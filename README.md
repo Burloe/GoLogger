@@ -1,4 +1,5 @@
-#![GoLogger](https://github.com/Burloe/LogSystemTutorial/blob/main/GoLogger.svg) 
+![GoLogger](https://github.com/Burloe/LogSystemTutorial/blob/main/GoLogger.svg) 
+#GoLogger
  A basic logging system for game events in into a .log file for Godot 4.
 
 ## Introduction
