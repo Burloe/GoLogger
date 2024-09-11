@@ -12,18 +12,25 @@
 
 ## Installation and setup:
 Download either on GitHub(!https://github.com/Burloe/GoLogger) or through the Asset Library. After importing it into your project, some files are added which are not strictly necessary that are added for the sake of making the installation simplified. But I highly recommend doing the complicated installation because it will be easier to manage and build upon the system if that's what you're looking for.
-### Simple setup:
+### Simple setup - For those who just want a basic standalone logging system:
 1. Find the "Log.gd" file in the addon folder and specify the desired location of the log inside your project by altering this line:
    
    `const DEVFILE = "res://GoLogger/game.log"` 
 3. In order to swap between saving logs in the project file and the User Data folder. You find the "GoLogger.gd" in the addons folder and set `log_in_devfile` to `false` in order to save logs in User Data and `true` to save logs in your project. 
 4. The plugin will add a new autoload script called GoLogger to your project. This handles autoload only handles telling the plugin whether or not it's currently logging by using a signal and the setting which handles the log location(see step 2). Everything involved with the actual logging is handled in the `Log.gd` script. 
 	
-### Elaborate setup:
-In order to make this an easy installation to quickly get the plugin running with as little setup as possible, additional scripts were required. They are GoLogger.gd, plugin.gd and plugin.cfg. Only GoLogger is required but can be easily merged into one of your existing autoloads. It's required to be an autoload due to the nature of static functions. How to do that:
-1. Copy the code below and put it into any of your existing autoload scripts.  Then delete GoLogger.gd:
-NoteIt REQUIRES TO BE IN AN AUTOLOAD!
- 	signal session_status_changed(status : bool) ## Session Status is changed whenever a session is started or stopped.
+### Elaborate setup - For those who intend on further improving and customize the system:
+In order to make this an easy installation to quickly get the plugin running with as little setup as possible, additional scripts were required. They are GoLogger.gd, plugin.gd and plugin.cfg. Only GoLogger is required but can be easily merged into one of your existing autoloads. Due to the nature of static functions the code needs to be in an autoload. How to do that:
+1. Find the "Log.gd" file in the addon folder and specify the desired location of the log inside your project by altering this line:
+   
+   `const DEVFILE = "res://GoLogger/game.log"` 
+
+
+2. Copy the code below and put it into any of your existing autoload scripts.  Then delete GoLogger.gd:
+
+It is REQUIRED to be an autoload!
+
+	signal session_status_changed(status : bool) ## Session Status is changed whenever a session is started or stopped.
 	var session_status: bool = false ## Flags whether a log session is in progress or not. 
 	var log_in_devfile : bool = true ## Flags whether or not logs are saved using the [param FILE](false) or [param DEVFILE](true).
 	
@@ -32,11 +39,11 @@ NoteIt REQUIRES TO BE IN AN AUTOLOAD!
 		Log.start_session() # Begins the logging seesion
 	
 	func _on_session_status_changed(status : bool) -> void:
-		session_status = status` [/codeblock]
+		session_status = status
  
-1. In Log.gd, use Find and Replace to replace any code referencing GoLogger with your own autoload.
+4. In Log.gd, use Find and Replace to replace any code referencing GoLogger with your own autoload.
 	2(sidenote). The example scene script also references the GoLogger.gd script so this will break that but you can just use Find and Replace there too and it's fixed. That has no bearing on the logging system since that's just example/showcase of what the plugin does.
-2. Optional! At this point, you can delete the plugin.gd and plugin.cfg and use the scripts as is. 
+5. Optional! At this point, you can delete the plugin.gd and plugin.cfg and use the scripts as is. 
 
 
 ## How to use:
@@ -46,3 +53,4 @@ Here are some examples I use in my code for my save system and inventory.
 ![SaveSystem](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example1.png)
 ![Inventory](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example2.png)
 ![Inventory](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example3.png)
+![Inventory](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example4.png)
