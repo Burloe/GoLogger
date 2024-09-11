@@ -1,5 +1,6 @@
 extends Node
 class_name GameLog
+# GoLog
 
 ## Static class that logs events into a single source which can be used for testing and debugging.
 ##
@@ -18,8 +19,8 @@ static func start_session() -> void:
 
 
 static func stop_session() -> void:
-	if FileAccess.file_exists(DEVFILE if Global.log_on_dev else FILE):
-		if Global.log_session:
+	if Global.log_session:
+		if FileAccess.file_exists(DEVFILE if Global.log_on_dev else FILE):
 			var _file = FileAccess.open(DEVFILE if Global.log_on_dev else FILE, FileAccess.READ)
 			var _content = _file.get_as_text()
 			_file.close()
@@ -32,21 +33,18 @@ static func stop_session() -> void:
 
 ## Stores a log entry into the [code]gamelog.txt[/code] file. By default, the system will log the date and time on each log entry. Optionally, this can be prevented by calling function with 'false'. 
 static func log(entry : String, include_date_time : bool = true) -> void:
-	if FileAccess.file_exists(DEVFILE if Global.log_on_dev else FILE):
-		if Global.log_session:
+	if Global.log_session:
+		if FileAccess.file_exists(DEVFILE if Global.log_on_dev else FILE):
 			# Store the old contents
 			var _file = FileAccess.open(DEVFILE if Global.log_on_dev else FILE, FileAccess.READ)
 			var _content = _file.get_as_text()
 			_file.close()
-			
 			# Add the new entry
 			var _f = FileAccess.open(DEVFILE if Global.log_on_dev else FILE, FileAccess.WRITE)
 			var _date : String = str("\t[", Time.get_datetime_string_from_system( true, true), "]: ")
 			_f.store_line(str(_content, _date if include_date_time else ": ", entry))
 			_f.close()
-		
-	else: # File doesn't exist > Create new one 
-		if Global.log_session:
+		else: # File doesn't exist > Create new one 
 			var _file = FileAccess.open(DEVFILE if Global.log_on_dev else FILE, FileAccess.WRITE)
 			var _date : String = str("\t[", Time.get_datetime_string_from_system( true, true), "]: ")
 			_file.store_line(str("New log started [", Time.get_datetime_string_from_system( true, true), "]\n\t[", Time.get_datetime_string_from_system( true, true), "]: "))
