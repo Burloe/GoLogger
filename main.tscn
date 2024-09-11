@@ -1,0 +1,106 @@
+[gd_scene format=3 uid="uid://1n60rnfdej0p"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Simulations" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 120.0
+offset_right = 372.0
+offset_bottom = 520.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Simulations"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Simulations/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Simulations/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Simulate Log Entries"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pickup" type="Button" parent="Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Pickup Item"
+
+[node name="Combine" type="Button" parent="Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Combine Items"
+
+[node name="Discard" type="Button" parent="Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Discard Item"
+
+[node name="Spacer" type="Control" parent="Simulations/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+
+[node name="Death" type="Button" parent="Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Player Death"
+
+[node name="Respawn" type="Button" parent="Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Player Death"
+
+[node name="Load" type="Button" parent="Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Load Game"
+
+[node name="Save" type="Button" parent="Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Save Game"
+
+[node name="Exit" type="Button" parent="Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Exit Game"
+
+[node name="LogContents" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 436.0
+offset_top = 23.0
+offset_right = 1127.0
+offset_bottom = 628.0
+
+[node name="MarginContainer" type="MarginContainer" parent="LogContents"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LogContents/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LogContents/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(335, 585)
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="LogContents/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(331, 585)
+layout_mode = 2
+autowrap_mode = 3
