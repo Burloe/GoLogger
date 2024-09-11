@@ -51,6 +51,6 @@ static func entry(log_entry : String, include_date_time : bool = true) -> void:
 
 ## Clears session and starts a new one.
 static func clear_session() -> void:
-	var _f = FileAccess.open(DEVFILE if Global.log_on_dev else FILE, FileAccess.WRITE)
+	var _f = FileAccess.open(DEVFILE if GoLogger.log_on_dev else FILE, FileAccess.WRITE)
 	_f.close()
 	start_session()
