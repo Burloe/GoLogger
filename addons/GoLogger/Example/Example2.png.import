@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qnqrnun3vmfu"
-path="res://.godot/imported/GoLogger.svg-9a7078c17d368bb082020342dfa8133f.ctex"
+uid="uid://bbnse1okcv1ux"
+path="res://.godot/imported/Example2.png-01faf5a517525cb6788614da71f84433.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GoLogger.svg"
-dest_files=["res://.godot/imported/GoLogger.svg-9a7078c17d368bb082020342dfa8133f.ctex"]
+source_file="res://addons/GoLogger/Example/Example2.png"
+dest_files=["res://.godot/imported/Example2.png-01faf5a517525cb6788614da71f84433.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
