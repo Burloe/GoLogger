@@ -6,8 +6,8 @@ extends Control
 @onready var gamelog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/GAMElog
 @onready var uilog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/UIlog
 @onready var playerlog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/PLAYERlog
-const INDICATOR_1 = preload("res://Showcase(do not put in your project)/Indicator1.png")
-const INDICATOR_2 = preload("res://Showcase(do not put in your project)/Indicator2.png")
+const INDICATOR_1 = preload("res://Showcase/Indicator1.png")
+const INDICATOR_2 = preload("res://Showcase/Indicator2.png")
 @onready var npr1: NinePatchRect = $VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer/NinePatchRect
 @onready var npr2: NinePatchRect = $VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer/NinePatchRect2
 @onready var npr3: NinePatchRect = $VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer/NinePatchRect3
