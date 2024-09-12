@@ -15,16 +15,13 @@ static func start_session() -> void:
 	# Opening a file with WRITE will clear it of previous contents. 
 	var _f = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE) 
 	_f.store_line(str("[", Time.get_datetime_string_from_system(true, true), "] New session:")) 
+	_f.close()
 	GoLogger.session_status_changed.emit(true)
 
 ## Stops the current session.
 static func stop_session() -> void:
 	if GoLogger.session_status:
 		if FileAccess.file_exists(DEVFILE if GoLogger.log_in_devfile else FILE):
-			var _file = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.READ)
-			var _content = _file.get_as_text()
-			_file.close()
-			
 			var _f = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE)
 			var _date : String = str("[", Time.get_datetime_string_from_system(true, true), "] Stopped session.") 
 			GoLogger.session_status_changed.emit(false)
