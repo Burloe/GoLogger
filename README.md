@@ -9,7 +9,7 @@ Have you ever found yourself working on multiple new features or a large system 
 
 This plugin is a basic logging system designed to serve as a foundation for you to build upon. As such, it is intentionally minimalistic, making it flexible and scalable. With a few small adjustments, you can modify it to categorize events into separate files. The system logs any game event or data to a .log file, but it won’t automatically generate log entries once installed. However, using this plugin is as simple as writing a print() statement:
 	
- 	Log.entry("Your log entry message here!")	# Result: [2024-09-10 12:04:58] Your log entry message here!
+ 	Log.entry("Your log entry message.")	# Result: [2024-04-04 14:04:44] Your log entry message.
 
 **Note: This system is only as comprehensive and detailed as you make it.** But it also works as a simple standalone logging system as is.<br><br><br>
 
