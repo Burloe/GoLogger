@@ -85,10 +85,10 @@ Using the above switching between the `DEVFILE` and the `FILE` as an example of 
 
 ### Examples:
 Here are some examples I use in my code for my save system and inventory.
-![SaveSystem]([https://github.com/Burloe/GoLogger/blob/main/Showcase/GoLogger/Example/Example1.png](https://github.com/Burloe/GoLogger/blob/main/Showcase(do%20not%20put%20in%20your%20project)/Example1.png))
-![Inventory1]([https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example2.png](https://github.com/Burloe/GoLogger/blob/main/Showcase(do%20not%20put%20in%20your%20project)/Example2.png))
-![Inventory2]([https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example3.png](https://github.com/Burloe/GoLogger/blob/main/Showcase(do%20not%20put%20in%20your%20project)/Example3.png))
-![Log file contents]([https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example4.png](https://github.com/Burloe/GoLogger/blob/main/Showcase(do%20not%20put%20in%20your%20project)/Example4.png))
+![SaveSystem](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example1.png)
+![Inventory1](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example2.png)
+![Inventory2](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example3.png)
+![Log file contents](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example4.png)
 
 
 
