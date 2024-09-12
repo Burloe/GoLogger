@@ -1,9 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://1n60rnfdej0p"]
+[gd_scene load_steps=11 format=3 uid="uid://1n60rnfdej0p"]
 
 [ext_resource type="Script" path="res://Showcase/main.gd" id="1_ewgn3"]
+[ext_resource type="Texture2D" uid="uid://bl5muwux5lfqx" path="res://Showcase/Indicator1.png" id="2_pdhit"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_fegtk"]
-font_size = 26
+font_size = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qosiu"]
+bg_color = Color(0.433789, 0.68319, 0.141601, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dj8pr"]
+bg_color = Color(0.0386462, 0.26275, 0.136913, 1)
+
+[sub_resource type="Theme" id="Theme_8uerd"]
+Button/styles/hover = SubResource("StyleBoxFlat_qosiu")
+Button/styles/normal = SubResource("StyleBoxFlat_qosiu")
+Button/styles/pressed = SubResource("StyleBoxFlat_dj8pr")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4327m"]
+bg_color = Color(0.59, 0.059, 0.1475, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1dq37"]
+bg_color = Color(0.18, 0.0288, 0.0792, 1)
+
+[sub_resource type="Theme" id="Theme_yn5ob"]
+Button/styles/hover = SubResource("StyleBoxFlat_4327m")
+Button/styles/normal = SubResource("StyleBoxFlat_4327m")
+Button/styles/pressed = SubResource("StyleBoxFlat_1dq37")
 
 [sub_resource type="LabelSettings" id="LabelSettings_8wl4e"]
 font_size = 26
@@ -16,8 +39,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ewgn3")
-metadata/_edit_horizontal_guides_ = [628.0, 23.0]
-metadata/_edit_vertical_guides_ = [25.0, 317.0]
+metadata/_edit_horizontal_guides_ = [677.0, 23.0]
+metadata/_edit_vertical_guides_ = [25.0, 317.0, 861.0, 865.0, 1371.0, 1375.0]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
@@ -28,7 +51,7 @@ offset_bottom = 628.0
 theme_override_constants/separation = 57
 
 [node name="LogActions" type="Panel" parent="VBoxContainer"]
-custom_minimum_size = Vector2(268, 148)
+custom_minimum_size = Vector2(268, 186)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/LogActions"]
@@ -54,32 +77,92 @@ text = "Log Actions
 label_settings = SubResource("LabelSettings_fegtk")
 horizontal_alignment = 1
 
-[node name="SessionStatusLbl" type="RichTextLabel" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-bbcode_enabled = true
-text = "[center]Session Status: [color=green] Logging"
-scroll_active = false
-
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 21
 
-[node name="Start" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(125, 0)
+[node name="NinePatchRect" type="NinePatchRect" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(88, 23)
 layout_mode = 2
-text = "Start
-Session"
+texture = ExtResource("2_pdhit")
+region_rect = Rect2(0, 0, 75, 23)
+patch_margin_left = 9
+patch_margin_top = 10
+patch_margin_right = 9
+patch_margin_bottom = 8
 
-[node name="Stop" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(125, 0)
+[node name="NinePatchRect2" type="NinePatchRect" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(88, 23)
 layout_mode = 2
-text = "Stop
-Session"
+texture = ExtResource("2_pdhit")
+region_rect = Rect2(0, 0, 75, 23)
+patch_margin_left = 9
+patch_margin_top = 10
+patch_margin_right = 9
+patch_margin_bottom = 8
+
+[node name="NinePatchRect3" type="NinePatchRect" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(88, 23)
+layout_mode = 2
+texture = ExtResource("2_pdhit")
+region_rect = Rect2(0, 0, 75, 23)
+patch_margin_left = 9
+patch_margin_top = 10
+patch_margin_right = 9
+patch_margin_bottom = 8
+
+[node name="SessionStatusLbl" type="RichTextLabel" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "             ^                            ^                           ^
+        GAME                       UI                    PLAYER
+       STATUS                STATUS               STATUS"
+scroll_active = false
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="StartGAME" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme = SubResource("Theme_8uerd")
+text = "Start"
+
+[node name="StartUI" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme = SubResource("Theme_8uerd")
+text = "Start"
+
+[node name="StartPLAYER" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme = SubResource("Theme_8uerd")
+text = "Start"
+
+[node name="StopGAME" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme = SubResource("Theme_yn5ob")
+text = "Stop"
+
+[node name="StopUI" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme = SubResource("Theme_yn5ob")
+text = "Stop"
+
+[node name="StopPLAYER" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme = SubResource("Theme_yn5ob")
+text = "Stop"
 
 [node name="Simulations" type="Panel" parent="VBoxContainer"]
-custom_minimum_size = Vector2(292, 400)
+custom_minimum_size = Vector2(292, 410)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Simulations"]
@@ -130,6 +213,10 @@ text = "Player Death"
 layout_mode = 2
 text = "Player Respawn"
 
+[node name="Spacer2" type="Control" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+
 [node name="Load" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Load Game"
@@ -164,6 +251,29 @@ theme_override_constants/margin_bottom = 10
 [node name="ScrollContainer" type="ScrollContainer" parent="LogContents/MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="LogContents/MarginContainer/ScrollContainer"]
-custom_minimum_size = Vector2(1527, 1010)
+[node name="VBoxContainer" type="VBoxContainer" parent="LogContents/MarginContainer/ScrollContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 0
+theme_override_font_sizes/bold_font_size = 36
+bbcode_enabled = true
+text = "[center][b][color=yellow]GAME                                              [color=blue]UI                                            [color=orange]PLAYER"
+fit_content = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GAMElog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(506, 956)
+layout_mode = 2
+
+[node name="UIlog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(506, 956)
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="PLAYERlog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(506, 956)
 layout_mode = 2
