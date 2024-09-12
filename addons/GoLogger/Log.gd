@@ -11,19 +11,19 @@ const FILE = "user://log/game.log" ## This file can be accessed by selecting Pro
 
 
 ## Initiates a log session, recording game events. 
-static func start_session() -> void:
+static func start_session(utc : bool = true, space : bool = true) -> void:
 	# Opening a file with WRITE will clear it of previous contents. 
 	var _f = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE) 
-	_f.store_line(str("[", Time.get_datetime_string_from_system(true, true), "] New session:")) 
+	_f.store_line(str("[", Time.get_datetime_string_from_system(utc, space), "] New session:")) 
 	_f.close()
 	GoLogger.session_status_changed.emit(true)
 
 ## Stops the current session.
-static func stop_session() -> void:
+static func stop_session(utc : bool = true, space : bool = true) -> void:
 	if GoLogger.session_status:
 		if FileAccess.file_exists(DEVFILE if GoLogger.log_in_devfile else FILE):
 			var _f = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE)
-			var _date : String = str("[", Time.get_datetime_string_from_system(true, true), "] Stopped session.") 
+			var _date : String = str("[", Time.get_datetime_string_from_system(utc, space), "] Stopped session.") 
 			_f.close()
 			GoLogger.session_status_changed.emit(false)
 
@@ -32,7 +32,7 @@ static func stop_session() -> void:
 ##[codeblock] 0 = date + time + log entry
 ## 1 = time + log entry
 ## 2 = log entry [/codeblock]
-static func entry(log_entry : String, date_time_flag : int = 0) -> void:
+static func entry(log_entry : String, date_time_flag : int = 0, utc : bool = true, space : bool = true) -> void:
 	if GoLogger.session_status:
 		if FileAccess.file_exists(DEVFILE if GoLogger.log_in_devfile else FILE):
 			# Store the old contents
@@ -43,8 +43,8 @@ static func entry(log_entry : String, date_time_flag : int = 0) -> void:
 			var _f = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE)
 			var _dt : String
 			match date_time_flag:
-				0: _dt = str("\t[", Time.get_datetime_string_from_system(true, true), "] ")
-				1: _dt = str("\t[", Time.get_time_string_from_system(true), "] ")
+				0: _dt = str("\t[", Time.get_datetime_string_from_system(utc, space), "] ")
+				1: _dt = str("\t[", Time.get_time_string_from_system(utc), "] ")
 				2: _dt = ""
 			_f.store_line(str(_content, _dt, log_entry))
 			_f.close()
