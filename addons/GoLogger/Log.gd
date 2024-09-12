@@ -50,6 +50,6 @@ static func entry(log_entry : String, date_time_flag : int = 0, utc : bool = tru
 			_f.close()
 		else: # File doesn't exist > Create new one 
 			var _file = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE)
-			var _date : String = str("\t[", Time.get_datetime_string_from_system( true, true), "]: ")
-			_file.store_line(str("New log started [", Time.get_datetime_string_from_system( true, true), "]\n\t[", Time.get_datetime_string_from_system( true, true), "]: "))
+			var _date : String = str("\t[", Time.get_datetime_string_from_system(utc, space), "]: ")
+			_file.store_line(str("New log started [", Time.get_datetime_string_from_system(utc, space), "]\n\t[", Time.get_datetime_string_from_system(utc, space), "]: "))
 			_file.close()
