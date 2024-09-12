@@ -1,6 +1,9 @@
 # ![GoLogger.svg](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/GoLogger.svg) GoLogger
- A basic lightweight logging system for game events in into an external .log file for Godot 4.<br><br>
+ A basic lightweight logging system for game events in into an external .log file for Godot 4.<br>
+ 
+https://github.com/user-attachments/assets/f8b55481-cd32-4be3-9e06-df4368d1183c
 
+<br><br>
 ## Introduction
 Have you ever found yourself working on multiple new features or a large system involving numerous scripts, adding countless print statements to debug? This can clutter the output, making the information difficult to decipher and even harder to manage. Or perhaps you want your game to record events to help debug issues that your players encounter, especially when you can’t access their instance. In that case, creating a logging system to record game events could provide a snapshot of the events leading up to a bug or crash.
 
@@ -54,6 +57,10 @@ In order for static functions to have access to variables and signals, an autolo
 **4. Optional:** At this point, you can delete plugin.gd and plugin.cfg and use the scripts as your own. Building upon this plugin and making it your own is not only encouraged, it was made for it.<br><br><br>
 
 
+https://github.com/user-attachments/assets/24a0c8d2-d4ea-49f2-89fc-a2fc675c42c1
+
+
+
 ##How to use:
 **Creating log entries:**<br>
 Simply installing this plugin won't automatically generate log entries when you run your game. You still need to manually add log entries and specify the data each entry should display (if necessary). Fortunately, adding entries is as easy as writing `print()` calls, done with a single line of code:
@@ -86,3 +93,6 @@ Here are some examples I use in my code for my save system and inventory.
 ![Inventory1](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example2.png)
 ![Inventory2](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example3.png)
 ![Log file contents](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/Example/Example4.png)
+
+
+
