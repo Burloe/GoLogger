@@ -1,5 +1,5 @@
 # ![GoLogger.svg](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/GoLogger.svg) GoLogger
- A basic lightweight logging system for game events in into a .log file for Godot 4.<br><br>
+ A basic lightweight logging system for game events in into an external .log file for Godot 4.<br><br>
 
 ## Introduction
 Have you ever found yourself working on multiple new features or a large system involving numerous scripts, adding countless print statements to debug? This can clutter the output, making the information difficult to decipher and even harder to manage. Or perhaps you want your game to record events to help debug issues that your players encounter, especially when you can’t access their instance. In that case, creating a logging system to record game events could provide a snapshot of the events leading up to a bug or crash.
@@ -8,7 +8,7 @@ This plugin is a basic logging system designed to serve as a foundation for you 
 	
  	Log.entry("Your log entry message here!")          # Result: [2024-09-10 12:04:58] Your log entry message here!
 
-**Note: This system is only as comprehensive and detailed as you make it.**<br><br><br>
+**Note: This system is only as comprehensive and detailed as you make it.** But it also works as a simple standalone logging system as is.<br><br><br>
 
 ## .log files
 The system in it's current state doesn't support multiple file handling. It will use one file at any time but there's an option of two directory locations of the file. The file is truncated between sessions and you can easily stop and start new sessions at runtime(see "How to use" section). 
@@ -54,27 +54,30 @@ In order for static functions to have access to variables and signals, an autolo
 **4. Optional:** At this point, you can delete plugin.gd and plugin.cfg and use the scripts as your own. Building upon this plugin and making it your own is not only encouraged, it was made for it.<br><br><br>
 
 
-## How to use:
-** Creating log entries:**
+##How to use:
+**Creating log entries:**<br>
 Simply installing this plugin won't automatically generate log entries when you run your game. You still need to manually add log entries and specify the data each entry should display (if necessary). Fortunately, adding entries is as easy as writing `print()` calls, done with a single line of code:
 
 	Log.entry("Your entry string here")
 You can call this from any script in your project. The string message can contain almost any data, but you may need to convert that data into a string format using str(). For example:
 	
  	Log.entry(str("Picked up item[", item_name, "] x", item_amount, "."))
+Godot allows you to format the strings in certain ways. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) 
+  
+**Changing the date and time flag on log entries:**<br>
+The plugin will add the date and time to your entries automatically, but it's possible to change that. After you've added your string you can add an integer when you call `Log.entry("Message", 1)`. 0 includes date + time, 1 will only add the time and 2 will only show messages. If you find it cumbersome to add a 1 or 2 everytime you call `Log.entry()`. I recommend that you open the "Log.gd" script and find the function declaration for `entry()`. There you can change the flag from `date_time_flag : int = 0` to `date_time_flag : int = 1`(or 2). <br>
+The date and time format used in this system is the UTC format(YYYY-MM-DDTHH:MM:SS), You can change it to use the local time format but note that if you are sent log files from other regions. The date and time will be in their local format, not yours. You change it by going into the "Log.gd" script and change the UTC parameter of each `Time.get_datetime_string_from_system()` and `Time.get_time_string_from_system()` call to false. [More info can be found in the doc page.](https://docs.godotengine.org/en/stable/classes/class_time.html#class-time-method-get-datetime-string-from-system)
 
-** Switching between using the `DEVFILE` and the `FILE`:**
+**Switching between using the `DEVFILE` and the `FILE`:**<br>
 Since this plugin runs entirely in the background, the only way to switch between the DEVFILE and FILE is to manually set `log_in_devfile` to true or false in the code of "GoLogger.gd". Adding a button or export variable to handle this switch is simple, as there are no signals or additional code execution tied to the variable. However, it is not recommended to just toggle the variable mid-session. While hotswapping the log file shouldn't cause errors, it will result in fragmented log files. Best practice is to use the `Log.stop_session()` and `Log.start_session()` before and after switching(see example usage below).
 
-** How to stop and start sessions at runtime:**
+**How to stop and start sessions at runtime:**<br>
 Using the above switching between the `DEVFILE` and the `FILE` as an example of when one might need to stop and start a session at runtime. Adding a toggle button in your game menu or in some debug panel is one way to achieve this.
-	func _on_button_toggled(toggle:bool) ->:
+	
+ 	func _on_button_toggled(toggle:bool) ->:
  		Log.stop_session()				# Stop session prior to swapping file
  		GoLogger.log_in_devfile = toggle  		# True will use DEVFILE, false will use FILE
    		log.start_session()				# Begins a new session on the other file
-  
-** Changing the date and time flag:**
-The plugin will add the date and time to your entries but it's possible to change that. After you've added your string you can add an integer when you call `Log.entry("Message", 1)`. 0 includes date + time, 1 will only add the time and 2 will only show messages. If you find it cumbersome to add a 1 or 2 everytime you call `Log.entry()`. I recommend that you open the "Log.gd" script and find the function declaration for `entry()`. There you can change the flag from `date_time_flag : int = 0` to `date_time_flag : int = 1`(or 2).
 <br><br><br>
 
 ### Examples:
