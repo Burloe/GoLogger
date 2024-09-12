@@ -52,12 +52,12 @@ In order for static functions to have access to variables and signals, they are 
 			2: player_session_status = status
 		session_status_changed.emit()
   
-3. In Log.gd, use "Find and Replace" to update any code referencing the deleted `GoLogger` autoload with your own updated one.
-	*Note: The example scene script also references the GoLogger.gd script, so this will break the example scene. However, you can fix this by using "Find and Replace" in the example script "main.gd" as well. This doesn't affect the logging system itself, but if you try to open scene "main.tscn" after completing these steps, you may encounter a series of errors.*
-*4. Optional:* At this point, you can delete plugin.gd and plugin.cfg and use the scripts as your own. Building upon this plugin and making it your own is not only encouraged, it was made for it.<br><br><br>
+3. In Log.gd, use "Find and Replace" to update any code referencing the deleted `GoLogger` autoload with your own updated one.<br>
+	*Note: The example scene script also references the GoLogger.gd script, so this will break the example scene. However, you can fix this by using "Find and Replace" in the example script "main.gd" as well. This doesn't affect the logging system itself, but if you try to open scene "main.tscn" after completing these steps, you may encounter a series of errors.*<br>
+4. *Optional:* At this point, you can delete plugin.gd and plugin.cfg and use the scripts as your own. Building upon this plugin and making it your own is not only encouraged, it was made for it.<br><br><br>
 
 
-##How to use:
+## How to use:<br>
 **Creating log entries:**<br>
 This plugin uses "sessions" to help you start and stop logging during the course of your game in case you don't want to log endlessly. Upon installation, the log sessions starts in the `_ready()` function of the "Gologger" autoload script. You should delete that if you only intend to log during specific times. Note that the .log files are truncated each time you run the game, if you want to save a specific log file, just copy it and rename it which won't overwrite the contents.
 
