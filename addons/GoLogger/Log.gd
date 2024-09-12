@@ -45,7 +45,7 @@ static func entry(log_entry : String, date_time_flag : int = 0, utc : bool = tru
 			match date_time_flag:
 				0: _dt = str("\t[", Time.get_datetime_string_from_system(utc, space), "] ")
 				1: _dt = str("\t[", Time.get_time_string_from_system(utc), "] ")
-				2: _dt = ""
+				2: _dt = "\t"
 			_f.store_line(str(_content, _dt, log_entry))
 			_f.close()
 		else: # File doesn't exist > Create new one 
