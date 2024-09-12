@@ -12,11 +12,15 @@ const FILE = "user://log/game.log" ## This file can be accessed by selecting Pro
 
 ## Initiates a log session, recording game events. 
 static func start_session(utc : bool = true, space : bool = true) -> void:
-	# Opening a file with WRITE will clear it of previous contents. 
-	var _f = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE) 
-	_f.store_line(str("[", Time.get_datetime_string_from_system(utc, space), "] New session:")) 
-	_f.close()
-	GoLogger.session_status_changed.emit(true)
+	if GoLogger.session_status: 
+		push_warning("GoLogger Warning: Attempted to start session without stopping previous.")
+		return
+	else:
+		# Opening a file with WRITE will clear it of previous contents. 
+		var _f = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE) 
+		_f.store_line(str("[", Time.get_datetime_string_from_system(utc, space), "] New session:")) 
+		_f.close()
+		GoLogger.session_status_changed.emit(true)
 
 ## Stops the current session.
 static func stop_session(utc : bool = true, space : bool = true) -> void:
@@ -26,6 +30,7 @@ static func stop_session(utc : bool = true, space : bool = true) -> void:
 			var _date : String = str("[", Time.get_datetime_string_from_system(utc, space), "] Stopped session.") 
 			_f.close()
 			GoLogger.session_status_changed.emit(false)
+	else: # Session not ru
 
 
 ## Stores a log entry into the [code]gamelog.txt[/code] file. [param date_time_flag] is used to specify if the date and time format you want included with your entries.
