@@ -1,6 +1,6 @@
 extends Control
 
-## Disregard this script. Only exists to facilitate the showcase simulations in the example scene. 
+## Disregard this script. Only exists to facilitate the showcase simulations in the example scene.
 
 @onready var session_status_lbl: RichTextLabel = %SessionStatusLbl
 @onready var gamelog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/GAMElog
