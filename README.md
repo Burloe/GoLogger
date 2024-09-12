@@ -14,7 +14,7 @@ This plugin is a basic logging system designed to serve as a foundation for you 
 **Note: This system is only as comprehensive and detailed as you make it.** But it also works as a simple standalone logging system as is.<br><br><br>
 
 ## .log files
-GoLogger will create and add logs to three .log files, named 'game.log', 'ui.log' and 'player.log'. Modifying the plugin to use different names is simple and steps are detailed in Modify paragraph of the "How to Use" section. The .log files are located in the User Data folder can be accessed through `Project > Open User Data Folder` and opening the `logs` folder. This folder location is different on every OS. Because they are stored externally from the project, your players/users can access these logs file and can include them when making bug reports to the developer(you).
+GoLogger will create and add logs to three .log files, named 'game.log', 'ui.log' and 'player.log'. Modifying the plugin to use different file names is a simple process and steps are detailed in Modify paragraph of the "How to Use" section. The .log files are located in the User Data folder can be accessed through `Project > Open User Data Folder` and opening the `logs` folder. This folder location is different on every OS. Because they are stored externally from the project, your players/users can access these logs file and can include them when making bug reports to the developer(you).
 
 ## Installation and setup:
 GoLogger requires an autoload to manage a signal and a few variables due to the nature of the static functions we use to be able to call them from anywhere in this way. When installing the plugin, an autoload "GoLogger.gd" is included and added to your autoloads automatically. GoLogger contains just 8 lines of code which can just as easily be incorporated into one of your existing autoload scripts. Therefore, it is **HIGHLY** recommended to do just that, and steps on how to do that is provided in the "Additional Setup".
@@ -23,6 +23,7 @@ GoLogger requires an autoload to manage a signal and a few variables due to the 
 * Download the plugin from either GitHub(!https://github.com/Burloe/GoLogger) or the Asset Library. If you download the .zip from GitHub, extract **only** the "addons" folder to any folder in your PC, then place the extracted "addons" folder into your project's root directory. The folder structure should look like `res://addons/GoLogger`. 
 * Navigate to `Project > Project Settings > Plugins`, where you should see "GoLogger" as an unchecked entry in the list of installed plugins. Check it to activate the plugin.
 * Go to `Project > Project Settings > Globals > Autoload` and ensure that the GoLogger autoload has been added correctly. If not, you can manually add it by clicking the folder icon, locating GoLogger.gd, and restarting Godot.
+* *Optional but recommended:* Add a `Log.stop_session()` in the function where you close your game with `get_tree().quit()`.
 * You are ready to use the plugin and start adding "Log.entry()" calls to your code. If you plan on exanding on this system and build upon it. I recommend going through the additional steps below but you can skip it. 
 	
 ### **Additional Setup** - For those intending to further improve and customize the system:
@@ -58,6 +59,8 @@ In order for static functions to have access to variables and signals, they are 
 
 ##How to use:
 **Creating log entries:**<br>
+This plugin uses "sessions" to help you start and stop logging during the course of your game in case you don't want to log endlessly. Upon installation, the log sessions starts in the `_ready()` function of the "Gologger" autoload script. You should delete that if you only intend to log during specific times. Note that the .log files are truncated each time you run the game, if you want to save a specific log file, just copy it and rename it which won't overwrite the contents.
+
 Simply installing this plugin is not enough to for log entries to appear in the log files when you run your game. You still need to manually add log entries and specify the data each entry should display (if necessary). Fortunately, adding entries is as easy as writing `print()` calls, done with a single line of code:
 
 	Log.entry(0, "Your entry string here")
@@ -75,6 +78,7 @@ You can call function this from any script in your project. The string message c
 Godot allows you to format the strings in many ways. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) 
 
 
+
 **Modifying the files:**
 The files that are logged when first installing the plugin are "game.log", "ui.log and "player.log". These are just examples of what you can log and how to sort then. You can easily change the name of them, plus, you decide where entry's are logged in your `Log.entry()` calls regardless. In order to change them, there are a couple of steps to do it safely without breaking anything and for the purposes of this example. We'll change the "ui.log" file to instead be an "npc.log" file where one might log events pertaining to NPCs and their pathfinding:
 
@@ -84,20 +88,31 @@ The files that are logged when first installing the plugin are "game.log", "ui.l
   	"UI_FILE" > "NPC_FILE"
    	"_fui" > "_fnpc"
    	"_flui" > "_flnpc"
-* *Optional* Use `Search > Find` and find occurances of "ui" in the comments/documentation and change them appropriately.
+* *Optional* Use `Search > Find` and find occurances of "ui" and "UI in the comments/documentation and change them appropriately.
 
-**In "GoLogger.gd" OR the autoload you integrated the "GoLogger" code into:**
-* Change variable `ui_session_status` to `npc_session_status`.
+**In "GoLogger.gd" OR the autoload you integrated the "GoLogger" code into:** 	
   
 * *optional* Select `Project > Open User Data folder` and navigate inside the "logs" folder. If you've ran your game one, the "ui.log" file was created so we can now delete it.
 
-If you want to remove files and just use 2 or one. The code is fairly clear on separating codeblocks in charge of handlings each file. Just delete whichever file you want.
-Similarly, if you want to add. You can just duplicate the same codeblocks, to expand the number of files/categories.
+If you want to remove file(s) and use 2 or 1. The code is fairly clear on separating codeblocks in charge of handlings each file. Just delete whichever file you want.
+Similarly, if you want to add. You can just duplicate the same codeblocks, to expand the number of files/categories.<br><br><br>
 
 
-**How to stop and start sessions at runtime:**<br>
-Because this plugin runs completely in the background, there's no built-in way to start, stop and restart sessions if you need to. However, this is easy to achieve since we can also access the `Log.start_sessiion()` and `Log.stop_session()` functions from anywhere in your project, much like the `Log.entry()`. Just call them using "Log." prefix. If you have a developer console or menu, just call these two function for your console command or button signals. 
-<br><br><br>
+**How to start and stop sessions at runtime:**<br>
+Because this plugin runs completely in the background, there's no built-in way to start, stop and restart sessions if you need to. However, this is easy to achieve since we can also access the `Log.start_sessiion()` and `Log.stop_session()` functions from anywhere in your project, much like the `Log.entry()`. Just call them using "Log." prefix. If you have a developer console or menu, just call these two function for your console command or button signals. <br><br><br>
+
+
+**I want to create new unique .log files that aren't overwritten when I run my game. How do I do that?**<br>
+Unfortunately, in the current state. The .log files are truncated upon starting new sessions. This plugin can be expanded so that it creates new unique log files each session with the date and time stamp in the name. By doing, you create new files rather than overwriting the previous ones each time you run the game. In order to keep this minimalistic and user friendly, I decided not to include that in the base plugin. If there's enough interest, I might add it in the future. Here's a quick way to do it with the ui.log file, but know that this will not delete old files, if you include this and run your game 1000 times, you'll have 3000 files in your logs folder. 
+
+*In Log.gd*
+Change `const UI_FILE = "user://logs/ui.log"` to `const UI_PATH = "user://logs/`.
+In `static func start_session()`, add to the ui block:
+
+	var file = str("ui(", Time.get_date_time_from_system(true, false), ").log
+Change `var _fui = FileAccess.open(UI_FILE, FileAccess.WRITE)` to `var _fui = FileAccess.open(UI_PATH + file, FileAccess.WRITE)`.
+
+There's more to it but this will get you started. Like i said, it will fill your folder will .log files. I would look into creating a way to only have a maximum amount of files in the folder and delete old ones accordingly. <br><br><br>
 
 ### Examples:
 Here are some examples I use in my code for my save system and inventory.
