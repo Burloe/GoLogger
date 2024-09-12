@@ -1,0 +1,169 @@
+[gd_scene load_steps=4 format=3 uid="uid://1n60rnfdej0p"]
+
+[ext_resource type="Script" path="res://Showcase(do not put in your project)/main.gd" id="1_ewgn3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_fegtk"]
+font_size = 26
+
+[sub_resource type="LabelSettings" id="LabelSettings_8wl4e"]
+font_size = 26
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ewgn3")
+metadata/_edit_horizontal_guides_ = [628.0, 23.0]
+metadata/_edit_vertical_guides_ = [25.0, 317.0]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 23.0
+offset_right = 317.0
+offset_bottom = 628.0
+theme_override_constants/separation = 57
+
+[node name="LogActions" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(268, 148)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/LogActions"]
+custom_minimum_size = Vector2(268, 148)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/LogActions/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Log Actions
+"
+label_settings = SubResource("LabelSettings_fegtk")
+horizontal_alignment = 1
+
+[node name="SessionStatusLbl" type="RichTextLabel" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Session Status: [color=green] Logging"
+scroll_active = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 21
+
+[node name="Start" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "Start
+Session"
+
+[node name="Stop" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "Stop
+Session"
+
+[node name="Simulations" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(292, 400)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Simulations"]
+custom_minimum_size = Vector2(292, 400)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Simulations/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Simulate Log Entries"
+label_settings = SubResource("LabelSettings_8wl4e")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pickup" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Pickup Item"
+
+[node name="Combine" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Combine Items"
+
+[node name="Discard" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Discard Item"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+
+[node name="Death" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Player Death"
+
+[node name="Respawn" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Player Respawn"
+
+[node name="Load" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Load Game"
+
+[node name="Save" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Save Game"
+
+[node name="Exit" type="Button" parent="VBoxContainer/Simulations/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Exit Game"
+
+[node name="LogContents" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 345.0
+offset_top = 23.0
+offset_right = 1892.0
+offset_bottom = 1053.0
+
+[node name="MarginContainer" type="MarginContainer" parent="LogContents"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="LogContents/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LogContents/MarginContainer/ScrollContainer"]
+custom_minimum_size = Vector2(1527, 1010)
+layout_mode = 2
