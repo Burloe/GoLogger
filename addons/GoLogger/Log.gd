@@ -24,6 +24,7 @@ static func stop_session() -> void:
 		if FileAccess.file_exists(DEVFILE if GoLogger.log_in_devfile else FILE):
 			var _f = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE)
 			var _date : String = str("[", Time.get_datetime_string_from_system(true, true), "] Stopped session.") 
+			_f.close()
 			GoLogger.session_status_changed.emit(false)
 
 
@@ -51,3 +52,4 @@ static func entry(log_entry : String, date_time_flag : int = 0) -> void:
 			var _file = FileAccess.open(DEVFILE if GoLogger.log_in_devfile else FILE, FileAccess.WRITE)
 			var _date : String = str("\t[", Time.get_datetime_string_from_system( true, true), "]: ")
 			_file.store_line(str("New log started [", Time.get_datetime_string_from_system( true, true), "]\n\t[", Time.get_datetime_string_from_system( true, true), "]: "))
+			_file.close()
