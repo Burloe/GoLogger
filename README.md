@@ -57,10 +57,6 @@ In order for static functions to have access to variables and signals, an autolo
 **4. Optional:** At this point, you can delete plugin.gd and plugin.cfg and use the scripts as your own. Building upon this plugin and making it your own is not only encouraged, it was made for it.<br><br><br>
 
 
-https://github.com/user-attachments/assets/24a0c8d2-d4ea-49f2-89fc-a2fc675c42c1
-
-
-
 ##How to use:
 **Creating log entries:**<br>
 Simply installing this plugin won't automatically generate log entries when you run your game. You still need to manually add log entries and specify the data each entry should display (if necessary). Fortunately, adding entries is as easy as writing `print()` calls, done with a single line of code:
