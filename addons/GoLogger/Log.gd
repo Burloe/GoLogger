@@ -30,7 +30,9 @@ static func stop_session(utc : bool = true, space : bool = true) -> void:
 			var _date : String = str("[", Time.get_datetime_string_from_system(utc, space), "] Stopped session.") 
 			_f.close()
 			GoLogger.session_status_changed.emit(false)
-	else: # Session not ru
+	else: # No session
+		push_error("GoLogger Error: Attempted to stop session without first starting one. Remember to call 'start_session()'.")
+		return
 
 
 ## Stores a log entry into the [code]gamelog.txt[/code] file. [param date_time_flag] is used to specify if the date and time format you want included with your entries.
@@ -58,3 +60,4 @@ static func entry(log_entry : String, date_time_flag : int = 0, utc : bool = tru
 			var _date : String = str("\t[", Time.get_datetime_string_from_system(utc, space), "]: ")
 			_file.store_line(str("New log started [", Time.get_datetime_string_from_system(utc, space), "]\n\t[", Time.get_datetime_string_from_system(utc, space), "]: "))
 			_file.close()
+	
