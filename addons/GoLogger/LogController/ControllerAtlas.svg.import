@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://lu7c4dnljdyj"
-path="res://.godot/imported/ControllerAtlas.svg-533e2257e621575d743adaa9a0840532.ctex"
+path="res://.godot/imported/ControllerAtlas.svg-d0b4ffbe2204f56f52f98dc30d2c4063.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/GoLogger/ControllerAtlas.svg"
-dest_files=["res://.godot/imported/ControllerAtlas.svg-533e2257e621575d743adaa9a0840532.ctex"]
+source_file="res://addons/GoLogger/LogController/ControllerAtlas.svg"
+dest_files=["res://.godot/imported/ControllerAtlas.svg-d0b4ffbe2204f56f52f98dc30d2c4063.ctex"]
 
 [params]
 

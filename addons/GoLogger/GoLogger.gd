@@ -12,6 +12,7 @@ func _ready() -> void:
 	toggle_session_status.connect(_on_toggle_session_status)
 	Log.start_session(0)
 	Log.start_session(1)
+
 ## Toggles the session status between true/false upon signal [signal GoLogger.toggle_session_status] emitting. 
 func _on_toggle_session_status(category : int, status : bool) -> void:
 	match category:

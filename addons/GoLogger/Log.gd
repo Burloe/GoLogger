@@ -6,8 +6,8 @@ class_name Log
 ## For installation, setup and how to use instructions, see the README.md or https://github.com/Burloe/GoLogger
 
 ## These paths can be accessed by selecting Project > Open User Data Folder in the top-left.
-const GAME_PATH = "user://logs/gamelogs/" ## Path where .log files are created/stored. Will create the directiry if it doesn't exist
-const PLAYER_PATH = "user://logs/playerlogs/" ## Path where .log files are created/stored. Will create the directiry if it doesn't exist
+const GAME_PATH = "user://logs/game_Gologs/" ## Path where .log files are created/stored. Will create the directiry if it doesn't exist
+const PLAYER_PATH = "user://logs/player_Gologs/" ## Path where .log files are created/stored. Will create the directiry if it doesn't exist
 # Normally located in:
 # Windows: %APPDATA%\Godot\app_userdata\[project_name]
 # macOS:   ~/Library/Application Support/Godot/app_userdata/[project_name]
@@ -66,9 +66,8 @@ static func start_session(category : int, utc : bool = true, space : bool = true
 					printerr("GoLogger Error: Unable to open file directory (", PLAYER_PATH, ")")
 					# Attempting to create the directory
 					var error = DirAccess.make_dir_absolute(PLAYER_PATH)
-					if error != OK:
-						# If you encounter Error[32], a conflicting file or directory already exists. Change path name to fix.
-						push_error("GoLogger Error: Failed to create directory (", PLAYER_PATH, ") -> Error[", error,"]")
+					# If you encounter Error[32], a conflicting file or directory already exists. Change path name to fix.
+					if error != OK: push_error("GoLogger Error: Failed to create directory (", PLAYER_PATH, ") -> Error[", error,"]")
 				else:
 					var files = dir.get_files() # Get all files, excluding directories
 					if files.size() >= GoLogger.max_file_count:
@@ -76,8 +75,7 @@ static func start_session(category : int, utc : bool = true, space : bool = true
 						# Delete the oldest file
 						var old_file = files[0]
 						var delete_err = dir.remove(PLAYER_PATH + old_file)
-						if delete_err != OK:
-							printerr("GoLogger Error: Failed to delete file (", old_file, ") -> Error[", delete_err,"]")
+						if delete_err != OK: printerr("GoLogger Error: Failed to delete file (", old_file, ") -> Error[", delete_err,"]")
 					# Create a new log file
 					var log_filepath = PLAYER_PATH + get_file_name("player")
 					var file = FileAccess.open(log_filepath, FileAccess.WRITE)
@@ -89,54 +87,61 @@ static func start_session(category : int, utc : bool = true, space : bool = true
 						printerr("GoLogger Error: Failed to create log file (", log_filepath, ").")
 
 
-## Stores a log entry into the 'game/ui/player.log' file. [param date_time_flag] is used to specify the type of date and time format you want your entries tagged with.
-##[codeblock] 0 = date + time + log entry
-## 1 = time + log entry
-## 2 = log entry [/codeblock]
-## [param utc] will convert the date and time into a unified UTC format as opposed to your or your players local date/time format.
-## [param space] will use a space to separate date and time in the tag. If false, they are separated with a "T"(2024-04-29T14:38:01).
-static func entry(category : int, log_entry : String, date_time_flag : int = 0, utc : bool = true, space : bool = true) -> void:
-	match category:
+## Stores a log entry into the 'game/ui/player.log' file.[br]
+## [param timestamp] is used to specify the type of date and time format you want your entries tagged with.[br]
+## [param utc] will convert the time into a unified UTC format as opposed to your or your players local time format.
+static func entry(file : int, log_entry : String, include_timestamp : bool = true, utc : bool = true) -> void:
+	match file:
 		0: # Game Log
 			if !GoLogger.game_session_status:
-				push_warning("GoLogger Warning: Attempted to log entry into game.log but session is run started. Remember to call 'start_session(0)' in a _ready() function.")
+				push_warning("GoLogger Warning: Attempted to log Game entry without starting a session. Remember to call 'start_session(0)' in a _ready() function.")
 				return
-			elif !FileAccess.file_exists(GAME_PATH): # File doesn't exist, create one by calling start_session()
-				start_session(0)
-			# Get and store previous log entries in _c
-			var _flg = FileAccess.open(GAME_PATH, FileAccess.READ)
-			var _c = _flg.get_as_text()
-			_flg.close()
-			# Add the previous content > Add the new entry with the proper date format as specified in the call
-			var _fg = FileAccess.open(GAME_PATH, FileAccess.WRITE)
-			var _dt : String
-			match date_time_flag:
-				0: _dt = str("\t[", Time.get_datetime_string_from_system(utc, space), "] ")
-				1: _dt = str("\t[", Time.get_date_string_from_system(utc), ") ")
-				2: _dt = str("\t[", Time.get_time_string_from_system(utc), "] ")
-				3: _dt = str("\t")
-			_fg.store_line(str(_c, _dt, log_entry))
-			_fg.close()
-
+				
+			var dir = DirAccess.open(GAME_PATH) 
+			if !dir:
+				printerr("GoLogger Error: Unsuccessful in loggin entry. Couldn't open in directory (", GAME_PATH, ") to find the game.log file.")
+			else: 
+				var _files = dir.get_files()
+				var _newest_file = str(GAME_PATH + _files[_files.size() -1]) 
+				var _fr = FileAccess.open(_newest_file, FileAccess.READ)# Open last newest file with READ
+				if !_fr:
+					var _err = FileAccess.get_open_error() 
+					if _err != OK: printerr("GoLogger Error: Reading player.log file Error[", _err, "].") 
+				var _content = _fr.get_as_text() # Store old log entries before the file is truncated
+				_fr.close()
+				var _f = FileAccess.open(_newest_file, FileAccess.WRITE) 
+				if !_f: 
+					var _ferr = FileAccess.get_open_error()  
+					if _ferr != OK: printerr("GoLogger Error: Writing to player.log file Error[", _ferr, "].")
+				var _timestamp : String = str("\t[", Time.get_time_string_from_system(utc), "] ") 
+				# Re-enter old log entries then add the new entry, prefixed with timestamp if include_timestamp allows
+				_f.store_line(str(_content, _timestamp + log_entry if include_timestamp else "\t" + log_entry)) 
+				_f.close()
+				
 		1: # Player Log
 			if !GoLogger.player_session_status:
-				push_warning("GoLogger Warning: Attempted to log entry into player.log but session was not started. Call 'start_session(1)' in a _ready() function.")
+				push_warning("GoLogger Warning: Attempted to log Player entry without starting a session. Remember to call 'start_session(0)' in a _ready() function.")
 				return
-			elif !FileAccess.file_exists(PLAYER_PATH): # File doesn't exist, create one by calling start_session()
-				start_session(2)
-			# Get and store previous log entries in _c
-			var _flp = FileAccess.open(PLAYER_PATH, FileAccess.READ)
-			var _c = _flp.get_as_text()
-			_flp.close()
-			# Add the previous content > Add the new entry with the proper date format as specified in the call
-			var _fp = FileAccess.open(PLAYER_PATH, FileAccess.WRITE)
-			var _dt : String
-			match date_time_flag:
-				0: _dt = str("\t[", Time.get_datetime_string_from_system(utc, space), "] ")
-				1: _dt = str("\t[", Time.get_time_string_from_system(utc), "] ")
-				2: _dt = str("\t")
-			_fp.store_line(str(_c, _dt, log_entry))
-			_fp.close()
+				
+			var dir = DirAccess.open(GAME_PATH) 
+			if !dir:
+				printerr("GoLogger Error: Unsuccessful in loggin entry. Couldn't open in directory (", GAME_PATH, ") to find the game.log file.")
+			else: 
+				var _files = dir.get_files()
+				var _newest_file = str(GAME_PATH + _files[_files.size() -1])
+				var _fr = FileAccess.open(_newest_file, FileAccess.READ)
+				if !_fr:
+					var _err = FileAccess.get_open_error() 
+					if _err != OK: printerr("GoLogger Error: Reading player.log file Error[", _err, "].") 
+				var _content = _fr.get_as_text()
+				_fr.close()
+				var _f = FileAccess.open(_newest_file, FileAccess.WRITE)
+				if !_f:
+					var _ferr = FileAccess.get_open_error()  
+					if _ferr != OK: printerr("GoLogger Error: Writing to player.log file Error[", _ferr, "].")
+				var _timestamp : String = str("\t[", Time.get_time_string_from_system(utc), "] ") 
+				_f.store_line(str(_content, _timestamp + log_entry if include_timestamp else "\t" + log_entry)) 
+				_f.close()
 
 
 ## Stops the current session. Preventing further entries to be logged.

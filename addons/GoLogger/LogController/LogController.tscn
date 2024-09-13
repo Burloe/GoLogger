@@ -1,0 +1,73 @@
+[gd_scene load_steps=3 format=3 uid="uid://f3p11x5iq0xa"]
+
+[ext_resource type="Script" path="res://addons/GoLogger/LogController/LogController.gd" id="1_kqsm8"]
+[ext_resource type="Texture2D" uid="uid://ce5crsggd1rb7" path="res://addons/GoLogger/GoLogger.png" id="2_s3juj"]
+
+[node name="LogController" type="Panel"]
+anchors_preset = -1
+anchor_right = 0.111
+anchor_bottom = 0.195
+offset_right = -2.12001
+offset_bottom = 0.399994
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kqsm8")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -3.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_s3juj")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "LogController"
+horizontal_alignment = 1
+
+[node name="GameButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Game Session"
+
+[node name="PlayerButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Player Session"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PrintGameLogButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(90, 60)
+layout_mode = 2
+text = "Print
+GameLog"
+
+[node name="PrintPlayerLogButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(90, 60)
+layout_mode = 2
+text = "Print
+PlayerLog"

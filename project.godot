@@ -25,4 +25,4 @@ window/size/viewport_height=1080
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=0
+textures/canvas_textures/default_texture_filter=3
