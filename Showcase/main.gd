@@ -4,18 +4,18 @@ extends Control
 
 @onready var session_status_lbl: RichTextLabel = %SessionStatusLbl
 @onready var gamelog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/GAMElog
-@onready var uilog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/UIlog
 @onready var playerlog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/PLAYERlog
 const INDICATOR_1 = preload("res://Showcase/Indicator1.png")
 const INDICATOR_2 = preload("res://Showcase/Indicator2.png")
 @onready var npr1: NinePatchRect = $VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer/NinePatchRect
 @onready var npr2: NinePatchRect = $VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer/NinePatchRect2
-@onready var npr3: NinePatchRect = $VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer/NinePatchRect3
 
 var rng := RandomNumberGenerator.new()
-const F_GAME = "user://logs/game.log"
-const F_UI = "user://logs/ui.log"
-const F_PLAYER = "user://logs/player.log"
+var current_game_log : String
+var current_player_log : String
+#const F_GAME = "user://logs/game.log"
+#const F_UI = "user://logs/ui.log"
+#const F_PLAYER = "user://logs/player.log"
 
 
 func _ready() -> void:
@@ -28,14 +28,13 @@ func _ready() -> void:
 		if c is Button:
 			c.button_up.connect(_on_button_up.bind(c))
 	
-	var _fg = FileAccess.open(F_GAME, FileAccess.READ)
-	var _gc = _fg.get_as_text()
+	var _fg = FileAccess.open(current_game_log, FileAccess.READ)
+	var _gc = ""
+	if _fg != null: _gc = _fg.get_as_text()
 	gamelog.text = _gc
-	var _fui = FileAccess.open(F_UI, FileAccess.READ)
-	var _uic = _fg.get_as_text()
-	uilog.text = _uic
-	var _pg = FileAccess.open(F_PLAYER, FileAccess.READ)
-	var _pc = _fg.get_as_text()
+	var _pg = FileAccess.open(current_player_log, FileAccess.READ)
+	var _pc = ""
+	if _pg != null: _pc = _fg.get_as_text()
 	playerlog.text = _gc
 
 
@@ -43,29 +42,24 @@ func _ready() -> void:
 func _on_session_status_changed():
 	print("emitted")
 	if GoLogger.game_session_status: npr1.texture = INDICATOR_1
-	else: npr1.texture = INDICATOR_2
-	if GoLogger.ui_session_status: npr2.texture = INDICATOR_1
+	else: npr1.texture = INDICATOR_2 
+	if GoLogger.player_session_status: npr2.texture = INDICATOR_1
 	else: npr2.texture = INDICATOR_2
-	if GoLogger.player_session_status: npr3.texture = INDICATOR_1
-	else: npr3.texture = INDICATOR_2
 
 ## Buttons that starts/stops sessions.
 func _on_session_button_up(btn : Button):
 	match btn.get_name():
 		"StartGAME": Log.start_session(0)
-		"StartUI": Log.start_session(1)
-		"StartPLAYER": Log.start_session(2)
+		"StartPLAYER": Log.start_session(1)
 		"StopGAME": Log.stop_session(0)
-		"StopUI": Log.stop_session(1)
-		"StopPLAYER": Log.stop_session(2)
-	var _fg = FileAccess.open(F_GAME, FileAccess.READ)
-	var _cg = _fg.get_as_text()
+		"StopPLAYER": Log.stop_session(1)
+	var _fg = FileAccess.open(current_game_log, FileAccess.READ)
+	var _cg = ""
+	if _fg != null: _cg = _fg.get_as_text()
 	gamelog.text = _cg
-	var _fui = FileAccess.open(F_UI, FileAccess.READ)
-	var _cui = _fui.get_as_text()
-	uilog.text = _cui
-	var _fp = FileAccess.open(F_PLAYER, FileAccess.READ)
-	var _cp = _fp.get_as_text()
+	var _fp = FileAccess.open(current_player_log, FileAccess.READ)
+	var _cp = ""
+	if _fp != null: _cp = _fp.get_as_text()
 	playerlog.text = _cp
 
 ## Buttons that simulates log entries.
@@ -84,9 +78,9 @@ func _on_button_up(btn : Button):
 		"Discard": 
 			Log.entry(1, str("Discarded [", items[rng.randi_range(0, items.size() -1)], "] x", randi_range(1, 6), "."))
 		"Death": 
-			Log.entry(2, "Player died")
+			Log.entry(1, "Player died")
 		"Respawn": 
-			Log.entry(2, str("Player respawned @", Vector2(randi_range(0, 512), randi_range(0, 512)), "."))
+			Log.entry(1, str("Player respawned @", Vector2(randi_range(0, 512), randi_range(0, 512)), "."))
 		"Load":
 			Log.entry(0, str("Loaded GameSave#1 on Slot#", randi_range(1, 3), "."))
 		"Save": 
@@ -94,12 +88,11 @@ func _on_button_up(btn : Button):
 		"Exit": 
 			Log.entry(0, "Exited game, closing session.")
 		
-	var _fg = FileAccess.open(F_GAME, FileAccess.READ)
-	var _cg = _fg.get_as_text()
+	var _fg = FileAccess.open(current_game_log, FileAccess.READ)
+	var _cg = ""
+	if _fg != null: _cg = _fg.get_as_text()
 	gamelog.text = _cg
-	var _fui = FileAccess.open(F_UI, FileAccess.READ)
-	var _cui = _fui.get_as_text()
-	uilog.text = _cui
-	var _fp = FileAccess.open(F_PLAYER, FileAccess.READ)
-	var _cp = _fp.get_as_text()
+	var _fp = FileAccess.open(current_player_log, FileAccess.READ)
+	var _cp = ""
+	if _fp != null: _cp = _fp.get_as_text()
 	playerlog.text = _cp
