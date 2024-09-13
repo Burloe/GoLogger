@@ -96,23 +96,31 @@ The files that are logged when first installing the plugin are "game.log", "ui.l
 
 If you want to remove file(s) and use 2 or 1. The code is fairly clear on separating codeblocks in charge of handlings each file. Just delete whichever file you want.
 Similarly, if you want to add. You can just duplicate the same codeblocks, to expand the number of files/categories.<br><br><br>
-
-
-**How to start and stop sessions at runtime:**<br>
-Because this plugin runs completely in the background, there's no built-in way to start, stop and restart sessions if you need to. However, this is easy to achieve since we can also access the `Log.start_sessiion()` and `Log.stop_session()` functions from anywhere in your project, much like the `Log.entry()`. Just call them using "Log." prefix. If you have a developer console or menu, just call these two function for your console command or button signals. <br><br><br>
+ <br><br><br>
 
 
 **I want to create new unique .log files that aren't overwritten when I run my game. How do I do that?**<br>
 Unfortunately, in the current state. The .log files are truncated upon starting new sessions. This plugin can be expanded so that it creates new unique log files each session with the date and time stamp in the name. By doing, you create new files rather than overwriting the previous ones each time you run the game. In order to keep this minimalistic and user friendly, I decided not to include that in the base plugin. If there's enough interest, I might add it in the future. Here's a quick way to do it with the ui.log file, but know that this will not delete old files, if you include this and run your game 1000 times, you'll have 3000 files in your logs folder. 
-
 *In Log.gd*
-Change `const UI_FILE = "user://logs/ui.log"` to `const UI_PATH = "user://logs/`.
-In `static func start_session()`, add to the ui block:
 
-	var file = str("ui(", Time.get_date_time_from_system(true, false), ").log
-Change `var _fui = FileAccess.open(UI_FILE, FileAccess.WRITE)` to `var _fui = FileAccess.open(UI_PATH + file, FileAccess.WRITE)`.
+ 	const UI_FILE = "user://logs/ui.log" # Change this line to the one below
+  	const UI_PATH = "user://logs/ 
+   
+	# Inside "start_session()", replace the UI codeblock with this new codeblock:
+ 	1: # UI
+		if GoLogger.ui_session_status:
+			push_warning("GoLogger Warning: Attempted to start new UI log session before stopping the previous.")
+			return
+		else:
+			var file = str("ui(", Time.get_date_time_from_system(true, false), ").log # New line
+			var _fui = FileAccess.open(UI_PATH + file, FileAccess.WRITE) # Changed
+			var _fui = FileAccess.open(UI_FILE, FileAccess.WRITE)
+			_fui.store_line(str("[", Time.get_datetime_string_from_system(utc, space), "] New UI Session:"))
+			_fui.close()
+			GoLogger.toggle_session_status.emit(1, true)
+ 
 
-There's more to it but this will get you started. Like i said, it will fill your folder will .log files. I would look into creating a way to only have a maximum amount of files in the folder and delete old ones accordingly. <br><br><br>
+There's more to it than this but this'll get you started. Again, know that it will fill your folder will .log files. I would look into creating a way to only have a maximum amount of files in the folder and delete oldest one when creating the new file. <br><br><br>
 
 ### Examples:
 Here are some examples I use in my code for my save system and inventory.
