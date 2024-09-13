@@ -107,6 +107,7 @@ static func start_session(file : int, utc : bool = true, space : bool = true) ->
 ## [param timestamp] is used to specify the type of date and time format you want your entries tagged with.[br]
 ## [param utc] will convert the time into a unified UTC format as opposed to your or your players local time format.
 static func entry(file : int, log_entry : String, include_timestamp : bool = true, utc : bool = true) -> void:
+	printerr("start_called")
 	match file:
 		0: # Game Log
 			if !GoLogger.game_session_status:
@@ -176,62 +177,63 @@ static func entry(file : int, log_entry : String, include_timestamp : bool = tru
 
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [code]start_session()[/code]. Doing so will create a new file to log into.
 static func stop_session(file : int, utc : bool = true, include_timestamp : bool = true) -> void:
-		match file:
-			0: # GAME
-				if GoLogger.game_session_status:
-					var _dir = DirAccess.open(GAME_PATH)
-					if !_dir:
-						var _err = DirAccess.get_open_error()
+	printerr("stop_called")
+	match file:
+		0: # GAME
+			if GoLogger.game_session_status:
+				var _dir = DirAccess.open(GAME_PATH)
+				if !_dir:
+					var _err = DirAccess.get_open_error()
+					if _err != OK: 
+						printerr("GoLogger Error. Opening directory to stop the current session (", GAME_PATH, ")")
+						return
+				else:
+					var _files = _dir.get_files()
+					var _newest_file = str(GAME_PATH + _files[_files.size() -1])
+					var _fr = FileAccess.open(_newest_file, FileAccess.READ)
+					if !_fr:
+						var _err = FileAccess.get_open_error()
 						if _err != OK: 
-							printerr("GoLogger Error. Opening directory to stop the current session (", GAME_PATH, ")")
+							printerr("GoLogger Error: Reading game.log file -> Error[", _err, "]")
 							return
-					else:
-						var _files = _dir.get_files()
-						var _newest_file = str(GAME_PATH + _files[_files.size() -1])
-						var _fr = FileAccess.open(_newest_file, FileAccess.READ)
-						if !_fr:
-							var _err = FileAccess.get_open_error()
-							if _err != OK: 
-								printerr("GoLogger Error: Reading game.log file -> Error[", _err, "]")
-								return
-						var _content = _fr.get_as_text()
-						_fr.close()
-						var _f = FileAccess.open(_newest_file, FileAccess.WRITE)
-						if !_f:
-							var _err = FileAccess.get_open_error()
-							if _err != OK:
-								printerr("GoLogger Error: Writing to game.log to end session -> Error[", _err, "]")
-								return
-						var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped Game log session.") 
-						_f.store_line(str(_content, _timestamp if include_timestamp else "Stopped Game log session",))
-						_f.close()
-						GoLogger.toggle_session_status.emit(0, false)
-			1: # PLAYER
-				if GoLogger.player_session_status:
-					var _dir = DirAccess.open(PLAYER_PATH)
-					if !_dir:
-						var _err = DirAccess.get_open_error()
+					var _content = _fr.get_as_text()
+					_fr.close()
+					var _f = FileAccess.open(_newest_file, FileAccess.WRITE)
+					if !_f:
+						var _err = FileAccess.get_open_error()
+						if _err != OK:
+							printerr("GoLogger Error: Writing to game.log to end session -> Error[", _err, "]")
+							return
+					var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped Game log session.") 
+					_f.store_line(str(_content, _timestamp if include_timestamp else "Stopped Game log session",))
+					_f.close()
+					GoLogger.toggle_session_status.emit(0, false)
+		1: # PLAYER
+			if GoLogger.player_session_status:
+				var _dir = DirAccess.open(PLAYER_PATH)
+				if !_dir:
+					var _err = DirAccess.get_open_error()
+					if _err != OK: 
+						printerr("GoLogger Error: Unable to open log directory (", PLAYER_PATH, ") -> Error[", _err,"]")
+						return
+				else:
+					var _files = _dir.get_files()
+					var _newest_file = str(PLAYER_PATH + _files[_files.size() -1])
+					var _fr = FileAccess.open(_newest_file, FileAccess.READ)
+					if !_fr:
+						var _err = FileAccess.get_open_error()
 						if _err != OK: 
-							printerr("GoLogger Error: Unable to open log directory (", PLAYER_PATH, ") -> Error[", _err,"]")
+							printerr("GoLogger Error: Reading game.log file -> Error[", _err, "]")
 							return
-					else:
-						var _files = _dir.get_files()
-						var _newest_file = str(PLAYER_PATH + _files[_files.size() -1])
-						var _fr = FileAccess.open(_newest_file, FileAccess.READ)
-						if !_fr:
-							var _err = FileAccess.get_open_error()
-							if _err != OK: 
-								printerr("GoLogger Error: Reading game.log file -> Error[", _err, "]")
-								return
-						var _content = _fr.get_as_text()
-						_fr.close()
-						var _f = FileAccess.open(_newest_file, FileAccess.WRITE)
-						if !_f:
-							var _err = FileAccess.get_open_error()
-							if _err != OK:
-								printerr("GoLogger Error: Writing to game.log to end session -> Error[", _err, "]")
-								return
-						var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped Game log session.") 
-						_f.store_line(str(_content, _timestamp if include_timestamp else "Stopped Game log session",))
-						_f.close()
-					GoLogger.toggle_session_status.emit(1, false)
+					var _content = _fr.get_as_text()
+					_fr.close()
+					var _f = FileAccess.open(_newest_file, FileAccess.WRITE)
+					if !_f:
+						var _err = FileAccess.get_open_error()
+						if _err != OK:
+							printerr("GoLogger Error: Writing to game.log to end session -> Error[", _err, "]")
+							return
+					var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped Game log session.") 
+					_f.store_line(str(_content, _timestamp if include_timestamp else "Stopped Game log session",))
+					_f.close()
+				GoLogger.toggle_session_status.emit(1, false)

@@ -1,6 +1,6 @@
 @icon("res://addons/GoLogger/GoLogger.png")
 extends Node
-#TODO: add inputmap to toggle the controller on or off
+#TODO: toggle the controller on or off
 ## Responsible for most non-static operations. Make sure that the GoLogger.tscn file is an autoload before using GoLogger. Note that it's the .TSCN we want to be an autoload and not the script file.
 
 ## Emitted at the end of [code]Log.start_session()[/code] and [code]Log.end_session[/code]. This signal is responsible for turning sessions on and off.
@@ -41,11 +41,17 @@ func _ready() -> void:
 ## Toggles the session status between true/false upon signal [signal GoLogger.toggle_session_status] emitting. 
 func _on_toggle_session_status(type : int, status : bool) -> void:
 	match type:
-		0: game_session_status = status
-		1: player_session_status = status
-	if status and enable_session_timer and !session_timer.is_stopped():
+		0: 
+			game_session_status = status
+			if !status: Log.stop_session(type)
+		1: 
+			player_session_status = status
+			if !status: Log.stop_session(type)
+	if status and enable_session_timer and session_timer.is_stopped():
 		session_timer.start(session_time)
 		session_timer_started.emit()
+	if !status and enable_session_timer and !session_timer.is_stopped():
+		session_timer.stop()
 	session_status_changed.emit()
 
 

@@ -40,7 +40,20 @@ func get_last_log(path) -> String:
 
 ## Receives signal from [GoLogger] whenever a status is changed.
 func _on_session_status_changed():
-	pass
+	var _f = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
+	if !_f:
+		var _err = FileAccess.get_open_error()
+		if _err != OK: gamelog.text = str("GoLogger Error: Reading file (", get_last_log(Log.GAME_PATH), ") -> Error[", _err, "]")
+	else:
+		var _c = _f.get_as_text()
+		gamelog.text = _c
+	var _fl = FileAccess.open(get_last_log(Log.PLAYER_PATH), FileAccess.READ)
+	if !_fl:
+		var _err = FileAccess.get_open_error()
+		if _err != OK: playerlog.text = str("GoLogger Error: Reading file (", get_last_log(Log.PLAYER_PATH), ") -> Error[", _err, "]")
+	else:
+		var _c = _f.get_as_text()
+		playerlog.text = _c
 
 ## Buttons that starts/stops sessions.
 func _on_session_button_up(btn : Button):

@@ -55,10 +55,12 @@ text = "[center][font_size=12]Autostart is [color=green]ON"
 
 [node name="GameButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 text = "Game Session"
 
 [node name="PlayerButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 text = "Player Session"
 
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
@@ -72,13 +74,14 @@ horizontal_alignment = 1
 
 [node name="SessionTimerPGB" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-value = 20.93
 
 [node name="ValueTimer" type="Timer" parent="MarginContainer/VBoxContainer/SessionTimerPGB"]
+wait_time = 0.5
 
 [node name="StartTimerButton" type="Button" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 button_pressed = true
 text = "Start Timer"
@@ -94,11 +97,13 @@ alignment = 1
 [node name="PrintGameLogButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(90, 60)
 layout_mode = 2
+focus_mode = 0
 text = "Print
 GameLog"
 
 [node name="PrintPlayerLogButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(90, 60)
 layout_mode = 2
+focus_mode = 0
 text = "Print
 PlayerLog"
