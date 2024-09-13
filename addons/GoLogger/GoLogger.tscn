@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://dm7mwwoselesw"]
+
+[ext_resource type="Script" path="res://addons/GoLogger/GoLogger.gd" id="1_am1mu"]
+[ext_resource type="PackedScene" uid="uid://quridjl6aioe" path="res://addons/GoLogger/LogController/GoLoggerController.tscn" id="2_i3pa3"]
+
+[node name="GoLogger" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 80.0
+offset_top = 80.0
+offset_right = 120.0
+offset_bottom = 120.0
+script = ExtResource("1_am1mu")
+
+[node name="SessionTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="GoLoggerController" parent="." instance=ExtResource("2_i3pa3")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 210.0
+offset_bottom = 268.0
+grow_horizontal = 1
+grow_vertical = 1

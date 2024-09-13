@@ -21,69 +21,86 @@ static func get_file_name(log : String) -> String:
 	# Resulting string name for the log file "game(2024-09-10_12.52.09).log"
 	return _fin
 
-## Returns the log entries of the given file.
+
+## Returns the log entries of the newest file in the given folder.
 static func get_file_contents(folder_path : String) -> String:
-	var f = FileAccess.open(folder_path, FileAccess.READ)
-	var c := f.get_as_text()
-	f.close()
-	return c
+	var dir = DirAccess.open(folder_path) 
+	if !dir:
+		var err = DirAccess.get_open_error()
+		if err != OK:
+			return str("GoLogger Error: Attempting to open directory (", GAME_PATH, ") to find player.log")
+	else: 
+		#var _files = _dir.get_files()
+		#var _newest_file = str(GAME_PATH + _files[_files.size() -1])
+		var _files = dir.get_files()
+		print(folder_path + _files[_files.size() -1])
+		var _newest_file = str(folder_path + _files[_files.size() -1])
+		var _fr = FileAccess.open(_newest_file, FileAccess.READ)
+		if !_fr:
+			var _err = FileAccess.get_open_error() 
+			if _err != OK: 
+				return str("GoLogger Error: Reading player.log file -> Error[", _err, "].") 
+		return _fr.get_as_text()
+	return str("GoLogger Error: Unable to retrieve file contents in (", folder_path, ")")
+
+
 
 
 ## Initiates a log session, recording game events in the .log file. [param category] denotes the file where the entry is logged. [param utc] will force the date and time format to UTC[yy,mm,ddThh:mm:ss]. [param space] will use a space to separate date and time instead of a "T".[br][b]Note:[/b][br]    You cannot start one session without stopping the previous. Attempting it will do nothing.
-static func start_session(category : int, utc : bool = true, space : bool = true) -> void: 
-	match category:
+static func start_session(file : int, utc : bool = true, space : bool = true) -> void: 
+	match file:
 		0: # GAME
 			if GoLogger.game_session_status:
 				push_warning("GoLogger Warning: Attempted to start new Game log session before stopping the previous.")
 				return
 			else:
-				var dir = DirAccess.open(GAME_PATH)
-				if !dir:
+				var _dir = DirAccess.open(GAME_PATH)
+				if !_dir:
 					printerr("GoLogger Error: Unable to open file directory (", GAME_PATH, ")") 
-					var error = DirAccess.make_dir_absolute(GAME_PATH)
-					if error != OK:
-						printerr("GoLogger Error: Failed to create directory (", GAME_PATH, ") -> Error[", error,"]")
+					var _error = DirAccess.make_dir_absolute(GAME_PATH)
+					if _error != OK:
+						printerr("GoLogger Error: Failed to create directory (", GAME_PATH, ") -> Error[", _error,"]")
 				else:  
-					var files = dir.get_files() 
-					if files.size() >= GoLogger.max_file_count:
-						files.sort() 
-						var old_file = files[0]
-						var delete_err = dir.remove(GAME_PATH + old_file)
-						if delete_err != OK:
-							printerr("GoLogger Error: Failed to delete file (", old_file, ") -> Error[", delete_err,"]") 
-					var log_filepath = GAME_PATH + get_file_name("game")
-					var file = FileAccess.open(log_filepath, FileAccess.WRITE)
-					if file:
-						file.store_line(str( "Game Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:"))
-						file.close()
+					var _files = _dir.get_files() 
+					if _files.size() >= GoLogger.max_file_count:
+						_files.sort() 
+						var _old_file = _files[0]
+						var _delete_err = _dir.remove(GAME_PATH + _old_file)
+						if _delete_err != OK:
+							printerr("GoLogger Error: Failed to delete file (", _old_file, ") -> Error[", _delete_err,"]") 
+					var _log_filepath = GAME_PATH + get_file_name("game")
+					var _file = FileAccess.open(_log_filepath, FileAccess.WRITE)
+					if _file:
+						_file.store_line(str( "Game Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:"))
+						_file.close()
 						GoLogger.toggle_session_status.emit(0, true)
 					else:
-						printerr("GoLogger Error: Failed to create log file (", log_filepath, ").")
+						printerr("GoLogger Error: Failed to create log file (", _log_filepath, ").")
 		1: # PLAYER
 			if GoLogger.player_session_status:
 				push_warning("GoLogger Warning: Attempted to start new Player log session before stopping the previous.")
 				return
 			else:
-				var dir = DirAccess.open(PLAYER_PATH)
-				if !dir: 
+				var _dir = DirAccess.open(PLAYER_PATH)
+				if !_dir: 
 					printerr("GoLogger Error: Unable to open file directory (", PLAYER_PATH, ")") 
-					var error = DirAccess.make_dir_absolute(PLAYER_PATH) 
-					if error != OK: push_error("GoLogger Error: Failed to create directory (", PLAYER_PATH, ") -> Error[", error,"]")
+					var _error = DirAccess.make_dir_absolute(PLAYER_PATH) 
+					if _error != OK: push_error("GoLogger Error: Failed to create directory (", PLAYER_PATH, ") -> Error[", _error,"]")
 				else:
-					var files = dir.get_files() 
-					if files.size() >= GoLogger.max_file_count:
-						files.sort() 
-						var old_file = files[0]
-						var delete_err = dir.remove(PLAYER_PATH + old_file)
-						if delete_err != OK: printerr("GoLogger Error: Failed to delete file (", old_file, ") -> Error[", delete_err,"]") 
-					var log_filepath = PLAYER_PATH + get_file_name("player")
-					var file = FileAccess.open(log_filepath, FileAccess.WRITE)
-					if file:
-						file.store_line(str( "Player Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:"))
-						file.close()
+					var _files = _dir.get_files() 
+					if _files.size() >= GoLogger.max_file_count:
+						_files.sort() 
+						var _old_file = _files[0]
+						var _delete_err = _dir.remove(PLAYER_PATH + _old_file)
+						if _delete_err != OK: printerr("GoLogger Error: Failed to delete file (", _old_file, ") -> Error[", _delete_err,"]") 
+					var _log_filepath = PLAYER_PATH + get_file_name("player")
+					var _file = FileAccess.open(_log_filepath, FileAccess.WRITE)
+					if _file:
+						_file.store_line(str( "Player Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:"))
+						_file.close()
 						GoLogger.toggle_session_status.emit(1, true)
 					else:
-						printerr("GoLogger Error: Failed to create log file (", log_filepath, ").")
+						printerr("GoLogger Error: Failed to create log file (", _log_filepath, ").")
 
 
 ## Stores a log entry into the 'game/ui/player.log' file.[br]
@@ -96,14 +113,14 @@ static func entry(file : int, log_entry : String, include_timestamp : bool = tru
 				push_warning("GoLogger Warning: Attempted to log Game entry without starting a session. Remember to call 'start_session(0)' in a _ready() function.")
 				return
 				
-			var dir = DirAccess.open(GAME_PATH) 
-			if !dir:
-				var err = DirAccess.get_open_error()
-				if err != OK:
-					printerr("GoLogger Error: Attempting to log entry. Opening directory (", GAME_PATH, ") to find game.log")
+			var _dir = DirAccess.open(GAME_PATH) 
+			if !_dir:
+				var _err = DirAccess.get_open_error()
+				if _err != OK:
+					printerr("GoLogger Error: Attempting to open directory (", GAME_PATH, ") to find game.log -> Error[", _err, "]")
 					return
 			else: 
-				var _files = dir.get_files()
+				var _files = _dir.get_files()
 				var _newest_file = str(GAME_PATH + _files[_files.size() -1]) 
 				var _fr = FileAccess.open(_newest_file, FileAccess.READ)# Open last newest file with READ
 				if !_fr:
@@ -129,15 +146,15 @@ static func entry(file : int, log_entry : String, include_timestamp : bool = tru
 				push_warning("GoLogger Warning: Attempted to log Player entry without starting a session. Remember to call 'start_session(0)' in a _ready() function.")
 				return
 				
-			var dir = DirAccess.open(GAME_PATH) 
-			if !dir:
-				var err = DirAccess.get_open_error()
-				if err != OK:
-					printerr("GoLogger Error: Attempting to log entry. Opening directory (", GAME_PATH, ") to find player.log")
+			var _dir = DirAccess.open(PLAYER_PATH) 
+			if !_dir:
+				var _err = DirAccess.get_open_error()
+				if _err != OK:
+					printerr("GoLogger Error: Attempting to open directory (", PLAYER_PATH, ") to find player.log -> Error[", _err, "]")
 					return
 			else: 
-				var _files = dir.get_files()
-				var _newest_file = str(GAME_PATH + _files[_files.size() -1])
+				var _files = _dir.get_files()
+				var _newest_file = str(PLAYER_PATH + _files[_files.size() -1])
 				var _fr = FileAccess.open(_newest_file, FileAccess.READ)
 				if !_fr:
 					var _err = FileAccess.get_open_error() 
@@ -162,14 +179,14 @@ static func stop_session(file : int, utc : bool = true, include_timestamp : bool
 		match file:
 			0: # GAME
 				if GoLogger.game_session_status:
-					var dir = DirAccess.open(GAME_PATH)
-					if !dir:
-						var err = DirAccess.get_open_error()
-						if err != OK: 
+					var _dir = DirAccess.open(GAME_PATH)
+					if !_dir:
+						var _err = DirAccess.get_open_error()
+						if _err != OK: 
 							printerr("GoLogger Error. Opening directory to stop the current session (", GAME_PATH, ")")
 							return
 					else:
-						var _files = dir.get_files()
+						var _files = _dir.get_files()
 						var _newest_file = str(GAME_PATH + _files[_files.size() -1])
 						var _fr = FileAccess.open(_newest_file, FileAccess.READ)
 						if !_fr:
@@ -187,17 +204,18 @@ static func stop_session(file : int, utc : bool = true, include_timestamp : bool
 								return
 						var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped Game log session.") 
 						_f.store_line(str(_content, _timestamp if include_timestamp else "Stopped Game log session",))
-						
+						_f.close()
+						GoLogger.toggle_session_status.emit(0, false)
 			1: # PLAYER
 				if GoLogger.player_session_status:
-					var dir = DirAccess.open(PLAYER_PATH)
-					if !dir:
-						var err = DirAccess.get_open_error()
-						if err != OK: 
-							printerr("GoLogger Error. Opening directory to stop the current session (", PLAYER_PATH, ")")
+					var _dir = DirAccess.open(PLAYER_PATH)
+					if !_dir:
+						var _err = DirAccess.get_open_error()
+						if _err != OK: 
+							printerr("GoLogger Error: Unable to open log directory (", PLAYER_PATH, ") -> Error[", _err,"]")
 							return
 					else:
-						var _files = dir.get_files()
+						var _files = _dir.get_files()
 						var _newest_file = str(PLAYER_PATH + _files[_files.size() -1])
 						var _fr = FileAccess.open(_newest_file, FileAccess.READ)
 						if !_fr:
@@ -215,3 +233,5 @@ static func stop_session(file : int, utc : bool = true, include_timestamp : bool
 								return
 						var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped Game log session.") 
 						_f.store_line(str(_content, _timestamp if include_timestamp else "Stopped Game log session",))
+						_f.close()
+					GoLogger.toggle_session_status.emit(1, false)

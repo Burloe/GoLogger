@@ -1,32 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://1n60rnfdej0p"]
+[gd_scene load_steps=3 format=3 uid="uid://1n60rnfdej0p"]
 
 [ext_resource type="Script" path="res://Showcase/main.gd" id="1_ewgn3"]
-[ext_resource type="Texture2D" uid="uid://bl5muwux5lfqx" path="res://Showcase/Indicator1.png" id="2_pdhit"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_fegtk"]
-font_size = 20
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qosiu"]
-bg_color = Color(0.433789, 0.68319, 0.141601, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dj8pr"]
-bg_color = Color(0.0386462, 0.26275, 0.136913, 1)
-
-[sub_resource type="Theme" id="Theme_8uerd"]
-Button/styles/hover = SubResource("StyleBoxFlat_qosiu")
-Button/styles/normal = SubResource("StyleBoxFlat_qosiu")
-Button/styles/pressed = SubResource("StyleBoxFlat_dj8pr")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4327m"]
-bg_color = Color(0.59, 0.059, 0.1475, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1dq37"]
-bg_color = Color(0.18, 0.0288, 0.0792, 1)
-
-[sub_resource type="Theme" id="Theme_yn5ob"]
-Button/styles/hover = SubResource("StyleBoxFlat_4327m")
-Button/styles/normal = SubResource("StyleBoxFlat_4327m")
-Button/styles/pressed = SubResource("StyleBoxFlat_1dq37")
 
 [sub_resource type="LabelSettings" id="LabelSettings_8wl4e"]
 font_size = 26
@@ -38,111 +12,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_ewgn3")
-metadata/_edit_horizontal_guides_ = [677.0, 23.0]
+metadata/_edit_horizontal_guides_ = [677.0, 23.0, 1053.0]
 metadata/_edit_vertical_guides_ = [25.0, 317.0, 861.0, 865.0, 1371.0, 1375.0, 218.0]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 25.0
-offset_top = 23.0
+offset_top = 644.0
 offset_right = 317.0
-offset_bottom = 628.0
+offset_bottom = 1054.0
+mouse_filter = 2
 theme_override_constants/separation = 57
-
-[node name="LogActions" type="Panel" parent="VBoxContainer"]
-custom_minimum_size = Vector2(268, 186)
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/LogActions"]
-custom_minimum_size = Vector2(268, 148)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/LogActions/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Log Actions
-"
-label_settings = SubResource("LabelSettings_fegtk")
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="NinePatchRect" type="NinePatchRect" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(88, 23)
-layout_mode = 2
-texture = ExtResource("2_pdhit")
-region_rect = Rect2(0, 0, 75, 23)
-patch_margin_left = 9
-patch_margin_top = 10
-patch_margin_right = 9
-patch_margin_bottom = 8
-
-[node name="Spacer" type="Control" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(87, 0)
-layout_mode = 2
-
-[node name="NinePatchRect2" type="NinePatchRect" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(88, 23)
-layout_mode = 2
-texture = ExtResource("2_pdhit")
-region_rect = Rect2(0, 0, 75, 23)
-patch_margin_left = 9
-patch_margin_top = 10
-patch_margin_right = 9
-patch_margin_bottom = 8
-
-[node name="SessionStatusLbl" type="RichTextLabel" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 52)
-layout_mode = 2
-theme_override_font_sizes/normal_font_size = 12
-bbcode_enabled = true
-text = "             ^                                                         ^
-        GAME                                               PLAYER
-       STATUS                                             STATUS"
-scroll_active = false
-
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 95
-columns = 2
-
-[node name="StartGAME" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(88, 0)
-layout_mode = 2
-theme = SubResource("Theme_8uerd")
-text = "Start"
-
-[node name="StartPLAYER" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(88, 0)
-layout_mode = 2
-theme = SubResource("Theme_8uerd")
-text = "Start"
-
-[node name="StopGAME" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(88, 0)
-layout_mode = 2
-theme = SubResource("Theme_yn5ob")
-text = "Stop"
-
-[node name="StopPLAYER" type="Button" parent="VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(88, 0)
-layout_mode = 2
-theme = SubResource("Theme_yn5ob")
-text = "Stop"
 
 [node name="Simulations" type="Panel" parent="VBoxContainer"]
 custom_minimum_size = Vector2(292, 410)

@@ -2,49 +2,45 @@ extends Control
 
 ## Disregard this script. Only exists to facilitate the showcase simulations in the example scene.
 
-@onready var session_status_lbl: RichTextLabel = %SessionStatusLbl
 @onready var gamelog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/GAMElog
 @onready var playerlog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/PLAYERlog
-const INDICATOR_1 = preload("res://Showcase/Indicator1.png")
-const INDICATOR_2 = preload("res://Showcase/Indicator2.png")
-@onready var npr1: NinePatchRect = $VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer/NinePatchRect
-@onready var npr2: NinePatchRect = $VBoxContainer/LogActions/MarginContainer/VBoxContainer/HBoxContainer/NinePatchRect2
 
 var rng := RandomNumberGenerator.new()
-var current_game_log : String
-var current_player_log : String
-#const F_GAME = "user://logs/game.log"
-#const F_UI = "user://logs/ui.log"
-#const F_PLAYER = "user://logs/player.log"
 
 
 func _ready() -> void:
 	randomize()
 	GoLogger.session_status_changed.connect(_on_session_status_changed)
-	for c in $VBoxContainer/LogActions/MarginContainer/VBoxContainer/GridContainer.get_children(): # Log action buttons
-		if c is Button:
-			c.button_up.connect(_on_session_button_up.bind(c))
 	for c in $VBoxContainer/Simulations/MarginContainer/VBoxContainer.get_children(): # Event Simulation buttons
 		if c is Button:
 			c.button_up.connect(_on_button_up.bind(c))
 	
-	var _fg = FileAccess.open(current_game_log, FileAccess.READ)
+	var _fg = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
 	var _gc = ""
 	if _fg != null: _gc = _fg.get_as_text()
 	gamelog.text = _gc
-	var _pg = FileAccess.open(current_player_log, FileAccess.READ)
+	var _pg = FileAccess.open(get_last_log(Log.PLAYER_PATH), FileAccess.READ)
 	var _pc = ""
 	if _pg != null: _pc = _fg.get_as_text()
 	playerlog.text = _gc
 
+## Returns the last log in a directory. Call using the paths specified in [Log]. Example usage: [code]FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ[/code]
+func get_last_log(path) -> String:
+	var _dir = DirAccess.open(path) 
+	if !_dir:
+		var _err = DirAccess.get_open_error()
+		if _err != OK:
+			printerr("Showcase Error: Attempting to open directory (", path, ") to find .log -> Error[", _err, "]")
+			return ""
+	else: 
+		var _files = _dir.get_files()
+		return str(path + _files[_files.size() -1]) 
+	return ""
+
 
 ## Receives signal from [GoLogger] whenever a status is changed.
 func _on_session_status_changed():
-	print("emitted")
-	if GoLogger.game_session_status: npr1.texture = INDICATOR_1
-	else: npr1.texture = INDICATOR_2 
-	if GoLogger.player_session_status: npr2.texture = INDICATOR_1
-	else: npr2.texture = INDICATOR_2
+	pass
 
 ## Buttons that starts/stops sessions.
 func _on_session_button_up(btn : Button):
@@ -53,11 +49,11 @@ func _on_session_button_up(btn : Button):
 		"StartPLAYER": Log.start_session(1)
 		"StopGAME": Log.stop_session(0)
 		"StopPLAYER": Log.stop_session(1)
-	var _fg = FileAccess.open(current_game_log, FileAccess.READ)
+	var _fg = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
 	var _cg = ""
 	if _fg != null: _cg = _fg.get_as_text()
 	gamelog.text = _cg
-	var _fp = FileAccess.open(current_player_log, FileAccess.READ)
+	var _fp = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
 	var _cp = ""
 	if _fp != null: _cp = _fp.get_as_text()
 	playerlog.text = _cp
@@ -88,11 +84,11 @@ func _on_button_up(btn : Button):
 		"Exit": 
 			Log.entry(0, "Exited game, closing session.")
 		
-	var _fg = FileAccess.open(current_game_log, FileAccess.READ)
+	var _fg = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
 	var _cg = ""
 	if _fg != null: _cg = _fg.get_as_text()
 	gamelog.text = _cg
-	var _fp = FileAccess.open(current_player_log, FileAccess.READ)
+	var _fp = FileAccess.open(get_last_log(Log.PLAYER_PATH), FileAccess.READ)
 	var _cp = ""
 	if _fp != null: _cp = _fp.get_as_text()
 	playerlog.text = _cp
