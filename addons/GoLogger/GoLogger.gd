@@ -4,15 +4,14 @@ extends Node
 ## Responsible for most non-static operations. Make sure that the GoLogger.tscn file is an autoload before using GoLogger. Note that it's the .TSCN we want to be an autoload and not the script file.
 
 ## Emitted at the end of [code]Log.start_session()[/code] and [code]Log.end_session[/code]. This signal is responsible for turning sessions on and off.
-signal toggle_session_status(type : int, status : bool) 
+signal toggle_session_status(status : bool) 
 signal session_status_changed ## Emitted when session status is changed. 
 signal session_timer_started ## Emitted when the [param session_timer] is started.
 @export var session_timer: Timer ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
 @export var debug_warnings_errors : bool = true ## Enables/disables all debug prints, warnings and errors
 @export var autostart_logs : bool = true ## Sessions will autostart when running your project.
-@export var max_file_count = 3 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
-@export var game_session_status: bool = false ## Flags whether a log session is in progress or not, only meant to be a visual hint to see if the session is started or not. [br][b]NOT RECOMMENDED TO BE USED TO START AND RESTART SESSIONS![/b]
-@export var player_session_status: bool = false ## Flags whether a log session is in progress or not, only meant to be a visual hint to see if the session is started or not. [br][b]NOT RECOMMENDED TO BE USED TO START AND RESTART SESSIONS![/b]
+@export var file_cap = 3 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
+@export var session_status: bool = false ## Flags whether a log session is in progress or not, only meant to be a visual hint to see if the session is started or not. [br][b]NOT RECOMMENDED TO BE USED TO START AND RESTART SESSIONS![/b]
 
 @export_group("Session Limit & Timer")
 ## Denotes the condition which triggers the stopping a session. This is to prevent possible performance issues when adding entries to logs. See README/GitHub, section "" for more information.[br][br]
@@ -55,20 +54,18 @@ func _ready() -> void:
 
 
 ## Toggles the session status between true/false upon signal [signal GoLogger.toggle_session_status] emitting. 
-func _on_toggle_session_status(log_file : int, status : bool) -> void:
-	match log_file:
-		0: 
-			game_session_status = status
-			if !status: Log.stop_session(log_file)
-			else: Log.start_session(log_file)
-		1: 
-			player_session_status = status
-			if !status: Log.stop_session(log_file)
-			else: Log.start_session(log_file)
+func _on_toggle_session_status(status : bool) -> void:
+	session_status = status
+	
+	if !status: 
+		Log.stop_session(0)
+		Log.stop_session(1)
+	else: 
+		Log.start_session(0)
+		#Log.start_session(1)
 	
 	if !status:
 		session_timer.stop()
-		
 	
 	# If starting session and `end_session_condition` dictates the timer to be used(and it's stopped) -> Start it and emit signal.
 	if status and end_session_condition >= 2 and  session_timer.is_stopped():

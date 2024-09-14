@@ -4,6 +4,7 @@ extends Control
 
 @onready var gamelog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/GAMElog
 @onready var playerlog: Label = $LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2/PLAYERlog
+@onready var update_timer: Timer = $UpdateTimer
 
 var rng := RandomNumberGenerator.new()
 
@@ -11,6 +12,7 @@ var rng := RandomNumberGenerator.new()
 func _ready() -> void:
 	randomize()
 	GoLogger.session_status_changed.connect(_on_session_status_changed)
+	update_timer.timeout.connect(_on_update_timer_timeout)
 	for c in $VBoxContainer/Simulations/MarginContainer/VBoxContainer.get_children(): # Event Simulation buttons
 		if c is Button:
 			c.button_up.connect(_on_entry_sim_button_up.bind(c))
@@ -39,7 +41,7 @@ func get_last_log(path) -> String:
 
 
 ## Receives signal from [GoLogger] whenever a status is changed.
-func _on_session_status_changed():
+func _on_session_status_changed() -> void:
 	var _f = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
 	if !_f:
 		var _err = FileAccess.get_open_error()
@@ -55,6 +57,10 @@ func _on_session_status_changed():
 		var _c = _f.get_as_text()
 		playerlog.text = _c
 
+
+func _on_update_timer_timeout() -> void:
+	gamelog.text = Log.get_file_contents(Log.GAME_PATH)
+	playerlog.text = Log.get_file_contents(Log.PLAYER_PATH)
  
 
 ## Buttons that simulates log entries.

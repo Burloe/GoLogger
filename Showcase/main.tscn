@@ -1,9 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://1n60rnfdej0p"]
+[gd_scene load_steps=4 format=3 uid="uid://1n60rnfdej0p"]
 
 [ext_resource type="Script" path="res://Showcase/main.gd" id="1_ewgn3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8wl4e"]
 font_size = 26
+
+[sub_resource type="LabelSettings" id="LabelSettings_xqaaj"]
+font_size = 12
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -16,6 +19,10 @@ mouse_filter = 2
 script = ExtResource("1_ewgn3")
 metadata/_edit_horizontal_guides_ = [677.0, 23.0, 1053.0]
 metadata/_edit_vertical_guides_ = [25.0, 317.0, 861.0, 865.0, 1371.0, 1375.0, 218.0]
+
+[node name="UpdateTimer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
@@ -133,7 +140,11 @@ layout_mode = 2
 [node name="GAMElog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(761, 956)
 layout_mode = 2
+label_settings = SubResource("LabelSettings_xqaaj")
+autowrap_mode = 2
 
 [node name="PLAYERlog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(761, 956)
 layout_mode = 2
+label_settings = SubResource("LabelSettings_xqaaj")
+autowrap_mode = 2

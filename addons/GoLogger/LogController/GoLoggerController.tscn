@@ -4,15 +4,18 @@
 [ext_resource type="Texture2D" uid="uid://ce5crsggd1rb7" path="res://addons/GoLogger/GoLogger.png" id="2_u13a6"]
 
 [node name="GoLoggerController" type="Panel"]
-custom_minimum_size = Vector2(210, 411)
+custom_minimum_size = Vector2(210, 389)
 anchors_preset = -1
 anchor_right = 0.109
-anchor_bottom = 0.381
+anchor_bottom = 0.36
 offset_right = 0.719986
-offset_bottom = -0.480011
+offset_bottom = 0.199982
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sp6vx")
+
+[node name="InfoUpdateTimer" type="Timer" parent="."]
+wait_time = 0.5
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -29,7 +32,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -47,74 +50,120 @@ theme_override_font_sizes/font_size = 24
 text = "LogController"
 horizontal_alignment = 1
 
-[node name="AutostartLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 18)
-layout_mode = 2
-bbcode_enabled = true
-text = "[center][font_size=12]Autostart is [color=green]ON"
-
-[node name="GameButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+[node name="SessionButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 focus_mode = 0
-text = "Game Session"
+text = "  Session status"
 
-[node name="PlayerButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/SessionButton"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="PrintButtonHBOX" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-focus_mode = 0
-text = "Player Session"
-
-[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 15)
-layout_mode = 2
-
-[node name="CharacterTitleLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 38)
-layout_mode = 2
-bbcode_enabled = true
-text = "[center][font_size=14]Character Counts:
-[font_size=12]Current Limit: [color=green]10000"
-
-[node name="CharCountLabelHBXC" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="GameCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/CharCountLabelHBXC"]
-custom_minimum_size = Vector2(90, 40)
-layout_mode = 2
-bbcode_enabled = true
-text = "[center][font_size=12] GameLog:
-1000"
-
-[node name="PlayerCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/CharCountLabelHBXC"]
-custom_minimum_size = Vector2(90, 40)
-layout_mode = 2
-bbcode_enabled = true
-text = "[center][font_size=12] PlayerLog:
-1000"
-
-[node name="SessionTimerPGB" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="ValueTimer" type="Timer" parent="MarginContainer/VBoxContainer/SessionTimerPGB"]
-wait_time = 0.5
-
-[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 15)
-layout_mode = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
+theme_override_constants/separation = 11
 alignment = 1
 
-[node name="PrintGameLogButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="PrintGameLogButton" type="Button" parent="MarginContainer/VBoxContainer/PrintButtonHBOX"]
 custom_minimum_size = Vector2(90, 60)
 layout_mode = 2
 focus_mode = 0
 text = "Print
 GameLog"
 
-[node name="PrintPlayerLogButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="PrintPlayerLogButton" type="Button" parent="MarginContainer/VBoxContainer/PrintButtonHBOX"]
 custom_minimum_size = Vector2(90, 60)
 layout_mode = 2
 focus_mode = 0
 text = "Print
 PlayerLog"
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 93)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="CharacterTitleLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][font_size=14]Character Counts:
+[font_size=12]Current Limit: [color=green]10000"
+
+[node name="CharCountLabelHBXC" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GameCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/CharCountLabelHBXC"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][font_size=12] GameLog:
+1000"
+
+[node name="PlayerCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/CharCountLabelHBXC"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][font_size=12] PlayerLog:
+1000"
+
+[node name="TimerPanel" type="Panel" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+
+[node name="TimerLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel"]
+custom_minimum_size = Vector2(0, 23)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 191.0
+offset_bottom = 28.0
+bbcode_enabled = true
+text = "[center]Session Timer:
+"
+
+[node name="SessionTimerPGB" type="ProgressBar" parent="MarginContainer/VBoxContainer/TimerPanel"]
+self_modulate = Color(5, 5, 5, 1)
+layout_mode = 2
+offset_left = 10.0
+offset_top = 33.0
+offset_right = 182.0
+offset_bottom = 60.0
+
+[node name="TimerLabelHBOX" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TimerPanel"]
+layout_mode = 2
+offset_top = 65.0
+offset_right = 191.0
+offset_bottom = 99.0
+
+[node name="TimerStatusLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX"]
+custom_minimum_size = Vector2(93, 34)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][font_size=12]Status: 
+[color=red]OFF"
+
+[node name="TimerLeftLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX"]
+custom_minimum_size = Vector2(93, 34)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][font_size=12]TimeLeft:
+[color=light_blue]108s"
