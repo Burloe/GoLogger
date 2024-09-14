@@ -50,7 +50,7 @@ func _ready() -> void:
 	session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer.one_shot = false
 	session_timer.wait_time = session_timer_wait_time
-	session_timer.autostart = session_timer_autostart
+	session_timer.autostart = true
 	
 
 
@@ -65,6 +65,10 @@ func _on_toggle_session_status(log_file : int, status : bool) -> void:
 			player_session_status = status
 			if !status: Log.stop_session(log_file)
 			else: Log.start_session(log_file)
+	
+	if !status:
+		session_timer.stop()
+		
 	
 	# If starting session and `end_session_condition` dictates the timer to be used(and it's stopped) -> Start it and emit signal.
 	if status and end_session_condition >= 2 and  session_timer.is_stopped():

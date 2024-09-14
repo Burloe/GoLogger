@@ -7,7 +7,6 @@ class_name GoLoggerController
 ## [b]Session Timer [ProgressBar][/b] tells you the time left for the session if you have it enabled. You can use the button below to start it manually at runtime but it will use the [param session_time] of the GoLoggerController as the wait_time and not the [GoLogger]s [param session_time]. The default session time is 2 minutes.[br]
 ## [b]Print buttons[/b] will print the .log file created last. If a session is started, this is the file that's being logged into actively. If a session is stopped, the log of the last session is printed.
 
-@onready var autostart_label: RichTextLabel = $MarginContainer/VBoxContainer/AutostartLabel
 @onready var game_button: CheckButton = $MarginContainer/VBoxContainer/GameButton
 @onready var player_button: CheckButton = $MarginContainer/VBoxContainer/PlayerButton
 @onready var print_gamebutton: Button = $MarginContainer/VBoxContainer/HBoxContainer2/PrintGameLogButton
@@ -33,8 +32,8 @@ func _input(event: InputEvent) -> void:
 func _ready() -> void:
 	#region Signal connections
 	GoLogger.session_status_changed.connect(_on_session_status_changed)
-	game_button.toggled.connect(_on_game_button_toggled)
-	player_button.toggled.connect(_on_player_button_toggled)
+	game_button.toggled.connect(_on_gamesession_button_toggled)
+	player_button.toggled.connect(_on_playersession_button_toggled)
 	print_gamebutton.button_up.connect(_on_print_button_up.bind(print_gamebutton))
 	print_playerbutton.button_up.connect(_on_print_button_up.bind(print_playerbutton))
 	GoLogger.session_timer_started.connect(_on_session_timer_started)
@@ -44,8 +43,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	session_timer_pgb.min_value = 0
 	session_timer_pgb.max_value = GoLogger.session_timer_wait_time
-	session_timer_pgb.step = GoLogger.session_timer_wait_time / GoLogger.session_timer_wait_time
-	autostart_label.text = str("[center][font_size=12]Autostart is [color=green]ON") if GoLogger.autostart_logs else str("[center][font_size=12]Autostart logs is [color=red]OFF")
+	session_timer_pgb.step = GoLogger.session_timer_wait_time / GoLogger.session_timer_wait_time 
 	await get_tree().process_frame # GoLogger autoload is initialized after this node -> Thus, await one physics frame
 	GoLogger.session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer_pgb.modulate = Color.BLACK if GoLogger.session_timer.is_stopped() else Color.FOREST_GREEN
@@ -58,11 +56,11 @@ func _ready() -> void:
 
 
 ## Signal receiver when Game Session CheckButton is toggled.
-func _on_game_button_toggled(toggled_on : bool) -> void:  
+func _on_gamesession_button_toggled(toggled_on : bool) -> void:  
 	GoLogger.toggle_session_status.emit(0, toggled_on)
 	
 ## Signal receiver when Player Session CheckButton is toggled.
-func _on_player_button_toggled(toggled_on : bool) -> void: 
+func _on_playersession_button_toggled(toggled_on : bool) -> void: 
 	GoLogger.toggle_session_status.emit(1, toggled_on)
 
 ## Received signal from [GoLogger] when session status is changed. 
