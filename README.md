@@ -1,11 +1,11 @@
 # ![GoLogger.svg](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/GoLogger.svg) GoLogger
-A basic lightweight logging system for game events in into one or more external .log file for Godot 4.<br>
+A basic framework for logging game events in into one or more external .log file for Godot 4. GoLogger was designed to easily be able to slot into any project with minimal setup so you can start logging quickly.<br>Creating logging entries are as easy as writing a `print()` call!
  
 https://github.com/user-attachments/assets/f8b55481-cd32-4be3-9e06-df4368d1183c
 
 <br><br>
 ## Introduction
-Have you ever found yourself working on multiple new features or a large system involving numerous scripts, adding countless print statements to debug? This can clutter the output, making the information difficult to decipher and even harder to manage. Or perhaps you want your game to record events to help debug issues that your players encounter, especially when you can’t access their instance. In that case, creating a logging system to record game events could provide a snapshot of the events leading up to a bug or crash.
+Have you ever found yourself working on multiple new features or a large system involving numerous scripts, adding countless print statements to debug? This can clutter the output, making the information difficult to decipher and even harder to manage. Or perhaps you want your game to record events to help debug issues that your players encounter, especially when you can’t access their instance. In that case, creating a logging system to record game events into external files could provide helpful a snapshot of the events leading up to a bug or crash.
 
 This plugin is a basic logging system designed to serve as a foundation for you to build upon. As such, it is intentionally minimalistic, making it flexible and scalable. The plugin logs any game event or data(that can be converted into a string) to a .log file. However, simply installing this plugin won’t instantly and automatically generate log entries once installed. on the plus side, adding these log entries to your code is almost as simply as writing a print() statement:
 	
@@ -19,7 +19,7 @@ GoLogger will create and add logs to three .log files, named 'game.log', 'ui.log
 ## Installation and setup:
 GoLogger requires an autoload to manage a signal and a few variables due to the nature of the static functions we use to be able to call them from anywhere in this way. When installing the plugin, an autoload "GoLogger.gd" is included and added to your autoloads automatically. GoLogger contains just 8 lines of code which can just as easily be incorporated into one of your existing autoload scripts. Therefore, it is **HIGHLY** recommended to do just that, and steps on how to do that is provided in the "Additional Setup".
 
-###**Installation:**
+### **Installation:**
 * Download the plugin from either GitHub(!https://github.com/Burloe/GoLogger) or the Asset Library. If you download the .zip from GitHub, extract **only** the "addons" folder to any folder in your PC, then place the extracted "addons" folder into your project's root directory. The folder structure should look like `res://addons/GoLogger`. 
 * Navigate to `Project > Project Settings > Plugins`, where you should see "GoLogger" as an unchecked entry in the list of installed plugins. Check it to activate the plugin.
 * Go to `Project > Project Settings > Globals > Autoload` and ensure that the GoLogger autoload has been added correctly. If not, you can manually add it by clicking the folder icon, locating GoLogger.gd, and restarting Godot.
@@ -58,7 +58,7 @@ In order for static functions to have access to variables and signals, they are 
 
 
 ## How to use:<br>
-**Creating log entries:**<br>
+### **Creating log entries:**<br>
 This plugin uses "sessions" to help you start and stop logging during the course of your game in case you don't want to log endlessly. Upon installation, the log sessions starts in the `_ready()` function of the "Gologger" autoload script. You should delete that if you only intend to log during specific times. Note that the .log files are truncated each time you run the game, if you want to save a specific log file, just copy it and rename it which won't overwrite the contents.
 
 Simply installing this plugin is not enough to for log entries to appear in the log files when you run your game. You still need to manually add log entries and specify the data each entry should display (if necessary). Fortunately, adding entries is as easy as writing `print()` calls, done with a single line of code:
@@ -79,7 +79,7 @@ Godot allows you to format the strings in many ways. [See this documentation pag
 
 
 
-**Modifying the files:**
+### **Modifying the files:**
 The files that are logged when first installing the plugin are "game.log", "ui.log and "player.log". These are just examples of what you can log and how to sort then. You can easily change the name of them, plus, you decide where entry's are logged in your `Log.entry()` calls regardless. In order to change them, there are a couple of steps to do it safely without breaking anything and for the purposes of this example. We'll change the "ui.log" file to instead be an "npc.log" file where one might log events pertaining to NPCs and their pathfinding:
 
 **In "Log.gd":**
@@ -99,28 +99,11 @@ Similarly, if you want to add. You can just duplicate the same codeblocks, to ex
  <br><br><br>
 
 
-**I want to create new unique .log files that aren't overwritten when I run my game. How do I do that?**<br>
-Unfortunately, in the current state. The .log files are truncated upon starting new sessions. This plugin can be expanded so that it creates new unique log files each session with the date and time stamp in the name. By doing, you create new files rather than overwriting the previous ones each time you run the game. In order to keep this minimalistic and user friendly, I decided not to include that in the base plugin. If there's enough interest, I might add it in the future. Here's a quick way to do it with the ui.log file, but know that this will not delete old files, if you include this and run your game 1000 times, you'll have 3000 files in your logs folder. 
-*In Log.gd*
+### **What are some of the downsides of this plugin?**<br>
+I'm aware of one the potential of a performance issue with GoLogger. Personally, I haven't had this issue yet but I would expect it to become a problem for large-scale projects. If you produce a ton of entries from different sources continually and you run your game for a long time. Issues with micro-stutters and memory leaks wouldn't be surprising. Due to how log entries are handled,  when we open a file with `FileAccess.open("filepath", FileAccess.WRITE)`, the file is truncated(which means the content is deleted). To circumvent this, we first open the file with `FileAccess.READ` and store the old content in a variable. Then when we log the new entry, we first paste in the old stored content and add the new entry at the end of the file. If your log has thousands of logs and new ones are added continually, we're loading in large strings over and over again which is prone to these types of issues. An optional timer was added to solve this. Essentially, we start a timer with the user defined wait time which will stop a session, then start a new one every X minutes. If you log entries rapidly, just shorten the timer's wait time. 
 
- 	const UI_FILE = "user://logs/ui.log" # Change this line to the one below
-  	const UI_PATH = "user://logs/ 
-   
-	# Inside "start_session()", replace the UI codeblock with this new codeblock:
- 	1: # UI
-		if GoLogger.ui_session_status:
-			push_warning("GoLogger Warning: Attempted to start new UI log session before stopping the previous.")
-			return
-		else:
-			var file = str("ui(", Time.get_date_time_from_system(true, false), ").log # New line
-			var _fui = FileAccess.open(UI_PATH + file, FileAccess.WRITE) # Changed
-			var _fui = FileAccess.open(UI_FILE, FileAccess.WRITE)
-			_fui.store_line(str("[", Time.get_datetime_string_from_system(utc, space), "] New UI Session:"))
-			_fui.close()
-			GoLogger.toggle_session_status.emit(1, true)
- 
+It's possible to also add a character limit in the content, which is checked whether or not is exceeded everytime a new entry is logged. Though I found the timer method more reliable.
 
-There's more to it than this but this'll get you started. Again, know that it will fill your folder will .log files. I would look into creating a way to only have a maximum amount of files in the folder and delete oldest one when creating the new file. <br><br><br>
 
 ### Examples:
 Here are some examples I use in my code for my save system and inventory.
