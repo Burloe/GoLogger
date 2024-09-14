@@ -13,7 +13,7 @@ func _ready() -> void:
 	GoLogger.session_status_changed.connect(_on_session_status_changed)
 	for c in $VBoxContainer/Simulations/MarginContainer/VBoxContainer.get_children(): # Event Simulation buttons
 		if c is Button:
-			c.button_up.connect(_on_button_up.bind(c))
+			c.button_up.connect(_on_entry_sim_button_up.bind(c))
 	
 	var _fg = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
 	var _gc = ""
@@ -55,30 +55,11 @@ func _on_session_status_changed():
 		var _c = _f.get_as_text()
 		playerlog.text = _c
 
-## Buttons that starts/stops sessions.
-func _on_session_button_up(btn : Button):
-	match btn.get_name():
-		"StartGAME": Log.start_session(0)
-		"StartPLAYER": Log.start_session(1)
-		"StopGAME": Log.stop_session(0)
-		"StopPLAYER": Log.stop_session(1)
-	var _fg = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
-	var _cg = ""
-	if _fg != null: _cg = _fg.get_as_text()
-	gamelog.text = _cg
-	var _fp = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
-	var _cp = ""
-	if _fp != null: _cp = _fp.get_as_text()
-	playerlog.text = _cp
+ 
 
 ## Buttons that simulates log entries.
-func _on_button_up(btn : Button):
-	var items : Array[String] = [
-		"Pipe",
-		"Handgun",
-		"Gunpowder",
-		"Uncased Bullets"
-	]
+func _on_entry_sim_button_up(btn : Button):
+	var items : Array[String] = ["Pipe", "Handgun", "Gunpowder", "Uncased Bullets"]
 	match btn.get_name():
 		"Pickup":
 			Log.entry(1, str("Picked up ", items[rng.randi_range(0, items.size() -1)], " x", rng.randi_range(1, 6), "."))

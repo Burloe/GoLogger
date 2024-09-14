@@ -4,12 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://ce5crsggd1rb7" path="res://addons/GoLogger/GoLogger.png" id="2_u13a6"]
 
 [node name="GoLoggerController" type="Panel"]
-custom_minimum_size = Vector2(210, 358)
+custom_minimum_size = Vector2(210, 411)
 anchors_preset = -1
 anchor_right = 0.109
-anchor_bottom = 0.331
+anchor_bottom = 0.381
 offset_right = 0.719986
-offset_bottom = 0.519958
+offset_bottom = -0.480011
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sp6vx")
@@ -67,24 +67,35 @@ text = "Player Session"
 custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 
-[node name="SesstionTimerLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="CharacterTitleLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 38)
 layout_mode = 2
-text = "Session Timer:"
-horizontal_alignment = 1
+bbcode_enabled = true
+text = "[center][font_size=14]Character Counts:
+[font_size=12]Current Limit: [color=green]10000"
+
+[node name="CharCountLabelHBXC" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GameCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/CharCountLabelHBXC"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][font_size=12] GameLog:
+1000"
+
+[node name="PlayerCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/CharCountLabelHBXC"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][font_size=12] PlayerLog:
+1000"
 
 [node name="SessionTimerPGB" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="ValueTimer" type="Timer" parent="MarginContainer/VBoxContainer/SessionTimerPGB"]
 wait_time = 0.5
-
-[node name="StartTimerButton" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 34)
-layout_mode = 2
-focus_mode = 0
-toggle_mode = true
-button_pressed = true
-text = "Start Timer"
 
 [node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 15)

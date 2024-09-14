@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/GoLogger/GoLogger.gd" id="1_am1mu"]
 [ext_resource type="PackedScene" uid="uid://quridjl6aioe" path="res://addons/GoLogger/LogController/GoLoggerController.tscn" id="2_i3pa3"]
 
-[node name="GoLogger" type="Control"]
+[node name="GoLogger" type="Control" node_paths=PackedStringArray("session_timer")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 80.0
@@ -11,6 +11,9 @@ offset_top = 80.0
 offset_right = 120.0
 offset_bottom = 120.0
 script = ExtResource("1_am1mu")
+session_timer = NodePath("SessionTimer")
+end_session_condition = 3
+end_session_behavior = 1
 
 [node name="SessionTimer" type="Timer" parent="."]
 wait_time = 0.5
