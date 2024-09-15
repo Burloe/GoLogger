@@ -4,12 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://ce5crsggd1rb7" path="res://addons/GoLogger/GoLogger.png" id="2_u13a6"]
 
 [node name="GoLoggerController" type="Panel"]
-custom_minimum_size = Vector2(210, 389)
+custom_minimum_size = Vector2(210, 459)
 anchors_preset = -1
 anchor_right = 0.109
-anchor_bottom = 0.36
+anchor_bottom = 0.425
 offset_right = 0.719986
-offset_bottom = 0.199982
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sp6vx")
@@ -34,27 +33,43 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TitleHBOX" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/TitleHBOX"]
 layout_mode = 2
 texture = ExtResource("2_u13a6")
 expand_mode = 3
 stretch_mode = 4
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/TitleHBOX"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "LogController"
 horizontal_alignment = 1
 
+[node name="SessionStatusPanel" type="Panel" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="SessionStatusLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/SessionStatusPanel"]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[center][font_size=18] Session status:
+[center][color=green]ON"
+
 [node name="SessionButton" type="CheckButton" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 focus_mode = 0
-text = "  Session status"
+text = "  Session Switch"
 
 [node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/SessionButton"]
 show_behind_parent = true

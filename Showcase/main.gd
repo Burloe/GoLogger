@@ -36,7 +36,7 @@ func get_last_log(path) -> String:
 			return ""
 	else: 
 		var _files = _dir.get_files()
-		return str(path + _files[_files.size() -1]) 
+		return str(path + _files[_files.size() -1]) if _files.size() > 0 else ""
 	return ""
 
 
