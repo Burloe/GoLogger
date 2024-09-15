@@ -82,7 +82,7 @@ func _on_entry_sim_button_up(btn : Button):
 		"Save": 
 			Log.entry(0, str("Saved GameSave#1 on Slot#", randi_range(1, 3), "."))
 		"Exit": 
-			Log.entry(0, "Exited game, closing session.")
+			Log.entry(0, "Exited game.")
 		
 	var _fg = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
 	var _cg = ""

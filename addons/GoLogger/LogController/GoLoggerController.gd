@@ -62,21 +62,29 @@ func _ready() -> void:
 
 ## Signal receiver when Game Session CheckButton is toggled.
 func _on_session_button_toggled(toggled_on : bool) -> void:  
-	GoLogger.toggle_session_status.emit(toggled_on)
+	Log.stop_session() if !toggled_on else Log.start_session()
+	# Prevent the creation of file on the same timestamp
+	printerr("1", session_button.disabled)
+	session_button.disabled = true
+	await get_tree().create_timer(1.2).timeout
+	printerr("2", session_button.disabled)
+	session_button.disabled = false
+	printerr("3", session_button.disabled)
 	
 
 ## Received signal from [GoLogger] when session status is changed. 
 func _on_session_status_changed() -> void:
 	session_button.button_pressed = GoLogger.session_status
 
+
 ## Starts value time to update [ProgressBar] when session timer is started.
 func _on_session_timer_started() -> void:
 	info_timer.start()
 	session_timer_pgb.modulate = Color.FOREST_GREEN
-
 ## Updates [ProgressBar] modulate depending on session status.
 func _on_session_timer_timeout() -> void:
 	session_timer_pgb.modulate = Color.BLACK
+
 
 ## Updates both the [ProgressBar] value and the last known character count on timeout.
 func _on_info_timer_timeout() -> void:
