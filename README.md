@@ -13,96 +13,72 @@ GoLogger was designed as a foundation for you to build upon. As such, it is inte
 
 **Note: This system is only as comprehensive and detailed as you make it.** But it also works as a simple standalone logging system as is.<br><br><br>
 
-## .log files
-GoLogger will create and add logs to three .log files, named 'game.log', 'ui.log' and 'player.log'. Modifying the plugin to use different file names is a simple process and steps are detailed in Modify paragraph of the "How to Use" section. The .log files are located in the User Data folder can be accessed through `Project > Open User Data Folder` and opening the `logs` folder. This folder location is different on every OS.
+### .log files:
+GoLogger will create and manage up to three .log files(file limit can be changed) for two category of logs, named 'game.log' and 'player.log'. Modifying the plugin to use different file names is a simple process and steps are detailed in "Modifying the log names, adding or removing the number of logs" paragraph of the "How to Use" section. Note that the "game" and "player" logs are just suggestions of names and a way to categorize/separate logs into multiple files. If you just want to consolidate all logs into one file, you don't need to change anything. You can just call `Log.entry(0, "Your log entry here")` and it'll always log into the "game.log" file.
+
+The .log files are located in the User Data folder can be accessed through `Project > Open User Data Folder` and opening the "game_Gologs" and "player_Gologs" folder. This folder location is different on every OS. Because they are stored externally from the project, your players/users can therefore access these logs files and can share them when investigating bugs and issues.
+
+### GoLogger Controller:
+The plugin comes with a "controller" which is why we autoload the scene rather than the script. This affords us the option to make changes in the inspector using the export variables too. The controller allows you to stop and start sessions, print log contents, shows the character count and the session timer during gameplay and can be shown/hidden using F9.
+
+
+## Options for automatic stopping and starting of logging sessions:
+There's one potential problem one should be mindful of performing operations to load and store data as done here. In order to write log entries into an external file, `FileAccess.open(file, FileAccess.WRITE)` is used which truncates the file every time. In short terms, we need to load and store the old log entries into a variable everytime we log a new entry. Meaning we load and unload potentially very large strings which are prone to performance issues if the file gets excessively long and may cause memory leaks. 
+
+To combat this issue, an optional `end_session_condition` along with `end_session_action` was added in order to prevent any .log file from becoming too large. There are three possible conditions to use which perform the action once fullfilled. 
+**Conditions:**
+a) When we READ and store the old entries, a check to see if the character count exceeds a predefined character limit. 
+b) When a session is started, a 2 minute timer start(time can be changed). 
+c) Third option uses both of them, meaning the timer will stop and start every 2 minutes AND the character count is checked upon each entry. 
+**Actions:**
+a) **Stop & Start Session**. 
+b) **Stop only**. Stops a session WITHOUT starting a new one, requiring either a manual start or if you have added some automatic trigger yourself. 
+c) **Clear**. Simply purges the file contents and continues to log in the same file. 
+
+If you are experiencing performance issues like micro-stutters, lags or freezes and you suspect it's due to GoLogger. You can turn these options on in the GoLogger.tscn scene in the inspector(they are exported variables).
+### I HIGHLY RECOMMEND using one or both of these `end_session_condition`s if you intend to include GoLogger in your released game!<br><br><br>
+
 
 ## Installation and setup:
-GoLogger requires an autoload to manage a signal and a few variables due to the nature of the static functions we use to be able to call them from anywhere in this way. When installing the plugin, an autoload "GoLogger.gd" is included and added to your autoloads automatically. GoLogger contains just 8 lines of code which can just as easily be incorporated into one of your existing autoload scripts. Therefore, it is **HIGHLY** recommended to do just that, and steps on how to do that is provided in the "Additional Setup".
+GoLogger requires an autoload to manage a signal and a few variables since static functions can't use variables otherwise which the plugin adds automatically upon installation. However, this isn't always a reliable process and therefore **it is crucial that you ensure the "GoLogger.tscn" was added properly for the plugin to work.**
 
 ### **Installation:**
 * Download the plugin from either GitHub(!https://github.com/Burloe/GoLogger) or the Asset Library. If you download the .zip from GitHub, extract **only** the "addons" folder to any folder in your PC, then place the extracted "addons" folder into your project's root directory. The folder structure should look like `res://addons/GoLogger`. 
 * Navigate to `Project > Project Settings > Plugins`, where you should see "GoLogger" as an unchecked entry in the list of installed plugins. Check it to activate the plugin.
 * Go to `Project > Project Settings > Globals > Autoload` and ensure that the GoLogger autoload has been added correctly. If not, you can manually add it by clicking the folder icon, locating GoLogger.gd, and restarting Godot.
-* *Optional but recommended:* Add a `Log.stop_session()` in the function where you close your game with `get_tree().quit()`.
-* You are ready to use the plugin and start adding "Log.entry()" calls to your code. If you plan on exanding on this system and build upon it. I recommend going through the additional steps below but you can skip it. 
-	
-### **Additional Setup** - For those intending to further improve and customize the system:
-In order for static functions to have access to variables and signals, they are required to be in an autoload script and as such, one was added to the plugin called `GoLogger.gd`. This autoload only contains 8 lines of code which can and **should** be be merged into one of your existing autoloads. 
-1. Copy the code below and put it into any of your existing autoload scripts. Then delete GoLogger.gd:
+* *Optional but recommended:* Add `Log.stop_session()` in whatever function that triggers your game to close with `get_tree().quit()`. Frankly, this is purely for the aesthetics, closing without stopping won't break the plugin.
+* *Optional:* The autoload "GoLogger.tscn" has the option to enable "autostart session". This will start the session in the _ready() method and works well. Disabling it means you have to use the GoLoggerController to manually start the session, or you need to add some way to call `start_session()` in your code.<br><br><br>
 
-*It is REQUIRED to be an autoload! If your existing autoload already has a _ready() function declared, simply add the two _ready() lines from the code below inside your existing _ready() function.*
-
-	signal toggle_session_status(category : int, status : bool) ## Session Status is changed whenever a session is started or stopped.
-	signal session_status_changed ## Emitted after session status is changed. Not used by the plugin but can be useful if you plan on expanding the system. 
-	var game_session_status: bool = false ## Flags whether a log session is in progress or not. 
-	var ui_session_status: bool = false ## Flags whether a log session is in progress or not. 
-	var player_session_status: bool = false ## Flags whether a log session is in progress or not. 
-	var log_in_devfile : bool = true ## Flags whether or not logs are saved using the [param FILE](false) or [param DEVFILE](true).
-	
-	func _ready() -> void:
-		toggle_session_status.connect(_on_toggle_session_status)
-		Log.start_session(0)
-		Log.start_session(1)
-		Log.start_session(2)
-	## Toggles the session status between true/false upon signal [signal GoLogger.toggle_session_status] emitting. 
-	func _on_toggle_session_status(category : int, status : bool) -> void:
-		match category:
-			0: game_session_status = status
-			1: ui_session_status = status
-			2: player_session_status = status
-		session_status_changed.emit()
-  
-3. In Log.gd, use "Find and Replace" to update any code referencing the deleted `GoLogger` autoload with your own updated one.<br>
-	*Note: The example scene script also references the GoLogger.gd script, so this will break the example scene. However, you can fix this by using "Find and Replace" in the example script "main.gd" as well. This doesn't affect the logging system itself, but if you try to open scene "main.tscn" after completing these steps, you may encounter a series of errors.*<br>
-4. *Optional:* At this point, you can delete plugin.gd and plugin.cfg and use the scripts as your own. Building upon this plugin and making it your own is not only encouraged, it was made for it.<br><br><br>
 
 
 ## How to use:<br>
-### **Creating log entries:**<br>
-This plugin uses "sessions" to help you start and stop logging during the course of your game in case you don't want to log endlessly. Upon installation, the log sessions starts in the `_ready()` function of the "Gologger" autoload script. You should delete that if you only intend to log during specific times. Note that the .log files are truncated each time you run the game, if you want to save a specific log file, just copy it and rename it which won't overwrite the contents.
+### **How to start and stop log sessions:**<br>
+This plugin uses sessions to indicate when its logging entries or not but will also create a new .log file with each session. Starting and stopping sessions are as simple as calling `start_session()` and `stop_session()` If you intend on starting and stopping during gameplay. It is recommended that you add a 'cooldown' of at least 1 second before starting the next session. You can find an example of how this can be implemented in GoLoggerController.gd within the `_on_session_button_toggled()` signal receiver.<br><br><br>
 
-Simply installing this plugin is not enough to for log entries to appear in the log files when you run your game. You still need to manually add log entries and specify the data each entry should display (if necessary). Fortunately, adding entries is as easy as writing `print()` calls, done with a single line of code:
 
-	Log.entry(0, "Your entry string here")
-The `entry()` function has some mandatory and optional parameters. `entry(category : int, log_entry : String, date_time_flag : int = 0, utc : bool = true, space : bool = true)`. Only the first two are mandatory and needs to be declared when called while the rest are optional and allow you to customize the log to your liking.
+### **How to create log entries and include data:**<br>
+Simply installing GoLogger doesn't generate any log entries for your project. You still need to write out when and where logs are entered and what message + data is included in the entry. However, doing so is just as easy as writing a `print()` statement. For this example, lets say we want to log when the player dies, the position of the player, what dealt the killing blow and for how much damage the blow inflicted. Additionally, we assume there's a signal that sends the amount of damage dealt and the entity that dealt it to the Player script in which we want to log an entry.
+
+	func _on_damage_taken(entity: CharacterBody2D, damage : float):
+		current_health -= damage
+ 		if current_health <= 0:
+			death()
+  			Log.entry(str("Player died @", position, " by the hands of ", entity.get_name(), ". Final blow dealt ", damage, " damage.")
+     			# Resulting log entry:  [21:42:18] Player died @(918, 2103) at the hand of Swamp Monster. Final blow dealt 68 damage. 
+
+The `entry()` function has some mandatory and optional parameters. `entry(category : int, log_entry : String, date_time_flag : int = 0, utc : bool = true, space : bool = true)`. Only the first two are mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the log to your liking.
 1. `category` - This denotes which log file the entry will be stored in. 0 = "game.log", 2 = "ui.log", 3 = "player.log".
 2. `entry` - This is the string that makes up your entry. Data can be added as long as it is able to be converted to a string.
-3. `date_time_flag` - Flags whether to include either date, time or none of the two in your log entries. 0 = date + time, 1 = date, 2 = time, 3 = none.
-4. `utc` - UTC is the date and time format used. If you call this will false. The date and time will adhere to the users local date and time format. [More info can be found in the doc page.](https://docs.godotengine.org/en/stable/classes/class_time.html#class-time-method-get-datetime-string-from-system)
-5. `space` - This separates the date and time with a space if true. False will put a T instead of a space. Which will look like [2024-09-10T12.42:09].
+3. `include_timestamp` - Flags whether to include time or not. Log entries are always added sequentially so timestamps just helps you to measure the time between events.
+4. `utc` - UTC is the standardized date and time format used. Using false, the timestamp will adhere to the users local time format. [More info can be found in the doc page.](https://docs.godotengine.org/en/stable/classes/class_time.html#class-time-method-get-time-string-from-system)
 
-You can call function this from any script in your project. The string message can contain almost any data, but you may need to convert that data into a string format using str(). For example:
-
- 	Log.entry(str("Player died at position", player.position, ".")		# Result: [2024-09-10 12:42:09] Player died at position(531, 82).
-
-Godot allows you to format the strings in many ways. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) 
+You can call function this from any script in your project. The string message can contain almost any data, but you may need to convert that data into a string format using str(). Godot allows you to format the strings in many ways. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) <br><br><br>
 
 
-
-### **Modifying the files:**
-The files that are logged when first installing the plugin are "game.log", "ui.log and "player.log". These are just examples of what you can log and how to sort then. You can easily change the name of them, plus, you decide where entry's are logged in your `Log.entry()` calls regardless. In order to change them, there are a couple of steps to do it safely without breaking anything and for the purposes of this example. We'll change the "ui.log" file to instead be an "npc.log" file where one might log events pertaining to NPCs and their pathfinding:
-
-**In "Log.gd":**
-* At the top of the script. Change `const UI_FILE = "user://logs/ui.log"` to `const NPC_FILE = "user://logs/npc.log"`
-* Press `Search > Replace` in the script editor and use it to replace following:
-  	"UI_FILE" > "NPC_FILE"
-   	"_fui" > "_fnpc"
-   	"_flui" > "_flnpc"
-* *Optional* Use `Search > Find` and find occurances of "ui" and "UI in the comments/documentation and change them appropriately.
-
-**In "GoLogger.gd" OR the autoload you integrated the "GoLogger" code into:** 	
-  
-* *optional* Select `Project > Open User Data folder` and navigate inside the "logs" folder. If you've ran your game one, the "ui.log" file was created so we can now delete it.
-
-If you want to remove file(s) and use 2 or 1. The code is fairly clear on separating codeblocks in charge of handlings each file. Just delete whichever file you want.
-Similarly, if you want to add. You can just duplicate the same codeblocks, to expand the number of files/categories.<br><br><br>
+### **Modifying the log names, adding or removing the number of logs:**
+A game.log and player.log file are created upon running your project the first time. Every time a session is stopped and started, a new file is created. Using the file cap option, its possible to how many files you want to keep in the directories at any one time. It's recommended to keep this at around the 1-6 range.
+Changing the name of the files and directories are not hard but can be tedious which is why I plan on making a tutorial on the subject(either text based or video). The "player.log" file was added to showcase how and what is required to add more files and directories. **Be aware** that changing the files will certainly break the controller and will require code and scene changes to accommodate your changes. There are however helper functions to make this process easier. 
  <br><br><br>
-
-
-### **What are some of the downsides of this plugin?**<br>
-I'm aware of one the potential of a performance issue with GoLogger. Personally, I haven't had this issue yet but I would expect it to become a problem for large-scale projects. If you produce a ton of entries from different sources continually and you run your game for a long time. Issues with micro-stutters and memory leaks wouldn't be surprising. Due to how log entries are handled,  when we open a file with `FileAccess.open("filepath", FileAccess.WRITE)`, the file is truncated(which means the content is deleted). To circumvent this, we first open the file with `FileAccess.READ` and store the old content in a variable. Then when we log the new entry, we first paste in the old stored content and add the new entry at the end of the file. If your log has thousands of logs and new ones are added continually, we're loading in large strings over and over again which is prone to these types of issues. An optional timer was added to solve this. Essentially, we start a timer with the user defined wait time which will stop a session, then start a new one every X minutes. If you log entries rapidly, just shorten the timer's wait time. 
-
-It's possible to also add a character limit in the content, which is checked whether or not is exceeded everytime a new entry is logged. Though I found the timer method more reliable.
 
 
 ### Examples:
