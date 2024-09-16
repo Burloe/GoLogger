@@ -12,7 +12,8 @@ func _enter_tree() -> void:
 		tempkey.keycode = KEY_F9
 		InputMap.action_add_event("gologger_controller_toggle", tempkey)
 	### Disable this print specifically to remove the message alone ###
-	print("GoLogger loaded. Thanks for downloading! Before using GoLogger, ensure 'GoLogger.tscn' was added properly as an autoload. Additionally, a new InputMap Action was added(KEY_F9) used to toggle the controller module in your game. Message can be disabled in 'res://addons/GoLogger/plugin.gd")
+	if !GoLogger.disable_welcome_message:
+		print("GoLogger loaded. Thanks for downloading! Before using GoLogger, ensure 'GoLogger.tscn' was added properly as an autoload. Additionally, a new InputMap Action was added(KEY_F9) used to toggle the controller module in your game. Message can be disabled in 'res://addons/GoLogger/plugin.gd")
 	#endregion
 
 

@@ -64,6 +64,7 @@ func _ready() -> void:
 
 ## Toggles the session status between true/false upon signal [signal GoLogger.toggle_session_status] emitting. 
 func _on_toggle_session_status(status : bool) -> void:
+	printerr("toggle session status received = ", status)
 	session_status = status
 	if !status: 
 		session_timer.stop()
@@ -77,9 +78,7 @@ func _on_toggle_session_status(status : bool) -> void:
 
 func _on_session_timer_timeout() -> void:
 	if end_session_condition >= 2:
-		Log.stop_session(0)
-		Log.stop_session(1)
+		Log.stop_session() 
 		if end_session_behavior != 1:
-			Log.start_session(0)
-			Log.start_session(1)
+			Log.start_session() 
 	session_timer.wait_time = session_timer_wait_time

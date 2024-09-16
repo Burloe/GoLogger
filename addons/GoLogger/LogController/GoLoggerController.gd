@@ -62,7 +62,7 @@ func _ready() -> void:
 
 
 ## Signal receiver when Game Session CheckButton is toggled.
-func _on_session_button_toggled(toggled_on : bool) -> void:  
+func _on_session_button_toggled(toggled_on : bool) -> void:
 	Log.stop_session() if !toggled_on else Log.start_session()
 	# Prevent the creation of conflicting file names with the same timestamp 
 	session_button.disabled = true
