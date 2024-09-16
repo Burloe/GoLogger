@@ -16,15 +16,7 @@ func _ready() -> void:
 	for c in $VBoxContainer/Simulations/MarginContainer/VBoxContainer.get_children(): # Event Simulation buttons
 		if c is Button:
 			c.button_up.connect(_on_entry_sim_button_up.bind(c))
-	
-	var _fg = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
-	var _gc = ""
-	if _fg != null: _gc = _fg.get_as_text()
-	gamelog.text = _gc
-	var _pg = FileAccess.open(get_last_log(Log.PLAYER_PATH), FileAccess.READ)
-	var _pc = ""
-	if _pg != null: _pc = _fg.get_as_text()
-	playerlog.text = _gc
+	set_log_text()
 
 ## Returns the last log in a directory. Call using the paths specified in [Log]. Example usage: [code]FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ[/code]
 func get_last_log(path) -> String:
@@ -40,27 +32,45 @@ func get_last_log(path) -> String:
 	return ""
 
 
+func set_log_text() -> void:
+	if GoLogger.current_game_file != "":
+		var _g = FileAccess.open(GoLogger.current_game_file, FileAccess.READ)
+		if !_g:
+			var _err = FileAccess.get_open_error()
+			if _err != OK:
+				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> Error [", _err, "]")
+		else:
+			var _gc = _g.get_as_text()
+			gamelog.text = _gc
+		_g.close()
+	else: gamelog.text = "No active session."
+	
+	if GoLogger.current_player_file != "":
+		var _p = FileAccess.open(GoLogger.current_player_file, FileAccess.READ)
+		if !_p:
+			var _err = FileAccess.get_open_error()
+			if _err != OK:
+				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> Error [", _err, "]")
+		else:
+			var _pc = _p.get_as_text()
+			playerlog.text = _pc
+		_p.close()
+	else: playerlog.text = "No active session."
+	if gamelog.text.length() > playerlog.text.length():
+		playerlog.size = gamelog.size
+	if gamelog.size > playerlog.size: playerlog.size = gamelog.size
+	if playerlog.size > gamelog.size: gamelog.size = playerlog.size
+
+
 ## Receives signal from [GoLogger] whenever a status is changed.
 func _on_session_status_changed() -> void:
-	var _f = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
-	if !_f:
-		var _err = FileAccess.get_open_error()
-		if _err != OK: gamelog.text = str("GoLogger Error: Reading file (", get_last_log(Log.GAME_PATH), ") -> Error[", _err, "]")
-	else:
-		var _c = _f.get_as_text()
-		gamelog.text = _c
-	var _fl = FileAccess.open(get_last_log(Log.PLAYER_PATH), FileAccess.READ)
-	if !_fl:
-		var _err = FileAccess.get_open_error()
-		if _err != OK: playerlog.text = str("GoLogger Error: Reading file (", get_last_log(Log.PLAYER_PATH), ") -> Error[", _err, "]")
-	else:
-		var _c = _f.get_as_text()
-		playerlog.text = _c
+	set_log_text()
 
 
 func _on_update_timer_timeout() -> void:
-	gamelog.text = Log.get_file_contents(Log.GAME_PATH)
-	playerlog.text = Log.get_file_contents(Log.PLAYER_PATH)
+	set_log_text()
+	$LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Label.text = str("Current game log file:\n", GoLogger.current_game_file)
+	$LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Label2.text = str("Current player log file:\n", GoLogger.current_player_file)
  
 
 ## Buttons that simulates log entries.
@@ -84,11 +94,4 @@ func _on_entry_sim_button_up(btn : Button):
 		"Exit": 
 			Log.entry(0, "Exited game.")
 		
-	var _fg = FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ)
-	var _cg = ""
-	if _fg != null: _cg = _fg.get_as_text()
-	gamelog.text = _cg
-	var _fp = FileAccess.open(get_last_log(Log.PLAYER_PATH), FileAccess.READ)
-	var _cp = ""
-	if _fp != null: _cp = _fp.get_as_text()
-	playerlog.text = _cp
+	set_log_text()

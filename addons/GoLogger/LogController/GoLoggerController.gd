@@ -39,7 +39,7 @@ func _input(event: InputEvent) -> void:
 func _ready() -> void:
 	#region Signal connections
 	GoLogger.session_status_changed.connect(_on_session_status_changed)
-	session_button.toggled.connect(_on_session_button_toggled) 
+	if !GoLogger.autostart_session: session_button.toggled.connect(_on_session_button_toggled) 
 	print_gamelog_button.button_up.connect(_on_print_button_up.bind(print_gamelog_button))
 	print_playerlog_button.button_up.connect(_on_print_button_up.bind(print_playerlog_button))
 	GoLogger.session_timer_started.connect(_on_session_timer_started)
@@ -63,7 +63,7 @@ func _ready() -> void:
 
 ## Signal receiver when Game Session CheckButton is toggled.
 func _on_session_button_toggled(toggled_on : bool) -> void:
-	Log.stop_session() if !toggled_on else Log.start_session()
+	Log.stop_session() if !toggled_on else Log.start_session() # this is called during initialization. I need to disable it for the _ready() part and enable it after somehow. 
 	# Prevent the creation of conflicting file names with the same timestamp 
 	session_button.disabled = true
 	await get_tree().create_timer(1.2).timeout 
@@ -76,6 +76,9 @@ func _on_session_status_changed() -> void:
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if GoLogger.session_status else str("[center][font_size=18] Session status:
 [center][color=red]OFF")
+	if !session_button.toggled.is_connected(_on_session_button_toggled): # Connect signal after setting the initial state(if auto
+		session_button.toggled.connect(_on_session_button_toggled)
+	
 
 
 ## Starts value time to update [ProgressBar] when session timer is started.
@@ -89,6 +92,10 @@ func _on_session_timer_timeout() -> void:
 
 ## Updates all values on the controller every 0.5(by default). To change this, alter the wait time on [param InfoUpdateTimer].
 func _on_update_timer_timeout() -> void:
+	session_status_label.text = str("[center][font_size=18] Session status:
+[center][color=green]ON") if GoLogger.session_status else str("[center][font_size=18] Session status:
+[center][color=red]OFF")
+	
 	# Character count
 	if GoLogger.current_game_char_count > GoLogger.session_character_limit or GoLogger.current_player_char_count > GoLogger.session_character_limit:
 		character_title_label.text = str("[center][font_size=14]Character Counts:

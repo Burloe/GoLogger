@@ -125,6 +125,7 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="LogContents/MarginContainer/ScrollContainer"]
 layout_mode = 2
+theme_override_constants/separation = 28
 
 [node name="RichTextLabel" type="RichTextLabel" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -134,17 +135,32 @@ bbcode_enabled = true
 text = "[center][b][color=yellow]GAME                                                                        [color=orange]PLAYER"
 fit_content = true
 
+[node name="HBoxContainer" type="HBoxContainer" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 435
+alignment = 1
+
+[node name="Label" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Current game log file:"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Current player log file:"
+horizontal_alignment = 1
+
 [node name="HBoxContainer2" type="HBoxContainer" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="GAMElog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(761, 956)
+custom_minimum_size = Vector2(761, 881)
 layout_mode = 2
 label_settings = SubResource("LabelSettings_xqaaj")
 autowrap_mode = 2
 
 [node name="PLAYERlog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(761, 956)
+custom_minimum_size = Vector2(761, 881)
 layout_mode = 2
 label_settings = SubResource("LabelSettings_xqaaj")
 autowrap_mode = 2

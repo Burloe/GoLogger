@@ -8,11 +8,11 @@ extends Node
 
 ## Emitted at the end of [code]Log.start_session()[/code] and [code]Log.end_session[/code]. This signal is responsible for turning sessions on and off.
 signal toggle_session_status(status : bool) 
-signal session_status_changed ## Emitted when session status is changed. 
+signal session_status_changed ## Emitted when session status is changed. Use to signal your other scripts that the session is active. 
 signal session_timer_started ## Emitted when the [param session_timer] is started.
 @export var disable_welcome_message : bool = false ## Disables the GoLogger welcome message. You can also go into the "plugin.gd" and comment out the message to completely remove it.
 @export var debug_warnings_errors : bool = true ## Enables/disables all debug prints, warnings and errors
-@export var autostart_logs : bool = true ## Sessions will autostart when running your project.
+@export var autostart_session : bool = false ## Starts the session in the '_ready()' function of GoLogger.gd.
 @export var file_cap = 3 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
 @export var session_status: bool = false ## Flags whether a log session is in progress or not, only meant to be a visual hint to see if the session is started or not. [br][b]NOT RECOMMENDED TO BE USED TO START AND RESTART SESSIONS![/b]
 
@@ -32,9 +32,8 @@ signal session_timer_started ## Emitted when the [param session_timer] is starte
 @export_enum("Stop + Start new session", "Stop session only", "Clear log") var end_session_behavior : int = 0
 
 ## Character limit used if [param end_session_condition] is set to "Character Limit" or "Both Limit + Timer".
-@export var session_character_limit : int = 10000
+@export var session_character_limit : int = 50000
 ## Sets enables autostanrt of session [Timer].
-@export var session_timer_autostart : bool = false
 ## Default length of time for a session when [param Session Timer] is enabled
 @export var session_timer_wait_time : float = 120.0:
 	set(new):
@@ -46,11 +45,11 @@ var current_game_file : String = "" ## .log file associated with the current ses
 var current_player_file : String = "" ## .log file associated with the current session
 
 
-
 func _ready() -> void:
 	toggle_session_status.connect(_on_toggle_session_status)
-	if autostart_logs:
-		toggle_session_status.emit(true)
+	if autostart_session:
+		print("Starting session using 'start_session()' in GoLogger _ready()")
+		Log.start_session()
 	if session_timer == null:
 		session_timer = Timer.new()
 		add_child(session_timer)
@@ -59,19 +58,20 @@ func _ready() -> void:
 	session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer.one_shot = false
 	session_timer.wait_time = session_timer_wait_time
-	session_timer.autostart = true
+	session_timer.autostart = false
+	
 
 
 ## Toggles the session status between true/false upon signal [signal GoLogger.toggle_session_status] emitting. 
 func _on_toggle_session_status(status : bool) -> void:
-	printerr("toggle session status received = ", status)
+	print("Received 'toggle_session_status signal -> ", status)
 	session_status = status
 	if !status: 
 		session_timer.stop()
 	else:  
 		# Prevent the creation of file on the same timestamp
 		await get_tree().create_timer(1.0)
-		session_timer.start(session_timer_wait_time)
+		session_timer.start(autostart_session)
 		session_timer_started.emit()
 	session_status_changed.emit()
 
@@ -81,4 +81,5 @@ func _on_session_timer_timeout() -> void:
 		Log.stop_session() 
 		if end_session_behavior != 1:
 			Log.start_session() 
+			print("Starting session in 'GoLogger.gd' under the '_on_session_timer_timeout()' because end_session_behavior dictates to start anew.")
 	session_timer.wait_time = session_timer_wait_time

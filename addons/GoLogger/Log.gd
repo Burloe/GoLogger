@@ -14,6 +14,33 @@ const PLAYER_PATH = "user://logs/player_Gologs/" ## Path where .log files are cr
 # Linux:   ~/.local/share/godot/app_userdata/[project_name]
 
 
+static func get_err_string(error_code : int) -> String:
+	match error_code:
+		1: # Failed
+			return "Error[12]: Generic error occured, unknown cause."
+		4: # Unauthorized
+			return "Error[12]: Not authorized to open file."
+		7: # Not found
+			return "Error[12]: FIle not found."
+		8: # Bad path
+			return "Error[8]: Incorrect path."
+		10: # No file permission
+			return "Error[10]: No permission to access file."
+		11: # File in use
+			return "Error[11]: File already in use(forgot to use 'close()'?)."
+		12: # Cannae open file
+			return "Error[12]: Can't open file."
+		13: # Can't write
+			return "Error[13]: Can't write to file."
+		14: # Can't read
+			return "Error[14]: Can't read file."
+		15: # Unrecognized file
+			return "Error[15]: Unrecognized file."
+		16: #  Corrupt
+			return "Error[16]: File is corrupted."
+	return "Error[X]: Unspecified error-"
+
+
 ## Returns the string file name for your log containing the current system date and time.
 static func get_file_name(log : String) -> String:
 	var _d : Dictionary = Time.get_datetime_dict_from_system(true)
@@ -41,16 +68,15 @@ static func get_file_contents(folder_path : String) -> String:
 		var contents = _fr.get_as_text()
 		_fr.close()
 		return contents
-
 	return str("GoLogger Error: Unable to retrieve file contents in (", folder_path, ")") if GoLogger.debug_warnings_errors else ""
-
 
 
 ## Initiates a log session, recording game events in the .log file. [param category] denotes the file where the entry is logged. [param utc] will force the date and time format to UTC[yy,mm,ddThh:mm:ss]. [param space] will use a space to separate date and time instead of a "T".[br][b]Note:[/b][br]    You cannot start one session without stopping the previous. Attempting it will do nothing.
 static func start_session(utc : bool = true, space : bool = true) -> void: 
 	printerr("start() called  session status = ", GoLogger.session_status, "    gamepath = ", GAME_PATH, "      playerpath = ", PLAYER_PATH)
 	# Game logs
-	if GAME_PATH != null and GAME_PATH != "":
+	if GAME_PATH != "":
+		if GAME_PATH == null: if GoLogger.debug_warnings_errors: push_error("GoLogger Error: GAME_PATH is null. Assign a valid directory path.")
 		if GoLogger.session_status:
 			if GoLogger.debug_warnings_errors: push_warning("GoLogger Warning: Attempted to start new Game log session before stopping the previous.")
 			return
@@ -59,34 +85,30 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 			if !_dir and GoLogger.debug_warnings_errors:
 				var _err = DirAccess.get_open_error()
 				if _err != OK:
-					printerr("GoLogger Error: Failed to open file directory (", GAME_PATH, ")") 
-				printerr("GoLogger Error: Failed to open file directory (", GAME_PATH, ")")
+					push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
+				push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
 				return 
 			else:  
 				var _files = _dir.get_files() 
 				if _files.size() >= GoLogger.file_cap: # File count exceeds cap. Sort then delete oldest file
-					printerr("files pre-sort: ", _files)
-					_files.sort() 
-					printerr("files post_sort: ", _files)
+					_files.sort()
 					var _old_file = _files[0]
 					var _del_err = _dir.remove(GAME_PATH + _old_file)
-					if _del_err != OK: if GoLogger.debug_warnings_errors: printerr("GoLogger Error: Failed to delete file (", _old_file, ") -> Error[", _del_err,"]") 
+					if _del_err != OK: if GoLogger.debug_warnings_errors: push_warning("GoLogger Error: Failed to delete file (", _old_file, ") -> Error[", _del_err,"]") 
 				GoLogger.current_game_file = GAME_PATH + get_file_name("game") # Game path is "user://logs/game_Gologs/"
-				print("Current GAME file: ", GoLogger.current_game_file)
+				print("START_SESSION(): Current GAME file: ", GoLogger.current_game_file)
 				var _file = FileAccess.open(GoLogger.current_game_file, FileAccess.WRITE)
 				if !_file:
-					if GoLogger.debug_warnings_errors: printerr("GoLogger Error: Failed to create log file (", GoLogger.current_game_file, ").")
+					if GoLogger.debug_warnings_errors: push_warning("GoLogger Error: Failed to create log file (", GoLogger.current_game_file, ").")
 				else:
 					var _s := str( "Game Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
 					_file.store_line(_s)
 					GoLogger.current_game_char_count = _s.length()
 					_file.close() 
-
-
-
-	
+				
 	# Player logs
-	if PLAYER_PATH != null and PLAYER_PATH != "": 
+	if PLAYER_PATH != "": 
+		if PLAYER_PATH == null: if GoLogger.debug_warnings_errors: push_error("GoLogger Error: PLAYER_PATH is null. Assign a valid directory path.")
 		if GoLogger.session_status:
 			if GoLogger.debug_warnings_errors: push_warning("GoLogger Warning: Attempted to start new Player log session before stopping the previous.")
 			return
@@ -95,8 +117,8 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 			if !_dir and GoLogger.debug_warnings_errors:
 				var _err = DirAccess.get_open_error()
 				if _err != OK:
-					printerr("GoLogger Error: Failed to open file directory (", PLAYER_PATH, ")") 
-				printerr("GoLogger Error: Failed to open file directory (", PLAYER_PATH, ")")
+					push_warning("GoLogger Error: Failed to open file directory (", PLAYER_PATH, ")") 
+				push_warning("GoLogger Error: Failed to open file directory (", PLAYER_PATH, ")")
 				return 
 			else:
 				var _files = _dir.get_files() 
@@ -108,7 +130,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 				GoLogger.current_player_file = PLAYER_PATH + get_file_name("player") # Player path is "user://logs/player_Gologs/"
 				var _file = FileAccess.open(GoLogger.current_player_file, FileAccess.WRITE)
 				if !_file:
-					if GoLogger.debug_warnings_errors: printerr("GoLogger Error: Failed to create log file (", GoLogger.current_player_file, ").")
+					if GoLogger.debug_warnings_errors: push_warning("GoLogger Error: Failed to create log file (", GoLogger.current_player_file, ").")
 				else:
 					var _s := str( "Player Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
 					_file.store_line(_s)
@@ -121,72 +143,62 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 ## [param timestamp] is used to specify the type of date and time format you want your entries tagged with.[br]
 ## [param utc] will convert the time into a unified UTC format as opposed to your or your players local time format.
 static func entry(file : int, log_entry : String, include_timestamp : bool = true, utc : bool = true) -> void:
-	printerr("entry(", file, ") called")
 	var _timestamp : String = str("\t[", Time.get_time_string_from_system(utc), "] ") 
 	match file:
 		0: # GAME
-			if !GoLogger.session_status and !GoLogger.end_session_behavior == 2: # Error check
-				if GoLogger.debug_warnings_errors: push_warning("GoLogger Warning: Attempted to log Game Entry without starting a session. Remember to call 'start_session(0)' in any _ready function.")
+			# 1.
+			if !GoLogger.session_status and !GoLogger.end_session_behavior == 2: 
+				if GoLogger.debug_warnings_errors: push_warning("GoLogger Warning: Attempted to log Game Entry without starting a session.")
 				return
-			var _f = FileAccess.open(GoLogger.current_game_file, FileAccess.READ)
-			if !_f and GoLogger.debug_warnings_errors:
-				var _err = FileAccess.get_open_error()
-				if _err != OK:
-						printerr("GoLogger Error: Attempting to log entry by reading file (", GoLogger.current_game_file, ") -> Error[", _err, "].") 
-						return
 			else:
-				var _content := _f.get_as_text()
+				var _f = FileAccess.open(GoLogger.current_game_file, FileAccess.READ)
+				if !_f:
+					var err = FileAccess.get_open_error()
+					if err != OK: push_warning("GoLogger ", get_err_string(err))
+				var _c = _f.get_as_text()
 				_f.close()
-				if GoLogger.end_session_condition == 1 or GoLogger.end_session_condition == 3: # Character limit or Character limit + Session timer
-					if _content.length() > GoLogger.session_character_limit:
-						match GoLogger.end_session_behavior:
-							0: # Stop & start session
-								stop_session()
-								start_session()
-							1: stop_session() # Stop session only
-							2: _content == "Session character limit exceed. Log was purged of previous content. Continuing session:" # Clear log
 				var _fw = FileAccess.open(GoLogger.current_game_file, FileAccess.WRITE)
-				if !_f and GoLogger.debug_warnings_errors:
-					var _err = FileAccess.get_open_error()
-					if _err != OK:
-						printerr("GoLogger Error: Attempting to log entry into file (", GoLogger.current_game_file, ") -> Error[", _err, "]")
-						return
-				var _s := str(_content, _timestamp + log_entry if include_timestamp else "\t" + log_entry)
-				_f.store_line(_s) 
-				GoLogger.current_game_char_count = _s.length()
-				_f.close()
+				if !_fw:
+					var err = FileAccess.get_open_error()
+					if err != OK: push_warning("GoLogger ", get_err_string(err))
+				var _s : String = str(_c, "\t" + _timestamp + log_entry)
+				_fw.store_line(_s)
+				if _s.length() >= GoLogger.session_character_limit:
+					match GoLogger.end_session_behavior:
+						0: # Stop & Start
+							stop_session()
+							start_session()
+							print("Starting session in 'Log.gd' under the 'entry()' because end_session_behavior dictates to start anew.")
+						1: stop_session() # Stop only
+						2: _fw.store_line(str(_timestamp + " Cleared session:\n\t", _timestamp + log_entry)) # Clear log
+				_fw.close()
 		
 		1: # PLAYER
 			if !GoLogger.session_status and !GoLogger.end_session_behavior == 2: # Error check
-				if GoLogger.debug_warnings_errors: push_warning("GoLogger Warning: Attempted to log Game Entry without starting a session. Remember to call 'start_session(0)' in any _ready function.")
+				if GoLogger.debug_warnings_errors: push_warning("GoLogger Warning: Log entry attempt failed due to inactive session.")
 				return
-			var _f = FileAccess.open(GoLogger.current_player_file, FileAccess.READ)
-			if !_f and GoLogger.debug_warnings_errors:
-				var _err = FileAccess.get_open_error()
-				if _err != OK:
-						printerr("GoLogger Error: Attempting to log entry by reading file (", GoLogger.current_player_file, ") -> Error[", _err, "].") 
-						return
 			else:
-				var _content := _f.get_as_text()
+				var _f = FileAccess.open(GoLogger.current_player_file, FileAccess.READ)
+				if !_f:
+					var err = FileAccess.get_open_error()
+					if err != OK: push_warning("GoLogger ", get_err_string(err))
+				var _c = _f.get_as_text()
 				_f.close()
-				if GoLogger.end_session_condition == 1 or GoLogger.end_session_condition == 3: # Character limit or Character limit + Session timer
-					if _content.length() > GoLogger.session_character_limit:
-						match GoLogger.end_session_behavior:
-							0: # Stop & start session
-								stop_session()
-								start_session()
-							1: stop_session() # Stop session only
-							2: _content == "Session character limit exceed. Log was purged of previous content. Continuing session:" # Clear log
 				var _fw = FileAccess.open(GoLogger.current_player_file, FileAccess.WRITE)
-				if !_f and GoLogger.debug_warnings_errors:
-					var _err = FileAccess.get_open_error()
-					if _err != OK:
-						printerr("GoLogger Error: Attempting to log entry into file (", GoLogger.current_player_file, ") -> Error[", _err, "]")
-						return
-				var _s := str(_content, _timestamp + log_entry if include_timestamp else "\t" + log_entry)
-				_f.store_line(_s) 
-				GoLogger.current_game_char_count = _s.length()
-				_f.close()
+				if !_fw:
+					var err = FileAccess.get_open_error()
+					if err != OK: push_warning("GoLogger ", get_err_string(err))
+				var _s : String = str(_c, "\t" + _timestamp + log_entry)
+				_fw.store_line(_s)
+				if _s.length() >= GoLogger.session_character_limit:
+					match GoLogger.end_session_behavior:
+						0: # Stop & Start
+							stop_session()
+							start_session()
+							print("Starting session in 'Log.gd' under the 'entry()' because end_session_behavior dictates to start anew.")
+						1: stop_session() # Stop only
+						2: _fw.store_line(str(_timestamp + " Cleared session:\n\t", _timestamp + log_entry)) # Clear log
+				_fw.close()
 
 
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [code]start_session()[/code]. Doing so will create a new file to log into.
@@ -199,14 +211,14 @@ static func stop_session( utc : bool = true, include_timestamp : bool = true) ->
 				var _err = FileAccess.get_open_error()
 				if _err != OK:
 					printerr("GoLogger Error: Attempting to stop session by reading file (", GoLogger.current_game_file, ") -> Error[", _err, "]")
-					return
+					push_warning
 			var _content := _f.get_as_text()
 			_f.close()
 			var _fw = FileAccess.open(GoLogger.current_game_file, FileAccess.WRITE)
 			if !_fw:
 				var _err = FileAccess.get_open_error()
 				if _err != OK and GoLogger.debug_warnings_errors:
-					printerr("GoLogger Error: Attempting to stop session by writing to file (", GoLogger.current_game_file, ") -> Error[", _err, "]")
+					push_warning("GoLogger Error: Attempting to stop session by writing to file (", GoLogger.current_game_file, ") -> Error[", _err, "]")
 					return
 			var _s := str(_content, _timestamp if include_timestamp else "Stopped log session.")
 			_fw.store_line(_s)
@@ -220,7 +232,7 @@ static func stop_session( utc : bool = true, include_timestamp : bool = true) ->
 			if !_f:
 				var _err = FileAccess.get_open_error()
 				if _err != OK and GoLogger.debug_warnings_errors:
-					printerr("GoLogger Error: Attempting to stop session by reading file (", GoLogger.current_player_file, ") -> Error[", _err, "]")
+					push_warning("GoLogger Error: Attempting to stop session by reading file (", GoLogger.current_player_file, ") -> Error[", _err, "]")
 					return
 			var _content := _f.get_as_text()
 			_f.close()
@@ -228,7 +240,7 @@ static func stop_session( utc : bool = true, include_timestamp : bool = true) ->
 			if !_fw and GoLogger.debug_warnings_errors:
 				var _err = FileAccess.get_open_error()
 				if _err != OK:
-					printerr("GoLogger Error: Attempting to stop session by writing to file (", GoLogger.current_player_file, ") -> Error[", _err, "]")
+					push_warning("GoLogger Error: Attempting to stop session by writing to file (", GoLogger.current_player_file, ") -> Error[", _err, "]")
 					return
 			var _s := str(_content, _timestamp if include_timestamp else "Stopped log session.")
 			_fw.store_line(_s)
