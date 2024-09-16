@@ -5,16 +5,16 @@ https://github.com/user-attachments/assets/f8b55481-cd32-4be3-9e06-df4368d1183c
 
 <br><br>
 ## Introduction
-Have you ever found yourself working on multiple new features or a large system involving numerous scripts, adding countless print statements to debug? This can clutter the output, making the information difficult to decipher and even harder to manage. Or perhaps you want your game to record events to help debug issues that your players encounter, especially when you can’t access their instance. In that case, creating a logging system to record game events into external files could provide helpful a snapshot of the events leading up to a bug or crash.
+Have you ever found yourself working on multiple new features or a large system involving numerous scripts, adding countless print statements to debug? This can clutter the output, making the information difficult to decipher and even harder to manage. Or perhaps you want your game to record events to help debug issues that your players may encounter. In that case, having a logging system in the background to record game events into external files could provide helpful a snapshot of the events leading up to a bug or crash that users can access and share.
 
-This plugin is a basic logging system designed to serve as a foundation for you to build upon. As such, it is intentionally minimalistic, making it flexible and scalable. The plugin logs any game event or data(that can be converted into a string) to a .log file. However, simply installing this plugin won’t instantly and automatically generate log entries once installed. on the plus side, adding these log entries to your code is almost as simply as writing a print() statement:
+GoLogger was designed as a foundation for you to build upon. As such, it is intentionally minimalistic, making it flexible and scalable. Log entries can contain any message and data(as long as it can be converted into a string). However, simply installing this plugin won’t automatically generate log entries out of the bo, but adding these log entries to your code is as easy as writing a print() statement:
 	
  	Log.entry(0, "Your log entry message.")	# Result: [2024-04-04 14:04:44] Your log entry message.
 
 **Note: This system is only as comprehensive and detailed as you make it.** But it also works as a simple standalone logging system as is.<br><br><br>
 
 ## .log files
-GoLogger will create and add logs to three .log files, named 'game.log', 'ui.log' and 'player.log'. Modifying the plugin to use different file names is a simple process and steps are detailed in Modify paragraph of the "How to Use" section. The .log files are located in the User Data folder can be accessed through `Project > Open User Data Folder` and opening the `logs` folder. This folder location is different on every OS. Because they are stored externally from the project, your players/users can access these logs file and can include them when making bug reports to the developer(you).
+GoLogger will create and add logs to three .log files, named 'game.log', 'ui.log' and 'player.log'. Modifying the plugin to use different file names is a simple process and steps are detailed in Modify paragraph of the "How to Use" section. The .log files are located in the User Data folder can be accessed through `Project > Open User Data Folder` and opening the `logs` folder. This folder location is different on every OS.
 
 ## Installation and setup:
 GoLogger requires an autoload to manage a signal and a few variables due to the nature of the static functions we use to be able to call them from anywhere in this way. When installing the plugin, an autoload "GoLogger.gd" is included and added to your autoloads automatically. GoLogger contains just 8 lines of code which can just as easily be incorporated into one of your existing autoload scripts. Therefore, it is **HIGHLY** recommended to do just that, and steps on how to do that is provided in the "Additional Setup".
