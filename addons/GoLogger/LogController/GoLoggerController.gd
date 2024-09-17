@@ -24,15 +24,10 @@ class_name GoLoggerController
 
 # TODO: Add a "get_viewport_width() and height and add an export enum to say "position"
 
-@export var session_time : float = 120.0:
-	set(new):
-		await get_tree().process_frame
-		session_time = new
-		GoLogger.session_time = session_time
 
 func _input(event: InputEvent) -> void:
-	if InputMap.has_action("gologger_controller_toggle"):
-		if event.is_action_released("gologger_controller_toggle"):
+	if event is InputEventKey and event.keycode == KEY_F9: # Change keybind to toggle controller here
+		if event.is_released():
 			if visible: hide()
 			else: show()
 
@@ -46,11 +41,14 @@ func _ready() -> void:
 	update_timer.timeout.connect(_on_update_timer_timeout)
 	#endregion
 	
+	if GoLogger.hide_contoller_on_start: hide()
+	else: show()
 	await get_tree().process_frame
 	session_timer_pgb.min_value = 0
 	session_timer_pgb.max_value = GoLogger.session_timer_wait_time
 	session_timer_pgb.step = GoLogger.session_timer_wait_time / GoLogger.session_timer_wait_time 
-	await get_tree().process_frame # GoLogger autoload is initialized after this node -> Thus, await one physics frame
+	# GoLogger autoload is initialized after this node -> Thus, await one physics frame. Can also use the "ready" signal.
+	await get_tree().process_frame 
 	GoLogger.session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer_pgb.modulate = Color.BLACK if GoLogger.session_timer.is_stopped() else Color.FOREST_GREEN
 	character_title_label.text = str("[center][font_size=14]Character Counts:
@@ -58,39 +56,39 @@ func _ready() -> void:
 	game_count_label.text = str("[center][font_size=12] GameLog:
 ", GoLogger.current_game_char_count)
 	player_count_label.text = str("[center][font_size=12] PlayerLog:
-1000", GoLogger.current_player_char_count)
+", GoLogger.current_player_char_count)
 
 
 ## Signal receiver when Game Session CheckButton is toggled.
 func _on_session_button_toggled(toggled_on : bool) -> void:
-	Log.stop_session() if !toggled_on else Log.start_session() # this is called during initialization. I need to disable it for the _ready() part and enable it after somehow. 
-	# Prevent the creation of conflicting file names with the same timestamp 
+	Log.stop_session() if !toggled_on else Log.start_session() 
+	# Prevent the creation of conflicting file names with the same timestamp, resulting in additional numbers which caused issues in my testing.
 	session_button.disabled = true
 	await get_tree().create_timer(1.2).timeout 
 	session_button.disabled = false 
-	
+
 
 ## Received signal from [GoLogger] when session status is changed. 
 func _on_session_status_changed() -> void:
 	session_button.button_pressed = GoLogger.session_status
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if GoLogger.session_status else str("[center][font_size=18] Session status:
-[center][color=red]OFF")
-	if !session_button.toggled.is_connected(_on_session_button_toggled): # Connect signal after setting the initial state(if auto
+			[center][color=red]OFF")
+	# Connect signal after setting the initial state(if autostart is on)
+	if !session_button.toggled.is_connected(_on_session_button_toggled): 
 		session_button.toggled.connect(_on_session_button_toggled)
-	
 
 
-## Starts value time to update [ProgressBar] when session timer is started.
+## Signal receiver: Starts value time to update [ProgressBar] when session timer is started.
 func _on_session_timer_started() -> void:
 	update_timer.start()
 	session_timer_pgb.modulate = Color.FOREST_GREEN
-## Updates [ProgressBar] modulate depending on session status.
+## Signal receiver: Updates [ProgressBar] modulate depending on session status.
 func _on_session_timer_timeout() -> void:
 	session_timer_pgb.modulate = Color.BLACK
 
 
-## Updates all values on the controller every 0.5(by default). To change this, alter the wait time on [param InfoUpdateTimer].
+## Signal receiver: Updates all values on the controller every 0.5 by default. This can be changed with the [param session_timer_wait_time] in [GoLogger].
 func _on_update_timer_timeout() -> void:
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if GoLogger.session_status else str("[center][font_size=18] Session status:
@@ -115,7 +113,7 @@ func _on_update_timer_timeout() -> void:
 [color=light_blue]", snappedi(GoLogger.session_timer.get_time_left(), 1) )
 
 
-## Prints the current/latest log contents to 'Output'.
+## Signal receiver: Prints the current/latest log contents to 'Output'.
 func _on_print_button_up(button : Button) -> void:
 	match button.get_name():
 		"PrintGameLogButton": print(Log.get_file_contents(Log.GAME_PATH))

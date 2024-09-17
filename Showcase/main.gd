@@ -18,19 +18,6 @@ func _ready() -> void:
 			c.button_up.connect(_on_entry_sim_button_up.bind(c))
 	set_log_text()
 
-## Returns the last log in a directory. Call using the paths specified in [Log]. Example usage: [code]FileAccess.open(get_last_log(Log.GAME_PATH), FileAccess.READ[/code]
-func get_last_log(path) -> String:
-	var _dir = DirAccess.open(path) 
-	if !_dir:
-		var _err = DirAccess.get_open_error()
-		if _err != OK:
-			printerr("Showcase Error: Attempting to open directory (", path, ") to find .log -> Error[", _err, "]")
-			return ""
-	else: 
-		var _files = _dir.get_files()
-		return str(path + _files[_files.size() -1]) if _files.size() > 0 else ""
-	return ""
-
 
 func set_log_text() -> void:
 	if GoLogger.current_game_file != "":
@@ -62,7 +49,7 @@ func set_log_text() -> void:
 	if playerlog.size > gamelog.size: gamelog.size = playerlog.size
 
 
-## Receives signal from [GoLogger] whenever a status is changed.
+## Signal receiver: Updates log labels  whenever a status is changed.
 func _on_session_status_changed() -> void:
 	set_log_text()
 
@@ -78,20 +65,19 @@ func _on_entry_sim_button_up(btn : Button):
 	var items : Array[String] = ["Pipe", "Handgun", "Gunpowder", "Uncased Bullets"]
 	match btn.get_name():
 		"Pickup":
-			Log.entry(1, str("Picked up ", items[rng.randi_range(0, items.size() -1)], " x", rng.randi_range(1, 6), "."))
+			Log.entry(str("Picked up ", items[rng.randi_range(0, items.size() -1)], " x", rng.randi_range(1, 6), "."), 1)
 		"Combine": 
-			Log.entry(1, str("Combined ItemA[Gunpowder] and itemB[Uncased Bullets] to create item[Handgun Ammo] x", rng.randi_range(1, 6), "."))
+			Log.entry(str("Combined ItemA[Gunpowder] and itemB[Uncased Bullets] to create item[Handgun Ammo] x", rng.randi_range(1, 6), "."), 1)
 		"Discard": 
-			Log.entry(1, str("Discarded [", items[rng.randi_range(0, items.size() -1)], "] x", randi_range(1, 6), "."))
+			Log.entry(str("Discarded [", items[rng.randi_range(0, items.size() -1)], "] x", randi_range(1, 6), "."), 1)
 		"Death": 
-			Log.entry(1, "Player died")
+			Log.entry("Player died", 1 )
 		"Respawn": 
-			Log.entry(1, str("Player respawned @", Vector2(randi_range(0, 512), randi_range(0, 512)), "."))
+			Log.entry(str("Player respawned @", Vector2(randi_range(0, 512), randi_range(0, 512)), "."), 1)
 		"Load":
-			Log.entry(0, str("Loaded GameSave#1 on Slot#", randi_range(1, 3), "."))
+			Log.entry(str("Loaded GameSave#1 on Slot#", randi_range(1, 3), "."), 1)
 		"Save": 
-			Log.entry(0, str("Saved GameSave#1 on Slot#", randi_range(1, 3), "."))
+			Log.entry(str("Saved GameSave#1 on Slot#", randi_range(1, 3), "."), 1)
 		"Exit": 
-			Log.entry(0, "Exited game.")
-		
+			Log.entry("Exited game.", 1)
 	set_log_text()
