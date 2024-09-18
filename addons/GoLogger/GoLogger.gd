@@ -11,8 +11,7 @@ signal toggle_session_status(status : bool) ## Emitted at the end of [code]Log.s
 signal session_status_changed ## Emitted when session status is changed. Use to signal your other scripts that the session is active. 
 signal session_timer_started ## Emitted when the [param session_timer] is started.
 var project_name : String ## Name of your project/game. Found in "Project Settings > Application > Config > Name"
-var project_version : String ## Version of your project. If left empty, it will default to 1.0.0. Found in "Project Settings > Application > Config > Version".
-@export var disable_welcome_message : bool = false ## Disables the GoLogger welcome message. You can also go into the "plugin.gd" and comment out the message to completely remove it.
+var project_version : String ## Version of your project. Found in "Project Settings > Application > Config > Version".
 @export var disable_errors : bool = true ## Enables/disables all debug warnings and errors
 @export var include_name_and_version : bool = true ## Includes the project version at the top of the log file as defined in "Project Settings > Application > Config > Version"
 @export var hide_contoller_on_start : bool = false
@@ -44,6 +43,8 @@ var current_player_file : String = "" ## .log file associated with the current s
 
 func _ready() -> void:
 	toggle_session_status.connect(_on_toggle_session_status)
+	project_name = ProjectSettings.get_setting("application/config/name")
+	project_version = ProjectSettings.get_setting("application/config/version")
 	if autostart_session:
 		print("Starting session using 'start_session()' in GoLogger _ready()")
 		Log.start_session()
