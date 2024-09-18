@@ -27,7 +27,13 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 			if !GoLogger.disable_errors: push_warning("GoLogger Warning: Attempted to start new Game log session before stopping the previous.")
 			return
 		else:
-			var _dir = DirAccess.open(GAME_PATH)
+			# TODO Need to use "DirAcces.make_dir_recursive()" to create the directory. 
+			
+			
+			var _dir : DirAccess
+			if !DirAccess.dir_exists_absolute(GAME_PATH):
+				DirAccess.make_dir_recursive_absolute(GAME_PATH)
+			_dir = DirAccess.open(GAME_PATH)
 			if !_dir and !GoLogger.disable_errors:
 				var _err = DirAccess.get_open_error()
 				if _err != OK and !GoLogger.disable_errors:
@@ -62,7 +68,10 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 			if !GoLogger.disable_errors: push_warning("GoLogger Warning: Attempted to start new Player log session before stopping the previous.")
 			return
 		else:
-			var _dir = DirAccess.open(PLAYER_PATH)
+			var _dir : DirAccess
+			if !DirAccess.dir_exists_absolute(PLAYER_PATH): # Directory doesn't exist
+				DirAccess.make_dir_recursive_absolute(PLAYER_PATH) # Create it
+			_dir = DirAccess.open(PLAYER_PATH) # Open the directory
 			if !_dir and !GoLogger.disable_errors:
 				var _err = DirAccess.get_open_error()
 				if _err != OK and !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to open file directory (", PLAYER_PATH, ")") 
