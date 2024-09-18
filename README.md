@@ -9,10 +9,20 @@ Have you ever found yourself working on multiple new features or a large system 
 
 GoLogger was designed as a foundation for you to build upon. As such, it is intentionally minimalistic, making it flexible and scalable. Log entries can contain any message and data(as long as it can be converted into a string). However, simply installing this plugin won’t automatically generate log entries out of the bo, but adding these log entries to your code is as easy as writing a print() statement:
 	
- 	Log.entry("Your log entry message.", 0)	# Result: [2024-04-04 14:44:44] Your log entry message.
+ 	Log.entry("Your log entry message.", 0)	# Result: [14:44:44] Your log entry message.
 
 **Note: This system is only as comprehensive and detailed as you make it.** But it also works as a simple standalone logging system as is.<br><br><br>
 
+## Installation and setup:
+**Godot will print a bunch of errors when first installing the plugin!** GoLogger requires an autoload to work which isn't added until you enabled the plugin. There's only a few steps to install the plugin correctly.
+* Download the plugin from either [GitHub](https://github.com/Burloe/GoLogger) or the Asset Library. If you download the .zip from GitHub, extract **the "addons" folder only** into any folder in your PC, then place the extracted "addons" folder into your project's root directory. The folder structure should look like `res://addons/GoLogger`. 
+* Ignore the "Parse Error: Identifier "GoLogger" not declared" warnings and navigate to `Project > Project Settings > Plugins`, where you should see "GoLogger" as an unchecked entry in the list of available plugins. Check it to activate the plugin.
+* Enabling the plugin will add the "GoLogger" autoload, but make sure it was indeed properly added by going to `Project > Project Settings > Globals > Autoload`. If not, you can manually add it by clicking the folder icon, locating **"GoLogger.tscn"** and clicking on "Add"
+Done but there are some additional steps that are optional
+* *Optional but recommended:* Add `Log.stop_session()` in whatever function that calls `get_tree().quit()` and put it above the quit() call. Frankly, this is purely for the aesthetics, closing your game without stopping won't break the plugin.
+* *Optional:* The autoload "GoLogger.tscn" has the option to enable "autostart session". This will start the session in the _ready() method and works well. Disabling it means you have to use the GoLoggerController to manually start the session, or you need to add some way to call `start_session()` in your code.<br><br><br>
+
+## **How it works:**
 ### .log files:
 GoLogger will create and manage up to three .log files by default(limit can be changed) for two category of logs, named 'game.log' and 'player.log'. Two file categories was included to showcase how and what's required to add additional files. Modifying the plugin to have more or less files or use different file names is a simple process and steps are detailed in "Modifying the log names, adding or removing the number of logs" paragraph of the "How to Use" section. Note that the "game" and "player" logs are just suggestions of names and a way to categorize/separate logs into multiple files. If you just want to consolidate all logs into one file, you don't need to change anything. Calling `Log.entry("Your log entry here", 0)` and only using 0 as the second param will always log into "game.log" file, effectively achieving the same result.
 
@@ -29,17 +39,6 @@ There's one potential problem one should be mindful of when loading and storing 
 **Session Timer:** A timer is started in tandem with the session. Upon timeout, the session will stop and restart by default. The action taken upon timeout can be changed with `session_timeout_action` which allows you to either stop and start a session or just stop. Note that the session needs to be started manually using the GoLoggerController or if you've added some option yourself. 
 
 You can choose to use Entry count limit, Session Timer, both or none using `log_manage_method`. It is **Highly Recommended** that you use one or both of these options, especially if you intend on using GoLogger in your released product. Objectively speaking, Entry Count Limit is the better solution and should be used. However, Session Timer has uses for other purposes. If you want to stress test a certain feature during a specific time, only logging entries during a set time can be helpful. Regardless. If you experience performance issue and suspect GoLogger to be the cause. Consider using one or both of these options. <br><br><br> 
-
-## Installation and setup:
-GoLogger requires an autoload to manage a signal and a few variables since static functions can't use variables otherwise, which the plugin adds automatically upon installation. However, this isn't always a reliable process and therefore **it is crucial that you ensure the "GoLogger.tscn" was added properly for the plugin to work.**
-
-### **Installation:**
-* Download the plugin from either GitHub(!https://github.com/Burloe/GoLogger) or the Asset Library. If you download the .zip from GitHub, extract **only** the "addons" folder to any folder in your PC, then place the extracted "addons" folder into your project's root directory. The folder structure should look like `res://addons/GoLogger`. 
-* Navigate to `Project > Project Settings > Plugins`, where you should see "GoLogger" as an unchecked entry in the list of installed plugins. Check it to activate the plugin.
-* Go to `Project > Project Settings > Globals > Autoload` and ensure that the GoLogger autoload has been added correctly. If not, you can manually add it by clicking the folder icon, locating GoLogger.gd, and restarting Godot.
-* *Optional but recommended:* Add `Log.stop_session()` in whatever function that triggers your game to close with `get_tree().quit()`. Frankly, this is purely for the aesthetics, closing without stopping won't break the plugin.
-* *Optional:* The autoload "GoLogger.tscn" has the option to enable "autostart session". This will start the session in the _ready() method and works well. Disabling it means you have to use the GoLoggerController to manually start the session, or you need to add some way to call `start_session()` in your code.<br><br><br>
-
 
 
 ## How to use GoLogger:<br>
@@ -67,33 +66,23 @@ Only the first parameter mandatory and needs to be defined when calling the func
 3. `include_timestamp` - *Optional* -  Flags whether to include time or not. Log entries are always added sequentially so timestamps just helps you to measure the time between events.
 4. `utc` - *Optional* -  UTC is the standardized date and time format used. Using false, the timestamp will adhere to the users local time format. [More info can be found in the doc page.](https://docs.godotengine.org/en/stable/classes/class_time.html#class-time-method-get-time-string-from-system)
 
-You can call function this from any script in your project. The string message can contain almost any data, but you may need to convert that data into a string format using str(). Godot allows you to format the strings in many ways. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) <br><br><br>
+You can call function this from any script in your project. The string message can contain almost any data, but you may need to convert that data into a string format using str(). Godot allows you to format the strings in many ways. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) <br><br>
 
 
 ### **Modifying log names, adding or removing the number of log files:**
 A game.log and player.log file are created upon running your project the first time. Every time a session is stopped and started, a new file is created. Using the file cap option, its possible to prevent the number of files in the directories at any one time. It's recommended to keep this at around the 1-6 range.
 Changing the name of the files and directories are not hard but can be tedious which is why I plan on making a tutorial on the subject(either text based or video). The "player.log" file was added to showcase how and what is required to add more files and directories. **Be aware** that changing the files will certainly break the controller and will require code and scene changes to accommodate your changes. There are however helper functions to make this process easier. 
- <br><br><br>
+ <br><br>
 
 ### **How can I save a specific .log file from being deleted:**
-If you encountered an issue and need to keep the .log file from being deleted is very simple. Just create a copy and/or move the file out of the original folder.
+If you encountered an issue and need to keep the .log file from being deleted is very simple. Just create a copy and/or move the file out of the original folder.<br><br>
 
 ### **Questions regarding the plugin, it's use or installation:**
-Questions can be submitted to the GitHub repo. Click the issue tab and 'New issue', then select "Question About GoLogger" to submit any questions you might have.
+Questions can be submitted to the GitHub repo. Click the issue tab and 'New issue', then select "Question About GoLogger" to submit any questions you might have.<br><br>
 
 ## **Future development:**
 GoLogger will be updated to the latest version of Godot. Currently, it supports version 4.0 and above. 
-Currently, all the planned features have been added to the plugin. While it could be further improved and have added customization and formatting. That's beyond the scope of the plugin and the hopes are that people using it will improve and add their own customization as they need it. Feature requests are accepted and will always be considered but if a request comes in that doesn't aligns with this "vision" of the plugin, it will most likely not be added. 
+Currently, all the planned features have been added to the plugin. While it could be further improved and have added customization and formatting. That's beyond the scope of the plugin and the hopes are that people using it will improve and add their own customization as they need it. Feature requests are accepted and will always be considered but if a request comes in that doesn't aligns with this "vision" of the plugin, it will most likely not be added. <br><br><br>
 
 ## **Credit and permissions**
-This is a completely free plugin. No monetary contributions are accepted and no credit is necessary. This was made to be customized by the user to fit your projects, be expanded and improved. You are not required to ask for permission or credit the author or the plugin to use it in your commercial or non-commercial product.
-
-
-
-## Examples:
-Here are some examples I use in my code for my save system and inventory.
-![SaveSystem](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example1.png)
-![Inventory1](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example2.png)
-![Inventory2](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example3.png)
-![Log file contents](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example4.png)
- 
+This is a completely free plugin. No monetary contributions are accepted and no credit is necessary. This plugin was designed to be customized by the you to fit your projects, be expanded and improved. You are not required to ask for permission or credit the author or the plugin to use it in your commercial or non-commercial product. 
