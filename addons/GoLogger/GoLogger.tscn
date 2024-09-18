@@ -12,8 +12,6 @@ offset_right = 120.0
 offset_bottom = 120.0
 script = ExtResource("1_am1mu")
 autostart_session = true
-end_session_condition = 3
-session_timer_wait_time = 10.0
 
 [node name="SessionTimer" type="Timer" parent="."]
 wait_time = 0.5

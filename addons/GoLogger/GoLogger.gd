@@ -10,38 +10,53 @@ extends Node
 signal toggle_session_status(status : bool) ## Emitted at the end of [code]Log.start_session()[/code] and [code]Log.end_session[/code]. This signal is responsible for turning sessions on and off.
 signal session_status_changed ## Emitted when session status is changed. Use to signal your other scripts that the session is active. 
 signal session_timer_started ## Emitted when the [param session_timer] is started.
+var project_name : String ## Name of your project/game. Found in "Project Settings > Application > Config > Name"
+var project_version : String ## Version of your project. If left empty, it will default to 1.0.0. Found in "Project Settings > Application > Config > Version".
 @export var disable_welcome_message : bool = false ## Disables the GoLogger welcome message. You can also go into the "plugin.gd" and comment out the message to completely remove it.
 @export var disable_errors : bool = true ## Enables/disables all debug warnings and errors
+@export var include_name_and_version : bool = true ## Includes the project version at the top of the log file as defined in "Project Settings > Application > Config > Version"
 @export var hide_contoller_on_start : bool = false
 @export var autostart_session : bool = false ## Starts the session in the '_ready()' function of GoLogger.gd.
 @export var file_cap = 3 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
-@export var session_status: bool = false ## Flags whether a log session is in progress or not, only meant to be a visual hint to see if the session is started or not. [br][b]NOT RECOMMENDED TO BE USED TO START AND RESTART SESSIONS![/b]
+@export var session_status: bool = false ## Flags whether a log session is in active or not, only meant to hint to see session status in inspector. [br][b]NOT RECOMMENDED TO BE USED TO START AND STOP SESSIONS![/b]
 
-@export_group("Session Limit & Timer")
+@export_group("Log Management") 
+## Denotes the method of log management used to prevent long and large .log files. Prevents potential performance issues(see "Preventing too large .log files" in the README for more info).[br]
+## [b]1. Line Limit:[/b] Checks the number of lines(log entries) in the file when logging a new entry. If line count exceeds [param line_count_limit], the oldest line in file is removed to make room for the new line.[br]
+## [b]2. Session Timer:[/b] Whenever a session is started, the [param session_timer] is started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], the session is stopped and depending on the [param session_timeout_action]. It will either start a new session(creating a new .log file), stop the session only(requires manual restart) or clear the current log of it's contents and continue to log in the same file.[br]
+## [b]3. Both Line Count Limit and Session Timer:[/b] Uses both of the above methods.[br]
+## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended, particularly so if you intend to ship your game with this plugin.
+@export_enum("Line Count Limit", "Session Timer", "Both Line Limit & Session Timer", "None") var log_manage_method : int = 0
+@export var line_count_limit: int = 150 ## The log entry count(or line count) limit allowed in the .log file. If line count exceeds this number, the oldest line is removed before adding the new.
+## [b]Stop & start new session:[/b] Stops the current session and starting a new one. Creates a new .log file to continue log into.[br][b]Stop session only:[/b] Stops the current session without starting a new one. Note that this requires a manual restart which can be done in the Controller, or if you've implemented your own way of starting it.[br][b]Clear current log:[/b] Clears the current .log file of it's previous log entries and continues to log into the same file. 
+@export_enum("Stop & start new session", "Stop session only", "Clear current log") var session_timeout_action : int = 0
+
+
+
 @onready var session_timer: Timer = $SessionTimer ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
 ## Denotes the condition which trigger(s) stop a session. This is to prevent possible performance issues when adding entries to logs. See README/GitHub, section "Potential Performance Issues" for more information.[br][br]
 ## [b]None:[/b] No automatic session managing. Logging session will continue until manually stopped or until your game is stopped.[br]
 ## [b]Character Limit:[/b] Session is stopped when the character count exceeds the [param session_character_limit].[br]
 ## [b]Session Timer:[/b] a [Timer] is started whenever a session is, and when [signal timeout] is emitted. The session is stopped.[br]
 ## [i]Note:[br]    This only determines the condition and should be used in tandem with [param end_session_action] to decide what happens once the condition is fulfilled. 
-@export_enum("None", "Character Limit", "Session Timer", "Limit + Timer") var end_session_condition : int = 0
+@export_enum("None", "Character Limit", "Session Timer", "Limit + Timer") var end_session_condition : int = 0 ## Deprecated 
 
 ## Determines the behavior once the [param end_session_condition] is triggered. This is to prevent possible performance issues when adding entries to logs. See README/GitHub, section "Potential Performance Issues " for more information.[br][br]
 ## [b]Stop & Start new session:[/b] Stops the session and immidietly starts a new one, logging into a newly generated file.[br]
 ## [b]Stop session only:[/b] Stops the current session but doesn't start a new one. Effectively stopping logging until manually started again(or if you've built your own custom [code]start_session()[/code] trigger).[br]
 ## [b]Clear Log(destructive):[/b] Doesn't stop the current session and instead purges the .log contents and continues to log on the same session and .log file. 
-@export_enum("Stop + Start new session", "Stop session only", "Clear log") var end_session_action : int = 0
+@export_enum("Stop + Start new session", "Stop session only", "Clear log") var end_session_action : int = 0 ## Deprecated 
 
 ## Character limit used if [param end_session_condition] is set to "Character Limit" or "Both Limit + Timer".
-@export var session_character_limit : int = 50000
+@export var session_character_limit : int = 50000 ## Deprecated 
 ## Sets enables autostanrt of session [Timer].
 ## Default length of time for a session when [param Session Timer] is enabled
-@export var session_timer_wait_time : float = 120.0:
+@export var session_timer_wait_time : float = 120.0: 
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
-@onready var current_game_char_count : int = 0 ## Current character count in the game.log.
-@onready var current_player_char_count : int = 0 ## Current character count in the player.log.
+@onready var current_game_char_count : int = 0 ## Current character count in the game.log. ## Deprecated 
+@onready var current_player_char_count : int = 0 ## Current character count in the player.log. ## Deprecated 
 var current_game_file : String = "" ## .log file associated with the current session
 var current_player_file : String = "" ## .log file associated with the current session
 #endregion

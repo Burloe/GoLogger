@@ -45,7 +45,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 				if !_file:
 					if GoLogger.disable_errors: push_warning("GoLogger Error: Failed to create log file (", GoLogger.current_game_file, ").")
 				else:
-					var _s := str( "Game Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
+					var _s := str(GoLogger.project_name, " Version ", GoLogger.project_version, " - Game Log Session Started [", Time.get_datetime_string_from_system(utc, space), "]:") if GoLogger.include_name_and_version else str( "Game Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
 					_file.store_line(_s)
 					GoLogger.current_game_char_count = _s.length()
 					_file.close() 
@@ -100,20 +100,24 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 					var err = FileAccess.get_open_error()
 					if err != OK: push_warning("GoLogger ", get_err_string(err))
 				var _c = _f.get_as_text()
+				var lines = []
+				while not _f.eof_reached():
+					var line = _f.get_line().strip_edges(false, true) 
+					if line != "": 
+						lines.append(line) 
 				_f.close()
+				if lines.size() >= GoLogger.line_count_limit:
+					lines.remove_at(1) 
 				var _fw = FileAccess.open(GoLogger.current_game_file, FileAccess.WRITE)
 				if !_fw:
 					var err = FileAccess.get_open_error()
 					if err != OK: push_warning("GoLogger ", get_err_string(err))
-				var _s : String = str(_c, "\t" + _timestamp + log_entry)
-				_fw.store_line(_s)
-				if _s.length() >= GoLogger.session_character_limit:
-					match GoLogger.end_session_action:
-						0: # Stop & Start
-							stop_session()
-							start_session() 
-						1: stop_session() # Stop only
-						2: _fw.store_line(str(_timestamp + " Cleared session:\n\t", _timestamp + log_entry)) # Clear log
+				var _s : String = str("\t" + _timestamp + log_entry)
+				if GoLogger.log_manage_method == 0 or GoLogger.log_manage_method == 2:
+					lines.append(_s) 
+					for line in lines: 
+						_fw.store_line(line)
+				else: _fw.store_line(str(_c, _s))  
 				_fw.close()
 		
 		1: # PLAYER
@@ -126,21 +130,24 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 					var err = FileAccess.get_open_error()
 					if err != OK: push_warning("GoLogger ", get_err_string(err))
 				var _c = _f.get_as_text()
+				var lines = []
+				while not _f.eof_reached():
+					var line = _f.get_line().strip_edges(false, true) 
+					if line != "": 
+						lines.append(line) 
 				_f.close()
+				if lines.size() >= GoLogger.line_count_limit:
+					lines.remove_at(1) 
 				var _fw = FileAccess.open(GoLogger.current_player_file, FileAccess.WRITE)
 				if !_fw:
 					var err = FileAccess.get_open_error()
 					if err != OK: push_warning("GoLogger ", get_err_string(err))
-				var _s : String = str(_c, "\t" + _timestamp + log_entry)
-				_fw.store_line(_s)
-				if _s.length() >= GoLogger.session_character_limit:
-					match GoLogger.end_session_action:
-						0: # Stop & Start
-							stop_session()
-							start_session()
-							print("Starting session in 'Log.gd' under the 'entry()' because end_session_action dictates to start anew.")
-						1: stop_session() # Stop only
-						2: _fw.store_line(str(_timestamp + " Cleared session:\n\t", _timestamp + log_entry)) # Clear log
+				var _s : String = str("\t" + _timestamp + log_entry)
+				if GoLogger.log_manage_method == 0 or GoLogger.log_manage_method == 2:
+					lines.append(_s) 
+					for line in lines: 
+						_fw.store_line(line)
+				else: _fw.store_line(str(_c, _s))  
 				_fw.close()
 
 
@@ -192,32 +199,6 @@ static func stop_session( utc : bool = true, include_timestamp : bool = true) ->
 			GoLogger.current_player_file = ""
 	GoLogger.toggle_session_status.emit(false)
 	GoLogger.session_status_changed.emit()
-
-
-func log_event(log_file_path: String, new_entry: String, max_lines: int) -> void:
-	var file_access = FileAccess.open(log_file_path, FileAccess.READ_WRITE)
-	
-	# Check if the file exists and has content
-	var lines = []
-	if file_access:
-		while not file_access.eof_reached():
-			lines.append(file_access.get_line())
-		file_access.close()
-
-	# Remove the last entry if it exceeds max_lines
-	if lines.size() >= max_lines:
-		lines.pop_back()
-
-	# Add the new entry
-	lines.append(new_entry)
-
-	# Rewrite the log file with updated content
-	file_access = FileAccess.open(log_file_path, FileAccess.WRITE)  # This truncates the file
-	for line in lines:
-		file_access.store_line(line)
-
-	file_access.close()
-
 
 
 ## Helper function to get an error string for likely [DirAccess] and [FileAccess] errors.
