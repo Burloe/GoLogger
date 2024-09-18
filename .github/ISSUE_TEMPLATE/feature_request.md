@@ -1,20 +1,17 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
-title: ''
+about: Suggest an idea or propose a feature for GoLogger
+title: Feature Request
 labels: ''
-assignees: ''
+assignees: Burloe
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**Does your feature request involve a current feature?**
+Describe what's missing in the current feature. Use N/A if not.
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**Does your feature request propose a completely new feature?**
+Please describe what your feature would like to see included in GoLogger.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**Is your feature request related to a bug or issue with the current version of GoLogger?**
+Please describe in detail what issue you're experiencing and how your proposition would solve this issue. Please include screenshots.
