@@ -1,0 +1,25 @@
+name: Feature request for GoLogger
+description: Create a feature request to help improve GoLogger
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please note that GoLogger was made to be fairly basic and not packed with features so that it would be easily slotted into any project and quickly get a logging system up and running. As such, only required features were added and kept intentionally basic.
+
+  - type: textarea
+    attributes:
+      label: Your feature proposal for GoLogger
+      description: |
+        Detail your proposal and how it would improve GoLogger for everyone. Please provide screenshots and/or mockups if possible.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the issue your proposal would solve.
+      description: |
+        Please describe your issue in detail and provide code or screenshots if applicable.
+    validations:
+      placeholder: Describe in detail the issue, why it's a hinderance for you and how your proposal would solve this problem.
+      required: true
