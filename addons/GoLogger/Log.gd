@@ -91,7 +91,7 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 	match file:
 		0: # GAME
 			# 1.
-			if !GoLogger.session_status and !GoLogger.end_session_action == 2: 
+			if !GoLogger.session_status: 
 				if GoLogger.disable_errors: push_warning("GoLogger Warning: Attempted to log Game Entry without starting a session.")
 				return
 			else:
@@ -121,7 +121,7 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 				_fw.close()
 		
 		1: # PLAYER
-			if !GoLogger.session_status and !GoLogger.end_session_action == 2: # Error check
+			if !GoLogger.session_status: # Error check
 				if GoLogger.disable_errors: push_warning("GoLogger Warning: Log entry attempt failed due to inactive session.")
 				return
 			else:
