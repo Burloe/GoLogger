@@ -23,6 +23,10 @@ GoLogger="*res://addons/GoLogger/GoLogger.tscn"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/GoLogger/plugin.cfg")
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=3
