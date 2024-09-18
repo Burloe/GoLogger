@@ -25,7 +25,7 @@ The plugin comes with a "controller" which is why we autoload the scene rather t
 
 ## Managing .log file size:
 There's one potential problem one should be mindful of when loading and storing data. In order to write log entries into an external file, `FileAccess.open(file, FileAccess.WRITE)` is used which truncates the file every time. In short terms, first store the old entries before the file is truncated. Adding the old entries before adding the new entry. Meaning we load and unload potentially very large strings which are prone to performance issues if the file gets excessively long and may cause memory leaks. To combat this issue, two methods of managing the file size w added to GoLogger. <br>
-**Entry count limit:** *(Recommended)* In the Gologger inspector(and script), `entry count limit` sets the max number of lines allowed in any one file. When starting a new session, the log entries are added until they hit the limit. Afterwards, the oldest entry will be removed when adding a new one.
+**Entry count limit:** *(Recommended)* In the Gologger inspector(and script), `entry_count_limit` sets the max number of lines allowed in any one file. When starting a new session, the log entries are added until they hit the limit. Afterwards, the oldest entry will be removed when adding a new one.
 **Session Timer:** A timer is started in tandem with the session. Upon timeout, the session will stop and restart by default. The action taken upon timeout can be changed with `session_timeout_action` which allows you to either stop and start a session or just stop. Note that the session needs to be started manually using the GoLoggerController or if you've added some option yourself. 
 
 You can choose to use Entry count limit, Session Timer, both or none using `log_manage_method`. It is **Highly Recommended** that you use one or both of these options, especially if you intend on using GoLogger in your released product. Objectively speaking, Entry Count Limit is the better solution and should be used. However, Session Timer has uses for other purposes. If you want to stress test a certain feature during a specific time, only logging entries during a set time can be helpful. Regardless. If you experience performance issue and suspect GoLogger to be the cause. Consider using one or both of these options. <br><br><br> 
@@ -79,8 +79,13 @@ Changing the name of the files and directories are not hard but can be tedious w
 If you encountered an issue and need to keep the .log file from being deleted is very simple. Just create a copy and/or move the file out of the original folder.
 
 ## **Future development:**
-I will address bugs and issues as they come to my attention. Please report issues on GitHub if you encounter them. I will also update the plugin for the latest Godot Version.
-Currently, all features I had the goal of implementing has been added. The plugin was designed to be minimalistic intentionally in order for it to easily be slotted into any project. Adding major features to change this would be in conflict of this goal. I *currently* have no plans to add any major features or increase the scope, merely because I(personally) don't have the need for more features but that might change in the future(especially if people request features that are reasonable). 
+GoLogger will be updated to the latest version of Godot. Currently, it supports version 4.0 and above. 
+Currently, all the planned features have been added to the plugin. While it could be further improved and have added customization and formatting. That's beyond the scope of the plugin and the hopes are that people using it will improve and add their own customization as they need it. Feature requests are accepted and will always be considered but if a request comes in that doesn't aligns with this "vision" of the plugin, it will most likely not be added. 
+
+## **Credit and permissions**
+This is a completely free plugin. No monetary contributions are accepted and no credit is necessary. This was made to be customized by the user to fit your projects, be expanded and improved. You are not required to ask for permission or credit the author or the plugin to use it in your commercial or non-commercial product.
+
+
 
 ## Examples:
 Here are some examples I use in my code for my save system and inventory.
@@ -92,4 +97,5 @@ Here are some examples I use in my code for my save system and inventory.
 
 
 ### Future development of GoLogger:
-Currently, all the features I
+
+Of course, bugs and issues will be addressed and investigated. Bug and issue submitting is included in the GitHub repo. 
