@@ -78,6 +78,9 @@ Changing the name of the files and directories are not hard but can be tedious w
 ### **How can I save a specific .log file from being deleted:**
 If you encountered an issue and need to keep the .log file from being deleted is very simple. Just create a copy and/or move the file out of the original folder.
 
+### **Questions regarding the plugin, it's use or installation:**
+Questions can be submitted to the GitHub repo. Click the issue tab and 'New issue', then select "Question About GoLogger" to submit any questions you might have.
+
 ## **Future development:**
 GoLogger will be updated to the latest version of Godot. Currently, it supports version 4.0 and above. 
 Currently, all the planned features have been added to the plugin. While it could be further improved and have added customization and formatting. That's beyond the scope of the plugin and the hopes are that people using it will improve and add their own customization as they need it. Feature requests are accepted and will always be considered but if a request comes in that doesn't aligns with this "vision" of the plugin, it will most likely not be added. 
@@ -93,9 +96,4 @@ Here are some examples I use in my code for my save system and inventory.
 ![Inventory1](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example2.png)
 ![Inventory2](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example3.png)
 ![Log file contents](https://github.com/Burloe/GoLogger/blob/main/Showcase/Example4.png)
-
-
-
-### Future development of GoLogger:
-
-Of course, bugs and issues will be addressed and investigated. Bug and issue submitting is included in the GitHub repo. 
+ 
