@@ -1,43 +1,16 @@
-name: Bug Report
-description: Create a report to help improve GoLogger
+name: Question about GoLogger
+description: Have a question about GoLogger or have any issues getting it to work properly? 
 
 body:
   - type: markdown
     attributes:
       value: |
-        Please provide a detailed description of the bug you're experiencing and include screenshots if applicable.
+        Any questions about the basic functionality and features of GoLogger? Ask them here and I will do my best to answer you promptly.
 
   - type: textarea
     attributes:
-      label: Godot version and OS
+      label: Your GoLogger question
       description: |
-        You can find the version in the output section or through "Help > About Godot".
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Issue description
-      description: |
-        Please describe your issue in detail and provide code or screenshots if applicable.
-    validations:
-      placeholder: Describe your issue
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Expected behavior
-      description: |
-        Detail what you expected/wanted to achieve and how it failed if applicable.
-    validations:
-      placeholder: Describe the expected behavior
-      required: false
-
-  - type: textarea
-    attributes:
-      label: Steps to reproduce
-      description: |
-        List of steps or sample code that reproduces the issue. Having reproducible issues is a prerequisite for contributors to be able to solve them.
-        If you include a minimal reproduction project below, you can detail how to use it here.
+        Describe your question and provide screenshots if applicable.
     validations:
       required: true
