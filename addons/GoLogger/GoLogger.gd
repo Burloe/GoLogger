@@ -1,4 +1,4 @@
-@icon("res://addons/GoLogger/GoLogger.png")
+@icon("res://addons/GoLogger/GoLogger_v2.png")
 extends Node
 
 #region Documentation & variable declarations
@@ -10,12 +10,12 @@ extends Node
 signal toggle_session_status(status : bool) ## Emitted at the end of [code]Log.start_session()[/code] and [code]Log.end_session[/code]. This signal is responsible for turning sessions on and off.
 signal session_status_changed ## Emitted when session status is changed. Use to signal your other scripts that the session is active. 
 signal session_timer_started ## Emitted when the [param session_timer] is started.
-var project_name : String ## Name of your project/game. Found in "Project Settings > Application > Config > Name"
-var project_version : String ## Version of your project. Found in "Project Settings > Application > Config > Version".
+@export_enum("Project name & Project version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Denotes the type of header used in the .log file header. I.E. the string that says "Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:
+var header_string : String ## String that contains either project name, project version, both or none
 @export var disable_errors : bool = true ## Enables/disables all debug warnings and errors
 @export var include_name_and_version : bool = true ## Includes the project version at the top of the log file as defined in "Project Settings > Application > Config > Version"
 @export var hide_contoller_on_start : bool = false
-@export var autostart_session : bool = false ## Starts the session in the '_ready()' function of GoLogger.gd.
+@export var autostart_session : bool = true ## Starts the session in the '_ready()' function of GoLogger.gd.
 @export var file_cap = 3 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
 @export var session_status: bool = false ## Flags whether a log session is in active or not, only meant to hint to see session status in inspector. [br][b]NOT RECOMMENDED TO BE USED TO START AND STOP SESSIONS![/b]
 
@@ -45,8 +45,23 @@ var current_player_file : String = "" ## player.log file associated with the cur
 
 func _ready() -> void:
 	toggle_session_status.connect(_on_toggle_session_status)
-	project_name = ProjectSettings.get_setting("application/config/name") if ProjectSettings.get_setting("application/config/name") else ""
-	project_version = ProjectSettings.get_setting("application/config/version") if ProjectSettings.get_setting("application/config/version") else ""
+	match log_info_header:
+		0: # Project name + version
+			header_string = str(
+				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != null else "",
+				ProjectSettings.get_setting("application/config/version") + " " if ProjectSettings.get_setting("application/config/version") != null else ""
+			)
+		1: # Project name
+			header_string = str(
+				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != null else ""
+			)
+		2: # Project version
+			header_string = str(
+				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != null else ""
+			)
+		3: header_string = ""
+			
+	
 	if autostart_session:
 		print("Starting session using 'start_session()' in GoLogger _ready()")
 		Log.start_session()

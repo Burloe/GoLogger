@@ -53,7 +53,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 				if !_file:
 					if !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to create log file (", GoLogger.current_game_file, ").")
 				else:
-					var _s := str(GoLogger.project_name, " Version ", GoLogger.project_version, " - Game Log Session Started [", Time.get_datetime_string_from_system(utc, space), "]:") if GoLogger.include_name_and_version else str( "Game Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
+					var _s := str(GoLogger.header_string, "Game Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
 					_file.store_line(_s)
 					GoLogger.entry_count_game = 1
 					_file.close() 
@@ -89,7 +89,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 				if !_file:
 					if !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to create log file (", GoLogger.current_player_file, ").")
 				else:
-					var _s := str( "Player Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
+					var _s := str(GoLogger.header_string, "Player Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
 					_file.store_line(_s)
 					GoLogger.entry_count_player = 1
 					_file.close()

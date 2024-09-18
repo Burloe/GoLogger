@@ -8,7 +8,10 @@ custom_minimum_size = Vector2(210, 459)
 anchors_preset = -1
 anchor_right = 0.109
 anchor_bottom = 0.425
-offset_right = 0.719986
+offset_left = 320.0
+offset_top = 80.0
+offset_right = 320.72
+offset_bottom = 80.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sp6vx")
@@ -41,7 +44,6 @@ alignment = 1
 layout_mode = 2
 texture = ExtResource("2_u13a6")
 expand_mode = 3
-stretch_mode = 4
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/TitleHBOX"]
 layout_mode = 2
