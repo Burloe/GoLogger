@@ -8,5 +8,4 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
-	remove_autoload_singleton("GoLogger")
-	InputMap.erase_action("gologger_controller_toggle")
+	remove_autoload_singleton("GoLogger") 

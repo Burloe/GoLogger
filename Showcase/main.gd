@@ -24,7 +24,7 @@ func set_log_text() -> void:
 		var _g = FileAccess.open(GoLogger.current_game_file, FileAccess.READ)
 		if !_g:
 			var _err = FileAccess.get_open_error()
-			if _err != OK:
+			if _err != OK and !GoLogger.disable_errors:
 				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> Error [", _err, "]")
 		else:
 			var _gc = _g.get_as_text()
@@ -36,13 +36,14 @@ func set_log_text() -> void:
 		var _p = FileAccess.open(GoLogger.current_player_file, FileAccess.READ)
 		if !_p:
 			var _err = FileAccess.get_open_error()
-			if _err != OK:
+			if _err != OK and !GoLogger.disable_errors:
 				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> Error [", _err, "]")
 		else:
 			var _pc = _p.get_as_text()
 			playerlog.text = _pc
 		_p.close()
 	else: playerlog.text = "No active session."
+	
 	if gamelog.text.length() > playerlog.text.length():
 		playerlog.size = gamelog.size
 	if gamelog.size > playerlog.size: playerlog.size = gamelog.size
@@ -75,9 +76,11 @@ func _on_entry_sim_button_up(btn : Button):
 		"Respawn": 
 			Log.entry(str("Player respawned @", Vector2(randi_range(0, 512), randi_range(0, 512)), "."), 1)
 		"Load":
-			Log.entry(str("Loaded GameSave#1 on Slot#", randi_range(1, 3), "."), 1)
+			Log.entry(str("Loaded GameSave#1 on Slot#", randi_range(1, 3), "."), 0)
 		"Save": 
-			Log.entry(str("Saved GameSave#1 on Slot#", randi_range(1, 3), "."), 1)
+			Log.entry(str("Saved GameSave#1 on Slot#", randi_range(1, 3), "."), 0)
 		"Exit": 
-			Log.entry("Exited game.", 1)
+			Log.entry("Exited game.", 0)
+			Log.stop_session()
+			get_tree().quit()
 	set_log_text()

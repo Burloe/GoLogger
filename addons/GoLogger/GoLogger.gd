@@ -29,22 +29,24 @@ var project_version : String ## Version of your project. Found in "Project Setti
 @export_enum("Entry Count Limit", "Session Timer", "Both Entry Limit & Session Timer", "None") var log_manage_method : int = 0
 ## The log entry count(or line count) limit allowed in the .log file. If entry count exceeds this number, the oldest entry is removed before adding the new.
 ## [b]Stop & start new session:[/b] Stops the current session and starting a new one. Creates a new .log file to continue log into.[br][b]Stop session only:[/b] Stops the current session without starting a new one. Note that this requires a manual restart which can be done in the Controller, or if you've implemented your own way of starting it.[br][b]Clear current log:[/b] Clears the current .log file of it's previous log entries and continues to log into the same file.
-@export_enum("Stop & start new session", "Stop session only", "Clear current log") var session_timeout_action : int = 0
-@export var entry_count_limit: int = 100
+@export_enum("Stop & start new session", "Stop session only") var session_timeout_action : int = 0
+@export var entry_count_limit: int = 100 ## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
+var entry_count_game : int = 0 ## The current count of entries in the game.log.
+var entry_count_player : int = 0 ## The current count of entries in the player.log.
 ## Default length of time for a session when [param Session Timer] is enabled
 @export var session_timer_wait_time : float = 120.0: 
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
-var current_game_file : String = "" ## .log file associated with the current session
-var current_player_file : String = "" ## .log file associated with the current session
+var current_game_file : String = "" ## game.log file associated with the current session
+var current_player_file : String = "" ## player.log file associated with the current session
 #endregion
 
 
 func _ready() -> void:
 	toggle_session_status.connect(_on_toggle_session_status)
-	project_name = ProjectSettings.get_setting("application/config/name")
-	project_version = ProjectSettings.get_setting("application/config/version")
+	project_name = ProjectSettings.get_setting("application/config/name") if ProjectSettings.get_setting("application/config/name") else ""
+	project_version = ProjectSettings.get_setting("application/config/version") if ProjectSettings.get_setting("application/config/version") else ""
 	if autostart_session:
 		print("Starting session using 'start_session()' in GoLogger _ready()")
 		Log.start_session()
@@ -69,14 +71,31 @@ func _on_toggle_session_status(status : bool) -> void:
 	else:  
 		# Prevent the creation of file on the same timestamp
 		await get_tree().create_timer(1.0)
-		session_timer.start(autostart_session)
+		session_timer.start(session_timer_wait_time)
 		session_timer_started.emit()
 	session_status_changed.emit()
 
 ## Signal receiver: Stops and possibly starts the session when [param session_timer]s [signal timeout] signal is emitted. 
 func _on_session_timer_timeout() -> void:
-	if log_manage_method == 1 or log_manage_method == 2:
-		Log.stop_session() 
-		if session_timeout_action == 1:
-			Log.start_session()  
+	match log_manage_method:
+		0: # Entry count limit
+			pass
+		1: # Session Timer
+			if session_timeout_action == 0: # Stop & Start
+				Log.stop_session()
+				Log.start_session()
+			else: # Stop only
+				Log.stop_session()
+		2: # Both Count limit + Session timer
+			if session_timeout_action == 0: # Stop & Start
+				Log.stop_session()
+				Log.start_session()
+			else: # Stop only
+				Log.stop_session()
+		3: # None
+			pass
+	#if log_manage_method == 1 or log_manage_method == 2:
+		#Log.stop_session() 
+		#if session_timeout_action == 1:
+			#Log.start_session()  
 	session_timer.wait_time = session_timer_wait_time

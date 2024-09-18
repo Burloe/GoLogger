@@ -14,9 +14,9 @@ class_name GoLoggerController
 @onready var print_gamelog_button: Button = $MarginContainer/VBoxContainer/PrintButtonHBOX/PrintGameLogButton 
 @onready var print_playerlog_button: Button = $MarginContainer/VBoxContainer/PrintButtonHBOX/PrintPlayerLogButton 
 
-@onready var character_title_label: RichTextLabel = $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/CharacterTitleLabel  
-@onready var game_count_label: RichTextLabel = $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/CharCountLabelHBXC/GameCountLabel  
-@onready var player_count_label: RichTextLabel = $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/CharCountLabelHBXC/PlayerCountLabel  
+@onready var entry_title_label: RichTextLabel = $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountTitleLabel
+@onready var game_count_label: RichTextLabel =  $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountLabelHBXC/GameCountLabel
+@onready var player_count_label: RichTextLabel = $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountLabelHBXC/PlayerCountLabel
 
 @onready var session_timer_pgb: ProgressBar = $MarginContainer/VBoxContainer/TimerPanel/SessionTimerPGB
 @onready var timer_status_label: RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerStatusLabel
@@ -51,12 +51,12 @@ func _ready() -> void:
 	await get_tree().process_frame 
 	GoLogger.session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer_pgb.modulate = Color.BLACK if GoLogger.session_timer.is_stopped() else Color.FOREST_GREEN
-	character_title_label.text = str("[center][font_size=14]Character Counts:
-[font_size=12]Current Limit: [color=green]", GoLogger.session_character_limit)
+	entry_title_label.text = str("[center][font_size=14]Log Entry Count:
+[font_size=12]Current Limit: [color=green]", GoLogger.entry_count_limit)
 	game_count_label.text = str("[center][font_size=12] GameLog:
-", GoLogger.current_game_char_count)
+", GoLogger.entry_count_game)
 	player_count_label.text = str("[center][font_size=12] PlayerLog:
-", GoLogger.current_player_char_count)
+", GoLogger.entry_count_player)
 
 
 ## Signal receiver when Game Session CheckButton is toggled.
@@ -90,20 +90,21 @@ func _on_session_timer_timeout() -> void:
 
 ## Signal receiver: Updates all values on the controller every 0.5 by default. This can be changed with the [param session_timer_wait_time] in [GoLogger].
 func _on_update_timer_timeout() -> void:
+	session_timer_pgb.modulate = Color.BLACK if GoLogger.session_timer.is_stopped() else Color.FOREST_GREEN
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if GoLogger.session_status else str("[center][font_size=18] Session status:
 [center][color=red]OFF")
 	
 	# Character count
-	if GoLogger.current_game_char_count > GoLogger.session_character_limit or GoLogger.current_player_char_count > GoLogger.session_character_limit:
-		character_title_label.text = str("[center][font_size=14]Character Counts:
-[font_size=12]Current Limit: [color=red]", GoLogger.session_character_limit)
-	else: character_title_label.text = str("[center][font_size=14]Character Counts:
-[font_size=12]Current Limit: [color=green]", GoLogger.session_character_limit)
+	if GoLogger.entry_count_game > GoLogger.entry_count_limit or GoLogger.entry_count_player > GoLogger.entry_count_limit:
+		entry_title_label.text = str("[center][font_size=14]Log Entry Count:
+[font_size=12]Current Limit: [color=red]", GoLogger.entry_count_limit)
+	else: entry_title_label.text = str("[center][font_size=14]Log Entry Count:
+[font_size=12]Current Limit: [color=green]", GoLogger.entry_count_limit)
 	game_count_label.text = str("[center][font_size=12] GameLog:
-1000", GoLogger.current_game_char_count)
+", GoLogger.entry_count_game)
 	player_count_label.text = str("[center][font_size=12] PlayerLog:
-1000", GoLogger.current_game_char_count)
+", GoLogger.entry_count_player)
 	
 	# Session timer
 	session_timer_pgb.value = GoLogger.session_timer.get_time_left() 
