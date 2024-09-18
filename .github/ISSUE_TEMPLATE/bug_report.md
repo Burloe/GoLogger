@@ -10,11 +10,8 @@ assignees: Burloe
 **Godot version**
 Include the version of Godot you're on.
 
-**Describe the bug**
-A clear and concise description of what the bug is.
-
-**Expected behavior**
-Describe the intended behavior(what you expected) when the bug occurred.
+**Describe the bug and the expected behavior**
+Please describe the bug you're experiencing and the expected behavior this bug is preventing. 
 
 **To Reproduce**
 Steps to reproduce the behavior.
