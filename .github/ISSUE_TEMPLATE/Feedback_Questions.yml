@@ -24,7 +24,7 @@ body:
   - type: input
     id: rating
     attributes:
-      label: Rate the GoLogger plugin, using 0(bad) to 5(great).
+      label: Rate the GoLogger plugin, using 0(bad) to 5(great)
       description: "How would you rate the plugin as a whole?"
       placeholder: "5 - It's amazing. It saved my life and I'm naming my first-born after you."
     validations:
@@ -32,7 +32,7 @@ body:
   - type: input
     id: implement_rating
     attributes:
-      label: Please rate the ease of importing GoLogged to your project, using 0(bad) to 5(great).
+      label: Please rate the ease of importing GoLogged to your project, using 0(bad) to 5(great)
       description: "What rating would you give on how difficult or easy it was to implement into your project?
       placeholder: "4 - It was easy, the README provided sufficient information to implement it into my Godot project"
     validations:
@@ -40,7 +40,7 @@ body:
   - type: input
     id: rating
     attributes:
-      label: What rating would you give regarding the user experience with this plugin, using 0(bad) to 5(great).
+      label: Please rate the user experience with this plugin, using 0(bad) to 5(great)
       description: "How would you rate the ease of use?"
       placeholder: "3 - There was a bit of a learning curve and I could use a tutorial on how to make additions of my own."
     validations:
