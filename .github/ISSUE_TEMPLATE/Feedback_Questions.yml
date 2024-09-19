@@ -14,6 +14,7 @@ body:
         - Rating
     validations:
       required: true
+      
   - type: textarea
     attributes:
       label: Your feedback or question. Please include screenshots if applicable.
@@ -29,6 +30,7 @@ body:
       placeholder: "5 - It's amazing. It saved my life and I'm naming my first-born after you."
     validations:
       required: true
+      
   - type: input
     id: implement_rating
     attributes:
@@ -37,6 +39,7 @@ body:
       placeholder: "4 - It was easy, the README provided sufficient information to implement it into my Godot project"
     validations:
       required: false
+      
   - type: input
     id: rating
     attributes:
