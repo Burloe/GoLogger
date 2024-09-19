@@ -3,9 +3,11 @@ description: Do you have any feedback or criticism for the plugin? Or do you hav
 
 body:
   - type: markdown
+    id: intro
     attributes:
       value: Any questions about the basic functionality and features of GoLogger? Ask them here and I will do my best to answer you promptly.
   - type: dropdown
+    id: type
     attributes:
       label: What would you like to give:.
       options:
@@ -16,6 +18,7 @@ body:
       required: true
       
   - type: textarea
+    id: textinput
     attributes:
       label: Your feedback or question. Please include screenshots if applicable.
       description: |
@@ -23,7 +26,7 @@ body:
     validations:
       required: true
   - type: input
-    id: rating
+    id: pluginrating
     attributes:
       label: Rate the GoLogger plugin, using 0(bad) to 5(great)
       description: "How would you rate the plugin as a whole?"
@@ -41,7 +44,7 @@ body:
       required: false
       
   - type: input
-    id: rating
+    id: uxrating
     attributes:
       label: Please rate the user experience with this plugin, using 0(bad) to 5(great)
       description: "How would you rate the ease of use?"
