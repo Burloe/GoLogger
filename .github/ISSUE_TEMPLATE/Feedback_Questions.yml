@@ -35,7 +35,7 @@ body:
     id: implement_rating
     attributes:
       label: Please rate the ease of importing GoLogged to your project, using 0(bad) to 5(great)
-      description: "What rating would you give on how difficult or easy it was to implement into your project?
+      description: "What rating would you give on how difficult or easy it was to implement into your project?"
       placeholder: "4 - It was easy, the README provided sufficient information to implement it into my Godot project"
     validations:
       required: false
