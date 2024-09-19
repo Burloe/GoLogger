@@ -115,7 +115,6 @@ func _on_update_timer_timeout() -> void:
 ", GoLogger.entry_count_game)
 	player_count_label.text = str("[center][font_size=12] PlayerLog:
 ", GoLogger.entry_count_player)
-	
 	# Session timer
 	session_timer_pgb.value = GoLogger.session_timer.get_time_left() 
 	timer_status_label.text = str("[center][font_size=12]Status: 
@@ -123,11 +122,13 @@ func _on_update_timer_timeout() -> void:
 	timer_left_label.text = str("[center][font_size=12]TimeLeft:
 [color=light_blue]", snappedi(GoLogger.session_timer.get_time_left(), 1) )
 
+
 ## Signal receiver: Prints the current/latest log contents to 'Output'.
 func _on_print_button_up(button : Button) -> void:
 	match button.get_name():
 		"PrintGameLogButton": print(Log.get_file_contents(Log.GAME_PATH))
 		"PrintPlayerLogButton": print(Log.get_file_contents(Log.PLAYER_PATH))
+
 
 ## Sets [param is_dragging] depending on the pressed state of the drag button.
 func _on_drag_button(state : bool) -> void:

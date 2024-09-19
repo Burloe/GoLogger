@@ -35,8 +35,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 			_dir = DirAccess.open(GAME_PATH)
 			if !_dir and !GoLogger.disable_errors:
 				var _err = DirAccess.get_open_error()
-				if _err != OK and !GoLogger.disable_errors:
-					push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
+				if _err != OK and !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
 				if !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
 				return
 			else:  
@@ -75,8 +74,8 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 			_dir = DirAccess.open(PLAYER_PATH) # Open the directory
 			if !_dir and !GoLogger.disable_errors:
 				var _err = DirAccess.get_open_error()
-				if _err != OK and !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to open file directory (", PLAYER_PATH, ")") 
-				push_warning("GoLogger Error: Failed to open file directory (", PLAYER_PATH, ")")
+				if _err != OK and !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(_err), " (", PLAYER_PATH, ")")  
+				if !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to open file directory (", PLAYER_PATH, ")")
 				return 
 			else:
 				var _files = _dir.get_files() 
@@ -142,8 +141,8 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 			else:
 				var _f = FileAccess.open(GoLogger.current_player_file, FileAccess.READ)
 				if !_f:
-					var err = FileAccess.get_open_error()
-					if err != OK and !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(err))
+					var _err = FileAccess.get_open_error()
+					if _err != OK and !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(_err))
 				var _c = _f.get_as_text()
 				var lines : Array[String] = []
 				while not _f.eof_reached():
@@ -156,8 +155,8 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 					lines.remove_at(1) 
 				var _fw = FileAccess.open(GoLogger.current_player_file, FileAccess.WRITE)
 				if !_fw:
-					var err = FileAccess.get_open_error()
-					if err != OK and !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(err))
+					var _err = FileAccess.get_open_error()
+					if _err != OK and !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(_err))
 				var _s : String = str("\t" + _timestamp + log_entry)
 				if GoLogger.log_manage_method == 0 or GoLogger.log_manage_method == 2:
 					lines.append(_s) 
