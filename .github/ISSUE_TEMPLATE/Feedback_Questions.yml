@@ -6,7 +6,6 @@ body:
     attributes:
       value: |
         Any questions about the basic functionality and features of GoLogger? Ask them here and I will do my best to answer you promptly.
-
   - type: dropdown
     attributes:
       label: What would you like to give:.
@@ -16,7 +15,6 @@ body:
         - Rating
     validations:
       required: true
-
   - type: textarea
     attributes:
       label: Your feedback or question. Please include screenshots if applicable.
@@ -24,7 +22,6 @@ body:
         Describe your question and provide screenshots if applicable.
     validations:
       required: true
-
   - type: input
     id: rating
     attributes:
@@ -33,7 +30,6 @@ body:
       placeholder: "5 - It's amazing. It saved my life and I would like to name my first-born after you."
     validations:
       required: false
-
     - type: input
     id: implement_rating
     attributes:
@@ -42,7 +38,6 @@ body:
       placeholder: "4 - It was easy, the README provided sufficient information to implement it into my Godot project"
     validations:
       required: false
-
     - type: input
     id: rating
     attributes:
