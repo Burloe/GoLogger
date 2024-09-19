@@ -23,13 +23,13 @@ body:
     validations:
       required: true
   - type: input
-    id: rating
-    attributes:
-      label: Rate the GoLogger plugin using a single integer from 0 to 5. 0 = bad, 5 = great.
-      description: "How would you rate the plugin as a whole?"
-      placeholder: "5 - It's amazing. It saved my life and I would like to name my first-born after you."
-    validations:
-      required: false
+  id: rating
+  attributes:
+    label: Rate the GoLogger plugin using a single integer from 0 to 5. 0 = bad, 5 = great.
+    description: "How would you rate the plugin as a whole?"
+    placeholder: "5 - It's amazing. It saved my life and I would like to name my first-born after you."
+  validations:
+    required: true
     - type: input
     id: implement_rating
     attributes:
