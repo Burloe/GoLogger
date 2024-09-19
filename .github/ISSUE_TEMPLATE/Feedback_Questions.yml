@@ -30,7 +30,7 @@ body:
     placeholder: "5 - It's amazing. It saved my life and I would like to name my first-born after you."
   validations:
     required: true
-    - type: input
+  - type: input
     id: implement_rating
     attributes:
       label: Rate your experience in regards to implementing the plugin into your project, using a signle integer from 0 to 5. 0 = bad, 5 = great.
@@ -38,7 +38,7 @@ body:
       placeholder: "4 - It was easy, the README provided sufficient information to implement it into my Godot project"
     validations:
       required: false
-    - type: input
+  - type: input
     id: rating
     attributes:
       label: What rating would you give regarding the user experience with this plugin, using 0(bad) to 5(great).
