@@ -1,23 +1,39 @@
 [gd_scene load_steps=3 format=3 uid="uid://quridjl6aioe"]
 
 [ext_resource type="Script" path="res://addons/GoLogger/LogController/GoLoggerController.gd" id="1_sp6vx"]
-[ext_resource type="Texture2D" uid="uid://ce5crsggd1rb7" path="res://addons/GoLogger/GoLogger.png" id="2_u13a6"]
+[ext_resource type="Texture2D" uid="uid://cyl5mqywcs3lo" path="res://addons/GoLogger/GoLoggerIcon.png" id="2_nndk8"]
 
 [node name="GoLoggerController" type="Panel"]
 custom_minimum_size = Vector2(210, 459)
 anchors_preset = -1
-anchor_right = 0.109
+anchor_left = -0.055
+anchor_right = 0.055
 anchor_bottom = 0.425
-offset_left = 320.0
-offset_top = 80.0
-offset_right = 320.72
-offset_bottom = 80.0
+offset_left = 0.599998
+offset_right = 0.399986
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(105, 0)
 script = ExtResource("1_sp6vx")
+metadata/_edit_vertical_guides_ = [106.0, -105.0]
 
 [node name="InfoUpdateTimer" type="Timer" parent="."]
 wait_time = 0.5
+
+[node name="DragButton" type="Button" parent="."]
+z_index = 10
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -36.0
+offset_bottom = -464.0
+focus_mode = 0
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 0)
+text = "Drag to Move"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -40,16 +56,14 @@ theme_override_constants/separation = 10
 layout_mode = 2
 alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/TitleHBOX"]
+[node name="GoLoggerIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/TitleHBOX"]
 layout_mode = 2
-texture = ExtResource("2_u13a6")
-expand_mode = 3
+texture = ExtResource("2_nndk8")
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/TitleHBOX"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "LogController"
-horizontal_alignment = 1
+text = "GoLogger"
 
 [node name="SessionStatusPanel" type="Panel" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)

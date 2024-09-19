@@ -1,6 +1,7 @@
 extends Panel
 class_name GoLoggerController
 
+#region Documentation and variable declaration
 ## A controller to manage logging sessions along with some additional features to make it easier to manage GoLogger during runtime.
 ##
 ## [b]Game and Player Session buttons[/b] are used to indicate whether or not a session is running. But they can also be used to start and stop a session manually.[br]
@@ -8,6 +9,7 @@ class_name GoLoggerController
 ## [b]Print buttons[/b] will print the .log file created last. If a session is started, this is the file that's being logged into actively. If a session is stopped, the log of the last session is printed.
 
 @onready var update_timer: Timer = $InfoUpdateTimer ## Updates info displayed in the [GoLoggerController] every time it times out(every 0.5s by default]
+@onready var drag_button: Button = $DragButton ## Drag the controller while pressing this button
 
 @onready var session_status_label: RichTextLabel = $MarginContainer/VBoxContainer/SessionStatusPanel/SessionStatusLabel
 @onready var session_button: CheckButton = $MarginContainer/VBoxContainer/SessionButton
@@ -22,17 +24,23 @@ class_name GoLoggerController
 @onready var timer_status_label: RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerStatusLabel
 @onready var timer_left_label: RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerLeftLabel
 
-# TODO: Add a "get_viewport_width() and height and add an export enum to say "position"
-
+var is_dragging : bool = false
+#endregion
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.keycode == KEY_F9: # Change keybind to toggle controller here
 		if event.is_released():
 			if visible: hide()
 			else: show()
+	
+	if event is InputEventMouseMotion:
+		if is_dragging:
+			position = Vector2(event.position.x + GoLogger.controller_offset.x, event.position.y + GoLogger.controller_offset.y) #Vector2(event.position.x - 180, event.position.y - 60)
 
 func _ready() -> void:
 	#region Signal connections
+	drag_button.button_up.connect(_on_drag_button.bind(false))
+	drag_button.button_down.connect(_on_drag_button.bind(true))
 	GoLogger.session_status_changed.connect(_on_session_status_changed)
 	if !GoLogger.autostart_session: session_button.toggled.connect(_on_session_button_toggled) 
 	print_gamelog_button.button_up.connect(_on_print_button_up.bind(print_gamelog_button))
@@ -41,8 +49,8 @@ func _ready() -> void:
 	update_timer.timeout.connect(_on_update_timer_timeout)
 	#endregion
 	
-	if GoLogger.hide_contoller_on_start: hide()
-	else: show()
+#region Apply base values and settings
+	hide() if GoLogger.hide_contoller_on_start else show()
 	await get_tree().process_frame
 	session_timer_pgb.min_value = 0
 	session_timer_pgb.max_value = GoLogger.session_timer_wait_time
@@ -57,6 +65,9 @@ func _ready() -> void:
 ", GoLogger.entry_count_game)
 	player_count_label.text = str("[center][font_size=12] PlayerLog:
 ", GoLogger.entry_count_player)
+#endregion
+
+
 
 
 ## Signal receiver when Game Session CheckButton is toggled.
@@ -94,8 +105,7 @@ func _on_update_timer_timeout() -> void:
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if GoLogger.session_status else str("[center][font_size=18] Session status:
 [center][color=red]OFF")
-	
-	# Character count
+	# Entry count logic
 	if GoLogger.entry_count_game > GoLogger.entry_count_limit or GoLogger.entry_count_player > GoLogger.entry_count_limit:
 		entry_title_label.text = str("[center][font_size=14]Log Entry Count:
 [font_size=12]Current Limit: [color=red]", GoLogger.entry_count_limit)
@@ -113,9 +123,12 @@ func _on_update_timer_timeout() -> void:
 	timer_left_label.text = str("[center][font_size=12]TimeLeft:
 [color=light_blue]", snappedi(GoLogger.session_timer.get_time_left(), 1) )
 
-
 ## Signal receiver: Prints the current/latest log contents to 'Output'.
 func _on_print_button_up(button : Button) -> void:
 	match button.get_name():
 		"PrintGameLogButton": print(Log.get_file_contents(Log.GAME_PATH))
 		"PrintPlayerLogButton": print(Log.get_file_contents(Log.PLAYER_PATH))
+
+## Sets [param is_dragging] depending on the pressed state of the drag button.
+func _on_drag_button(state : bool) -> void:
+	is_dragging = state

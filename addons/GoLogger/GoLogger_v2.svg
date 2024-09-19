@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="16"
-   height="16"
-   viewBox="0 0 4.2333333 4.2333333"
+   width="23.000002"
+   height="32"
+   viewBox="0 0 5.7500005 8"
    version="1.1"
    id="svg1"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
@@ -25,7 +25,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
+     inkscape:document-units="px"
      inkscape:zoom="45.254834"
      inkscape:cx="1.9445436"
      inkscape:cy="11.015398"
@@ -34,30 +34,69 @@
      inkscape:window-x="-8"
      inkscape:window-y="10"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     showgrid="true">
+    <sodipodi:guide
+       position="-0.24999952,8.75"
+       orientation="0,16"
+       id="guide2"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="3.7500005,8.75"
+       orientation="16,0"
+       id="guide3"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="3.7500005,4.75"
+       orientation="0,-16"
+       id="guide4"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="-0.24999952,4.75"
+       orientation="-16,0"
+       id="guide5"
+       inkscape:locked="false" />
+    <inkscape:grid
+       id="grid5"
+       units="px"
+       originx="-0.24999952"
+       originy="-0.25"
+       spacingx="0.25"
+       spacingy="0.25"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       dotted="false"
+       gridanglex="30"
+       gridanglez="30"
+       visible="true" />
+  </sodipodi:namedview>
   <defs
      id="defs1" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-0.24999952,-0.25)">
     <rect
-       style="fill:none;stroke:#e5c35d;stroke-width:0.133272;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1.33272, 0.266547;stroke-dashoffset:0.306527;stroke-opacity:1"
+       style="fill:none;stroke:#e5c35d;stroke-width:0.250381;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2.5038, 0.751143;stroke-dashoffset:0.801219;stroke-opacity:1"
        id="rect1"
-       width="2.7771442"
-       height="3.8354776"
-       x="0.066636227"
-       y="0.066636227"
-       rx="0.23359565"
-       ry="0.26134241" />
+       width="5.4996195"
+       height="7.749619"
+       x="0.37519002"
+       y="0.3751905"
+       rx="0.46259287"
+       ry="0.5280447" />
     <rect
-       style="fill:#e5c35d;fill-opacity:1;stroke:none;stroke-width:0.116999;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:0.903175"
+       style="fill:#e5c35d;fill-opacity:1;stroke:none;stroke-width:0.235734;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:0.903175"
        id="rect2"
-       width="2.3812499"
-       height="3.4395833"
-       x="0.26458332"
-       y="0.26458332"
-       rx="0.099057227"
-       ry="0.11590737" />
+       width="4.7499709"
+       height="7"
+       x="0.75002873"
+       y="0.74999958"
+       rx="0.19759327"
+       ry="0.23588659" />
   </g>
 </svg>

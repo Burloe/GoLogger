@@ -2,25 +2,27 @@
 extends Node
 
 #region Documentation & variable declarations
-## Responsible for most non-static operations. Make sure that the GoLogger.tscn file is an autoload before using GoLogger. Note that it's the .TSCN we want to be an autoload and not the script file.
+## Autoload singleton that holds all of the settings and variables as well as some signal receiver functions. 
 ##
-## The plugin has two safeguard in place in order to prevent potential issues. A character count is performed each time anything is written to the log and a session timer also starts alongside a session. These are turned off by default but does still count the characters and start/stop the timer. Having them enabled/disabled merely determines whether or not it will perform a behaviour once their conditions are fulfilled.[br][br]
+## Due to the class [Log] being static, we require an autoload to hold all of the variables, settings and signals.[br]
 ## [color=red]WARNING: [br][color=white]When installing the plugin Gologger.tscn should be added as an autoload. Ensure that it's in [code]Project > Project Settings > Globals > Autoload[/code] and if it doesn't appear in the list. Add the "GoLogger.TSCN" scene file. NOT THE ".gd" file, or the plugin won't work.
 
 signal toggle_session_status(status : bool) ## Emitted at the end of [code]Log.start_session()[/code] and [code]Log.end_session[/code]. This signal is responsible for turning sessions on and off.
 signal session_status_changed ## Emitted when session status is changed. Use to signal your other scripts that the session is active. 
-signal session_timer_started ## Emitted when the [param session_timer] is started.
-@export_enum("Project name & Project version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Denotes the type of header used in the .log file header. I.E. the string that says "Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:
-var header_string : String ## String that contains either project name, project version, both or none
+signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications that file size manage. E.g. when stress testing some system and logging is needed for a set time. Having a 'started' signal can be useful to call functions in other scripts.
+@export_enum("Project name & Project version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Denotes the type of header used in the .log file header. I.e. the string that says:[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:
+var header_string : String ## String result from [param log_info_header], that contains either project name, project version, both or none
 @export var disable_errors : bool = true ## Enables/disables all debug warnings and errors
-@export var include_name_and_version : bool = true ## Includes the project version at the top of the log file as defined in "Project Settings > Application > Config > Version"
-@export var hide_contoller_on_start : bool = false
+@export var hide_contoller_on_start : bool = false ## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
+@export var controller_drag_offset : Vector2 = Vector2(-180, -60) ## Correcting offset for the controller while draggin(may require changing depending on your project resolution).
 @export var autostart_session : bool = true ## Starts the session in the '_ready()' function of GoLogger.gd.
-@export var file_cap = 3 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
-@export var session_status: bool = false ## Flags whether a log session is in active or not, only meant to hint to see session status in inspector. [br][b]NOT RECOMMENDED TO BE USED TO START AND STOP SESSIONS![/b]
+var session_status: bool = false ## Main session status bool. 
+@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var session_print : int = 0 ## Used to [method print] whenever a session is started or stopped to the Output. 
+@export var include_log_name : bool = true ## includes the .log names that's logged into the print statements when using [param session_print].
 
-@export_group("Log Management") 
+@export_category("Log Management") 
 @onready var session_timer: Timer = $SessionTimer ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
+@export var file_cap = 3 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
 ## Denotes the method of log management used to prevent long and large .log files. Prevents potential performance issues(see "Preventing too large .log files" in the README for more info).[br]
 ## [b]1. Entry Limit:[/b] Checks the number of entries in the file when logging a new ones. If entry count exceeds [param entry_count_limit], the oldest entry in file is removed to make room for the new entry.[br]
 ## [b]2. Session Timer:[/b] Whenever a session is started, the [param session_timer] is started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], the session is stopped and depending on the [param session_timeout_action]. It will either start a new session(creating a new .log file), stop the session only(requires manual restart) or clear the current log of it's contents and continue to log in the same file.[br]
@@ -40,6 +42,8 @@ var entry_count_player : int = 0 ## The current count of entries in the player.l
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
 var current_game_file : String = "" ## game.log file associated with the current session
 var current_player_file : String = "" ## player.log file associated with the current session
+
+
 #endregion
 
 
@@ -49,42 +53,35 @@ func _ready() -> void:
 		0: # Project name + version
 			header_string = str(
 				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != null else "",
-				ProjectSettings.get_setting("application/config/version") + " " if ProjectSettings.get_setting("application/config/version") != null else ""
-			)
+				ProjectSettings.get_setting("application/config/version") + " " if ProjectSettings.get_setting("application/config/version") != null else "")
 		1: # Project name
 			header_string = str(
-				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != null else ""
-			)
+				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != null else "")
 		2: # Project version
 			header_string = str(
-				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != null else ""
-			)
+				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != null else "")
 		3: header_string = ""
-			
 	
 	if autostart_session:
-		print("Starting session using 'start_session()' in GoLogger _ready()")
 		Log.start_session()
-	if session_timer == null:
+	if session_timer == null: 
 		session_timer = Timer.new()
 		add_child(session_timer)
 		session_timer.owner = self
 		session_timer.set_name("SessionTimer")
+	# Fix: By connecting the signal at end of [method _ready], "start_session()" is prevented from being called twice during param _ready().
 	session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer.one_shot = false
 	session_timer.wait_time = session_timer_wait_time
 	session_timer.autostart = false
-	
 
 
 ## Signal receiver: Toggles the session status between true/false upon signal [signal GoLogger.toggle_session_status] emitting. 
 func _on_toggle_session_status(status : bool) -> void:
-	print("Received 'toggle_session_status signal -> ", status)
 	session_status = status
 	if !status: 
 		session_timer.stop()
-	else:  
-		# Prevent the creation of file on the same timestamp
+	else:  # Prevent the creation of file on the same timestamp by adding a "cooldown" timer
 		await get_tree().create_timer(1.0)
 		session_timer.start(session_timer_wait_time)
 		session_timer_started.emit()
@@ -109,8 +106,4 @@ func _on_session_timer_timeout() -> void:
 				Log.stop_session()
 		3: # None
 			pass
-	#if log_manage_method == 1 or log_manage_method == 2:
-		#Log.stop_session() 
-		#if session_timeout_action == 1:
-			#Log.start_session()  
 	session_timer.wait_time = session_timer_wait_time

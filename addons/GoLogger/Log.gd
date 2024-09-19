@@ -6,8 +6,8 @@ class_name Log
 ## For installation, setup and how to use instructions, see the README.md or https://github.com/Burloe/GoLogger
 
 ## These paths can be accessed by selecting Project > Open User Data Folder in the top-left.
-const GAME_PATH = "user://logs/game_Gologs/" ## Path where .log files are created/stored. Will create the directiry if it doesn't exist
-const PLAYER_PATH = "user://logs/player_Gologs/" ## Path where .log files are created/stored. Will create the directiry if it doesn't exist
+const GAME_PATH = "user://logs/game_Gologs/" ## Directory path where game.log files are created/stored. Directory is created if it doesn't exist
+const PLAYER_PATH = "user://logs/player_Gologs/" ## Directory path where player.log files are created/stored. Directory is created if it doesn't exist
 # Normally located in:
 # Windows: %APPDATA%\Godot\app_userdata\[project_name]
 # macOS:   ~/Library/Application Support/Godot/app_userdata/[project_name]
@@ -19,6 +19,7 @@ const PLAYER_PATH = "user://logs/player_Gologs/" ## Path where .log files are cr
 static func start_session(utc : bool = true, space : bool = true) -> void: 
 	# Game logs
 	if GAME_PATH != "":
+		#region Error check
 		if GAME_PATH == null: 
 			if !GoLogger.disable_errors: 
 				push_error("GoLogger Error: GAME_PATH is null. Assign a valid directory path.")
@@ -26,10 +27,8 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 		if GoLogger.session_status:
 			if !GoLogger.disable_errors: push_warning("GoLogger Warning: Attempted to start new Game log session before stopping the previous.")
 			return
+		#endregion
 		else:
-			# TODO Need to use "DirAcces.make_dir_recursive()" to create the directory. 
-			
-			
 			var _dir : DirAccess
 			if !DirAccess.dir_exists_absolute(GAME_PATH):
 				DirAccess.make_dir_recursive_absolute(GAME_PATH)
@@ -39,7 +38,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 				if _err != OK and !GoLogger.disable_errors:
 					push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
 				if !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
-				return 
+				return
 			else:  
 				var _files = _dir.get_files() 
 				if _files.size() >= GoLogger.entry_count_limit: # File count exceeds cap. Sort then delete oldest file
@@ -48,7 +47,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 					var _del_err = _dir.remove(GAME_PATH + _old_file)
 					if _del_err != OK and !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to delete file (", _old_file, ") -> Error[", _del_err,"]") 
 				GoLogger.current_game_file = GAME_PATH + get_file_name("game") # Game path is "user://logs/game_Gologs/"
-				print("START_SESSION(): Current GAME file: ", GoLogger.current_game_file)
+				#print("START_SESSION(): Current GAME file: ", GoLogger.current_game_file) # Prints when a session is started and the name + timestamp of the .log file it stores log entries to. 
 				var _file = FileAccess.open(GoLogger.current_game_file, FileAccess.WRITE)
 				if !_file:
 					if !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to create log file (", GoLogger.current_game_file, ").")
@@ -60,13 +59,15 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 				
 	# Player logs
 	if PLAYER_PATH != "": 
-		if PLAYER_PATH == null: 
+		#region Error check
+		if PLAYER_PATH == null:
 			if !GoLogger.disable_errors: 
 				push_error("GoLogger Error: PLAYER_PATH is null. Assign a valid directory path.")
 			return
 		if GoLogger.session_status:
 			if !GoLogger.disable_errors: push_warning("GoLogger Warning: Attempted to start new Player log session before stopping the previous.")
 			return
+		#endregion
 		else:
 			var _dir : DirAccess
 			if !DirAccess.dir_exists_absolute(PLAYER_PATH): # Directory doesn't exist
@@ -113,7 +114,7 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 					var err = FileAccess.get_open_error()
 					if err != OK and !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(err))
 				var _c = _f.get_as_text()
-				var lines = []
+				var lines : Array[String] = []
 				while not _f.eof_reached():
 					var line = _f.get_line().strip_edges(false, true) 
 					if line != "": 
@@ -144,7 +145,7 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 					var err = FileAccess.get_open_error()
 					if err != OK and !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(err))
 				var _c = _f.get_as_text()
-				var lines = []
+				var lines : Array[String] = []
 				while not _f.eof_reached():
 					var line = _f.get_line().strip_edges(false, true) 
 					if line != "": 

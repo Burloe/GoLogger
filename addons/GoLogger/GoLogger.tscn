@@ -13,13 +13,14 @@ offset_bottom = 120.0
 script = ExtResource("1_am1mu")
 
 [node name="SessionTimer" type="Timer" parent="."]
-wait_time = 0.5
 
 [node name="GoLoggerController" parent="." instance=ExtResource("2_i3pa3")]
 layout_mode = 0
 anchors_preset = 0
+anchor_left = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
+offset_left = 0.0
 offset_right = 210.0
 offset_bottom = 268.0
 grow_horizontal = 1
