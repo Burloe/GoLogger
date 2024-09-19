@@ -2,10 +2,9 @@ name: Have feedback, general questions or want to leave a rating regarding GoLog
 description: Do you have any feedback or criticism for the plugin? Or do you have a general question on how to use, install or alter GoLogger? If you have a feature request, please use the feature request form.
 
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Any questions about the basic functionality and features of GoLogger? Ask them here and I will do my best to answer you promptly.
+- type: markdown
+  attributes:
+    value: Any questions about the basic functionality and features of GoLogger? Ask them here and I will do my best to answer you promptly.
   - type: dropdown
     attributes:
       label: What would you like to give:.
