@@ -1,4 +1,4 @@
-@icon("res://addons/GoLogger/GoLogger_v2.png")
+@icon("res://addons/GoLogger/GoLoggerIcon.png")
 extends Node
 
 #region Documentation & variable declarations
@@ -9,7 +9,7 @@ extends Node
 
 signal toggle_session_status(status : bool) ## Emitted at the end of [code]Log.start_session()[/code] and [code]Log.end_session[/code]. This signal is responsible for turning sessions on and off.
 signal session_status_changed ## Emitted when session status is changed. Use to signal your other scripts that the session is active. 
-signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications that file size manage. E.g. when stress testing some system and logging is needed for a set time. Having a 'started' signal can be useful to call functions in other scripts.
+signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications that file size manage. E.g. when stress testing some system and logging is needed for a set time. Having a 'started' signal can be useful to initiate a test.
 @export_enum("Project name & Project version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Denotes the type of header used in the .log file header. I.e. the string that says:[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:
 var header_string : String ## String result from [param log_info_header], that contains either project name, project version, both or none
 @export var disable_errors : bool = true ## Enables/disables all debug warnings and errors
@@ -40,8 +40,10 @@ var entry_count_player : int = 0 ## The current count of entries in the player.l
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
-var current_game_file : String = "" ## game.log file associated with the current session
-var current_player_file : String = "" ## player.log file associated with the current session
+var current_game_filepath : String = "" ## game.log file path associated with the current session
+var current_game_file : String = "" ## game.log file path associated with the current session
+var current_player_filepath : String = "" ## player.log file path associated with the current session
+var current_player_file : String = "" ## player.log file path associated with the current session
 
 
 #endregion

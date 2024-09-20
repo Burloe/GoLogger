@@ -18,7 +18,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_ewgn3")
 metadata/_edit_horizontal_guides_ = [677.0, 23.0, 1053.0]
-metadata/_edit_vertical_guides_ = [25.0, 317.0, 861.0, 865.0, 1371.0, 1375.0, 218.0]
+metadata/_edit_vertical_guides_ = [25.0, 317.0, 218.0, 1118.0]
 
 [node name="UpdateTimer" type="Timer" parent="."]
 wait_time = 0.5
@@ -137,7 +137,7 @@ fit_content = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 435
+theme_override_constants/separation = 660
 alignment = 1
 
 [node name="Label" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
@@ -154,13 +154,23 @@ horizontal_alignment = 1
 layout_mode = 2
 
 [node name="GAMElog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(761, 881)
+custom_minimum_size = Vector2(761, 860)
 layout_mode = 2
 label_settings = SubResource("LabelSettings_xqaaj")
 autowrap_mode = 2
 
 [node name="PLAYERlog" type="Label" parent="LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(761, 881)
+custom_minimum_size = Vector2(761, 860)
 layout_mode = 2
 label_settings = SubResource("LabelSettings_xqaaj")
 autowrap_mode = 2
+
+[node name="Label" type="Label" parent="LogContents"]
+layout_mode = 0
+offset_left = 669.0
+offset_top = 25.0
+offset_right = 880.0
+offset_bottom = 74.0
+text = "Toggle GoLogger Controller 
+with F9"
+horizontal_alignment = 1

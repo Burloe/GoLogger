@@ -35,7 +35,7 @@ func _input(event: InputEvent) -> void:
 	
 	if event is InputEventMouseMotion:
 		if is_dragging:
-			position = Vector2(event.position.x + GoLogger.controller_offset.x, event.position.y + GoLogger.controller_offset.y) #Vector2(event.position.x - 180, event.position.y - 60)
+			position = Vector2(event.position.x + GoLogger.controller_drag_offset.x, event.position.y + GoLogger.controller_drag_offset.y)
 
 func _ready() -> void:
 	#region Signal connections

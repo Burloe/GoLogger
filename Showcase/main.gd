@@ -21,11 +21,12 @@ func _ready() -> void:
 
 func set_log_text() -> void:
 	if GoLogger.current_game_file != "":
-		var _g = FileAccess.open(GoLogger.current_game_file, FileAccess.READ)
+		var _g = FileAccess.open(GoLogger.current_game_filepath, FileAccess.READ)
 		if !_g:
 			var _err = FileAccess.get_open_error()
 			if _err != OK and !GoLogger.disable_errors:
-				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> Error [", _err, "]")
+				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> ", Log.get_err_string(_err))
+				return
 		else:
 			var _gc = _g.get_as_text()
 			gamelog.text = _gc
@@ -33,21 +34,17 @@ func set_log_text() -> void:
 	else: gamelog.text = "No active session."
 	
 	if GoLogger.current_player_file != "":
-		var _p = FileAccess.open(GoLogger.current_player_file, FileAccess.READ)
+		var _p = FileAccess.open(GoLogger.current_player_filepath, FileAccess.READ)
 		if !_p:
 			var _err = FileAccess.get_open_error()
 			if _err != OK and !GoLogger.disable_errors:
-				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> Error [", _err, "]")
+				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> ", Log.get_err_string(_err))
+				return
 		else:
 			var _pc = _p.get_as_text()
 			playerlog.text = _pc
 		_p.close()
 	else: playerlog.text = "No active session."
-	
-	if gamelog.text.length() > playerlog.text.length():
-		playerlog.size = gamelog.size
-	if gamelog.size > playerlog.size: playerlog.size = gamelog.size
-	if playerlog.size > gamelog.size: gamelog.size = playerlog.size
 
 
 ## Signal receiver: Updates log labels  whenever a status is changed.

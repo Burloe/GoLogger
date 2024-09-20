@@ -11,6 +11,7 @@ offset_top = 80.0
 offset_right = 120.0
 offset_bottom = 120.0
 script = ExtResource("1_am1mu")
+disable_errors = false
 
 [node name="SessionTimer" type="Timer" parent="."]
 
