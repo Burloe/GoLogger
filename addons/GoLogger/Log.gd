@@ -39,7 +39,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 				if !GoLogger.disable_errors: push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
 				return
 			else:  
-				GoLogger.current_game_filepath = PLAYER_PATH + get_file_name("game") # Resulting in "user://logs/game_Gologs/player(yy-mm-dd_hh-mm-ss).log"
+				GoLogger.current_game_filepath = GAME_PATH + get_file_name("game") # Resulting in "user://logs/game_Gologs/player(yy-mm-dd_hh-mm-ss).log"
 				GoLogger.current_game_file     = get_file_name("game")               # Resulting in "player(yy-mm-dd_hh-mm-ss).log"
 				var _file = FileAccess.open(GoLogger.current_game_filepath, FileAccess.WRITE)
 				var _files = _dir.get_files()  

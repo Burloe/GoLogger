@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cyl5mqywcs3lo" path="res://addons/GoLogger/GoLoggerIcon.png" id="2_nndk8"]
 
 [node name="GoLoggerController" type="Panel"]
+z_index = 10
 custom_minimum_size = Vector2(210, 459)
 anchors_preset = -1
 anchor_left = -0.055
