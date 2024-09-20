@@ -5,13 +5,13 @@ GoLogger runs in the background but comes with a controller(that you can toggle 
 https://github.com/user-attachments/assets/f8b55481-cd32-4be3-9e06-df4368d1183c
 
 ## Introduction
-Have you ever found yourself working on multiple new features or a large system involving numerous scripts, adding countless print statements to debug? This can clutter the output, making the information difficult to decipher and even harder to manage. Or perhaps you want your game to record events to help debug issues that your players may encounter. In that case, having a logging system in the background that records game events into external .log files could provide helpful a snapshot of the events leading up to a bug or crash that users can access and share.
+GoLogger is a standalone logging system that creates external .log files that your players/user or you can access. This plugin aims to aid in your development by storing game events with timestamps into an external file that you and your players/users can access to provide a history snapshot, a list of events leading up to a crash, bug or issue. This can replace the need for excessive use of `print()` and runs in the background.
 
 GoLogger was designed as a foundation for you to build upon. As such, it is intentionally minimalistic, making it flexible and scalable. Log entries can contain any message and data(as long as it can be converted into a string). However, simply installing this plugin won’t automatically generate log entries out of the bo, but adding these log entries to your code is as easy as writing a print() statement:
 	
  	Log.entry("Your log entry message.", 0)	     # Result: [14:44:44] Your log entry message.
 
-**Note: GoLogger is as comprehensive as you make it.** However, it also works as a simple standalone logging system as is.<br><br><br>
+**Note: GoLogger is as comprehensive as you make it.** However, the plugin will work as a standalone logging system as is.<br><br><br>
 
 ## Installation and setup:
 ![Errors](https://github.com/Burloe/GoLogger/blob/main/Showcase/InstallErrors.png)<br>
@@ -27,9 +27,9 @@ The .log files created by the plugin are located in the User Data folder and can
 GoLogger will create and manage two .log files by default(can be changed) for two category of logs, named 'game.log' and 'player.log'. Two file categories was included to showcase how and what's required to add additional files. Modifying the plugin to have more or less files or use different file names is a simple process and steps are detailed in "Modifying the log names, adding or removing the number of logs" paragraph of the "How to Use" section. Note that the "game" and "player" logs are just suggestions of names and a way to categorize/separate logs into multiple files. If you just want to consolidate all logs into one file, you don't need to change anything. Calling `Log.entry("Your log entry here")` without any secondary parameter will always log into "game.log" file, effectively achieving the same result.<br><br>
 
 
-### Settings & GoLogger Controller :
+### GoLogger & Controller Settings:
+The plugin comes with a "controller" which is why we autoload the scene rather than the script. This affords us the option to make changes in the inspector using the export variables too. The controller allows you to stop and start sessions, print log contents, shows the character count and the session timer during gameplay and can be shown/hidden using F9.<br><br><br>
 GoLogger has optional settings that change the way it behaves which all are located on the "GoLogger.tscn" or its script if you intend to change the default values. Documentation has been added to the entire scripts, including the export variables to describe what they do. Meaning you can hover over options in the inspector and you can use "Search Help" to find documentation pages for the scripts.
-The plugin comes with a "controller" which is why we autoload the scene rather than the script. This affords us the option to make changes in the inspector using the export variables too. The controller allows you to stop and start sessions, print log contents, shows the character count and the session timer during gameplay and can be shown/hidden using F9.<br><br>
 
 
 ## Managing .log file size:
@@ -41,7 +41,6 @@ A timer is started in tandem with the session. Upon timeout, the session will st
 *Note using "Stop session only" requires a new session to be started manually using GoLoggerController or if you've added a `start_session()` trigger in your code yourself.* <br><br>
 
 You can choose to use Entry count limit, Session Timer, both or none using `log_manage_method`. It is **Highly Recommended** that you use one or both of these options, especially if you intend on using GoLogger in your released product. Objectively speaking, Entry Count Limit is the better solution and should be used but it's always good to have options. Regardless, if you experience performance issue and suspect GoLogger to be the cause. Consider using one or both of these options and setting the entry limit to something smaller and decrease the wait time on the session timer. <br><br><br> 
-
 
 ## How to use GoLogger:<br>
 ### **Where can I access options and settings:** <br>
@@ -72,18 +71,4 @@ You can call function this from any script in your project. The string message c
 
 ### **Modifying log names, adding or removing the number of log files:**
 A game.log and player.log file are created upon running your project the first time. Every time a session is stopped and started, a new file is created. Using the file cap option, its possible to prevent the number of files in the directories at any one time. It's recommended to keep this at around the 1-6 range.
-Changing the name of the files and directories are not hard but can be tedious which is why I plan on making a tutorial on the subject(either text based or video). The "player.log" file was added to showcase how and what is required to add more files and directories. **Be aware** that changing the default files will certainly break the controller and will require code and scene changes to accommodate your changes. There are however helper functions to make this process easier and shouldn't be difficult to add the required buttons and labels for your changes. A step-by-step tutorial will be made on how to add files, adding the controller elements to include the new files as well as how and what is required to connect the proper signals for it all to work. <br><br>
-
-### **How can I save a specific .log file from being deleted:**
-If you encountered an issue and need to keep the .log file from being deleted is very simple. Just create a copy and/or move the file out of the original folder.<br><br>
-
-### **Questions regarding the plugin, it's use or installation:**
-Questions can be submitted to the GitHub repo. Click the issue tab and 'New issue', then select "Question About GoLogger" to submit any questions you might have.<br><br>
-
-## **Future development:**
-GoLogger will be updated to the latest version of Godot. Currently, it supports version 4.0 and above with no plans to support 3.x. 
-Currently, all planned features have been added to the plugin. While it could be further improved and have added customization and formatting, that's beyond the scope of the plugin. The intention is for every user to add to and customize GoLogger for your purposes and project. It's kept simple with some added quality of life options in order for the plugin to easily be added and used with any project. Feature requests are accepted and will always be considered but if a request comes in that doesn't aligns with this "vision" of the plugin, it will most likely not be added. <br>
-Feedback and bug reports are taken seriously and should be submitted through Github <br><br><br>
-
-## **Credit and permissions**
-This is a completely free plugin. No monetary contributions are accepted and no credit is necessary. This plugin was designed to be customized by the you to fit your projects, be expanded and improved. You are not required to ask for permission or credit the author or the plugin to use it in your commercial or non-commercial product. 
+Changing the name of the files and directories are not hard but can be tedious which is why I plan on making a tutorial on the subject(either text based or video). The "player.log" file was added to showcase how and what is required to add more files and directories. **Be aware** that changing the default files will certainly break the controller and will require code and scene changes to accommodate your changes. There are however helper functions to make this process easier and shouldn't be difficult to add the required buttons and labels for your changes. A step-by-step tutorial will be made on how to add files, adding the controller elements to include the new files as well as how and what is required to connect the proper signals for it all to work.
