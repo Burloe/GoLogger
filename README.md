@@ -47,7 +47,7 @@ GoLogger will create and manage two .log files by default(can be changed) for tw
 ### GoLogger Controller & Settings:
 The plugin comes with a "controller" which is why we autoload the scene rather than the script. This affords us the option to make changes in the inspector using the export variables too. The controller allows you to stop and start sessions, print log contents, shows the character count and the session timer during gameplay and can be shown/hidden using F9.
 
-GoLogger has optional settings that change the way it behaves which all are located on the "GoLogger.tscn" or its script if you intend to change the default values. Documentation has been added to the entire scripts, including the export variables to describe what they do. Meaning you can hover over options in the inspector and you can use "Search Help" to find documentation pages for the scripts.
+GoLogger has optional settings that change the way it behaves which all are located on the "GoLogger.tscn" or its script if you intend to change the default values. Documentation has been added to the entire scripts, including the export variables to describe what they do. Meaning you can hover over options in the inspector and you can use "Search Help" to find documentation pages for the scripts.<br>
 ![options](https://github.com/user-attachments/assets/52e7fa13-836e-4c3e-9675-1a3b3a563bdf)
 
 ## Managing .log file size:
