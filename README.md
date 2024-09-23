@@ -10,7 +10,8 @@ https://github.com/user-attachments/assets/d49a569a-0702-433a-bc66-45c5253d543d
 1. Introduction
 2. Installation and setup
 3. How do I access the .log files
-4. How to use GoLogger
+4. GoLogger Controller & Settings
+5. How to use GoLogger
    * Starting & Stopping Log Sessions
    *  Creating log entries and include data
    *  Modifying log names, adding or removing the number of log files
@@ -41,7 +42,7 @@ You're all set! You can navigate to and open `res://addons/GoLogger/GoLogger.tsc
 The directories and .log files created by the plugin are located in the User Data folder under `user://logs/x_Gologs/x.log`. This folder location is different on every OS but can be accessed through Godot and can be accessed through `Project > Open User Data Folder`. Because they are stored externally from the project, your players/users can therefore access these logs files and can share them when investigating bugs and issues. The directory can be changed.<br><br>
 
 
-### GoLogger Controller & Settings:
+## GoLogger Controller & Settings:
 The plugin comes with a "controller" which is why we autoload the scene rather than the script. This affords us the option to make changes in the inspector using the export variables too. The controller allows you to stop and start sessions, print log contents, shows the character count and the session timer during gameplay and can be shown/hidden using F9.
 
 GoLogger has optional settings that change the way it behaves which all are located on the "GoLogger.tscn" or its script if you intend to change the default values. Documentation has been added to the entire scripts, including the export variables to describe what they do. Meaning you can hover over options in the inspector and you can use "Search Help" to find documentation pages for the scripts.<br>
