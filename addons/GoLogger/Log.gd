@@ -102,7 +102,7 @@ static func start_session(utc : bool = false, space : bool = true) -> void:
 ## Stores a log entry into the 'game/ui/player.log' file.[br]
 ## [param timestamp] is used to specify the type of date and time format you want your entries tagged with.[br]
 ## [param utc] will convert the time into a unified UTC format as opposed to your or your players local time format.
-static func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, utc : bool = true) -> void:
+static func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, utc : bool = false) -> void:
 	var _timestamp : String = str("\t[", Time.get_time_string_from_system(utc), "] ") 
 	match file:
 		0: # GAME
@@ -169,7 +169,7 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 
 
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [code]start_session()[/code]. Doing so will create a new file to log into.
-static func stop_session( utc : bool = true, include_timestamp : bool = true) -> void:
+static func stop_session( utc : bool = false, include_timestamp : bool = true) -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped log session.")
 	if GoLogger.current_game_file != "":
 		if GoLogger.session_status:
