@@ -106,7 +106,6 @@ static func entry(log_entry : String, file : int = 0, include_timestamp : bool =
 	var _timestamp : String = str("\t[", Time.get_time_string_from_system(utc), "] ") 
 	match file:
 		0: # GAME
-			# 1.
 			if !GoLogger.session_status: 
 				if !GoLogger.disable_errors: push_warning("GoLogger Warning: Attempted to log Game Entry without starting a session.")
 				return
@@ -240,23 +239,24 @@ static func get_err_string(error_code : int) -> String:
 			return "Error[15]: Unrecognized file."
 		16: #  Corrupt
 			return "Error[16]: File is corrupted."
-	return "Error[X]: Unspecified error-"
+	return "Error[X]: Unspecified error."
 
 ## Helper function that returns the string file name for your log containing the current system date and time.[br]
-## WARNING: Change this at your own discretion! Removing the "0" from date/time "09" will cause sorting issues which can result inproper file deletion.
+## [color=red]WARNING: [color=white]Change this at your own discretion! Removing the "0" from single ints("09") will cause sorting issues > can result inproper file deletion.
 static func get_file_name(filename : String) -> String:
 	var dict  : Dictionary = Time.get_datetime_dict_from_system()
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
+	# Add 0 to single int dates and times
 	var mm  : String = str(dict["month"] if dict["month"] > 9 else str("0", dict["month"]))
 	var dd  : String = str(dict["day"] if dict["day"] > 9 else str("0", dict["day"]))
 	var hh  : String = str(dict["hour"] if dict["hour"] > 9 else str("0", dict["hour"]))
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
-	var fin : String = str(filename, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log")
-	# Resulting string name for the log file "game(yy-mm-dd_hh-mm-ss).log"
+	# Format the final string 
+	var fin : String = str(filename, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") # Result > "game(yy-mm-dd_hh-mm-ss).log"
 	return fin 
 
-## Helper function that returns the log entries of the newest file in the given folder. Used to get .log content in external scripts.
+## Helper function that returns the log entries of the newest file in the given folder. Can be used to fetch .log contents.
 static func get_file_contents(folder_path : String) -> String:
 	var dir = DirAccess.open(folder_path)
 	if !dir:

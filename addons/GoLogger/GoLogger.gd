@@ -23,12 +23,12 @@ var session_status: bool = false ## Main session status bool.
 @export_category("Log Management") 
 @onready var session_timer: Timer = $SessionTimer ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
 @export var file_cap = 3 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
-## Denotes the method of log management used to prevent long and large .log files. Prevents potential performance issues(see "Preventing too large .log files" in the README for more info).[br]
-## [b]1. Entry Limit:[/b] Checks the number of entries in the file when logging a new ones. If entry count exceeds [param entry_count_limit], the oldest entry in file is removed to make room for the new entry.[br]
-## [b]2. Session Timer:[/b] Whenever a session is started, the [param session_timer] is started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], the session is stopped and depending on the [param session_timeout_action]. It will either start a new session(creating a new .log file), stop the session only(requires manual restart) or clear the current log of it's contents and continue to log in the same file.[br]
-## [b]3. Both Entry Count Limit and Session Timer:[/b] Uses both of the above methods.[br]
-## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended, particularly so if you intend to ship your game with this plugin.
-@export_enum("Entry Count Limit", "Session Timer", "Both Entry Limit & Session Timer", "None") var log_manage_method : int = 0
+## Denotes the log management method used to prevent long or large .log files. Added to combat potential performance issues.[br]
+## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for the new entry.[br]
+## [b]2. Session Timer:[/b] Upon session is start, [param session_timer] is also started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], session is stopped and the action is determined by [param session_timeout_action].[br]
+## [b]3. Entry Count Limit + Session Timer:[/b] Uses both of the above methods.[br]
+## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended, particularly so if you intend to ship your game with GoLogger or a derivation.
+@export_enum("Entry Count Limit", "Session Timer", "Entry Limit + Session Timer", "None") var log_manage_method : int = 0
 ## The log entry count(or line count) limit allowed in the .log file. If entry count exceeds this number, the oldest entry is removed before adding the new.
 ## [b]Stop & start new session:[/b] Stops the current session and starting a new one. Creates a new .log file to continue log into.[br][b]Stop session only:[/b] Stops the current session without starting a new one. Note that this requires a manual restart which can be done in the Controller, or if you've implemented your own way of starting it.[br][b]Clear current log:[/b] Clears the current .log file of it's previous log entries and continues to log into the same file.
 @export_enum("Stop & start new session", "Stop session only") var session_timeout_action : int = 0
