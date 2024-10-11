@@ -11,8 +11,9 @@ signal toggle_session_status(status : bool) ## Emitted at the end of [code]Log.s
 signal session_status_changed ## Emitted when session status is changed. Use to signal your other scripts that the session is active. 
 signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications that file size manage. E.g. when stress testing some system and logging is needed for a set time. Having a 'started' signal can be useful to initiate a test.
 @export_enum("Project name & Project version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Denotes the type of header used in the .log file header. I.e. the string that says:[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:
-var header_string : String ## String result from [param log_info_header], that contains either project name, project version, both or none
-@export var disable_errors : bool = true ## Enables/disables all debug warnings and errors
+var header_string : String ## String result from [param log_info_header], that contains either project name, project version, both or none.
+@export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 ## Enables/disables all debug warnings and errors.\n'All' - Enables errors and warnings.\n'Only Warnings' - Disables errors and only allows warnings.\n'None' - All errors and warnings are disabled.
+@export var warn_failed_start : bool = true ## Enables/disables warning whenever 'Log.start_session()' is called when a session is already running.
 @export var hide_contoller_on_start : bool = false ## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
 @export var controller_drag_offset : Vector2 = Vector2(-180, -60) ## Correcting offset for the controller while draggin(may require changing depending on your project resolution).
 @export var autostart_session : bool = true ## Starts the session in the '_ready()' function of GoLogger.gd.
@@ -35,15 +36,15 @@ var session_status: bool = false ## Main session status bool.
 @export var entry_count_limit: int = 100 ## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
 var entry_count_game : int = 0 ## The current count of entries in the game.log.
 var entry_count_player : int = 0 ## The current count of entries in the player.log.
-## Default length of time for a session when [param Session Timer] is enabled
+## Default length of time for a session when [param Session Timer] is enabled.
 @export var session_timer_wait_time : float = 120.0: 
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
-var current_game_filepath : String = "" ## game.log file path associated with the current session
-var current_game_file : String = "" ## game.log file path associated with the current session
-var current_player_filepath : String = "" ## player.log file path associated with the current session
-var current_player_file : String = "" ## player.log file path associated with the current session
+var current_game_filepath : String = "" ## game.log file path associated with the current session.
+var current_game_file : String = "" ## game.log file path associated with the current session.
+var current_player_filepath : String = "" ## player.log file path associated with the current session.
+var current_player_file : String = "" ## player.log file path associated with the current session.
 
 
 #endregion
