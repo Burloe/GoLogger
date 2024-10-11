@@ -50,7 +50,8 @@ func _ready() -> void:
 	#endregion
 	
 #region Apply base values and settings
-	hide() if GoLogger.hide_contoller_on_start else show()
+	if GoLogger.hide_contoller_on_start: hide()
+	else: show()
 	await get_tree().process_frame
 	session_timer_pgb.min_value = 0
 	session_timer_pgb.max_value = GoLogger.session_timer_wait_time

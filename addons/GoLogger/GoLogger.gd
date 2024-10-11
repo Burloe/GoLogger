@@ -84,7 +84,7 @@ func _on_toggle_session_status(status : bool) -> void:
 	if !status: 
 		session_timer.stop()
 	else:  # Prevent the creation of file on the same timestamp by adding a "cooldown" timer
-		await get_tree().create_timer(1.0)
+		await get_tree().create_timer(1.0).timeout
 		session_timer.start(session_timer_wait_time)
 		session_timer_started.emit()
 	session_status_changed.emit()

@@ -16,7 +16,7 @@ const PLAYER_PATH = "user://logs/player_Gologs/" ## Directory path where player.
 
 
 ## Initiates a log session, recording game events in the .log file. [param category] denotes the file where the entry is logged. [param utc] will force the date and time format to UTC[yy,mm,ddThh:mm:ss]. [param space] will use a space to separate date and time instead of a "T".[br][b]Note:[/b][br]    You cannot start one session without stopping the previous. Attempting it will do nothing.
-static func start_session(utc : bool = true, space : bool = true) -> void: 
+static func start_session(utc : bool = false, space : bool = true) -> void: 
 	# Game logs
 	if GAME_PATH != "":
 		#region Error check
@@ -47,7 +47,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 					_files.sort()
 					_dir.remove(_files[0])
 					_files.remove_at(0)
-					var _err = _dir.get_open_error()
+					var _err = DirAccess.get_open_error()
 					if _err != OK: if !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to remove old log file -> ", get_err_string(_err))
 				if !_file:
 					if !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to create log file (", GoLogger.current_game_file, ").")
@@ -87,7 +87,7 @@ static func start_session(utc : bool = true, space : bool = true) -> void:
 					_files.sort()
 					_dir.remove(_files[0])
 					_files.remove_at(0)
-					var _err = _dir.get_open_error()
+					var _err = DirAccess.get_open_error()
 					if _err != OK: if !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to remove old log file -> ", get_err_string(_err))
 				if !_file:
 					if !GoLogger.disable_errors: push_warning("GoLogger Error: Failed to create log file (", GoLogger.current_player_file, ").")
