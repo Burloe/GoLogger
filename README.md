@@ -1,5 +1,5 @@
 # ![GoLogger.svg](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/GoLoggerIcon.png) GoLogger
-A basic framework for logging game events and data into one or more external .log file for Godot 4. GoLogger was designed to easily be able to slot into any project with minimal setup so you can start logging quickly. Creating logging entries are as easy as writing `print()` calls.<br>
+A basic framework for logging game events and data into one or more external .log file for Godot 4. GoLogger was designed to easily be able to slot into any project with minimal setup so you can start logging quickly. Creating logging entries are as easy as writing `print()` calls using `Log.entry(str("Your log entry: ", data)`.<br>
 GoLogger runs in the background but comes with a controller(that you can toggle with F9) which provides information and controls of the current log session.
 
 https://github.com/user-attachments/assets/d49a569a-0702-433a-bc66-45c5253d543d
@@ -14,7 +14,7 @@ https://github.com/user-attachments/assets/d49a569a-0702-433a-bc66-45c5253d543d
 5. How to use GoLogger
    * Starting & Stopping Log Sessions
    *  Creating log entries and include data
-   *  Modifying log names, adding or removing the number of log files
+6. Current issues and bugs
 
 ## Introduction
 GoLogger is a standalone logging system that creates external .log files that your players/user or you can access. This plugin aims to aid in your development by storing game events with timestamps into an external file that you and your players/users can access to provide a history snapshot, a list of events leading up to a crash, bug or issue. This can replace the need for excessive use of `print()` and runs in the background.
@@ -35,6 +35,8 @@ Do not worry. GoLogger simply requires an autoload to work which isn't added unt
 * **Enabling the plugin:** Navigate to `Project > Project Settings > Plugins`, where you should see "GoLogger" as an unchecked entry in the list of available plugins. Check it to enable the plugin. *If you still get the errors, make sure "GoLogger.tscn" was added as an autoload and restart Godot.*<br>
 
 ![enable_plugin](https://github.com/user-attachments/assets/f6eecd64-16ca-4158-815b-70eda5ad6fab)
+
+* *Optional* Intantiate the GoLoggerController into your UI. **Beware** GoLoggerController is currently broken and will be fixed. Some of the functionality still works but it requires a refactor which will come in 1.0.2.
 
 You're all set! You can navigate to and open `res://addons/GoLogger/GoLogger.tscn"` where you'll see all the options of the plugin in the inspector. I recommend that you add `Log.stop_session()` in the function that calls `get_tree().quit()` and put it above the quit() call. Frankly, closing your game without first stopping a session won't break the plugin but it's best practice to add it to your exit game function. That way, it can be used as an indication as to whether or not the game was closed due to a crash, forced close or a normal "exit game", depending on if there's a "Stopped session" at the end of the file. <br><br>
 
@@ -83,7 +85,3 @@ Only the first parameter mandatory and needs to be defined when calling the func
 4. `utc` - *Optional* -  UTC is a standardized date and time. Using false, the will use the user's local system time. [More info can be found in the doc page.](https://docs.godotengine.org/en/stable/classes/class_time.html#class-time-method-get-time-string-from-system)
 
 You can call function this from any script in your project. The string message can contain almost any data, but you may need to convert that data into a string format using `str()`. Godot allows you to format the strings in many ways. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) <br><br>
-
-
-### **Modifying log names, adding or removing the number of log files:**
-If you want to add more log files to expand the categories, it will require you to familiarize yourself with the code to an extent. If you only want to log into a single file, you don't need to make any changes. You can simply leave out the second param when calling `Log.entry("Entry string.")` and it will default to log into "game.log". That I plan on making a short tutorial on how to add files. **Beware** that changing the default files will certainly break the controller and requires code and scene alerations to accommodate your changes.  
