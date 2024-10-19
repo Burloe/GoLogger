@@ -1,5 +1,6 @@
 # ![GoLogger.svg](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/GoLoggerIcon.png) GoLogger
-GoLogger is a simple framework for logging game events and data to external .log files in Godot 4. Designed for easy integration, GoLogger requires minimal setup, allowing you to start logging quickly. Logging entries are as straightforward as using `print()`, like `Log.entry(str("Your log entry: ", data))`.<br>
+GoLogger is a simple framework for logging game events and data to external .log files in Godot 4. Designed for easy integration, GoLogger requires minimal setup, allowing you to start logging quickly. Logging entries are as straightforward as using `print()`, like `Log.entry(str("Your log entry: ", data))`.
+<br><br>
 GoLogger runs in the background but includes a controller(toggle with F9) for monitoring and managing the current log session.
 
 https://github.com/user-attachments/assets/d49a569a-0702-433a-bc66-45c5253d543d
