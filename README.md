@@ -31,19 +31,19 @@ Designed as a minimalistic foundation, GoLogger is flexible and scalable. Log en
 
 * **Importing the plugin:** Only import the "addons" into your project's root directory. The folder structure should look like `res://addons/GoLogger`.
 
-* **Enable the plugin:** Navigate to `Project > Project Settings > Plugins`, and check "GoLogger" in the list of available plugins to enable it.<br>
-*If errors persist, ensure "GoLogger.tscn" is added as an autoload and restart Godot.*<br>
+* **Enable the plugin:** Navigate to `Project > Project Settings > Plugins`, and check "GoLogger" in the list of available plugins to enable it.
+*If errors persist, ensure "GoLogger.tscn" was added properly as an autoload and then restart Godot.*<br>
 
 ![enable_plugin](https://github.com/user-attachments/assets/f6eecd64-16ca-4158-815b-70eda5ad6fab)
 
-* *Optional* Intantiate the GoLoggerController into your UI. **Beware** GoLoggerController is currently partially broken and will be fixed in the next update.
+* *Optional:* Intantiate the GoLoggerController into your UI. **Beware!** Currently, GoLoggerController is partially broken and will be fixed in the next update.
 
 You're all set! It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` in your exit game function. While not stopping a session before closing the game won’t break the plugin, it’s good practice. This can help differentiate between normal exits, crashes, or forced closures, depending on whether the log file ends with "Stopped session."<br><br>
 
 
 ## How to use GoLogger:<br>
 ### **Starting & stopping log sessions:**<br>
-GoLogger uses "sessions" to indicate when it’s actively logging. Each session creates a new .log file with the time- and datestamp of creation. Starting and stopping sessions is as simple as calling `Log.start_session()` and `Log.stop_session()`. If you start and stop sessions during gameplay, it's recommended to add at least a 1-second cooldown before starting a new session. An example of this can be found in "GoLoggerController.gd" under the `_on_session_button_toggled()` signal. This prevents multiple sessions from being created within the same second, which could cause sorting issues when identifying the oldest file.<br><br>
+GoLogger uses "sessions" to indicate when it’s actively logging. Each session creates a new .log file with the time- and datestamp of creation. Starting and stopping sessions is as simple as calling `Log.start_session()` and `Log.stop_session()`. If you plan to start and stop sessions during gameplay, it’s recommended to use the `start_delay` parameter with 1 or more seconds using `Log.start_session(1.2)`, which will delay the session start by 1.2 seconds. This helps prevent multiple log files from being created with the same timestamp, which can cause sorting issues. This delay is especially useful if you accidentally add session start/stop calls in multiple scripts.<br><br>
 
 
 ### **Creating log entries and include data:**<br>
@@ -71,15 +71,15 @@ The directories where the .log files are created are located in the User Data fo
 ### Plugin settings:
 To access the settings, you open "GoLogger.tscn" and find the settings in the Inspector. ![options](https://github.com/user-attachments/assets/52e7fa13-836e-4c3e-9675-1a3b3a563bdf)
 ### GoLogger Controller:
-This plugin comes with a controller that provides some basic information and functionality while the project is running, and can be toggled by pressing F9. <br><br>
+This plugin comes with a controller that provides information about the current session and can stop and start sessions. To use it, just instantiate it into your existing UI and you can toggle its visibility using F9. Binding can be changed in "Log.tscn". <br><br>
 
 
 ## Managing .log file size:
-One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how GoLogger handles file writes. To write log entries, `FileAccess.WRITE` which truncates the file when used. The plugin stores the old entries, truncates the file, adds them back, and then appends the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings can slow down the system. This is especially a concern during long game sessions or if multiple systems are logging to the same file. To mitigate this, GoLogger offers two methods for limiting log file size:
+One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates the file when used. Therefore, the plugin first stores the old entries with `FileAccess.READ`, truncates the file with `FileAccess.WRITE`, adds them back, and then appends the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings/arrays can slow down the system. This is especially a concern during long game sessions or if multiple systems are logging to the same file. To mitigate this, GoLogger offers two methods for limiting log length:
 ### Entry Count Limit(recommended):
-In the GoLogger inspector (or via script), `entry_count_limit` sets the maximum number of lines allowed in a file. Once the limit is reached, the oldest entry is removed as new ones are added. This method is highly reliable for preventing files from becoming too large.
+In the inspector of "Log.tscn"(where you find all plugin settings), `entry_count_limit` sets the maximum number of entries/lines allowed in a file. Once the limit is reached, the oldest entry is removed as new ones are added. This method is highly reliable for preventing files from becoming too large.
 ### Session Timer:
-A timer starts with each session, and when it expires, the session will stop and restart by default. The `session_timeout_action` allows you to either stop the session or stop and start a new one. While this can be helpful, it is less reliable for file size management if many entries are being logged continuously. However, the timer can be useful for other purposes, such as stress testing. A `session_timer_started` signal is available to help sync with this timer.
+A timer starts with each session, and when it expires, the session will stop and restart by default. The `session_timeout_action` allows you to either stop the session entrirely or stop and start a new one. While this can be helpful and can be useful in certain situation, it is less reliable for file size management because it's still possible to log too many entries in a short amount of time. However, the timer can be useful for other purposes, such as stress testing. A `session_timer_started` signal is available to help sync with this timer.
 *Note: If `stop_session_only` is used, you'll need to manually start a new session either via the GoLoggerController or by calling `start_session()` in your code.*
 <br>
 You can use Entry Count Limit, Session Timer, or both via the `log_manage_method` setting. It is highly recommended to use one or both methods, especially for released projects. Objectively, Entry Count Limit is the more efficient solution, but both options offer flexibility. If you experience performance issues and suspect GoLogger is the cause, try reducing the entry limit or shortening the session timer.
