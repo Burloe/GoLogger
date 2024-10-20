@@ -3,7 +3,7 @@ extends EditorPlugin
 
 
 func _enter_tree() -> void:
-	add_autoload_singleton("Log", "res://addons/GoLogger/GoLogger.tscn")
+	add_autoload_singleton("Log", "res://addons/GoLogger/Log.tscn")
 
 
 

@@ -17,7 +17,7 @@ config/features=PackedStringArray("4.3", "Forward Plus")
 
 [autoload]
 
-GoLogger="*res://addons/GoLogger/Log.tscn"
+Log="*res://addons/GoLogger/Log.tscn"
 
 [display]
 

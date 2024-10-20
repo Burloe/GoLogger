@@ -11,7 +11,7 @@ var rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	randomize()
-	GoLogger.session_status_changed.connect(_on_session_status_changed)
+	Log.session_status_changed.connect(_on_session_status_changed)
 	update_timer.timeout.connect(_on_update_timer_timeout)
 	for c in $VBoxContainer/Simulations/MarginContainer/VBoxContainer.get_children(): # Event Simulation buttons
 		if c is Button:
@@ -20,11 +20,11 @@ func _ready() -> void:
 
 
 func set_log_text() -> void:
-	if GoLogger.current_game_file != "":
-		var _g = FileAccess.open(GoLogger.current_game_filepath, FileAccess.READ)
+	if Log.current_game_file != "":
+		var _g = FileAccess.open(Log.current_game_filepath, FileAccess.READ)
 		if !_g:
 			var _err = FileAccess.get_open_error()
-			if _err != OK and !GoLogger.disable_errors:
+			if _err != OK and !Log.disable_errors:
 				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> ", Log.get_err_string(_err))
 				return
 		else:
@@ -33,11 +33,11 @@ func set_log_text() -> void:
 		_g.close()
 	else: gamelog.text = "No active session."
 	
-	if GoLogger.current_player_file != "":
-		var _p = FileAccess.open(GoLogger.current_player_filepath, FileAccess.READ)
+	if Log.current_player_file != "":
+		var _p = FileAccess.open(Log.current_player_filepath, FileAccess.READ)
 		if !_p:
 			var _err = FileAccess.get_open_error()
-			if _err != OK and !GoLogger.disable_errors:
+			if _err != OK and !Log.disable_errors:
 				printerr("GoLogger Error: Attempting to read file contents in _on_update_timer_timeout() -> ", Log.get_err_string(_err))
 				return
 		else:
@@ -54,8 +54,8 @@ func _on_session_status_changed() -> void:
 
 func _on_update_timer_timeout() -> void:
 	set_log_text()
-	$LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Label.text = str("Current game log file:\n", GoLogger.current_game_file)
-	$LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Label2.text = str("Current player log file:\n", GoLogger.current_player_file)
+	$LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Label.text = str("Current game log file:\n", Log.current_game_file)
+	$LogContents/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer/Label2.text = str("Current player log file:\n", Log.current_player_file)
  
 
 ## Buttons that simulates log entries.

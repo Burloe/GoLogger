@@ -88,7 +88,7 @@ text = "[center][font_size=18] Session status:
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 focus_mode = 0
-text = "  Session Switch"
+text = "  Session Toggle"
 
 [node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/SessionButton"]
 show_behind_parent = true

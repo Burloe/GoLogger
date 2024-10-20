@@ -1,5 +1,5 @@
 extends Node
-class_name Log
+# class_name Log
 
 ## Class that handles settings, all session a logging logic. 
 ##
@@ -40,7 +40,7 @@ var entry_count_player : int = 0 ## The current count of entries in the player.l
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
 
 @export_category("LogController")
-@export var controller_toggle_binding : InputEventShortcut = shortcut_res ## Shortcut binding used to toggle the controller's visibility.
+@export var controller_toggle_binding : InputEventShortcut = shortcut_res ## Shortcut binding used to toggle the controller's visibility. Does support joypad bindings as well. 
 var shortcut_res := preload("res://addons/GoLogger/LogController/ControllerShortcut.tres")
 @export var hide_contoller_on_start : bool = false ## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
 @export var controller_drag_offset : Vector2 = Vector2(-180, -60) ## Correcting offset for the controller while draggin(may require changing depending on your project resolution).
