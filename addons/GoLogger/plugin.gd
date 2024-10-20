@@ -3,9 +3,9 @@ extends EditorPlugin
 
 
 func _enter_tree() -> void:
-	add_autoload_singleton("GoLogger", "res://addons/GoLogger/GoLogger.tscn")
+	add_autoload_singleton("Log", "res://addons/GoLogger/GoLogger.tscn")
 
 
 
 func _exit_tree() -> void:
-	remove_autoload_singleton("GoLogger") 
+	remove_autoload_singleton("Log") 

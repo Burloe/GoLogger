@@ -11,12 +11,13 @@ config_version=5
 [application]
 
 config/name="GoLogger"
+config/version="1.1"
 run/main_scene="res://Showcase/main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 
 [autoload]
 
-GoLogger="*res://addons/GoLogger/GoLogger.tscn"
+GoLogger="*res://addons/GoLogger/Log.tscn"
 
 [display]
 
