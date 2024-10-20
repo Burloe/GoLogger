@@ -1,40 +1,33 @@
-# ![GoLogger.svg](https://github.com/Burloe/GoLogger/blob/main/addons/GoLogger/GoLoggerIcon.png) GoLogger
-GoLogger is a simple framework for logging game events and data to external .log files in Godot 4. Designed for easy integration, GoLogger requires minimal setup, allowing you to start logging quickly. Logging entries are as straightforward as using `print()`, like `Log.entry(str("Your log entry: ", data))`.
-<br><br>
-GoLogger runs in the background but includes a controller(toggle with F9) for monitoring and managing the current log session.
+# ![GoLoggerTitleBase](https://github.com/user-attachments/assets/46520848-521e-4bd9-b6d7-53fef6e52cad)
 
-https://github.com/user-attachments/assets/d49a569a-0702-433a-bc66-45c5253d543d
+GoLogger is a simple yet flexible logging framework for Godot 4, designed to log game events and data to external .log files accessible by both developers and players. With minimal setup required, GoLogger can be integrated quickly and easily into your project. It runs in the background, capturing the data you define with timestamps, providing a snapshot of events leading up to crashes, bugs, or other issues—making it easier for users to share logs and investigate problems.
 
-*Note: The file count limitation and deletion code was improved and works a lot better than what's seen in this video.*
+Log entries are as simple as calling `Log.entry()`(similar and as easy to use as `print()`) and can include any data that can be converted into a string. The framework is fully customizable, allowing you to log as much or as little information as needed. For convenience, GoLogger includes an optional controller (toggleable with F9) for managing the current session directly within the game.
+
+	Log.entry("Player picked up", item, " x", item.amount, ".")	     # Result: [14:44:44] Player picked up MedKit x3. 
+
+![Showcase1](https://github.com/user-attachments/assets/1fda122c-3aff-4e50-b706-e38403bda3a9)
+
 
 ## **Contents**
-1. Introduction
-2. Installation and setup
-3. How to use GoLogger
+1. Installation and setup
+2. How to use GoLogger
    * Starting & Stopping Log Sessions
    * Creating log entries and include data
-4. Accessing the .log files, the plugin settings and GoLoggerController
-5. GoLogger Controller & Settings
-6. Current issues and bugs
-
-## Introduction
-GoLogger is a standalone logging framework that creates external .log files accessible to both developers and players. It stores whatever game events and data you define with timestamps, offering a snapshot of events leading up to crashes, bugs, or issues which your players/users can share to aid in investigating issues.
-
-Designed as a minimalistic foundation, GoLogger is flexible and scalable. Log entries can include any message or data (as long as they can be converted to strings). Although GoLogger doesn't generate log entries automatically upon installation, adding them to your code is as easy as using `print()` which you can make as simple or detailed as you decide:
-	
- 	Log.entry("Player picked up", item, " x", item.amount, ".")	     # Result: [14:44:44] Player picked up MedKit x3. 
+3. Accessing the .log files, the plugin settings and GoLoggerController
+4. GoLogger Controller & Settings
 
 ## Installation and setup:
-![InstallErrors](https://github.com/user-attachments/assets/8875e569-7cd3-4517-8d7c-e51412f8cafd)<br>
+![Install Errors](https://github.com/user-attachments/assets/7edcdc5d-9d10-4e39-83fa-e31a9f2a49c3)<br>
 
-**Note: Godot will print several errors upon first installing the plugin and is expected!** GoLogger requires an autoload, which isn't added until the plugin is enabled.
+**Note: Godot will print several errors upon importing the plugin and is expected!** GoLogger requires an autoload, which isn't added until the plugin is enabled.
 
 * **Importing the plugin:** Only import the "addons" into your project's root directory. The folder structure should look like `res://addons/GoLogger`.
 
 * **Enable the plugin:** Navigate to `Project > Project Settings > Plugins`, and check "GoLogger" in the list of available plugins to enable it.
 *If errors persist, ensure "GoLogger.tscn" was added properly as an autoload and then restart Godot.*<br>
 
-![enable_plugin](https://github.com/user-attachments/assets/f6eecd64-16ca-4158-815b-70eda5ad6fab)
+![enable_plugin](https://github.com/user-attachments/assets/6d201a57-638d-48a6-a9c0-fc8719beff37)
 
 * *Optional:* Intantiate the GoLoggerController into your UI. **Beware!** Currently, GoLoggerController is partially broken and will be fixed in the next update.
 
@@ -43,18 +36,15 @@ You're all set! It’s recommended to add `Log.stop_session()` before calling `g
 
 ## How to use GoLogger:<br>
 ### **Starting & stopping log sessions:**<br>
-GoLogger uses "sessions" to indicate when it’s actively logging. Each session creates a new .log file with the time- and datestamp of creation. Starting and stopping sessions is as simple as calling `Log.start_session()` and `Log.stop_session()`. If you plan to start and stop sessions during gameplay, it’s recommended to use the `start_delay` parameter with 1 or more seconds using `Log.start_session(1.2)`, which will delay the session start by 1.2 seconds. This helps prevent multiple log files from being created with the same timestamp, which can cause sorting issues. This delay is especially useful if you accidentally add session start/stop calls in multiple scripts.<br><br>
+GoLogger uses sessions to indicate when it’s actively logging or not, and each session creates a new .log file with the time- and datestamp of creation. The plugin has a .log file limit of 10 by default(can be changed) and once the limit has been hit, the file with the oldest timestamp is deleted. 
+![image](https://github.com/user-attachments/assets/75ee6dc9-8cfe-472f-b037-86f2f1cf8f7f)
+Starting and stopping sessions is as simple as calling `Log.start_session()` and `Log.stop_session()`. The parameter `start_delay` was implemented to add a 1-second delay before starting a new session. This was added to prevent .log files from being created with the same timestamp(if you accidentally add `start_sessions()` in multiple scripts) which can cause sorting issues when deleting the oldest log. Use only if this is affecting you!<br><br>
 
 
 ### **Creating log entries and include data:**<br>
-Simply installing GoLogger will not generate any log entries. You still need to define `Log.entry()` to your code, including a string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry. However, be mindful that converting to a string may not always format the data in a human-readable way. Here's an example of how to create a log entry with some formatting for readability. 
+Simply installing GoLogger will not generate any log entries. You still need to define `Log.entry()` to your code, including a string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry. However, be mindful that converting to a string may not always format the data in a human-readable way. In this example you can see a couple of ways one can format these entries:
 
-	func _on_damage_taken(entity: CharacterBody2D, damage : float):
-		current_health -= damage
- 		if current_health <= 0:
-			death()
-  			Log.entry(str("Player died @", get_position(), ", killed by ", entity.get_name(), ". Final blow dealt ", damage, " damage."), 1)
-     			# Resulting log entry:  [21:42:18] Player died @(918, 2103), killed by Swamp Monster. Final blow dealt 68 damage. 
+![Example](https://github.com/user-attachments/assets/e2b81bd7-648f-4fe2-8608-bc58c1e1fde3)
 
 The `entry()` function has one mandatory and optional parameters: `entry(category : int, log_entry : String, date_time_flag : int = 0, utc : bool = true, space : bool = true)`
 Only the first parameter mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the formatting of your log entry to your liking.
@@ -69,7 +59,7 @@ You can call this function from any script in your project. The string message c
 ### Accessing the .log files:
 The directories where the .log files are created are located in the User Data folder under `user://logs/x_Gologs/x.log`. The User Data folder location is different on every OS but can be accessed through Godot and can be accessed through `Project > Open User Data Folder`.
 ### Plugin settings:
-To access the settings, you open "GoLogger.tscn" and find the settings in the Inspector. ![options](https://github.com/user-attachments/assets/52e7fa13-836e-4c3e-9675-1a3b3a563bdf)
+To access the settings, you open "GoLogger.tscn" and find the settings in the Inspector.
 ### GoLogger Controller:
 This plugin comes with a controller that provides information about the current session and can stop and start sessions. To use it, just instantiate it into your existing UI and you can toggle its visibility using F9. Binding can be changed in "Log.tscn". <br><br>
 
