@@ -33,8 +33,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		visible = !visible
 	if event is InputEventJoypadButton and Log.controller_toggle_binding.shortcut.matches_event(event) and event.is_released():
 		visible = !visible
-	
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_dragging:
+		print("hellyea")
 		position = Vector2(event.position.x + Log.controller_drag_offset.x, event.position.y + Log.controller_drag_offset.y)
 
 
@@ -114,7 +115,7 @@ func _on_update_timer_timeout() -> void:
 [color=light_blue]", snappedi(Log.session_timer.get_time_left(), 1) )
 
 func _on_session_button_toggled(toggled_on : bool) -> void:
-	Log.stop_session() if !toggled_on else Log.start_session(1.2) 
+	Log.stop_session() if !toggled_on else await Log.start_session(1.2) 
 	# Prevent the creation of conflicting file names with the same timestamp
 	session_button.disabled = true
 	await get_tree().create_timer(1.2).timeout
@@ -123,6 +124,7 @@ func _on_session_button_toggled(toggled_on : bool) -> void:
 
 ## Sets [param is_dragging] depending on the pressed state of the drag button.
 func _on_drag_button(state : bool) -> void:
+	print(state)
 	is_dragging = state
 
 

@@ -90,22 +90,18 @@ func _ready() -> void:
 		start_session()
 
 
-## Initiates a log session, recording game events in the .log file.[br][param start_delay] will start the session after the defined time. This is to prevent log files from being created with the same timestamp which can cause sorting issues.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br}[param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).[br][b]Note:[/b][br]    You cannot start one session without stopping the previous. 
-func start_session(start_delay : float = 0.0, utc : bool = false, space : bool = true) -> void: 
-	# if start_delay > 0.0:
-	# 	var sdtimer := Timer.new()
-	# 	sdtimer.wait_time = start_delay
-	# 	sdtimer.one_shot = true
-	# 	sdtimer.start()
-	# 	await sdtimer.timeout
-
-	# 	start_delay_timer.wait_time = start_delay
-	# 	start_delay_timer.one_shot = true
-	# 	start_delay_timer.start()
-	# 	await start_delay_timer.timeout
-
-
-
+## Initiates a log session, recording game events in the .log file.
+## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but requires function to be called using the "await" keyword: [code]await Log.start_session(1.0)[/code].[br]
+## See README[How to use GoLogger > Starting and stopping sessions] for more info.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br][param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).
+## [codeblock]
+##	# Three ways to use 
+##	Log.start_session()                       # Normal call
+##	await Log.start session(1.2)              # Calling with a start delay
+##	await Log.start_session(1.2, true, false) # Using all redefined parameters
+##	# 1. Uses a start delay. 2. UTC time rather than local system time. 3. Uses a T instead of a space to separate date and time in timestamps.[/codeblock]
+func start_session(start_delay : float = 0.0, utc : bool = false, space : bool = true) -> void:
+	if start_delay > 0.0:
+		await get_tree().create_timer(start_delay).timeout
 	if log_manage_method == 1 or log_manage_method == 2:
 		session_timer.start(session_timer_wait_time)
 		session_timer_started.emit()
@@ -256,7 +252,7 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 					var err = FileAccess.get_open_error()
 					if err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(err))
 				var entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
-				_fw.store_line(str(_c, entry))  
+				_fw.store_line(str(_c, entry))
 				_fw.close()
 
 
