@@ -1,24 +1,27 @@
 extends Node
-# class_name Log
 
-## Class that handles settings, all session a logging logic. 
+## Singleton that handles settings and session logging logic. 
 ##
 ## For installation, setup and how to use instructions, see the README.md or https://github.com/Burloe/GoLogger
 
 #region Declarations
-signal toggle_session_status(status : bool) ## Emitted at the end of [code]Log.start_session()[/code] and [code]Log.end_session[/code]. This signal is responsible for turning sessions on and off.
-signal session_status_changed ## Emitted when session status is changed. Use to signal your other scripts that the session is active. 
-signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications that file size manage. E.g. when stress testing some system and logging is needed for a set time. Having a 'started' signal can be useful to initiate a test.
+signal session_status_changed ## Emitted when the session status has changed.  
+signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications than filemanagement. E.g. when stress testing some system and/or when logging is needed for a specific time. 
+
 @export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Determines the type of header used in the .log file header. I.e. the string that says:[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:
-var header_string : String ## String result from [param log_info_header], that contains either project name, project version, both or none.
+var header_string : String ## Contains the resulting string determined from [param log_info_header].
 @export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 ## Enables/disables all debug warnings and errors.\n'All' - Enables errors and warnings.\n'Only Warnings' - Disables errors and only allows warnings.\n'None' - All errors and warnings are disabled.
 @export var warn_failed_start : bool = true ## Enables/disables the "Attempted to start new log session before stopping the previous" warning.
-@export var autostart_session : bool = true ## Starts the session when autoload is initialized.
-var session_status: bool = false ## Flags whether or not a session is active.
-@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var session_print : int = 0 ## Used to [method print] whenever a session is started or stopped to the Output. 
+@export var autostart_session : bool = true ## Autostarts the session when plugin is initialized in the scene tree.
+var session_status: bool = false: ## Flags whether or not a session is active.
+	set(value):
+		session_status = value
+		session_status_changed.emit()
+@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var session_print : int = 0 ## When enabled, [method print] whenever a session is started or stopped to the Output. 
 @export var include_log_name : bool = true ## includes the .log names that's logged into the print statements when using [param session_print].
 
 @export_category("Log Management") 
+@onready var start_delay_timer : Timer = $StartDelayTimer ## Used to delay the start of a session in order to prevent logs with the same name/timestamp from being generated.
 @onready var session_timer: Timer = $SessionTimer ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
 @export var file_cap = 10 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
 ## Denotes the log management method used to prevent long or large .log files. Added to combat potential performance issues.[br]
@@ -62,7 +65,6 @@ var current_player_file : String = "" ## player.log file path associated with th
 
 
 func _ready() -> void:
-	toggle_session_status.connect(_on_toggle_session_status)
 	match log_info_header:
 		0: # Project name + version
 			header_string = str(
@@ -74,36 +76,51 @@ func _ready() -> void:
 			header_string = str(ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != "" else "")
 		3: header_string = ""
 	
-	if autostart_session:
-		start_session()
 	if session_timer == null: 
 		session_timer = Timer.new()
 		add_child(session_timer)
 		session_timer.owner = self
 		session_timer.set_name("SessionTimer")
-	# Fix: By connecting the signal at end of [method _ready], "start_session()" is prevented from being called twice during param _ready().
 	session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer.one_shot = false
 	session_timer.wait_time = session_timer_wait_time
 	session_timer.autostart = false
+	
+	if autostart_session:
+		start_session()
 
 
-## Initiates a log session, recording game events in the .log file.[br][param start_delay] will start the session after the defined time. This is to prevent log files from being created with the same timestamp which can cause sorting issues.[br][param utc] will force the date and time format to UTC[yy,mm,ddThh:mm:ss].[br}[param space] will use a space to separate date and time instead of a "T".[br][b]Note:[/b][br]    You cannot start one session without stopping the previous. 
+## Initiates a log session, recording game events in the .log file.[br][param start_delay] will start the session after the defined time. This is to prevent log files from being created with the same timestamp which can cause sorting issues.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br}[param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).[br][b]Note:[/b][br]    You cannot start one session without stopping the previous. 
 func start_session(start_delay : float = 0.0, utc : bool = false, space : bool = true) -> void: 
-	if start_delay > 0.0:
-		await get_tree().create_timer(start_delay).timeout
-	#region Game logs
-	if GAME_PATH != "":
-		#region Error check
+	# if start_delay > 0.0:
+	# 	var sdtimer := Timer.new()
+	# 	sdtimer.wait_time = start_delay
+	# 	sdtimer.one_shot = true
+	# 	sdtimer.start()
+	# 	await sdtimer.timeout
+
+	# 	start_delay_timer.wait_time = start_delay
+	# 	start_delay_timer.one_shot = true
+	# 	start_delay_timer.start()
+	# 	await start_delay_timer.timeout
+
+
+
+	if log_manage_method == 1 or log_manage_method == 2:
+		session_timer.start(session_timer_wait_time)
+		session_timer_started.emit()
+ 
+	if GAME_PATH != "": 
 		if GAME_PATH == null: 
 			if error_reporting == 0: 
-				push_error("GoLogger Error: GAME_PATH is null. Assign a valid directory path.")
+				push_error("GoLogger Error: Failed to start session[]. Assign a valid directory path.")
+			if error_reporting == 1:
+				push_warning("GoLogger Error: Failed to start session[Invalid GAME_PATH]. Assign a valid directory path.")
 			return
 		if session_status:
 			if error_reporting != 2 and warn_failed_start: 
 				push_warning("GoLogger Warning: Attempted to start new log session before stopping the previous.")
-			return
-		#endregion
+			return 
 		else:
 			var _dir : DirAccess
 			if !DirAccess.dir_exists_absolute(GAME_PATH):
@@ -131,12 +148,9 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 					var _s := str(header_string, "Game Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
 					_file.store_line(_s)
 					entry_count_game = 1
-					_file.close() 
-	#endregion
-				
-	#region Player logs
-	if PLAYER_PATH != "": 
-		#region Error check
+					_file.close()  
+				 
+	if PLAYER_PATH != "":  
 		if PLAYER_PATH == null:
 			if error_reporting == 0: 
 				push_error("GoLogger Error: PLAYER_PATH is null. Assign a valid directory path.")
@@ -144,8 +158,7 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 		if session_status:
 			if error_reporting != 2 and warn_failed_start: 
 				push_warning("GoLogger Warning: Attempted to start new log session before stopping the previous.")
-			return
-		#endregion
+			return 
 		else:
 			var _dir : DirAccess
 			if !DirAccess.dir_exists_absolute(PLAYER_PATH):
@@ -173,9 +186,7 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 					var _s := str(header_string, "Player Log Session Started[", Time.get_datetime_string_from_system(utc, space), "]:")
 					_file.store_line(_s)
 					entry_count_player = 1
-					_file.close() 
-	#endregion
-	toggle_session_status.emit(true)
+					_file.close()
 
 
 ## Stores a log entry into the 'game/ui/player.log' file.[br]
@@ -290,8 +301,7 @@ func stop_session(include_timestamp : bool = true, utc : bool = false) -> void:
 			_fw.store_line(_s)
 			_fw.close()
 			current_player_file = ""
-	toggle_session_status.emit(false)
-	session_status_changed.emit()
+	# session_status_changed.emit()
 
 
 ## Helper function to get an error string for likely [DirAccess] and [FileAccess] errors.
@@ -358,19 +368,7 @@ func get_file_contents(folder_path : String) -> String:
 	return str("GoLogger Error: Unable to retrieve file contents in (", folder_path, ")") if error_reporting != 2 else ""
 
 
-
-## Signal receiver: Toggles the session status between true/false upon signal [signal toggle_session_status] emitting. 
-func _on_toggle_session_status(status : bool) -> void:
-	session_status = status
-	if !status: 
-		session_timer.stop()
-	else:  # Prevent the creation of file on the same timestamp by adding a "cooldown" timer
-		await get_tree().create_timer(1.0).timeout
-		session_timer.start(session_timer_wait_time)
-		session_timer_started.emit()
-	session_status_changed.emit()
-
-## Signal receiver: Stops and possibly starts the session when [param session_timer]s [signal timeout] signal is emitted. 
+## Stops and starts sessions when using [param session_timeout_action]. 
 func _on_session_timer_timeout() -> void:
 	match log_manage_method:
 		0: # Entry count limit

@@ -38,25 +38,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		position = Vector2(event.position.x + Log.controller_drag_offset.x, event.position.y + Log.controller_drag_offset.y)
 
 func _ready() -> void:
-	#region Signal connections
 	drag_button.button_up.connect(_on_drag_button.bind(false))
 	drag_button.button_down.connect(_on_drag_button.bind(true))
 	Log.session_status_changed.connect(_on_session_status_changed)
-	if !Log.autostart_session: session_button.toggled.connect(_on_session_button_toggled) 
+	session_button.toggled.connect(_on_session_button_toggled) 
 	print_gamelog_button.button_up.connect(_on_print_button_up.bind(print_gamelog_button))
 	print_playerlog_button.button_up.connect(_on_print_button_up.bind(print_playerlog_button))
 	Log.session_timer_started.connect(_on_session_timer_started)
 	update_timer.timeout.connect(_on_update_timer_timeout)
-	#endregion
-	
-#region Apply base values and settings
+
 	if Log.hide_contoller_on_start: hide()
 	else: show()
 	await get_tree().process_frame
 	session_timer_pgb.min_value = 0
 	session_timer_pgb.max_value = Log.session_timer_wait_time
 	session_timer_pgb.step = Log.session_timer_wait_time / Log.session_timer_wait_time 
-	# GoLogger autoload is initialized after this node -> Thus, await one physics frame. Can also use the "ready" signal.
 	await get_tree().process_frame 
 	Log.session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer_pgb.modulate = Color.BLACK if Log.session_timer.is_stopped() else Color.FOREST_GREEN
@@ -66,21 +62,31 @@ func _ready() -> void:
 ", Log.entry_count_game)
 	player_count_label.text = str("[center][font_size=12] PlayerLog:
 ", Log.entry_count_player)
-#endregion
+	session_button.button_pressed = Log.session_status
+	session_status_label.text = str("[center][font_size=18] Session status:
+[center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:
+[center][color=red]OFF")
 
+
+func _process(delta):
+	print(Log.session_status)
 
 
 
 ## Signal receiver when Game Session CheckButton is toggled.
 func _on_session_button_toggled(toggled_on : bool) -> void:
+	print("yoo")
+	
 	Log.stop_session() if !toggled_on else Log.start_session(1.2) 
-	# Prevent the creation of conflicting file names with the same timestamp, resulting in additional numbers which caused issues in my testing.
+	# Prevent the creation of conflicting file names with the same timestamp
 	session_button.disabled = true
+	await get_tree().create_timer(1.2).timeout
 	session_button.disabled = false 
 
 
 ## Received signal from [GoLogger] when session status is changed. 
 func _on_session_status_changed() -> void:
+	print("session status changed emitted")
 	session_button.button_pressed = Log.session_status
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:

@@ -1,3 +1,8 @@
 {
-	"godotTools.editorPath.godot4": "c:\\Users\\TomNi\\OneDrive\\1. GODOT\\Engine\\Godot_v4.3-stable_win64.exe"
+	"godotTools.editorPath.godot4": "c:\\Users\\TomNi\\OneDrive\\1. GODOT\\Engine\\Godot_v4.3-stable_win64.exe",
+	"workbench.colorCustomizations": {
+        "editorError.foreground":   "#ff000000",
+        "editorWarning.foreground": "#ffe60033",
+        "editorInfo.foreground":    "#00ff0088"
+        }
 }
