@@ -37,6 +37,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_dragging:
 		position = Vector2(event.position.x + Log.controller_drag_offset.x, event.position.y + Log.controller_drag_offset.y)
 
+
 func _ready() -> void:
 	drag_button.button_up.connect(_on_drag_button.bind(false))
 	drag_button.button_down.connect(_on_drag_button.bind(true))
@@ -68,44 +69,28 @@ func _ready() -> void:
 [center][color=red]OFF")
 
 
-func _process(delta):
-	print(Log.session_status)
-
-
-
-## Signal receiver when Game Session CheckButton is toggled.
-func _on_session_button_toggled(toggled_on : bool) -> void:
-	print("yoo")
-	
-	Log.stop_session() if !toggled_on else Log.start_session(1.2) 
-	# Prevent the creation of conflicting file names with the same timestamp
-	session_button.disabled = true
-	await get_tree().create_timer(1.2).timeout
-	session_button.disabled = false 
-
-
-## Received signal from [GoLogger] when session status is changed. 
+## Called when [signal session_status_changed] is emitted from [Log].
 func _on_session_status_changed() -> void:
 	print("session status changed emitted")
 	session_button.button_pressed = Log.session_status
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:
-			[center][color=red]OFF")
+[center][color=red]OFF")
 	# Connect signal after setting the initial state(if autostart is on)
 	if !session_button.toggled.is_connected(_on_session_button_toggled): 
 		session_button.toggled.connect(_on_session_button_toggled)
 
 
-## Signal receiver: Starts value time to update [ProgressBar] when session timer is started.
+## Starts value time to update [ProgressBar] when session timer is started.
 func _on_session_timer_started() -> void:
 	update_timer.start()
 	session_timer_pgb.modulate = Color.FOREST_GREEN
-## Signal receiver: Updates [ProgressBar] modulate depending on session status.
+## Updates [ProgressBar] modulate depending on session status.
 func _on_session_timer_timeout() -> void:
 	session_timer_pgb.modulate = Color.BLACK
 
 
-## Signal receiver: Updates all values on the controller every 0.5 by default. This can be changed with the [param session_timer_wait_time] in [GoLogger].
+## Updates all values on the controller every 0.5 by default. This can be changed with the [param session_timer_wait_time] in [GoLogger].
 func _on_update_timer_timeout() -> void:
 	session_timer_pgb.modulate = Color.BLACK if Log.session_timer.is_stopped() else Color.FOREST_GREEN
 	session_status_label.text = str("[center][font_size=18] Session status:
@@ -128,14 +113,20 @@ func _on_update_timer_timeout() -> void:
 	timer_left_label.text = str("[center][font_size=12]TimeLeft:
 [color=light_blue]", snappedi(Log.session_timer.get_time_left(), 1) )
 
-
-## Signal receiver: Prints the current/latest log contents to 'Output'.
-func _on_print_button_up(button : Button) -> void:
-	match button.get_name():
-		"PrintGameLogButton": print(Log.get_file_contents(Log.GAME_PATH))
-		"PrintPlayerLogButton": print(Log.get_file_contents(Log.PLAYER_PATH))
+func _on_session_button_toggled(toggled_on : bool) -> void:
+	Log.stop_session() if !toggled_on else Log.start_session(1.2) 
+	# Prevent the creation of conflicting file names with the same timestamp
+	session_button.disabled = true
+	await get_tree().create_timer(1.2).timeout
+	session_button.disabled = false 
 
 
 ## Sets [param is_dragging] depending on the pressed state of the drag button.
 func _on_drag_button(state : bool) -> void:
 	is_dragging = state
+
+
+func _on_print_button_up(button : Button) -> void:
+	match button.get_name():
+		"PrintGameLogButton": print(Log.get_file_contents(Log.GAME_PATH))
+		"PrintPlayerLogButton": print(Log.get_file_contents(Log.PLAYER_PATH))

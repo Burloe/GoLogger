@@ -187,6 +187,7 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 					_file.store_line(_s)
 					entry_count_player = 1
 					_file.close()
+	session_status = true
 
 
 ## Stores a log entry into the 'game/ui/player.log' file.[br]
@@ -301,7 +302,7 @@ func stop_session(include_timestamp : bool = true, utc : bool = false) -> void:
 			_fw.store_line(_s)
 			_fw.close()
 			current_player_file = ""
-	# session_status_changed.emit()
+	session_status = false
 
 
 ## Helper function to get an error string for likely [DirAccess] and [FileAccess] errors.
