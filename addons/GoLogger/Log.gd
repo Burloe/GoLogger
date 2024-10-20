@@ -182,11 +182,11 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 ## [param timestamp] is used to specify the type of date and time format you want your entries tagged with.[br]
 ## [param utc] will convert the time into a unified UTC format as opposed to your or your players local time format.
 func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, utc : bool = false) -> void:
-	var _timestamp : String = str("\t[", Time.get_time_string_from_system(utc), "] ") 
+	var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] ") 
 	match file:
 		0: # GAME
 			if !session_status: 
-				if error_reporting != 2: push_warning("GoLogger Warning: Attempted to log Game Entry without starting a session.")
+				if error_reporting != 2: push_warning("GoLogger Warning: Log entry attempt failed due to inactive session.")
 				return
 			else:
 				var _f = FileAccess.open(current_game_filepath, FileAccess.READ)
@@ -196,25 +196,26 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 				var _c = _f.get_as_text()
 				var lines : Array[String] = []
 				while not _f.eof_reached():
-					var line = _f.get_line().strip_edges(false, true) 
-					if line != "": 
-						lines.append(line) 
+					var _l = _f.get_line().strip_edges(false, true) 
+					if _l != "": 
+						lines.append(_l)
 				_f.close()
+				
+				# Remove old entries at line 1 until entry count is less than limit.
+				if log_manage_method == 0 or log_manage_method == 2:
+					while lines.size() > entry_count_limit:
+						lines.remove_at(1)
 				entry_count_game = lines.size()
-				if lines.size() >= entry_count_limit:
-					lines.remove_at(1) 
+				
 				var _fw = FileAccess.open(current_game_filepath, FileAccess.WRITE)
 				if !_fw:
 					var err = FileAccess.get_open_error()
 					if err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(err))
-				var _s : String = str("\t" + _timestamp + log_entry)
-				if log_manage_method == 0 or log_manage_method == 2:
-					lines.append(_s) 
-					for line in lines: 
-						_fw.store_line(line)
-				else: _fw.store_line(str(_c, _s))  
+				var entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
+				_fw.store_line(str(_c, entry))  
 				_fw.close()
 		
+
 		1: # PLAYER
 			if !session_status: # Error check
 				if error_reporting != 2: push_warning("GoLogger Warning: Log entry attempt failed due to inactive session.")
@@ -222,28 +223,28 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 			else:
 				var _f = FileAccess.open(current_player_filepath, FileAccess.READ)
 				if !_f:
-					var _err = FileAccess.get_open_error()
-					if _err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(_err))
+					var err = FileAccess.get_open_error()
+					if err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(err))
 				var _c = _f.get_as_text()
 				var lines : Array[String] = []
 				while not _f.eof_reached():
-					var line = _f.get_line().strip_edges(false, true) 
-					if line != "": 
-						lines.append(line) 
+					var _l = _f.get_line().strip_edges(false, true) 
+					if _l != "": 
+						lines.append(_l)
 				_f.close()
-				entry_count_player = lines.size()
-				if lines.size() >= entry_count_limit:
-					lines.remove_at(1) 
+				
+				# Remove old entries at line 1 until entry count is less than limit.
+				if log_manage_method == 0 or log_manage_method == 2:
+					while lines.size() > entry_count_limit:
+						lines.remove_at(1)
+				entry_count_game = lines.size()
+				
 				var _fw = FileAccess.open(current_player_filepath, FileAccess.WRITE)
 				if !_fw:
-					var _err = FileAccess.get_open_error()
-					if _err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(_err))
-				var _s : String = str("\t" + _timestamp + log_entry)
-				if log_manage_method == 0 or log_manage_method == 2:
-					lines.append(_s) 
-					for line in lines: 
-						_fw.store_line(line)
-				else: _fw.store_line(str(_c, _s))  
+					var err = FileAccess.get_open_error()
+					if err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(err))
+				var entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
+				_fw.store_line(str(_c, entry))  
 				_fw.close()
 
 
