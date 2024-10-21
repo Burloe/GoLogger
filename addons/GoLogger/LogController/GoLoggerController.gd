@@ -72,7 +72,6 @@ func _ready() -> void:
 
 ## Called when [signal session_status_changed] is emitted from [Log].
 func _on_session_status_changed() -> void:
-	print("session status changed emitted")
 	session_button.button_pressed = Log.session_status
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:
@@ -124,7 +123,6 @@ func _on_session_button_toggled(toggled_on : bool) -> void:
 
 ## Sets [param is_dragging] depending on the pressed state of the drag button.
 func _on_drag_button(state : bool) -> void:
-	print(state)
 	is_dragging = state
 
 

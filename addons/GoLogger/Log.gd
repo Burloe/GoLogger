@@ -91,7 +91,7 @@ func _ready() -> void:
 
 
 ## Initiates a log session, recording game events in the .log file.
-## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but requires function to be called using the "await" keyword: [code]await Log.start_session(1.0)[/code].[br]
+## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but requires function to be called using the "await" keyword: [code]await Log.start_session(1.0)[/code].
 ## See README[How to use GoLogger > Starting and stopping sessions] for more info.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br][param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).
 ## [codeblock]
 ##	# Three ways to use 
