@@ -8,7 +8,6 @@ extends Node
 signal session_status_changed ## Emitted when the session status has changed.  
 signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications than filemanagement. E.g. when stress testing some system and/or when logging is needed for a specific time. 
 
-var plugin_version : String = "1.1" ## Do not change this!
 # These paths can be accessed by selecting Project > Open User Data Folder in the top-left.[br]
 # Normally located in:[br]
 # Windows: %APPDATA%\Godot\app_userdata\[project_name][br]
