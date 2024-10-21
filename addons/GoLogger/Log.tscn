@@ -6,14 +6,9 @@
 
 [node name="Log" type="Node"]
 script = ExtResource("1_qpie0")
-log_manage_method = 2
 controller_toggle_binding = ExtResource("2_yjbc5")
 
 [node name="SessionTimer" type="Timer" parent="."]
-
-[node name="StartDelayTimer" type="Timer" parent="."]
-wait_time = 1.2
-one_shot = true
 
 [node name="GoLoggerController" parent="." instance=ExtResource("2_i3pa3")]
 offset_left = 157.6

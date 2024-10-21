@@ -20,21 +20,18 @@ var current_game_file : String = "" ## game.log file path associated with the cu
 var current_player_filepath : String = "" ## player.log file path associated with the current session.
 var current_player_file : String = "" ## player.log file path associated with the current session.
 
-@export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Determines the type of header used in the .log file header. I.e. the string that says:[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:
+@export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Determines the type of header used in the .log file header. Gets the project name and version from Project Settings > Application > Config.[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
 var header_string : String ## Contains the resulting string determined from [param log_info_header].
-@export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 ## Enables/disables all debug warnings and errors.\n'All' - Enables errors and warnings.\n'Only Warnings' - Disables errors and only allows warnings.\n'None' - All errors and warnings are disabled.
-@export var warn_failed_start : bool = true ## Enables/disables the "Attempted to start new log session before stopping the previous" warning.
-@export var autostart_session : bool = true ## Autostarts the session when plugin is initialized in the scene tree.
+@export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 ## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - Disables errors and only allows warnings.[br]'None' - All errors and warnings are disabled.
+@export var autostart_session : bool = true ## Autostarts the session at runtime.
+@export var warn_failed_start : bool = true ## Enables/disables the "Attempted to start new log session before stopping the previous" warning which can be particularly annoying.
 var session_status: bool = false: ## Flags whether or not a session is active.
 	set(value):
 		session_status = value
 		session_status_changed.emit()
-@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var session_print : int = 0 ## When enabled, [method print] whenever a session is started or stopped to the Output. 
-@export var include_log_name : bool = true ## includes the .log names that's logged into the print statements when using [param session_print].
+@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var print_session_changes : int = 0 ## If true, enables printing messages to the output when a log session is started or stopped.
 
 @export_category("Log Management") 
-@onready var start_delay_timer : Timer = $StartDelayTimer ## Used to delay the start of a session in order to prevent logs with the same name/timestamp from being generated.
-@onready var session_timer: Timer = $SessionTimer ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
 @export var file_cap = 10 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
 ## Denotes the log management method used to prevent long or large .log files. Added to combat potential performance issues.[br]
 ## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for the new entry.[br]
@@ -43,27 +40,28 @@ var session_status: bool = false: ## Flags whether or not a session is active.
 ## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended, particularly so if you intend to ship your game with GoLogger or a derivation.
 @export_enum("Entry Count Limit", "Session Timer", "Entry Limit + Session Timer", "None") var log_manage_method : int = 0
 ## The log entry count(or line count) limit allowed in the .log file. If entry count exceeds this number, the oldest entry is removed before adding the new.
-## [b]Stop & start new session:[/b] Stops the current session and starting a new one. Creates a new .log file to continue log into.[br][b]Stop session only:[/b] Stops the current session without starting a new one. Note that this requires a manual restart which can be done in the Controller, or if you've implemented your own way of starting it.[br][b]Clear current log:[/b] Clears the current .log file of it's previous log entries and continues to log into the same file.
+## [b]Stop & start new session:[/b] Stops the current session and starting a new one.[br][b]Stop session only:[/b] Stops the current session without starting a new one. Note that this requires a manual restart which can be done in the Controller, or if you've implemented your own way of starting it.
 @export_enum("Stop & start new session", "Stop session only") var session_timeout_action : int = 0
 @export var entry_count_limit: int = 1500 ## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
 var entry_count_game : int = 0 ## The current count of entries in the game.log.
 var entry_count_player : int = 0 ## The current count of entries in the player.log.
-## Default length of time for a session when [param Session Timer] is enabled.
-@export var session_timer_wait_time : float = 600.0:  
+@onready var session_timer: Timer = $SessionTimer ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
+@export var session_timer_wait_time : float = 600.0: ## Default length of time for a session when [param Session Timer] is enabled.
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
 
 @export_category("LogController")
-@export var controller_toggle_binding : InputEventShortcut = shortcut_res ## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
 var shortcut_res := preload("res://addons/GoLogger/LogController/ControllerShortcut.tres")
+@export var controller_toggle_binding : InputEventShortcut = shortcut_res ## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
 @export var hide_contoller_on_start : bool = false ## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
-@export var controller_drag_offset : Vector2 = Vector2(-180, -60) ## The offset used to correct the controller window while dragging(may require changing depending on your project resolution and scaling).
+@export var controller_drag_offset : Vector2 = Vector2(0, 0) ## The offset used to correct the controller window position while dragging(may require changing depending on your project resolution and scaling).
 #endregion
 
 
 
 func _ready() -> void:
+	controller_toggle_binding = shortcut_res
 	match log_info_header:
 		0: # Project name + version
 			header_string = str(
@@ -102,6 +100,8 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 	if log_manage_method == 1 or log_manage_method == 2:
 		session_timer.start(session_timer_wait_time)
 		session_timer_started.emit()
+	if print_session_changes == 1 or print_session_changes == 3:
+		print("GoLogger: Session started!")
  
 	if game_path != "": 
 		if game_path == null: 
@@ -244,7 +244,7 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 				if log_manage_method == 0 or log_manage_method == 2:
 					while lines.size() > entry_count_limit:
 						lines.remove_at(1)
-				entry_count_game = lines.size()
+				entry_count_player = lines.size()
 				
 				var _fw = FileAccess.open(current_player_filepath, FileAccess.WRITE)
 				if !_fw:
@@ -259,6 +259,8 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 ## [param timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
 ## [param utc] will force the date/timestamp to use UTC time rather than the user's local system time.[br]
 func stop_session(include_timestamp : bool = true, utc : bool = false) -> void:
+	if print_session_changes == 1 or print_session_changes == 3:
+		print("GoLogger: Session stopped!")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped log session.")
 	if current_game_file != "":
 		if session_status:
