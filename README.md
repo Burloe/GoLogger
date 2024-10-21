@@ -54,11 +54,11 @@ Only the first parameter mandatory and needs to be defined when calling the func
 You can call this function from any script in your project. The string message can include almost any data, but you may need to convert that data into a string using `str()`. Godot also offers various methods of formatting strings. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) <br><br>
 
 ## **Accessing the .log files, the plugin settings and GoLoggerController:**
-### Accessing the .log files:
+#### Accessing the .log files:
 The directories where the .log files are created are located in the User Data folder under `user://logs/x_Gologs/x.log`. The User Data folder location is different on every OS but can be accessed through Godot and can be accessed through `Project > Open User Data Folder`.
-### Plugin settings:
+#### Plugin settings:
 To access the settings, you open "GoLogger.tscn" and find the settings in the Inspector.
-### GoLogger Controller:
+#### GoLogger Controller:
 This plugin comes with a controller that provides information about the current session and can stop and start sessions. To use it, just instantiate it into your existing UI and you can toggle its visibility using F9. Binding can be changed in "Log.tscn". <br><br>
 
 
