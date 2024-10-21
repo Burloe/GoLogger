@@ -5,7 +5,8 @@ GoLogger is a simple yet flexible logging framework for Godot 4, designed to log
 Log entries are as simple as calling `Log.entry()`(similar and as easy to use as `print()`) and can include any data that can be converted into a string. The framework is fully customizable, allowing you to log as much or as little information as needed. For convenience, GoLogger includes an optional controller (toggleable with F9) for managing the current session directly within the game.
 
 	Log.entry("Player picked up", item, " x", item.amount, ".")	     # Result: [14:44:44] Player picked up MedKit x3. 
-![Showcase](https://github.com/user-attachments/assets/088c6fbd-531c-44b3-bf19-c00481d8c4c8)
+![Showcase](https://github.com/user-attachments/assets/aa859f0b-c68f-4e67-bd38-c71c148a44a1)
+
 
 ## **Contents**
 1. Installation and setup
