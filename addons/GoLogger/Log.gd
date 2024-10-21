@@ -28,7 +28,6 @@ var header_string : String ## Contains the resulting string determined from [par
 @export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 ## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - Disables errors and only allows warnings.[br]'None' - All errors and warnings are disabled.
 @export var autostart_session : bool = true ## Autostarts the session at runtime.
 @export var warn_failed_start : bool = true ## Enables/disables the "Attempted to start new log session before stopping the previous" warning which can be particularly annoying.
-@export var disable_welcome_print : bool = false ## Disables the "GoLogger version X loaded." message.
 var session_status: bool = false: ## Flags whether or not a session is active.
 	set(value):
 		session_status = value
