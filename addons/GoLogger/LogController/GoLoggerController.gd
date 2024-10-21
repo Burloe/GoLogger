@@ -128,5 +128,5 @@ func _on_drag_button(state : bool) -> void:
 
 func _on_print_button_up(button : Button) -> void:
 	match button.get_name():
-		"PrintGameLogButton": print(Log.get_file_contents(Log.GAME_PATH))
-		"PrintPlayerLogButton": print(Log.get_file_contents(Log.PLAYER_PATH))
+		"PrintGameLogButton": print(Log.get_file_contents(Log.game_path))
+		"PrintPlayerLogButton": print(Log.get_file_contents(Log.player_path))

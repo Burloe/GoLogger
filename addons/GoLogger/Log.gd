@@ -1,12 +1,24 @@
 extends Node
 
-## Singleton that handles settings and session logging logic. 
+## Autoload containing the entire framework that is GoLogger. 
 ##
 ## For installation, setup and how to use instructions, see the README.md or https://github.com/Burloe/GoLogger
 
 #region Declarations
 signal session_status_changed ## Emitted when the session status has changed.  
 signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications than filemanagement. E.g. when stress testing some system and/or when logging is needed for a specific time. 
+
+# These paths can be accessed by selecting Project > Open User Data Folder in the top-left.[br]
+# Normally located in:[br]
+# Windows: %APPDATA%\Godot\app_userdata\[project_name][br]
+# macOS:   ~/Library/Application Support/Godot/app_userdata/[project_name][br]
+# Linux:   ~/.local/share/godot/app_userdata/[project_name]
+@export var game_path = "user://logs/game_Gologs/" ## Directory path where game.log files are created/stored. Directory is created if it doesn't exist.
+@export var player_path = "user://logs/player_Gologs/" ## Directory path where player.log files are created/stored. Directory is created if it doesn't exist.
+var current_game_filepath : String = "" ## game.log file path associated with the current session.
+var current_game_file : String = "" ## game.log file path associated with the current session.
+var current_player_filepath : String = "" ## player.log file path associated with the current session.
+var current_player_file : String = "" ## player.log file path associated with the current session.
 
 @export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Determines the type of header used in the .log file header. I.e. the string that says:[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:
 var header_string : String ## Contains the resulting string determined from [param log_info_header].
@@ -43,23 +55,10 @@ var entry_count_player : int = 0 ## The current count of entries in the player.l
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
 
 @export_category("LogController")
-@export var controller_toggle_binding : InputEventShortcut = shortcut_res ## Shortcut binding used to toggle the controller's visibility. Does support joypad bindings as well. 
+@export var controller_toggle_binding : InputEventShortcut = shortcut_res ## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
 var shortcut_res := preload("res://addons/GoLogger/LogController/ControllerShortcut.tres")
 @export var hide_contoller_on_start : bool = false ## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
-@export var controller_drag_offset : Vector2 = Vector2(-180, -60) ## Correcting offset for the controller while draggin(may require changing depending on your project resolution).
-
-## These paths can be accessed by selecting Project > Open User Data Folder in the top-left.
-const GAME_PATH = "user://logs/game_Gologs/" ## Directory path where game.log files are created/stored. Directory is created if it doesn't exist.
-const PLAYER_PATH = "user://logs/player_Gologs/" ## Directory path where player.log files are created/stored. Directory is created if it doesn't exist.
-# Normally located in:
-# Windows: %APPDATA%\Godot\app_userdata\[project_name]
-# macOS:   ~/Library/Application Support/Godot/app_userdata/[project_name]
-# Linux:   ~/.local/share/godot/app_userdata/[project_name]
-
-var current_game_filepath : String = "" ## game.log file path associated with the current session.
-var current_game_file : String = "" ## game.log file path associated with the current session.
-var current_player_filepath : String = "" ## player.log file path associated with the current session.
-var current_player_file : String = "" ## player.log file path associated with the current session.
+@export var controller_drag_offset : Vector2 = Vector2(-180, -60) ## The offset used to correct the controller window while dragging(may require changing depending on your project resolution and scaling).
 #endregion
 
 
@@ -92,9 +91,7 @@ func _ready() -> void:
 
 ## Initiates a log session, recording game events in the .log file.
 ## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but requires function to be called using the "await" keyword: [code]await Log.start_session(1.0)[/code].
-## See README[How to use GoLogger > Starting and stopping sessions] for more info.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br][param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).
-## [codeblock]
-##	# Three ways to use 
+## See README[Starting and stopping sessions] for more info.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br][param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).[br]Example usage:[codeblock]
 ##	Log.start_session()                       # Normal call
 ##	await Log.start session(1.2)              # Calling with a start delay
 ##	await Log.start_session(1.2, true, false) # Using all redefined parameters
@@ -106,12 +103,12 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 		session_timer.start(session_timer_wait_time)
 		session_timer_started.emit()
  
-	if GAME_PATH != "": 
-		if GAME_PATH == null: 
+	if game_path != "": 
+		if game_path == null: 
 			if error_reporting == 0: 
 				push_error("GoLogger Error: Failed to start session[]. Assign a valid directory path.")
 			if error_reporting == 1:
-				push_warning("GoLogger Error: Failed to start session[Invalid GAME_PATH]. Assign a valid directory path.")
+				push_warning("GoLogger Error: Failed to start session[Invalid game_path]. Assign a valid directory path.")
 			return
 		if session_status:
 			if error_reporting != 2 and warn_failed_start: 
@@ -119,16 +116,16 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 			return 
 		else:
 			var _dir : DirAccess
-			if !DirAccess.dir_exists_absolute(GAME_PATH):
-				DirAccess.make_dir_recursive_absolute(GAME_PATH)
-			_dir = DirAccess.open(GAME_PATH)
+			if !DirAccess.dir_exists_absolute(game_path):
+				DirAccess.make_dir_recursive_absolute(game_path)
+			_dir = DirAccess.open(game_path)
 			if !_dir and error_reporting != 2:
 				var _err = DirAccess.get_open_error()
-				if _err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
-				if error_reporting != 2: push_warning("GoLogger ", get_err_string(_err), " (", GAME_PATH, ")") 
+				if _err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(_err), " (", game_path, ")") 
+				if error_reporting != 2: push_warning("GoLogger ", get_err_string(_err), " (", game_path, ")") 
 				return
 			else:  
-				current_game_filepath = GAME_PATH + get_file_name("game") # Resulting in "user://logs/game_Gologs/player(yy-mm-dd_hh-mm-ss).log"
+				current_game_filepath = game_path + get_file_name("game") # Resulting in "user://logs/game_Gologs/player(yy-mm-dd_hh-mm-ss).log"
 				current_game_file     = get_file_name("game")             # Resulting in "player(yy-mm-dd_hh-mm-ss).log"
 				var _file = FileAccess.open(current_game_filepath, FileAccess.WRITE)
 				var _files = _dir.get_files()  
@@ -146,10 +143,10 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 					entry_count_game = 1
 					_file.close()  
 				 
-	if PLAYER_PATH != "":  
-		if PLAYER_PATH == null:
+	if player_path != "":  
+		if player_path == null:
 			if error_reporting == 0: 
-				push_error("GoLogger Error: PLAYER_PATH is null. Assign a valid directory path.")
+				push_error("GoLogger Error: player_path is null. Assign a valid directory path.")
 			return
 		if session_status:
 			if error_reporting != 2 and warn_failed_start: 
@@ -157,16 +154,16 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 			return 
 		else:
 			var _dir : DirAccess
-			if !DirAccess.dir_exists_absolute(PLAYER_PATH):
-				DirAccess.make_dir_recursive_absolute(PLAYER_PATH)
-			_dir = DirAccess.open(PLAYER_PATH)
+			if !DirAccess.dir_exists_absolute(player_path):
+				DirAccess.make_dir_recursive_absolute(player_path)
+			_dir = DirAccess.open(player_path)
 			if !_dir and error_reporting != 2:
 				var _err = DirAccess.get_open_error()
-				if _err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(_err), " (", PLAYER_PATH, ")") 
-				if error_reporting != 2: push_warning("GoLogger ", get_err_string(_err), " (", PLAYER_PATH, ")") 
+				if _err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(_err), " (", player_path, ")") 
+				if error_reporting != 2: push_warning("GoLogger ", get_err_string(_err), " (", player_path, ")") 
 				return
 			else:  
-				current_player_filepath = PLAYER_PATH + get_file_name("player") # Result "user://logs/player_Gologs/player(yy-mm-dd_hh-mm-ss).log"
+				current_player_filepath = player_path + get_file_name("player") # Result "user://logs/player_Gologs/player(yy-mm-dd_hh-mm-ss).log"
 				current_player_file     = get_file_name("player")               # Result "player(yy-mm-dd_hh-mm-ss).log"
 				var _file = FileAccess.open(current_player_filepath, FileAccess.WRITE)
 				var _files = _dir.get_files()  
@@ -187,8 +184,10 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 
 
 ## Stores a log entry into the 'game/ui/player.log' file.[br]
-## [param timestamp] is used to specify the type of date and time format you want your entries tagged with.[br]
-## [param utc] will convert the time into a unified UTC format as opposed to your or your players local time format.
+## [param timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
+## [param utc] will force the date/timestamp to use UTC time rather than the user's local system time.[br]Example usage:[codeblock]
+## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."))
+## # Resulting log entry: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, utc : bool = false) -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] ") 
 	match file:
@@ -256,7 +255,9 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 				_fw.close()
 
 
-## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [code]start_session()[/code] which creates a new file. 
+## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [method start_session] which creates a new file.[br]
+## [param timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
+## [param utc] will force the date/timestamp to use UTC time rather than the user's local system time.[br]
 func stop_session(include_timestamp : bool = true, utc : bool = false) -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(utc), "] Stopped log session.")
 	if current_game_file != "":
@@ -334,16 +335,16 @@ func get_file_name(filename : String) -> String:
 	var dict  : Dictionary = Time.get_datetime_dict_from_system()
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 	# Add 0 to single int dates and times
-	var mm  : String = str(dict["month"] if dict["month"] > 9 else str("0", dict["month"]))
-	var dd  : String = str(dict["day"] if dict["day"] > 9 else str("0", dict["day"]))
-	var hh  : String = str(dict["hour"] if dict["hour"] > 9 else str("0", dict["hour"]))
+	var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
+	var dd  : String = str(dict["day"]    if dict["day"]    > 9 else str("0", dict["day"]))
+	var hh  : String = str(dict["hour"]   if dict["hour"]   > 9 else str("0", dict["hour"]))
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
 	# Format the final string 
 	var fin : String = str(filename, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") # Result > "game(yy-mm-dd_hh-mm-ss).log"
 	return fin 
 
-## Helper function that returns the log entries of the newest file in the given folder. Can be used to fetch .log contents.
+## Helper function which returns the contents of the current/newest .log file in the given folder. Can be used to fetch .log contents.
 func get_file_contents(folder_path : String) -> String:
 	var dir = DirAccess.open(folder_path)
 	if !dir:
@@ -365,7 +366,7 @@ func get_file_contents(folder_path : String) -> String:
 	return str("GoLogger Error: Unable to retrieve file contents in (", folder_path, ")") if error_reporting != 2 else ""
 
 
-## Stops and starts sessions when using [param session_timeout_action]. 
+## Stops and starts sessions when using the "Session Timer" option with[param session_timeout_action]. 
 func _on_session_timer_timeout() -> void:
 	match log_manage_method:
 		0: # Entry count limit
