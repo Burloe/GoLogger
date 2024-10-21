@@ -8,6 +8,7 @@ extends Node
 signal session_status_changed ## Emitted when the session status has changed.  
 signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications than filemanagement. E.g. when stress testing some system and/or when logging is needed for a specific time. 
 
+var plugin_version : String = "1.1" ## Do not change this!
 # These paths can be accessed by selecting Project > Open User Data Folder in the top-left.[br]
 # Normally located in:[br]
 # Windows: %APPDATA%\Godot\app_userdata\[project_name][br]
@@ -22,14 +23,17 @@ var current_player_file : String = "" ## player.log file path associated with th
 
 @export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Determines the type of header used in the .log file header. Gets the project name and version from Project Settings > Application > Config.[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
 var header_string : String ## Contains the resulting string determined from [param log_info_header].
+@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var print_session_changes : int = 0 ## If true, enables printing messages to the output when a log session is started or stopped.
+
+@export_group("Error Reporting Options")
 @export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 ## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - Disables errors and only allows warnings.[br]'None' - All errors and warnings are disabled.
 @export var autostart_session : bool = true ## Autostarts the session at runtime.
 @export var warn_failed_start : bool = true ## Enables/disables the "Attempted to start new log session before stopping the previous" warning which can be particularly annoying.
+@export var disable_welcome_print : bool = false ## Disables the "GoLogger version X loaded." message.
 var session_status: bool = false: ## Flags whether or not a session is active.
 	set(value):
 		session_status = value
 		session_status_changed.emit()
-@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var print_session_changes : int = 0 ## If true, enables printing messages to the output when a log session is started or stopped.
 
 @export_category("Log Management") 
 @export var file_cap = 10 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
