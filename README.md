@@ -64,9 +64,9 @@ This plugin comes with a controller that provides information about the current 
 
 ## Managing .log file size:
 One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates the file when used. Therefore, the plugin first stores the old entries with `FileAccess.READ`, truncates the file with `FileAccess.WRITE`, adds them back, and then appends the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings/arrays can slow down the system. This is especially a concern during long game sessions or if multiple systems are logging to the same file. To mitigate this, GoLogger offers two methods for limiting log length:
-### Entry Count Limit(recommended):
+#### Entry Count Limit(recommended):
 In the inspector of "Log.tscn"(where you find all plugin settings), `entry_count_limit` sets the maximum number of entries/lines allowed in a file. Once the limit is reached, the oldest entry is removed as new ones are added. This method is highly reliable for preventing files from becoming too large.
-### Session Timer:
+#### Session Timer:
 A timer starts with each session, and when it expires, the session will stop and restart by default. The `session_timeout_action` allows you to either stop the session entrirely or stop and start a new one. While this can be helpful and can be useful in certain situation, it is less reliable for file size management because it's still possible to log too many entries in a short amount of time. However, the timer can be useful for other purposes, such as stress testing. A `session_timer_started` signal is available to help sync with this timer.
 *Note: If `stop_session_only` is used, you'll need to manually start a new session either via the GoLoggerController or by calling `start_session()` in your code.*
 <br>
