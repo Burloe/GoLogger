@@ -6,35 +6,43 @@ extends Node
 
 #region Declarations
 signal session_status_changed ## Emitted when the session status has changed.  
-signal session_timer_started ## Emitted when the [param session_timer] is started. Useful for other applications than filemanagement. E.g. when stress testing some system and/or when logging is needed for a specific time. 
+signal session_timer_started  ## Emitted when the [param session_timer] is started. Useful for other applications than filemanagement. E.g. when stress testing some system and/or when logging is needed for a specific time. 
 
 # These paths can be accessed by selecting Project > Open User Data Folder in the top-left.[br]
 # Normally located in:[br]
 # Windows: %APPDATA%\Godot\app_userdata\[project_name][br]
 # macOS:   ~/Library/Application Support/Godot/app_userdata/[project_name][br]
 # Linux:   ~/.local/share/godot/app_userdata/[project_name]
-@export var game_path = "user://logs/game_Gologs/" ## Directory path where game.log files are created/stored. Directory is created if it doesn't exist.
+@export var game_path = "user://logs/game_Gologs/"     ## Directory path where game.log files are created/stored. Directory is created if it doesn't exist.
 @export var player_path = "user://logs/player_Gologs/" ## Directory path where player.log files are created/stored. Directory is created if it doesn't exist.
-var current_game_filepath : String = "" ## game.log file path associated with the current session.
-var current_game_file : String = "" ## game.log file path associated with the current session.
-var current_player_filepath : String = "" ## player.log file path associated with the current session.
-var current_player_file : String = "" ## player.log file path associated with the current session.
+var current_game_filepath : String = ""                ## game.log file path associated with the current session.
+var current_game_file : String = ""                    ## game.log file path associated with the current session.
+var current_player_filepath : String = ""              ## player.log file path associated with the current session.
+var current_player_file : String = ""                  ## player.log file path associated with the current session.
 
 @export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Determines the type of header used in the .log file header. Gets the project name and version from Project Settings > Application > Config.[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
 var header_string : String ## Contains the resulting string determined from [param log_info_header].
 @export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var print_session_changes : int = 0 ## If true, enables printing messages to the output when a log session is started or stopped.
 
+@export_group("LogController")
+var shortcut_res := preload("res://addons/GoLogger/LogController/ControllerShortcut.tres")
+@export var controller_toggle_binding : InputEventShortcut = shortcut_res ## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
+@export var hide_contoller_on_start : bool = false                        ## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
+@export var controller_drag_offset : Vector2 = Vector2(0, 0)              ## The offset used to correct the controller window position while dragging(may require changing depending on your project resolution and scaling).
+
 @export_group("Error Reporting Options")
 @export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 ## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - Disables errors and only allows warnings.[br]'None' - All errors and warnings are disabled.
-@export var autostart_session : bool = true ## Autostarts the session at runtime.
-@export var warn_failed_start : bool = true ## Enables/disables the "Attempted to start new log session before stopping the previous" warning which can be particularly annoying.
-var session_status: bool = false: ## Flags whether or not a session is active.
+@export var autostart_session : bool = true            ## Autostarts the session at runtime.
+@export var disable_session_warning : bool = false     ## Disables the "Attempted to start new log session before stopping the previous" warning.
+@export var disable_entry_warning : bool = false       ## Disables the "Attempt to log entry failed due to inactive session".
+var session_status: bool = false:                      ## Flags whether or not a session is active.
 	set(value):
 		session_status = value
 		session_status_changed.emit()
 
 @export_category("Log Management") 
 @export var file_cap = 10 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
+
 ## Denotes the log management method used to prevent long or large .log files. Added to combat potential performance issues.[br]
 ## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for the new entry.[br]
 ## [b]2. Session Timer:[/b] Upon session is start, [param session_timer] is also started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], session is stopped and the action is determined by [param session_timeout_action].[br]
@@ -44,20 +52,14 @@ var session_status: bool = false: ## Flags whether or not a session is active.
 ## The log entry count(or line count) limit allowed in the .log file. If entry count exceeds this number, the oldest entry is removed before adding the new.
 ## [b]Stop & start new session:[/b] Stops the current session and starting a new one.[br][b]Stop session only:[/b] Stops the current session without starting a new one. Note that this requires a manual restart which can be done in the Controller, or if you've implemented your own way of starting it.
 @export_enum("Stop & start new session", "Stop session only") var session_timeout_action : int = 0
-@export var entry_count_limit: int = 1500 ## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
-var entry_count_game : int = 0 ## The current count of entries in the game.log.
-var entry_count_player : int = 0 ## The current count of entries in the player.log.
-@onready var session_timer: Timer = $SessionTimer ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
-@export var session_timer_wait_time : float = 600.0: ## Default length of time for a session when [param Session Timer] is enabled.
+@export var entry_count_limit: int = 1500              ## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
+var entry_count_game : int = 0                         ## The current count of entries in the game.log.
+var entry_count_player : int = 0                       ## The current count of entries in the player.log.
+@onready var session_timer: Timer = $SessionTimer      ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
+@export var session_timer_wait_time : float = 600.0:   ## Default length of time for a session when [param Session Timer] is enabled.
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
-
-@export_category("LogController")
-var shortcut_res := preload("res://addons/GoLogger/LogController/ControllerShortcut.tres")
-@export var controller_toggle_binding : InputEventShortcut = shortcut_res ## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
-@export var hide_contoller_on_start : bool = false ## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
-@export var controller_drag_offset : Vector2 = Vector2(0, 0) ## The offset used to correct the controller window position while dragging(may require changing depending on your project resolution and scaling).
 #endregion
 
 
@@ -113,7 +115,7 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 				push_warning("GoLogger Error: Failed to start session[Invalid game_path]. Assign a valid directory path.")
 			return
 		if session_status:
-			if error_reporting != 2 and warn_failed_start: 
+			if error_reporting != 2 and !disable_session_warning: 
 				push_warning("GoLogger Warning: Attempted to start new log session before stopping the previous.")
 			return 
 		else:
@@ -151,7 +153,7 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 				push_error("GoLogger Error: player_path is null. Assign a valid directory path.")
 			return
 		if session_status:
-			if error_reporting != 2 and warn_failed_start: 
+			if error_reporting != 2 and !disable_session_warning: 
 				push_warning("GoLogger Warning: Attempted to start new log session before stopping the previous.")
 			return 
 		else:
@@ -195,7 +197,7 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 	match file:
 		0: # GAME
 			if !session_status: 
-				if error_reporting != 2: push_warning("GoLogger Warning: Log entry attempt failed due to inactive session.")
+				if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
 				return
 			else:
 				var _f = FileAccess.open(current_game_filepath, FileAccess.READ)
@@ -220,14 +222,14 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 				if !_fw:
 					var err = FileAccess.get_open_error()
 					if err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(err))
-				var entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
-				_fw.store_line(str(_c, entry))  
+				var _entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
+				_fw.store_line(str(_c, _entry))  
 				_fw.close()
 		
 
 		1: # PLAYER
 			if !session_status: # Error check
-				if error_reporting != 2: push_warning("GoLogger Warning: Log entry attempt failed due to inactive session.")
+				if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Log entry attempt failed due to inactive session.")
 				return
 			else:
 				var _f = FileAccess.open(current_player_filepath, FileAccess.READ)
@@ -252,8 +254,8 @@ func entry(log_entry : String, file : int = 0, include_timestamp : bool = true, 
 				if !_fw:
 					var err = FileAccess.get_open_error()
 					if err != OK and error_reporting != 2: push_warning("GoLogger ", get_err_string(err))
-				var entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
-				_fw.store_line(str(_c, entry))
+				var _entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
+				_fw.store_line(str(_c, _entry))
 				_fw.close()
 
 
