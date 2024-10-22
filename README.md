@@ -13,8 +13,10 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
 2. How to use GoLogger
    * Starting & Stopping Log Sessions
    * Creating log entries and include data
-3. Accessing the .log files, the plugin settings and GoLoggerController
-4. GoLogger Controller & Settings
+   * Accessing the .log files, the plugin settings and GoLoggerController
+3. Managing .log file size
+   * Entry count limit
+   * Sesssion timer
 
 ## Installation and setup:
 ![Install Errors](https://github.com/user-attachments/assets/7edcdc5d-9d10-4e39-83fa-e31a9f2a49c3)<br>
@@ -53,7 +55,7 @@ Only the first parameter mandatory and needs to be defined when calling the func
 
 You can call this function from any script in your project. The string message can include almost any data, but you may need to convert that data into a string using `str()`. Godot also offers various methods of formatting strings. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) <br><br>
 
-## **Accessing the .log files, the plugin settings and GoLoggerController:**
+### **Accessing the .log files, the plugin settings and GoLoggerController:**
 #### Accessing the .log files:
 The directories where the .log files are created are located in the User Data folder under `user://logs/x_Gologs/x.log`. The User Data folder location is different on every OS but can be accessed through Godot and can be accessed through `Project > Open User Data Folder`.
 #### Plugin settings:
