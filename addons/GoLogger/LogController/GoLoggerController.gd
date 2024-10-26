@@ -35,7 +35,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		visible = !visible
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_dragging:
-		print("hellyea")
 		position = Vector2(event.position.x + Log.controller_drag_offset.x, event.position.y + Log.controller_drag_offset.y)
 
 
