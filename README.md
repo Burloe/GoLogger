@@ -17,6 +17,7 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
 3. Managing .log file size
    * Entry count limit
    * Sesssion timer
+4. Credit and Permission
 
 ## Installation and setup:
 ![Install Errors](https://github.com/user-attachments/assets/7edcdc5d-9d10-4e39-83fa-e31a9f2a49c3)<br>
@@ -73,3 +74,7 @@ A timer starts with each session, and when it expires, the session will stop and
 *Note: If `stop_session_only` is used, you'll need to manually start a new session either via the GoLoggerController or by calling `start_session()` in your code.*
 <br>
 You can use Entry Count Limit, Session Timer, or both via the `log_manage_method` setting. It is highly recommended to use one or both methods, especially for released projects. Objectively, Entry Count Limit is the more efficient solution, but both options offer flexibility. If you experience performance issues and suspect GoLogger is the cause, try reducing the entry limit or shortening the session timer.
+
+
+### Credit and Permission:
+Everything in this plugin/repo(code, resources, images, text etc) is entirely free to use in commercial and non-commercial products and projects. No credit is required.
