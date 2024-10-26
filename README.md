@@ -76,5 +76,5 @@ A timer starts with each session, and when it expires, the session will stop and
 You can use Entry Count Limit, Session Timer, or both via the `log_manage_method` setting. It is highly recommended to use one or both methods, especially for released projects. Objectively, Entry Count Limit is the more efficient solution, but both options offer flexibility. If you experience performance issues and suspect GoLogger is the cause, try reducing the entry limit or shortening the session timer.
 
 
-### Credit and Permission:
+## Credit and Permission:
 Everything in this plugin/repo(code, resources, images, text etc) is entirely free to use in commercial and non-commercial products and projects. No credit is required.
