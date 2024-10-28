@@ -29,9 +29,9 @@ var is_dragging : bool = false
 #endregion
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and Log.controller_toggle_binding.shortcut.matches_event(event) and event.is_released():	
+	if event is InputEventKey and Log.hotkey_toggle_controller.shortcut.matches_event(event) and event.is_released():	
 		visible = !visible
-	if event is InputEventJoypadButton and Log.controller_toggle_binding.shortcut.matches_event(event) and event.is_released():
+	if event is InputEventJoypadButton and Log.hotkey_toggle_controller.shortcut.matches_event(event) and event.is_released():
 		visible = !visible
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_dragging:
