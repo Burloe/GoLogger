@@ -10,12 +10,8 @@ class_name LogFileResource
 
 ## Sets the file name prefix, followed by the date and timestamp. prefix(241118_130959).log. If left empty, prefix will be "file1". 
 @export_placeholder("Enter file name prefix.") var filename_prefix : String = ""
-## Use to set a custom filepath to store logs within. If left empty, files are saved in "user://logs/file1_Gologs/". Uses [param filename_prefix] in the directory path[br][b]Note:[/b][br]    One or more folders are created within this directory for each [LogFileResource] in the plugin's [param file] parameter.
-@export var base_directory 	: String = "user://logs/"
-
 
 var current_file	 	: String = ""
 var current_filepath 	: String = ""
 var entry_count			: int = 0
 
-@export var save_uniques_in_subfolder : bool = true ## When enabled, saving unique logs using the hotkey or controller will store the .log file within a subfolder of [param filepath].
