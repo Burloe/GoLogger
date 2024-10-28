@@ -31,16 +31,19 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
 
 ![enable_plugin](https://github.com/user-attachments/assets/6d201a57-638d-48a6-a9c0-fc8719beff37)
 
-* *Optional:* Intantiate "GoLoggerController.tscn" into your UI. 
-
-You're all set! Next time you run your project, folders and .log files will be created. It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` in your exit game function. While not stopping a session before closing the game won’t break the plugin, it’s good practice. This can help differentiate between normal exits, crashes, or forced closures, depending on whether the log file ends with "Stopped session."<br><br>
+*You can find settings and formatting options in the inspector when you open "Log.tscn". Next time you run your project, folders and .log files will be created. It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` in your exit game function. This can help differentiate between normal exits, crashes, or forced closures, depending on whether the log file ends with "Stopped session.*"<br><br>
 
 
 ## How to use GoLogger:<br>
 ### **Starting & stopping log sessions:**<br>
-GoLogger uses sessions to indicate when it’s actively logging or not, and each session creates a new .log file with the time- and datestamp of creation. The plugin has a .log file limit of 10 by default(can be changed) and once the limit has been hit, the file with the oldest timestamp is deleted. 
+GoLogger uses sessions to indicate when it’s actively logging or not, and each session creates a new .log file with the time- and datestamp of creation. The plugin has a .log file limit of 10 by default(can be changed) and once the limit has been hit, the file with the oldest timestamp is deleted.<br>
+
+Managing the log sessions can be done in three ways:
+1. Hotkeys - <br>	Ctrl + Shift + O to start a session.<br>	Ctrl + Shift + P to stop a session<br>	Ctrl + Shift + U to create a copy of the current session and save the logs in a subfolder called "saved_logs". 
+2. Controller - The plugin comes with a simple controller for those who prefer a visual controller which you can toggle its visibility with Ctrl + Shift + K. 
+3. Code - Calling the functions `Log.start_session()`, `Log.stop_session()` and `Log.save_copy()` which can be added anywhere in your projects code. If `autostart` is enabled. The plugin calls `start_session()` by itself. 
+The parameter `start_delay` was adde to create a >1-second delay before starting a new session. This was added to prevent .log files from being created with the same timestamp(if you accidentally add `start_sessions()` in multiple scripts) which can cause sorting issues when deleting the oldest log. Use only if this is affecting you!<br><br>
 ![image](https://github.com/user-attachments/assets/75ee6dc9-8cfe-472f-b037-86f2f1cf8f7f)
-Starting and stopping sessions is as simple as calling `Log.start_session()` and `Log.stop_session()`. The parameter `start_delay` was implemented to add a 1-second delay before starting a new session. This was added to prevent .log files from being created with the same timestamp(if you accidentally add `start_sessions()` in multiple scripts) which can cause sorting issues when deleting the oldest log. Use only if this is affecting you!<br><br>
 
 
 ### **Creating log entries and include data:**<br>
