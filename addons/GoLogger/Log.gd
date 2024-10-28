@@ -133,16 +133,17 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
  
 
 	for i in file.size():
-		print(str("Does size() start at 0 or 1? Results are in: ", i))
+		assert(file[i] != null, str("GoLogger Error: 'file' array entry", i, " has no [LogFileResource] added."))
+
 		var _fname : String
 		_fname = get_file_name(file[i].filename_prefix) if file[i].filename_prefix != "" else str("file", i)
-		var _path : String = file[i].filepath
+		var _path : String = str(file[i].base_directory, file[i].filename_prefix, "_GoLogs/")
 		
 		if _path == "": 
 			if error_reporting == 0: 
 				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
 			if error_reporting == 1:
-				push_warning("GoLogger Error: Failed to start session[Invalid file1_path]. Assign a valid directory path.")
+				push_warning(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
 			return
 		if session_status:
 			if error_reporting != 2 and !disable_session_warning:
@@ -160,6 +161,8 @@ func start_session(start_delay : float = 0.0, utc : bool = false, space : bool =
 			else:
 				file[i].current_filepath = _path + get_file_name(file[i].filename_prefix)
 				file[i].current_file = get_file_name(file[i].filename_prefix)
+				printerr("Current File: ",file[i].current_file)
+				printerr("Current FilePath: ",file[i].current_filepath)
 				var _f = FileAccess.open(file[i].current_filepath, FileAccess.WRITE)
 				var _files = _dir.get_files()
 				while _files.size() > file_cap:
@@ -298,7 +301,7 @@ func get_file_name(filename : String) -> String:
 	var hh  : String = str(dict["hour"]   if dict["hour"]   > 9 else str("0", dict["hour"]))
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
-	# Format the final string 
+	# Format the final string
 	var fin : String 
 	# Result > "prefix(yy-mm-dd_hh-mm-ss).log"   OR   "prefix(yymmdd_hhmmss.log)
 	fin = str(filename, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if separate_timestamps else str(filename, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
