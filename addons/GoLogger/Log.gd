@@ -113,8 +113,9 @@ func _ready() -> void:
 	session_timer.autostart = false
 	popup.visible = popup_state
 	popup_errorlbl.visible = false
+	assert(check_filename_conflicts() == null, str("GoLogger Error: Conflicting name found in [LogFileResource]. Please assign a unique name to ", check_filename_conflicts()))
 	if autostart_session:
-		start_session()
+		start_session()		
 
 
 
@@ -133,14 +134,14 @@ func start_session(start_delay : float = 0.0) -> void:
 		session_timer_started.emit()
 	if print_session_changes == 1 or print_session_changes == 3:
 		print("GoLogger: Session started!")
- 
+
+	# Iterate over each LogFileResource in [param file] array > Create directories and files 
 	for i in range(file.size()):
 		assert(file[i] != null, str("GoLogger Error: 'file' array entry", i, " has no [LogFileResource] added."))
 
 		var _fname : String
 		_fname = get_file_name(file[i].filename_prefix) if file[i].filename_prefix != "" else str("file", i)
 		var _path : String = str(base_directory, file[i].filename_prefix, "_GoLogs/")
-		
 		if _path == "": 
 			if error_reporting == 0: 
 				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
@@ -151,6 +152,7 @@ func start_session(start_delay : float = 0.0) -> void:
 			if error_reporting != 2 and !disable_session_warning:
 				push_warning("GoLogger Warning: Attempted to start a new log session before stopping the previous session.")
 			return
+
 		else:
 			var _dir : DirAccess
 			if !DirAccess.dir_exists_absolute(_path):
@@ -167,8 +169,6 @@ func start_session(start_delay : float = 0.0) -> void:
 			else:
 				file[i].current_filepath = _path + get_file_name(file[i].filename_prefix)
 				file[i].current_file = get_file_name(file[i].filename_prefix)
-				printerr("Current File: ",file[i].current_file)
-				printerr("Current FilePath: ",file[i].current_filepath)
 				var _f = FileAccess.open(file[i].current_filepath, FileAccess.WRITE)
 				var _files = _dir.get_files()
 				while _files.size() > file_cap:
@@ -293,6 +293,7 @@ func save_copy() -> void:
 
 
 
+
 ## Helper function that returns the appropriate log header depending on [param log_info_header].
 func get_header() -> String:
 	match log_info_header:
@@ -305,6 +306,20 @@ func get_header() -> String:
 		2: # Project version
 			return str(ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != "" else "")
 	return ""
+
+
+
+## Helper function that checks for conflicting log filenames of parameter [param filename_prefix]. 
+func check_filename_conflicts() -> LogFileResource:
+	var seen_names : Array[LogFileResource] = [] # Stores all the seen resources that doesnt conflict 
+
+	for r in file:
+		for s in seen_names:
+			if r.filename_prefix == s.filename_prefix: # Conflict found, return resource
+				return r 
+			else: # No conflict, append resource to seen names array
+				seen_names.append(r)
+	return null 
 
 
 

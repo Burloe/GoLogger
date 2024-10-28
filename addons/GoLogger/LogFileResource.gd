@@ -8,7 +8,7 @@ class_name LogFileResource
 ## macOS:   ~/Library/Application Support/Godot/app_userdata/[project_name][br]
 ## Linux:   ~/.local/share/godot/app_userdata/[project_name]
 
-## Sets the file name prefix, followed by the date and timestamp. prefix(241118_130959).log. If left empty, prefix will be "file1". 
+## Sets the file name prefix, followed by the date and timestamp. prefix(241118_130959).log. If left empty, prefix will be "file" + the index number of the array. 
 @export_placeholder("Enter file name prefix.") var filename_prefix : String = ""
 
 var current_file	 	: String = ""
