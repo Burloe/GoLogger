@@ -5,7 +5,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "GDScript: Launch Project",
+			"name": "Minimal Launch",
 			"type": "godot",
 			"request": "launch",
 			"project": "${workspaceFolder}",
