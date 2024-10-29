@@ -1,5 +1,4 @@
-extends Panel
-class_name GoLoggerController
+extends Panel 
 
 #region Documentation and variable declaration
 ## An optional controller to help manage logging sessions along with some additional features and information.
@@ -13,27 +12,61 @@ class_name GoLoggerController
 @onready var drag_button			: Button = 			$DragButton ## Drag the controller while pressing this button
 
 @onready var session_status_label	: RichTextLabel = 	$MarginContainer/VBoxContainer/SessionStatusPanel/SessionStatusLabel
-@onready var session_button			: CheckButton = 	$MarginContainer/VBoxContainer/SessionButton
-@onready var print_gamelog_button	: Button = 			$MarginContainer/VBoxContainer/PrintButtonHBOX/PrintGameLogButton 
-@onready var print_playerlog_button	: Button = 			$MarginContainer/VBoxContainer/PrintButtonHBOX/PrintPlayerLogButton 
 
-@onready var entry_title_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountTitleLabel
-@onready var game_count_label		: RichTextLabel =  	$MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountLabelHBXC/GameCountLabel
-@onready var player_count_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountLabelHBXC/PlayerCountLabel
+@onready var start_btn 				: Button =			$MarginContainer/VBoxContainer/HBoxContainer/StartButton
+@onready var stop_btn 				: Button =			$MarginContainer/VBoxContainer/HBoxContainer/StartButton
+@onready var copy_btn 				: Button =			$MarginContainer/VBoxContainer/HBoxContainer/StartButton
 
 @onready var session_timer_pgb		: ProgressBar = 	$MarginContainer/VBoxContainer/TimerPanel/SessionTimerPGB
 @onready var timer_status_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerStatusLabel
 @onready var timer_left_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerLeftLabel
 
-@onready var tooltip 				: Panel = 			$Tooltip
-@onready var session_tooltip 		: RichTextLabel = 	$Tooltip/MarginContainer/RichTextLabel
-var tooltip_status 					: bool = false:
+@onready var tooltip 				: Panel = 			$MarginContainer/VBoxContainer/Tooltip
+@onready var tooltp_label 			: RichTextLabel = 	$MarginContainer/VBoxContainer/Tooltip/MarginContainer/RichTextLabel
+@onready var fileinfo_panel			: Panel = 			$FileInfoPanel
+@onready var fileinfo_container 	: VBoxContainer	=	$FileInfoPanel/MarginContainer/ScrollContainer/FileInfoContainer ## Container LogFiles are instantiated into.
+var fileinfo_scene := preload("res://addons/GoLogger/Resources/FileInfo.tscn")
+var fileinfos : Array
+var fileinfo_state : bool = false:
+	set(value):
+		fileinfo_state = value
+		fileinfo_panel.visible = value
+		if value:
+				for i in range(Log.file.size()):
+					var instance = fileinfo_scene.instantiate()
+					fileinfo_container.add_child(instance)
+					instance.left_label.text = str(
+						Log.file[i].filename_prefix, ":[font_size=10]
+File:
+
+File count: 
+Entry count: "
+					)
+					instance.right_label.text = str(
+						"[right] [font_size=10]
+", Log.file[i].current_file, "
+
+", Log.file[i].file_count, "
+", Log.file[i].entry_count)
+					fileinfos.append(instance)
+
+		else:
+			if fileinfo_container.get_child_count() != 0:
+				for i in fileinfo_container.get_children():
+					if i is Panel and i.get_name().contains("FileInfo"):
+						i.queue_free()
+
+
+
+var tooltip_status : bool = false:
 	set(value):
 		tooltip_status = value
-		tooltip.visible = tooltip_status
 
 var is_dragging : bool = false
 #endregion
+
+
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and Log.hotkey_toggle_controller.shortcut.matches_event(event) and event.is_released():	
@@ -46,15 +79,29 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
+	#region Signal connections
 	drag_button.button_up.connect(_on_drag_button.bind(false))
 	drag_button.button_down.connect(_on_drag_button.bind(true))
 	Log.session_status_changed.connect(_on_session_status_changed)
-	session_button.toggled.connect(_on_session_button_toggled) 
-	print_gamelog_button.button_up.connect(_on_print_button_up.bind(print_gamelog_button))
-	print_playerlog_button.button_up.connect(_on_print_button_up.bind(print_playerlog_button))
 	Log.session_timer_started.connect(_on_session_timer_started)
 	update_timer.timeout.connect(_on_update_timer_timeout)
-	tooltip.visible = false
+
+	start_btn.button_up.connect(_on_start_button_button_up)
+	start_btn.mouse_entered.connect(_on_start_button_mouse_entered)
+	start_btn.mouse_exited.connect(_on_start_button_mouse_exited)
+
+	copy_btn.button_up.connect(_on_copy_button_button_up)
+	copy_btn.mouse_entered.connect(_on_copy_button_mouse_entered)
+	copy_btn.mouse_exited.connect(_on_copy_button_mouse_exited)
+
+	stop_btn.button_up.connect(_on_stop_button_button_up)
+	stop_btn.mouse_entered.connect(_on_stop_button_mouse_entered)
+	stop_btn.mouse_exited.connect(_on_stop_button_mouse_exited)
+	#endregion
+
+	tooltip.visible = true
+	tooltip.
+	fileinfo_panel.visible = fileinfo_state
 
 	if Log.hide_contoller_on_start: hide()
 	else: show()
@@ -65,27 +112,21 @@ func _ready() -> void:
 	await get_tree().process_frame 
 	Log.session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer_pgb.modulate = Color.BLACK if Log.session_timer.is_stopped() else Color.FOREST_GREEN
-	entry_title_label.text = str("[center][font_size=14]Log Entry Count:
-[font_size=12]Current Limit: [color=green]", Log.entry_count_limit)
-	game_count_label.text = str("[center][font_size=12] GameLog:
-", Log.entry_count_game)
-	player_count_label.text = str("[center][font_size=12] PlayerLog:
-", Log.entry_count_player)
-	session_button.button_pressed = Log.session_status
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:
 [center][color=red]OFF")
+	$FileInfoPanel/MarginContainer/ScrollContainer/FileInfoContainer/RichTextLabel.text = str("Base directory:\n", Log.base_directory)
+
+
+
+
 
 
 ## Called when [signal session_status_changed] is emitted from [Log].
 func _on_session_status_changed() -> void:
-	session_button.button_pressed = Log.session_status
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:
 [center][color=red]OFF")
-	# Connect signal after setting the initial state(if autostart is on)
-	if !session_button.toggled.is_connected(_on_session_button_toggled): 
-		session_button.toggled.connect(_on_session_button_toggled)
 
 
 ## Starts value time to update [ProgressBar] when session timer is started.
@@ -103,29 +144,12 @@ func _on_update_timer_timeout() -> void:
 	session_status_label.text = str("[center][font_size=18] Session status:
 [center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:
 [center][color=red]OFF")
-	# Entry count logic
-	if Log.entry_count_game > Log.entry_count_limit or Log.entry_count_player > Log.entry_count_limit:
-		entry_title_label.text = str("[center][font_size=14]Log Entry Count:
-[font_size=12]Current Limit: [color=red]", Log.entry_count_limit)
-	else: entry_title_label.text = str("[center][font_size=14]Log Entry Count:
-[font_size=12]Current Limit: [color=green]", Log.entry_count_limit)
-	game_count_label.text = str("[center][font_size=12] GameLog:
-", Log.entry_count_game)
-	player_count_label.text = str("[center][font_size=12] PlayerLog:
-", Log.entry_count_player)
 	# Session timer
 	session_timer_pgb.value = Log.session_timer.get_time_left() 
 	timer_status_label.text = str("[center][font_size=12]Status: 
 ", "[color=red]OFF" if Log.session_timer.is_stopped() else "[color=green]ON")
 	timer_left_label.text = str("[center][font_size=12]TimeLeft:
 [color=light_blue]", snappedi(Log.session_timer.get_time_left(), 1) )
-
-func _on_session_button_toggled(toggled_on : bool) -> void:
-	Log.stop_session() if !toggled_on else await Log.start_session(1.2) 
-	# Prevent the creation of conflicting file names with the same timestamp
-	session_button.disabled = true
-	await get_tree().create_timer(1.2).timeout
-	session_button.disabled = false 
 
 
 ## Sets [param is_dragging] depending on the pressed state of the drag button.
@@ -141,11 +165,11 @@ func _on_print_button_up(button : Button) -> void:
 
 
 func _on_start_button_mouse_entered() -> void:
-	session_tooltip.text = "[font_size=12]Start a new session"
+	tooltp_label.text = "[font_size=12]Start a new session"
 	tooltip_status = true
 
 func _on_start_button_mouse_exited() -> void:
-	session_tooltip.text = ""
+	tooltp_label.text = ""
 	tooltip_status = false
 
 func _on_start_button_button_up() -> void:
@@ -156,11 +180,11 @@ func _on_start_button_button_up() -> void:
 
 
 func _on_copy_button_mouse_entered() -> void:
-	session_tooltip.text = "[font_size=12]Saves a copy of the active session"
+	tooltp_label.text = "[font_size=12]Saves a copy of the active session"
 	tooltip_status = true
 
 func _on_copy_button_mouse_exited() -> void:
-	session_tooltip.text = ""
+	tooltp_label.text = ""
 	tooltip_status = false
 
 func _on_copy_button_button_up() -> void:
@@ -173,12 +197,19 @@ func _on_copy_button_button_up() -> void:
 
 
 func _on_stop_button_mouse_entered() -> void:
-	session_tooltip.text = "[font_size=12]Stops the active session"
+	tooltp_label.text = "[font_size=12]Stops the active session"
 	tooltip_status = true
 
 func _on_stop_button_mouse_exited() -> void:
-	session_tooltip.text = ""
+	tooltp_label.text = ""
 	tooltip_status = false
 
 func _on_stop_button_button_up() -> void:
 	Log.stop_session()
+
+
+func _on_show_log_file_button_button_up() -> void:
+	print(fileinfo_state)
+	fileinfo_state = !fileinfo_state
+
+

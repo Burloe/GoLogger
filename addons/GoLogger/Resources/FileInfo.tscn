@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://b51sj3qhm1g7d"]
+
+[ext_resource type="Script" path="res://addons/GoLogger/Resources/file_info.gd" id="1_kwe5g"]
+
+[node name="FileInfo" type="Panel"]
+custom_minimum_size = Vector2(250, 98)
+offset_right = 249.0
+offset_bottom = 98.0
+script = ExtResource("1_kwe5g")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(205, 80)
+layout_mode = 2
+
+[node name="LabelL" type="RichTextLabel" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(62, 0)
+layout_mode = 2
+bbcode_enabled = true
+text = "Game:[font_size=10]
+File:
+
+File count: 
+Entry count: "
+
+[node name="LabelR" type="RichTextLabel" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(175, 0)
+layout_mode = 2
+bbcode_enabled = true
+text = "[right][font_size=10]
+game(101119_210432)
+
+10
+1000"

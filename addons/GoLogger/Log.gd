@@ -1,14 +1,14 @@
 extends Node
 
 ## Autoload containing the entire framework that is GoLogger. 
-##
+##	
 ## For installation, setup and how to use instructions, see the README.md or https://github.com/Burloe/GoLogger
 
 #region Declarations
 signal session_status_changed ## Emitted when the session status has changed.  
 signal session_timer_started  ## Emitted when the [param session_timer] is started. Useful for other applications than filemanagement. E.g. when stress testing some system and/or when logging is needed for a specific time. 
 
-## Use to set a custom filepath to store logs within. Folders are created within this directory for each [LogFileResource] within [param file].[br][b]Note:[/b][br]    One or more folders are created within this directory for each [LogFileResource] in the plugin's [param file] parameter.
+## Use to set a custom filepath to store logs within. Folders are created within this directory for each [LogFileResource] within [param file].[br][b]Note:[/b][br]    One or more folders are created within this directory for each [LogFileResource] in the plugin's [param file] parameter.[br][color=red]Warning! Changing this parameter at runtime will most likely cause errors.
 @export var base_directory : String = "user://logs/"
 @export var file : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")]
 @export var use_utc : bool = false ## Uses UTC time as opposed to the users local system time. 
@@ -40,7 +40,7 @@ var session_status						: bool = false:                      	## Flags whether o
 @export_category("Log Management") 
 @export var file_cap 					: int = 10 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
 
-## Denotes the log management method used to prevent long or large .log files. Added to combat potential performance issues.[br]
+## Flags the log management method used to prevent long or large .log files. [i]Added to combat potential performance issues. If performance issues aren't affecting you. Using [param entry_count_limit] is still recommended to use.[/i][br]
 ## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for the new entry.[br]
 ## [b]2. Session Timer:[/b] Upon session is start, [param session_timer] is also started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], session is stopped and the action is determined by [param session_timeout_action].[br]
 ## [b]3. Entry Count Limit + Session Timer:[/b] Uses both of the above methods.[br]
@@ -97,16 +97,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	header_string = get_header()	
-	if session_timer == null: 
-		session_timer = Timer.new()
-		add_child(session_timer)
-		session_timer.owner = self
-		session_timer.set_name("SessionTimer")
-	session_timer.timeout.connect(_on_session_timer_timeout)
-	session_timer.one_shot = false
-	session_timer.wait_time = session_timer_wait_time
-	session_timer.autostart = false
+	header_string = get_header()
+	session_timer.autostart = autostart_session
 	popup.visible = popup_state
 	popup_errorlbl.visible = false
 	assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting filename_prefix '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'file' array."))
@@ -167,7 +159,9 @@ func start_session(start_delay : float = 0.0) -> void:
 				file[i].current_file = get_file_name(file[i].filename_prefix)
 				var _f = FileAccess.open(file[i].current_filepath, FileAccess.WRITE)
 				var _files = _dir.get_files()
-				while _files.size() > file_cap:
+				print(str("File list: ", _files))
+				file[i].file_count = _files.size()
+				while _files.size() > file_cap -1:
 					_files.sort()
 					_dir.remove(_files[0])
 					_files.remove_at(0)
@@ -177,7 +171,7 @@ func start_session(start_delay : float = 0.0) -> void:
 				else:
 					var _s := str(header_string, file[i].filename_prefix, " Log session started[", Time.get_datetime_string_from_system(use_utc, true), "]:")
 					_f.store_line(_s)
-					file[i].entry_count += 1
+					file[i].entry_count = 0
 					_f.close()
 	session_status = true
 

@@ -13,5 +13,6 @@ class_name LogFileResource
 
 var current_file	 	: String = ""
 var current_filepath 	: String = ""
+var file_count 			: int = 0
 var entry_count			: int = 0
 
