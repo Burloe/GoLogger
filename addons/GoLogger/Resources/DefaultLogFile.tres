@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="LogFileResource" load_steps=2 format=3 uid="uid://d2u8mtobg80fu"]
 
-[ext_resource type="Script" path="res://addons/GoLogger/LogFileResource.gd" id="1_pk5wl"]
+[ext_resource type="Script" path="res://addons/GoLogger/Resources/LogFileResource.gd" id="1_pk5wl"]
 
 [resource]
 script = ExtResource("1_pk5wl")

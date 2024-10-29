@@ -1,18 +1,78 @@
 {
-	// Use IntelliSense to learn about possible attributes.
-	// Hover to view descriptions of existing attributes.
-	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Minimal Launch",
-			"type": "godot",
-			"request": "launch",
-			"project": "${workspaceFolder}",
-			"debug_collisions": false,
-			"debug_paths": false,
-			"debug_navigation": false,
-			"additional_options": ""
-		}
-	]
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Factory Config Launch",
+            "type": "godot",
+            "request": "launch",
+            "project": "${workspaceFolder}",
+            "address": "127.0.0.1",
+            "port": 6007,
+            // "scene": "main|current|pinned|<path>",
+            "editor_path": "godotTools.editorPath.godot4",
+            // engine command line flags
+            "profiling": false,
+            "single_threaded_scene": false,
+            "debug_collisions": false,
+            "debug_paths": false,
+            "debug_navigation": false,
+            "debug_avoidance": false,
+            "debug_stringnames": false,
+            "frame_delay": 0,
+            "time_scale": 1.0,
+            "disable_vsync": false,
+            "fixed_fps": 60,
+            // anything else
+            "additional_options": ""
+        },
+        {            
+            "name": "Minimal Launch",
+            "type": "godot",
+            "request": "launch"
+        },
+        {
+            "name": "w/o DebugServer",
+            "type": "godot",
+            "request": "launch",
+            "project": "${workspaceFolder}",
+            "address": "127.0.0.1",
+            "port": 6007, 
+            // "debugServer": 6006,
+            "profiling": true,
+            // "single_threaded_scene": false,
+            // "debug_collisions": false,
+            // "debug_paths": false,
+            // "debug_navigation": false,
+            // "debug_avoidance": false,
+            // "debug_stringnames": false,
+            // "frame_delay": 0,
+            // "time_scale": 1.0,
+            // "disable_vsync": false,
+            // "fixed_fps": 60
+        },
+        {
+            "name": "w/ DebugServer",
+            "type": "godot",
+            "request": "launch",
+            "project": "${workspaceFolder}",
+            "address": "127.0.0.1",
+            "port": 6007, 
+            "debugServer": 6006,
+            "profiling": true,
+            // "single_threaded_scene": false,
+            // "debug_collisions": false,
+            // "debug_paths": false,
+            // "debug_navigation": false,
+            // "debug_avoidance": false,
+            // "debug_stringnames": false,
+            // "frame_delay": 0,
+            // "time_scale": 1.0,
+            // "disable_vsync": false,
+            // "fixed_fps": 60,
+        }
+    ]
+    
 }

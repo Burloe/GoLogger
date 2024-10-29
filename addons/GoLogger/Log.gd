@@ -10,7 +10,7 @@ signal session_timer_started  ## Emitted when the [param session_timer] is start
 
 ## Use to set a custom filepath to store logs within. Folders are created within this directory for each [LogFileResource] within [param file].[br][b]Note:[/b][br]    One or more folders are created within this directory for each [LogFileResource] in the plugin's [param file] parameter.
 @export var base_directory : String = "user://logs/"
-@export var file : Array[LogFileResource] = [preload("res://addons/GoLogger/DefaultLogFile.tres")]
+@export var file : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")]
 @export var use_utc : bool = false ## Uses UTC time as opposed to the users local system time. 
 @export var dash_timestamp_separator : bool = false ## When enabled, date and timestamps are separated with '-'. Disabled = "prefix_241028_182143.log". Enabled = "prefix_24-10-28_18-21-43.log".
 
@@ -19,10 +19,10 @@ var header_string : String ## Contains the resulting string as determined by [pa
 @export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var print_session_changes : int = 0 ## If true, enables printing messages to the output when a log session is started or stopped.
 
 @export_group("Hotkeys & LogController")
-@export var hotkey_start_session		: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres") 		## Hotkey used to start session manually. Default hotkey: Ctrl + Shift + O
-@export var hotkey_stop_session			: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")		## Hotkey used to stop session manually. Default hotkey: Ctrl + Shift + P
-@export var hotkey_save_unique			: InputEventShortcut = preload("res://addons/GoLogger/SaveUniqueFileShortcut.tres")	## Hotkey used to save the currently active session with a unique filename(optionally in a unique folder) manually. Default hotkey: Ctrl + Shift + U
-@export var hotkey_toggle_controller	: InputEventShortcut = preload("res://addons/GoLogger/ToggleControllerShortcut.tres") 	## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
+@export var hotkey_start_session		: InputEventShortcut = preload("res://addons/GoLogger/Resources/StartSessionShortcut.tres") 		## Hotkey used to start session manually. Default hotkey: Ctrl + Shift + O
+@export var hotkey_stop_session			: InputEventShortcut = preload("res://addons/GoLogger/Resources/StopSessionShortcut.tres")		## Hotkey used to stop session manually. Default hotkey: Ctrl + Shift + P
+@export var hotkey_save_unique			: InputEventShortcut = preload("res://addons/GoLogger/Resources/SaveUniqueFileShortcut.tres")	## Hotkey used to save the currently active session with a unique filename(optionally in a unique folder) manually. Default hotkey: Ctrl + Shift + U
+@export var hotkey_toggle_controller	: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
 @export var hide_contoller_on_start		: bool = false                      	## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
 @export var controller_drag_offset		: Vector2 = Vector2(0, 0)             	## The offset used to correct the controller window position while dragging(may require changing depending on your project resolution and scaling).
 
@@ -44,14 +44,11 @@ var session_status						: bool = false:                      	## Flags whether o
 ## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for the new entry.[br]
 ## [b]2. Session Timer:[/b] Upon session is start, [param session_timer] is also started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], session is stopped and the action is determined by [param session_timeout_action].[br]
 ## [b]3. Entry Count Limit + Session Timer:[/b] Uses both of the above methods.[br]
-## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended, particularly so if you intend to ship your game with GoLogger or a derivation.
+## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended.
 @export_enum("Entry Count Limit", "Session Timer", "Entry Limit + Session Timer", "None") var log_manage_method : int = 0
-
-## The log entry count(or line count) limit allowed in the .log file. If entry count exceeds this number, the oldest entry is removed before adding the new.
-## [b]Stop & start new session:[/b] Stops the current session and starting a new one.[br][b]Stop session only:[/b] Stops the current session without starting a new one. Note that this requires a manual restart which can be done in the Controller, or if you've implemented your own way of starting it.
+## The log entry count(or line count) limit allowed in the .log file. If entry count exceeds this number, the oldest entry is removed before adding the new.[br][b]Stop & start new session:[/b] Stops the current session and starting a new one.[br][b]Stop session only:[/b] Stops the current session without starting a new one.
 @export_enum("Stop & start new session", "Stop session only") var session_timeout_action : int = 0
-
-@export var entry_count_limit			: int = 1500             	## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
+@export var entry_count_limit			: int = 1000             	## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
 var entry_count_game 					: int = 0                   ## The current count of entries in the game.log.
 var entry_count_player 					: int = 0                   ## The current count of entries in the player.log.
 @onready var session_timer				: Timer = $SessionTimer     ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
@@ -59,7 +56,6 @@ var entry_count_player 					: int = 0                   ## The current count of 
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
-
 
 
 # Popup
@@ -113,12 +109,12 @@ func _ready() -> void:
 	session_timer.autostart = false
 	popup.visible = popup_state
 	popup_errorlbl.visible = false
-	assert(check_filename_conflicts() == null, str("GoLogger Error: Conflicting name found in [LogFileResource]. Please assign a unique name to ", check_filename_conflicts()))
+	assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting filename_prefix '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'file' array."))
 	if autostart_session:
-		start_session()		
+		start_session()
 
 
-
+#region Base Plugin Functions
 ## Initiates a log session, recording game events in the .log file.
 ## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but requires function to be called using the "await" keyword: [code]await Log.start_session(1.0)[/code].
 ## See README[Starting and stopping sessions] for more info.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br][param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).[br]Example usage:[codeblock]
@@ -260,7 +256,7 @@ func stop_session(include_timestamp : bool = true) -> void:
 
 
 
-## Saves copies of the current log session in sub-folders called "saved_logs" 
+## Saves copies of the current log session in "saved_logs" sub-folders.
 func save_copy() -> void:
 	popup_state = false
 	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
@@ -290,10 +286,10 @@ func save_copy() -> void:
 		popup_textedit.text = ""
 		if print_session_changes:
 			print("GoLogger: Saved persistent copies of current file(s) into sub-folders.")
+#endregion
 
 
-
-
+#region Helper functions
 ## Helper function that returns the appropriate log header depending on [param log_info_header].
 func get_header() -> String:
 	match log_info_header:
@@ -310,16 +306,28 @@ func get_header() -> String:
 
 
 ## Helper function that checks for conflicting log filenames of parameter [param filename_prefix]. 
-func check_filename_conflicts() -> LogFileResource:
-	var seen_names : Array[LogFileResource] = [] # Stores all the seen resources that doesnt conflict 
+# func check_filename_conflicts() -> LogFileResource:
+# 	var seen_resources : Array[LogFileResource] = [] # Stores all the seen resources that doesnt conflict 
+# 	for r in file:
+# 		for s in seen_resources:
+# 			if s.filename_prefix == r.filename_prefix: # Conflict found, return resource
+# 				return r 
+# 			else: # No conflict, append resource to seen resources array
+# 				seen_resources.append(r)
+# 		if seen_resources.is_empty(): seen_resources.append(r) 
+# 	return null 
 
+
+func check_filename_conflicts() -> String:
+	var seen_resources : Array[String] = []
 	for r in file:
-		for s in seen_names:
-			if r.filename_prefix == s.filename_prefix: # Conflict found, return resource
-				return r 
-			else: # No conflict, append resource to seen names array
-				seen_names.append(r)
-	return null 
+		if !seen_resources.is_empty():
+			if r.filename_prefix in seen_resources:
+				return r.filename_prefix # Conflict found -> return the conflicting name for assert error 
+			else: seen_resources.append(r.filename_prefix)
+		else: seen_resources.append(r.filename_prefix)
+	return ""# If no conflicts found -> return empty string and resume execution
+
 
 
 
@@ -338,7 +346,7 @@ func get_err_string(error_code : int) -> String:
 			return "Error[10]: No permission to access file."
 		11: # File in use
 			return "Error[11]: File already in use(forgot to use 'close()'?)."
-		12: # Cannae open file
+		12: # Can't open file
 			return "Error[12]: Can't open file."
 		13: # Can't write
 			return "Error[13]: Can't write to file."
@@ -357,7 +365,7 @@ func get_err_string(error_code : int) -> String:
 func get_file_name(filename : String) -> String:
 	var dict  : Dictionary = Time.get_datetime_dict_from_system()
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
-	# Add 0 to single int dates and times
+	# Add 0 to single-numbered dates and times
 	var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
 	var dd  : String = str(dict["day"]    if dict["day"]    > 9 else str("0", dict["day"]))
 	var hh  : String = str(dict["hour"]   if dict["hour"]   > 9 else str("0", dict["hour"]))
@@ -391,9 +399,9 @@ func get_file_contents(folder_path : String) -> String:
 		_fr.close()
 		return contents
 	return str("GoLogger Error: Unable to retrieve file contents in (", folder_path, ")") if error_reporting != 2 else ""
+#endregion
 
-
-
+#region Signal listeners
 ## Stops and starts sessions when using the "Session Timer" option with[param session_timeout_action]. 
 func _on_session_timer_timeout() -> void:
 	match log_manage_method:
@@ -442,3 +450,5 @@ func _on_no_button_button_up() -> void:
 
 func _on_yes_button_button_up() -> void:
 	save_copy()
+
+#endregion
