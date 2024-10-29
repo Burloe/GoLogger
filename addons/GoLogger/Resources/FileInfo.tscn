@@ -22,26 +22,33 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
-custom_minimum_size = Vector2(205, 80)
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="LabelL" type="RichTextLabel" parent="MarginContainer/HBoxContainer"]
+[node name="CategoryNameLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 23)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Network"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(205, 56)
+layout_mode = 2
+
+[node name="LabelL" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(62, 0)
 layout_mode = 2
 bbcode_enabled = true
-text = "Game:[font_size=10]
-File:
+text = "[font_size=10]File:
 
-File count: 
-Entry count: "
+File count:
+Entry count:"
 
-[node name="LabelR" type="RichTextLabel" parent="MarginContainer/HBoxContainer"]
+[node name="LabelR" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(175, 0)
 layout_mode = 2
 bbcode_enabled = true
-text = "[right][font_size=10]
-game(101119_210432)
+text = "[right][font_size=10]network(101119_210432).log
 
 10
 1000"

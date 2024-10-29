@@ -10,7 +10,7 @@ signal session_timer_started  ## Emitted when the [param session_timer] is start
 
 ## Use to set a custom filepath to store logs within. Folders are created within this directory for each [LogFileResource] within [param file].[br][b]Note:[/b][br]    One or more folders are created within this directory for each [LogFileResource] in the plugin's [param file] parameter.[br][color=red]Warning! Changing this parameter at runtime will most likely cause errors.
 @export var base_directory : String = "user://logs/"
-@export var file : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")]
+@export var categories : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")]
 @export var use_utc : bool = false ## Uses UTC time as opposed to the users local system time. 
 @export var dash_timestamp_separator : bool = false ## When enabled, date and timestamps are separated with '-'. Disabled = "prefix_241028_182143.log". Enabled = "prefix_24-10-28_18-21-43.log".
 
@@ -46,7 +46,7 @@ var session_status						: bool = false:                      	## Flags whether o
 ## [b]3. Entry Count Limit + Session Timer:[/b] Uses both of the above methods.[br]
 ## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended.
 @export_enum("Entry Count Limit", "Session Timer", "Entry Limit + Session Timer", "None") var log_manage_method : int = 0
-## The log entry count(or line count) limit allowed in the .log file. If entry count exceeds this number, the oldest entry is removed before adding the new.[br][b]Stop & start new session:[/b] Stops the current session and starting a new one.[br][b]Stop session only:[/b] Stops the current session without starting a new one.
+## The log entry count(or line count) limit allowed in the .log categories. If entry count exceeds this number, the oldest entry is removed before adding the new.[br][b]Stop & start new session:[/b] Stops the current session and starting a new one.[br][b]Stop session only:[/b] Stops the current session without starting a new one.
 @export_enum("Stop & start new session", "Stop session only") var session_timeout_action : int = 0
 @export var entry_count_limit			: int = 1000             	## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
 var entry_count_game 					: int = 0                   ## The current count of entries in the game.log.
@@ -101,13 +101,13 @@ func _ready() -> void:
 	session_timer.autostart = autostart_session
 	popup.visible = popup_state
 	popup_errorlbl.visible = false
-	assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting filename_prefix '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'file' array."))
+	assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
 	if autostart_session:
 		start_session()
 
 
 #region Base Plugin Functions
-## Initiates a log session, recording game events in the .log file.
+## Initiates a log session, recording game events in the .log categories.
 ## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but requires function to be called using the "await" keyword: [code]await Log.start_session(1.0)[/code].
 ## See README[Starting and stopping sessions] for more info.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br][param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).[br]Example usage:[codeblock]
 ##	Log.start_session()                       # Normal call
@@ -123,13 +123,13 @@ func start_session(start_delay : float = 0.0) -> void:
 	if print_session_changes == 1 or print_session_changes == 3:
 		print("GoLogger: Session started!")
 
-	# Iterate over each LogFileResource in [param file] array > Create directories and files 
-	for i in range(file.size()):
-		assert(file[i] != null, str("GoLogger Error: 'file' array entry", i, " has no [LogFileResource] added."))
+	# Iterate over each LogFileResource in [param categories] array > Create directories and files 
+	for i in range(categories.size()):
+		assert(categories[i] != null, str("GoLogger Error: 'categories' array entry", i, " has no [LogFileResource] added."))
 
 		var _fname : String
-		_fname = get_file_name(file[i].filename_prefix) if file[i].filename_prefix != "" else str("file", i)
-		var _path : String = str(base_directory, file[i].filename_prefix, "_GoLogs/")
+		_fname = get_file_name(categories[i].category_name) if categories[i].category_name != "" else str("file", i)
+		var _path : String = str(base_directory, categories[i].category_name, "_GoLogs/")
 		if _path == "": 
 			if error_reporting == 0: 
 				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
@@ -155,42 +155,42 @@ func start_session(start_delay : float = 0.0) -> void:
 				if _err != OK: push_warning("GoLogger ", get_err_string(_err), " (", _path, ").")
 				return
 			else:
-				file[i].current_filepath = _path + get_file_name(file[i].filename_prefix)
-				file[i].current_file = get_file_name(file[i].filename_prefix)
-				var _f = FileAccess.open(file[i].current_filepath, FileAccess.WRITE)
+				categories[i].current_filepath = _path + get_file_name(categories[i].category_name)
+				categories[i].current_file = get_file_name(categories[i].category_name)
+				var _f = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
 				var _files = _dir.get_files()
 				print(str("File list: ", _files))
-				file[i].file_count = _files.size()
+				categories[i].file_count = _files.size()
 				while _files.size() > file_cap -1:
 					_files.sort()
 					_dir.remove(_files[0])
 					_files.remove_at(0)
 					var _err = DirAccess.get_open_error()
 					if _err != OK and error_reporting != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_err_string(_err))
-				if !_f and error_reporting != 2: push_warning("GoLogger Error: Failed to create log file(", file[i].current_file, ").")
+				if !_f and error_reporting != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i].current_file, ").")
 				else:
-					var _s := str(header_string, file[i].filename_prefix, " Log session started[", Time.get_datetime_string_from_system(use_utc, true), "]:")
+					var _s := str(header_string, categories[i].category_name, " Log session started[", Time.get_datetime_string_from_system(use_utc, true), "]:")
 					_f.store_line(_s)
-					file[i].entry_count = 0
+					categories[i].entry_count = 0
 					_f.close()
 	session_status = true
 
 
 
-## Stores a log entry into the 'game/ui/player.log' file.[br]
-## [param file_index] is used when you use multiple log files at once. The file index corresponds to the order of [LogFileResource] entries in the [param file] array.
+## Stores a log entry into the 'game/ui/player.log' categories.[br]
+## [param file_index] is used when you use multiple log files at once. The category_index index corresponds to the order of [LogFileResource] entries in the [param categories] array.
 ## [param timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
 ## [param utc] will force the date/timestamp to use UTC time rather than the user's local system time.[br]Example usage:[codeblock]
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."))
 ## # Resulting log entry: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
-func entry(log_entry : String, file_index : int = 0, include_timestamp : bool = true) -> void:
+func entry(log_entry : String, category_index : int = 0, include_timestamp : bool = true) -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
 
 	if !session_status:
 		if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
 		return
 	else:
-		var _f = FileAccess.open(file[file_index].current_filepath, FileAccess.READ)
+		var _f = FileAccess.open(categories[category_index].current_filepath, FileAccess.READ)
 		if !_f:
 			var _err = FileAccess.get_open_error()
 			if _err != OK and error_reporting != 2: push_warning("Gologger Error: Log entry failed due to FileAccess error[", get_err_string(_err), "]")
@@ -206,9 +206,9 @@ func entry(log_entry : String, file_index : int = 0, include_timestamp : bool = 
 			if log_manage_method == 0 or log_manage_method == 2:
 				while lines.size() > entry_count_limit:
 					lines.remove_at(1)
-			file[file_index].entry_count = lines.size()
+			categories[category_index].entry_count = lines.size()
 
-			var _fw = FileAccess.open(file[file_index].current_filepath, FileAccess.WRITE)
+			var _fw = FileAccess.open(categories[category_index].current_filepath, FileAccess.WRITE)
 			if !_fw and error_reporting != 2:
 				var err = FileAccess.get_open_error()
 				if err != OK: push_warning("GoLogger error: Log entry failed due to FileAccess error[", get_err_string(err), "]")
@@ -218,7 +218,7 @@ func entry(log_entry : String, file_index : int = 0, include_timestamp : bool = 
 
 
 
-## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [method start_session] which creates a new file.[br]
+## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [method start_session] which creates a new categories.[br]
 ## [param timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
 ## [param utc] will force the date/timestamp to use UTC time rather than the user's local system time.[br]
 func stop_session(include_timestamp : bool = true) -> void:
@@ -227,25 +227,25 @@ func stop_session(include_timestamp : bool = true) -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] Stopped log session.")
 
 	if session_status:
-		for i in range(file.size()):
-			var _f = FileAccess.open(file[i].current_filepath, FileAccess.READ)
+		for i in range(categories.size()):
+			var _f = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
 			if !_f and error_reporting != 2:
 				var _err = FileAccess.get_open_error()
-				if _err != OK: push_warning("GoLogger Error: Attempting to stop session by reading file (", file[i].current_filepath, ") -> Error[", _err, "]")
+				if _err != OK: push_warning("GoLogger Error: Attempting to stop session by reading file (", categories[i].current_filepath, ") -> Error[", _err, "]")
 			var _content := _f.get_as_text()
 			_f.close()
-			var _fw = FileAccess.open(file[i].current_filepath, FileAccess.WRITE)
+			var _fw = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
 			if !_fw and error_reporting != 2:
 				var _err = FileAccess.get_open_error()
 				if _err != OK: 
-					push_warning("GoLogger Error: Attempting to stop session by writing to file (", file[i].current_filepath, ") -> Error[", _err, "]")
+					push_warning("GoLogger Error: Attempting to stop session by writing to file (", categories[i].current_filepath, ") -> Error[", _err, "]")
 					return
 			var _s := str(_content, str(_timestamp + "Stopped Log Session.") if include_timestamp else "Stopped Log Session.")
 			_fw.store_line(_s)
 			_fw.close()
-			file[i].current_file = ""
-			file[i].current_filepath = ""
-			file[i].entry_count = 0
+			categories[i].current_file = ""
+			categories[i].current_filepath = ""
+			categories[i].entry_count = 0
 	session_status = false
 
 
@@ -259,22 +259,22 @@ func save_copy() -> void:
 		if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
 		return
 	else:
-		for i in range(file.size()):
-			var _fr = FileAccess.open(file[i].current_filepath, FileAccess.READ)
+		for i in range(categories.size()):
+			var _fr = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
 			if !_fr:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", file[i].current_file," [/pulse]")
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i].current_file," [/pulse]")
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
 			var _c = _fr.get_as_text()
-			var _path := str(base_directory, file[i].filename_prefix, "_GoLogs/saved_logs/", get_file_name(persistent_copy_name))
+			var _path := str(base_directory, categories[i].category_name, "_GoLogs/saved_logs/", get_file_name(persistent_copy_name))
 			var _fw = FileAccess.open(_path, FileAccess.WRITE)
 			if !_fw:
 				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
-			_fw.store_line(str(_c, "\nSaved copy of ", file[i].current_file, "."))
+			_fw.store_line(str(_c, "\nSaved copy of ", categories[i].current_file, "."))
 			_fw.close()
 		persistent_copy_name = ""
 		popup_textedit.text = ""
@@ -301,12 +301,12 @@ func get_header() -> String:
 
 func check_filename_conflicts() -> String:
 	var seen_resources : Array[String] = []
-	for r in file:
+	for r in categories:
 		if !seen_resources.is_empty():
-			if r.filename_prefix in seen_resources:
-				return r.filename_prefix # Conflict found -> return the conflicting name for assert error 
-			else: seen_resources.append(r.filename_prefix)
-		else: seen_resources.append(r.filename_prefix)
+			if r.category_name in seen_resources:
+				return r.category_name # Conflict found -> return the conflicting name for assert error 
+			else: seen_resources.append(r.category_name)
+		else: seen_resources.append(r.category_name)
 	return ""# If no conflicts found -> return empty string and resume execution
 
 
@@ -318,23 +318,23 @@ func get_err_string(error_code : int) -> String:
 		1: # Failed
 			return "Error[12]: Generic error occured, unknown cause."
 		4: # Unauthorized
-			return "Error[12]: Not authorized to open file."
+			return "Error[12]: Not authorized to open categories."
 		7: # Not found
 			return "Error[12]: FIle not found."
 		8: # Bad path
 			return "Error[8]: Incorrect path."
 		10: # No file permission
-			return "Error[10]: No permission to access file."
+			return "Error[10]: No permission to access categories."
 		11: # File in use
 			return "Error[11]: File already in use(forgot to use 'close()'?)."
 		12: # Can't open file
-			return "Error[12]: Can't open file."
+			return "Error[12]: Can't open categories."
 		13: # Can't write
-			return "Error[13]: Can't write to file."
+			return "Error[13]: Can't write to categories."
 		14: # Can't read
-			return "Error[14]: Can't read file."
+			return "Error[14]: Can't read categories."
 		15: # Unrecognized file
-			return "Error[15]: Unrecognized file."
+			return "Error[15]: Unrecognized categories."
 		16: #  Corrupt
 			return "Error[16]: File is corrupted."
 	return "Error[X]: Unspecified error."

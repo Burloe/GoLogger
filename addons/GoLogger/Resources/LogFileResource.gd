@@ -9,7 +9,8 @@ class_name LogFileResource
 ## Linux:   ~/.local/share/godot/app_userdata/[project_name]
 
 ## Sets the file name prefix, followed by the date and timestamp. prefix(241118_130959).log. If left empty, prefix will be "file" + the index number of the array. 
-@export_placeholder("Enter file name prefix.") var filename_prefix : String = ""
+## Sets the name for this log category. This name will be the prefix name of the .log files followed by the date/timestamp. Using "game" for example will create folder inside the [param base_directory] called "game_GoLogs" and subsequent log files will be named "game(yymmdd_hhmmss).log".[br][i]If left blank, the name will be "file" + array position integer("file1", "file2" etc.).
+@export_placeholder("Enter category name.") var category_name : String = ""
 
 var current_file	 	: String = ""
 var current_filepath 	: String = ""

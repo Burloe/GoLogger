@@ -4,6 +4,4 @@
 
 [resource]
 script = ExtResource("1_pk5wl")
-filename_prefix = "game"
-filepath = "user://logs/"
-save_uniques_in_subfolder = true
+category_name = "game"

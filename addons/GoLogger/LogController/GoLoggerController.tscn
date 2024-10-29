@@ -91,16 +91,19 @@ custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+modulate = Color(0.552941, 0.858824, 0.337255, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
 text = "Start"
 
 [node name="CopyButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+modulate = Color(1, 0.870588, 0.141176, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
 text = "Copy"
 
 [node name="StopButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+modulate = Color(1, 0.290196, 0.290196, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
 text = "Stop"
@@ -152,7 +155,6 @@ layout_mode = 2
 text = "Show Log File Info"
 
 [node name="Tooltip" type="Panel" parent="MarginContainer/VBoxContainer"]
-modulate = Color(1, 0.28, 0.688, 1)
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
@@ -171,13 +173,19 @@ theme_override_constants/margin_bottom = 5
 [node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Tooltip/MarginContainer"]
 layout_mode = 2
 bbcode_enabled = true
-text = "[font_size=12]Saves a copy of the active session"
 
 [node name="FileInfoPanel" type="Panel" parent="."]
+custom_minimum_size = Vector2(270, 446)
 layout_mode = 0
 offset_left = 213.0
-offset_right = 448.0
+offset_right = 483.0
 offset_bottom = 446.0
+
+[node name="FileInfoSide_Button" type="Button" parent="FileInfoPanel"]
+layout_mode = 0
+offset_top = -34.0
+offset_right = 270.0
+offset_bottom = -3.0
 
 [node name="MarginContainer" type="MarginContainer" parent="FileInfoPanel"]
 layout_mode = 1
@@ -195,24 +203,8 @@ theme_override_constants/margin_bottom = 15
 layout_mode = 2
 
 [node name="FileInfoContainer" type="VBoxContainer" parent="FileInfoPanel/MarginContainer/ScrollContainer"]
-custom_minimum_size = Vector2(210, 416)
+custom_minimum_size = Vector2(250, 416)
 layout_mode = 2
 theme_override_constants/separation = 13
 
-[node name="RichTextLabel" type="RichTextLabel" parent="FileInfoPanel/MarginContainer/ScrollContainer/FileInfoContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-bbcode_enabled = true
-text = "[center]Base directory:
- user://logs/"
-
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
-[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/StartButton" to="." method="_on_start_button_mouse_entered"]
-[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/HBoxContainer/StartButton" to="." method="_on_start_button_mouse_exited"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/CopyButton" to="." method="_on_copy_button_button_up"]
-[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/CopyButton" to="." method="_on_copy_button_mouse_entered"]
-[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/HBoxContainer/CopyButton" to="." method="_on_copy_button_mouse_exited"]
-[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/StopButton" to="." method="_on_stop_button_button_up"]
-[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/StopButton" to="." method="_on_stop_button_mouse_entered"]
-[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/HBoxContainer/StopButton" to="." method="_on_stop_button_mouse_exited"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ShowLogFileButton" to="." method="_on_show_log_file_button_button_up"]
