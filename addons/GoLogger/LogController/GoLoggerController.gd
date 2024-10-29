@@ -9,21 +9,28 @@ class_name GoLoggerController
 ## [b]Session Timer [ProgressBar][/b] tells you the time left for the active session. Uses[param session_time] of [Log] as the [param wait_time]. The default session time is 10 minutes.[br]
 ## [b]Print buttons[/b] will print the .log file created last. If a session is started, this is the file that's being logged into actively. If a session is stopped, the log of the last session is printed.
 
-@onready var update_timer: Timer = $InfoUpdateTimer ## Updates info displayed in the [GoLoggerController] every time it times out(every 0.5s by default]
-@onready var drag_button: Button = $DragButton ## Drag the controller while pressing this button
+@onready var update_timer			: Timer = 			$InfoUpdateTimer ## Updates info displayed in the [GoLoggerController] every time it times out(every 0.5s by default]
+@onready var drag_button			: Button = 			$DragButton ## Drag the controller while pressing this button
 
-@onready var session_status_label: RichTextLabel = $MarginContainer/VBoxContainer/SessionStatusPanel/SessionStatusLabel
-@onready var session_button: CheckButton = $MarginContainer/VBoxContainer/SessionButton
-@onready var print_gamelog_button: Button = $MarginContainer/VBoxContainer/PrintButtonHBOX/PrintGameLogButton 
-@onready var print_playerlog_button: Button = $MarginContainer/VBoxContainer/PrintButtonHBOX/PrintPlayerLogButton 
+@onready var session_status_label	: RichTextLabel = 	$MarginContainer/VBoxContainer/SessionStatusPanel/SessionStatusLabel
+@onready var session_button			: CheckButton = 	$MarginContainer/VBoxContainer/SessionButton
+@onready var print_gamelog_button	: Button = 			$MarginContainer/VBoxContainer/PrintButtonHBOX/PrintGameLogButton 
+@onready var print_playerlog_button	: Button = 			$MarginContainer/VBoxContainer/PrintButtonHBOX/PrintPlayerLogButton 
 
-@onready var entry_title_label: RichTextLabel = $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountTitleLabel
-@onready var game_count_label: RichTextLabel =  $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountLabelHBXC/GameCountLabel
-@onready var player_count_label: RichTextLabel = $MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountLabelHBXC/PlayerCountLabel
+@onready var entry_title_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountTitleLabel
+@onready var game_count_label		: RichTextLabel =  	$MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountLabelHBXC/GameCountLabel
+@onready var player_count_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/Panel/MarginContainer/VBoxContainer/EntryCountLabelHBXC/PlayerCountLabel
 
-@onready var session_timer_pgb: ProgressBar = $MarginContainer/VBoxContainer/TimerPanel/SessionTimerPGB
-@onready var timer_status_label: RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerStatusLabel
-@onready var timer_left_label: RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerLeftLabel
+@onready var session_timer_pgb		: ProgressBar = 	$MarginContainer/VBoxContainer/TimerPanel/SessionTimerPGB
+@onready var timer_status_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerStatusLabel
+@onready var timer_left_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerLeftLabel
+
+@onready var tooltip 				: Panel = 			$Tooltip
+@onready var session_tooltip 		: RichTextLabel = 	$Tooltip/MarginContainer/RichTextLabel
+var tooltip_status 					: bool = false:
+	set(value):
+		tooltip_status = value
+		tooltip.visible = tooltip_status
 
 var is_dragging : bool = false
 #endregion
@@ -47,6 +54,7 @@ func _ready() -> void:
 	print_playerlog_button.button_up.connect(_on_print_button_up.bind(print_playerlog_button))
 	Log.session_timer_started.connect(_on_session_timer_started)
 	update_timer.timeout.connect(_on_update_timer_timeout)
+	tooltip.visible = false
 
 	if Log.hide_contoller_on_start: hide()
 	else: show()
@@ -129,3 +137,48 @@ func _on_print_button_up(button : Button) -> void:
 	match button.get_name():
 		"PrintGameLogButton": print(Log.get_file_contents(Log.game_path))
 		"PrintPlayerLogButton": print(Log.get_file_contents(Log.player_path))
+
+
+
+func _on_start_button_mouse_entered() -> void:
+	session_tooltip.text = "[font_size=12]Start a new session"
+	tooltip_status = true
+
+func _on_start_button_mouse_exited() -> void:
+	session_tooltip.text = ""
+	tooltip_status = false
+
+func _on_start_button_button_up() -> void:
+	Log.start_session()
+
+
+
+
+
+func _on_copy_button_mouse_entered() -> void:
+	session_tooltip.text = "[font_size=12]Saves a copy of the active session"
+	tooltip_status = true
+
+func _on_copy_button_mouse_exited() -> void:
+	session_tooltip.text = ""
+	tooltip_status = false
+
+func _on_copy_button_button_up() -> void:
+	Log.save_copy()
+
+
+
+
+
+
+
+func _on_stop_button_mouse_entered() -> void:
+	session_tooltip.text = "[font_size=12]Stops the active session"
+	tooltip_status = true
+
+func _on_stop_button_mouse_exited() -> void:
+	session_tooltip.text = ""
+	tooltip_status = false
+
+func _on_stop_button_button_up() -> void:
+	Log.stop_session()

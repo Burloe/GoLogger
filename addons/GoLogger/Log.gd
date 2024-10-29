@@ -305,19 +305,6 @@ func get_header() -> String:
 
 
 
-## Helper function that checks for conflicting log filenames of parameter [param filename_prefix]. 
-# func check_filename_conflicts() -> LogFileResource:
-# 	var seen_resources : Array[LogFileResource] = [] # Stores all the seen resources that doesnt conflict 
-# 	for r in file:
-# 		for s in seen_resources:
-# 			if s.filename_prefix == r.filename_prefix: # Conflict found, return resource
-# 				return r 
-# 			else: # No conflict, append resource to seen resources array
-# 				seen_resources.append(r)
-# 		if seen_resources.is_empty(): seen_resources.append(r) 
-# 	return null 
-
-
 func check_filename_conflicts() -> String:
 	var seen_resources : Array[String] = []
 	for r in file:
