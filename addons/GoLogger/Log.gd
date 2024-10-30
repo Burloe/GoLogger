@@ -1,69 +1,137 @@
 extends Node
 
+#region Documentation & Declarations
 ## Autoload containing the entire framework that is GoLogger. 
-##	
-## For installation, setup and how to use instructions, see the README.md or https://github.com/Burloe/GoLogger
+##
+## The GitHub repository [url]https://github.com/Burloe/GoLogger[/url] will always have the latest version of GoLogger to download. For installation, setup and 
+## how to use instructions, see the README.md or in the Github repo.[br][br] This framework will create folders for each log category in the directory specified 
+## in [param base_directory] in which .log files are created. You can add however many log categories you want by adding more [LogFileResource]s into the arrray 
+## [param categories]. This plugin uses 'sessions' to indicate when it's logging and each session creates one .log file. To use this plugin, there are four main 
+## functions when using this plugin which can be called from any script in your project:[br][br][method start_session]: Starts a session and creates a .log file. 
+## When [param autostart_session] is enabled, the plugin calls this function by itself when running your project.[br][method entry]: Main bread and butter of this 
+## plugin. Call this in your code to log entries into the .log file. In order to log an entry into different categories, you specify the category by the category's 
+## array position in [param categories].[codeblock]
+## Log.entry("My first game log entry", 0) # Logs entry into category 0 named 'game'.
+## Log.entry("My first game log entry") # Alternative. Not specifying the category will log into category 0.
+## Log.entry("My first player log entry", 1) # Log entry into category 1 named 'player[/codeblock]
+## [method save_copy]: Copies the active session log into a separate .log file that's saved into [code]base_directory/categoryname_GoLogs/saved_logs/[/code]. 
+## Files saved into the subfolder are exempt from being deleted. This plugin will delete the oldest entry when the number of logs exceeds [param file_cap] so log 
+## files aren't created endlessly.[br][method stop_session]: Stops the active session and stops logging to the corresponding .log file.
 
-#region Declarations
-signal session_status_changed ## Emitted when the session status has changed.  
-signal session_timer_started  ## Emitted when the [param session_timer] is started. Useful for other applications than filemanagement. E.g. when stress testing some system and/or when logging is needed for a specific time. 
 
-## Use to set a custom filepath to store logs within. Folders are created within this directory for each [LogFileResource] within [param file].[br][b]Note:[/b][br]    One or more folders are created within this directory for each [LogFileResource] in the plugin's [param file] parameter.[br][color=red]Warning! Changing this parameter at runtime will most likely cause errors.
+
+## Emitted when the session status has changed.  
+signal session_status_changed 
+
+## Emitted when the [param session_timer] is started. Useful to sync up sessions with systems/features for other applications than simple file management. 
+## E.g. when stress testing some system or feather or to log for a specific time.
+signal session_timer_started   
+
+## Set the base filepath where folders for each log category are created. For each [LogFileResource] within [param file], a corresponding folder is created where 
+## the logs are stored.[br][color=red][b]Warning:[/b][br]Changing this parameter at runtime will likely cause errors.
 @export var base_directory : String = "user://logs/"
-@export var categories : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")]
-@export var use_utc : bool = false ## Uses UTC time as opposed to the users local system time. 
-@export var dash_timestamp_separator : bool = false ## When enabled, date and timestamps are separated with '-'.[br]Disabled = "categoryname_241028_182143.log".[br]Enabled  = "categoryname_24-10-28_18-21-43.log".
-var header_string : String ## Contains the resulting string as determined by [param log_info_header].
-## Determines the type of header used in the .log file header. Gets the project name and version from Project Settings > Application > Config.[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
-@export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 
-@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var print_session_changes : int = 0 ## If true, enables printing messages to the output when a log session is started or stopped.
+
+## Array containing [LogFileResource]s that each corresponds to a log category. They define the category name.
+@export var categories : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")] 
+
+## Determines the type of header used in the .log file header. Gets the project name and version from Project Settings > Application > Config.[br]
+## [i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
+@export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0
+
+## Autostarts the session at runtime.
+@export var autostart_session 			: bool = true
+
+## Uses UTC time as opposed to the users local system time. 
+@export var use_utc : bool = false
+
+## When enabled, date and timestamps are separated with '-'.[br]Disabled = "categoryname_241028_182143.log".[br]Enabled  = "categoryname_24-10-28_18-21-43.log".
+@export var dash_timestamp_separator : bool = false
+
+## Contains the resulting string as determined by [param log_info_header].
+var header_string : String
 
 @export_group("Log Management") 
-@export var file_cap 					: int = 10 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number
-## Flags which log management method used to prevent long or large .log files. [i]Added to combat potential performance issues. Using [param entry_count_limit] is still recommended to use regardless if you experience performance issues or not.[/i][br]
-## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for the new entry.[br]
-## [b]2. Session Timer:[/b] Upon session is start, [param session_timer] is also started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], session is stopped and the action is determined by [param session_timeout_action].[br]
+## Flags which log management method used to prevent long or large .log files. [i]Added to combat potential performance issues. Using [param entry_count_limit] 
+## is still recommended to use regardless if you experience performance issues or not.[/i][br]
+## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for 
+## the new entry.[br]
+## [b]2. Session Timer:[/b] Upon session is start, [param session_timer] is also started, counting down the [param session_timer_wait_time] value. Upon 
+## [signal timeout], session is stopped and the action is determined by [param session_timeout_action].[br]
 ## [b]3. Entry Count Limit + Session Timer:[/b] Uses both of the above methods.[br]
 ## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended.
 @export_enum("Entry Count Limit", "Session Timer", "Entry Limit + Session Timer", "None") var log_manage_method : int = 0
-## The log entry count(or line count) limit allowed in the .log categories. If entry count exceeds this number, the oldest entry is removed before adding the new.[br][b]Stop & start new session:[/b] Stops the current session and starting a new one.[br][b]Stop session only:[/b] Stops the current session without starting a new one.
+
+## The log entry count(or line count) limit allowed in the .log categories. If entry count exceeds this number, the oldest entry 
+## is removed before adding the new.[br] [b]Stop & start new session:[/b] Stops the current session and starting a new one.[br]
+## [b]Stop session only:[/b] Stops the current session without starting a new one.
 @export_enum("Stop & start new session", "Stop session only") var session_timeout_action : int = 0
-@export var entry_count_limit			: int = 1000             	## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
-var entry_count_game 					: int = 0                   ## The current count of entries in the game.log.
-var entry_count_player 					: int = 0                   ## The current count of entries in the player.log.
-@onready var session_timer				: Timer = $SessionTimer     ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
-@export var session_timer_wait_time 	: float = 600.0:   			## Default length of time for a session when [param Session Timer] is enabled.
+
+## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number
+@export var file_cap : int = 10
+
+## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
+@export var entry_count_limit : int = 1000
+
+## The current count of entries in the game.log.
+var entry_count_game : int = 0 
+
+## The current count of entries in the player.log.
+var entry_count_player : int = 0 
+
+## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
+@onready var session_timer : Timer = $SessionTimer
+
+## Default length of time for a session when [param Session Timer] is enabled.
+@export var session_timer_wait_time : float = 600.0:
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
 
 @export_group("Error Reporting")
-@export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 		## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - Disables errors and only allows warnings.[br]'None' - All errors and warnings are disabled.
+## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - Disables errors and 
+## only allows warnings.[br]'None' - All errors and warnings are disabled.
+@export_enum("All", "Only Warnings", "None") var error_reporting : int = 0
 
-@export var autostart_session 			: bool = true            				## Autostarts the session at runtime.
-@export var disable_session_warning 	: bool = false    						## Disables the "Attempted to start new log session before stopping the previous" warning.
-@export var disable_entry_warning 		: bool = false       					## Disables the "Attempt to log entry failed due to inactive session" warning.
-var session_status						: bool = false:                      	## Flags whether or not a session is active.
+## If true, enables printing messages to the output when a log session is started or stopped.
+@export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var print_session_changes : int = 0 
+
+## Disables the "Attempted to start new log session before stopping the previous" warning.
+@export var disable_session_warning : bool = false
+
+## Disables the "Attempt to log entry failed due to inactive session" warning.
+@export var disable_entry_warning : bool = false
+
+## Flags whether or not a session is active.
+var session_status : bool = false:
 	set(value):
 		session_status = value
 		session_status_changed.emit()
 
 @export_group("Hotkeys")
-@export var hotkey_start_session		: InputEventShortcut = preload("res://addons/GoLogger/Resources/StartSessionShortcut.tres") 		## Hotkey used to start session manually. Default hotkey: [kbd]Ctrl + Shift + O[/kbd]
-@export var hotkey_stop_session			: InputEventShortcut = preload("res://addons/GoLogger/Resources/StopSessionShortcut.tres")			## Hotkey used to stop session manually. Default hotkey: [kbd]Ctrl + Shift + P[/kbd]
-@export var hotkey_save_unique			: InputEventShortcut = preload("res://addons/GoLogger/Resources/SaveUniqueFileShortcut.tres")		## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
-@export var hotkey_toggle_controller	: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
+## Hotkey used to start session manually. Default hotkey: [kbd]Ctrl + Shift + O[/kbd]
+@export var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/Resources/StartSessionShortcut.tres")
+
+## Hotkey used to stop session manually. Default hotkey: [kbd]Ctrl + Shift + P[/kbd]
+@export var hotkey_stop_session	: InputEventShortcut = preload("res://addons/GoLogger/Resources/StopSessionShortcut.tres")			
+
+## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
+@export var hotkey_save_unique : InputEventShortcut = preload("res://addons/GoLogger/Resources/SaveUniqueFileShortcut.tres")		
+
+## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
+@export var hotkey_toggle_controller: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	
 
 @export_group("LogController")
-@export var canvaslayer_layer			: int	 			 = 5:				## Sets the [param layer] property of the [CanvasLayer] containing the Controller and Copy Popup.
+## Sets the [param layer] property of the [CanvasLayer] containing the Controller and Copy Popup.
+@export var canvaslayer_layer : int = 5:				
 	set(value):
 		canvaslayer_layer = value
 		$GoLoggerElements.layer = value
-@export var hide_contoller_on_start		: bool = true                   	   	## Hides GoLoggerController when running your project. Use hotkey defined in [param hotkey_toggle_controller]. [kbd]Ctrl + Shift + K[/kbd] by default.
-@export var controller_drag_offset		: Vector2 = Vector2(0, 0)             	## The offset used to correct the controller window position while dragging(depending on any potential scaling or resolution).
 
+## Hides GoLoggerController when running your project. Use hotkey defined in [param hotkey_toggle_controller]. [kbd]Ctrl + Shift + K[/kbd] by default.
+@export var hide_contoller_on_start	: bool = true
 
-
+## The offset used to correct the controller window position while dragging(depending on any potential scaling or resolution).
+@export var controller_drag_offset	: Vector2 = Vector2(0, 0)
 
 # Popup
 @onready var popup : CenterContainer = $GoLoggerElements/Popup
@@ -71,7 +139,9 @@ var session_status						: bool = false:                      	## Flags whether o
 @onready var popup_yesbtn : Button = $GoLoggerElements/Popup/Panel/HBoxContainer/YesButton
 @onready var popup_nobtn : Button = $GoLoggerElements/Popup/Panel/HBoxContainer/NoButton
 @onready var popup_errorlbl : RichTextLabel = $GoLoggerElements/Popup/Panel/ErrorLabel
-var popup_state : bool = false:
+
+## When true, this bool activates the popup prompt that allows you to enter a file copy name. 
+var popup_state : bool = false: 
 	set(value):
 		if session_status:
 			popup_state = value
@@ -87,7 +157,9 @@ var popup_state : bool = false:
 				popup_textedit.focus_mode = Control.FOCUS_NONE
 				popup_yesbtn.focus_mode   = Control.FOCUS_NONE
 				popup_nobtn.focus_mode    = Control.FOCUS_NONE
-var persistent_copy_name : String = "" ## When saving  file copies of the current session, the entered name is stored in this variable.
+
+## When saving  file copies of the current session, the entered name is stored in this variable.
+var copy_name : String = "" 
 #endregion
 
 
@@ -114,14 +186,13 @@ func _ready() -> void:
 		start_session()
 
 
-#region Base Plugin Functions
-## Initiates a log session, recording game events in the .log categories.
-## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but requires function to be called using the "await" keyword: [code]await Log.start_session(1.0)[/code].
-## See README[Starting and stopping sessions] for more info.[br][param utc] when enabled will use the UTC time when creating timestamps. Leave false to use the user's local system time.[br][param space] will use a space to separate date and time instead of a "T"(from "YY-MM-DDTHH-MM-SS" to "YY-MM-DD HH-MM-SS).[br]Example usage:[codeblock]
+
+#region Main Plugin Functions
+## Initiates a log session, recording user defined game events in the .log categories.
+## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but requires function to be called using the 
+## "await" keyword: [code]await Log.start_session(1.0)[/code]. See README[Starting and stopping sessions] for more info.[br]Example usage:[codeblock]
 ##	Log.start_session()                       # Normal call
-##	await Log.start session(1.2)              # Calling with a start delay
-##	await Log.start_session(1.2, true, false) # Using all redefined parameters
-##	# 1. Uses a start delay. 2. UTC time rather than local system time. 3. Uses a T instead of a space to separate date and time in timestamps.[/codeblock]
+##	await Log.start session(1.2)              # Calling with a start delay[/codeblock]
 func start_session(start_delay : float = 0.0) -> void:
 	if start_delay > 0.0:
 		await get_tree().create_timer(start_delay).timeout
@@ -167,7 +238,6 @@ func start_session(start_delay : float = 0.0) -> void:
 				categories[i].current_file = get_file_name(categories[i].category_name)
 				var _f = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
 				var _files = _dir.get_files()
-				print(str("File list: ", _files))
 				categories[i].file_count = _files.size()
 				while _files.size() > file_cap -1:
 					_files.sort()
@@ -185,12 +255,13 @@ func start_session(start_delay : float = 0.0) -> void:
 
 
 
-## Stores a log entry into the 'game/ui/player.log' categories.[br]
-## [param file_index] is used when you use multiple log files at once. The category_index index corresponds to the order of [LogFileResource] entries in the [param categories] array.
-## [param timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
-## [param utc] will force the date/timestamp to use UTC time rather than the user's local system time.[br]Example usage:[codeblock]
-## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."))
-## # Resulting log entry: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
+## Stores a log entry into the a .log file. You can add data to the log entry(as long as the data can be converted into a string) and specify which category the entry
+## should be store in.[br][br]
+## [param category_index] determine which log category this entry will be stored in. The category_index index corresponds to the order of [LogFileResource] entries in 
+## the [param categories] array. Note that leaving this parameter undefined will store the entry in category 0.[br][br][param timestamp] enables you to include a timestamp 
+## of when the entry was added to your log.[br][br]Example usage:[codeblock]
+## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
+## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0, include_timestamp : bool = true) -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
 
@@ -210,12 +281,13 @@ func entry(log_entry : String, category_index : int = 0, include_timestamp : boo
 				lines.append(_l)
 			_f.close()
 
-			# Remove old entried at line 1 until entry count is less than limit.
+			# Remove old entries at line 1 until entry count is less than limit.
 			if log_manage_method == 0 or log_manage_method == 2:
 				while lines.size() > entry_count_limit:
 					lines.remove_at(1)
 			categories[category_index].entry_count = lines.size()
 
+			# Open file with write and store the new entry
 			var _fw = FileAccess.open(categories[category_index].current_filepath, FileAccess.WRITE)
 			if !_fw and error_reporting != 2:
 				var err = FileAccess.get_open_error()
@@ -252,7 +324,7 @@ func complete_copy() -> void:
 				await get_tree().create_timer(4.0).timeout
 				return
 			var _c = _fr.get_as_text()
-			var _path := str(base_directory, categories[i].category_name, "_GoLogs/saved_logs/", get_file_name(persistent_copy_name))
+			var _path := str(base_directory, categories[i].category_name, "_GoLogs/saved_logs/", get_file_name(copy_name))
 			var _fw = FileAccess.open(_path, FileAccess.WRITE)
 			if !_fw:
 				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
@@ -261,16 +333,15 @@ func complete_copy() -> void:
 				return
 			_fw.store_line(str(_c, "\nSaved copy of ", categories[i].current_file, "."))
 			_fw.close()
-		persistent_copy_name = ""
-		popup_textedit.text = ""
 		if print_session_changes:
-			print("GoLogger: Saved persistent copies of current file(s) into sub-folders.")
+			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
+		copy_name = ""
+		popup_textedit.text = ""
 
 
 
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [method start_session] which creates a new categories.[br]
-## [param timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
-## [param utc] will force the date/timestamp to use UTC time rather than the user's local system time.[br]
+## [param include_timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
 func stop_session(include_timestamp : bool = true) -> void:
 	if print_session_changes == 1 or print_session_changes == 3:
 		print("GoLogger: Session stopped!")
@@ -300,8 +371,9 @@ func stop_session(include_timestamp : bool = true) -> void:
 #endregion
 
 
+
 #region Helper functions
-## Helper function that returns the appropriate log header depending on [param log_info_header].
+## Helper function that returns an appropriate log header string depending on [param log_info_header].
 func get_header() -> String:
 	match log_info_header:
 		0: # Project name + version
@@ -315,7 +387,7 @@ func get_header() -> String:
 	return ""
 
 
-
+## Helper function that determines whether or not any [param category_name] was found more than once in [param categories].
 func check_filename_conflicts() -> String:
 	var seen_resources : Array[String] = []
 	for r in categories:
@@ -327,9 +399,7 @@ func check_filename_conflicts() -> String:
 	return ""# If no conflicts found -> return empty string and resume execution
 
 
-
-
-## Helper function to get an error string for likely [DirAccess] and [FileAccess] errors.
+## Helper function that returns an error string for likely [DirAccess] and [FileAccess] errors.
 func get_err_string(error_code : int) -> String:
 	match error_code:
 		1: # Failed
@@ -357,10 +427,10 @@ func get_err_string(error_code : int) -> String:
 	return "Error[X]: Unspecified error."
 
 
-
-## Helper function that returns the string file name for your log containing the current system date and time.[br]
+## Helper function that returns a file name string for your log containing using the prefix entered and adds the current system date and time.[br]
+## This should be called with a [LogFileResource]'s [param category_name]. For example [code]get_file_name(categories[0].category_name)[/code]
 ## [color=red]WARNING: [color=white]Change this at your own discretion! Removing the "0" from single ints("09") will cause sorting issues > May result in improper file deletion.
-func get_file_name(filename : String) -> String:
+func get_file_name(prefix_name : String) -> String:
 	var dict  : Dictionary = Time.get_datetime_dict_from_system()
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 	# Add 0 to single-numbered dates and times
@@ -372,9 +442,8 @@ func get_file_name(filename : String) -> String:
 	# Format the final string
 	var fin : String 
 	# Result > "prefix(yy-mm-dd_hh-mm-ss).log"   OR   "prefix(yymmdd_hhmmss.log)
-	fin = str(filename, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if dash_timestamp_separator else str(filename, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
+	fin = str(prefix_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if dash_timestamp_separator else str(prefix_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
 	return fin 
-
 
 
 ## Helper function which returns the contents of the current/newest .log file in the given folder. Can be used to fetch .log contents.
@@ -399,8 +468,10 @@ func get_file_contents(folder_path : String) -> String:
 	return str("GoLogger Error: Unable to retrieve file contents in (", folder_path, ")") if error_reporting != 2 else ""
 #endregion
 
+
+
 #region Signal listeners
-## Stops and starts sessions when using the "Session Timer" option with[param session_timeout_action]. 
+## Uses [param session_timeout_action] to determine which action should be taken when [param session_timer] timeout occurs. 
 func _on_session_timer_timeout() -> void:
 	match log_manage_method:
 		0: # Entry count limit
@@ -428,15 +499,13 @@ func _on_text_edit_text_changed() -> void:
 	var max_char = 20
 	if tx != "":
 		popup_yesbtn.disabled = false
-		# print(str("Before Edit Linecount: ", popup_textedit.get_line_count(), "\n", tx))
 		if popup_textedit.get_line_count() > 1:
 			popup_textedit.text = popup_textedit.get_line(0)
 			popup_textedit.set_caret_column(popup_textedit.text.length())
 		if popup_textedit.text.length() > max_char:
 			popup_textedit.text = popup_textedit.text.substr(0, max_char)
 			popup_textedit.set_caret_column(popup_textedit.text.length())
-		persistent_copy_name = popup_textedit.text
-		# print(str("After Edit Linecount: ", popup_textedit.get_line_count(), "\n", tx))
+		copy_name = popup_textedit.text
 
 
 
@@ -447,6 +516,6 @@ func _on_no_button_button_up() -> void:
 
 
 func _on_yes_button_button_up() -> void:
-	save_copy()
+	complete_copy()
 
 #endregion

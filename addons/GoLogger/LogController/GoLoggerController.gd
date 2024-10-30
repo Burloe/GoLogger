@@ -1,42 +1,68 @@
 extends Panel 
 
-#region Documentation and variable declaration
+#region Documentation and declarations
 ## An optional controller to help manage logging sessions along with some additional features and information.
-##
-## Instantiate it into your existing UI to use. 
-## [b]Session Toggle[/b] can be used to manually stop and start sessions.[br]
-## [b]Session Timer [ProgressBar][/b] tells you the time left for the active session. Uses[param session_time] of [Log] as the [param wait_time]. The default session time is 10 minutes.[br]
-## [b]Print buttons[/b] will print the .log file created last. If a session is started, this is the file that's being logged into actively. If a session is stopped, the log of the last session is printed.
 
-@onready var update_timer			: Timer = 			$InfoUpdateTimer 															## Updates info displayed in the [GoLoggerController] every time it times out(every 0.5s by default].
-@onready var drag_button			: Button = 			$DragButton 																## Drag the controller while pressing this button.
 
-@onready var session_status_label	: RichTextLabel = 	$MarginContainer/VBoxContainer/SessionStatusPanel/SessionStatusLabel		## Session status button.
+## Drag the controller while pressing this button.
+@onready var drag_button : Button = $DragButton
+## Session status button.
+@onready var session_status_label : RichTextLabel = $MarginContainer/VBoxContainer/SessionStatusPanel/SessionStatusLabel
 
-@onready var start_btn 				: Button =			$MarginContainer/VBoxContainer/HBoxContainer/StartButton					## Start session button.
-@onready var copy_btn 				: Button =			$MarginContainer/VBoxContainer/HBoxContainer/CopyButton						## Copy session button.
-@onready var stop_btn 				: Button =			$MarginContainer/VBoxContainer/HBoxContainer/StopButton						## Stop session button.
 
-@onready var session_timer_pgb		: ProgressBar = 	$MarginContainer/VBoxContainer/TimerPanel/SessionTimerPGB					## Session timer progressbar.
-@onready var timer_status_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerStatusLabel	## Timer status label.
-@onready var timer_left_label		: RichTextLabel = 	$MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerLeftLabel		## Timer left label.
+## Start session button.
+@onready var start_btn : Button = $MarginContainer/VBoxContainer/HBoxContainer/StartButton
 
-@onready var tooltip 				: Panel = 			$MarginContainer/VBoxContainer/Tooltip										## Tooltip root node.
-@onready var tooltip_label 			: RichTextLabel = 	$MarginContainer/VBoxContainer/Tooltip/MarginContainer/RichTextLabel		## Tooltip Label.
+## Copy session button.
+@onready var copy_btn : Button = $MarginContainer/VBoxContainer/HBoxContainer/CopyButton
 
-@onready var fileinfo_panel			: Panel = 			$FileInfoPanel 																## FileInfo root node.
-@onready var fileinfo_container 	: VBoxContainer	=	$FileInfoPanel/MarginContainer/ScrollContainer/FileInfoContainer 			## Container LogFiles are instantiated into.
-@onready var fileinfo_button 		: Button = 			$MarginContainer/VBoxContainer/ShowLogFileButton 							## FileInfo toggle button.
-@onready var fileinfo_side_button 	: Button = 			$FileInfoPanel/FileInfoSide_Button											## Positional toggle button for FileInfo panel.
+## Stop session button.
+@onready var stop_btn : Button = $MarginContainer/VBoxContainer/HBoxContainer/StopButton
 
-var fileinfo_side : bool = true: 																									## Shifts side of file info panel. false = left - right = true
+
+## Session timer progressbar.
+@onready var session_timer_pgb : ProgressBar = $MarginContainer/VBoxContainer/TimerPanel/SessionTimerPGB
+
+## Timer status label.
+@onready var timer_status_label : RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerStatusLabel
+
+## Timer left label.
+@onready var timer_left_label : RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerLeftLabel
+
+## Tooltip root node.
+@onready var tooltip : Panel = $MarginContainer/VBoxContainer/Tooltip
+
+## Tooltip Label.
+@onready var tooltip_label : RichTextLabel = $MarginContainer/VBoxContainer/Tooltip/MarginContainer/RichTextLabel
+
+
+## FileInfo root node.
+@onready var fileinfo_panel : Panel = $FileInfoPanel
+
+## Container LogFiles are instantiated into.
+@onready var fileinfo_container : VBoxContainer	= $FileInfoPanel/MarginContainer/ScrollContainer/FileInfoContainer
+
+## FileInfo toggle button.
+@onready var fileinfo_button : Button = $MarginContainer/VBoxContainer/ShowLogFileButton
+
+## Positional toggle button for FileInfo panel.
+@onready var fileinfo_side_button : Button = $FileInfoPanel/FileInfoSide_Button
+
+## Flags whether or not the controller is dragged 
+var is_dragging : bool = false 
+
+## Shifts side of file info panel. false = left - right = true
+var fileinfo_side : bool = true: 																									
 	set(value):
 		fileinfo_side = value
 		fileinfo_panel.position = Vector2(213, 0) if value else Vector2(-273, 0)
 
-var fileinfo_scene := preload("res://addons/GoLogger/Resources/FileInfo.tscn") 														## Gets instantiated depending on the number of file categories.
-var fileinfos : Array																												## Array containing each instance.
-var fileinfo_state : bool = false:																									## State whether or not the file info panel is shown or not.
+## Gets instantiated depending on the number of file categories.
+var fileinfo_scene := preload("res://addons/GoLogger/Resources/FileInfo.tscn")
+## Array containing each instance.
+var fileinfos : Array
+## State whether or not the file info panel is shown or not.
+var fileinfo_state : bool = false:
 	set(value):
 		fileinfo_state = value
 		fileinfo_panel.visible = value
@@ -53,7 +79,6 @@ var fileinfo_state : bool = false:																									## State whether or n
 				for i in fileinfo_container.get_children():
 					if i is Panel and i.get_name().contains("FileInfo"):
 						i.queue_free()
-var is_dragging : bool = false ## Flags whether or not the controller is dragged 
 #endregion
 
 
@@ -64,6 +89,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		visible = !visible
 	if event is InputEventJoypadButton and Log.hotkey_toggle_controller.shortcut.matches_event(event) and event.is_released():
 		visible = !visible
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_dragging:
 		position = Vector2(event.position.x + Log.controller_drag_offset.x, event.position.y + Log.controller_drag_offset.y)
@@ -114,8 +140,6 @@ func _ready() -> void:
 
 
 
-
-
 #region Signal listeners
 ## Called when [signal session_status_changed] is emitted from [Log].
 func _on_session_status_changed() -> void:
@@ -146,8 +170,6 @@ func _on_drag_button(state : bool) -> void:
 	is_dragging = state
 
 
-
-
 func _on_start_button_mouse_entered() -> void: 
 	tooltip_label.text = "[font_size=12]Start a new session" 
 
@@ -156,7 +178,6 @@ func _on_start_button_mouse_exited() -> void:
 
 func _on_start_button_button_up() -> void:
 	Log.start_session()
-
 
 
 func _on_copy_button_mouse_entered() -> void: 
@@ -169,7 +190,6 @@ func _on_copy_button_button_up() -> void:
 	Log.save_copy()
 
 
-
 func _on_stop_button_mouse_entered() -> void: 
 	tooltip_label.text = "[font_size=12]Stops the active session."
 
@@ -180,7 +200,6 @@ func _on_stop_button_button_up() -> void:
 	Log.stop_session()
 
 
-
 func _on_fileinfo_button_up() -> void:
 	fileinfo_state = !fileinfo_state
 
@@ -189,7 +208,6 @@ func _on_fileinfo_mouse_entered() -> void:
 
 func _on_fileinfo_mouse_exited() -> void:
 	tooltip_label.text = ""
-
 
 
 func _on_fileinfo_side_button_up() -> void:
