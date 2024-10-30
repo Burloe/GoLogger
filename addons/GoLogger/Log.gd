@@ -12,35 +12,15 @@ signal session_timer_started  ## Emitted when the [param session_timer] is start
 @export var base_directory : String = "user://logs/"
 @export var categories : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")]
 @export var use_utc : bool = false ## Uses UTC time as opposed to the users local system time. 
-@export var dash_timestamp_separator : bool = false ## When enabled, date and timestamps are separated with '-'. Disabled = "prefix_241028_182143.log". Enabled = "prefix_24-10-28_18-21-43.log".
-
-@export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 ## Determines the type of header used in the .log file header. Gets the project name and version from Project Settings > Application > Config.[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
+@export var dash_timestamp_separator : bool = false ## When enabled, date and timestamps are separated with '-'.[br]Disabled = "categoryname_241028_182143.log".[br]Enabled  = "categoryname_24-10-28_18-21-43.log".
 var header_string : String ## Contains the resulting string as determined by [param log_info_header].
+## Determines the type of header used in the .log file header. Gets the project name and version from Project Settings > Application > Config.[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
+@export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0 
 @export_enum("None", "Start & Stop Session", "Start Session only", "Stop Session only") var print_session_changes : int = 0 ## If true, enables printing messages to the output when a log session is started or stopped.
 
-@export_group("Hotkeys & LogController")
-@export var hotkey_start_session		: InputEventShortcut = preload("res://addons/GoLogger/Resources/StartSessionShortcut.tres") 		## Hotkey used to start session manually. Default hotkey: Ctrl + Shift + O
-@export var hotkey_stop_session			: InputEventShortcut = preload("res://addons/GoLogger/Resources/StopSessionShortcut.tres")		## Hotkey used to stop session manually. Default hotkey: Ctrl + Shift + P
-@export var hotkey_save_unique			: InputEventShortcut = preload("res://addons/GoLogger/Resources/SaveUniqueFileShortcut.tres")	## Hotkey used to save the currently active session with a unique filename(optionally in a unique folder) manually. Default hotkey: Ctrl + Shift + U
-@export var hotkey_toggle_controller	: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
-@export var hide_contoller_on_start		: bool = false                      	## Hides GoLoggerController when running your project. Use F9(by default) to toggle visibility.
-@export var controller_drag_offset		: Vector2 = Vector2(0, 0)             	## The offset used to correct the controller window position while dragging(may require changing depending on your project resolution and scaling).
-
-@export_group("Error Reporting Options")
-@export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 		## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - Disables errors and only allows warnings.[br]'None' - All errors and warnings are disabled.
-
-@export var autostart_session 			: bool = true            				## Autostarts the session at runtime.
-@export var disable_session_warning 	: bool = false    						## Disables the "Attempted to start new log session before stopping the previous" warning.
-@export var disable_entry_warning 		: bool = false       					## Disables the "Attempt to log entry failed due to inactive session" warning.
-var session_status						: bool = false:                      	## Flags whether or not a session is active.
-	set(value):
-		session_status = value
-		session_status_changed.emit()
-
-@export_category("Log Management") 
-@export var file_cap 					: int = 10 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number.
-
-## Flags the log management method used to prevent long or large .log files. [i]Added to combat potential performance issues. If performance issues aren't affecting you. Using [param entry_count_limit] is still recommended to use.[/i][br]
+@export_group("Log Management") 
+@export var file_cap 					: int = 10 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number
+## Flags which log management method used to prevent long or large .log files. [i]Added to combat potential performance issues. Using [param entry_count_limit] is still recommended to use regardless if you experience performance issues or not.[/i][br]
 ## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for the new entry.[br]
 ## [b]2. Session Timer:[/b] Upon session is start, [param session_timer] is also started, counting down the [param session_timer_wait_time] value. Upon [signal timeout], session is stopped and the action is determined by [param session_timeout_action].[br]
 ## [b]3. Entry Count Limit + Session Timer:[/b] Uses both of the above methods.[br]
@@ -56,6 +36,33 @@ var entry_count_player 					: int = 0                   ## The current count of 
 	set(new):
 		session_timer_wait_time = new
 		if session_timer != null: session_timer.wait_time = session_timer_wait_time
+
+@export_group("Error Reporting")
+@export_enum("All", "Only Warnings", "None") var error_reporting : int = 0 		## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - Disables errors and only allows warnings.[br]'None' - All errors and warnings are disabled.
+
+@export var autostart_session 			: bool = true            				## Autostarts the session at runtime.
+@export var disable_session_warning 	: bool = false    						## Disables the "Attempted to start new log session before stopping the previous" warning.
+@export var disable_entry_warning 		: bool = false       					## Disables the "Attempt to log entry failed due to inactive session" warning.
+var session_status						: bool = false:                      	## Flags whether or not a session is active.
+	set(value):
+		session_status = value
+		session_status_changed.emit()
+
+@export_group("Hotkeys")
+@export var hotkey_start_session		: InputEventShortcut = preload("res://addons/GoLogger/Resources/StartSessionShortcut.tres") 		## Hotkey used to start session manually. Default hotkey: [kbd]Ctrl + Shift + O[/kbd]
+@export var hotkey_stop_session			: InputEventShortcut = preload("res://addons/GoLogger/Resources/StopSessionShortcut.tres")			## Hotkey used to stop session manually. Default hotkey: [kbd]Ctrl + Shift + P[/kbd]
+@export var hotkey_save_unique			: InputEventShortcut = preload("res://addons/GoLogger/Resources/SaveUniqueFileShortcut.tres")		## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
+@export var hotkey_toggle_controller	: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
+
+@export_group("LogController")
+@export var canvaslayer_layer			: int	 			 = 5:				## Sets the [param layer] property of the [CanvasLayer] containing the Controller and Copy Popup.
+	set(value):
+		canvaslayer_layer = value
+		$GoLoggerElements.layer = value
+@export var hide_contoller_on_start		: bool = true                   	   	## Hides GoLoggerController when running your project. Use hotkey defined in [param hotkey_toggle_controller]. [kbd]Ctrl + Shift + K[/kbd] by default.
+@export var controller_drag_offset		: Vector2 = Vector2(0, 0)             	## The offset used to correct the controller window position while dragging(depending on any potential scaling or resolution).
+
+
 
 
 # Popup
@@ -92,11 +99,12 @@ func _input(event: InputEvent) -> void:
 		if Log.hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
 			stop_session()
 		if Log.hotkey_save_unique.shortcut.matches_event(event) and event.is_released():
-			popup_state = !popup_state
+			save_copy()
 
 
 
 func _ready() -> void:
+	$GoLoggerElements.layer = canvaslayer_layer
 	header_string = get_header()
 	session_timer.autostart = autostart_session
 	popup.visible = popup_state
@@ -218,6 +226,48 @@ func entry(log_entry : String, category_index : int = 0, include_timestamp : boo
 
 
 
+## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and confirmed. [method complete_copy] is called.
+func save_copy() -> void:
+	popup_state = !popup_state
+
+
+
+## Saves the actual copies of the current log session in "saved_logs" sub-folders. [br][b]Note:[br][/b]   This function should never be called to perform the "save copy" operation. Instead, use [method save_copy].
+## func _on_copy_button_up() -> void:
+##     Log.popup_state = !Log.popup_state
+## [/codeblock]
+func complete_copy() -> void: 
+	popup_state = false
+	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
+
+	if !session_status:
+		if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
+		return
+	else:
+		for i in range(categories.size()):
+			var _fr = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
+			if !_fr:
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i].current_file," [/pulse]")
+				popup_errorlbl.visible = true
+				await get_tree().create_timer(4.0).timeout
+				return
+			var _c = _fr.get_as_text()
+			var _path := str(base_directory, categories[i].category_name, "_GoLogs/saved_logs/", get_file_name(persistent_copy_name))
+			var _fw = FileAccess.open(_path, FileAccess.WRITE)
+			if !_fw:
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
+				popup_errorlbl.visible = true
+				await get_tree().create_timer(4.0).timeout
+				return
+			_fw.store_line(str(_c, "\nSaved copy of ", categories[i].current_file, "."))
+			_fw.close()
+		persistent_copy_name = ""
+		popup_textedit.text = ""
+		if print_session_changes:
+			print("GoLogger: Saved persistent copies of current file(s) into sub-folders.")
+
+
+
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [method start_session] which creates a new categories.[br]
 ## [param timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
 ## [param utc] will force the date/timestamp to use UTC time rather than the user's local system time.[br]
@@ -247,39 +297,6 @@ func stop_session(include_timestamp : bool = true) -> void:
 			categories[i].current_filepath = ""
 			categories[i].entry_count = 0
 	session_status = false
-
-
-
-## Saves copies of the current log session in "saved_logs" sub-folders.
-func save_copy() -> void:
-	popup_state = false
-	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
-
-	if !session_status:
-		if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
-		return
-	else:
-		for i in range(categories.size()):
-			var _fr = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
-			if !_fr:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i].current_file," [/pulse]")
-				popup_errorlbl.visible = true
-				await get_tree().create_timer(4.0).timeout
-				return
-			var _c = _fr.get_as_text()
-			var _path := str(base_directory, categories[i].category_name, "_GoLogs/saved_logs/", get_file_name(persistent_copy_name))
-			var _fw = FileAccess.open(_path, FileAccess.WRITE)
-			if !_fw:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
-				popup_errorlbl.visible = true
-				await get_tree().create_timer(4.0).timeout
-				return
-			_fw.store_line(str(_c, "\nSaved copy of ", categories[i].current_file, "."))
-			_fw.close()
-		persistent_copy_name = ""
-		popup_textedit.text = ""
-		if print_session_changes:
-			print("GoLogger: Saved persistent copies of current file(s) into sub-folders.")
 #endregion
 
 
