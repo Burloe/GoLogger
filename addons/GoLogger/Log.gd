@@ -14,7 +14,7 @@ extends Node
 ## Log.entry("My first game log entry", 0) # Logs entry into category 0 named 'game'.
 ## Log.entry("My first game log entry") # Alternative. Not specifying the category will log into category 0.
 ## Log.entry("My first player log entry", 1) # Log entry into category 1 named 'player[/codeblock]
-## [method save_copy]: Copies the active session log into a separate .log file that's saved into [code]base_directory/categoryname_GoLogs/saved_logs/[/code]. 
+## [method save_copy]: Copies the active session log into a separate .log file that's saved into [code]base_directory/categoryname_Gologs/saved_logs/[/code]. 
 ## Files saved into the subfolder are exempt from being deleted. This plugin will delete the oldest entry when the number of logs exceeds [param file_cap] so log 
 ## files aren't created endlessly.[br][method stop_session]: Stops the active session and stops logging to the corresponding .log file.
 
@@ -29,14 +29,14 @@ signal session_timer_started
 
 ## Set the base filepath where folders for each log category are created. For each [LogFileResource] within [param file], a corresponding folder is created where 
 ## the logs are stored.[br][color=red][b]Warning:[/b][br]Changing this parameter at runtime will likely cause errors.
-@export var base_directory : String = "user://logs/"
+@export var base_directory : String = "user://GoLogger/"
 
 ## Array containing [LogFileResource]s that each corresponds to a log category. They define the category name.
 @export var categories : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")] 
 
 ## Determines the type of header used in the .log file header. Gets the project name and version from Project Settings > Application > Config.[br]
 ## [i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
-@export_enum("Project name & version", "Project name", "Project version", "None") var log_info_header : int = 0
+@export_enum("Project name & version", "Project name", "Project version", "None") var log_header : int = 0
 
 ## Autostarts the session at runtime.
 @export var autostart_session 			: bool = true
@@ -47,7 +47,7 @@ signal session_timer_started
 ## When enabled, date and timestamps are separated with '-'.[br]Disabled = "categoryname_241028_182143.log".[br]Enabled  = "categoryname_24-10-28_18-21-43.log".
 @export var dash_timestamp_separator : bool = false
 
-## Contains the resulting string as determined by [param log_info_header].
+## Contains the resulting string as determined by [param log_header].
 var header_string : String
 
 @export_group("Log Management") 
@@ -56,15 +56,15 @@ var header_string : String
 ## [b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds [param entry_count_limit], oldest entry is removed to make room for 
 ## the new entry.[br]
 ## [b]2. Session Timer:[/b] Upon session is start, [param session_timer] is also started, counting down the [param session_timer_wait_time] value. Upon 
-## [signal timeout], session is stopped and the action is determined by [param session_timeout_action].[br]
+## [signal timeout], session is stopped and the action is determined by [param limit_action].[br]
 ## [b]3. Entry Count Limit + Session Timer:[/b] Uses both of the above methods.[br]
 ## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended.
-@export_enum("Entry Count Limit", "Session Timer", "Entry Limit + Session Timer", "None") var log_manage_method : int = 0
+@export_enum("Entry Count Limit", "Session Timer", "Entry Limit + Session Timer", "None") var limit_method : int = 0
 
 ## The log entry count(or line count) limit allowed in the .log categories. If entry count exceeds this number, the oldest entry 
 ## is removed before adding the new.[br] [b]Stop & start new session:[/b] Stops the current session and starting a new one.[br]
 ## [b]Stop session only:[/b] Stops the current session without starting a new one.
-@export_enum("Stop & start new session", "Stop session only") var session_timeout_action : int = 0
+@export_enum("Stop & start new session", "Stop session only") var limit_action : int = 0
 
 ## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number
 @export var file_cap : int = 10
@@ -115,10 +115,10 @@ var session_status : bool = false:
 @export var hotkey_stop_session	: InputEventShortcut = preload("res://addons/GoLogger/Resources/StopSessionShortcut.tres")			
 
 ## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
-@export var hotkey_save_unique : InputEventShortcut = preload("res://addons/GoLogger/Resources/SaveUniqueFileShortcut.tres")		
+@export var hotkey_copy_session : InputEventShortcut = preload("res://addons/GoLogger/Resources/CopySessionShortcut.tres")		
 
 ## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
-@export var hotkey_toggle_controller: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	
+@export var hotkey_controller_toggle: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	
 
 @export_group("LogController")
 ## Sets the [param layer] property of the [CanvasLayer] containing the Controller and Copy Popup.
@@ -163,27 +163,30 @@ var copy_name : String = ""
 #endregion
 
 
-
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey or event is InputEventJoypadButton or event is InputEventJoypadMotion:
-		if Log.hotkey_start_session.shortcut.matches_event(event) and event.is_released():
-			start_session()
-		if Log.hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
-			stop_session()
-		if Log.hotkey_save_unique.shortcut.matches_event(event) and event.is_released():
-			save_copy()
+	if !Engine.is_editor_hint():
+		if event is InputEventKey or event is InputEventJoypadButton or event is InputEventJoypadMotion:
+			if Log.hotkey_start_session.shortcut.matches_event(event) and event.is_released():
+				start_session()
+			if Log.hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
+				stop_session()
+			if Log.hotkey_save_unique.shortcut.matches_event(event) and event.is_released():
+				save_copy()
 
 
 
 func _ready() -> void:
-	$GoLoggerElements.layer = canvaslayer_layer
-	header_string = get_header()
-	session_timer.autostart = autostart_session
-	popup.visible = popup_state
-	popup_errorlbl.visible = false
-	assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
-	if autostart_session:
-		start_session()
+	if !Engine.is_editor_hint():
+		$GoLoggerElements.layer = canvaslayer_layer
+		header_string = get_header()
+		session_timer.autostart = autostart_session
+		popup.visible = popup_state
+		popup_errorlbl.visible = false
+		assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
+		if autostart_session:
+			start_session()
+		add_hotkeys()
+	
 
 
 
@@ -194,64 +197,66 @@ func _ready() -> void:
 ##	Log.start_session()                       # Normal call
 ##	await Log.start session(1.2)              # Calling with a start delay[/codeblock]
 func start_session(start_delay : float = 0.0) -> void:
-	if start_delay > 0.0:
-		await get_tree().create_timer(start_delay).timeout
-	if log_manage_method == 1 or log_manage_method == 2:
-		session_timer.start(session_timer_wait_time)
-		session_timer_started.emit()
-	if print_session_changes == 1 or print_session_changes == 3:
-		print("GoLogger: Session started!")
+	if !Engine.is_editor_hint():
+		if start_delay > 0.0:
+			await get_tree().create_timer(start_delay).timeout
+		if limit_method == 1 or limit_method == 2:
+			session_timer.start(session_timer_wait_time)
+			session_timer_started.emit()
+		if print_session_changes == 1 or print_session_changes == 3:
+			print("GoLogger: Session started!")
 
-	# Iterate over each LogFileResource in [param categories] array > Create directories and files 
-	for i in range(categories.size()):
-		assert(categories[i] != null, str("GoLogger Error: 'categories' array entry", i, " has no [LogFileResource] added."))
+		# Iterate over each LogFileResource in [param categories] array > Create directories and files 
+		for i in range(categories.size()):
+			assert(categories[i] != null, str("GoLogger Error: 'categories' array entry", i, " has no [LogFileResource] added."))
 
-		var _fname : String
-		_fname = get_file_name(categories[i].category_name) if categories[i].category_name != "" else str("file", i)
-		var _path : String = str(base_directory, categories[i].category_name, "_GoLogs/")
-		if _path == "": 
-			if error_reporting == 0: 
-				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
-			if error_reporting == 1:
-				push_warning(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
-			return
-		if session_status:
-			if error_reporting != 2 and !disable_session_warning:
-				push_warning("GoLogger Warning: Attempted to start a new log session before stopping the previous session.")
-			return
-
-		else:
-			var _dir : DirAccess
-			if !DirAccess.dir_exists_absolute(_path):
-				DirAccess.make_dir_recursive_absolute(_path)
-			var _dd : DirAccess # Create sub-folders for saved logs
-			if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
-				DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
-
-			_dir = DirAccess.open(_path)
-			if !_dir and error_reporting != 2:
-				var _err = DirAccess.get_open_error()
-				if _err != OK: push_warning("GoLogger ", get_err_string(_err), " (", _path, ").")
+			var _fname : String
+			_fname = get_file_name(categories[i].category_name) if categories[i].category_name != "" else str("file", i)
+			var _path : String = str(base_directory, categories[i].category_name, "_Gologs/")
+			if _path == "": 
+				if error_reporting == 0: 
+					push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
+				if error_reporting == 1:
+					push_warning(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
 				return
+			if session_status:
+				if error_reporting != 2 and !disable_session_warning:
+					push_warning("GoLogger Warning: Failed to start session, a session is already active.")
+				return
+
 			else:
-				categories[i].current_filepath = _path + get_file_name(categories[i].category_name)
-				categories[i].current_file = get_file_name(categories[i].category_name)
-				var _f = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
-				var _files = _dir.get_files()
-				categories[i].file_count = _files.size()
-				while _files.size() > file_cap -1:
-					_files.sort()
-					_dir.remove(_files[0])
-					_files.remove_at(0)
+				var _dir : DirAccess
+				if !DirAccess.dir_exists_absolute(_path):
+					DirAccess.make_dir_recursive_absolute(_path)
+				var _dd : DirAccess # Create sub-folders for saved logs
+				if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
+					DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
+
+				_dir = DirAccess.open(_path)
+				if !_dir and error_reporting != 2:
 					var _err = DirAccess.get_open_error()
-					if _err != OK and error_reporting != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_err_string(_err))
-				if !_f and error_reporting != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i].current_file, ").")
+					if _err != OK: push_warning("GoLogger ", get_err_string(_err), " (", _path, ").")
+					return
 				else:
-					var _s := str(header_string, categories[i].category_name, " Log session started[", Time.get_datetime_string_from_system(use_utc, true), "]:")
-					_f.store_line(_s)
-					categories[i].entry_count = 0
-					_f.close()
-	session_status = true
+					categories[i].current_filepath = _path + get_file_name(categories[i].category_name)
+					categories[i].current_file = get_file_name(categories[i].category_name)
+					var _f = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
+					var _files = _dir.get_files()
+					categories[i].file_count = _files.size()
+					while _files.size() > file_cap -1:
+						_files.sort()
+						_dir.remove(_files[0])
+						_files.remove_at(0)
+						var _err = DirAccess.get_open_error()
+						if _err != OK and error_reporting != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_err_string(_err))
+					if !_f and error_reporting != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i].current_file, ").")
+					else:
+						var _s := str(header_string, categories[i].category_name, " Log session started[", Time.get_datetime_string_from_system(use_utc, true), "]:")
+						_f.store_line(_s)
+						categories[i].entry_count = 0
+						_f.close()
+		if print_session_changes == 1 or print_session_changes == 2: print("GoLogger: Started session.")
+		session_status = true
 
 
 
@@ -263,44 +268,45 @@ func start_session(start_delay : float = 0.0) -> void:
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
 ## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0, include_timestamp : bool = true) -> void:
-	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
+	if !Engine.is_editor_hint():
+		var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
 
-	if !session_status:
-		if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
-		return
-	else:
-		var _f = FileAccess.open(categories[category_index].current_filepath, FileAccess.READ)
-		if !_f:
-			var _err = FileAccess.get_open_error()
-			if _err != OK and error_reporting != 2: push_warning("Gologger Error: Log entry failed due to FileAccess error[", get_err_string(_err), "]")
-		var _c = _f.get_as_text()
-		var lines : Array[String] = []
-		while not _f.eof_reached():
-			var _l = _f.get_line().strip_edges(false, true)
-			if _l != "":
-				lines.append(_l)
-			_f.close()
+		if !session_status:
+			if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Failed to log entry due to inactive session.")
+			return
+		else:
+			var _f = FileAccess.open(categories[category_index].current_filepath, FileAccess.READ)
+			if !_f:
+				var _err = FileAccess.get_open_error()
+				if _err != OK and error_reporting != 2: push_warning("Gologger Error: Log entry failed due to FileAccess error[", get_err_string(_err), "]")
+			var _c = _f.get_as_text()
+			var lines : Array[String] = []
+			while not _f.eof_reached():
+				var _l = _f.get_line().strip_edges(false, true)
+				if _l != "":
+					lines.append(_l)
+				_f.close()
 
-			# Remove old entries at line 1 until entry count is less than limit.
-			if log_manage_method == 0 or log_manage_method == 2:
-				while lines.size() > entry_count_limit:
-					lines.remove_at(1)
-			categories[category_index].entry_count = lines.size()
+				# Remove old entries at line 1 until entry count is less than limit.
+				if limit_method == 0 or limit_method == 2:
+					while lines.size() > entry_count_limit:
+						lines.remove_at(1)
+				categories[category_index].entry_count = lines.size()
 
-			# Open file with write and store the new entry
-			var _fw = FileAccess.open(categories[category_index].current_filepath, FileAccess.WRITE)
-			if !_fw and error_reporting != 2:
-				var err = FileAccess.get_open_error()
-				if err != OK: push_warning("GoLogger error: Log entry failed due to FileAccess error[", get_err_string(err), "]")
-			var _entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
-			_fw.store_line(str(_c, _entry))
-			_fw.close()
+				# Open file with write and store the new entry
+				var _fw = FileAccess.open(categories[category_index].current_filepath, FileAccess.WRITE)
+				if !_fw and error_reporting != 2:
+					var err = FileAccess.get_open_error()
+					if err != OK: push_warning("GoLogger error: Log entry failed due to FileAccess error[", get_err_string(err), "]")
+				var _entry : String = str("\t", _timestamp, log_entry) if include_timestamp else str("\t", log_entry)
+				_fw.store_line(str(_c, _entry))
+				_fw.close()
 
 
 
 ## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and confirmed. [method complete_copy] is called.
 func save_copy() -> void:
-	popup_state = !popup_state
+	if !Engine.is_editor_hint(): popup_state = !popup_state
 
 
 
@@ -309,73 +315,76 @@ func save_copy() -> void:
 ##     Log.popup_state = !Log.popup_state
 ## [/codeblock]
 func complete_copy() -> void: 
-	popup_state = false
-	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
+	if !Engine.is_editor_hint():
+		popup_state = false
+		var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] ") 
 
-	if !session_status:
-		if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
-		return
-	else:
-		for i in range(categories.size()):
-			var _fr = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
-			if !_fr:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i].current_file," [/pulse]")
-				popup_errorlbl.visible = true
-				await get_tree().create_timer(4.0).timeout
-				return
-			var _c = _fr.get_as_text()
-			var _path := str(base_directory, categories[i].category_name, "_GoLogs/saved_logs/", get_file_name(copy_name))
-			var _fw = FileAccess.open(_path, FileAccess.WRITE)
-			if !_fw:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
-				popup_errorlbl.visible = true
-				await get_tree().create_timer(4.0).timeout
-				return
-			_fw.store_line(str(_c, "\nSaved copy of ", categories[i].current_file, "."))
-			_fw.close()
-		if print_session_changes:
-			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
-		copy_name = ""
-		popup_textedit.text = ""
+		if !session_status:
+			if error_reporting != 2 and !disable_entry_warning: push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
+			return
+		else:
+			for i in range(categories.size()):
+				var _fr = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
+				if !_fr:
+					popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i].current_file," [/pulse]")
+					popup_errorlbl.visible = true
+					await get_tree().create_timer(4.0).timeout
+					return
+				var _c = _fr.get_as_text()
+				var _path := str(base_directory, categories[i].category_name, "_Gologs/saved_logs/", get_file_name(copy_name))
+				var _fw = FileAccess.open(_path, FileAccess.WRITE)
+				if !_fw:
+					popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
+					popup_errorlbl.visible = true
+					await get_tree().create_timer(4.0).timeout
+					return
+				_fw.store_line(str(_c, "\nSaved copy of ", categories[i].current_file, "."))
+				_fw.close()
+			if print_session_changes == 1 or print_session_changes == 3:
+				print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
+			copy_name = ""
+			popup_textedit.text = ""
 
 
 
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new session must be started using [method start_session] which creates a new categories.[br]
 ## [param include_timestamp] enables you to turn on and off the date/timestamp with your entries.[br]
 func stop_session(include_timestamp : bool = true) -> void:
-	if print_session_changes == 1 or print_session_changes == 3:
-		print("GoLogger: Session stopped!")
-	var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] Stopped log session.")
+	if !Engine.is_editor_hint():
+		if print_session_changes == 1 or print_session_changes == 3:
+			print("GoLogger: Session stopped!")
+		var _timestamp : String = str("[", Time.get_time_string_from_system(use_utc), "] Stopped log session.")
 
-	if session_status:
-		for i in range(categories.size()):
-			var _f = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
-			if !_f and error_reporting != 2:
-				var _err = FileAccess.get_open_error()
-				if _err != OK: push_warning("GoLogger Error: Attempting to stop session by reading file (", categories[i].current_filepath, ") -> Error[", _err, "]")
-			var _content := _f.get_as_text()
-			_f.close()
-			var _fw = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
-			if !_fw and error_reporting != 2:
-				var _err = FileAccess.get_open_error()
-				if _err != OK: 
-					push_warning("GoLogger Error: Attempting to stop session by writing to file (", categories[i].current_filepath, ") -> Error[", _err, "]")
-					return
-			var _s := str(_content, str(_timestamp + "Stopped Log Session.") if include_timestamp else "Stopped Log Session.")
-			_fw.store_line(_s)
-			_fw.close()
-			categories[i].current_file = ""
-			categories[i].current_filepath = ""
-			categories[i].entry_count = 0
-	session_status = false
+		if session_status:
+			for i in range(categories.size()):
+				var _f = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
+				if !_f and error_reporting != 2:
+					var _err = FileAccess.get_open_error()
+					if _err != OK: push_warning("GoLogger Error: Attempting to stop session by reading file (", categories[i].current_filepath, ") -> Error[", _err, "]")
+				var _content := _f.get_as_text()
+				_f.close()
+				var _fw = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
+				if !_fw and error_reporting != 2:
+					var _err = FileAccess.get_open_error()
+					if _err != OK: 
+						push_warning("GoLogger Error: Attempting to stop session by writing to file (", categories[i].current_filepath, ") -> Error[", _err, "]")
+						return
+				var _s := str(_content, str(_timestamp + "Stopped Log Session.") if include_timestamp else "Stopped Log Session.")
+				_fw.store_line(_s)
+				_fw.close()
+				categories[i].current_file = ""
+				categories[i].current_filepath = ""
+				categories[i].entry_count = 0
+			if print_session_changes == 1 or print_session_changes == 4: print("GoLogger: Stopped log session.")
+		session_status = false
 #endregion
 
 
 
 #region Helper functions
-## Helper function that returns an appropriate log header string depending on [param log_info_header].
+## Helper function that returns an appropriate log header string depending on [param log_header].
 func get_header() -> String:
-	match log_info_header:
+	match log_header:
 		0: # Project name + version
 			return str(
 				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != "" else "",
@@ -466,24 +475,56 @@ func get_file_contents(folder_path : String) -> String:
 		_fr.close()
 		return contents
 	return str("GoLogger Error: Unable to retrieve file contents in (", folder_path, ")") if error_reporting != 2 else ""
+
+
+
+## Adds actions and events to [InputMap]. This only adds it for the runtime instance, meaning it doesn't clutter the [InputMap].
+func add_hotkeys() -> void:
+	# Start session
+	if !InputMap.has_action("GoLogger_start_session"):
+		InputMap.add_action("GoLogger_start_session")
+	
+	if InputMap.action_get_events("GoLogger_start_session").is_empty():
+		InputMap.action_add_event("GoLogger_start_session", hotkey_start_session)
+	
+	# Copy session
+	if !InputMap.has_action("GoLogger_copy_session"):
+		InputMap.add_action("GoLogger_copy_session")
+	
+	if InputMap.action_get_events("GoLogger_copy_session").is_empty():
+		InputMap.action_add_event("GoLogger_copy_session", hotkey_start_session)
+	
+	# Stop session
+	if !InputMap.has_action("GoLogger_stop_session"):
+		InputMap.add_action("GoLogger_stop_session")
+	
+	if InputMap.action_get_events("GoLogger_stop_session").is_empty():
+		InputMap.action_add_event("GoLogger_stop_session", hotkey_stop_session)
+	
+	# Controller toggle
+	if !InputMap.has_action("GoLogger_controller_toggle"):
+		InputMap.add_action("GoLogger_controller_toggle")
+	
+	if InputMap.action_get_events("GoLogger_controller_toggle").is_empty():
+		InputMap.action_add_event("GoLogger_controller_toggle", hotkey_controller_toggle)
 #endregion
 
 
 
 #region Signal listeners
-## Uses [param session_timeout_action] to determine which action should be taken when [param session_timer] timeout occurs. 
+## Uses [param limit_action] to determine which action should be taken when [param session_timer] timeout occurs. 
 func _on_session_timer_timeout() -> void:
-	match log_manage_method:
+	match limit_method:
 		0: # Entry count limit
 			pass
 		1: # Session Timer
-			if session_timeout_action == 0: # Stop & Start
+			if limit_action == 0: # Stop & Start
 				stop_session()
 				start_session()
 			else: # Stop only
 				stop_session()
 		2: # Both Count limit + Session timer
-			if session_timeout_action == 0: # Stop & Start
+			if limit_action == 0: # Stop & Start
 				stop_session()
 				start_session()
 			else: # Stop only

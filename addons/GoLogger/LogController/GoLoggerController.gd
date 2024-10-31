@@ -101,7 +101,6 @@ func _ready() -> void:
 	drag_button.button_down.connect(_on_drag_button.bind(true))
 	Log.session_status_changed.connect(_on_session_status_changed)
 	Log.session_timer_started.connect(_on_session_timer_started)
-	update_timer.timeout.connect(_on_update_timer_timeout)
 
 	start_btn.button_up.connect(_on_start_button_button_up)
 	start_btn.mouse_entered.connect(_on_start_button_mouse_entered)
@@ -148,7 +147,6 @@ func _on_session_status_changed() -> void:
 
 ## Starts value time to update [ProgressBar] when session timer is started.
 func _on_session_timer_started() -> void:
-	update_timer.start()
 	session_timer_pgb.modulate = Color.FOREST_GREEN
 ## Updates [ProgressBar] modulate depending on session status.
 func _on_session_timer_timeout() -> void:

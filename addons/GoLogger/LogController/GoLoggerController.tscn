@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://quridjl6aioe"]
+[gd_scene load_steps=4 format=3 uid="uid://quridjl6aioe"]
 
+[ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_d1jly"]
 [ext_resource type="Script" path="res://addons/GoLogger/LogController/GoLoggerController.gd" id="1_sp6vx"]
-[ext_resource type="Texture2D" uid="uid://cyl5mqywcs3lo" path="res://addons/GoLogger/GoLoggerIcon.png" id="2_nndk8"]
+[ext_resource type="Texture2D" uid="uid://dk2bskiyrkq7d" path="res://addons/GoLogger/Resources/GoLogger_Icon_Flat.svg" id="3_wib7l"]
 
 [node name="GoLoggerController" type="Panel"]
 z_index = 10
@@ -11,11 +12,13 @@ anchor_left = -0.055
 anchor_right = 0.055
 anchor_bottom = 0.413
 offset_left = 0.600006
+offset_top = 34.0
 offset_right = 0.399994
-offset_bottom = -0.0400085
+offset_bottom = 33.96
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(105, 0)
+pivot_offset = Vector2(105, -20)
+theme = ExtResource("1_d1jly")
 script = ExtResource("1_sp6vx")
 metadata/_edit_vertical_guides_ = [106.0, -105.0, 331.0]
 metadata/_edit_horizontal_guides_ = [168.0]
@@ -34,6 +37,7 @@ offset_bottom = -449.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 0
+theme = ExtResource("1_d1jly")
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
@@ -48,6 +52,7 @@ anchor_bottom = 1.0
 offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_d1jly")
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -55,24 +60,30 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 theme_override_constants/separation = 10
 
 [node name="TitleHBOX" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 alignment = 1
 
-[node name="GoLoggerIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/TitleHBOX"]
+[node name="GoLoggerIconFlat" type="TextureRect" parent="MarginContainer/VBoxContainer/TitleHBOX"]
+custom_minimum_size = Vector2(30, 34)
 layout_mode = 2
-texture = ExtResource("2_nndk8")
+texture = ExtResource("3_wib7l")
+expand_mode = 1
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/TitleHBOX"]
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 theme_override_font_sizes/font_size = 24
 text = "GoLogger"
 
 [node name="SessionStatusPanel" type="Panel" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 
 [node name="SessionStatusLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/SessionStatusPanel"]
 custom_minimum_size = Vector2(0, 55)
@@ -82,6 +93,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_d1jly")
 bbcode_enabled = true
 text = "[center][font_size=18] Session status:
 [center][color=green]ON"
@@ -89,28 +101,33 @@ text = "[center][font_size=18] Session status:
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 
 [node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 modulate = Color(0.552941, 0.858824, 0.337255, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 text = "Start"
 
 [node name="CopyButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 modulate = Color(1, 0.870588, 0.141176, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 text = "Copy"
 
 [node name="StopButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 modulate = Color(1, 0.290196, 0.290196, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 text = "Stop"
 
 [node name="TimerPanel" type="Panel" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 104)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 
 [node name="TimerLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel"]
 custom_minimum_size = Vector2(0, 23)
@@ -118,6 +135,7 @@ layout_mode = 2
 offset_top = 5.0
 offset_right = 191.0
 offset_bottom = 28.0
+theme = ExtResource("1_d1jly")
 bbcode_enabled = true
 text = "[center]Session Timer:
 "
@@ -129,16 +147,19 @@ offset_left = 10.0
 offset_top = 33.0
 offset_right = 182.0
 offset_bottom = 60.0
+theme = ExtResource("1_d1jly")
 
 [node name="TimerLabelHBOX" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TimerPanel"]
 layout_mode = 2
 offset_top = 65.0
 offset_right = 191.0
 offset_bottom = 99.0
+theme = ExtResource("1_d1jly")
 
 [node name="TimerStatusLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX"]
 custom_minimum_size = Vector2(93, 34)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 bbcode_enabled = true
 text = "[center][font_size=12]Status: 
 [color=red]OFF"
@@ -146,17 +167,20 @@ text = "[center][font_size=12]Status:
 [node name="TimerLeftLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX"]
 custom_minimum_size = Vector2(93, 34)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 bbcode_enabled = true
 text = "[center][font_size=12]TimeLeft:
 [color=light_blue]108s"
 
 [node name="ShowLogFileButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 text = "Show Log File Info"
 
 [node name="Tooltip" type="Panel" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Tooltip"]
 layout_mode = 1
@@ -165,6 +189,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_d1jly")
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
@@ -172,6 +197,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Tooltip/MarginContainer"]
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 bbcode_enabled = true
 
 [node name="FileInfoPanel" type="Panel" parent="."]
@@ -180,12 +206,14 @@ layout_mode = 0
 offset_left = 213.0
 offset_right = 483.0
 offset_bottom = 446.0
+theme = ExtResource("1_d1jly")
 
 [node name="FileInfoSide_Button" type="Button" parent="FileInfoPanel"]
 layout_mode = 0
 offset_top = -34.0
 offset_right = 270.0
 offset_bottom = -3.0
+theme = ExtResource("1_d1jly")
 
 [node name="MarginContainer" type="MarginContainer" parent="FileInfoPanel"]
 layout_mode = 1
@@ -194,6 +222,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_d1jly")
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 0
@@ -201,10 +230,12 @@ theme_override_constants/margin_bottom = 15
 
 [node name="ScrollContainer" type="ScrollContainer" parent="FileInfoPanel/MarginContainer"]
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 
 [node name="FileInfoContainer" type="VBoxContainer" parent="FileInfoPanel/MarginContainer/ScrollContainer"]
 custom_minimum_size = Vector2(250, 416)
 layout_mode = 2
+theme = ExtResource("1_d1jly")
 theme_override_constants/separation = 13
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/ShowLogFileButton" to="." method="_on_show_log_file_button_button_up"]
