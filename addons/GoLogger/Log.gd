@@ -72,11 +72,6 @@ var header_string : String
 ## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
 @export var entry_count_limit : int = 1000
 
-## The current count of entries in the game.log.
-var entry_count_game : int = 0 
-
-## The current count of entries in the player.log.
-var entry_count_player : int = 0 
 
 ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
 @onready var session_timer : Timer = $SessionTimer

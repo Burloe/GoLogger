@@ -1,7 +1,10 @@
-[gd_scene format=3 uid="uid://c3n416c5fajm5"]
+[gd_scene load_steps=2 format=3 uid="uid://c3n416c5fajm5"]
+
+[ext_resource type="Script" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
 
 [node name="Panel" type="Panel"]
 custom_minimum_size = Vector2(185, 85)
+script = ExtResource("1_8da2w")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -22,8 +25,9 @@ theme_override_constants/separation = 11
 [node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 placeholder_text = "Enter category name"
+max_length = 20
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer"]
 modulate = Color(1, 0.34, 0.34, 1)
 layout_mode = 2
 text = "Delete"
