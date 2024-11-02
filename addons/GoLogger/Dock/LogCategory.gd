@@ -10,8 +10,7 @@ var dock : TabContainer ## Dock root
 @export var category_name : String = "":
 	set(value):
 		if value.length() <= 20:
-			if dock != null: dock.update_category_name(category_name, value)
-			# print(str("DOCK = ", dock))
+			if dock != null: dock.update_category_name(self, value)
 			category_name = value
 			if line_edit != null: line_edit.text = category_name
 			
@@ -38,9 +37,9 @@ func update_index_label(idx : int) -> void:
 
 func _on_text_changed(new_text : String) -> void:
 	dock._t = str("\n", index)
+	dock.update_category_name(self, new_text)
 
 func _on_text_submitted(new_text : String) -> void:
-	# dock._t = str("\n", index, " Submitted = ", new_text)
 	line_edit.release_focus()
 
 

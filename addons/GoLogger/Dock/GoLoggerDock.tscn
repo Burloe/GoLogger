@@ -86,9 +86,9 @@ columns = 8
 
 [node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Current size(): 2
-[[\"game\", 0], [\"player\", 1]]
-[Panel:<Panel#1838782938194>, @Panel@17348:<Panel#1839051373666>]"
+text = "Current size(): 4
+[[\"game\", 0], [\"player\", 1], [\"\", 2], [\"\", 3]]
+[Panel:<Panel#1839504358520>, @Panel@17350:<Panel#1839772793992>, @Panel@17351:<Panel#1840041229463>, @Panel@17352:<Panel#1840309664934>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
 visible = false

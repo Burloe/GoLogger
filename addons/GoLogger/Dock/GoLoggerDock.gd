@@ -75,7 +75,6 @@ const PATH = "user://GoLogger/settings.ini"
 
 signal update_index
 
-var _t : String = ""
 
 func _ready() -> void: 
 	if Engine.is_editor_hint():
@@ -123,7 +122,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current size(): ", categ.size(), "\n", categ, "\n", category_container.get_children(), _t)
+	categ = config.get_value("plugin", "categories") 
+	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current size(): ", categ.size(), "\n", categ, "\n", category_container.get_children())
 
 
 
@@ -155,23 +155,23 @@ func add_category() -> void:
 	config.save(PATH)
 
 
-func update_category_name(current_name : String, new_name : String) -> void:
-	# Check conflicts
-	for i in categ:
-		if i[0] == new_name:
-			return
-	# Update name
-	for i in categ:
-		if i[0] == current_name:
-			i[0] = new_name
-			save_setting("plugin", "categories")
-			break
+func update_category_name(obj : Panel, new_name : String) -> void:
+	var final_name = new_name
+	var add_name : int = 1
+
+	while check_conflict_name(obj, final_name):
+		final_name = new_name + str(add_name)
+		add_name += 1
+
+	obj.category_name = final_name
+	
+	# category.category_name = new_name
+	save_setting("plugin", "categories")
 	update_indices()
 	
 
 ## Remove [LogFileResource] from array 
 func remove_category(name : String) -> void:
-	print(str(name, categ))
 	for i in range(categ.size()):
 		print(str("Trying to remove ", i, " with array size = ", categ.size()))
 		if categ[i][0] == name:
@@ -188,7 +188,11 @@ func update_indices() -> void:
 		_c[i].update_index_label(i)
 
 
-
+func check_conflict_name(obj : Panel, name : String) -> bool:
+	for i in category_container.get_children():
+		if i.category_name == name and i != obj:
+			return true
+	return false
 
 
 
