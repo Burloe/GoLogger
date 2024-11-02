@@ -58,18 +58,18 @@ var canvas_layer_tt : String = "Sets the layer of the CanvasLayer containing the
 
 @onready var controller_start_btn : CheckButton = $Settings/HBoxContainer/ColumnD/VBoxContainer/ShowOnStartCheckButton
 var controller_start_tt : String = "Show the controller by default."
-#endregion
 
 @onready var controller_monitor_side__btn : CheckButton = $Settings/HBoxContainer/ColumnD/VBoxContainer/MonitorSideCheckButton
 var controller_monitor_side_tt : String = "Set the side of the controller the log file monitor panel."
+#endregion
 
 # Category tab
 @onready var add_category_btn : Button = $Categories/MarginContainer/VBoxContainer/HBoxContainer/AddButton
 @onready var category_container : GridContainer = $Categories/MarginContainer/VBoxContainer/HBoxContainer/GridContainer
 @onready var open_dir_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/OpenDirButton
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
-var categ : Array[Array] = []
- 
+# var categ : Array[Array] = []
+var max_name_length : int = 20
 var config = ConfigFile.new()
 const PATH = "user://GoLogger/settings.ini"
 
@@ -81,8 +81,7 @@ func _ready() -> void:
 		# Load/create settings.ini
 		if !FileAccess.file_exists(PATH):
 			var _a : Array[Array] = [
-				["game", 0],
-				["player", 1]
+				["game", 0]
 			]
 			config.set_value("plugin", "categories", _a)
 			config.set_value("plugin", "base_directory", "user://GoLogger/")
@@ -122,77 +121,89 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	categ = config.get_value("plugin", "categories") 
-	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current size(): ", categ.size(), "\n", categ, "\n", category_container.get_children())
+	var _c = config.get_value("plugin", "categories") 
+	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current .ini setting(size = ", _c.size(), "):\n      ", _c, "\nCurrent GridContainer.get_children()[size = ",category_container.get_children().size(), "]:\n      ", category_container.get_children())
 
 
 
-
+#region Main category functions
 func load_categories() -> void:
-	categ = config.get_value("plugin", "categories")
-	for i in range(categ.size()):
+	var _c = config.get_value("plugin", "categories")
+	for i in range(_c.size()):
 		var _n = category_scene.instantiate()
 		_n.dock = self
-		_n.category_name = categ[i][0]
-		_n.index = i
-		categ[i][1] = i
+		_n.category_name = _c[i][0]
+		_n.index = i #_c[i][1]
 		category_container.add_child(_n)
 		category_container.move_child(_n, _n.index)
 	update_indices()
-	config.save_value("plugin", "categories", categ)
+	# config.save_value("plugin", "categories", _c)
 
 	
-## Adds a new category element to the dock. Adds a corresponding [LogFileResource] to the [param categories].
+## Adds a new category instance to the dock.
 func add_category() -> void:
 	var _n = category_scene.instantiate()
 	_n.dock = self 
-	_n.index = categ.size()
+	_n.index = category_container.get_children().size()
 	category_container.add_child(_n)
 	category_container.move_child(_n, _n.index)
-	categ.append([_n.category_name, categ.size()])
 	update_indices()
-	config.set_value("plugin", "categories", categ)
+	save_categories()
 	config.save(PATH)
 
 
+func save_categories(deferred : bool = false) -> void:
+	if deferred:
+		await get_tree().physics_frame
+	var main : Array # Main array
+	var children = category_container.get_children()
+	for i in range(children.size()): # Loop through each child
+		# Create and append a nested array inside main
+		var _n : Array = [children[i].category_name, children[i].index] 
+		main.append(_n)
+	config.set_value("plugin", "categories", main)
+	config.save(PATH)
+#endregion
+
+
+
+#region Helpers
 func update_category_name(obj : Panel, new_name : String) -> void:
 	var final_name = new_name
 	var add_name : int = 1
-
 	while check_conflict_name(obj, final_name):
 		final_name = new_name + str(add_name)
 		add_name += 1
+	if obj.category_name != final_name:
+		obj.category_name = final_name
+	# update_indices() # Changing names shouldn't require index update
+	save_categories()
 
-	obj.category_name = final_name
-	
-	# category.category_name = new_name
-	save_setting("plugin", "categories")
-	update_indices()
-	
 
-## Remove [LogFileResource] from array 
-func remove_category(name : String) -> void:
-	for i in range(categ.size()):
-		print(str("Trying to remove ", i, " with array size = ", categ.size()))
-		if categ[i][0] == name:
-			categ.remove_at(i)
-			break  
-	update_indices()
-
-    
-func update_indices() -> void:
+func update_indices(deferred : bool = false) -> void:
+	if deferred:
+		await get_tree().physics_frame
+	var refresh_table = []
 	var _c = category_container.get_children()
-	for i in range(categ.size()):
-		categ[i][1] = i # updates array corresponding array
+	for i in range(_c.size()):
 		_c[i].index = i # updates actual dock elements
-		_c[i].update_index_label(i)
+		_c[i].refresh_index_label(i)
+		var _e : Array = [_c[i].category_name, i]
+		refresh_table.append(_e)
+	printt("Update indices:\n", refresh_table)
+
 
 
 func check_conflict_name(obj : Panel, name : String) -> bool:
 	for i in category_container.get_children():
 		if i.category_name == name and i != obj:
+			if name == "": return false
 			return true
 	return false
+#endregion
+
+
+
 
 
 

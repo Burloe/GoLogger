@@ -88,7 +88,7 @@ columns = 8
 layout_mode = 2
 text = "Current size(): 4
 [[\"game\", 0], [\"player\", 1], [\"\", 2], [\"\", 3]]
-[Panel:<Panel#1839504358520>, @Panel@17350:<Panel#1839772793992>, @Panel@17351:<Panel#1840041229463>, @Panel@17352:<Panel#1840309664934>]"
+[Panel:<Panel#1839571467371>, @Panel@17350:<Panel#1839839902842>, @Panel@17351:<Panel#1840108338313>, @Panel@17352:<Panel#1840376773784>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
 visible = false
