@@ -15,40 +15,83 @@ offset_top = 1.0
 offset_bottom = -0.199997
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 1
+current_tab = 0
 script = ExtResource("2_qhfb3")
 
 [node name="Categories" type="ScrollContainer" parent="."]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="Categories"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Categories/MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer"]
+[node name="Panel" type="Panel" parent="Categories/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1920, 41)
 layout_mode = 2
-text = "Manage your log categories:"
 
-[node name="GridContainer" type="GridContainer" parent="Categories/MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/MarginContainer/VBoxContainer/Panel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer"]
+custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 0
-columns = 8
+theme_override_constants/separation = 105
 
-[node name="AddButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(50, 85)
+[node name="OpenDirButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Open Base Directory"
+
+[node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+text = "Press enter to submit a name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+modulate = Color(1, 0.26, 0.26, 1)
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+text = "Unnamed categories will not be used"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="AddButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 118)
 layout_mode = 2
 text = "+"
 
+[node name="GridContainer" type="GridContainer" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 5
+columns = 8
+
+[node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Current size(): 2
+[[\"game\", 0], [\"player\", 1]]
+[Panel:<Panel#1838782938194>, @Panel@17348:<Panel#1839051373666>]"
+
 [node name="Settings" type="ScrollContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 metadata/_tab_index = 1
