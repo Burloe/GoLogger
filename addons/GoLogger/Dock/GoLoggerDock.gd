@@ -222,6 +222,8 @@ func update_indices(deferred : bool = false) -> void:
 		_c[i].refresh_index_label(i)
 		var _e : Array = [_c[i].category_name, i, _c[i].is_locked]
 		refresh_table.append(_e)
+	config.set_value("plugin", "categories", refresh_table)
+	config.save(PATH)
 	printt("Update indices:\n", refresh_table)
 #endregion
 
