@@ -88,12 +88,11 @@ func _ready() -> void:
 		defaults_btn.button_up.connect(reset_to_default)
 		base_dir.text = Log.base_directory
 
-		# Remove existing categories
+		# Remove any existing categories
 		for i in category_container.get_children():
 			if i is not Button:
 				i.queue_free()
 
-		# Add categories as saved in .ini file
 		load_categories()
 
 
@@ -126,18 +125,32 @@ func create_settings_file() -> void:
 	config.set_value("settings", "controller_drag_offset", Vector2(0,0))
 	config.save(PATH)
 
-## Resets the categories to default by removing any existing category elements, overwriting the saved categories in the .ini file and then loading default categories "game" and "player".
+## Resets the categories to default by removing any existing category elements, 
+## overwriting the saved categories in the .ini file and then loading default 
+## categories "game" and "player".
 func reset_to_default() -> void:
+	# Remove existing category elements from dock
 	var children = category_container.get_children()
 	for i in range(children.size()):
 		children[i].queue_free()
+
+	# Set/load default categories deferred to ensure completed deletion
+	# Preventative "cooldown" added to disable reset and add to be called
+	# during this cooldown period.
+	defaults_btn.disabled = true
+	add_category_btn.disabled = true
+	await get_tree().create_timer(0.5).timeout
 	config.set_value("plugin", "categories", [["game", 0, false], ["player", 1, false]])
-	call_deferred("load_categories")
+	load_categories()
+	defaults_btn.disabled = false
+	add_category_btn.disabled = false
 
 
 
 #region Main category functions
-func load_categories() -> void:
+func load_categories(deferred : bool = false) -> void:
+	if deferred:
+		await get_tree().physics_frame
 	var _c = config.get_value("plugin", "categories")
 	for i in range(_c.size()):
 		var _n = category_scene.instantiate()
@@ -218,6 +231,7 @@ func check_conflict_name(obj : Panel, name : String) -> bool:
 		if i == obj:
 			continue
 		elif i.category_name == name:
+			printerr(str("FOUND CONFLICTING NAME ON OBJECT: ", i.category_name, "[", i, "] - ", obj.category_name, "[", obj, "]\nall children: ", category_container.get_children()))
 			if name == "": return false
 			return true
 	return false

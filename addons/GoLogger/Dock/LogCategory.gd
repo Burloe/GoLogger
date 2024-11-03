@@ -43,8 +43,8 @@ func _ready() -> void:
 		lock_btn.button_pressed = is_locked
 		apply_btn.disabled = true
 
-func _physics_process(delta: float) -> void:
-	print(str("Size", get_size()))
+# func _physics_process(delta: float) -> void:
+# 	print(str("Size", get_size()))
 
 func refresh_index_label(idx : int) -> void:
 	ilbl.text = str(idx)
