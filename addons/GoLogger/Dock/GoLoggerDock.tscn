@@ -81,7 +81,7 @@ layout_mode = 2
 theme_override_constants/separation = 9
 
 [node name="AddButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(80, 118)
+custom_minimum_size = Vector2(80, 111)
 layout_mode = 2
 text = "+"
 
@@ -93,10 +93,10 @@ columns = 8
 
 [node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Current .ini setting(size = 5):
-      [[\"game\", 0, true], [\"player\", 1, false], [\"network\", 2, true], [\"\", 3, true], [\"\", 4, false]]
-Current GridContainer.get_children()[size = 5]:
-      [Panel:<Panel#1847020551340>, @Panel@17351:<Panel#1847406427330>, @Panel@17352:<Panel#1847775526103>, @Panel@17353:<Panel#1848161402093>, @Panel@17354:<Panel#1848530500867>]"
+text = "Current .ini setting(size = 2):
+      [[\"game\", 0, false], [\"player\", 1, false]]
+Current GridContainer.get_children()[size = 2]:
+      [Panel:<Panel#1838950710378>, @Panel@17348:<Panel#1839370140802>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
 visible = false

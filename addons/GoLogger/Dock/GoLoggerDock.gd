@@ -69,8 +69,6 @@ var disable_warn2_tt : String = "Disable warning: 'Failed to log entry due to in
 @onready var open_dir_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/OpenDirButton
 @onready var defaults_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/DefaultsButton
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
-# var categ : Array[Array] = []
-var max_name_length : int = 20
 var config = ConfigFile.new()
 const PATH = "user://GoLogger/settings.ini"
 
@@ -215,7 +213,11 @@ func update_category_name(obj : Panel, new_name : String) -> void:
 ## Helper function - Iterates through all children and compares the name of other nodes. 
 func check_conflict_name(obj : Panel, name : String) -> bool:
 	for i in category_container.get_children():
-		if i.category_name == name and i != obj:
+		# Continue if the current loop 
+		# is the object being renamed
+		if i == obj:
+			continue
+		elif i.category_name == name:
 			if name == "": return false
 			return true
 	return false
