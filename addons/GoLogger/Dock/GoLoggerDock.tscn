@@ -49,16 +49,16 @@ theme_override_constants/margin_bottom = 5
 [node name="HBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer"]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 12
 alignment = 2
 
 [node name="OpenDirButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "Open Base Directory"
 
-[node name="Button" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+[node name="DefaultsButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-text = "Default "
+text = "Reset to Default "
 
 [node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
 visible = false
@@ -72,7 +72,7 @@ vertical_alignment = 1
 modulate = Color(1, 0.26, 0.26, 1)
 custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
-text = "Unnamed categories will not be used"
+text = "                Unnamed categories will not be used"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -93,10 +93,10 @@ columns = 8
 
 [node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Current .ini setting(size = 4):
-      [[\"game\", 0], [\"player\", 1], [\"network\", 2], [\"quartz\", 3]]
+text = "Current .ini setting(size = 5):
+      [[\"game\", 0, true], [\"player\", 1, false], [\"network\", 2, true], [\"\", 3, true], [\"\", 4, false]]
 Current GridContainer.get_children()[size = 5]:
-      [Panel:<Panel#1839688907913>, @Panel@17352:<Panel#1839957343384>, @Panel@17353:<Panel#1840225778855>, @Panel@17354:<Panel#1840494214326>, @Panel@17355:<Panel#1840762649797>]"
+      [Panel:<Panel#1847020551340>, @Panel@17351:<Panel#1847406427330>, @Panel@17352:<Panel#1847775526103>, @Panel@17353:<Panel#1848161402093>, @Panel@17354:<Panel#1848530500867>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
 visible = false

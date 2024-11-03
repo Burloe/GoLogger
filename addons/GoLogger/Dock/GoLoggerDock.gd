@@ -67,6 +67,7 @@ var disable_warn2_tt : String = "Disable warning: 'Failed to log entry due to in
 @onready var add_category_btn : Button = $Categories/MarginContainer/VBoxContainer/HBoxContainer/AddButton
 @onready var category_container : GridContainer = $Categories/MarginContainer/VBoxContainer/HBoxContainer/GridContainer
 @onready var open_dir_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/OpenDirButton
+@onready var defaults_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/DefaultsButton
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
 # var categ : Array[Array] = []
 var max_name_length : int = 20
@@ -86,6 +87,7 @@ func _ready() -> void:
 
 		add_category_btn.button_up.connect(add_category)
 		open_dir_btn.button_up.connect(open_directory)
+		defaults_btn.button_up.connect(reset_to_default)
 		base_dir.text = Log.base_directory
 
 		# Remove existing categories
@@ -126,6 +128,13 @@ func create_settings_file() -> void:
 	config.set_value("settings", "controller_drag_offset", Vector2(0,0))
 	config.save(PATH)
 
+## Resets the categories to default by removing any existing category elements, overwriting the saved categories in the .ini file and then loading default categories "game" and "player".
+func reset_to_default() -> void:
+	var children = category_container.get_children()
+	for i in range(children.size()):
+		children[i].queue_free()
+	config.set_value("plugin", "categories", [["game", 0, false], ["player", 1, false]])
+	call_deferred("load_categories")
 
 
 
@@ -141,7 +150,6 @@ func load_categories() -> void:
 		category_container.add_child(_n)
 		category_container.move_child(_n, _n.index)
 	update_indices()
-	# config.save_value("plugin", "categories", _c)
 
 
 ## Adds a new category instance to the dock.
@@ -193,6 +201,7 @@ func save_categories(deferred : bool = false) -> void:
 
 
 #region Helpers
+## Updates the name of a category, then saves all categories.
 func update_category_name(obj : Panel, new_name : String) -> void:
 	var final_name = new_name
 	var add_name : int = 1
@@ -203,7 +212,7 @@ func update_category_name(obj : Panel, new_name : String) -> void:
 		obj.category_name = final_name
 	save_categories()
 
-
+## Helper function - Iterates through all children and compares the name of other nodes. 
 func check_conflict_name(obj : Panel, name : String) -> bool:
 	for i in category_container.get_children():
 		if i.category_name == name and i != obj:
@@ -211,7 +220,7 @@ func check_conflict_name(obj : Panel, name : String) -> bool:
 			return true
 	return false
 
-
+## Helper function - Updates indices of all the categories.
 func update_indices(deferred : bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
