@@ -64,15 +64,27 @@ var disable_warn2_tt : String = "Disable warning: 'Failed to log entry due to in
 #endregion
 
 # Category tab
+## Add category [Button]. Instantiates a [param category_scene] and adds it as a child of [param category_container].
 @onready var add_category_btn : Button = $Categories/MarginContainer/VBoxContainer/HBoxContainer/AddButton
+## Category [GridContainer] node. Holds all the LogCategory nodes that represent each category.
 @onready var category_container : GridContainer = $Categories/MarginContainer/VBoxContainer/HBoxContainer/GridContainer
+## Open directory [Button] node. Opens the [param base_directory] folder using the OS file explorer. 
 @onready var open_dir_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/OpenDirButton
+## Reset to default categories [Button] node. Removes all existing categories and adds "game" and "player" categories.
 @onready var defaults_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/DefaultsButton
-var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
-var config = ConfigFile.new()
-const PATH = "user://GoLogger/settings.ini"
 
+## LogCategory scene. Instantiated into [param LogCategory].
+var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
+## [ConfigFile]. All settings are added to this instance and then saves the stored settings to the settings.ini file.
+var config = ConfigFile.new()
+## Path to settings.ini file.
+const PATH = "user://GoLogger/settings.ini"
+## Emitted whenever an action that changes the display order is potentially made. Updates the index of all LogCategories.
 signal update_index
+
+# func _physics_process(delta: float) -> void:
+# 	var _c = config.get_value("plugin", "categories") 
+# 	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current .ini setting(size = ", _c.size(), "):\n      ", _c, "\nCurrent GridContainer.get_children()[size = ",category_container.get_children().size(), "]:\n      ", category_container.get_children())
 
 
 func _ready() -> void: 
@@ -96,12 +108,7 @@ func _ready() -> void:
 		load_categories()
 
 
-
-func _physics_process(delta: float) -> void:
-	var _c = config.get_value("plugin", "categories") 
-	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current .ini setting(size = ", _c.size(), "):\n      ", _c, "\nCurrent GridContainer.get_children()[size = ",category_container.get_children().size(), "]:\n      ", category_container.get_children())
-
-
+#region Main category functions
 func create_settings_file() -> void:
 	var _a : Array[Array] = [["game", 0, true], ["player", 1, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
@@ -125,6 +132,7 @@ func create_settings_file() -> void:
 	config.set_value("settings", "controller_drag_offset", Vector2(0,0))
 	config.save(PATH)
 
+
 ## Resets the categories to default by removing any existing category elements, 
 ## overwriting the saved categories in the .ini file and then loading default 
 ## categories "game" and "player".
@@ -146,8 +154,7 @@ func reset_to_default() -> void:
 	add_category_btn.disabled = false
 
 
-
-#region Main category functions
+## Loads categories from settings.ini and creates corresponding LogCategory elements.
 func load_categories(deferred : bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
@@ -174,6 +181,7 @@ func add_category() -> void:
 	update_indices()
 	save_categories()
 	_n.line_edit.grab_focus()
+
 
 ## Saves categories by looping through each category element. Storing and appending its 
 ## name, index and locked status into an array and then saving it into a [ConfigFile].[br]
@@ -207,11 +215,9 @@ func save_categories(deferred : bool = false) -> void:
 	config.set_value("settings", "hide_controller", true)
 	config.set_value("settings", "controller_drag_offset", Vector2(0,0))
 	config.save(PATH)
-#endregion
 
 
-
-#region Helpers
+### Helpers ###
 ## Updates the name of a category, then saves all categories.
 func update_category_name(obj : Panel, new_name : String) -> void:
 	var final_name = new_name
@@ -254,9 +260,7 @@ func update_indices(deferred : bool = false) -> void:
 
 
 
-
-
-
+#region Settings
 func load_settings(section : String) -> Dictionary:
 	var settings = {}
 	for key in config.get_section_keys(section):
