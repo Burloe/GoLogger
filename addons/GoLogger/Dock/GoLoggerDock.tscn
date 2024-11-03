@@ -31,6 +31,7 @@ theme_override_constants/margin_bottom = 15
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Categories/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 8
 
 [node name="Panel" type="Panel" parent="Categories/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(1920, 41)
@@ -48,11 +49,16 @@ theme_override_constants/margin_bottom = 5
 [node name="HBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer"]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-theme_override_constants/separation = 105
+theme_override_constants/separation = 5
+alignment = 2
 
 [node name="OpenDirButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "Open Base Directory"
+
+[node name="Button" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Default "
 
 [node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
 visible = false
@@ -72,6 +78,7 @@ vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 9
 
 [node name="AddButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(80, 118)
@@ -86,9 +93,10 @@ columns = 8
 
 [node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Current size(): 4
-[[\"game\", 0], [\"player\", 1], [\"\", 2], [\"\", 3]]
-[Panel:<Panel#1839571467371>, @Panel@17350:<Panel#1839839902842>, @Panel@17351:<Panel#1840108338313>, @Panel@17352:<Panel#1840376773784>]"
+text = "Current .ini setting(size = 4):
+      [[\"game\", 0], [\"player\", 1], [\"network\", 2], [\"quartz\", 3]]
+Current GridContainer.get_children()[size = 5]:
+      [Panel:<Panel#1839688907913>, @Panel@17352:<Panel#1839957343384>, @Panel@17353:<Panel#1840225778855>, @Panel@17354:<Panel#1840494214326>, @Panel@17355:<Panel#1840762649797>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
 visible = false
@@ -113,6 +121,7 @@ theme_override_constants/margin_bottom = 4
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
+theme_override_constants/separation = 9
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/HBoxContainer/ColumnA/VBox"]
@@ -225,7 +234,7 @@ vertical_alignment = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnB/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 9
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="Settings/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
@@ -266,38 +275,103 @@ text = "10"
 alignment = 2
 
 [node name="ColumnC" type="MarginContainer" parent="Settings/HBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 4
 
-[node name="Column" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnC"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnC"]
 layout_mode = 2
+theme_override_constants/separation = 9
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/HBoxContainer/ColumnC/Column"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/HBoxContainer/ColumnC/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 18
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnC/Column/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="ErrorRepLabel" type="Label" parent="Settings/HBoxContainer/ColumnC/Column/HBoxContainer/VBoxContainer"]
+[node name="CanvasLayerLabel" type="Label" parent="Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "CanvasLayer layer:"
+vertical_alignment = 1
+
+[node name="DragOffsetLabel" type="Label" parent="Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = " Controller dragging offset:"
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="CanvasLayerLineEdit" type="LineEdit" parent="Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "5"
+alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="XLineEdit" type="LineEdit" parent="Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "0"
+alignment = 2
+right_icon = ExtResource("3_wl4ws")
+
+[node name="YLineEdit" type="LineEdit" parent="Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "0"
+alignment = 2
+right_icon = ExtResource("4_vvjka")
+
+[node name="ShowOnStartCheckButton" type="CheckButton" parent="Settings/HBoxContainer/ColumnC/VBoxContainer"]
+layout_mode = 2
+text = "Show Controller on start:"
+icon_alignment = 2
+
+[node name="MonitorSideCheckButton" type="CheckButton" parent="Settings/HBoxContainer/ColumnC/VBoxContainer"]
+layout_mode = 2
+text = "Controller LogFile Monitor side:"
+icon_alignment = 2
+
+[node name="ColumnD" type="MarginContainer" parent="Settings/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="Column" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnD"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/HBoxContainer/ColumnD/Column"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnD/Column/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ErrorRepLabel" type="Label" parent="Settings/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Error reporting"
 vertical_alignment = 1
 
-[node name="SessionChangeLabel" type="Label" parent="Settings/HBoxContainer/ColumnC/Column/HBoxContainer/VBoxContainer"]
+[node name="SessionChangeLabel" type="Label" parent="Settings/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Print session changes:"
 vertical_alignment = 1
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnC/Column/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnD/Column/HBoxContainer"]
 layout_mode = 2
 
-[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/HBoxContainer/ColumnC/Column/HBoxContainer/VBoxContainer2"]
+[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 alignment = 2
 selected = 0
@@ -309,7 +383,7 @@ popup/item_1/id = 1
 popup/item_2/text = "None"
 popup/item_2/id = 2
 
-[node name="SessionChangeOptButton" type="OptionButton" parent="Settings/HBoxContainer/ColumnC/Column/HBoxContainer/VBoxContainer2"]
+[node name="SessionChangeOptButton" type="OptionButton" parent="Settings/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 alignment = 2
 selected = 0
@@ -325,83 +399,19 @@ popup/item_3/id = 3
 popup/item_4/text = "Stop session only"
 popup/item_4/id = 4
 
-[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/HBoxContainer/ColumnC/Column"]
+[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/HBoxContainer/ColumnD/Column"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 text = "Disable warning:
 \"Failed to start session, no active session\":         "
 
-[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/HBoxContainer/ColumnC/Column"]
+[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/HBoxContainer/ColumnD/Column"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 text = "Disable warning:
 \"No active session, failed to log entry\":                "
-
-[node name="ColumnD" type="MarginContainer" parent="Settings/HBoxContainer"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnD"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/HBoxContainer/ColumnD/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 18
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnD/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 1
-
-[node name="CanvasLayerLabel" type="Label" parent="Settings/HBoxContainer/ColumnD/VBoxContainer/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = "CanvasLayer layer:"
-vertical_alignment = 1
-
-[node name="DragOffsetLabel" type="Label" parent="Settings/HBoxContainer/ColumnD/VBoxContainer/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = " Controller dragging offset:"
-vertical_alignment = 1
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/HBoxContainer/ColumnD/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="CanvasLayerLineEdit" type="LineEdit" parent="Settings/HBoxContainer/ColumnD/VBoxContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-text = "5"
-alignment = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/HBoxContainer/ColumnD/VBoxContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-
-[node name="XLineEdit" type="LineEdit" parent="Settings/HBoxContainer/ColumnD/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
-layout_mode = 2
-text = "0"
-alignment = 2
-right_icon = ExtResource("3_wl4ws")
-
-[node name="YLineEdit" type="LineEdit" parent="Settings/HBoxContainer/ColumnD/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
-layout_mode = 2
-text = "0"
-alignment = 2
-right_icon = ExtResource("4_vvjka")
-
-[node name="ShowOnStartCheckButton" type="CheckButton" parent="Settings/HBoxContainer/ColumnD/VBoxContainer"]
-layout_mode = 2
-text = "Show Controller on start:"
-icon_alignment = 2
-
-[node name="MonitorSideCheckButton" type="CheckButton" parent="Settings/HBoxContainer/ColumnD/VBoxContainer"]
-layout_mode = 2
-text = "Controller LogFile Monitor side:"
-icon_alignment = 2
 
 [node name="ToolTip" parent="Settings/HBoxContainer" instance=ExtResource("5_r16qc")]
 layout_mode = 2
