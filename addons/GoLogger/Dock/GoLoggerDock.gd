@@ -198,20 +198,22 @@ func _on_basedir_button_up(btn : Button) -> void:
 
 #region Log Header
 @onready var log_header : OptionButton = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/LogHeaderOptButton
+var log_header_string : String
 
 func _on_logheader_item_selected(index : int) -> void:
-	var _s : String
 	match index:
 		0: # Project name and version
 			var _n = str(ProjectSettings.get_setting("application/config/name"))
 			var _v = str(ProjectSettings.get_setting("application/config/version"))
-			if _n == "": printerr("GoLogger warning: No project name set in 'ProjectSettings/application/config/name'.")
-			if _v == "": printerr("GoLogger warning: No proejct version set in 'ProjectSettings/application/config/version'.")
-			_s = str(_n, " V.", _v)
+			if _n == "": printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
+			if _v == "": printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
+			log_header_string = str(_n, " V.", _v)
 		1: # Project name
-			_s = str(ProjectSettings.get_setting("application/config/name"))
+			log_header_string = str(ProjectSettings.get_setting("application/config/name"))
 		2: # Version
-			_s = str(ProjectSettings.get_setting("application/config/version"))
+			log_header_string = str(ProjectSettings.get_setting("application/config/version"))
+	config.set_value("settings", "log_header", index)
+	config.save(PATH) # ? Doesn't this save a settings.ini file with just this one setting?
 #endregion
 
 
