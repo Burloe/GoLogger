@@ -13,9 +13,7 @@ extends TabContainer
 
 var base_dir_tstring : String = "Directory. GoLogger will create folders within this base directory for each log category to store the log files."
 
-var log_header_value
-@onready var log_header : OptionButton = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/LogHeaderOptButton
-var log_header_tt : String = "Sets the header used in logs. Gets the name and version from Project Settings."
+
 
 @onready var autostart_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/AutostartCheckButton
 var autostart_tt : String = "Autostarts a session when you run your project."
@@ -118,16 +116,43 @@ func _ready() -> void:
 
 		
 		# Settings
+		# Base directory
 		base_dir_node.text_submitted.connect(_on_basedir_text_submitted)
 		base_dir_reset_btn.button_up.connect(_on_basedir_button_up.bind(base_dir_reset_btn))
 		base_dir_reset_btn.mouse_entered.connect(update_tooltip.bind(base_dir_reset_btn))
+		base_dir_reset_btn.focus_entered.connect(update_tooltip.bind(base_dir_reset_btn))
 
 		base_dir_opendir_btn.button_up.connect(_on_basedir_button_up.bind(base_dir_opendir_btn))
 		base_dir_opendir_btn.mouse_entered.connect(update_tooltip.bind(base_dir_opendir_btn))
+		base_dir_opendir_btn.focus_entered.connect(update_tooltip.bind(base_dir_opendir_btn))
 
 		base_dir_apply_btn.button_up.connect(_on_basedir_button_up.bind(base_dir_apply_btn))
 		base_dir_apply_btn.mouse_entered.connect(update_tooltip.bind(base_dir_apply_btn))
+		base_dir_apply_btn.focus_entered.connect(update_tooltip.bind(base_dir_apply_btn))
 		base_dir_node.text = config.get_setting("base_directory")
+
+		# Log header
+		log_header.item_selected.connect(_on_logheader_item_selected)
+		log_header.mouse_entered.connect(update_tooltip.bind(log_header))
+		log_header.focus_entered.connect(update_tooltip.bind(log_header))
+
+
+
+func update_tooltip(node : Control):
+	match node:
+		# Base directory tooltips
+		base_dir_node:
+			tooltip_lbl.text = "The base directory used to create and store log files within."
+		base_dir_reset_btn:
+			tooltip_lbl.text = "Resets the base directory to the default user://GoLogger/"
+		base_dir_opendir_btn:
+			tooltip_lbl.text = "Opens the currently applied base directory folder."
+		base_dir_apply_btn:
+			tooltip_lbl.text = "Attempts to apply and create the base directory folder using the entered path. The directory path resets to the previously saved path if the new path was rejected."
+
+		log_header:
+			tooltip_lbl.text = "Used to set what to include in the log header. Project name and version is fetched from Project Settings."
+
 
 #region Base Directory setting: 
 @onready var base_dir_node : LineEdit = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit
@@ -148,7 +173,6 @@ func _on_basedir_text_submitted(new_text : String) -> void:
 		print(_e)
 		base_dir_node.text = old_dir
 	base_dir_node.release_focus()
-
 
 
 func _on_basedir_button_up(btn : Button) -> void:
@@ -172,21 +196,25 @@ func _on_basedir_button_up(btn : Button) -> void:
 
 
 
+#region Log Header
+@onready var log_header : OptionButton = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/LogHeaderOptButton
+
+func _on_logheader_item_selected(index : int) -> void:
+	var _s : String
+	match index:
+		0: # Project name and version
+			var _n = str(ProjectSettings.get_setting("application/config/name"))
+			var _v = str(ProjectSettings.get_setting("application/config/version"))
+			if _n == "": printerr("GoLogger warning: No project name set in 'ProjectSettings/application/config/name'.")
+			if _v == "": printerr("GoLogger warning: No proejct version set in 'ProjectSettings/application/config/version'.")
+			_s = str(_n, " V.", _v)
+		1: # Project name
+			_s = str(ProjectSettings.get_setting("application/config/name"))
+		2: # Version
+			_s = str(ProjectSettings.get_setting("application/config/version"))
+#endregion
 
 
-
-
-func update_tooltip(btn : Control):
-	match btn:
-		# Base directory tooltips
-		base_dir_node:
-			tooltip_lbl.text = "The base directory used to create and store log files within."
-		base_dir_reset_btn:
-			tooltip_lbl.text = "Resets the base directory to the default user://GoLogger/"
-		base_dir_opendir_btn:
-			tooltip_lbl.text = "Opens the currently applied base directory folder."
-		base_dir_apply_btn:
-			tooltip_lbl.text = "Attempts to apply and create the base directory folder using the entered path. The directory path resets to the previously saved path if the new path was rejected."
 
 		
 
