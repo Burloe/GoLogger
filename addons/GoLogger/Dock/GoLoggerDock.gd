@@ -18,18 +18,7 @@ extends TabContainer
 
 
 
-@onready var entry_count_line : LineEdit = $Settings/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/FileCountLineEdit
-var entry_count_tt : String = "The entry count limit of any log."
 
-@onready var wait_time_line : LineEdit = $Settings/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/EntryCountLineEdit
-var wait_time_tt : String = "Wait time of the session timer."
-
-@onready var file_count_line : LineEdit = $Settings/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/SessionTimerLineEdit
-var file_count_tt : String = "The limit of files in a category folder. The oldest log file is deleted when a new one is created."
-
-
-@onready var canvas_layer_line : LineEdit = $Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/CanvasLayerLineEdit
-var canvas_layer_tt : String = "Sets the layer of the CanvasLayer containing the copy popup prompt and Controller."
 
 @onready var drag_offset_x : LineEdit = $Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/XLineEdit
 @onready var drag_offset_y : LineEdit = $Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/YLineEdit
@@ -141,6 +130,11 @@ func _ready() -> void:
 		limit_action_btn.mouse_entered.connect(update_tooltip.bind(limit_action_btn))
 		limit_action_btn.focus_entered.connect(update_tooltip.bind(limit_action_btn))
 
+		entry_count_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(entry_count_spinbox))
+		wait_time_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(wait_time_spinbox))
+		file_count_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(file_count_spinbox))
+		canvas_layer_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(canvas_layer_spinbox))
+
 
 func update_tooltip(node : Control) -> void:
 	match node:
@@ -169,6 +163,17 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "Method used to limit log file length/size. Action taken is when this condition is met is set with 'Limit Action'. Entry count will execute an action when the number of entries hits the cap. Session timer executes an action on timer timeout."
 		limit_action_btn:
 			tooltip_lbl.text = "Action taken when 'Limit Method' condition is met. "
+		
+		# Int settings [LineEdits]
+		entry_count_spinbox:
+			tooltip_lbl.text = "Entry count limit of any log. Used when 'Limit Method' is set to use Entry Count."
+		wait_time_spinbox:
+			tooltip_lbl.text = "Wait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer."
+		file_count_spinbox:
+			tooltip_lbl.text = "File count limit. Limits the number of files in any log category folder."
+		canvas_layer_spinbox:
+			tooltip_lbl.text = "Sets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
+		
 
 		
 
@@ -269,6 +274,24 @@ func _on_limit_action_item_selected(index : int) -> void:
 #endregion
 
 
+#region File & Entry cap, Session wait time and CanvasLayer layer
+@onready var entry_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/EntryCountLineEdit
+@onready var wait_time_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/SessionTimerSpinBox
+@onready var file_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/FileCountSpinBox
+@onready var canvas_layer_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/CanvasLayerSpinBox
+
+func _on_spinbox_value_changed(value : float, node : Control) -> void:
+	match node:
+		entry_count_spinbox:
+			config.set_value("settings", "entry_count_limit", value)
+		wait_time_spinbox:
+			config.set_value("settings", "session_timer_wait_time", value)
+		file_count_spinbox:
+			config.set_value("settings", "file_cap", value)
+		canvas_layer_spinbox:
+			config.set_value("settings", "canvaslayer_layer", value)
+	config.save(PATH)
+#endregion
 
 
 #region Main category functions
@@ -282,7 +305,7 @@ func create_settings_file() -> void:
 	config.set_value("settings", "use_utc", false)
 	config.set_value("settings", "dash_separator", false)
 	config.set_value("settings", "limit_method", 0)
-	config.set_value("settings", "limit_actio", 0)
+	config.set_value("settings", "limit_action", 0)
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_count_limit", 1000)
 	config.set_value("settings", "session_timer_wait_time", 600.0)

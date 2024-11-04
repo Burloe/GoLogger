@@ -328,20 +328,19 @@ popup/item_0/text = "Stop & Start new session"
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="FileCountLineEdit" type="LineEdit" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
-text = "10"
 alignment = 2
 
-[node name="EntryCountLineEdit" type="LineEdit" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
+[node name="EntryCountLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
-text = "1000"
 alignment = 2
 
-[node name="SessionTimerLineEdit" type="LineEdit" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
+[node name="SessionTimerLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
-text = "10"
+max_value = 1200.0
 alignment = 2
+update_on_text_changed = true
 
 [node name="ColumnC" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
