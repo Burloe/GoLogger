@@ -11,18 +11,9 @@ extends TabContainer
 # ]
 
 
-var base_dir_tstring : String = "Directory. GoLogger will create folders within this base directory for each log category to store the log files."
 
 
 
-@onready var autostart_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/AutostartCheckButton
-var autostart_tt : String = "Autostarts a session when you run your project."
-
-@onready var utc_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/UTCCheckButton
-var utc_tt : String = "Use UTC time as opposed to the local system time."
-
-@onready var dash_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/SeparatorCheckButton
-var dash_tt : String = "Uses - to separate date/timestamp. With categoryname(yy-mm-dd_hh-mm-ss).log. Without = categoryname(yymmdd_hhmmss).log."
 
 
 @onready var limit_method_btn : OptionButton = $Settings/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/LimitMethodOptButton
@@ -136,9 +127,18 @@ func _ready() -> void:
 		log_header.mouse_entered.connect(update_tooltip.bind(log_header))
 		log_header.focus_entered.connect(update_tooltip.bind(log_header))
 
+		# Autostart session, UTC and Dash Separator
+		autostart_btn.toggled.connect(_on_checkbutton_toggled.bind(autostart_btn))
+		autostart_btn.mouse_entered.connect(update_tooltip)
+
+		utc_btn.toggled.connect(_on_checkbutton_toggled.bind(utc_btn))
+		utc_btn.mouse_entered.connect(update_tooltip)
+
+		dash_btn.toggled.connect(_on_checkbutton_toggled.bind(autostart_btn))
+		dash_btn.mouse_entered.connect(update_tooltip)
 
 
-func update_tooltip(node : Control):
+func update_tooltip(node : Control) -> void:
 	match node:
 		# Base directory tooltips
 		base_dir_node:
@@ -152,6 +152,13 @@ func update_tooltip(node : Control):
 
 		log_header:
 			tooltip_lbl.text = "Used to set what to include in the log header. Project name and version is fetched from Project Settings."
+
+		autostart_btn:
+			tooltip_lbl.text = "Autostarts a session when running your project."
+		utc_btn:
+			tooltip_lbl.text = "Use UTC time for date/timestamps as opposed to the local system time."
+		dash_btn:
+			tooltip_lbl.text = "Uses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
 
 
 #region Base Directory setting: 
@@ -195,7 +202,6 @@ func _on_basedir_button_up(btn : Button) -> void:
 #endregion
 
 
-
 #region Log Header
 @onready var log_header : OptionButton = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/LogHeaderOptButton
 var log_header_string : String
@@ -217,13 +223,22 @@ func _on_logheader_item_selected(index : int) -> void:
 #endregion
 
 
+#region Autostart session, UTC and Dash separator
+@onready var autostart_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/AutostartCheckButton 
+@onready var utc_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/UTCCheckButton 
+@onready var dash_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/SeparatorCheckButton 
 
+func _on_checkbutton_toggled(toggled_on : bool, node : Control) -> void:
+	match node:
+		autostart_btn:
+			config.set_value("settings", "autostart_session", toggled_on)
+		utc_btn:
+			config.set_value("settings", "use_utc", toggled_on)
+		dash_btn:
+			config.set_value("settings", "dash_separator", toggled_on)
+	
+	config.save(PATH)
 		
-
-
-
-
-
 
 
 
