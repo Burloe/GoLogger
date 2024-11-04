@@ -16,11 +16,7 @@ extends TabContainer
 
 
 
-@onready var limit_method_btn : OptionButton = $Settings/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/LimitMethodOptButton
-var limit_method_tt : String = "Sets the method used to limit log files from becoming excessively large.\nEntry count is triggered when the number of entries exceeds the entry count limit.\n Session Timer will trigger upon timer's timeout signal."
 
-@onready var limit_action_btn : OptionButton = $Settings/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/LimitActionOptButton
-var limit_action_tt : String = "Sets the action taken when the limit method is triggered."
 
 @onready var entry_count_line : LineEdit = $Settings/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/FileCountLineEdit
 var entry_count_tt : String = "The entry count limit of any log."
@@ -137,6 +133,14 @@ func _ready() -> void:
 		dash_btn.toggled.connect(_on_checkbutton_toggled.bind(autostart_btn))
 		dash_btn.mouse_entered.connect(update_tooltip)
 
+		limit_method_btn.item_selected.connect(_on_limit_method_item_selected)
+		limit_method_btn.mouse_entered.connect(update_tooltip.bind(limit_method_btn))
+		limit_method_btn.focus_entered.connect(update_tooltip.bind(limit_method_btn))
+
+		limit_action_btn.item_selected.connect(_on_limit_action_item_selected)
+		limit_action_btn.mouse_entered.connect(update_tooltip.bind(limit_action_btn))
+		limit_action_btn.focus_entered.connect(update_tooltip.bind(limit_action_btn))
+
 
 func update_tooltip(node : Control) -> void:
 	match node:
@@ -144,22 +148,29 @@ func update_tooltip(node : Control) -> void:
 		base_dir_node:
 			tooltip_lbl.text = "The base directory used to create and store log files within."
 		base_dir_reset_btn:
-			tooltip_lbl.text = "Resets the base directory to the default user://GoLogger/"
+			tooltip_lbl.text = "The base directory used to create and store log files within.\nResets the base directory to the default user://GoLogger/"
 		base_dir_opendir_btn:
-			tooltip_lbl.text = "Opens the currently applied base directory folder."
+			tooltip_lbl.text = "The base directory used to create and store log files within.\nOpens the currently applied base directory folder."
 		base_dir_apply_btn:
-			tooltip_lbl.text = "Attempts to apply and create the base directory folder using the entered path. The directory path resets to the previously saved path if the new path was rejected."
+			tooltip_lbl.text = "The base directory used to create and store log files within.\nAttempts to apply and create the base directory folder using the entered path. The directory path resets to the previously saved path if the new path was rejected."
 
-		log_header:
-			tooltip_lbl.text = "Used to set what to include in the log header. Project name and version is fetched from Project Settings."
-
+		# Bool settings [CheckButtons]
 		autostart_btn:
 			tooltip_lbl.text = "Autostarts a session when running your project."
 		utc_btn:
 			tooltip_lbl.text = "Use UTC time for date/timestamps as opposed to the local system time."
 		dash_btn:
 			tooltip_lbl.text = "Uses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
+		
+		# Enum settings [OptionButtons]
+		log_header:
+			tooltip_lbl.text = "Used to set what to include in the log header. Project name and version is fetched from Project Settings."
+		limit_method_btn:
+			tooltip_lbl.text = "Method used to limit log file length/size. Action taken is when this condition is met is set with 'Limit Action'. Entry count will execute an action when the number of entries hits the cap. Session timer executes an action on timer timeout."
+		limit_action_btn:
+			tooltip_lbl.text = "Action taken when 'Limit Method' condition is met. "
 
+		
 
 #region Base Directory setting: 
 @onready var base_dir_node : LineEdit = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit
@@ -238,7 +249,25 @@ func _on_checkbutton_toggled(toggled_on : bool, node : Control) -> void:
 			config.set_value("settings", "dash_separator", toggled_on)
 	
 	config.save(PATH)
-		
+#endregion
+
+
+#region Limit Method & Limit Action
+@onready var limit_method_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/LimitMethodOptButton
+var limit_method_tt : String = "Sets the method used to limit log files from becoming excessively large.\nEntry count is triggered when the number of entries exceeds the entry count limit.\n Session Timer will trigger upon timer's timeout signal."
+
+@onready var limit_action_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/LimitActionOptButton
+var limit_action_tt : String = "Sets the action taken when the limit method is triggered."
+
+func _on_limit_method_item_selected(index : int) -> void:
+	config.set_value("settings", "limit_method", index)
+	config.save(PATH)
+
+func _on_limit_action_item_selected(index : int) -> void:
+	config.set_value("settings", "limit_action", index)
+	config.save(PATH)
+#endregion
+
 
 
 
