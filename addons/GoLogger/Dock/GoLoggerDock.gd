@@ -4,9 +4,16 @@ extends TabContainer
 #region Settings
 @onready var tooltip : Panel = $Settings/HBoxContainer/ToolTip
 
-@onready var base_dir : LineEdit = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit
-var base_dir_tt : String = "Directory. GoLogger will create folders within the base directory for each log category to store the logs."
+# var base_dir : Array = [
+# 	"user://GoLogger/", 
+# 	$Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit,
+# 	"Directory. GoLogger will create folders within the base directory for each log category to store the logs."
+# ]
 
+
+var base_dir_tstring : String = "Directory. GoLogger will create folders within this base directory for each log category to store the log files."
+
+var log_header_value
 @onready var log_header : OptionButton = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/LogHeaderOptButton
 var log_header_tt : String = "Sets the header used in logs. Gets the name and version from Project Settings."
 
@@ -61,6 +68,8 @@ var disable_warn1_tt : String = "Disable: 'Failed to start session, a session is
 
 @onready var disable_warn2_btn : CheckButton = $Settings/HBoxContainer/ColumnD/Column/DisableWarn2CheckButton
 var disable_warn2_tt : String = "Disable warning: 'Failed to log entry due to inactive session'."
+
+@onready var tooltip_lbl : Label = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer/Label
 #endregion
 
 # Category tab
@@ -94,11 +103,11 @@ func _ready() -> void:
 			create_settings_file()
 		else:
 			config.load(PATH)
-
+		# Categories
 		add_category_btn.button_up.connect(add_category)
+		
 		open_dir_btn.button_up.connect(open_directory)
 		defaults_btn.button_up.connect(reset_to_default)
-		base_dir.text = Log.base_directory
 
 		# Remove any existing categories
 		for i in category_container.get_children():
@@ -106,6 +115,86 @@ func _ready() -> void:
 				i.queue_free()
 
 		load_categories()
+
+		
+		# Settings
+		base_dir_node.text_submitted.connect(_on_basedir_text_submitted)
+		base_dir_reset_btn.button_up.connect(_on_basedir_button_up.bind(base_dir_reset_btn))
+		base_dir_reset_btn.mouse_entered.connect(update_tooltip.bind(base_dir_reset_btn))
+
+		base_dir_opendir_btn.button_up.connect(_on_basedir_button_up.bind(base_dir_opendir_btn))
+		base_dir_opendir_btn.mouse_entered.connect(update_tooltip.bind(base_dir_opendir_btn))
+
+		base_dir_apply_btn.button_up.connect(_on_basedir_button_up.bind(base_dir_apply_btn))
+		base_dir_apply_btn.mouse_entered.connect(update_tooltip.bind(base_dir_apply_btn))
+		base_dir_node.text = config.get_setting("base_directory")
+
+#region Base Directory setting: 
+@onready var base_dir_node : LineEdit = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit
+@onready var base_dir_reset_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ResetButton
+@onready var base_dir_opendir_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/OpenDirButton
+@onready var base_dir_apply_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ApplyButton
+
+
+func _on_basedir_text_submitted(new_text : String) -> void:
+	var old_dir = config.get_value("plugin", "base_directory")
+	var _d = DirAccess.open(new_text)
+	_d.make_dir(new_text)
+	var _e = DirAccess.get_open_error()
+	# Create directory was successful > Allow/set as new directory
+	if _e == OK:
+		save_setting("plugin", "base_directory", new_text)
+	else:
+		print(_e)
+		base_dir_node.text = old_dir
+	base_dir_node.release_focus()
+
+
+
+func _on_basedir_button_up(btn : Button) -> void:
+	match btn:
+		base_dir_reset_btn:
+			config.set_value("plugin", "base_directory", "user://GoLogger/")
+		base_dir_opendir_btn:
+			open_directory()
+		base_dir_apply_btn:
+			var old_dir = config.get_value("plugin", "base_directory")
+			var new = base_dir_node.text
+			var _d = DirAccess.open(new)
+			_d.make_dir(new)
+			var _e = DirAccess.get_open_error()
+			if _e == OK: # New directory approved and created
+				save_setting("plugin", "base_directory", new)
+			else: # New directory rejected
+				base_dir_node = old_dir 
+	base_dir_node.release_focus()
+#endregion
+
+
+
+
+
+
+
+func update_tooltip(btn : Control):
+	match btn:
+		# Base directory tooltips
+		base_dir_node:
+			tooltip_lbl.text = "The base directory used to create and store log files within."
+		base_dir_reset_btn:
+			tooltip_lbl.text = "Resets the base directory to the default user://GoLogger/"
+		base_dir_opendir_btn:
+			tooltip_lbl.text = "Opens the currently applied base directory folder."
+		base_dir_apply_btn:
+			tooltip_lbl.text = "Attempts to apply and create the base directory folder using the entered path. The directory path resets to the previously saved path if the new path was rejected."
+
+		
+
+
+
+
+
+
 
 
 #region Main category functions
