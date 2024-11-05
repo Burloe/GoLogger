@@ -20,9 +20,7 @@ extends TabContainer
 
 
 
-@onready var drag_offset_x : LineEdit = $Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/XLineEdit
-@onready var drag_offset_y : LineEdit = $Settings/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/YLineEdit
-@onready var drag_offset_tt : String = "Offset the controller window while dragging."
+
 
 @onready var controller_start_btn : CheckButton = $Settings/HBoxContainer/ColumnC/VBoxContainer/ShowOnStartCheckButton
 var controller_start_tt : String = "Show the controller by default."
@@ -131,14 +129,16 @@ func _ready() -> void:
 		limit_action_btn.focus_entered.connect(update_tooltip.bind(limit_action_btn))
 
 		entry_count_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(entry_count_spinbox))
-		wait_time_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(wait_time_spinbox))
+		session_duration_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(session_duration_spinbox))
 		file_count_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(file_count_spinbox))
 		canvas_layer_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(canvas_layer_spinbox))
+		drag_offset_x.value_changed.connect(_on_spinbox_value_changed.bind(drag_offset_x))
+		drag_offset_y.value_changed.connect(_on_spinbox_value_changed.bind(drag_offset_y))
 
 
 func update_tooltip(node : Control) -> void:
 	match node:
-		# Base directory tooltips
+		# String settings [LineEdits]
 		base_dir_node:
 			tooltip_lbl.text = "The base directory used to create and store log files within."
 		base_dir_reset_btn:
@@ -164,15 +164,20 @@ func update_tooltip(node : Control) -> void:
 		limit_action_btn:
 			tooltip_lbl.text = "Action taken when 'Limit Method' condition is met. "
 		
-		# Int settings [LineEdits]
+		# Int settings [SpinBoxes]
 		entry_count_spinbox:
 			tooltip_lbl.text = "Entry count limit of any log. Used when 'Limit Method' is set to use Entry Count."
-		wait_time_spinbox:
+		session_duration_spinbox:
 			tooltip_lbl.text = "Wait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer."
 		file_count_spinbox:
 			tooltip_lbl.text = "File count limit. Limits the number of files in any log category folder."
 		canvas_layer_spinbox:
 			tooltip_lbl.text = "Sets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
+		drag_offset_x:
+			tooltip_lbl.text = "Controller window drag offset. Used to correct the window position while dragging if needed."
+		drag_offset_y:
+			tooltip_lbl.text = "Controller window drag offset. Used to correct the window position while dragging if needed."
+
 		
 
 		
@@ -258,10 +263,10 @@ func _on_checkbutton_toggled(toggled_on : bool, node : Control) -> void:
 
 
 #region Limit Method & Limit Action
-@onready var limit_method_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/LimitMethodOptButton
+@onready var limit_method_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitMethodSplit/LimitMethodOptButton
 var limit_method_tt : String = "Sets the method used to limit log files from becoming excessively large.\nEntry count is triggered when the number of entries exceeds the entry count limit.\n Session Timer will trigger upon timer's timeout signal."
 
-@onready var limit_action_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/LimitActionOptButton
+@onready var limit_action_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitActionSplit/LimitActionOptButton
 var limit_action_tt : String = "Sets the action taken when the limit method is triggered."
 
 func _on_limit_method_item_selected(index : int) -> void:
@@ -275,23 +280,32 @@ func _on_limit_action_item_selected(index : int) -> void:
 
 
 #region File & Entry cap, Session wait time and CanvasLayer layer
-@onready var entry_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/EntryCountLineEdit
-@onready var wait_time_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/SessionTimerSpinBox
-@onready var file_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2/FileCountSpinBox
-@onready var canvas_layer_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/CanvasLayerSpinBox
+@onready var file_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/FileCountSplit/FileCountSpinBox
+@onready var entry_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/EntryCountSplit/EntryCountSpinBox
+@onready var session_duration_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/SessionDurationSplit/SessionDuration2
+@onready var canvas_layer_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/CanvasLayerSplit/CanvasLayerSpinBox
+@onready var drag_offset_x : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox/XLineEdit
+@onready var drag_offset_y : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox/YLineEdit
 
 func _on_spinbox_value_changed(value : float, node : Control) -> void:
 	match node:
 		entry_count_spinbox:
 			config.set_value("settings", "entry_count_limit", value)
-		wait_time_spinbox:
-			config.set_value("settings", "session_timer_wait_time", value)
+		session_duration_spinbox:
+			config.set_value("settings", "session_duration", value)
 		file_count_spinbox:
 			config.set_value("settings", "file_cap", value)
 		canvas_layer_spinbox:
 			config.set_value("settings", "canvaslayer_layer", value)
+		drag_offset_x:
+			config.set_value("settings", "controller_drag_offset_x", value)
+		drag_offset_y:
+			config.set_value("settings", "controller_drag_offset_y", value)
 	config.save(PATH)
 #endregion
+
+
+#region 
 
 
 #region Main category functions
@@ -308,15 +322,28 @@ func create_settings_file() -> void:
 	config.set_value("settings", "limit_action", 0)
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_count_limit", 1000)
-	config.set_value("settings", "session_timer_wait_time", 600.0)
+	config.set_value("settings", "session_duration", 600.0)
 	config.set_value("settings", "error_reporting", 0)
 	config.set_value("settings", "print_session_changes", 0)
 	config.set_value("settings", "disable_session_warning", false)
 	config.set_value("settings", "disable_entry_warning", false)
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "hide_controller", true)
-	config.set_value("settings", "controller_drag_offset", Vector2(0,0))
+	config.set_value("settings", "controller_drag_offset_x", 0)
+	config.set_value("settings", "controller_drag_offset_y", 0)
 	config.save(PATH)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Resets the categories to default by removing any existing category elements, 
@@ -389,18 +416,20 @@ func save_categories(deferred : bool = false) -> void:
 	config.set_value("settings", "use_utc", false)
 	config.set_value("settings", "dash_separator", false)
 	config.set_value("settings", "limit_method", 0)
-	config.set_value("settings", "limit_actio", 0)
+	config.set_value("settings", "limit_action", 0)
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_count_limit", 1000)
-	config.set_value("settings", "session_timer_wait_time", 600.0)
+	config.set_value("settings", "session_duration", 600.0)
 	config.set_value("settings", "error_reporting", 0)
 	config.set_value("settings", "print_session_changes", 0)
 	config.set_value("settings", "disable_session_warning", false)
 	config.set_value("settings", "disable_entry_warning", false)
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "hide_controller", true)
-	config.set_value("settings", "controller_drag_offset", Vector2(0,0))
+	config.set_value("settings", "controller_drag_offset_y", 0)
+	config.set_value("settings", "controller_drag_offset_x", 0)
 	config.save(PATH)
+
 
 
 ### Helpers ###

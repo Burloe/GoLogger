@@ -1,9 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=5 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Script" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
-[ext_resource type="Texture2D" uid="uid://ct8sclbnvvbar" path="res://addons/GoLogger/Resources/X_ico.png" id="3_wl4ws"]
-[ext_resource type="Texture2D" uid="uid://rcm3mhr16q3h" path="res://addons/GoLogger/Resources/Y_ico.png" id="4_vvjka"]
 [ext_resource type="PackedScene" uid="uid://bsjs2nwxyiflf" path="res://addons/GoLogger/Dock/ToolTip.tscn" id="5_r16qc"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6l1k1"]
@@ -29,10 +27,10 @@ metadata/_tab_index = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="Categories"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Categories/MarginContainer"]
 layout_mode = 2
@@ -116,10 +114,10 @@ metadata/_tab_index = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 8
 
 [node name="Panel" type="Panel" parent="Settings/MarginContainer"]
 layout_mode = 2
@@ -272,53 +270,37 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 3
 
-[node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Limit method:"
 
-[node name="LimitActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = "Limit action:"
-vertical_alignment = 1
-
-[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = "File count limit: "
-vertical_alignment = 1
-
-[node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = "Entry count limit: "
-vertical_alignment = 1
-
-[node name="SessionTimerLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = "Session timer wait time: "
-vertical_alignment = 1
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 9
-
-[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
+[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer"]
 layout_mode = 2
 alignment = 2
 selected = 2
 allow_reselect = true
 item_count = 3
-popup/item_0/text = "Entry Count Limit"
-popup/item_1/text = "Session Timer"
+popup/item_0/text = "Entry Count"
+popup/item_1/text = "SessionTimer"
 popup/item_1/id = 1
-popup/item_2/text = "Entry Count Limit + Session Timer"
+popup/item_2/text = "EntryCount + SessionTimer"
 popup/item_2/id = 2
 
-[node name="LimitActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(269, 0)
+[node name="HSplitContainer2" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+split_offset = 109
+
+[node name="LimitActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer2"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Limit action:"
+vertical_alignment = 1
+
+[node name="LimitActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer2"]
 layout_mode = 2
 alignment = 2
 selected = 0
@@ -328,19 +310,63 @@ popup/item_0/text = "Stop & Start new session"
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
+[node name="HSplitContainer3" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-alignment = 2
+split_offset = 190
 
-[node name="EntryCountLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
+[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer3"]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-alignment = 2
+text = "File count limit: "
+vertical_alignment = 1
 
-[node name="SessionTimerLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer2"]
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer3"]
 layout_mode = 2
-max_value = 1200.0
+min_value = 5.0
+max_value = 30.0
+value = 10.0
 alignment = 2
 update_on_text_changed = true
+custom_arrow_step = 1.0
+
+[node name="HSplitContainer4" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+split_offset = 190
+
+[node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer4"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Entry count limit: "
+vertical_alignment = 1
+
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer4"]
+layout_mode = 2
+min_value = 100.0
+max_value = 5000.0
+value = 1000.0
+alignment = 2
+update_on_text_changed = true
+
+[node name="HSplitContainer5" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+split_offset = 190
+
+[node name="SessionDuration" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer5"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Session duration"
+vertical_alignment = 1
+
+[node name="SessionDuration2" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer5"]
+layout_mode = 2
+min_value = 20.0
+max_value = 1200.0
+value = 600.0
+alignment = 2
+update_on_text_changed = true
+suffix = "sec"
+custom_arrow_step = 1.0
+select_all_on_focus = true
 
 [node name="ColumnC" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
@@ -365,7 +391,7 @@ theme_override_constants/separation = 1
 [node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "CanvasLayer layer:"
+text = " CanvasLayer layer:"
 vertical_alignment = 1
 
 [node name="DragOffsetLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer"]
@@ -377,25 +403,26 @@ vertical_alignment = 1
 [node name="VBoxContainer2" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="CanvasLayerLineEdit" type="LineEdit" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
-text = "5"
+value = 5.0
 alignment = 2
+update_on_text_changed = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 
-[node name="XLineEdit" type="LineEdit" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="XLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+modulate = Color(0.96, 0.34944, 0.2688, 1)
 layout_mode = 2
-text = "0"
 alignment = 2
-right_icon = ExtResource("3_wl4ws")
+prefix = "x:"
 
-[node name="YLineEdit" type="LineEdit" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="YLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+modulate = Color(0.4606, 0.98, 0.64239, 1)
 layout_mode = 2
-text = "0"
 alignment = 2
-right_icon = ExtResource("4_vvjka")
+prefix = "y:"
 
 [node name="ShowOnStartCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 layout_mode = 2
