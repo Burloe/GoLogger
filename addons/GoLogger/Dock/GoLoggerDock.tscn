@@ -13,8 +13,9 @@ custom_minimum_size = Vector2(192, 231)
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.215
-offset_top = 1.0
-offset_bottom = -0.199997
+offset_top = -1.0
+offset_right = 31.0
+offset_bottom = 2.8
 grow_horizontal = 2
 grow_vertical = 2
 current_tab = 1
@@ -105,12 +106,13 @@ Current GridContainer.get_children()[size = 2]:
       [Panel:<Panel#1846332685425>, @Panel@17348:<Panel#1846752115849>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
-custom_minimum_size = Vector2(0, 200)
+custom_minimum_size = Vector2(0, 205)
 layout_mode = 2
 follow_focus = true
 metadata/_tab_index = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings"]
+custom_minimum_size = Vector2(0, 216)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -123,11 +125,13 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-offset_right = 1999.0
-offset_bottom = 200.0
-theme_override_constants/separation = 26
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
 
 [node name="ColumnA" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
@@ -214,17 +218,17 @@ theme_override_constants/margin_bottom = 4
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="HSplitContainer" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer"]
+[node name="LogHeaderSplit" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 split_offset = 310
 
-[node name="LogHeaderLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/HSplitContainer"]
+[node name="LogHeaderLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/LogHeaderSplit"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "  Log Header"
 vertical_alignment = 1
 
-[node name="LogHeaderOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/HSplitContainer"]
+[node name="LogHeaderOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/LogHeaderSplit"]
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 alignment = 2
@@ -236,6 +240,23 @@ popup/item_1/text = "Project Name"
 popup/item_1/id = 1
 popup/item_2/text = "Version"
 popup/item_2/id = 2
+
+[node name="CanvasLayerSplit" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+split_offset = 156
+
+[node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/CanvasLayerSplit"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = " CanvasLayer"
+vertical_alignment = 1
+
+[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/CanvasLayerSplit"]
+layout_mode = 2
+value = 5.0
+alignment = 2
+update_on_text_changed = true
+prefix = "Layer"
 
 [node name="AutostartCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
@@ -270,15 +291,15 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 3
 
-[node name="HSplitContainer" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+[node name="LimitMethodSplit" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer"]
+[node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitMethodSplit"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Limit method:"
+text = "Limit method "
 
-[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer"]
+[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitMethodSplit"]
 layout_mode = 2
 alignment = 2
 selected = 2
@@ -290,17 +311,17 @@ popup/item_1/id = 1
 popup/item_2/text = "EntryCount + SessionTimer"
 popup/item_2/id = 2
 
-[node name="HSplitContainer2" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+[node name="LimitActionSplit" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 split_offset = 109
 
-[node name="LimitActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer2"]
+[node name="LimitActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitActionSplit"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Limit action:"
+text = "Limit action"
 vertical_alignment = 1
 
-[node name="LimitActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer2"]
+[node name="LimitActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitActionSplit"]
 layout_mode = 2
 alignment = 2
 selected = 0
@@ -310,17 +331,17 @@ popup/item_0/text = "Stop & Start new session"
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="HSplitContainer3" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+[node name="FileCountSplit" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 split_offset = 190
 
-[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer3"]
+[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/FileCountSplit"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "File count limit: "
+text = "File count limit"
 vertical_alignment = 1
 
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer3"]
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/FileCountSplit"]
 layout_mode = 2
 min_value = 5.0
 max_value = 30.0
@@ -329,17 +350,17 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
 
-[node name="HSplitContainer4" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+[node name="EntryCountSplit" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 split_offset = 190
 
-[node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer4"]
+[node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/EntryCountSplit"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Entry count limit: "
+text = "Entry count limit"
 vertical_alignment = 1
 
-[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer4"]
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/EntryCountSplit"]
 layout_mode = 2
 min_value = 100.0
 max_value = 5000.0
@@ -347,17 +368,17 @@ value = 1000.0
 alignment = 2
 update_on_text_changed = true
 
-[node name="HSplitContainer5" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
+[node name="SessionDurationSplit" type="HSplitContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 split_offset = 190
 
-[node name="SessionDuration" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer5"]
+[node name="SessionDuration" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/SessionDurationSplit"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Session duration"
 vertical_alignment = 1
 
-[node name="SessionDuration2" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/HSplitContainer5"]
+[node name="SessionDuration2" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/SessionDurationSplit"]
 layout_mode = 2
 min_value = 20.0
 max_value = 1200.0
@@ -388,37 +409,25 @@ theme_override_constants/separation = 18
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = " CanvasLayer layer:"
-vertical_alignment = 1
-
 [node name="DragOffsetLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = " Controller dragging offset:"
+text = " Controller dragging offset"
 vertical_alignment = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-value = 5.0
-alignment = 2
-update_on_text_changed = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="DragOffsetHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 
-[node name="XLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="XLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox"]
 modulate = Color(0.96, 0.34944, 0.2688, 1)
 layout_mode = 2
 alignment = 2
 prefix = "x:"
 
-[node name="YLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="YLineEdit" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox"]
 modulate = Color(0.4606, 0.98, 0.64239, 1)
 layout_mode = 2
 alignment = 2
@@ -426,13 +435,63 @@ prefix = "y:"
 
 [node name="ShowOnStartCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 layout_mode = 2
-text = "Show Controller on start:"
+text = "Show Controller on start"
 icon_alignment = 2
 
 [node name="MonitorSideCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 layout_mode = 2
-text = "Controller LogFile Monitor side:"
+text = "Controller LogFile Monitor side"
 icon_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Error reporting"
+vertical_alignment = 1
+
+[node name="SessionChangeLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Print session changes"
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+
+[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+alignment = 2
+selected = 0
+allow_reselect = true
+item_count = 3
+popup/item_0/text = "Warnings & Errors"
+popup/item_1/text = "Warnings Only"
+popup/item_1/id = 1
+popup/item_2/text = "None"
+popup/item_2/id = 2
+
+[node name="SessionChangeOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+alignment = 2
+selected = 0
+allow_reselect = true
+item_count = 5
+popup/item_0/text = "None"
+popup/item_1/text = "Start, Copy & Stop session"
+popup/item_1/id = 1
+popup/item_2/text = "Start session"
+popup/item_2/id = 2
+popup/item_3/text = "Copy session"
+popup/item_3/id = 3
+popup/item_4/text = "Stop session"
+popup/item_4/id = 4
 
 [node name="ColumnD" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
 layout_mode = 2
@@ -444,68 +503,20 @@ theme_override_constants/margin_bottom = 4
 [node name="Column" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
+[node name="Label" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
 layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 1
-
-[node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = "Error reporting"
-vertical_alignment = 1
-
-[node name="SessionChangeLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = "Print session changes:"
-vertical_alignment = 1
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/HBoxContainer"]
-layout_mode = 2
-
-[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-alignment = 2
-selected = 0
-allow_reselect = true
-item_count = 3
-popup/item_0/text = "All"
-popup/item_1/text = "Only Warnings"
-popup/item_1/id = 1
-popup/item_2/text = "None"
-popup/item_2/id = 2
-
-[node name="SessionChangeOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-alignment = 2
-selected = 0
-allow_reselect = true
-item_count = 5
-popup/item_0/text = "None"
-popup/item_1/text = "Start, Copy & Stop session"
-popup/item_1/id = 1
-popup/item_2/text = "Start session only"
-popup/item_2/id = 2
-popup/item_3/text = "Copy session only"
-popup/item_3/id = 3
-popup/item_4/text = "Stop session only"
-popup/item_4/id = 4
+text = "Disable warnings:"
 
 [node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
-text = "Disable warning:
-\"Failed to start session, no active session\":         "
+text = "Failed to start session w/o stopping prev"
 
 [node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
-text = "Disable warning:
-\"No active session, failed to log entry\":                "
+text = "No active session, failed to log entry"
 
 [editable path="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip"]

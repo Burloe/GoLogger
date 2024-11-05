@@ -1,49 +1,6 @@
 @tool
 extends TabContainer
 
-#region Settings
-@onready var tooltip : Panel = $Settings/HBoxContainer/ToolTip
-
-# var base_dir : Array = [
-# 	"user://GoLogger/", 
-# 	$Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit,
-# 	"Directory. GoLogger will create folders within the base directory for each log category to store the logs."
-# ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-@onready var controller_start_btn : CheckButton = $Settings/HBoxContainer/ColumnC/VBoxContainer/ShowOnStartCheckButton
-var controller_start_tt : String = "Show the controller by default."
-
-@onready var controller_monitor_side__btn : CheckButton = $Settings/HBoxContainer/ColumnC/VBoxContainer/MonitorSideCheckButton
-var controller_monitor_side_tt : String = "Set the side of the controller the log file monitor panel."
-
-
-@onready var error_rep_btn : OptionButton = $Settings/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer2/ErrorRepOptButton
-var error_rep_tt : String = "Sets the level of error reporting. Errors will pause execution while warnings are added to the Debugger > Error tab. You can also turn them off entirely."
-
-@onready var session_print_btn : OptionButton = $Settings/HBoxContainer/ColumnD/Column/HBoxContainer/VBoxContainer2/SessionChangeOptButton
-var session_print_tt : String = "Prints messages to the output whenever a session is started, copied or stopped. You can also turn them off entirely."
-
-@onready var disable_warn1_btn : CheckButton = $Settings/HBoxContainer/ColumnD/Column/DisableWarn1CheckButton
-var disable_warn1_tt : String = "Disable: 'Failed to start session, a session is already active'."
-
-@onready var disable_warn2_btn : CheckButton = $Settings/HBoxContainer/ColumnD/Column/DisableWarn2CheckButton
-var disable_warn2_tt : String = "Disable warning: 'Failed to log entry due to inactive session'."
-
-@onready var tooltip_lbl : Label = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer/Label
-#endregion
-
 # Category tab
 ## Add category [Button]. Instantiates a [param category_scene] and adds it as a child of [param category_container].
 @onready var add_category_btn : Button = $Categories/MarginContainer/VBoxContainer/HBoxContainer/AddButton
@@ -62,6 +19,42 @@ var config = ConfigFile.new()
 const PATH = "user://GoLogger/settings.ini"
 ## Emitted whenever an action that changes the display order is potentially made. Updates the index of all LogCategories.
 signal update_index
+#endregion
+
+
+
+#region Settings tab
+@onready var base_dir_node : LineEdit = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit
+@onready var base_dir_reset_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ResetButton
+@onready var base_dir_opendir_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/OpenDirButton
+@onready var base_dir_apply_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ApplyButton
+
+@onready var log_header_btn : OptionButton = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/LogHeaderOptButton
+var log_header_string : String
+
+@onready var autostart_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/AutostartCheckButton 
+@onready var utc_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/UTCCheckButton 
+@onready var dash_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/SeparatorCheckButton 
+
+@onready var limit_method_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitMethodSplit/LimitMethodOptButton 
+@onready var limit_action_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitActionSplit/LimitActionOptButton 
+
+@onready var file_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/FileCountSplit/FileCountSpinBox
+@onready var entry_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/EntryCountSplit/EntryCountSpinBox
+@onready var session_duration_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/SessionDurationSplit/SessionDuration2
+@onready var canvas_layer_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/CanvasLayerSplit/CanvasLayerSpinBox
+@onready var drag_offset_x : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox/XLineEdit
+@onready var drag_offset_y : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox/YLineEdit
+
+@onready var error_rep_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2/VBoxContainer2/ErrorRepOptButton
+@onready var session_print_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2/VBoxContainer2/SessionChangeOptButton
+@onready var controller_start_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/ShowOnStartCheckButton
+@onready var controller_monitor_side_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/MonitorSideCheckButton
+@onready var disable_warn1_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/DisableWarn1CheckButton
+@onready var disable_warn2_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/DisableWarn2CheckButton 
+#endregion
+
+
 
 # func _physics_process(delta: float) -> void:
 # 	var _c = config.get_value("plugin", "categories") 
@@ -106,9 +99,9 @@ func _ready() -> void:
 		base_dir_node.text = config.get_setting("base_directory")
 
 		# Log header
-		log_header.item_selected.connect(_on_logheader_item_selected)
-		log_header.mouse_entered.connect(update_tooltip.bind(log_header))
-		log_header.focus_entered.connect(update_tooltip.bind(log_header))
+		log_header_btn.item_selected.connect(_on_optbtn_item_selected)
+		log_header_btn.mouse_entered.connect(update_tooltip.bind(log_header_btn))
+		log_header_btn.focus_entered.connect(update_tooltip.bind(log_header_btn))
 
 		# Autostart session, UTC and Dash Separator
 		autostart_btn.toggled.connect(_on_checkbutton_toggled.bind(autostart_btn))
@@ -120,21 +113,44 @@ func _ready() -> void:
 		dash_btn.toggled.connect(_on_checkbutton_toggled.bind(autostart_btn))
 		dash_btn.mouse_entered.connect(update_tooltip)
 
-		limit_method_btn.item_selected.connect(_on_limit_method_item_selected)
+		limit_method_btn.item_selected.connect(_on_optbtn_item_selected)
 		limit_method_btn.mouse_entered.connect(update_tooltip.bind(limit_method_btn))
 		limit_method_btn.focus_entered.connect(update_tooltip.bind(limit_method_btn))
 
-		limit_action_btn.item_selected.connect(_on_limit_action_item_selected)
+		limit_action_btn.item_selected.connect(_on_optbtn_item_selected)
 		limit_action_btn.mouse_entered.connect(update_tooltip.bind(limit_action_btn))
 		limit_action_btn.focus_entered.connect(update_tooltip.bind(limit_action_btn))
 
 		entry_count_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(entry_count_spinbox))
+		entry_count_spinbox.focus_entered.connect(update_tooltip.bind(entry_count_spinbox))
 		session_duration_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(session_duration_spinbox))
+		session_duration_spinbox.focus_entered.connect(update_tooltip.bind(session_duration_spinbox))
 		file_count_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(file_count_spinbox))
+		file_count_spinbox.focus_entered.connect(update_tooltip.bind(file_count_spinbox))
 		canvas_layer_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(canvas_layer_spinbox))
+		canvas_layer_spinbox.focus_entered.connect(update_tooltip.bind(canvas_layer_spinbox))
 		drag_offset_x.value_changed.connect(_on_spinbox_value_changed.bind(drag_offset_x))
+		drag_offset_x.focus_entered.connect(update_tooltip.bind(drag_offset_x))
 		drag_offset_y.value_changed.connect(_on_spinbox_value_changed.bind(drag_offset_y))
+		drag_offset_y.focus_entered.connect(update_tooltip.bind(drag_offset_y))
 
+		error_rep_btn.item_selected.connect(_on_optbtn_item_selected.bind(error_rep_btn))
+		error_rep_btn.focus_entered.connect(update_tooltip.bind(error_rep_btn))
+		session_print_btn.item_selected.connect(_on_optbtn_item_selected.bind(session_print_btn))
+		session_print_btn.focus_entered.connect(update_tooltip.bind(session_print_btn))
+		controller_start_btn.toggled.connect(_on_checkbutton_toggled.bind(controller_start_btn))
+		controller_start_btn.focus_entered.connect(update_tooltip.bind(controller_start_btn))
+		controller_monitor_side_btn.toggled.connect(_on_checkbutton_toggled.bind(controller_monitor_side_btn))
+		controller_monitor_side_btn.focus_entered.connect(update_tooltip.bind(controller_monitor_side_btn))
+		disable_warn1_btn.toggled.connect(_on_checkbutton_toggled.bind(disable_warn1_btn))
+		disable_warn1_btn.focus_entered.connect(update_tooltip.bind(disable_warn1_btn))
+		disable_warn2_btn.toggled.connect(_on_checkbutton_toggled.bind(disable_warn2_btn))
+		disable_warn2_btn.focus_entered.connect(update_tooltip.bind(disable_warn2_btn))
+
+
+#region Tooltip
+@onready var tooltip : Panel = $Settings/HBoxContainer/ToolTip
+@onready var tooltip_lbl : Label = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer/Label
 
 func update_tooltip(node : Control) -> void:
 	match node:
@@ -157,7 +173,7 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "Uses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
 		
 		# Enum settings [OptionButtons]
-		log_header:
+		log_header_btn:
 			tooltip_lbl.text = "Used to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
 			tooltip_lbl.text = "Method used to limit log file length/size. Action taken is when this condition is met is set with 'Limit Action'. Entry count will execute an action when the number of entries hits the cap. Session timer executes an action on timer timeout."
@@ -177,18 +193,19 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "Controller window drag offset. Used to correct the window position while dragging if needed."
 		drag_offset_y:
 			tooltip_lbl.text = "Controller window drag offset. Used to correct the window position while dragging if needed."
-
+		error_rep_btn:
+			tooltip.lbl.text = "Some of the errors and warnings GoLogger provides are not always useful. Set whether or not you want to disable errors, warnings or both."
+		session_print_btn:
+			tooltip.lbl.text = "GoLogger can print to Output whenever its base functions are called."
+		disable_warn1_btn:
+			tooltip.lbl.text = "Enable/disable the warning 'Failed to start session without stopping the previous'."
+		disable_warn2_btn:
+			tooltip.lbl.text = "Enable/disable the warning 'Failed to log entry due to no session being active."
 		
-
-		
-
-#region Base Directory setting: 
-@onready var base_dir_node : LineEdit = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit
-@onready var base_dir_reset_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ResetButton
-@onready var base_dir_opendir_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/OpenDirButton
-@onready var base_dir_apply_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ApplyButton
+#endregion
 
 
+#region Base Directory
 func _on_basedir_text_submitted(new_text : String) -> void:
 	var old_dir = config.get_value("plugin", "base_directory")
 	var _d = DirAccess.open(new_text)
@@ -223,32 +240,36 @@ func _on_basedir_button_up(btn : Button) -> void:
 #endregion
 
 
-#region Log Header
-@onready var log_header : OptionButton = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/LogHeaderOptButton
-var log_header_string : String
-
-func _on_logheader_item_selected(index : int) -> void:
-	match index:
-		0: # Project name and version
-			var _n = str(ProjectSettings.get_setting("application/config/name"))
-			var _v = str(ProjectSettings.get_setting("application/config/version"))
-			if _n == "": printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
-			if _v == "": printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
-			log_header_string = str(_n, " V.", _v)
-		1: # Project name
-			log_header_string = str(ProjectSettings.get_setting("application/config/name"))
-		2: # Version
-			log_header_string = str(ProjectSettings.get_setting("application/config/version"))
-	config.set_value("settings", "log_header", index)
-	config.save(PATH) # ? Doesn't this save a settings.ini file with just this one setting?
+#region OptionButtons
+func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
+	match node:
+		log_header_btn:
+			match index:
+				0: # Project name and version
+					var _n = str(ProjectSettings.get_setting("application/config/name"))
+					var _v = str(ProjectSettings.get_setting("application/config/version"))
+					if _n == "": printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
+					if _v == "": printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
+					log_header_string = str(_n, " V.", _v)
+				1: # Project name
+					log_header_string = str(ProjectSettings.get_setting("application/config/name"))
+				2: # Version
+					log_header_string = str(ProjectSettings.get_setting("application/config/version"))
+			config.set_value("settings", "log_header", index)
+		limit_method_btn:
+			config.set_value("settings", "limit_method", index)
+		limit_action_btn:
+			config.set_value("settings", "limit_action", index)
+		error_rep_btn:
+			config.set_value("settings", "error_reporting", index)
+		session_print_btn:
+			config.set_value("settings", "print_session_changes", index)
+	
+	config.save(PATH)
 #endregion
 
 
-#region Autostart session, UTC and Dash separator
-@onready var autostart_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/AutostartCheckButton 
-@onready var utc_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/UTCCheckButton 
-@onready var dash_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/SeparatorCheckButton 
-
+#region CheckButtons
 func _on_checkbutton_toggled(toggled_on : bool, node : Control) -> void:
 	match node:
 		autostart_btn:
@@ -257,36 +278,19 @@ func _on_checkbutton_toggled(toggled_on : bool, node : Control) -> void:
 			config.set_value("settings", "use_utc", toggled_on)
 		dash_btn:
 			config.set_value("settings", "dash_separator", toggled_on)
-	
+		controller_start_btn:
+			config.set_value("settings", "show_controller", toggled_on)
+		controller_monitor_side_btn:
+			config.set_value("settings", "controller_monitor_side", toggled_on)
+		disable_warn1_btn:
+			config.set_value("settings", "disable_warn1", toggled_on)
+		disable_warn2_btn:
+			config.set_value("settings", "disable_warn2", toggled_on)
 	config.save(PATH)
 #endregion
 
 
-#region Limit Method & Limit Action
-@onready var limit_method_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitMethodSplit/LimitMethodOptButton
-var limit_method_tt : String = "Sets the method used to limit log files from becoming excessively large.\nEntry count is triggered when the number of entries exceeds the entry count limit.\n Session Timer will trigger upon timer's timeout signal."
-
-@onready var limit_action_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitActionSplit/LimitActionOptButton
-var limit_action_tt : String = "Sets the action taken when the limit method is triggered."
-
-func _on_limit_method_item_selected(index : int) -> void:
-	config.set_value("settings", "limit_method", index)
-	config.save(PATH)
-
-func _on_limit_action_item_selected(index : int) -> void:
-	config.set_value("settings", "limit_action", index)
-	config.save(PATH)
-#endregion
-
-
-#region File & Entry cap, Session wait time and CanvasLayer layer
-@onready var file_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/FileCountSplit/FileCountSpinBox
-@onready var entry_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/EntryCountSplit/EntryCountSpinBox
-@onready var session_duration_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/SessionDurationSplit/SessionDuration2
-@onready var canvas_layer_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/CanvasLayerSplit/CanvasLayerSpinBox
-@onready var drag_offset_x : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox/XLineEdit
-@onready var drag_offset_y : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox/YLineEdit
-
+#region Spinboxes
 func _on_spinbox_value_changed(value : float, node : Control) -> void:
 	match node:
 		entry_count_spinbox:
@@ -305,7 +309,14 @@ func _on_spinbox_value_changed(value : float, node : Control) -> void:
 #endregion
 
 
-#region 
+
+
+
+
+
+
+
+
 
 
 #region Main category functions
@@ -315,6 +326,7 @@ func create_settings_file() -> void:
 	config.set_value("plugin", "categories", _a)
 
 	config.set_value("settings", "log_header", 0)
+	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
 	config.set_value("settings", "use_utc", false)
 	config.set_value("settings", "dash_separator", false)
@@ -323,14 +335,14 @@ func create_settings_file() -> void:
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_count_limit", 1000)
 	config.set_value("settings", "session_duration", 600.0)
-	config.set_value("settings", "error_reporting", 0)
-	config.set_value("settings", "print_session_changes", 0)
-	config.set_value("settings", "disable_session_warning", false)
-	config.set_value("settings", "disable_entry_warning", false)
-	config.set_value("settings", "canvaslayer_layer", 5)
-	config.set_value("settings", "hide_controller", true)
 	config.set_value("settings", "controller_drag_offset_x", 0)
 	config.set_value("settings", "controller_drag_offset_y", 0)
+	config.set_value("settings", "show_controller", true)
+	config.set_value("settings", "controller_monitor_side", true)
+	config.set_value("settings", "error_reporting", 0)
+	config.set_value("settings", "print_session_changes", 0)
+	config.set_value("settings", "disable_warn1", false)
+	config.set_value("settings", "disable_warn2", false)
 	config.save(PATH)
 
 
@@ -410,24 +422,27 @@ func save_categories(deferred : bool = false) -> void:
 		# Create and append a nested array inside main [["game", 0, false], ["player", 1, false]]
 		var _n : Array = [children[i].category_name, children[i].index, children[i].is_locked] 
 		main.append(_n)
+	# config.set_value("plugin", "base_directory", config.get_value("plugin", "base_directory"))
 	config.set_value("plugin", "categories", main)
-	config.set_value("settings", "log_header", 0)
-	config.set_value("settings", "autostart_session", true)
-	config.set_value("settings", "use_utc", false)
-	config.set_value("settings", "dash_separator", false)
-	config.set_value("settings", "limit_method", 0)
-	config.set_value("settings", "limit_action", 0)
-	config.set_value("settings", "file_cap", 10)
-	config.set_value("settings", "entry_count_limit", 1000)
-	config.set_value("settings", "session_duration", 600.0)
-	config.set_value("settings", "error_reporting", 0)
-	config.set_value("settings", "print_session_changes", 0)
-	config.set_value("settings", "disable_session_warning", false)
-	config.set_value("settings", "disable_entry_warning", false)
-	config.set_value("settings", "canvaslayer_layer", 5)
-	config.set_value("settings", "hide_controller", true)
-	config.set_value("settings", "controller_drag_offset_y", 0)
-	config.set_value("settings", "controller_drag_offset_x", 0)
+
+	# config.set_value("settings", "log_header", 0)
+	# config.set_value("settings", "canvaslayer_layer", 5)
+	# config.set_value("settings", "autostart_session", true)
+	# config.set_value("settings", "use_utc", false)
+	# config.set_value("settings", "dash_separator", false)
+	# config.set_value("settings", "limit_method", 0)
+	# config.set_value("settings", "limit_action", 0)
+	# config.set_value("settings", "file_cap", 10)
+	# config.set_value("settings", "entry_count_limit", 1000)
+	# config.set_value("settings", "session_duration", 600.0)
+	# config.set_value("settings", "controller_drag_offset_x", 0)
+	# config.set_value("settings", "controller_drag_offset_y", 0)
+	# config.set_value("settings", "show_controller", true)
+	# config.set_value("settings", "controller_monitor_side", true)
+	# config.set_value("settings", "error_reporting", 0)
+	# config.set_value("settings", "print_session_changes", 0)
+	# config.set_value("settings", "disable_warn1", false)
+	# config.set_value("settings", "disable_warn2", false)
 	config.save(PATH)
 
 
