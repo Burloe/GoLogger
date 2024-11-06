@@ -22,36 +22,75 @@ signal update_index
 #endregion
 
 
-
 #region Settings tab
-@onready var base_dir_node : LineEdit = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/BaseDirLineEdit
-@onready var base_dir_reset_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ResetButton
-@onready var base_dir_opendir_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/OpenDirButton
-@onready var base_dir_apply_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ApplyButton
+@onready var tooltip : Panel = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip
+@onready var tooltip_lbl : RichTextLabel = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer/Label
 
-@onready var log_header_btn : OptionButton = $Settings/HBoxContainer/ColumnA/VBox/HBoxContainer/VBoxContainer2/LogHeaderOptButton
+@onready var base_dir_node : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/BaseDirLineEdit
+@onready var base_dir_apply_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ApplyButton
+@onready var base_dir_opendir_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/OpenDirButton
+@onready var base_dir_reset_btn : Button = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2/ResetButton
+
+@onready var log_header_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox/LogHeaderOptButton
+@onready var log_header_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox
 var log_header_string : String
 
-@onready var autostart_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/AutostartCheckButton 
-@onready var utc_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/UTCCheckButton 
-@onready var dash_btn : CheckButton = $Settings/HBoxContainer/ColumnA/VBox/SeparatorCheckButton 
+@onready var canvas_layer_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox/CanvasLayerSpinBox
+var canvas_spinbox_line 
+@onready var canvas_layer_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox
 
-@onready var limit_method_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitMethodSplit/LimitMethodOptButton 
-@onready var limit_action_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/LimitActionSplit/LimitActionOptButton 
 
-@onready var file_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/FileCountSplit/FileCountSpinBox
-@onready var entry_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/EntryCountSplit/EntryCountSpinBox
-@onready var session_duration_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/HBoxContainer/VBoxContainer/SessionDurationSplit/SessionDuration2
-@onready var canvas_layer_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/MarginContainer/VBoxContainer/CanvasLayerSplit/CanvasLayerSpinBox
-@onready var drag_offset_x : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox/XLineEdit
-@onready var drag_offset_y : LineEdit = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer/VBoxContainer2/DragOffsetHBox/YLineEdit
+@onready var autostart_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/AutostartCheckButton 
 
-@onready var error_rep_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2/VBoxContainer2/ErrorRepOptButton
-@onready var session_print_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/HBoxContainer2/VBoxContainer2/SessionChangeOptButton
-@onready var controller_start_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/ShowOnStartCheckButton
-@onready var controller_monitor_side_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/MonitorSideCheckButton
-@onready var disable_warn1_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/DisableWarn1CheckButton
-@onready var disable_warn2_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/DisableWarn2CheckButton 
+@onready var utc_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/UTCCheckButton
+
+@onready var dash_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/SeparatorCheckButton
+
+
+@onready var limit_method_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/LimitMethodHBox/LimitMethodOptButton
+
+@onready var limit_method_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/LimitMethodHBox
+
+@onready var limit_action_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/LimitActionHBox/LimitActionOptButton 
+
+@onready var limit_action_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/LimitActionHBox
+
+
+@onready var file_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/FileCountHBox/FileCountSpinBox
+var file_count_spinbox_line
+@onready var file_count_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/FileCountHBox
+
+@onready var entry_count_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/EntryCountHBox/EntryCountSpinBox
+var entry_count_spinbox_line
+@onready var entry_count_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/EntryCountHBox
+
+@onready var session_duration_spinbox : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/SessionDurationHBox/SessionDurationSpinBox
+var session_duration_spinbox_line
+@onready var session_duration_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/SessionDurationHBox
+
+
+@onready var drag_offset_x : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/DragOffsetHBox/XSpinBox
+var dragx_line
+
+@onready var drag_offset_y : SpinBox = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/DragOffsetHBox/YSpinBox
+var dragy_line
+@onready var drag_offset_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/DragOffsetHBox
+
+
+
+@onready var controller_start_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/ShowOnStartCheckButton
+
+@onready var controller_monitor_side_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/MonitorSideCheckButton
+
+@onready var error_rep_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/ErrorRepHBox/ErrorRepOptButton
+@onready var error_rep_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/ErrorRepHBox
+
+@onready var session_print_btn : OptionButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/SessionDurationHBox/SessionChangeOptButton
+@onready var session_print_container : HBoxContainer = $Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/SessionDurationHBox
+
+
+@onready var disable_warn1_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column/DisableWarn1CheckButton
+@onready var disable_warn2_btn : CheckButton = $Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column/DisableWarn2CheckButton 
 #endregion
 
 
@@ -70,7 +109,6 @@ func _ready() -> void:
 			config.load(PATH)
 		# Categories
 		add_category_btn.button_up.connect(add_category)
-		
 		open_dir_btn.button_up.connect(open_directory)
 		defaults_btn.button_up.connect(reset_to_default)
 
@@ -83,8 +121,16 @@ func _ready() -> void:
 
 		
 		# Settings
+		if canvas_spinbox_line == null: canvas_spinbox_line = canvas_layer_spinbox.get_line_edit()
+		if file_count_spinbox_line == null: file_count_spinbox_line = file_count_spinbox.get_line_edit()
+		if entry_count_spinbox_line == null: entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
+		if session_duration_spinbox_line == null: session_duration_spinbox_line = session_duration_spinbox.get_line_edit()
+		if dragx_line == null: dragx_line = drag_offset_x.get_line_edit()
+		if dragy_line == null: dragy_line = drag_offset_y.get_line_edit()
 		# Base directory
 		base_dir_node.text_submitted.connect(_on_basedir_text_submitted)
+		base_dir_node.mouse_entered.connect(update_tooltip.bind(base_dir_node))
+		base_dir_node.focus_entered.connect(update_tooltip.bind(base_dir_node))
 		base_dir_reset_btn.button_up.connect(_on_basedir_button_up.bind(base_dir_reset_btn))
 		base_dir_reset_btn.mouse_entered.connect(update_tooltip.bind(base_dir_reset_btn))
 		base_dir_reset_btn.focus_entered.connect(update_tooltip.bind(base_dir_reset_btn))
@@ -96,112 +142,147 @@ func _ready() -> void:
 		base_dir_apply_btn.button_up.connect(_on_basedir_button_up.bind(base_dir_apply_btn))
 		base_dir_apply_btn.mouse_entered.connect(update_tooltip.bind(base_dir_apply_btn))
 		base_dir_apply_btn.focus_entered.connect(update_tooltip.bind(base_dir_apply_btn))
-		base_dir_node.text = config.get_setting("base_directory")
+		base_dir_node.text = config.get_value("plugin", "base_directory")
 
-		# Log header
 		log_header_btn.item_selected.connect(_on_optbtn_item_selected)
 		log_header_btn.mouse_entered.connect(update_tooltip.bind(log_header_btn))
 		log_header_btn.focus_entered.connect(update_tooltip.bind(log_header_btn))
+		log_header_container.mouse_entered.connect(update_tooltip.bind(log_header_btn)) 
+		
+		canvas_layer_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(canvas_layer_spinbox))
+		canvas_layer_spinbox.mouse_entered.connect(update_tooltip.bind(canvas_layer_spinbox))
+		canvas_layer_spinbox.focus_entered.connect(update_tooltip.bind(canvas_layer_spinbox))
+		canvas_layer_container.mouse_entered.connect(update_tooltip.bind(canvas_layer_spinbox)) 
 
-		# Autostart session, UTC and Dash Separator
 		autostart_btn.toggled.connect(_on_checkbutton_toggled.bind(autostart_btn))
-		autostart_btn.mouse_entered.connect(update_tooltip)
+		autostart_btn.mouse_entered.connect(update_tooltip.bind(autostart_btn))
 
 		utc_btn.toggled.connect(_on_checkbutton_toggled.bind(utc_btn))
-		utc_btn.mouse_entered.connect(update_tooltip)
+		utc_btn.mouse_entered.connect(update_tooltip.bind(utc_btn))
 
-		dash_btn.toggled.connect(_on_checkbutton_toggled.bind(autostart_btn))
-		dash_btn.mouse_entered.connect(update_tooltip)
+		dash_btn.toggled.connect(_on_checkbutton_toggled.bind(dash_btn))
+		dash_btn.mouse_entered.connect(update_tooltip.bind(dash_btn))
 
 		limit_method_btn.item_selected.connect(_on_optbtn_item_selected)
 		limit_method_btn.mouse_entered.connect(update_tooltip.bind(limit_method_btn))
-		limit_method_btn.focus_entered.connect(update_tooltip.bind(limit_method_btn))
+		limit_method_container.mouse_entered.connect(update_tooltip.bind(limit_method_btn))
+		limit_method_btn.focus_entered.connect(update_tooltip.bind(limit_method_btn)) 
 
 		limit_action_btn.item_selected.connect(_on_optbtn_item_selected)
-		limit_action_btn.mouse_entered.connect(update_tooltip.bind(limit_action_btn))
+		limit_action_container.mouse_entered.connect(update_tooltip.bind(limit_action_btn))
+		limit_action_btn.mouse_entered.connect(update_tooltip.bind(limit_action_btn)) 
 		limit_action_btn.focus_entered.connect(update_tooltip.bind(limit_action_btn))
 
 		entry_count_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(entry_count_spinbox))
+		entry_count_spinbox.gui_input.connect(_on_spinbox_gui_input.bind(entry_count_spinbox))
+		entry_count_spinbox.mouse_entered.connect(update_tooltip.bind(entry_count_spinbox))
 		entry_count_spinbox.focus_entered.connect(update_tooltip.bind(entry_count_spinbox))
+		entry_count_container.mouse_entered.connect(update_tooltip.bind(entry_count_spinbox))
+
 		session_duration_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(session_duration_spinbox))
+		session_duration_spinbox.mouse_entered.connect(update_tooltip.bind(session_duration_spinbox))
 		session_duration_spinbox.focus_entered.connect(update_tooltip.bind(session_duration_spinbox))
+		session_duration_container.mouse_entered.connect(update_tooltip.bind(session_duration_spinbox))
+
 		file_count_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(file_count_spinbox))
+		file_count_spinbox.mouse_entered.connect(update_tooltip.bind(file_count_spinbox))
 		file_count_spinbox.focus_entered.connect(update_tooltip.bind(file_count_spinbox))
-		canvas_layer_spinbox.value_changed.connect(_on_spinbox_value_changed.bind(canvas_layer_spinbox))
-		canvas_layer_spinbox.focus_entered.connect(update_tooltip.bind(canvas_layer_spinbox))
+		file_count_container.mouse_entered.connect(update_tooltip.bind(file_count_spinbox))
+
 		drag_offset_x.value_changed.connect(_on_spinbox_value_changed.bind(drag_offset_x))
+		drag_offset_x.mouse_entered.connect(update_tooltip.bind(drag_offset_x))
 		drag_offset_x.focus_entered.connect(update_tooltip.bind(drag_offset_x))
+		dragx_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(dragx_line))
 		drag_offset_y.value_changed.connect(_on_spinbox_value_changed.bind(drag_offset_y))
+		drag_offset_y.mouse_entered.connect(update_tooltip.bind(drag_offset_y))
 		drag_offset_y.focus_entered.connect(update_tooltip.bind(drag_offset_y))
+		dragy_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(dragy_line))
+		drag_offset_container.mouse_entered.connect(update_tooltip.bind(drag_offset_x))
 
 		error_rep_btn.item_selected.connect(_on_optbtn_item_selected.bind(error_rep_btn))
+		error_rep_btn.mouse_entered.connect(update_tooltip.bind(error_rep_btn))
 		error_rep_btn.focus_entered.connect(update_tooltip.bind(error_rep_btn))
+		error_rep_container.mouse_entered.connect(update_tooltip.bind(error_rep_btn))
+
 		session_print_btn.item_selected.connect(_on_optbtn_item_selected.bind(session_print_btn))
+		session_print_btn.mouse_entered.connect(update_tooltip.bind(session_print_btn))
 		session_print_btn.focus_entered.connect(update_tooltip.bind(session_print_btn))
+		session_print_container.mouse_entered.connect(update_tooltip.bind(session_print_btn))
+
 		controller_start_btn.toggled.connect(_on_checkbutton_toggled.bind(controller_start_btn))
+		controller_start_btn.mouse_entered.connect(update_tooltip.bind(controller_start_btn))
 		controller_start_btn.focus_entered.connect(update_tooltip.bind(controller_start_btn))
+
 		controller_monitor_side_btn.toggled.connect(_on_checkbutton_toggled.bind(controller_monitor_side_btn))
+		controller_monitor_side_btn.mouse_entered.connect(update_tooltip.bind(controller_monitor_side_btn))
 		controller_monitor_side_btn.focus_entered.connect(update_tooltip.bind(controller_monitor_side_btn))
+
 		disable_warn1_btn.toggled.connect(_on_checkbutton_toggled.bind(disable_warn1_btn))
+		disable_warn1_btn.mouse_entered.connect(update_tooltip.bind(disable_warn1_btn))
 		disable_warn1_btn.focus_entered.connect(update_tooltip.bind(disable_warn1_btn))
+
 		disable_warn2_btn.toggled.connect(_on_checkbutton_toggled.bind(disable_warn2_btn))
+		disable_warn2_btn.mouse_entered.connect(update_tooltip.bind(disable_warn2_btn))
 		disable_warn2_btn.focus_entered.connect(update_tooltip.bind(disable_warn2_btn))
 
 
 #region Tooltip
-@onready var tooltip : Panel = $Settings/HBoxContainer/ToolTip
-@onready var tooltip_lbl : Label = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer/Label
-
 func update_tooltip(node : Control) -> void:
 	match node:
 		# String settings [LineEdits]
 		base_dir_node:
-			tooltip_lbl.text = "The base directory used to create and store log files within."
+			tooltip_lbl.text = "[color=green]Base Directory:[color=white][font_size=12]\nThe base directory used to create and store log files within."
 		base_dir_reset_btn:
-			tooltip_lbl.text = "The base directory used to create and store log files within.\nResets the base directory to the default user://GoLogger/"
+			tooltip_lbl.text = "[color=green]Base Directory:[color=white][font_size=12]\nThe base directory used to create and store log files within.\n[color=orange]Resets the base directory to the default:\n[center]user://GoLogger/"
 		base_dir_opendir_btn:
-			tooltip_lbl.text = "The base directory used to create and store log files within.\nOpens the currently applied base directory folder."
+			tooltip_lbl.text = "[color=green]Base Directory:[color=white][font_size=12]\nThe base directory used to create and store log files within.\n[color=orange]Opens the currently applied base directory folder."
 		base_dir_apply_btn:
-			tooltip_lbl.text = "The base directory used to create and store log files within.\nAttempts to apply and create the base directory folder using the entered path. The directory path resets to the previously saved path if the new path was rejected."
+			tooltip_lbl.text = "[color=green]Base Directory:[color=white][font_size=12]\nThe base directory used to create and store log files within.\n[color=orange]Reverts back if directory creation/access failed."
 
 		# Bool settings [CheckButtons]
 		autostart_btn:
-			tooltip_lbl.text = "Autostarts a session when running your project."
+			tooltip_lbl.text = "[color=green]Autostart Session:[color=white][font_size=12]\nAutostarts a session when running your project."
 		utc_btn:
-			tooltip_lbl.text = "Use UTC time for date/timestamps as opposed to the local system time."
+			tooltip_lbl.text = "[color=green]Use UTC:[color=white][font_size=12] Uses UTC time for date/timestamps as opposed to the local system time."
 		dash_btn:
-			tooltip_lbl.text = "Uses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
-		
+			tooltip_lbl.text = "[color=green]Use '-' Separator:[color=white][font_size=12]\nUses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
+		controller_start_btn:
+			tooltip_lbl.text = "[color=green]Show GoLogger Controller at Runtime:[color=white][font_size=12]\nShows the controller by default When running your project."
+		controller_monitor_side_btn:
+			tooltip_lbl.text = "[color=green]LogFile Monitoring Default Side:[color=white][font_size=12]\nSets the side(left or right) of the monitoring panel."
+		disable_warn1_btn:
+			tooltip_lbl.text = "[color=green]Disable Warning:[color=white][font_size=12]\nEnable/disable the warning 'Failed to start session without stopping the previous'."
+		disable_warn2_btn:
+			tooltip_lbl.text = "[color=green]Disable Warning:[color=white][font_size=12]\nEnable/disable the warning 'Failed to log entry due to no session being active."
+
 		# Enum settings [OptionButtons]
 		log_header_btn:
-			tooltip_lbl.text = "Used to set what to include in the log header. Project name and version is fetched from Project Settings."
+			tooltip_lbl.text = "[color=green]Log Header:[color=white][font_size=12]\nUsed to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
-			tooltip_lbl.text = "Method used to limit log file length/size. Action taken is when this condition is met is set with 'Limit Action'. Entry count will execute an action when the number of entries hits the cap. Session timer executes an action on timer timeout."
+			tooltip_lbl.text = "[color=green]Limit Method:[color=white][font_size=12]\nMethod used to limit log file length/size. Used in conjunction with 'Limit Action' which dictates the action taken when method condition is met."
 		limit_action_btn:
-			tooltip_lbl.text = "Action taken when 'Limit Method' condition is met. "
+			tooltip_lbl.text = "[color=green]Limit Action:[color=white][font_size=12]\nAction taken when 'Limit Method' condition is met. "
+		error_rep_btn:
+			tooltip_lbl.text = "[color=green]Error Reporting:[color=white][font_size=12]\nSome of the errors and warnings GoLogger provides are not always useful. Set whether or not you want to disable errors, warnings or both."
+		session_print_btn:
+			tooltip_lbl.text = "[color=green]Print Session Changes:[color=white][font_size=12]\nGoLogger can print to Output whenever its base functions are called."
 		
 		# Int settings [SpinBoxes]
 		entry_count_spinbox:
-			tooltip_lbl.text = "Entry count limit of any log. Used when 'Limit Method' is set to use Entry Count."
+			tooltip_lbl.text = "[color=green]Entry Count Limit:[color=white][font_size=12]\nEntry count limit of any log. Used when 'Limit Method' is set to use Entry Count."
 		session_duration_spinbox:
-			tooltip_lbl.text = "Wait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer."
+			tooltip_lbl.text = "[color=green]Session Duration:[color=white][font_size=12]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer."
 		file_count_spinbox:
-			tooltip_lbl.text = "File count limit. Limits the number of files in any log category folder."
+			tooltip_lbl.text = "[color=green]File Limit:[color=white][font_size=12]\nFile count limit. Limits the number of files in any log category folder."
 		canvas_layer_spinbox:
-			tooltip_lbl.text = "Sets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
+			tooltip_lbl.text = "[color=green]CanvasLayer Layer:[color=white][font_size=12]\nSets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
 		drag_offset_x:
-			tooltip_lbl.text = "Controller window drag offset. Used to correct the window position while dragging if needed."
+			tooltip_lbl.text = "[color=green]Controller Drag Offset:[color=white][font_size=12]\nController window drag offset. Used to correct the window position while dragging if needed."
 		drag_offset_y:
-			tooltip_lbl.text = "Controller window drag offset. Used to correct the window position while dragging if needed."
-		error_rep_btn:
-			tooltip.lbl.text = "Some of the errors and warnings GoLogger provides are not always useful. Set whether or not you want to disable errors, warnings or both."
-		session_print_btn:
-			tooltip.lbl.text = "GoLogger can print to Output whenever its base functions are called."
-		disable_warn1_btn:
-			tooltip.lbl.text = "Enable/disable the warning 'Failed to start session without stopping the previous'."
-		disable_warn2_btn:
-			tooltip.lbl.text = "Enable/disable the warning 'Failed to log entry due to no session being active."
+			tooltip_lbl.text = "[color=green]Controller Drag Offset:[color=white][font_size=12]\nController window drag offset. Used to correct the window position while dragging if needed."
 		
+		
+		 
 #endregion
 
 
@@ -306,6 +387,26 @@ func _on_spinbox_value_changed(value : float, node : Control) -> void:
 		drag_offset_y:
 			config.set_value("settings", "controller_drag_offset_y", value)
 	config.save(PATH)
+
+func _on_spinbox_lineedit_submitted(value : float, node : Control) -> void:
+	match node:
+		dragx_line:
+			if value >= drag_offset_x.min_value or value <= drag_offset_x.max_value:
+				config.set_value("settings", "controller_drag_offset_x", value)
+		dragy_line:
+			if value >= drag_offset_y.min_value or value <= drag_offset_y.max_value:
+				config.set_value("settings", "controller_drag_offset_y", value)
+	config.save(PATH)
+
+func _on_spinbox_gui_input(event : InputEvent, node : SpinBox) -> void:
+	if event is InputEventKey and event.keycode == KEY_ENTER and event.is_released():
+		match node:
+			canvas_layer_spinbox: canvas_layer_spinbox.release_focus()
+			file_count_spinbox: file_count_spinbox.release_focus()
+			entry_count_spinbox: entry_count_spinbox.release_focus()
+			session_duration_spinbox: session_duration_spinbox.release_focus()
+			drag_offset_x: drag_offset_x.release_focus()
+			drag_offset_y: drag_offset_y.release_focus()
 #endregion
 
 

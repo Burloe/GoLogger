@@ -15,8 +15,8 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Label" type="Label" parent="MarginContainer"]
+[node name="Label" type="RichTextLabel" parent="MarginContainer"]
 custom_minimum_size = Vector2(192, 192)
 layout_mode = 2
+bbcode_enabled = true
 text = "Disable \"Attempted to start a new log session before stopping the previous session\""
-autowrap_mode = 3
