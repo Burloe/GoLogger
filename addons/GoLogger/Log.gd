@@ -18,7 +18,11 @@ extends Node
 ## Files saved into the subfolder are exempt from being deleted. This plugin will delete the oldest entry when the number of logs exceeds [param file_cap] so log 
 ## files aren't created endlessly.[br][method stop_session]: Stops the active session and stops logging to the corresponding .log file.
 
+## Emitted when a log session has started.
+signal session_started 
 
+## Emitted when a log session has been stopped.
+signal session_stopped
 
 ## Emitted when the session status has changed.  
 signal session_status_changed 
@@ -252,6 +256,7 @@ func start_session(start_delay : float = 0.0) -> void:
 						_f.close()
 		if print_session_changes == 1 or print_session_changes == 2: print("GoLogger: Started session.")
 		session_status = true
+		session_started.emit()
 
 
 
@@ -372,6 +377,7 @@ func stop_session(include_timestamp : bool = true) -> void:
 				categories[i].entry_count = 0
 			if print_session_changes == 1 or print_session_changes == 4: print("GoLogger: Stopped log session.")
 		session_status = false
+		session_stopped.emit()
 #endregion
 
 

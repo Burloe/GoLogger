@@ -16,6 +16,7 @@ grow_vertical = 2
 current_tab = 1
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0]
+metadata/_edit_horizontal_guides_ = [180.0]
 
 [node name="Categories" type="ScrollContainer" parent="."]
 visible = false
@@ -208,6 +209,7 @@ theme_override_constants/margin_bottom = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB"]
 layout_mode = 2
+theme_override_constants/separation = -1
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
 unique_name_in_owner = true
@@ -270,6 +272,13 @@ layout_mode = 2
 theme = ExtResource("1_y5prw")
 text = "Autostart session"
 
+[node name="TimestampEntriesButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("1_y5prw")
+text = "Timestamp log entries"
+
 [node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
@@ -309,6 +318,7 @@ alignment = 1
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Limit method "
+vertical_alignment = 1
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/LimitMethodHBox"]
 unique_name_in_owner = true
@@ -546,5 +556,15 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 text = "No active session, failed to log entry"
+
+[node name="Spacer" type="Control" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column"]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
+
+[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column"]
+unique_name_in_owner = true
+modulate = Color(0.9, 0.315, 0.315, 1)
+layout_mode = 2
+text = "Reset to default"
 
 [editable path="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip"]

@@ -25,6 +25,7 @@ signal update_index
 #region Settings tab
 @onready var tooltip : Panel = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip
 @onready var tooltip_lbl : RichTextLabel = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer/Label
+@onready var reset_settings_btn : Button = %ResetSettingsButton
 
 @onready var base_dir_line : LineEdit = %BaseDirLineEdit
 @onready var base_dir_apply_btn : Button = %BaseDirApplyButton
@@ -42,6 +43,8 @@ var canvas_spinbox_line
 
 
 @onready var autostart_btn : CheckButton = %AutostartCheckButton
+
+@onready var timestamp_entries_btn : CheckButton = %TimestampEntriesButton
 
 @onready var utc_btn : CheckButton = %UTCCheckButton
 
@@ -75,7 +78,6 @@ var dragx_line
 @onready var drag_offset_y : SpinBox = %YSpinBox
 var dragy_line
 @onready var drag_offset_container : HBoxContainer = %DragOffsetHBox
-
 
 
 @onready var controller_start_btn : CheckButton = %ShowOnStartCheckButton
@@ -122,7 +124,6 @@ func _ready() -> void:
 
 		
 		# Settings
-		base_dir_line.text = config.get_value("plugin", "base_directory")
 		btn_array = [
 			base_dir_line,
 			base_dir_apply_btn,
@@ -132,6 +133,7 @@ func _ready() -> void:
 			canvas_layer_spinbox,
 			autostart_btn,
 			utc_btn,
+			timestamp_entries_btn,
 			dash_btn,
 			limit_method_btn,
 			limit_action_btn,
@@ -145,21 +147,23 @@ func _ready() -> void:
 			error_rep_btn,
 			session_print_btn,
 			disable_warn1_btn,
-			disable_warn2_btn
+			disable_warn2_btn,
+			reset_settings_btn
 		]
 
 		# Check and disconnect any existing signal connections > Connect the signals
 		for i in range(btn_array.size()):
+			# Connect mouse_entered signal(regardless of type) to update tooltip
 			if btn_array[i].mouse_entered.is_connected(update_tooltip):
 				btn_array[i].mouse_entered.disconnect(update_tooltip)
 			btn_array[i].mouse_entered.connect(update_tooltip.bind(btn_array[i]))
-			
+			# Connect focus_entered signal(regardless of type) to update tooltip
 			if btn_array[i].focus_entered.is_connected(update_tooltip):
 				print(str(btn_array[i].get_name(), " is already connected"))
 				btn_array[i].focus_entered.disconnect(update_tooltip)
 			btn_array[i].focus_entered.connect(update_tooltip.bind(btn_array[i]))
 
-
+			# Connect signal of each type that performs the action of the button
 			if btn_array[i] is Button:
 				if btn_array[i].button_up.is_connected(_on_button_button_up):
 					btn_array[i].button_up.disconnect(_on_button_button_up)
@@ -184,9 +188,10 @@ func _ready() -> void:
 				if btn_array[i].value_changed.is_connected(_on_spinbox_value_changed):
 					btn_array[i].value_changed.disconnect(_on_spinbox_value_changed)
 				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i]))
+			# printerr(str(btn_array[i].get_name(), " mouse_entered signal connection status: ", btn_array[i].mouse_entered.is_connected(update_tooltip)))
 
 
-		# Connect the underlying LineEdit signal "text submitted" of all the SpinBoxes
+		# Connect the "text submitted" signa of SpinBoxes underlying LineEdit node
 		if canvas_spinbox_line == null: canvas_spinbox_line = canvas_layer_spinbox.get_line_edit()
 		canvas_spinbox_line.text_submitted.connect(_on_line_edit_text_submitted.bind(canvas_spinbox_line))
 
@@ -204,7 +209,7 @@ func _ready() -> void:
 
 		if dragy_line == null: dragy_line = drag_offset_y.get_line_edit()
 		dragy_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(drag_offset_y))
-
+	
 		
 		container_array = [
 			base_dir_btn_container,
@@ -234,20 +239,23 @@ func _ready() -> void:
 			session_print_btn
 		]
 
-		# Check and disconnect any existing signal connections > Connect signals
+		# Connect mouse + focus_entered signals to container nodes
 		for i in range(container_array.size()):
 			if container_array[i].mouse_entered.is_connected(update_tooltip):
 				container_array[i].mouse_entered.disconnect(update_tooltip)
 			container_array[i].mouse_entered.connect(update_tooltip.bind(corresponding_btns[i]))
 			
-			printerr(str(container_array[i].get_name(), " mouse_entered signal connection status: ", 
-			container_array[i].mouse_entered.is_connected(update_tooltip)))
-
+			# printerr(str(container_array[i].get_name(), " mouse_entered signal connection status: ", container_array[i].mouse_entered.is_connected(update_tooltip)))
+		set_settings_state()
 	
 
 #region Tooltip
+## Updates the tooltip with pertinent information about each setting on mouseover and focus entered.
 func update_tooltip(node : Control) -> void:
 	match node:
+		reset_settings_btn:
+			tooltip_lbl.text = "[font_size=14][color_red]Reset Settings to Default:[color=white][font_size=11]\nReset all settings to their default values."
+
 		# String settings [LineEdits]
 		base_dir_line:
 			tooltip_lbl.text = "[font_size=14][color=green]Base Directory:[color=white][font_size=11]\nThe base directory used to create and store log files within."
@@ -261,6 +269,8 @@ func update_tooltip(node : Control) -> void:
 		# Bool settings [CheckButtons]
 		autostart_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Autostart Session:[color=white][font_size=11]\nAutostarts a session when running your project."
+		timestamp_entries_btn:
+			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nEnables whether or not entries are timestamped inside the log files.\n[i]Recommended to turn on.[/i]"
 		utc_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Use UTC:[color=white][font_size=11] Uses UTC time for date/timestamps as opposed to the local system time."
 		dash_btn:
@@ -299,46 +309,10 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "[font_size=14][color=green]Controller Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
 		drag_offset_y:
 			tooltip_lbl.text = "[font_size=14][color=green]Controller Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
-		
-		
-		 
-#endregion
-
-# func _on_basedir_text_submitted(new_text : String) -> void:
-# 	var old_dir = config.get_value("plugin", "base_directory")
-# 	var _d = DirAccess.open(new_text)
-# 	_d.make_dir(new_text)
-# 	var _e = DirAccess.get_open_error()
-# 	# Create directory was successful > Allow/set as new directory
-# 	if _e == OK:
-# 		save_setting("plugin", "base_directory", new_text)
-# 	else:
-# 		print(_e)
-# 		base_dir_line.text = old_dir
-# 	base_dir_line.release_focus()
 
 
-# func _on_basedir_button_up(btn : Button) -> void:
-# 	match btn:
-# 		base_dir_reset_btn:
-# 			config.set_value("plugin", "base_directory", "user://GoLogger/")
-# 		base_dir_opendir_btn:
-# 			open_directory()
-# 		base_dir_apply_btn:
-# 			var old_dir = config.get_value("plugin", "base_directory")
-# 			var new = base_dir_line.text
-# 			var _d = DirAccess.open(new)
-# 			_d.make_dir(new)
-# 			var _e = DirAccess.get_open_error()
-# 			if _e == OK: # New directory approved and created
-# 				save_setting("plugin", "base_directory", new)
-# 			else: # New directory rejected
-# 				base_dir_line = old_dir 
-# 	base_dir_line.release_focus()
-#endregion
 
-
-#region Button
+#region Buttons
 func _on_button_button_up(node : Button) -> void:
 	match node:
 		base_dir_apply_btn:
@@ -351,13 +325,16 @@ func _on_button_button_up(node : Button) -> void:
 				save_setting("plugin", "base_directory", new)
 			else: # New directory rejected
 				base_dir_line = old_dir
+		
 		base_dir_opendir_btn:
 			open_directory()
+		
 		base_dir_reset_btn:
 			config.set_value("plugin", "base_directory", "user://GoLogger/")
 #endregion
 
-#region LineEdit
+
+#region LineEdits
 func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 	match node:
 		base_dir_line:
@@ -373,8 +350,6 @@ func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 				base_dir_line.text = old_dir
 			base_dir_line.release_focus()
 #endregion
-
-
 
 
 #region OptionButtons
@@ -411,6 +386,8 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 	match node:
 		autostart_btn:
 			config.set_value("settings", "autostart_session", toggled_on)
+		timestamp_entries_btn:
+			config.set_value("settings", "timestamp_entries", toggled_on)
 		utc_btn:
 			config.set_value("settings", "use_utc", toggled_on)
 		dash_btn:
@@ -431,7 +408,7 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 	match node:
 		entry_count_spinbox:
-			config.set_value("settings", "entry_count_limit", value)
+			config.set_value("settings", "entry_count_cap", value)
 		session_duration_spinbox:
 			config.set_value("settings", "session_duration", value)
 		file_count_spinbox:
@@ -467,15 +444,6 @@ func _on_spinbox_gui_input(event : InputEvent, node : SpinBox) -> void:
 
 
 
-
-
-
-
-
-
-
-
-
 #region Main category functions
 func create_settings_file() -> void:
 	var _a : Array[Array] = [["game", 0, true], ["player", 1, true]]
@@ -485,33 +453,48 @@ func create_settings_file() -> void:
 	config.set_value("settings", "log_header", 0)
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
+	config.set_value("settings", "timestamp_entries", true)
 	config.set_value("settings", "use_utc", false)
 	config.set_value("settings", "dash_separator", false)
 	config.set_value("settings", "limit_method", 0)
 	config.set_value("settings", "limit_action", 0)
 	config.set_value("settings", "file_cap", 10)
-	config.set_value("settings", "entry_count_limit", 1000)
+	config.set_value("settings", "entry_count_cap", 1000)
 	config.set_value("settings", "session_duration", 600.0)
-	config.set_value("settings", "controller_drag_offset_x", 0)
-	config.set_value("settings", "controller_drag_offset_y", 0)
-	config.set_value("settings", "show_controller", true)
-	config.set_value("settings", "controller_monitor_side", true)
+	config.set_value("settings", "drag_offset_x", 0.0)
+	config.set_value("settings", "drag_offset_y", 0.0)
+	config.set_value("settings", "show_controller", false)
+	config.set_value("settings", "logfile_monitor_side", true)
 	config.set_value("settings", "error_reporting", 0)
-	config.set_value("settings", "print_session_changes", 0)
+	config.set_value("settings", "session_print", 0)
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false)
 	config.save(PATH)
 
 
-
-
-
-
-
-
-
-
-
+## Sets the state of all the buttons in the dock depending on the settings retrived
+## from the settings.ini.
+func set_settings_state() -> void:
+	base_dir_line.text = config.get_value("plugin", "base_directory")
+	log_header_btn.selected = config.get_value("settings", "log_header")
+	canvas_layer_spinbox.value = config.get_value("settings", "canvaslayer_layer")
+	autostart_btn.button_pressed = config.get_value("settings", "autostart_session")
+	timestamp_entries_btn.button_pressed = config.get_value("settings", "timestamp_entries")
+	utc_btn.button_pressed = config.get_value("settings", "use_utc")
+	dash_btn.button_pressed = config.get_value("settings", "dash_separator")
+	limit_method_btn.selected = config.get_value("settings", "limit_method")
+	limit_action_btn.selected = config.get_value("settings", "limit_action")
+	file_count_spinbox.value = config.get_value("settings", "file_cap")
+	entry_count_spinbox.value = config.get_value("settings", "entry_count_cap")
+	session_duration_spinbox.value = config.get_value("settings", "session_duration")
+	drag_offset_x.value = config.get_value("settings", "drag_offset_x")
+	drag_offset_y.value = config.get_value("settings", "drag_offset_y")
+	controller_start_btn.button_pressed = config.get_value("settings", "show_controller")
+	controller_monitor_side_btn.button_pressed = config.get_value("settings", "logfile_monitor_side")
+	error_rep_btn.selected = config.get_value("settings", "error_reporting")
+	session_print_btn.value = config.get_value("settings", "session_print")
+	disable_warn1_btn.button_pressed = config.get_value("settings", "disable_warn1")
+	disable_warn2_btn.button_pressed = config.get_value("settings", "disable_warn2")
 
 
 
@@ -581,25 +564,6 @@ func save_categories(deferred : bool = false) -> void:
 		main.append(_n)
 	# config.set_value("plugin", "base_directory", config.get_value("plugin", "base_directory"))
 	config.set_value("plugin", "categories", main)
-
-	# config.set_value("settings", "log_header", 0)
-	# config.set_value("settings", "canvaslayer_layer", 5)
-	# config.set_value("settings", "autostart_session", true)
-	# config.set_value("settings", "use_utc", false)
-	# config.set_value("settings", "dash_separator", false)
-	# config.set_value("settings", "limit_method", 0)
-	# config.set_value("settings", "limit_action", 0)
-	# config.set_value("settings", "file_cap", 10)
-	# config.set_value("settings", "entry_count_limit", 1000)
-	# config.set_value("settings", "session_duration", 600.0)
-	# config.set_value("settings", "controller_drag_offset_x", 0)
-	# config.set_value("settings", "controller_drag_offset_y", 0)
-	# config.set_value("settings", "show_controller", true)
-	# config.set_value("settings", "controller_monitor_side", true)
-	# config.set_value("settings", "error_reporting", 0)
-	# config.set_value("settings", "print_session_changes", 0)
-	# config.set_value("settings", "disable_warn1", false)
-	# config.set_value("settings", "disable_warn2", false)
 	config.save(PATH)
 
 
