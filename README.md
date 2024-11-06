@@ -2,9 +2,11 @@
 GoLogger is a simple yet flexible logging framework for Godot 4, designed to log game events and data to external .log files accessible by both developers and players. With minimal setup required, GoLogger can be integrated quickly and easily into any project. GoLogger runs in the background, capturing the data you define with timestamps, providing a snapshot of events leading up to crashes, bugs, or other issues, making it easier for users to share logs and investigate problems.
 
 
-Log entries are as simple as calling `Log.entry()`(similar and as easy to use as `print()`) and can include any data that can be converted into a string. The framework is fully customizable, allowing you to log as much or as little information as needed. For convenience, GoLogger includes an optional controller (toggleable with F9) for managing the current session directly within the game.
+Log entries are as simple as calling `Log.entry()`(similar and as easy to use as `print()`) and can include any data that can be converted into a string. The framework is fully customizable, allowing you to log as much or as little information as needed. There are many ways to format strings but ![you can find more information on how you can format strings here](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html).
 
-	Log.entry("Player picked up", item, " x", item.amount, ".")	     # Result: [14:44:44] Player picked up MedKit x3. 
+You can log into a single log file for all your needs but GoLogger allows for you to add as many categories as needed. When logging entries, by adding the integer corresponding to the category, your entries are logged into different files. 
+
+	Log.entry(str("Player picked up", item, " x", item.amount, ".")) # Resulting entry: [14:44:44] Player picked up MedKit x3. 
 ![Showcase](https://github.com/user-attachments/assets/68750dca-e25c-4390-a398-d1afddf65edb)
 
 
@@ -31,32 +33,29 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
 
 ![enable_plugin](https://github.com/user-attachments/assets/6d201a57-638d-48a6-a9c0-fc8719beff37)
 
-*You can find settings and formatting options in the inspector when you open "Log.tscn". Next time you run your project, folders and .log files will be created. It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` in your exit game function. This can help differentiate between normal exits, crashes, or forced closures, depending on whether the log file ends with "Stopped session.*"<br><br>
+*Everything required to add log categories and change settings can be found in the bottom dock panel. You can change the hotkey bindings in `res://addons/GoLogger/`. It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` in your exit game function. This can help differentiate between normal exits, crashes or forced closures, depending on whether the log file ends with "Stopped session*".<br><br>
 
 
 ## How to use GoLogger:<br>
 ### **Starting & stopping log sessions:**<br>
-GoLogger uses sessions to indicate when it’s actively logging or not, and each session creates a new .log file with the time- and datestamp of creation. The plugin has a .log file limit of 10 by default(can be changed) and once the limit has been hit, the file with the oldest timestamp is deleted.<br>
+GoLogger uses sessions to indicate when it’s actively logging or not, and each session creates a new .log file with the time- and datestamp of creation. There are three main ways to start and stop a session. You can use the `autostart` setting(on by default) which starts a session when you run the project. You can also use the hotkey Ctrl + Shift + O(start) or P(stop). The last way is to open the GoLoggerController with Ctrl + Shift + K and press the start button. Of course you can also start a session through code by simply calling `Log.start_session()` anywhere in your code. The plugin has a .log file limit of 10 by default(can be changed) and once the limit has been hit, the file with the oldest timestamp is deleted.<br>
 
-Managing the log sessions can be done in three ways:
-1. Hotkeys - <br>	Ctrl + Shift + O to start a session.<br>	Ctrl + Shift + P to stop a session<br>	Ctrl + Shift + U to create a copy of the current session and save the logs in a subfolder called "saved_logs". 
-2. Controller - The plugin comes with a simple controller for those who prefer a visual controller which you can toggle its visibility with Ctrl + Shift + K. 
-3. Code - Calling the functions `Log.start_session()`, `Log.stop_session()` and `Log.save_copy()` which can be added anywhere in your projects code. If `autostart` is enabled. The plugin calls `start_session()` by itself. 
-The parameter `start_delay` was adde to create a >1-second delay before starting a new session. This was added to prevent .log files from being created with the same timestamp(if you accidentally add `start_sessions()` in multiple scripts) which can cause sorting issues when deleting the oldest log. Use only if this is affecting you!<br><br>
-![image](https://github.com/user-attachments/assets/75ee6dc9-8cfe-472f-b037-86f2f1cf8f7f)
+Managing the log sessions at runtime can be done in four ways:
+1. Using the `autostart` setting which starts a session in the Log.gd `_ready()` function. Meaning it'll start a session when you run your project.
+2. Hotkeys - <br>	Ctrl + Shift + O to start a session.<br>	Ctrl + Shift + P to stop a session<br>	Ctrl + Shift + U to create a copy of the current session and save the logs in a subfolder called "saved_logs". 
+3. Controller - The plugin comes with a simple controller for those who prefer a visual controller which you can toggle its visibility with Ctrl + Shift + K. 
+4. Code - Calling the functions `Log.start_session()`, `Log.stop_session()` and `Log.save_copy()` which can be added anywhere in your projects code.
 
+![image](https://github.com/user-attachments/assets/66acca4b-86b5-40f4-9703-04549824fe7f)
 
 ### **Creating log entries and include data:**<br>
 Simply installing GoLogger will not generate any log entries. You still need to define `Log.entry()` in your code, including a string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry. However, be mindful that converting to a string may not always format the data in a human-readable way. Example of ways to format these entries:<br>
 ![Example](https://github.com/user-attachments/assets/e2b81bd7-648f-4fe2-8608-bc58c1e1fde3)
 
-The `entry()` function has one mandatory and optional parameters: `entry(category : int, log_entry : String, date_time_flag : int = 0, utc : bool = true, space : bool = true)`
+The `entry()` function has one mandatory and optional parameters: `entry(log_entry : String, category_index : int = 0)`
 Only the first parameter mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the formatting of your log entry to your liking.
 1. `log_entry` - *Mandatory* - The string that makes up your log entry. Include any data that can be converted to a string can be logged.
-2. `file` - *Optional* - Specifies which log file the entry will be stored in. 0 = "game.log", 1 = "player.log". If not specified, entries will be logged to "game.log" by default.
-3. `include_timestamp` - *Optional* -  Flags whether to include a timestamp with the entry inside the .log file. Log entries are always added sequentially, but timestamps help measure the time between events.
-4. `utc` - *Optional* -  Uses UTC as a standardized time. Set to `false` to use the user's local system time.
-
+2. `category_index` - *Optional* - Specifies which log category the entry will be stored in. Category index can be found in the category tab of the dock panel.
 You can call this function from any script in your project. The string message can include almost any data, but you may need to convert that data into a string using `str()`. Godot also offers various methods of formatting strings. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) <br><br>
 
 ### **Accessing the .log files, the plugin settings and GoLoggerController:**
