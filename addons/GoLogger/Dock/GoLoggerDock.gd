@@ -1,7 +1,7 @@
 @tool
 extends TabContainer
 
-# Category tab
+#region Category tab
 ## Add category [Button]. Instantiates a [param category_scene] and adds it as a child of [param category_container].
 @onready var add_category_btn : Button = $Categories/MarginContainer/VBoxContainer/HBoxContainer/AddButton
 ## Category [GridContainer] node. Holds all the LogCategory nodes that represent each category.
@@ -98,7 +98,7 @@ var container_array : Array[Control] = []
 #endregion
 
 
-
+# Debug
 # func _physics_process(delta: float) -> void:
 # 	var _c = config.get_value("plugin", "categories") 
 # 	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current .ini setting(size = ", _c.size(), "):\n      ", _c, "\nCurrent GridContainer.get_children()[size = ",category_container.get_children().size(), "]:\n      ", category_container.get_children())
@@ -114,7 +114,7 @@ func _ready() -> void:
 		# Categories
 		add_category_btn.button_up.connect(add_category)
 		open_dir_btn.button_up.connect(open_directory)
-		defaults_btn.button_up.connect(reset_to_default)
+		defaults_btn.button_up.connect(reset_to_default.bind(0))
 
 		# Remove any existing categories
 		for i in category_container.get_children():
@@ -124,6 +124,10 @@ func _ready() -> void:
 
 		
 		# Settings
+		reset_settings_btn.button_up.connect(reset_to_default.bind(1))
+		reset_settings_btn.mouse_entered.connect(update_tooltip.bind(reset_settings_btn))
+		reset_settings_btn.focus_entered.connect(update_tooltip.bind(reset_settings_btn))
+		
 		btn_array = [
 			base_dir_line,
 			base_dir_apply_btn,
@@ -147,8 +151,7 @@ func _ready() -> void:
 			error_rep_btn,
 			session_print_btn,
 			disable_warn1_btn,
-			disable_warn2_btn,
-			reset_settings_btn
+			disable_warn2_btn
 		]
 
 		# Check and disconnect any existing signal connections > Connect the signals
@@ -205,10 +208,10 @@ func _ready() -> void:
 		session_duration_spinbox_line.text_submitted.connect(_on_line_edit_text_submitted.bind(session_duration_spinbox_line))
 
 		if dragx_line == null: dragx_line = drag_offset_x.get_line_edit()
-		dragx_line.focus_entered.connect(update_tooltip.bind(drag_offset_x))
+		dragx_line.focus_entered.connect(update_tooltip.bind(dragx_line))
 
 		if dragy_line == null: dragy_line = drag_offset_y.get_line_edit()
-		dragy_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(drag_offset_y))
+		dragy_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(dragy_line))
 	
 		
 		container_array = [
@@ -246,15 +249,100 @@ func _ready() -> void:
 			container_array[i].mouse_entered.connect(update_tooltip.bind(corresponding_btns[i]))
 			
 			# printerr(str(container_array[i].get_name(), " mouse_entered signal connection status: ", container_array[i].mouse_entered.is_connected(update_tooltip)))
-		set_settings_state()
+		load_settings_state()
 	
+
+#region settings.ini
+func create_settings_file() -> void:
+	var _a : Array[Array] = [["game", 0, true], ["player", 1, true]]
+	config.set_value("plugin", "base_directory", "user://GoLogger/")
+	config.set_value("plugin", "categories", _a)
+
+	config.set_value("settings", "log_header", 0)
+	config.set_value("settings", "canvaslayer_layer", 5)
+	config.set_value("settings", "autostart_session", true)
+	config.set_value("settings", "timestamp_entries", true)
+	config.set_value("settings", "use_utc", false)
+	config.set_value("settings", "dash_separator", false)
+	config.set_value("settings", "limit_method", 0)
+	config.set_value("settings", "limit_action", 0)
+	config.set_value("settings", "file_cap", 10)
+	config.set_value("settings", "entry_cap", 1000)
+	config.set_value("settings", "session_duration", 600.0)
+	config.set_value("settings", "drag_offset_x", 0.0)
+	config.set_value("settings", "drag_offset_y", 0.0)
+	config.set_value("settings", "show_controller", false)
+	config.set_value("settings", "controller_monitor_side", true)
+	config.set_value("settings", "error_reporting", 0)
+	config.set_value("settings", "session_print", 0)
+	config.set_value("settings", "disable_warn1", false)
+	config.set_value("settings", "disable_warn2", false)
+	config.save(PATH)
+
+
+## Sets the state of all the buttons in the dock depending on the settings retrived
+## from the settings.ini.
+func load_settings_state() -> void:
+	base_dir_line.text = 							config.get_value("plugin", 	 "base_directory")
+	log_header_btn.selected = 						config.get_value("settings", "log_header")
+	canvas_layer_spinbox.value = 					config.get_value("settings", "canvaslayer_layer")
+	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session")
+	timestamp_entries_btn.button_pressed = 			config.get_value("settings", "timestamp_entries")
+	utc_btn.button_pressed = 						config.get_value("settings", "use_utc")
+	dash_btn.button_pressed = 						config.get_value("settings", "dash_separator")
+	limit_method_btn.selected = 					config.get_value("settings", "limit_method")
+	limit_action_btn.selected = 					config.get_value("settings", "limit_action")
+	file_count_spinbox.value = 						config.get_value("settings", "file_cap")
+	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap")
+	session_duration_spinbox.value = 				config.get_value("settings", "session_duration")
+	drag_offset_x.value = 							config.get_value("settings", "drag_offset_x")
+	drag_offset_y.value = 							config.get_value("settings", "drag_offset_y")
+	controller_start_btn.button_pressed = 			config.get_value("settings", "show_controller")
+	controller_monitor_side_btn.button_pressed = 	config.get_value("settings", "controller_monitor_side")
+	error_rep_btn.selected = 						config.get_value("settings", "error_reporting")
+	session_print_btn.selected =					config.get_value("settings", "session_print")
+	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1")
+	disable_warn2_btn.button_pressed = 				config.get_value("settings", "disable_warn2")
+
+
+
+## Resets the categories to default by removing any existing category elements, 
+## overwriting the saved categories in the .ini file and then loading default 
+## categories "game" and "player".
+func reset_to_default(tab : int) -> void:
+	if tab == 0: # Categories
+		# Remove existing category elements from dock
+		var children = category_container.get_children()
+		for i in range(children.size()):
+			children[i].queue_free()
+
+		# Set/load default categories deferred to ensure completed deletion
+		# Preventative "cooldown" added to disable reset and add to be called
+		# during this cooldown period.
+		defaults_btn.disabled = true
+		add_category_btn.disabled = true
+		await get_tree().create_timer(0.5).timeout
+		config.set_value("plugin", "categories", [["game", 0, false], ["player", 1, false]])
+		load_categories()
+		defaults_btn.disabled = false
+		add_category_btn.disabled = false
+
+	# Settings
+	else: 
+		config.clear()
+		create_settings_file()
+		load_settings_state()
+#endregion
+
+
+
 
 #region Tooltip
 ## Updates the tooltip with pertinent information about each setting on mouseover and focus entered.
 func update_tooltip(node : Control) -> void:
 	match node:
 		reset_settings_btn:
-			tooltip_lbl.text = "[font_size=14][color_red]Reset Settings to Default:[color=white][font_size=11]\nReset all settings to their default values."
+			tooltip_lbl.text = "[font_size=14][color=red]Reset Settings to Default:[color=white][font_size=11]\nReset all settings to their default values."
 
 		# String settings [LineEdits]
 		base_dir_line:
@@ -309,7 +397,7 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "[font_size=14][color=green]Controller Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
 		drag_offset_y:
 			tooltip_lbl.text = "[font_size=14][color=green]Controller Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
-
+#endregion
 
 
 #region Buttons
@@ -405,10 +493,10 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 
 
 #region Spinboxes
-func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
+func _on_spinbox_value_changed(value : float, node : Control) -> void:
 	match node:
 		entry_count_spinbox:
-			config.set_value("settings", "entry_count_cap", value)
+			config.set_value("settings", "entry_cap", value)
 		session_duration_spinbox:
 			config.set_value("settings", "session_duration", value)
 		file_count_spinbox:
@@ -423,102 +511,28 @@ func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 
 func _on_spinbox_lineedit_submitted(value : float, node : Control) -> void:
 	match node:
+		canvas_spinbox_line:
+			config.set_value("settings", "canvaslayer_layer", value)
+		file_count_spinbox_line:
+			config.set_value("settings", "file_cap", value)
+		entry_count_spinbox_line:
+			config.set_value("settings", "entry_cap", value)
+		session_duration_spinbox_line:
+			config.set_value("settings", "session_duration", value)
 		dragx_line:
 			if value >= drag_offset_x.min_value or value <= drag_offset_x.max_value:
 				config.set_value("settings", "controller_drag_offset_x", value)
 		dragy_line:
 			if value >= drag_offset_y.min_value or value <= drag_offset_y.max_value:
 				config.set_value("settings", "controller_drag_offset_y", value)
+	node.release_focus()
 	config.save(PATH)
 
-func _on_spinbox_gui_input(event : InputEvent, node : SpinBox) -> void:
-	if event is InputEventKey and event.keycode == KEY_ENTER and event.is_released():
-		match node:
-			canvas_layer_spinbox: canvas_layer_spinbox.release_focus()
-			file_count_spinbox: file_count_spinbox.release_focus()
-			entry_count_spinbox: entry_count_spinbox.release_focus()
-			session_duration_spinbox: session_duration_spinbox.release_focus()
-			drag_offset_x: drag_offset_x.release_focus()
-			drag_offset_y: drag_offset_y.release_focus()
 #endregion
 
 
 
 #region Main category functions
-func create_settings_file() -> void:
-	var _a : Array[Array] = [["game", 0, true], ["player", 1, true]]
-	config.set_value("plugin", "base_directory", "user://GoLogger/")
-	config.set_value("plugin", "categories", _a)
-
-	config.set_value("settings", "log_header", 0)
-	config.set_value("settings", "canvaslayer_layer", 5)
-	config.set_value("settings", "autostart_session", true)
-	config.set_value("settings", "timestamp_entries", true)
-	config.set_value("settings", "use_utc", false)
-	config.set_value("settings", "dash_separator", false)
-	config.set_value("settings", "limit_method", 0)
-	config.set_value("settings", "limit_action", 0)
-	config.set_value("settings", "file_cap", 10)
-	config.set_value("settings", "entry_count_cap", 1000)
-	config.set_value("settings", "session_duration", 600.0)
-	config.set_value("settings", "drag_offset_x", 0.0)
-	config.set_value("settings", "drag_offset_y", 0.0)
-	config.set_value("settings", "show_controller", false)
-	config.set_value("settings", "logfile_monitor_side", true)
-	config.set_value("settings", "error_reporting", 0)
-	config.set_value("settings", "session_print", 0)
-	config.set_value("settings", "disable_warn1", false)
-	config.set_value("settings", "disable_warn2", false)
-	config.save(PATH)
-
-
-## Sets the state of all the buttons in the dock depending on the settings retrived
-## from the settings.ini.
-func set_settings_state() -> void:
-	base_dir_line.text = config.get_value("plugin", "base_directory")
-	log_header_btn.selected = config.get_value("settings", "log_header")
-	canvas_layer_spinbox.value = config.get_value("settings", "canvaslayer_layer")
-	autostart_btn.button_pressed = config.get_value("settings", "autostart_session")
-	timestamp_entries_btn.button_pressed = config.get_value("settings", "timestamp_entries")
-	utc_btn.button_pressed = config.get_value("settings", "use_utc")
-	dash_btn.button_pressed = config.get_value("settings", "dash_separator")
-	limit_method_btn.selected = config.get_value("settings", "limit_method")
-	limit_action_btn.selected = config.get_value("settings", "limit_action")
-	file_count_spinbox.value = config.get_value("settings", "file_cap")
-	entry_count_spinbox.value = config.get_value("settings", "entry_count_cap")
-	session_duration_spinbox.value = config.get_value("settings", "session_duration")
-	drag_offset_x.value = config.get_value("settings", "drag_offset_x")
-	drag_offset_y.value = config.get_value("settings", "drag_offset_y")
-	controller_start_btn.button_pressed = config.get_value("settings", "show_controller")
-	controller_monitor_side_btn.button_pressed = config.get_value("settings", "logfile_monitor_side")
-	error_rep_btn.selected = config.get_value("settings", "error_reporting")
-	session_print_btn.value = config.get_value("settings", "session_print")
-	disable_warn1_btn.button_pressed = config.get_value("settings", "disable_warn1")
-	disable_warn2_btn.button_pressed = config.get_value("settings", "disable_warn2")
-
-
-
-## Resets the categories to default by removing any existing category elements, 
-## overwriting the saved categories in the .ini file and then loading default 
-## categories "game" and "player".
-func reset_to_default() -> void:
-	# Remove existing category elements from dock
-	var children = category_container.get_children()
-	for i in range(children.size()):
-		children[i].queue_free()
-
-	# Set/load default categories deferred to ensure completed deletion
-	# Preventative "cooldown" added to disable reset and add to be called
-	# during this cooldown period.
-	defaults_btn.disabled = true
-	add_category_btn.disabled = true
-	await get_tree().create_timer(0.5).timeout
-	config.set_value("plugin", "categories", [["game", 0, false], ["player", 1, false]])
-	load_categories()
-	defaults_btn.disabled = false
-	add_category_btn.disabled = false
-
-
 ## Loads categories from settings.ini and creates corresponding LogCategory elements.
 func load_categories(deferred : bool = false) -> void:
 	if deferred:
@@ -588,7 +602,7 @@ func check_conflict_name(obj : Panel, name : String) -> bool:
 		if i == obj:
 			continue
 		elif i.category_name == name:
-			printerr(str("FOUND CONFLICTING NAME ON OBJECT: ", i.category_name, "[", i, "] - ", obj.category_name, "[", obj, "]\nall children: ", category_container.get_children()))
+			# printerr(str("Found conflicting category name on: ", i.category_name, "[", i, "] - ", obj.category_name, "[", obj, "]\nall children: ", category_container.get_children()))
 			if name == "": return false
 			return true
 	return false
@@ -612,13 +626,6 @@ func update_indices(deferred : bool = false) -> void:
 
 
 #region Settings
-func load_settings(section : String) -> Dictionary:
-	var settings = {}
-	for key in config.get_section_keys(section):
-		settings[key] = config.get_value(section, key)
-	return settings
-
-
 func save_setting(value, key : String, section : String = "settings") -> void:
 	config.set_value(section, key, value)
 	config.save(PATH) 
@@ -628,3 +635,4 @@ func open_directory() -> void:
 	var abs_path = ProjectSettings.globalize_path(config.get_value("plugin", "base_directory"))
 	print(abs_path)
 	OS.shell_open(abs_path)
+#endregion

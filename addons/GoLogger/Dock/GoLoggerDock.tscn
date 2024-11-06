@@ -260,7 +260,7 @@ mouse_filter = 2
 [node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-value = 5.0
+value = 6.0
 alignment = 2
 update_on_text_changed = true
 prefix = "Layer"
@@ -324,7 +324,7 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 2
-selected = 2
+selected = 0
 allow_reselect = true
 item_count = 3
 popup/item_0/text = "Entry Count"
