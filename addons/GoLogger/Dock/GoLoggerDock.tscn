@@ -1,12 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=4 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Script" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="PackedScene" uid="uid://bsjs2nwxyiflf" path="res://addons/GoLogger/Dock/ToolTip.tscn" id="5_r16qc"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_6l1k1"]
-line_spacing = -2.0
-font_size = 12
 
 [node name="GoLoggerDock" type="TabContainer"]
 custom_minimum_size = Vector2(192, 231)
@@ -134,7 +130,7 @@ grow_vertical = 2
 theme_override_constants/separation = 12
 
 [node name="ColumnA" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
-custom_minimum_size = Vector2(0, 200)
+custom_minimum_size = Vector2(0, 202)
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 4
@@ -156,6 +152,7 @@ horizontal_alignment = 1
 vertical_alignment = 2
 
 [node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(198, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
@@ -163,53 +160,43 @@ text = "user://GoLogger/"
 placeholder_text = "user://logs/"
 alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox"]
+[node name="BaseDirBtnContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 9
 alignment = 1
 
-[node name="ApplyButton" type="Button" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2"]
+[node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
+unique_name_in_owner = true
 modulate = Color(0.46148, 0.83, 0.2324, 1)
 layout_mode = 2
 text = "Apply"
 
-[node name="OpenDirButton" type="Button" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2"]
+[node name="BaseDirOpenDirButton" type="Button" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
+unique_name_in_owner = true
 modulate = Color(1, 0.675, 0.25, 1)
 layout_mode = 2
 text = "Open Directory Folder"
 
-[node name="ResetButton" type="Button" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer2"]
+[node name="BaseDirResetButton" type="Button" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
+unique_name_in_owner = true
 self_modulate = Color(1, 0.35, 0.35, 1)
 layout_mode = 2
 text = "Reset"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox"]
-layout_mode = 2
-alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/HBoxContainer"]
-layout_mode = 2
-alignment = 1
-
 [node name="ToolTip" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox" instance=ExtResource("5_r16qc")]
-custom_minimum_size = Vector2(200, 65)
+custom_minimum_size = Vector2(200, 82)
 layout_mode = 2
 
 [node name="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip" index="0"]
-offset_bottom = 20.0
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer" index="0"]
-custom_minimum_size = Vector2(0, 57)
+custom_minimum_size = Vector2(0, 80)
 text = "The base directory used to create and store log files within.\\nAttempts to apply and create the base directory folder using the entered path. The directory path resets to the previously saved path if the new path was rejected."
-label_settings = SubResource("LabelSettings_6l1k1")
 
 [node name="ColumnB" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
 custom_minimum_size = Vector2(266, 0)
@@ -223,6 +210,7 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 alignment = 2
 
@@ -232,12 +220,13 @@ layout_mode = 2
 text = "  Log Header"
 vertical_alignment = 1
 
-[node name="Control" type="Control" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox"]
+[node name="Spacer" type="Control" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox"]
 custom_minimum_size = Vector2(68, 0)
 layout_mode = 2
 mouse_filter = 2
 
 [node name="LogHeaderOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 alignment = 2
@@ -251,6 +240,7 @@ popup/item_2/text = "Version"
 popup/item_2/id = 2
 
 [node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 alignment = 2
 
@@ -266,6 +256,7 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 value = 5.0
 alignment = 2
@@ -273,18 +264,21 @@ update_on_text_changed = true
 prefix = "Layer"
 
 [node name="AutostartCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 text = "Autostart session"
 
 [node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 text = "Use UTC time"
 
 [node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
@@ -294,7 +288,7 @@ text = "Use - separator in timestamps"
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 4
+theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 4
 
@@ -306,6 +300,7 @@ layout_mode = 2
 theme_override_constants/separation = 3
 
 [node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
@@ -316,6 +311,7 @@ layout_mode = 2
 text = "Limit method "
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/LimitMethodHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 alignment = 2
 selected = 2
@@ -328,6 +324,7 @@ popup/item_2/text = "EntryCount + SessionTimer"
 popup/item_2/id = 2
 
 [node name="LimitActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 46
 alignment = 1
@@ -339,6 +336,7 @@ text = "Limit action"
 vertical_alignment = 1
 
 [node name="LimitActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/LimitActionHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 alignment = 2
 selected = 0
@@ -349,6 +347,7 @@ popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
 [node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 125
 alignment = 1
@@ -360,6 +359,7 @@ text = "File count limit"
 vertical_alignment = 1
 
 [node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/FileCountHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 min_value = 5.0
 max_value = 30.0
@@ -369,6 +369,7 @@ update_on_text_changed = true
 custom_arrow_step = 1.0
 
 [node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 112
 alignment = 1
@@ -380,6 +381,7 @@ text = "Entry count limit"
 vertical_alignment = 1
 
 [node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/EntryCountHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 min_value = 100.0
 max_value = 5000.0
@@ -388,6 +390,7 @@ alignment = 2
 update_on_text_changed = true
 
 [node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 111
 alignment = 1
@@ -399,6 +402,7 @@ text = "Session duration"
 vertical_alignment = 1
 
 [node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/HBoxContainer/VBoxContainer/SessionDurationHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 min_value = 20.0
 max_value = 1200.0
@@ -419,9 +423,10 @@ theme_override_constants/margin_bottom = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD"]
 layout_mode = 2
-theme_override_constants/separation = 9
+theme_override_constants/separation = 3
 
 [node name="DragOffsetHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 4
 alignment = 1
@@ -433,6 +438,7 @@ text = " Controller dragging offset"
 vertical_alignment = 1
 
 [node name="XSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/DragOffsetHBox"]
+unique_name_in_owner = true
 modulate = Color(0.96, 0.34944, 0.2688, 1)
 layout_mode = 2
 min_value = -3840.0
@@ -441,22 +447,26 @@ alignment = 2
 prefix = "x:"
 
 [node name="YSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/DragOffsetHBox"]
+unique_name_in_owner = true
 modulate = Color(0.4606, 0.98, 0.64239, 1)
 layout_mode = 2
 alignment = 2
 prefix = "y:"
 
 [node name="ShowOnStartCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Show Controller on start"
 icon_alignment = 2
 
 [node name="MonitorSideCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Controller LogFile Monitor side"
 icon_alignment = 2
 
 [node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 76
 alignment = 1
@@ -468,6 +478,7 @@ text = "Error reporting"
 vertical_alignment = 1
 
 [node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/ErrorRepHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 alignment = 2
 selected = 0
@@ -491,6 +502,7 @@ text = "Print session changes"
 vertical_alignment = 1
 
 [node name="SessionChangeOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/VBoxContainer/SessionDurationHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 alignment = 2
 selected = 0
@@ -515,18 +527,21 @@ theme_override_constants/margin_bottom = 4
 
 [node name="Column" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE"]
 layout_mode = 2
+theme_override_constants/separation = 3
 
 [node name="Label" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column"]
 layout_mode = 2
 text = "Disable warnings:"
 
 [node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 text = "Failed to start session w/o stopping prev"
 
 [node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
