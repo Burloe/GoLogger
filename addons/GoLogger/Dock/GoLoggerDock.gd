@@ -3,13 +3,13 @@ extends TabContainer
 
 #region Category tab
 ## Add category [Button]. Instantiates a [param category_scene] and adds it as a child of [param category_container].
-@onready var add_category_btn : Button = $Categories/MarginContainer/VBoxContainer/HBoxContainer/AddButton
+@onready var add_category_btn : Button = %AddCategoryButton
 ## Category [GridContainer] node. Holds all the LogCategory nodes that represent each category.
-@onready var category_container : GridContainer = $Categories/MarginContainer/VBoxContainer/HBoxContainer/GridContainer
+@onready var category_container : GridContainer = %CategoryGridContainer
 ## Open directory [Button] node. Opens the [param base_directory] folder using the OS file explorer. 
-@onready var open_dir_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/OpenDirButton
+@onready var open_dir_btn : Button = %OpenDirCatButton
 ## Reset to default categories [Button] node. Removes all existing categories and adds "game" and "player" categories.
-@onready var defaults_btn : Button = $Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/DefaultsButton
+@onready var defaults_btn : Button = %DefaultsCatButton
 
 ## LogCategory scene. Instantiated into [param LogCategory].
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
@@ -38,7 +38,7 @@ signal update_index
 var log_header_string : String
 
 @onready var canvas_layer_spinbox : SpinBox = %CanvasLayerSpinBox
-var canvas_spinbox_line 
+var canvas_spinbox_line : LineEdit
 @onready var canvas_layer_container : HBoxContainer = %CanvasLayerHBox
 
 
@@ -60,29 +60,16 @@ var canvas_spinbox_line
 @onready var limit_action_container : HBoxContainer = %LimitActionHBox
 
 @onready var file_count_spinbox : SpinBox = %FileCountSpinBox
-var file_count_spinbox_line
+var file_count_spinbox_line : LineEdit
 @onready var file_count_container : HBoxContainer = %FileCountHBox
 
 @onready var entry_count_spinbox : SpinBox = %EntryCountSpinBox
-var entry_count_spinbox_line
+var entry_count_spinbox_line : LineEdit
 @onready var entry_count_container : HBoxContainer = %EntryCountHBox
 
 @onready var session_duration_spinbox : SpinBox = %SessionDurationHBox/SessionDurationSpinBox
-var session_duration_spinbox_line
+var session_duration_spinbox_line : LineEdit
 @onready var session_duration_container : HBoxContainer = %SessionDurationHBox
-
-
-@onready var drag_offset_x : SpinBox = %XSpinBox
-var dragx_line
-
-@onready var drag_offset_y : SpinBox = %YSpinBox
-var dragy_line
-@onready var drag_offset_container : HBoxContainer = %DragOffsetHBox
-
-
-@onready var controller_start_btn : CheckButton = %ShowOnStartCheckButton
-
-@onready var controller_monitor_side_btn : CheckButton = %MonitorSideCheckButton
 
 @onready var error_rep_btn : OptionButton = %ErrorRepOptButton
 @onready var error_rep_container : HBoxContainer = %ErrorRepHBox
@@ -93,6 +80,24 @@ var dragy_line
 
 @onready var disable_warn1_btn : CheckButton = %DisableWarn1CheckButton
 @onready var disable_warn2_btn : CheckButton = %DisableWarn2CheckButton 
+
+# Controller settings
+@onready var controller_xpos_spinbox : SpinBox = %XPosSpinBox
+var controller_xpos_line : LineEdit
+@onready var controller_ypos_spinbox : SpinBox = %YPosSpinBox
+var controller_ypos_line : LineEdit
+
+@onready var drag_offset_x : SpinBox = %XOffSpinBox
+var dragx_line : LineEdit
+
+@onready var drag_offset_y : SpinBox = %YOffSpinBox
+var dragy_line : LineEdit
+@onready var drag_offset_container : HBoxContainer = %DragOffsetHBox
+
+@onready var controller_start_btn : CheckButton = %ShowOnStartCheckButton
+
+@onready var controller_monitor_side_btn : CheckButton = %MonitorSideCheckButton
+
 var btn_array : Array[Control] = []
 var container_array : Array[Control] = []
 #endregion
@@ -100,6 +105,7 @@ var container_array : Array[Control] = []
 
 # Debug
 # func _physics_process(delta: float) -> void:
+# 	$Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column/Label2.text = str("FileCount status: ", file_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted))
 # 	var _c = config.get_value("plugin", "categories") 
 # 	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current .ini setting(size = ", _c.size(), "):\n      ", _c, "\nCurrent GridContainer.get_children()[size = ",category_container.get_children().size(), "]:\n      ", category_container.get_children())
 
@@ -120,10 +126,11 @@ func _ready() -> void:
 		for i in category_container.get_children():
 			if i is not Button:
 				i.queue_free()
+		# Load categories as saved in settings.ini
 		load_categories()
 
 		
-		# Settings
+		# Settings	
 		reset_settings_btn.button_up.connect(reset_to_default.bind(1))
 		reset_settings_btn.mouse_entered.connect(update_tooltip.bind(reset_settings_btn))
 		reset_settings_btn.focus_entered.connect(update_tooltip.bind(reset_settings_btn))
@@ -144,14 +151,14 @@ func _ready() -> void:
 			file_count_spinbox,
 			entry_count_spinbox,
 			session_duration_spinbox,
+			error_rep_btn,
+			session_print_btn,
+			disable_warn1_btn,
+			disable_warn2_btn,
 			drag_offset_x,
 			drag_offset_y,
 			controller_start_btn,
 			controller_monitor_side_btn,
-			error_rep_btn,
-			session_print_btn,
-			disable_warn1_btn,
-			disable_warn2_btn
 		]
 
 		# Check and disconnect any existing signal connections > Connect the signals
@@ -269,6 +276,8 @@ func create_settings_file() -> void:
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_cap", 1000)
 	config.set_value("settings", "session_duration", 600.0)
+	config.set_value("settings", "controller_xpos", 0.0)
+	config.set_value("settings", "controller_ypos", 0.0)
 	config.set_value("settings", "drag_offset_x", 0.0)
 	config.set_value("settings", "drag_offset_y", 0.0)
 	config.set_value("settings", "show_controller", false)
@@ -295,6 +304,8 @@ func load_settings_state() -> void:
 	file_count_spinbox.value = 						config.get_value("settings", "file_cap")
 	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap")
 	session_duration_spinbox.value = 				config.get_value("settings", "session_duration")
+	controller_xpos_spinbox.value =					config.get_value("settings", "controller_xpos")
+	controller_ypos_spinbox.value =					config.get_value("settings", "controller_ypos")
 	drag_offset_x.value = 							config.get_value("settings", "drag_offset_x")
 	drag_offset_y.value = 							config.get_value("settings", "drag_offset_y")
 	controller_start_btn.button_pressed = 			config.get_value("settings", "show_controller")
@@ -326,6 +337,7 @@ func reset_to_default(tab : int) -> void:
 		load_categories()
 		defaults_btn.disabled = false
 		add_category_btn.disabled = false
+		config.save(PATH)
 
 	# Settings
 	else: 
@@ -393,6 +405,10 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "[font_size=14][color=green]File Limit:[color=white][font_size=11]\nFile count limit. Limits the number of files in any log category folder."
 		canvas_layer_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]CanvasLayer Layer:[color=white][font_size=11]\nSets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
+		controller_xpos_spinbox:
+			tooltip_lbl.text = "[font_size=14][color=green]Position of GoLoggerController:[color=white][font_size=11]\nSets the original/start position of the GoLoggerController."
+		controller_ypos_spinbox:
+			tooltip_lbl.text = "[font_size=14][color=green]Position of GoLoggerController:[color=white][font_size=11]\nSets the original/start position of the GoLoggerController."
 		drag_offset_x:
 			tooltip_lbl.text = "[font_size=14][color=green]Controller Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
 		drag_offset_y:
@@ -416,7 +432,7 @@ func _on_button_button_up(node : Button) -> void:
 		
 		base_dir_opendir_btn:
 			open_directory()
-		
+
 		base_dir_reset_btn:
 			config.set_value("plugin", "base_directory", "user://GoLogger/")
 #endregion
@@ -493,7 +509,13 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 
 
 #region Spinboxes
-func _on_spinbox_value_changed(value : float, node : Control) -> void:
+func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
+	var u_line = node.get_line_edit()
+	# printerr(str("textsubmit connx status = ", u_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted)))
+	u_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(u_line))
+	# printerr(str("textsubmit connx status = ", u_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted)))
+	u_line.set_caret_column(u_line.text.length())
+	# print(str("Line Edit value_changed: ", node.get_name, " - ", value, ". ", u_line.get_name()))
 	match node:
 		entry_count_spinbox:
 			config.set_value("settings", "entry_cap", value)
@@ -503,31 +525,53 @@ func _on_spinbox_value_changed(value : float, node : Control) -> void:
 			config.set_value("settings", "file_cap", value)
 		canvas_layer_spinbox:
 			config.set_value("settings", "canvaslayer_layer", value)
+		controller_xpos_spinbox:
+			config.set_value("settings", "controller_start_pos_x", value)
+		controller_ypos_spinbox:
+			config.set_value("settings", "controller_start_pos_y", value)
 		drag_offset_x:
 			config.set_value("settings", "controller_drag_offset_x", value)
 		drag_offset_y:
 			config.set_value("settings", "controller_drag_offset_y", value)
 	config.save(PATH)
 
-func _on_spinbox_lineedit_submitted(value : float, node : Control) -> void:
+func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
+	print(str("Line Edit text_submitted: ", node.get_name, " - ", new_text, "."))
 	match node:
 		canvas_spinbox_line:
+			var value = int(new_text)
 			config.set_value("settings", "canvaslayer_layer", value)
+			canvas_layer_spinbox.release_focus()
+			canvas_spinbox_line.release_focus()
 		file_count_spinbox_line:
+			var value = int(new_text)
 			config.set_value("settings", "file_cap", value)
+			file_count_spinbox_line.release_focus()
+			file_count_spinbox.release_focus()
 		entry_count_spinbox_line:
+			var value = int(new_text)
 			config.set_value("settings", "entry_cap", value)
+			entry_count_spinbox.release_focus()
+			entry_count_spinbox_line.release_focus()
 		session_duration_spinbox_line:
+			var value = float(new_text)
 			config.set_value("settings", "session_duration", value)
+			session_duration_spinbox.release_focus()
+			session_duration_spinbox_line.release_focus()
 		dragx_line:
+			var value = float(new_text)
 			if value >= drag_offset_x.min_value or value <= drag_offset_x.max_value:
 				config.set_value("settings", "controller_drag_offset_x", value)
+				drag_offset_x.release_focus()
+				dragx_line.release_focus()
 		dragy_line:
+			var value = float(new_text)
 			if value >= drag_offset_y.min_value or value <= drag_offset_y.max_value:
 				config.set_value("settings", "controller_drag_offset_y", value)
-	node.release_focus()
+				drag_offset_y.release_focus()
+				dragy_line.release_focus()
+	# node.release_focus()
 	config.save(PATH)
-
 #endregion
 
 

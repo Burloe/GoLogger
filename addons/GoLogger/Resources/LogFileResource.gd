@@ -1,6 +1,7 @@
 extends Resource
 class_name LogFileResource
 
+##DEPRECATED
 ## Resource containing file names and paths in order to expand the number of log files to fit the users need. By default, the directory where .log files are stored are in the user data folder.
 ## These paths can be accessed by selecting Project > Open User Data Folder in the top-left.[br]
 ## Normally located in:[br]
