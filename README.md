@@ -15,7 +15,7 @@ You can log into a single log file for all your needs but GoLogger allows for yo
 2. How to use GoLogger
    * Starting & Stopping Log Sessions
    * Creating log entries and include data
-   * Accessing the .log files, the plugin settings and GoLoggerController
+   * Accessing the .log files and GoLoggerController
 3. Managing .log file size
    * Entry count limit
    * Sesssion timer
@@ -38,7 +38,7 @@ You can log into a single log file for all your needs but GoLogger allows for yo
 
 ## How to use GoLogger:<br>
 ### **Starting & stopping log sessions:**<br>
-GoLogger uses sessions to indicate when it’s actively logging or not, and each session creates a new .log file with the time- and datestamp of creation. There are three main ways to start and stop a session. You can use the `autostart` setting(on by default) which starts a session when you run the project. You can also use the hotkey Ctrl + Shift + O(start) or P(stop). The last way is to open the GoLoggerController with Ctrl + Shift + K and press the start button. Of course you can also start a session through code by simply calling `Log.start_session()` anywhere in your code. The plugin has a .log file limit of 10 by default(can be changed) and once the limit has been hit, the file with the oldest timestamp is deleted.<br>
+GoLogger uses sessions to indicate when it’s actively logging or not, and each session creates a new .log file with the time- and datestamp of when the session was started. There are three main ways to start and stop a session. You can use the `autostart` setting(on by default) which starts a session when you run the project. Hotkeys Ctrl + Shift + O to start or P to stop. Lastly, you can open the GoLoggerController with Ctrl + Shift + K and press the start button. Of course you can also start a session through code by simply calling `Log.start_session()` anywhere in your code. If you want to sync up some system or stress test some feature with a logging session, the signals `session_start` and `session_stopped` was added to the autoload to make this easy. The plugin also has a .log file limit of 10 by default(can be changed) and once the limit has been hit, the file with the oldest timestamp is deleted. But you can also save a copy of the active session(Ctrl + Shift + U) in case something noteworthy like a bug occured. When you do, a prompt popup appears for you to name the copy log file. These copies are saved in a subfolder of the normal log category folder.<br>
 
 Managing the log sessions at runtime can be done in four ways:
 1. Using the `autostart` setting which starts a session in the Log.gd `_ready()` function. Meaning it'll start a session when you run your project.
@@ -58,24 +58,19 @@ Only the first parameter mandatory and needs to be defined when calling the func
 2. `category_index` - *Optional* - Specifies which log category the entry will be stored in. Category index can be found in the category tab of the dock panel.
 You can call this function from any script in your project. The string message can include almost any data, but you may need to convert that data into a string using `str()`. Godot also offers various methods of formatting strings. [See this documentation page for more information](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_format_string.html) <br><br>
 
-### **Accessing the .log files, the plugin settings and GoLoggerController:**
-#### Accessing the .log files:
-The directories where the .log files are created are located in the User Data folder under `user://logs/x_Gologs/x.log`. The User Data folder location is different on every OS but can be accessed through Godot and can be accessed through `Project > Open User Data Folder`.
-#### Plugin settings:
-To access the settings, you open "GoLogger.tscn" and find the settings in the Inspector.
-#### GoLogger Controller:
-This plugin comes with a controller that provides information about the current session and can stop and start sessions. To use it, just instantiate it into your existing UI and you can toggle its visibility using F9. Binding can be changed in "Log.tscn". <br><br>
+### **Accessing the .log files and GoLoggerController:**
+You can access the base directory in the bottom dock panel. Logs are stored in folders named after the categories. By default, the log files are stored in the `user://GoLogger/category_name/` folder. This path is different depending on your OS but you can find information about where that is on this ![documentation page](https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#accessing-persistent-user-data-user). The GoLoggerController can be toggled in-game with `Ctrl + Shift + K`. <br><br>
 
 
 ## Managing .log file size:
-One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates the file when used. Therefore, the plugin first stores the old entries with `FileAccess.READ`, truncates the file with `FileAccess.WRITE`, adds them back, and then appends the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings/arrays can slow down the system. This is especially a concern during long game sessions or if multiple systems are logging to the same file. To mitigate this, GoLogger offers two methods for limiting log length:
-#### Entry Count Limit(recommended):
-In the inspector of "Log.tscn"(where you find all plugin settings), `entry_count_limit` sets the maximum number of entries/lines allowed in a file. Once the limit is reached, the oldest entry is removed as new ones are added. This method is highly reliable for preventing files from becoming too large.
-#### Session Timer:
-A timer starts with each session, and when it expires, the session will stop and restart by default. The `session_timeout_action` allows you to either stop the session entrirely or stop and start a new one. While this can be helpful and can be useful in certain situation, it is less reliable for file size management because it's still possible to log too many entries in a short amount of time. However, the timer can be useful for other purposes, such as stress testing. A `session_timer_started` signal is available to help sync with this timer.
-*Note: If `stop_session_only` is used, you'll need to manually start a new session either via the GoLoggerController or by calling `start_session()` in your code.*
-<br>
-You can use Entry Count Limit, Session Timer, or both via the `log_manage_method` setting. It is highly recommended to use one or both methods, especially for released projects. Objectively, Entry Count Limit is the more efficient solution, but both options offer flexibility. If you experience performance issues and suspect GoLogger is the cause, try reducing the entry limit or shortening the session timer.
+One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess.WRITE` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates the file when used. Therefore, old entries are temporarily stored with `FileAccess.READ` before the file is truncated, They're then added back, while appending the new entry. This may result in stuttering issues when files grow excessively large as loading and unloading large arrays can slow down the system. This is a concern during long sessions or if several systems log into one file. To mitigate this, GoLogger features a 'category' system that in addition of separating log entries into different files to make the data easier to digest but also has the added benefit of splitting up the log entries. Thereby limiting the size of each log file. Additionally, there are two methods you can use to automatically manage the log sizes. With the setting `Limit Method`, you determine the method to use, while the setting `Limit Action` sets what action is taken when the method's condition is met. 
+#### Methods:
+* **Entry Count Limit(recommended) - In the inspector of "Log.tscn"(where you find all plugin settings), `entry_count_limit` sets the maximum number of entries/lines allowed in a file. Once the limit is reached, the oldest entry is removed as new ones are added. This method is highly reliable for preventing files from becoming too large.
+* **Session Timer** - A timer is started with each session, and when it expires, the session will stop and restart by default. Settings allow you to set what action is taken u allows you to either stop the session entrirely or stop and start a new one. While this can be helpful and can be useful in certain situation, it is less reliable for file size management because it's still possible to log too many entries in a short amount of time. However, the timer can be useful for other purposes, such as stress testing. A `session_timer_started` signal is available to help sync with this timer.
+
+#### Actions:
+* **Stop & start session* - Stops a session and starts a new one. Starting a new session will create another .log file.
+* **Stop only** - Stops the active session only. Requiring you to start a new session using the hotkey controls, the GoLoggerController or by calling `start_session()` in your code to start another session.
 
 
 ## Credit and Permission:
