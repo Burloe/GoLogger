@@ -103,6 +103,8 @@ var container_array : Array[Control] = []
 #endregion
 
 
+#TODO Add a 'validate settings' function
+
 # Debug
 # func _physics_process(delta: float) -> void:
 # 	$Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column/Label2.text = str("FileCount status: ", file_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted))
