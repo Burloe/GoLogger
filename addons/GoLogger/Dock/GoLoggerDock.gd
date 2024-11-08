@@ -15,7 +15,7 @@ extends TabContainer
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
 ## [ConfigFile]. All settings are added to this instance and then saves the stored settings to the settings.ini file.
 var config = ConfigFile.new()
-## Path to settings.ini file.
+## Path to settings.ini file. This path is a contant and doesn't change if you set your own [param base_directory]
 const PATH = "user://GoLogger/settings.ini"
 ## Emitted whenever an action that changes the display order is potentially made. Updates the index of all LogCategories.
 signal update_index
@@ -113,6 +113,11 @@ var container_array : Array[Control] = []
 func _ready() -> void: 
 	if Engine.is_editor_hint():
 		# Load/create settings.ini
+		var _d = DirAccess.open("user://GoLogger/")
+		if !_d:
+			_d.make_dir("user://GoLogger/")
+
+
 		if !FileAccess.file_exists(PATH):
 			create_settings_file()
 		else:
@@ -286,7 +291,10 @@ func create_settings_file() -> void:
 	config.set_value("settings", "session_print", 0)
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false)
-	config.save(PATH)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 ## Sets the state of all the buttons in the dock depending on the settings retrived
@@ -338,6 +346,9 @@ func reset_to_default(tab : int) -> void:
 		defaults_btn.disabled = false
 		add_category_btn.disabled = false
 		config.save(PATH)
+		if !config:
+			var _e = config.get_open_error()
+			printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 	# Settings
 	else: 
@@ -481,7 +492,10 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 		session_print_btn:
 			config.set_value("settings", "print_session_changes", index)
 	
-	config.save(PATH)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 #endregion
 
 
@@ -504,7 +518,10 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 			config.set_value("settings", "disable_warn1", toggled_on)
 		disable_warn2_btn:
 			config.set_value("settings", "disable_warn2", toggled_on)
-	config.save(PATH)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 #endregion
 
 
@@ -533,7 +550,10 @@ func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 			config.set_value("settings", "controller_drag_offset_x", value)
 		drag_offset_y:
 			config.set_value("settings", "controller_drag_offset_y", value)
-	config.save(PATH)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 	print(str("Line Edit text_submitted: ", node.get_name, " - ", new_text, "."))
@@ -571,7 +591,10 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 				drag_offset_y.release_focus()
 				dragy_line.release_focus()
 	# node.release_focus()
-	config.save(PATH)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 #endregion
 
 
@@ -622,7 +645,10 @@ func save_categories(deferred : bool = false) -> void:
 		main.append(_n)
 	# config.set_value("plugin", "base_directory", config.get_value("plugin", "base_directory"))
 	config.set_value("plugin", "categories", main)
-	config.save(PATH)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 
@@ -663,8 +689,11 @@ func update_indices(deferred : bool = false) -> void:
 		var _e : Array = [_c[i].category_name, i, _c[i].is_locked]
 		refresh_table.append(_e)
 	config.set_value("plugin", "categories", refresh_table)
-	config.save(PATH)
-	printt("Update indices:\n", refresh_table)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+	# printt("Update indices:\n", refresh_table)
 #endregion
 
 
@@ -672,7 +701,10 @@ func update_indices(deferred : bool = false) -> void:
 #region Settings
 func save_setting(value, key : String, section : String = "settings") -> void:
 	config.set_value(section, key, value)
-	config.save(PATH) 
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 func open_directory() -> void:
@@ -680,3 +712,62 @@ func open_directory() -> void:
 	print(abs_path)
 	OS.shell_open(abs_path)
 #endregion
+
+
+
+
+
+
+
+
+## Returns error string from the error code passed.
+static func get_error(error : int, object_type : String = "") -> String:
+	match error: 
+		1:  return str("Error[1] ",  object_type, " Failed")
+		2:  return str("Error[2] ",  object_type, " Unavailable")
+		3:  return str("Error[3] ",  object_type, " Unconfigured")
+		4:  return str("Error[4] ",  object_type, " Unauthorized")
+		5:  return str("Error[5] ",  object_type, " Parameter range")
+		6:  return str("Error[6] ",  object_type, " Out of memory")
+		7:  return str("Error[7] ",  object_type, " File: Not found")
+		8:  return str("Error[8] ",  object_type, " File: Bad drive")
+		9:  return str("Error[9] ",  object_type, " File: Bad File path")
+		10: return str("Error[10] ", object_type, " No File permission")
+		11: return str("Error[11] ", object_type, " File already in use")
+		12: return str("Error[12] ", object_type, " Can't open File")
+		13: return str("Error[13] ", object_type, " Can't write to File")
+		14: return str("Error[14] ", object_type, " Can't read to File")
+		15: return str("Error[15] ", object_type, " File unrecognized")
+		16: return str("Error[16] ", object_type, " File corrupt")
+		17: return str("Error[17] ", object_type, " File missing dependencies")
+		18: return str("Error[18] ", object_type, " End of File")
+		19: return str("Error[19] ", object_type, " Can't open")
+		20: return str("Error[20] ", object_type, " Can't create")
+		21: return str("Error[21] ", object_type, " Query failed")
+		22: return str("Error[22] ", object_type, " Already in use")
+		23: return str("Error[23] ", object_type, " Locked")
+		24: return str("Error[24] ", object_type, " Timeout")
+		25: return str("Error[25] ", object_type, " Can't connect")
+		26: return str("Error[26] ", object_type, " Can't resolve")
+		27: return str("Error[27] ", object_type, " Connection error")
+		28: return str("Error[28] ", object_type, " Can't acquire resource")
+		29: return str("Error[29] ", object_type, " Can't fork process")
+		30: return str("Error[30] ", object_type, " Invalid data")
+		31: return str("Error[31] ", object_type, " Invalid parameter")
+		32: return str("Error[32] ", object_type, " Already exists")
+		33: return str("Error[33] ", object_type, " Doesn't exist")
+		34: return str("Error[34] ", object_type, " Database: Can't read")
+		35: return str("Error[35] ", object_type, " Database: Can't write")
+		36: return str("Error[36] ", object_type, " Compilation failed")
+		37: return str("Error[37] ", object_type, " Method not found")
+		38: return str("Error[38] ", object_type, " Link failed")
+		39: return str("Error[39] ", object_type, " Script failed")
+		40: return str("Error[40] ", object_type, " Cyclic link")
+		41: return str("Error[41] ", object_type, " Invalid declaration")
+		42: return str("Error[42] ", object_type, " Duplicate symbol")
+		43: return str("Error[43] ", object_type, " Parse error")
+		44: return str("Error[44] ", object_type, " Busy error")
+		46: return str("Error[45] ", object_type, " Skip error")
+		47: return str("Error[46] ", object_type, " Help error")
+		48: return str("Error[47] ", object_type, " Bug error")
+	return "N/A"

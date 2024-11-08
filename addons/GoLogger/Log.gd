@@ -31,6 +31,11 @@ signal session_status_changed
 ## E.g. when stress testing some system or feather or to log for a specific time.
 signal session_timer_started   
 
+
+
+## Path to settings.ini file. This path is a contant and doesn't change if you set your own [param base_directory]
+const PATH = "user://GoLogger/settings.ini"
+
 ## Set the base filepath where folders for each log category are created. For each [LogFileResource] within [param file], a corresponding folder is created where 
 ## the logs are stored.[br][color=red][b]Warning:[/b][br]Changing this parameter at runtime will likely cause errors.
 @export var base_directory : String = "user://GoLogger/"
@@ -435,6 +440,58 @@ func get_err_string(error_code : int) -> String:
 		16: #  Corrupt
 			return "Error[16]: File is corrupted."
 	return "Error[X]: Unspecified error."
+
+## Returns error string from the error code passed.
+static func get_error(error : int, object_type : String = "") -> String:
+	match error: 
+		1:  return str("Error[1] ",  object_type, " Failed")
+		2:  return str("Error[2] ",  object_type, " Unavailable")
+		3:  return str("Error[3] ",  object_type, " Unconfigured")
+		4:  return str("Error[4] ",  object_type, " Unauthorized")
+		5:  return str("Error[5] ",  object_type, " Parameter range")
+		6:  return str("Error[6] ",  object_type, " Out of memory")
+		7:  return str("Error[7] ",  object_type, " File: Not found")
+		8:  return str("Error[8] ",  object_type, " File: Bad drive")
+		9:  return str("Error[9] ",  object_type, " File: Bad File path")
+		10: return str("Error[10] ", object_type, " No File permission")
+		11: return str("Error[11] ", object_type, " File already in use")
+		12: return str("Error[12] ", object_type, " Can't open File")
+		13: return str("Error[13] ", object_type, " Can't write to File")
+		14: return str("Error[14] ", object_type, " Can't read to File")
+		15: return str("Error[15] ", object_type, " File unrecognized")
+		16: return str("Error[16] ", object_type, " File corrupt")
+		17: return str("Error[17] ", object_type, " File missing dependencies")
+		18: return str("Error[18] ", object_type, " End of File")
+		19: return str("Error[19] ", object_type, " Can't open")
+		20: return str("Error[20] ", object_type, " Can't create")
+		21: return str("Error[21] ", object_type, " Query failed")
+		22: return str("Error[22] ", object_type, " Already in use")
+		23: return str("Error[23] ", object_type, " Locked")
+		24: return str("Error[24] ", object_type, " Timeout")
+		25: return str("Error[25] ", object_type, " Can't connect")
+		26: return str("Error[26] ", object_type, " Can't resolve")
+		27: return str("Error[27] ", object_type, " Connection error")
+		28: return str("Error[28] ", object_type, " Can't acquire resource")
+		29: return str("Error[29] ", object_type, " Can't fork process")
+		30: return str("Error[30] ", object_type, " Invalid data")
+		31: return str("Error[31] ", object_type, " Invalid parameter")
+		32: return str("Error[32] ", object_type, " Already exists")
+		33: return str("Error[33] ", object_type, " Doesn't exist")
+		34: return str("Error[34] ", object_type, " Database: Can't read")
+		35: return str("Error[35] ", object_type, " Database: Can't write")
+		36: return str("Error[36] ", object_type, " Compilation failed")
+		37: return str("Error[37] ", object_type, " Method not found")
+		38: return str("Error[38] ", object_type, " Link failed")
+		39: return str("Error[39] ", object_type, " Script failed")
+		40: return str("Error[40] ", object_type, " Cyclic link")
+		41: return str("Error[41] ", object_type, " Invalid declaration")
+		42: return str("Error[42] ", object_type, " Duplicate symbol")
+		43: return str("Error[43] ", object_type, " Parse error")
+		44: return str("Error[44] ", object_type, " Busy error")
+		46: return str("Error[45] ", object_type, " Skip error")
+		47: return str("Error[46] ", object_type, " Help error")
+		48: return str("Error[47] ", object_type, " Bug error")
+	return "N/A"
 
 
 ## Helper function that returns a file name string for your log containing using the prefix entered and adds the current system date and time.[br]
