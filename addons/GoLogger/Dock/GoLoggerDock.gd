@@ -397,7 +397,7 @@ func update_tooltip(node : Control) -> void:
 		disable_warn2_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Disable Warning:[color=white][font_size=11]\nEnable/disable the warning 'Failed to log entry due to no session being active."
 
-		# Enum settings [OptionButtons]
+		# Enum-style int settings [OptionButtons]
 		log_header_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Log Header:[color=white][font_size=11]\nUsed to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
@@ -405,7 +405,7 @@ func update_tooltip(node : Control) -> void:
 		limit_action_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Limit Action:[color=white][font_size=11]\nAction taken when 'Limit Method' condition is met. "
 		error_rep_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nSome of the errors and warnings GoLogger provides are not always useful. Set whether or not you want to disable errors, warnings or both."
+			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nAllows you to disable non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' turns all warnings and non-critical errors."
 		session_print_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Print Session Changes:[color=white][font_size=11]\nGoLogger can print to Output whenever its base functions are called."
 		

@@ -206,7 +206,7 @@ func _ready() -> void:
 	if !Engine.is_editor_hint():
 		get_settings()		
 
-		$GoLoggerElements.layer = canvaslayer_layer
+		$GoLoggerElements.layer = get_value("canvaslayer_layer")
 		header_string = get_header()
 		session_timer.autostart = autostart_session
 		popup.visible = popup_state
@@ -217,7 +217,39 @@ func _ready() -> void:
 		add_hotkeys()
 	
 
+func create_settings_file() -> void:
+	var _a : Array[Array] = [["game", 0, true], ["player", 1, true]]
+	config.set_value("plugin", "base_directory", "user://GoLogger/")
+	config.set_value("plugin", "categories", _a)
 
+	config.set_value("settings", "log_header", 0)
+	config.set_value("settings", "canvaslayer_layer", 5)
+	config.set_value("settings", "autostart_session", true)
+	config.set_value("settings", "timestamp_entries", true)
+	config.set_value("settings", "use_utc", false)
+	config.set_value("settings", "dash_separator", false)
+	config.set_value("settings", "limit_method", 0)
+	config.set_value("settings", "limit_action", 0)
+	config.set_value("settings", "file_cap", 10)
+	config.set_value("settings", "entry_cap", 1000)
+	config.set_value("settings", "session_duration", 600.0)
+	config.set_value("settings", "controller_xpos", 0.0)
+	config.set_value("settings", "controller_ypos", 0.0)
+	config.set_value("settings", "drag_offset_x", 0.0)
+	config.set_value("settings", "drag_offset_y", 0.0)
+	config.set_value("settings", "show_controller", false)
+	config.set_value("settings", "controller_monitor_side", true)
+	config.set_value("settings", "error_reporting", 0)
+	config.set_value("settings", "session_print", 0)
+	config.set_value("settings", "disable_warn1", false)
+	config.set_value("settings", "disable_warn2", false)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
+
+
+## DEPRECATED 
 func get_settings() -> void:
 	if !FileAccess.file_exists(PATH):
 		#TODO Add a dock warning
@@ -249,53 +281,28 @@ func get_settings() -> void:
 	disable_warn2 = 			config.get_value("settings", "disable_warn2")
 
 
+
+## Returns any setting value from 'settings.ini'. Also preforms some crucial error checks and pushes errors.
 func get_value(value : String) -> Variant:
-	match value:
-		"base_directory":
-			return config.get_value("plugin", "base_directory")
-		"categories":
-			return config.get_value("plugin", "categories")
-		"log_header":
-			return config.get_value("settings", "log_header")
-		"canvaslayer_layer":
-			return config.get_value("settings", "canvaslayer_layer")
-		"autostart_session":
-			return config.get_value("settings", "autostart_session")
-		"timestamp_entries":
-			return config.get_value("settings", "timestamp_entries")
-		"use_utc":
-			return config.get_value("settings", "use_utc")
-		"dash_separator":
-			return config.get_value("settings", "dash_separator")
-		"limit_method":
-			return config.get_value("settings", "limit_method")
-		"limit_action":
-			return config.get_value("settings", "limit_action")
-		"file_cap":
-			return config.get_value("settings", "file_cap")
-		"entry_cap":
-			return config.get_value("settings", "entry_count")
-		"session_duration":
-			return config.get_value("settings", "session_duration")
-		"controller_xpos":
-			return config.get_value("settings", "controller_xpos")
-		"controller_ypos":
-			return config.get_value("settings", "controller_ypos")
-		"drag_offset_x":
-			return config.get_value("settings", "drag_offset_x")
-		"drag_offset_y":
-			return config.get_value("settings", "drag_offset_y")
-		"controller_monitor_side":
-			return config.get_value("settings", "controller_monitor_side")
-		"error_reporting":
-			return config.get_value("settings", "error_reporting")
-		"session_print":
-			return config.get_value("settings", "session_print")
-		"disable_warn1":
-			return config.get_value("settings", "disable_warn1")
-		"disable_warn2":
-			return config.get_value("settings", "disable_warn2")
-	return null
+	var _config = ConfigFile.new()
+	var _result = _config.load(PATH)
+	var section : String = "settings"
+	
+	if !FileAccess.file_exists(PATH):
+		push_warning(str("GoLogger Warning: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
+		create_settings_file()
+	
+	if _result != OK:
+		push_error(str("GoLogger Error: ConfigFile failed to load settings.ini file."))
+		return null
+	
+	if value == "base_directory" or value == "categories":
+		section = "plugin"
+
+	var _val = _config.get_value(section, value)
+	if _val == null:
+		push_error(str("GoLogger Error: ConfigFile failed to load settings value from file."))
+	return _val
 
 
 
@@ -502,7 +509,7 @@ func stop_session(include_timestamp : bool = true) -> void:
 #region Helper functions
 ## Helper function that returns an appropriate log header string depending on [param log_header].
 func get_header() -> String:
-	match log_header:
+	match get_value("log_header"):
 		0: # Project name + version
 			return str(
 				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != "" else "",
