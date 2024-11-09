@@ -16,7 +16,7 @@ category_name = "network"
 
 [node name="Log" type="Node"]
 script = ExtResource("1_qpie0")
-categories = Array[ExtResource("2_46rht")]([ExtResource("3_56q28"), SubResource("Resource_a7gom"), SubResource("Resource_gg1lx")])
+categories = [ExtResource("3_56q28"), SubResource("Resource_a7gom"), SubResource("Resource_gg1lx")]
 
 [node name="SessionTimer" type="Timer" parent="."]
 
