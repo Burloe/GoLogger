@@ -327,6 +327,49 @@ func load_settings_state() -> void:
 
 
 
+func validate_settings() -> bool:
+	var faults : int = 0
+	var expected_types = {
+		"plugin/base_directory": TYPE_STRING,
+		"plugin/categories": TYPE_ARRAY,
+		
+		"settings/log_header": TYPE_INT,
+		"settings/canvaslayer_layer": TYPE_INT,
+		"settings/autostart_session": TYPE_BOOL,
+		"settings/timestamp_entries": TYPE_BOOL,
+		"settings/use_utc": TYPE_BOOL,
+		"settings/dash_separator": TYPE_BOOL,
+		"settings/limit_method": TYPE_INT,
+		"settings/limit_action": TYPE_INT,
+		"settings/file_cap": TYPE_INT,
+		"settings/entry_cap": TYPE_INT,
+		"settings/session_duration": TYPE_FLOAT,
+		"settings/controller_xpos": TYPE_FLOAT,
+		"settings/controller_ypos": TYPE_FLOAT,
+		"settings/drag_offset_x": TYPE_FLOAT,
+		"settings/drag_offset_y": TYPE_FLOAT,
+		"settings/show_controller": TYPE_BOOL,
+		"settings/controller_monitor_side": TYPE_BOOL,
+		"settings/error_reporting": TYPE_INT,
+		"settings/session_print": TYPE_INT,
+		"settings/disable_warn1": TYPE_BOOL,
+		"settings/disable_warn2": TYPE_BOOL
+	}
+	
+	for setting_key in expected_types.keys():
+		# Create array ["settings", "log_header"] for each setting
+		var splits = setting_key.split("/") 
+		var expected_type = expected_types[setting_key]
+		var value = config.get_value(splits[0], splits[1])
+
+		if typeof(value) != expected_type:
+			push_error("Gologger Error: Validate settings failed. Invalid type for setting '" + splits[1] + "'. Expected " + str(expected_type) + " but got " + str(typeof(value)) + ".")
+			faults += 1
+	
+	return faults == 0
+
+
+
 ## Resets the categories to default by removing any existing category elements, 
 ## overwriting the saved categories in the .ini file and then loading default 
 ## categories "game" and "player".
@@ -405,7 +448,7 @@ func update_tooltip(node : Control) -> void:
 		limit_action_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Limit Action:[color=white][font_size=11]\nAction taken when 'Limit Method' condition is met. "
 		error_rep_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nAllows you to disable non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' turns all warnings and non-critical errors."
+			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nAllows you to disable non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' turns all warnings and non-critical errors off."
 		session_print_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Print Session Changes:[color=white][font_size=11]\nGoLogger can print to Output whenever its base functions are called."
 		

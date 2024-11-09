@@ -60,11 +60,13 @@ var log_header : int = 0
 ## Contains the resulting string as determined by [param log_header].
 var header_string : String
 
+@onready var elements_canvaslayer : CanvasLayer = %GoLoggerElements
+
 ## Sets the [param layer] property of the [CanvasLayer] containing the Controller and Copy Popup.
 var canvaslayer_layer : int = 5:				
 	set(value):
 		canvaslayer_layer = value
-		$GoLoggerElements.layer = value
+		elements_canvaslayer.layer = value
 
 ## Autostarts the session at runtime.
 var autostart_session : bool = true
@@ -162,11 +164,11 @@ var controller_drag_offset	: Vector2 = Vector2(0, 0)
 var controller_monitor_side : bool = true
 
 # Popup
-@onready var popup : CenterContainer = $GoLoggerElements/Popup
-@onready var popup_textedit : TextEdit = $GoLoggerElements/Popup/Panel/MarginContainer/VBoxContainer/TextEdit
-@onready var popup_yesbtn : Button = $GoLoggerElements/Popup/Panel/HBoxContainer/YesButton
-@onready var popup_nobtn : Button = $GoLoggerElements/Popup/Panel/HBoxContainer/NoButton
-@onready var popup_errorlbl : RichTextLabel = $GoLoggerElements/Popup/Panel/ErrorLabel
+@onready var popup 				: CenterContainer = %Popup
+@onready var popup_textedit 	: LineEdit = 		%CopyNameLineEdit
+@onready var popup_yesbtn 		: Button = 			%PopupYesButton
+@onready var popup_nobtn 		: Button =			%NoButton
+@onready var popup_errorlbl 	: RichTextLabel = 	%PopupErrorLabel
 
 ## When true, this bool activates the popup prompt that allows you to enter a file copy name. 
 var popup_state : bool = false: 
@@ -193,7 +195,10 @@ var copy_name : String = ""
 
 func _input(event: InputEvent) -> void:
 	if !Engine.is_editor_hint():
-		if event is InputEventKey or event is InputEventJoypadButton or event is InputEventJoypadMotion:
+		if event is InputEventKey \
+		or event is InputEventJoypadButton \
+		or event is InputEventJoypadMotion and event.axis == 4 \
+		or event is InputEventJoypadMotion and event.axis == 5: # Only allows trigger axis
 			if Log.hotkey_start_session.shortcut.matches_event(event) and event.is_released():
 				start_session()
 			if Log.hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
@@ -203,12 +208,10 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	if !Engine.is_editor_hint():
-		get_settings()		
-
-		$GoLoggerElements.layer = get_value("canvaslayer_layer")
+	if !Engine.is_editor_hint(): 
 		header_string = get_header()
-		session_timer.autostart = autostart_session
+		elements_canvaslayer.layer = get_value("canvaslayer_layer")
+		session_timer.autostart = get_value("autostart_session")
 		popup.visible = popup_state
 		popup_errorlbl.visible = false
 		assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
@@ -216,7 +219,7 @@ func _ready() -> void:
 			start_session()
 		add_hotkeys()
 	
-
+## Creates a settings.ini file.
 func create_settings_file() -> void:
 	var _a : Array[Array] = [["game", 0, true], ["player", 1, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
@@ -250,39 +253,40 @@ func create_settings_file() -> void:
 
 
 ## DEPRECATED 
-func get_settings() -> void:
-	if !FileAccess.file_exists(PATH):
-		#TODO Add a dock warning
-		push_warning(str("GoLogger Error: No 'settings.ini' file found in path(", PATH, ")."))
-	else:
-		var _l = config.load(PATH)
-		if _l != OK:
-			push_warning(str("GoLogger Error: Failed to load 'settings.ini'! ", get_error(_l, "ConfigFile")))
+# func get_settings() -> void:
+# 	if !FileAccess.file_exists(PATH):
+# 		#TODO Add a dock warning
+# 		push_warning(str("GoLogger Error: No 'settings.ini' file found in path(", PATH, ")."))
+# 	else:
+# 		var _l = config.load(PATH)
+# 		if _l != OK:
+# 			push_warning(str("GoLogger Error: Failed to load 'settings.ini'! ", get_error(_l, "ConfigFile")))
 	
-	log_header = 				config.get_value("settings", "log_header")
-	canvaslayer_layer = 		config.get_value("settings", "canvaslayer_layer")
-	autostart_session = 		config.get_value("settings", "autostart_session")
-	timestamp_entries = 		config.get_value("settings", "timestamp_entries")
-	use_utc = 					config.get_value("settings", "use_utc")
-	dash_separator = 			config.get_value("settings", "dash_separator")
-	limit_method = 				config.get_value("settings", "limit_method")
-	limit_action = 				config.get_value("settings", "limit_action")
-	file_cap = 					config.get_value("settings", "file_cap")
-	entry_cap = 				config.get_value("settings", "entry_count")
-	session_duration = 			config.get_value("settings", "session_duration")
-	controller_pos.x = 			config.get_value("settings", "controller_xpos")
-	controller_pos.y = 			config.get_value("settings", "controller_ypos")
-	controller_drag_offset.x = 	config.get_value("settings", "drag_offset_x")
-	controller_drag_offset.y = 	config.get_value("settings", "drag_offset_y")
-	controller_monitor_side = 	config.get_value("settings", "controller_monitor_side")
-	error_reporting = 			config.get_value("settings", "error_reporting")
-	session_print = 			config.get_value("settings", "session_print")
-	disable_warn1 = 			config.get_value("settings", "disable_warn1")
-	disable_warn2 = 			config.get_value("settings", "disable_warn2")
+# 	log_header = 				config.get_value("settings", "log_header")
+# 	canvaslayer_layer = 		config.get_value("settings", "canvaslayer_layer")
+# 	autostart_session = 		config.get_value("settings", "autostart_session")
+# 	timestamp_entries = 		config.get_value("settings", "timestamp_entries")
+# 	use_utc = 					config.get_value("settings", "use_utc")
+# 	dash_separator = 			config.get_value("settings", "dash_separator")
+# 	limit_method = 				config.get_value("settings", "limit_method")
+# 	limit_action = 				config.get_value("settings", "limit_action")
+# 	file_cap = 					config.get_value("settings", "file_cap")
+# 	entry_cap = 				config.get_value("settings", "entry_count")
+# 	session_duration = 			config.get_value("settings", "session_duration")
+# 	controller_pos.x = 			config.get_value("settings", "controller_xpos")
+# 	controller_pos.y = 			config.get_value("settings", "controller_ypos")
+# 	controller_drag_offset.x = 	config.get_value("settings", "drag_offset_x")
+# 	controller_drag_offset.y = 	config.get_value("settings", "drag_offset_y")
+# 	controller_monitor_side = 	config.get_value("settings", "controller_monitor_side")
+# 	error_reporting = 			config.get_value("settings", "error_reporting")
+# 	session_print = 			config.get_value("settings", "session_print")
+# 	disable_warn1 = 			config.get_value("settings", "disable_warn1")
+# 	disable_warn2 = 			config.get_value("settings", "disable_warn2")
 
 
 
-## Returns any setting value from 'settings.ini'. Also preforms some crucial error checks and pushes errors.
+## Returns any setting value from 'settings.ini'. Also preforms some crucial error checks, pushes errors and creates 
+## a default .ini file if one doesn't exist.
 func get_value(value : String) -> Variant:
 	var _config = ConfigFile.new()
 	var _result = _config.load(PATH)
