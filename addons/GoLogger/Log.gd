@@ -415,46 +415,52 @@ func start_session(start_delay : float = 0.0) -> void:
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
 ## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
-	if !Engine.is_editor_hint():
-		var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
+	# 0 = category name
+	# 1 = category index
+	# 2 = file name
+	# 3 = file path
+	# 4 = entry count 
+	# 5 = is locked 
+	categories = get_value("categories")
+	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
 
-		if !session_status:
-			if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Failed to log entry due to inactive session.")
-			return
-		else:
-			var _f = FileAccess.open(categories[category_index].current_filepath, FileAccess.READ)
-			if !_f:
-				var _err = FileAccess.get_open_error()
-				if _err != OK and get_value("error_reporting") != 2: push_warning("Gologger Error: Log entry failed due to FileAccess error[", get_err_string(_err), "]")
-			var _c = _f.get_as_text()
-			var lines : Array[String] = []
-			while not _f.eof_reached():
-				var _l = _f.get_line().strip_edges(false, true)
-				if _l != "":
-					lines.append(_l)
-				_f.close()
+	if !session_status:
+		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Failed to log entry due to inactive session.")
+		return
+	else:
+		var _f = FileAccess.open(categories[category_index][3], FileAccess.READ)
+		if !_f:
+			var _err = FileAccess.get_open_error()
+			if _err != OK and get_value("error_reporting") != 2: push_warning("Gologger Error: Log entry failed due to FileAccess error[", get_err_string(_err), "]")
+		var _c = _f.get_as_text()
+		var lines : Array[String] = []
+		while not _f.eof_reached():
+			var _l = _f.get_line().strip_edges(false, true)
+			if _l != "":
+				lines.append(_l)
+			_f.close()
 
-				# Remove old entries at line 1 until entry count is less than limit.
-				if get_value("limit_method") == 0 or get_value("limit_method") == 2:
-					while lines.size() > get_value("entry_cap"):
-						lines.remove_at(1)
-				categories[category_index].entry_count = lines.size()
+			# Remove old entries at line 1 until entry count is less than limit.
+			if get_value("limit_method") == 0 or get_value("limit_method") == 2:
+				while lines.size() > get_value("entry_cap"):
+					lines.remove_at(1)
+			categories[category_index].entry_count = lines.size()
 
-				# Open file with write and store the new entry
-				var _fw = FileAccess.open(categories[category_index].current_filepath, FileAccess.WRITE)
-				if !_fw and get_value("error_reporting") != 2:
-					var err = FileAccess.get_open_error()
-					if err != OK: push_warning("GoLogger error: Log entry failed due to FileAccess error[", get_err_string(err), "]")
-				var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
-				_fw.store_line(str(_c, _entry))
-				_fw.close()
+			# Open file with write and store the new entry
+			var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE)
+			if !_fw and get_value("error_reporting") != 2:
+				var err = FileAccess.get_open_error()
+				if err != OK: push_warning("GoLogger error: Log entry failed due to FileAccess error[", get_err_string(err), "]")
+			var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
+			_fw.store_line(str(_c, _entry))
+			_fw.close()
 
 
 
 ## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and 
 ## confirmed. [method complete_copy] is called.
 func save_copy() -> void:
-	if !Engine.is_editor_hint(): popup_state = !popup_state
+	popup_state = !popup_state
 
 
 
@@ -464,35 +470,40 @@ func save_copy() -> void:
 ##     Log.popup_state = !Log.popup_state
 ## [/codeblock]
 func complete_copy() -> void: 
-	if !Engine.is_editor_hint():
-		popup_state = false
-		var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
+	# 0 = category name
+	# 1 = category index
+	# 2 = current file name(with timestamp)
+	# 3 = current file path
+	# 4 = entry count 
+	# 5 = is locked
+	popup_state = false
+	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
 
-		if !session_status:
-			if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
-			return
-		else:
-			for i in range(categories.size()):
-				var _fr = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
-				if !_fr:
-					popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i].current_file," [/pulse]")
-					popup_errorlbl.visible = true
-					await get_tree().create_timer(4.0).timeout
-					return
-				var _c = _fr.get_as_text()
-				var _path := str(base_directory, categories[i].category_name, "_Gologs/saved_logs/", get_file_name(copy_name))
-				var _fw = FileAccess.open(_path, FileAccess.WRITE)
-				if !_fw:
-					popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
-					popup_errorlbl.visible = true
-					await get_tree().create_timer(4.0).timeout
-					return
-				_fw.store_line(str(_c, "\nSaved copy of ", categories[i].current_file, "."))
-				_fw.close()
-			if get_value("session_print") == 1 or get_value("session_print") == 3:
-				print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
-			copy_name = ""
-			popup_textedit.text = ""
+	if !session_status:
+		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
+		return
+	else:
+		for i in range(categories.size()):
+			var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
+			if !_fr:
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i][3]," [/pulse]")
+				popup_errorlbl.visible = true
+				await get_tree().create_timer(4.0).timeout
+				return
+			var _c = _fr.get_as_text()
+			var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
+			var _fw = FileAccess.open(_path, FileAccess.WRITE)
+			if !_fw:
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
+				popup_errorlbl.visible = true
+				await get_tree().create_timer(4.0).timeout
+				return
+			_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
+			_fw.close()
+		if get_value("session_print") == 1 or get_value("session_print") == 3:
+			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
+		copy_name = ""
+		popup_textedit.text = ""
 
 
 
