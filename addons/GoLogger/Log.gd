@@ -432,6 +432,31 @@ func complete_copy() -> void:
 			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
 		copy_name = ""
 		popup_textedit.text = ""
+	if !session_status:
+		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
+		return
+	else:
+		for i in range(categories.size()):
+			var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
+			if !_fr:
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i][3]," [/pulse]")
+				popup_errorlbl.visible = true
+				await get_tree().create_timer(4.0).timeout
+				return
+			var _c = _fr.get_as_text()
+			var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
+			var _fw = FileAccess.open(_path, FileAccess.WRITE)
+			if !_fw:
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
+				popup_errorlbl.visible = true
+				await get_tree().create_timer(4.0).timeout
+				return
+			_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
+			_fw.close()
+		if get_value("session_print") == 1 or get_value("session_print") == 3:
+			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
+		copy_name = ""
+		popup_textedit.text = ""
 
 
 
