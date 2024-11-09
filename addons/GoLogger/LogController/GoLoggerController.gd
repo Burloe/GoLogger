@@ -79,6 +79,9 @@ var fileinfo_state : bool = false:
 				for i in fileinfo_container.get_children():
 					if i is Panel and i.get_name().contains("FileInfo"):
 						i.queue_free()
+
+const PATH = "user://GoLogger/settings.ini"
+var config = ConfigFile.new()
 #endregion
 
 
@@ -92,7 +95,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_dragging:
-		position = Vector2(event.position.x + Log.controller_drag_offset.x, event.position.y + Log.controller_drag_offset.y)
+		position = Vector2(Vector2(get_value("drag_offset_x"), get_value("drag_offset_y")))
 
 
 func _ready() -> void:
@@ -122,9 +125,11 @@ func _ready() -> void:
 	fileinfo_side_button.mouse_entered.connect(_on_fileinfo_pos_mouse_entered)
 	fileinfo_side_button.mouse_exited.connect(_on_fileinfo_pos_mouse_exited)
 	#endregion
-
-	tooltip.visible = true
+	set_position(Vector2(get_value("controller_xpos"), get_value("controller_ypos")))
+	tooltip.visible = get_value("show_controller")
+	fileinfo_side = get_value("controller_monitor_side")
 	fileinfo_panel.visible = fileinfo_state
+
 
 	if Log.hide_contoller_on_start: hide()
 	else: show()
@@ -136,6 +141,26 @@ func _ready() -> void:
 	Log.session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer_pgb.modulate = Color.BLACK if Log.session_timer.is_stopped() else Color.FOREST_GREEN
 	session_status_label.text = str("[center][font_size=18] Session status:\n[center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:\n[center][color=red]OFF")
+
+
+## Returns any setting value from 'settings.ini'. Also preforms some crucial error checks, pushes errors and creates 
+## a default .ini file if one doesn't exist.
+func get_value(value : String) -> Variant:
+	var _config = ConfigFile.new()
+	var _result = _config.load(PATH) 
+	
+	if !FileAccess.file_exists(PATH):
+		push_warning(str("GoLogger Warning: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
+	
+	if _result != OK:
+		push_error(str("GoLogger Error: ConfigFile failed to load settings.ini file."))
+		return null
+	
+	var _val = _config.get_value("settings", value)
+	if _val == null:
+		push_error(str("GoLogger Error: ConfigFile failed to load settings value from file."))
+	return _val
+
 
 
 
