@@ -53,55 +53,11 @@ var base_directory : String = "user://GoLogger/"
 ## Array containing [LogFileResource]s that each corresponds to a log category. They define the category name.
 @export var categories : Array =[]
 
-## Determines the type of header used in the .log file header. Gets the project name and version from Project 
-## Settings > Application > Config.[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
-# var log_header : int = 0
 
 ## Contains the resulting string as determined by [param log_header].
 var header_string : String
 
 @onready var elements_canvaslayer : CanvasLayer = %GoLoggerElements
-
-## Sets the [param layer] property of the [CanvasLayer] containing the Controller and Copy Popup.
-# var canvaslayer_layer : int = 5:				
-# 	set(value):
-# 		canvaslayer_layer = value
-# 		elements_canvaslayer.layer = value
-
-## Autostarts the session at runtime.
-# var autostart_session : bool = true
-
-## Dictates whether or not entries are timestamped inside .log files.
-# var timestamp_entries : bool = true
-
-## Uses UTC time as opposed to the users local system time. 
-# var use_utc : bool = false
-
-## When enabled, date and timestamps are separated with '-'.[br]Disabled = "categoryname_241028_182143.log".[br]
-## Enabled  = "categoryname_24-10-28_18-21-43.log".
-# var dash_separator : bool = false
-
-## Determines the log management method used to prevent long/large .log files. [i]Added to combat potential 
-## performance issues. It is recommended to use [param entry_count_limit] regardless if you experience performance 
-## issues or not.[/i][br][b]1. Entry count Limit:[/b] Checks entry count when logging a new one. If count exceeds 
-## [param entry_cap], oldest entry is removed to make room for new entries.[br][b]2. Session Timer:[/b] Upon 
-## session is start, [param session_timer] is also started, counting down the [param session_duration] value. 
-## Upon [signal timeout], session is stopped and the action is determined by [param limit_action].[br]
-## [b]3. Entry Count Limit + Session Timer:[/b] Uses both of the above methods.[br]
-## [b]4. None:[/b] Uses no methods of preventing too large files. Not recommended.
-# var limit_method : int = 0
-
-## The log entry count(or line count) limit allowed in the .log categories. If entry count exceeds this number, 
-## the oldest entry is removed before adding the new.[br] [b]Stop & start new session:[/b] Stops the current 
-## session and starting a new one.[br][b]Stop session only:[/b] Stops the current session without starting a 
-## new one.
-# var limit_action : int = 0
-
-## Sets the max number of log files. Deletes the oldest log file in directory when file count exceeds this number
-# var file_cap : int = 10
-
-## The maximum number of log entries allowed in one file before it starts to delete the oldest entry when adding a new.
-# var entry_cap : int = 1000
 
 
 ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
@@ -113,19 +69,6 @@ var header_string : String
 # 		session_duration = new
 # 		if session_timer != null: session_timer.wait_time = session_duration
 
-
-## Enables/disables all debug warnings and errors.[br]'All' - Enables errors and warnings.[br]'Only Warnings' - 
-## Disables errors and only allows warnings.[br]'None' - All errors and warnings are disabled.
-# var error_reporting : int = 0
-
-## If true, enables printing messages to the output when a log session is started or stopped.
-# var session_print : int = 0
-
-## Disables the "Attempted to start new log session before stopping the previous" warning.
-# var disable_warn1 : bool = false
-
-## Disables the "Attempt to log entry failed due to inactive session" warning.
-# var disable_warn2 : bool = false
 
 ## Flags whether or not a session is active.
 var session_status : bool = false: 
@@ -147,21 +90,6 @@ var session_status : bool = false:
 @export var hotkey_controller_toggle: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	
 
 
-## Hides GoLoggerController when running your project. Use hotkey defined in [param hotkey_toggle_controller]. 
-## [kbd]Ctrl + Shift + K[/kbd] by default.
-# var hide_contoller_on_start	: bool = true
-
-## The starting position of the GoLoggerController. Change this if the controller's starting position is obscured 
-## or is obscured.
-# var controller_pos : Vector2 = Vector2.ZERO
-
-## The offset used to correct the controller window position while dragging(depending on any potential scaling 
-## or resolution).
-# var controller_drag_offset	: Vector2 = Vector2(0, 0)
-
-## Sets which side of the controller the monitor panel is(false = left, true = right). You can change this by 
-## clicking the top bar of the panel in-game as well. 
-# var controller_monitor_side : bool = true
 
 # Popup
 @onready var popup 				: CenterContainer = %Popup
@@ -334,12 +262,11 @@ func start_session(start_delay : float = 0.0) -> void:
 	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
 	# 0 = category name
 	# 1 = category index
-	# 2 = file name
-	# 3 = file path
+	# 2 = current file name(with timestamp)
+	# 3 = current file path
 	# 4 = entry count 
 	# 5 = is locked
-	# [["game", 0, true, "null", "null", 0], ["player", 0, true, "null", "null", 0]]
-	categories = get_value("categories") 
+	categories = get_value("categories")
 	if categories.is_empty(): 
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
 		return
@@ -380,7 +307,7 @@ func start_session(start_delay : float = 0.0) -> void:
 			_dir = DirAccess.open(_path)
 			if !_dir and get_value("error_reporting") != 2:
 				var _err = DirAccess.get_open_error()
-				if _err != OK: push_warning("GoLogger ", get_err_string(_err), " (", _path, ").")
+				if _err != OK: push_warning("GoLogger Error: ", get_error(_err, "DirAccess"), " (", _path, ").")
 				return
 			else:
 				categories[i][2] = get_file_name(categories[i].category_name)
@@ -393,7 +320,7 @@ func start_session(start_delay : float = 0.0) -> void:
 					_dir.remove(_files[0])
 					_files.remove_at(0)
 					var _err = DirAccess.get_open_error()
-					if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_err_string(_err))
+					if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 				if !_f and get_value("error_reporting") != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i][3], ").")
 				else:
 					var _s := str(header_string, categories[i][0], " Log session started[", Time.get_datetime_string_from_system(get_value("use_utc"), true), "]:")
@@ -417,10 +344,10 @@ func start_session(start_delay : float = 0.0) -> void:
 func entry(log_entry : String, category_index : int = 0) -> void:
 	# 0 = category name
 	# 1 = category index
-	# 2 = file name
-	# 3 = file path
+	# 2 = current file name(with timestamp)
+	# 3 = current file path
 	# 4 = entry count 
-	# 5 = is locked 
+	# 5 = is locked
 	categories = get_value("categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
 
@@ -431,7 +358,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 		var _f = FileAccess.open(categories[category_index][3], FileAccess.READ)
 		if !_f:
 			var _err = FileAccess.get_open_error()
-			if _err != OK and get_value("error_reporting") != 2: push_warning("Gologger Error: Log entry failed due to FileAccess error[", get_err_string(_err), "]")
+			if _err != OK and get_value("error_reporting") != 2: push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		var _c = _f.get_as_text()
 		var lines : Array[String] = []
 		while not _f.eof_reached():
@@ -450,7 +377,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 			var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE)
 			if !_fw and get_value("error_reporting") != 2:
 				var err = FileAccess.get_open_error()
-				if err != OK: push_warning("GoLogger error: Log entry failed due to FileAccess error[", get_err_string(err), "]")
+				if err != OK: push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 			var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
 			_fw.store_line(str(_c, _entry))
 			_fw.close()
@@ -477,6 +404,7 @@ func complete_copy() -> void:
 	# 4 = entry count 
 	# 5 = is locked
 	popup_state = false
+	categories = get_value("categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
 
 	if !session_status:
@@ -510,34 +438,40 @@ func complete_copy() -> void:
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new 
 ## session must be started using [method start_session] which creates a new categories.[br] 
 func stop_session() -> void:
-	if !Engine.is_editor_hint():
-		if get_value("session_print") == 1 or get_value("session_print") == 3:
-			print("GoLogger: Session stopped!")
-		var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] Stopped log session.")
+	# 0 = category name
+	# 1 = category index
+	# 2 = current file name(with timestamp)
+	# 3 = current file path
+	# 4 = entry count 
+	# 5 = is locked
+	categories = get_value("categories")
+	if get_value("session_print") == 1 or get_value("session_print") == 3:
+		print("GoLogger: Session stopped!")
+	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] Stopped log session.")
 
-		if session_status:
-			for i in range(categories.size()):
-				var _f = FileAccess.open(categories[i].current_filepath, FileAccess.READ)
-				if !_f and get_value("error_reporting") != 2:
-					var _err = FileAccess.get_open_error()
-					if _err != OK: push_warning("GoLogger Error: Attempting to stop session by reading file (", categories[i].current_filepath, ") -> Error[", _err, "]")
-				var _content := _f.get_as_text()
-				_f.close()
-				var _fw = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
-				if !_fw and get_value("error_reporting") != 2:
-					var _err = FileAccess.get_open_error()
-					if _err != OK: 
-						push_warning("GoLogger Error: Attempting to stop session by writing to file (", categories[i].current_filepath, ") -> Error[", _err, "]")
-						return
-				var _s := str(_content, str(_timestamp + "Stopped Log Session.") if get_value("timestamp_entries") else "Stopped Log Session.")
-				_fw.store_line(_s)
-				_fw.close()
-				categories[i].current_file = ""
-				categories[i].current_filepath = ""
-				categories[i].entry_count = 0
-			if get_value("session_print") == 1 or get_value("session_print") == 4: print("GoLogger: Stopped log session.")
-		session_status = false
-		session_stopped.emit()
+	if session_status:
+		for i in range(categories.size()):
+			var _f = FileAccess.open(categories[i][3], FileAccess.READ)
+			if !_f and get_value("error_reporting") != 2:
+				var _err = FileAccess.get_open_error()
+				if _err != OK: push_warning("GoLogger Error: Attempting to stop session by reading file (", categories[i][3], ") -> Error[", _err, "]")
+			var _content := _f.get_as_text()
+			_f.close()
+			var _fw = FileAccess.open(categories[i][3], FileAccess.WRITE)
+			if !_fw and get_value("error_reporting") != 2:
+				var _err = FileAccess.get_open_error()
+				if _err != OK: 
+					push_warning("GoLogger Error: Attempting to stop session by writing to file (", categories[i][3], ") -> Error[", _err, "]")
+					return
+			var _s := str(_content, str(_timestamp + "Stopped Log Session.") if get_value("timestamp_entries") else "Stopped Log Session.")
+			_fw.store_line(_s)
+			_fw.close()
+			categories[i][2] = ""
+			categories[i][3] = ""
+			categories[i][4] = 0
+		if get_value("session_print") == 1 or get_value("session_print") == 4: print("GoLogger: Stopped log session.")
+	session_status = false
+	session_stopped.emit()
 #endregion
 
 
@@ -560,42 +494,22 @@ func get_header() -> String:
 ## Helper function that determines whether or not any [param category_name] was found more than once 
 ## in [param categories].
 func check_filename_conflicts() -> String:
+	# 0 = category name
+	# 1 = category index
+	# 2 = current file name(with timestamp)
+	# 3 = current file path
+	# 4 = entry count 
+	# 5 = is locked
+	categories = get_value("categories")
 	var seen_resources : Array[String] = []
 	for r in categories:
 		if !seen_resources.is_empty():
-			if r.category_name in seen_resources:
-				return r.category_name # Conflict found -> return the conflicting name for assert error 
-			else: seen_resources.append(r.category_name)
-		else: seen_resources.append(r.category_name)
+			if r[0] in seen_resources:
+				return r[0] # Conflict found -> return the conflicting name for assert error 
+			else: seen_resources.append(r[0])
+		else: seen_resources.append(r[0])
 	return ""# If no conflicts found -> return empty string and resume execution
 
-
-## Helper function that returns an error string for likely [DirAccess] and [FileAccess] errors.
-func get_err_string(error_code : int) -> String:
-	match error_code:
-		1: # Failed
-			return "Error[12]: Generic error occured, unknown cause."
-		4: # Unauthorized
-			return "Error[12]: Not authorized to open categories."
-		7: # Not found
-			return "Error[12]: FIle not found."
-		8: # Bad path
-			return "Error[8]: Incorrect path."
-		10: # No file permission
-			return "Error[10]: No permission to access categories."
-		11: # File in use
-			return "Error[11]: File already in use(forgot to use 'close()'?)."
-		12: # Can't open file
-			return "Error[12]: Can't open categories."
-		13: # Can't write
-			return "Error[13]: Can't write to categories."
-		14: # Can't read
-			return "Error[14]: Can't read categories."
-		15: # Unrecognized file
-			return "Error[15]: Unrecognized categories."
-		16: #  Corrupt
-			return "Error[16]: File is corrupted."
-	return "Error[X]: Unspecified error."
 
 ## Returns error string from the error code passed.
 static func get_error(error : int, object_type : String = "") -> String:
@@ -650,9 +564,8 @@ static func get_error(error : int, object_type : String = "") -> String:
 	return "N/A"
 
 
-## Helper function that returns a file name string for your log containing using the prefix 
-## entered and adds the current system date and time.[br]This should be called with a [LogFileResource]'s 
-## [param category_name]. For example [code]get_file_name(categories[0].category_name)[/code]
+## Helper function that returns a date/timestamped file name for your log containing using the 
+## prefix category name.[br]Example usage [code]get_file_name(categories[0][2]})[/code]
 ## [color=red]WARNING: [color=white]Change this at your own discretion! Removing the "0" from 
 ## single ints("09") will cause sorting issues > May result in improper file deletion.
 func get_file_name(prefix_name : String) -> String:
@@ -669,29 +582,6 @@ func get_file_name(prefix_name : String) -> String:
 	# Result > "prefix(yy-mm-dd_hh-mm-ss).log"   OR   "prefix(yymmdd_hhmmss.log)
 	fin = str(prefix_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if get_value("dash_separator") else str(prefix_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
 	return fin 
-
-
-## Helper function which returns the contents of the current/newest .log file in the given folder. 
-## Can be used to fetch .log contents.
-func get_file_contents(folder_path : String) -> String:
-	var dir = DirAccess.open(folder_path)
-	if !dir:
-		var err = DirAccess.get_open_error()
-		if err != OK:
-			return str("GoLogger Error: Attempting to open directory (", folder_path, ") to find player.log") if get_value("error_reporting") != 2 else ""
-	else:
-		var _files = dir.get_files()
-		if _files.size() == 0:
-			return str("GoLogger Error: No files found in directory (", folder_path, ").") if get_value("error_reporting") != 2 else ""
-		var _newest_file = folder_path + "/" + _files[_files.size() - 1]
-		var _fr = FileAccess.open(_newest_file, FileAccess.READ)
-		if _fr == null:
-			var _err = FileAccess.get_open_error()
-			return str("GoLogger Error: Attempting to read .log file -> Error[", _err, "].") if get_value("error_reporting") != 2 else ""
-		var contents = _fr.get_as_text()
-		_fr.close()
-		return contents
-	return str("GoLogger Error: Unable to retrieve file contents in (", folder_path, ")") if get_value("error_reporting") != 2 else ""
 
 
 

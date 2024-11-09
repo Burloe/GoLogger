@@ -17,11 +17,11 @@ category_name = "network"
 [node name="Log" type="Node"]
 script = ExtResource("1_qpie0")
 categories = Array[ExtResource("2_46rht")]([ExtResource("3_56q28"), SubResource("Resource_a7gom"), SubResource("Resource_gg1lx")])
-hide_contoller_on_start = false
 
 [node name="SessionTimer" type="Timer" parent="."]
 
 [node name="GoLoggerElements" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 layer = 50
 
 [node name="GoLoggerController" parent="GoLoggerElements" instance=ExtResource("2_i3pa3")]
@@ -31,6 +31,7 @@ offset_right = 157.4
 offset_bottom = 71.0
 
 [node name="Popup" type="CenterContainer" parent="GoLoggerElements"]
+unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -68,7 +69,8 @@ theme = ExtResource("5_e13q5")
 bbcode_enabled = true
 text = "[center] Do you want to save copies of the current log(s)? [font_size=12]These copies are safe from potential deletion."
 
-[node name="TextEdit" type="TextEdit" parent="GoLoggerElements/Popup/Panel/MarginContainer/VBoxContainer"]
+[node name="CopyNameLineEdit" type="LineEdit" parent="GoLoggerElements/Popup/Panel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(60, 40)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
@@ -86,21 +88,24 @@ offset_bottom = 159.0
 theme = ExtResource("5_e13q5")
 theme_override_constants/separation = 12
 
-[node name="YesButton" type="Button" parent="GoLoggerElements/Popup/Panel/HBoxContainer"]
+[node name="PopupYesButton" type="Button" parent="GoLoggerElements/Popup/Panel/HBoxContainer"]
+unique_name_in_owner = true
 modulate = Color(0.16, 1, 0.16, 1)
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
 text = "Yes"
 
-[node name="NoButton" type="Button" parent="GoLoggerElements/Popup/Panel/HBoxContainer"]
+[node name="PopupNoButton" type="Button" parent="GoLoggerElements/Popup/Panel/HBoxContainer"]
+unique_name_in_owner = true
 modulate = Color(1, 0.16, 0.16, 1)
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
 text = "No"
 
-[node name="ErrorLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/Panel"]
+[node name="PopupErrorLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/Panel"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 9.0
 offset_top = 171.0
@@ -110,6 +115,6 @@ theme = ExtResource("5_e13q5")
 bbcode_enabled = true
 text = "[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Error attempting to open file: [/pulse]"
 
-[connection signal="text_changed" from="GoLoggerElements/Popup/Panel/MarginContainer/VBoxContainer/TextEdit" to="." method="_on_text_edit_text_changed"]
-[connection signal="button_up" from="GoLoggerElements/Popup/Panel/HBoxContainer/YesButton" to="." method="_on_yes_button_button_up"]
-[connection signal="button_up" from="GoLoggerElements/Popup/Panel/HBoxContainer/NoButton" to="." method="_on_no_button_button_up"]
+[connection signal="text_changed" from="GoLoggerElements/Popup/Panel/MarginContainer/VBoxContainer/CopyNameLineEdit" to="." method="_on_text_edit_text_changed"]
+[connection signal="button_up" from="GoLoggerElements/Popup/Panel/HBoxContainer/PopupYesButton" to="." method="_on_yes_button_button_up"]
+[connection signal="button_up" from="GoLoggerElements/Popup/Panel/HBoxContainer/PopupNoButton" to="." method="_on_no_button_button_up"]
