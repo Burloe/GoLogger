@@ -51,7 +51,7 @@ var config = ConfigFile.new()
 var base_directory : String = "user://GoLogger/"
 
 ## Array containing [LogFileResource]s that each corresponds to a log category. They define the category name.
-@export var categories : Array[LogFileResource] = [preload("res://addons/GoLogger/Resources/DefaultLogFile.tres")] 
+@export var categories : Array =[]
 
 ## Determines the type of header used in the .log file header. Gets the project name and version from Project 
 ## Settings > Application > Config.[br][i]"Project X version 0.84 - Game Log session started[2024-09-16 21:38:04]:"
@@ -224,7 +224,7 @@ func _ready() -> void:
 	
 ## Creates a settings.ini file.
 func create_settings_file() -> void:
-	var _a : Array[Array] = [["game", 0, true], ["player", 1, true]]
+	var _a : Array[Array] = [["game", 0, "null", "null", 0, true], ["player", 1, "null", "null", 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
 
@@ -254,38 +254,46 @@ func create_settings_file() -> void:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
-
-## DEPRECATED 
-# func get_settings() -> void:
-# 	if !FileAccess.file_exists(PATH):
-# 		#TODO Add a dock warning
-# 		push_warning(str("GoLogger Error: No 'settings.ini' file found in path(", PATH, ")."))
-# 	else:
-# 		var _l = config.load(PATH)
-# 		if _l != OK:
-# 			push_warning(str("GoLogger Error: Failed to load 'settings.ini'! ", get_error(_l, "ConfigFile")))
+## Validates settings by ensuring their type are correct when loading them.
+func validate_settings() -> bool:
+	var faults : int = 0
+	var expected_types = {
+		"plugin/base_directory": TYPE_STRING,
+		"plugin/categories": TYPE_ARRAY,
+		
+		"settings/log_header": TYPE_INT,
+		"settings/canvaslayer_layer": TYPE_INT,
+		"settings/autostart_session": TYPE_BOOL,
+		"settings/timestamp_entries": TYPE_BOOL,
+		"settings/use_utc": TYPE_BOOL,
+		"settings/dash_separator": TYPE_BOOL,
+		"settings/limit_method": TYPE_INT,
+		"settings/limit_action": TYPE_INT,
+		"settings/file_cap": TYPE_INT,
+		"settings/entry_cap": TYPE_INT,
+		"settings/session_duration": TYPE_FLOAT,
+		"settings/controller_xpos": TYPE_FLOAT,
+		"settings/controller_ypos": TYPE_FLOAT,
+		"settings/drag_offset_x": TYPE_FLOAT,
+		"settings/drag_offset_y": TYPE_FLOAT,
+		"settings/show_controller": TYPE_BOOL,
+		"settings/controller_monitor_side": TYPE_BOOL,
+		"settings/error_reporting": TYPE_INT,
+		"settings/session_print": TYPE_INT,
+		"settings/disable_warn1": TYPE_BOOL,
+		"settings/disable_warn2": TYPE_BOOL
+	}
 	
-# 	log_header = 				config.get_value("settings", "log_header")
-# 	canvaslayer_layer = 		config.get_value("settings", "canvaslayer_layer")
-# 	autostart_session = 		config.get_value("settings", "autostart_session")
-# 	timestamp_entries = 		config.get_value("settings", "timestamp_entries")
-# 	use_utc = 					config.get_value("settings", "use_utc")
-# 	dash_separator = 			config.get_value("settings", "dash_separator")
-# 	limit_method = 				config.get_value("settings", "limit_method")
-# 	limit_action = 				config.get_value("settings", "limit_action")
-# 	file_cap = 					config.get_value("settings", "file_cap")
-# 	entry_cap = 				config.get_value("settings", "entry_count")
-# 	session_duration = 			config.get_value("settings", "session_duration")
-# 	controller_pos.x = 			config.get_value("settings", "controller_xpos")
-# 	controller_pos.y = 			config.get_value("settings", "controller_ypos")
-# 	controller_drag_offset.x = 	config.get_value("settings", "drag_offset_x")
-# 	controller_drag_offset.y = 	config.get_value("settings", "drag_offset_y")
-# 	controller_monitor_side = 	config.get_value("settings", "controller_monitor_side")
-# 	error_reporting = 			config.get_value("settings", "error_reporting")
-# 	session_print = 			config.get_value("settings", "session_print")
-# 	disable_warn1 = 			config.get_value("settings", "disable_warn1")
-# 	disable_warn2 = 			config.get_value("settings", "disable_warn2")
+	for setting_key in expected_types.keys():
+		# Create array ["settings", "log_header"] for each setting
+		var splits = setting_key.split("/") 
+		var expected_type = expected_types[setting_key]
+		var value = config.get_value(splits[0], splits[1])
 
+		if typeof(value) != expected_type:
+			push_error("Gologger Error: Validate settings failed. Invalid type for setting '" + splits[1] + "'. Expected " + str(expected_type) + " but got " + str(typeof(value)) + ".")
+			faults += 1
+	return faults == 0
 
 
 ## Returns any setting value from 'settings.ini'. Also preforms some crucial error checks, pushes errors and creates 
@@ -294,6 +302,7 @@ func get_value(value : String) -> Variant:
 	var _config = ConfigFile.new()
 	var _result = _config.load(PATH)
 	var section : String = "settings"
+	validate_settings() 
 	
 	if !FileAccess.file_exists(PATH):
 		push_warning(str("GoLogger Warning: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
@@ -322,67 +331,78 @@ func get_value(value : String) -> Variant:
 ##	Log.start_session()                       # Normal call
 ##	await Log.start session(1.2)              # Calling with a start delay[/codeblock]
 func start_session(start_delay : float = 0.0) -> void:
-	if !Engine.is_editor_hint():
-		if start_delay > 0.0:
-			await get_tree().create_timer(start_delay).timeout
-		if get_value("limit_method") == 1 or get_value("limit_method") == 2:
-			session_timer.start(get_value("session_duration"))
-			session_timer_started.emit()
-		if get_value("session_print") == 1 or get_value("session_print") == 3:
-			print("GoLogger: Session started!")
+	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
+	# 0 = category name
+	# 1 = category index
+	# 2 = file name
+	# 3 = file path
+	# 4 = entry count 
+	# 5 = is locked
+	# [["game", 0, true, "null", "null", 0], ["player", 0, true, "null", "null", 0]]
+	categories = get_value("categories") 
+	if categories.is_empty(): 
+		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
+		return
+	
+	if start_delay > 0.0:
+		await get_tree().create_timer(start_delay).timeout
+	if get_value("limit_method") == 1 or get_value("limit_method") == 2:
+		session_timer.start(get_value("session_duration"))
+		session_timer_started.emit()
+	if get_value("session_print") == 1 or get_value("session_print") == 3:
+		print("GoLogger: Session started!")
 
-		# Iterate over each LogFileResource in [param categories] array > Create directories and files 
-		for i in range(categories.size()):
-			assert(categories[i] != null, str("GoLogger Error: 'categories' array entry", i, " has no [LogFileResource] added."))
 
-			var _fname : String
-			_fname = get_file_name(categories[i].category_name) if categories[i].category_name != "" else str("file", i)
-			var _path : String = str(base_directory, categories[i].category_name, "_Gologs/")
-			if _path == "": 
-				if get_value("error_reporting") == 0: 
-					push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
-				if get_value("error_reporting") == 1:
-					push_warning(str("GoLogger Error: Failed to start session due to invalid directory path(", _fname, "). Please assign a valid directory path."))
+	# Iterate over each LogFileResource in [param categories] array > Create directories and files 
+	for i in range(categories.size()): 
+
+		categories[i][3] = get_file_name(categories[i][0])
+		var _path : String = str(base_directory, categories[i][0], "_Gologs/")
+		if _path == "": 
+			if get_value("error_reporting") == 0: 
+				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
+			if get_value("error_reporting") == 1:
+				push_warning(str("GoLogger Error: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
+			return
+		if session_status:
+			if get_value("error_reporting") != 2 and !get_value("disable_warn1"):
+				push_warning("GoLogger Warning: Failed to start session, a session is already active.")
+			return
+
+		else:
+			var _dir : DirAccess
+			if !DirAccess.dir_exists_absolute(_path):
+				DirAccess.make_dir_recursive_absolute(_path)
+			var _dd : DirAccess # Create sub-folders for saved logs
+			if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
+				DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
+
+			_dir = DirAccess.open(_path)
+			if !_dir and get_value("error_reporting") != 2:
+				var _err = DirAccess.get_open_error()
+				if _err != OK: push_warning("GoLogger ", get_err_string(_err), " (", _path, ").")
 				return
-			if session_status:
-				if get_value("error_reporting") != 2 and !get_value("disable_warn1"):
-					push_warning("GoLogger Warning: Failed to start session, a session is already active.")
-				return
-
 			else:
-				var _dir : DirAccess
-				if !DirAccess.dir_exists_absolute(_path):
-					DirAccess.make_dir_recursive_absolute(_path)
-				var _dd : DirAccess # Create sub-folders for saved logs
-				if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
-					DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
-
-				_dir = DirAccess.open(_path)
-				if !_dir and get_value("error_reporting") != 2:
+				categories[i][2] = get_file_name(categories[i].category_name)
+				categories[i][3] = str(_path, categories[i][2])
+				var _f = FileAccess.open(categories[i][2], FileAccess.WRITE)
+				var _files = _dir.get_files()
+				categories[i].file_count = _files.size()
+				while _files.size() > get_value("file_cap") -1:
+					_files.sort()
+					_dir.remove(_files[0])
+					_files.remove_at(0)
 					var _err = DirAccess.get_open_error()
-					if _err != OK: push_warning("GoLogger ", get_err_string(_err), " (", _path, ").")
-					return
+					if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_err_string(_err))
+				if !_f and get_value("error_reporting") != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i][3], ").")
 				else:
-					categories[i].current_filepath = _path + get_file_name(categories[i].category_name)
-					categories[i].current_file = get_file_name(categories[i].category_name)
-					var _f = FileAccess.open(categories[i].current_filepath, FileAccess.WRITE)
-					var _files = _dir.get_files()
-					categories[i].file_count = _files.size()
-					while _files.size() > get_value("file_cap") -1:
-						_files.sort()
-						_dir.remove(_files[0])
-						_files.remove_at(0)
-						var _err = DirAccess.get_open_error()
-						if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_err_string(_err))
-					if !_f and get_value("error_reporting") != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i].current_file, ").")
-					else:
-						var _s := str(header_string, categories[i].category_name, " Log session started[", Time.get_datetime_string_from_system(get_value("use_utc"), true), "]:")
-						_f.store_line(_s)
-						categories[i].entry_count = 0
-						_f.close()
-		if get_value("session_print") == 1 or get_value("session_print") == 2: print("GoLogger: Started session.")
-		session_status = true
-		session_started.emit()
+					var _s := str(header_string, categories[i][0], " Log session started[", Time.get_datetime_string_from_system(get_value("use_utc"), true), "]:")
+					_f.store_line(_s)
+					categories[i][5] = 0
+					_f.close()
+	if get_value("session_print") == 1 or get_value("session_print") == 2: print("GoLogger: Started session.")
+	session_status = true
+	session_started.emit()
 
 
 

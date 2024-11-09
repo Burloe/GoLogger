@@ -268,7 +268,7 @@ func _ready() -> void:
 
 #region settings.ini
 func create_settings_file() -> void:
-	var _a : Array[Array] = [["game", 0, true], ["player", 1, true]]
+	var _a : Array[Array] = [["game", 0, "null", "null", 0, true], ["player", 1, "null", "null", 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
 
@@ -326,7 +326,7 @@ func load_settings_state() -> void:
 	disable_warn2_btn.button_pressed = 				config.get_value("settings", "disable_warn2")
 
 
-
+## Validates settings by ensuring their type are correct when loading them.
 func validate_settings() -> bool:
 	var faults : int = 0
 	var expected_types = {
@@ -386,7 +386,7 @@ func reset_to_default(tab : int) -> void:
 		defaults_btn.disabled = true
 		add_category_btn.disabled = true
 		await get_tree().create_timer(0.5).timeout
-		config.set_value("plugin", "categories", [["game", 0, false], ["player", 1, false]])
+		config.set_value("plugin", "categories", [["game", 0, "null", "null", 0, false], ["player", 1, "null", "null", 0, false]])
 		load_categories()
 		defaults_btn.disabled = false
 		add_category_btn.disabled = false
@@ -655,7 +655,7 @@ func load_categories(deferred : bool = false) -> void:
 		_n.dock = self
 		_n.category_name = _c[i][0]
 		_n.index = i 
-		_n.is_locked = _c[i][2]
+		_n.is_locked = _c[i][5]
 		category_container.add_child(_n)
 		category_container.move_child(_n, _n.index)
 	update_indices()
@@ -685,8 +685,9 @@ func save_categories(deferred : bool = false) -> void:
 	var main : Array # Main array
 	var children = category_container.get_children()
 	for i in range(children.size()): # Loop through each child
-		# Create and append a nested array inside main [["game", 0, false], ["player", 1, false]]
-		var _n : Array = [children[i].category_name, children[i].index, children[i].is_locked] 
+		# Create and append a nested array inside main 
+		# [name index, filename, filepath, locked]
+		var _n : Array = [children[i].category_name, children[i].index, "null", "null", 0, children[i].is_locked] 
 		main.append(_n)
 	# config.set_value("plugin", "base_directory", config.get_value("plugin", "base_directory"))
 	config.set_value("plugin", "categories", main)
@@ -731,7 +732,7 @@ func update_indices(deferred : bool = false) -> void:
 	for i in range(_c.size()):
 		_c[i].index = i # updates actual dock elements
 		_c[i].refresh_index_label(i)
-		var _e : Array = [_c[i].category_name, i, _c[i].is_locked]
+		var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c[i].entry_count, _c[i].is_locked]
 		refresh_table.append(_e)
 	config.set_value("plugin", "categories", refresh_table)
 	var _s = config.save(PATH)

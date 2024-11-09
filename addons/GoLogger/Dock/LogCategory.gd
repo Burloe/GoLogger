@@ -14,14 +14,6 @@ extends Panel
 
 var dock : TabContainer ## Dock root
 ## Flags whether or not this log is locked. I.e. safe from being deleted or renamed.
-var is_locked : bool = false:
-	set(value):
-		# print(str(category_name, " > is_locked = ", is_locked, ". new_value = ", value))
-		is_locked = value
-		if lock_btn != null: lock_btn.button_pressed = is_locked
-		if line_edit != null: 	line_edit.editable = !value
-		if del_btn != null: 	del_btn.disabled = value
-		if dock != null: 		dock.save_categories(true)
 
 ## The prefix name of this log. 
 @export var category_name : String = "":
@@ -37,6 +29,22 @@ var is_locked : bool = false:
 		index = value
 		if ilbl != null:
 			ilbl.text = str(value)
+
+@export var file_name : String = "null"
+
+@export var file_path : String = "null"
+
+@export var entry_count : int = 0
+
+var is_locked : bool = false:
+	set(value):
+		# print(str(category_name, " > is_locked = ", is_locked, ". new_value = ", value))
+		is_locked = value
+		if lock_btn != null: 	lock_btn.button_pressed = is_locked
+		if line_edit != null: 	line_edit.editable = !value
+		if del_btn != null: 	del_btn.disabled = value
+		if dock != null: 		dock.save_categories(true)
+
 
 
 
