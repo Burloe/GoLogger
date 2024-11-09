@@ -27,6 +27,7 @@ metadata/_edit_horizontal_guides_ = [168.0]
 wait_time = 0.5
 
 [node name="DragButton" type="Button" parent="."]
+unique_name_in_owner = true
 z_index = 10
 layout_mode = 1
 anchors_preset = 15
@@ -86,6 +87,7 @@ layout_mode = 2
 theme = ExtResource("1_d1jly")
 
 [node name="SessionStatusLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/SessionStatusPanel"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 55)
 layout_mode = 1
 anchors_preset = 15
@@ -104,6 +106,7 @@ layout_mode = 2
 theme = ExtResource("1_d1jly")
 
 [node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 modulate = Color(0.552941, 0.858824, 0.337255, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
@@ -111,6 +114,7 @@ theme = ExtResource("1_d1jly")
 text = "Start"
 
 [node name="CopyButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 modulate = Color(1, 0.870588, 0.141176, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
@@ -118,6 +122,7 @@ theme = ExtResource("1_d1jly")
 text = "Copy"
 
 [node name="StopButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 modulate = Color(1, 0.290196, 0.290196, 1)
 custom_minimum_size = Vector2(61, 0)
 layout_mode = 2
@@ -129,7 +134,8 @@ custom_minimum_size = Vector2(0, 104)
 layout_mode = 2
 theme = ExtResource("1_d1jly")
 
-[node name="TimerLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel"]
+[node name="SessionTimerLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
 offset_top = 5.0
@@ -141,6 +147,7 @@ text = "[center]Session Timer:
 "
 
 [node name="SessionTimerPGB" type="ProgressBar" parent="MarginContainer/VBoxContainer/TimerPanel"]
+unique_name_in_owner = true
 self_modulate = Color(5, 5, 5, 1)
 layout_mode = 2
 offset_left = 10.0
@@ -157,6 +164,7 @@ offset_bottom = 99.0
 theme = ExtResource("1_d1jly")
 
 [node name="TimerStatusLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(93, 34)
 layout_mode = 2
 theme = ExtResource("1_d1jly")
@@ -165,6 +173,7 @@ text = "[center][font_size=12]Status:
 [color=red]OFF"
 
 [node name="TimerLeftLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(93, 34)
 layout_mode = 2
 theme = ExtResource("1_d1jly")
@@ -173,11 +182,13 @@ text = "[center][font_size=12]TimeLeft:
 [color=light_blue]108s"
 
 [node name="ShowLogFileButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_d1jly")
 text = "Show Log File Info"
 
 [node name="Tooltip" type="Panel" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 theme = ExtResource("1_d1jly")
@@ -195,12 +206,14 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Tooltip/MarginContainer"]
+[node name="TooltipLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Tooltip/MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_d1jly")
 bbcode_enabled = true
 
 [node name="FileInfoPanel" type="Panel" parent="."]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(270, 446)
 layout_mode = 0
 offset_left = 213.0
@@ -209,6 +222,7 @@ offset_bottom = 446.0
 theme = ExtResource("1_d1jly")
 
 [node name="FileInfoSide_Button" type="Button" parent="FileInfoPanel"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_top = -34.0
 offset_right = 270.0
@@ -233,6 +247,7 @@ layout_mode = 2
 theme = ExtResource("1_d1jly")
 
 [node name="FileInfoContainer" type="VBoxContainer" parent="FileInfoPanel/MarginContainer/ScrollContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 416)
 layout_mode = 2
 theme = ExtResource("1_d1jly")

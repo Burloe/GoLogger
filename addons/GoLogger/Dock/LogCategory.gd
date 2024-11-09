@@ -34,6 +34,8 @@ var dock : TabContainer ## Dock root
 
 @export var file_path : String = "null"
 
+@export var file_count : int = 0
+
 @export var entry_count : int = 0
 
 var is_locked : bool = false:

@@ -655,7 +655,7 @@ func load_categories(deferred : bool = false) -> void:
 		_n.dock = self
 		_n.category_name = _c[i][0]
 		_n.index = i 
-		_n.is_locked = _c[i][5]
+		_n.is_locked = _c[i][6]
 		category_container.add_child(_n)
 		category_container.move_child(_n, _n.index)
 	update_indices()
@@ -687,7 +687,7 @@ func save_categories(deferred : bool = false) -> void:
 	for i in range(children.size()): # Loop through each child
 		# Create and append a nested array inside main 
 		# [name index, filename, filepath, locked]
-		var _n : Array = [children[i].category_name, children[i].index, "null", "null", 0, children[i].is_locked] 
+		var _n : Array = [children[i].category_name, children[i].index, "null", "null", 0, 0, children[i].is_locked] 
 		main.append(_n)
 	# config.set_value("plugin", "base_directory", config.get_value("plugin", "base_directory"))
 	config.set_value("plugin", "categories", main)
@@ -732,7 +732,7 @@ func update_indices(deferred : bool = false) -> void:
 	for i in range(_c.size()):
 		_c[i].index = i # updates actual dock elements
 		_c[i].refresh_index_label(i)
-		var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c[i].entry_count, _c[i].is_locked]
+		var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c.file_count, _c[i].entry_count, _c[i].is_locked]
 		refresh_table.append(_e)
 	config.set_value("plugin", "categories", refresh_table)
 	var _s = config.save(PATH)

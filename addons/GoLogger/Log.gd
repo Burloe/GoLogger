@@ -93,9 +93,9 @@ var session_status : bool = false:
 
 # Popup
 @onready var popup 				: CenterContainer = %Popup
-@onready var popup_textedit 	: LineEdit = 		%CopyNameLineEdit
+@onready var popup_line_edit 	: LineEdit = 		%CopyNameLineEdit
 @onready var popup_yesbtn 		: Button = 			%PopupYesButton
-@onready var popup_nobtn 		: Button =			%NoButton
+@onready var popup_nobtn 		: Button =			%PopupNoButton
 @onready var popup_errorlbl 	: RichTextLabel = 	%PopupErrorLabel
 
 ## When true, this bool activates the popup prompt that allows you to enter a file copy name. 
@@ -104,15 +104,16 @@ var popup_state : bool = false:
 		if session_status:
 			popup_state = value
 			popup.visible = value
-			popup_textedit.editable = value
+			popup_line_edit.editable = value
 			popup_nobtn.disabled  = !value
 			if value:
-				popup_textedit.focus_mode = Control.FOCUS_ALL
+				popup_line_edit.focus_mode = Control.FOCUS_ALL
 				popup_yesbtn.focus_mode   = Control.FOCUS_ALL
 				popup_nobtn.focus_mode    = Control.FOCUS_ALL
-				popup_textedit.grab_focus()
+				popup_line_edit.grab_focus()
 			else:
-				popup_textedit.focus_mode = Control.FOCUS_NONE
+				popup_line_edit.release_focus()
+				popup_line_edit.focus_mode = Control.FOCUS_NONE
 				popup_yesbtn.focus_mode   = Control.FOCUS_NONE
 				popup_nobtn.focus_mode    = Control.FOCUS_NONE
 
@@ -127,29 +128,34 @@ func _input(event: InputEvent) -> void:
 		or event is InputEventJoypadButton \
 		or event is InputEventJoypadMotion and event.axis == 4 \
 		or event is InputEventJoypadMotion and event.axis == 5: # Only allows trigger axis
-			if Log.hotkey_start_session.shortcut.matches_event(event) and event.is_released():
+			if hotkey_start_session.shortcut.matches_event(event) and event.is_released():
 				start_session()
-			if Log.hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
+			if hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
 				stop_session()
-			if Log.hotkey_save_unique.shortcut.matches_event(event) and event.is_released():
+			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
 
 
 func _ready() -> void:
-	if !Engine.is_editor_hint(): 
-		header_string = get_header()
-		elements_canvaslayer.layer = get_value("canvaslayer_layer")
-		session_timer.autostart = get_value("autostart_session") #TODO Check if setting this in _ready() actually starts the session
+	config.load(PATH)
+	base_directory = config.get_value("plugin", "base_directory")
+	header_string = get_header()
+	elements_canvaslayer.layer = get_value("canvaslayer_layer")
+	session_timer.autostart = get_value("autostart_session") #TODO Check if setting this in _ready() actually starts the session
 
 
+	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
+	popup_line_edit.text_submitted.connect(_on_line_edit_text_submitted)
+	popup.visible = popup_state
+	popup_errorlbl.visible = false
+	assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
+	if get_value("autostart_session"):
+		start_session()
+	add_hotkeys()
 
-		popup.visible = popup_state
-		popup_errorlbl.visible = false
-		assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
-		if get_value("autostart_session"):
-			start_session()
-		add_hotkeys()
 	
+
+
 ## Creates a settings.ini file.
 func create_settings_file() -> void:
 	var _a : Array[Array] = [["game", 0, "null", "null", 0, true], ["player", 1, "null", "null", 0, true]]
@@ -211,15 +217,51 @@ func validate_settings() -> bool:
 		"settings/disable_warn1": TYPE_BOOL,
 		"settings/disable_warn2": TYPE_BOOL
 	}
+	var types : Array[String] = [
+		"Nil",           
+		"Bool",          
+		"Integer",       
+		"Float",         
+		"String",        
+		"Vector2",       
+		"Vector2i",      
+		"Rect2",         
+		"Rect2i",        
+		"Vector3",       
+		"Vector3i",      
+		"Transform2D",   
+		"Plane",         
+		"Quaternion",    
+		"AABB",          
+		"Basis",         
+		"Transform3D",   
+		"Color",         
+		"StringName",    
+		"NodePath",      
+		"RID",           
+		"Object",        
+		"Callable",      
+		"Signal",        
+		"Dictionary",    
+		"Array",         
+		"PackedByteArray",   
+		"PackedInt32Array",  
+		"PackedInt64Array",  
+		"PackedFloat32Array",
+		"PackedFloat64Array",
+		"PackedStringArray", 
+		"PackedVector2Array",
+		"PackedVector3Array",
+		"PackedColorArray"   
+	]
 	
-	for setting_key in expected_types.keys():
-		# Create array ["settings", "log_header"] for each setting
+	for setting_key in expected_types.keys(): 
 		var splits = setting_key.split("/") 
 		var expected_type = expected_types[setting_key]
 		var value = config.get_value(splits[0], splits[1])
 
 		if typeof(value) != expected_type:
-			push_error("Gologger Error: Validate settings failed. Invalid type for setting '" + splits[1] + "'. Expected " + str(expected_type) + " but got " + str(typeof(value)) + ".")
+			push_error(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
 			faults += 1
 	return faults == 0
 
@@ -264,8 +306,9 @@ func start_session(start_delay : float = 0.0) -> void:
 	# 1 = category index
 	# 2 = current file name(with timestamp)
 	# 3 = current file path
-	# 4 = entry count 
-	# 5 = is locked
+	# 4 = file count
+	# 5 = entry count 
+	# 6 = is locked
 	categories = get_value("categories")
 	if categories.is_empty(): 
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
@@ -284,7 +327,7 @@ func start_session(start_delay : float = 0.0) -> void:
 	for i in range(categories.size()): 
 
 		categories[i][3] = get_file_name(categories[i][0])
-		var _path : String = str(base_directory, categories[i][0], "_Gologs/")
+		var _path : String = str(base_directory, categories[i][0], "_Gologs/") # Result: user://GoLogger/category_GoLogs
 		if _path == "": 
 			if get_value("error_reporting") == 0: 
 				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
@@ -299,8 +342,7 @@ func start_session(start_delay : float = 0.0) -> void:
 		else:
 			var _dir : DirAccess
 			if !DirAccess.dir_exists_absolute(_path):
-				DirAccess.make_dir_recursive_absolute(_path)
-			var _dd : DirAccess # Create sub-folders for saved logs
+				DirAccess.make_dir_recursive_absolute(_path) 
 			if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
 				DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
 
@@ -310,11 +352,16 @@ func start_session(start_delay : float = 0.0) -> void:
 				if _err != OK: push_warning("GoLogger Error: ", get_error(_err, "DirAccess"), " (", _path, ").")
 				return
 			else:
-				categories[i][2] = get_file_name(categories[i].category_name)
+				# Assign file name
+				categories[i][2] = get_file_name(categories[i][0])
+				print(str("changed current_filename to ", categories[i][2], "."))
+				# Assign file path
 				categories[i][3] = str(_path, categories[i][2])
-				var _f = FileAccess.open(categories[i][2], FileAccess.WRITE)
+				print(str("changed current_filepath to ", categories[i][3]))
+				var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
 				var _files = _dir.get_files()
-				categories[i].file_count = _files.size()
+				#TODO Check if files are .log files > add them to an array and use that to detect/delete files 
+				categories[i][4] = _files.size()
 				while _files.size() > get_value("file_cap") -1:
 					_files.sort()
 					_dir.remove(_files[0])
@@ -327,6 +374,8 @@ func start_session(start_delay : float = 0.0) -> void:
 					_f.store_line(_s)
 					categories[i][5] = 0
 					_f.close()
+	config.set_value("plugin", "categories", categories)
+	config.save(PATH)
 	if get_value("session_print") == 1 or get_value("session_print") == 2: print("GoLogger: Started session.")
 	session_status = true
 	session_started.emit()
@@ -342,12 +391,14 @@ func start_session(start_delay : float = 0.0) -> void:
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
 ## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
+	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
 	# 0 = category name
 	# 1 = category index
 	# 2 = current file name(with timestamp)
 	# 3 = current file path
-	# 4 = entry count 
-	# 5 = is locked
+	# 4 = file count
+	# 5 = entry count 
+	# 6 = is locked
 	categories = get_value("categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
 
@@ -371,8 +422,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 			if get_value("limit_method") == 0 or get_value("limit_method") == 2:
 				while lines.size() > get_value("entry_cap"):
 					lines.remove_at(1)
-			categories[category_index].entry_count = lines.size()
-
+			categories[category_index][4] = lines.size()
 			# Open file with write and store the new entry
 			var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE)
 			if !_fw and get_value("error_reporting") != 2:
@@ -381,6 +431,8 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 			var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
 			_fw.store_line(str(_c, _entry))
 			_fw.close()
+	config.set_value("plugin", "categories", categories)
+	config.save(PATH)
 
 
 
@@ -397,14 +449,20 @@ func save_copy() -> void:
 ##     Log.popup_state = !Log.popup_state
 ## [/codeblock]
 func complete_copy() -> void: 
+	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
 	# 0 = category name
 	# 1 = category index
 	# 2 = current file name(with timestamp)
 	# 3 = current file path
-	# 4 = entry count 
-	# 5 = is locked
+	# 4 = file count
+	# 5 = entry count 
+	# 6 = is locked
 	popup_state = false
 	categories = get_value("categories")
+	# If user entered a name with .log, trim it
+	if copy_name.ends_with(".log") or copy_name.ends_with(".txt"):
+		copy_name = copy_name.substr(0, copy_name.length() - 4)
+
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
 
 	if !session_status:
@@ -431,7 +489,7 @@ func complete_copy() -> void:
 		if get_value("session_print") == 1 or get_value("session_print") == 3:
 			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
 		copy_name = ""
-		popup_textedit.text = ""
+		popup_line_edit.text = ""
 	if !session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
 		return
@@ -456,19 +514,23 @@ func complete_copy() -> void:
 		if get_value("session_print") == 1 or get_value("session_print") == 3:
 			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
 		copy_name = ""
-		popup_textedit.text = ""
+		popup_line_edit.text = ""
+	config.set_value("plugin", "categories", categories)
+	config.save(PATH)
 
 
 
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new 
 ## session must be started using [method start_session] which creates a new categories.[br] 
 func stop_session() -> void:
+	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
 	# 0 = category name
 	# 1 = category index
 	# 2 = current file name(with timestamp)
 	# 3 = current file path
-	# 4 = entry count 
-	# 5 = is locked
+	# 4 = file count
+	# 5 = entry count 
+	# 6 = is locked
 	categories = get_value("categories")
 	if get_value("session_print") == 1 or get_value("session_print") == 3:
 		print("GoLogger: Session stopped!")
@@ -479,7 +541,7 @@ func stop_session() -> void:
 			var _f = FileAccess.open(categories[i][3], FileAccess.READ)
 			if !_f and get_value("error_reporting") != 2:
 				var _err = FileAccess.get_open_error()
-				if _err != OK: push_warning("GoLogger Error: Attempting to stop session by reading file (", categories[i][3], ") -> Error[", _err, "]")
+				if _err != OK: push_warning("GoLogger Warning: Failed to open file ", categories[i][3], " with READ ", get_error(_err))
 			var _content := _f.get_as_text()
 			_f.close()
 			var _fw = FileAccess.open(categories[i][3], FileAccess.WRITE)
@@ -493,8 +555,10 @@ func stop_session() -> void:
 			_fw.close()
 			categories[i][2] = ""
 			categories[i][3] = ""
-			categories[i][4] = 0
+			categories[i][5] = 0
 		if get_value("session_print") == 1 or get_value("session_print") == 4: print("GoLogger: Stopped log session.")
+	config.set_value("plugin", "categories", categories)
+	config.save(PATH)
 	session_status = false
 	session_stopped.emit()
 #endregion
@@ -519,12 +583,14 @@ func get_header() -> String:
 ## Helper function that determines whether or not any [param category_name] was found more than once 
 ## in [param categories].
 func check_filename_conflicts() -> String:
+	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
 	# 0 = category name
 	# 1 = category index
 	# 2 = current file name(with timestamp)
 	# 3 = current file path
-	# 4 = entry count 
-	# 5 = is locked
+	# 4 = file count
+	# 5 = entry count 
+	# 6 = is locked
 	categories = get_value("categories")
 	var seen_resources : Array[String] = []
 	for r in categories:
@@ -669,24 +735,31 @@ func _on_session_timer_timeout() -> void:
 
 
 
-func _on_text_edit_text_changed() -> void:
-	var tx = popup_textedit.text
-	var max_char = 20
-	if tx != "":
+func _on_line_edit_text_changed(new_text : String) -> void:
+	if new_text != "":
 		popup_yesbtn.disabled = false
-		if popup_textedit.get_line_count() > 1:
-			popup_textedit.text = popup_textedit.get_line(0)
-			popup_textedit.set_caret_column(popup_textedit.text.length())
-		if popup_textedit.text.length() > max_char:
-			popup_textedit.text = popup_textedit.text.substr(0, max_char)
-			popup_textedit.set_caret_column(popup_textedit.text.length())
-		copy_name = popup_textedit.text
+		popup_line_edit.set_caret_column(popup_line_edit.text.length())
+		if new_text.ends_with(".log") or new_text.ends_with(".txt"):
+			copy_name = new_text.substr(0, new_text.length() - 4)
+		copy_name = popup_line_edit.text
+	else:
+		popup_yesbtn.disabled = true
+
+
+func _on_line_edit_text_submitted(new_text : String) -> void:
+	if new_text != "":
+		if new_text.ends_with(".log") or new_text.ends_with(".txt"):
+			copy_name = new_text.substr(0, new_text.length() - 4)
+		else:
+			copy_name = popup_line_edit.text
+		complete_copy()
+		popup_line_edit.release_focus()
 
 
 
 func _on_no_button_button_up() -> void:
 	popup_state = false
-	popup_textedit.text = ""
+	popup_line_edit.text = ""
 
 
 

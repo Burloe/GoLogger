@@ -8,6 +8,7 @@ custom_minimum_size = Vector2(205, 111)
 offset_right = 205.0
 offset_bottom = 100.0
 script = ExtResource("1_8da2w")
+file_count = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1

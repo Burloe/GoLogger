@@ -5,48 +5,48 @@ extends Panel
 
 
 ## Drag the controller while pressing this button.
-@onready var drag_button : Button = $DragButton
+@onready var drag_button : Button = %DragButton
 ## Session status button.
-@onready var session_status_label : RichTextLabel = $MarginContainer/VBoxContainer/SessionStatusPanel/SessionStatusLabel
+@onready var session_status_label : RichTextLabel = %SessionStatusLabel
 
 
 ## Start session button.
-@onready var start_btn : Button = $MarginContainer/VBoxContainer/HBoxContainer/StartButton
+@onready var start_btn : Button = %StartButton
 
 ## Copy session button.
-@onready var copy_btn : Button = $MarginContainer/VBoxContainer/HBoxContainer/CopyButton
+@onready var copy_btn : Button = %CopyButton
 
 ## Stop session button.
-@onready var stop_btn : Button = $MarginContainer/VBoxContainer/HBoxContainer/StopButton
+@onready var stop_btn : Button = %StopButton
 
 
 ## Session timer progressbar.
-@onready var session_timer_pgb : ProgressBar = $MarginContainer/VBoxContainer/TimerPanel/SessionTimerPGB
+@onready var session_timer_pgb : ProgressBar = %SessionTimerPGB
 
 ## Timer status label.
-@onready var timer_status_label : RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerStatusLabel
+@onready var timer_status_label : RichTextLabel = %TimerStatusLabel
 
 ## Timer left label.
-@onready var timer_left_label : RichTextLabel = $MarginContainer/VBoxContainer/TimerPanel/TimerLabelHBOX/TimerLeftLabel
+@onready var timer_left_label : RichTextLabel = %TimerLeftLabel
 
 ## Tooltip root node.
-@onready var tooltip : Panel = $MarginContainer/VBoxContainer/Tooltip
+@onready var tooltip : Panel = %Tooltip
 
 ## Tooltip Label.
-@onready var tooltip_label : RichTextLabel = $MarginContainer/VBoxContainer/Tooltip/MarginContainer/RichTextLabel
+@onready var tooltip_label : RichTextLabel = %TooltipLabel
 
 
 ## FileInfo root node.
-@onready var fileinfo_panel : Panel = $FileInfoPanel
+@onready var fileinfo_panel : Panel = %FileInfoPanel
 
 ## Container LogFiles are instantiated into.
-@onready var fileinfo_container : VBoxContainer	= $FileInfoPanel/MarginContainer/ScrollContainer/FileInfoContainer
+@onready var fileinfo_container : VBoxContainer	= %FileInfoContainer
 
 ## FileInfo toggle button.
-@onready var fileinfo_button : Button = $MarginContainer/VBoxContainer/ShowLogFileButton
+@onready var fileinfo_button : Button = %ShowLogFileButton
 
 ## Positional toggle button for FileInfo panel.
-@onready var fileinfo_side_button : Button = $FileInfoPanel/FileInfoSide_Button
+@onready var fileinfo_side_button : Button = %FileInfoSide_Button
 
 ## Flags whether or not the controller is dragged 
 var is_dragging : bool = false 
@@ -66,13 +66,14 @@ var fileinfo_state : bool = false:
 	set(value):
 		fileinfo_state = value
 		fileinfo_panel.visible = value
+		categories = config.get_value("plugin", "categories")
 		if value:
 				for i in range(Log.categories.size()):
 					var instance = fileinfo_scene.instantiate()
 					fileinfo_container.add_child(instance)
-					instance.name_label.text = str("[center]", Log.categories[i].category_name)
+					instance.name_label.text = str("[center]", categories[i][0])
 					instance.left_label.text = str("[font_size=10]File:\n\nFile count:\nEntry count:")
-					instance.right_label.text = str("[right][font_size=10]", Log.categories[i].current_file, "\n\n", Log.categories[i].file_count -1, "\n", Log.categories[i].entry_count)
+					instance.right_label.text = str("[right][font_size=10]", categories[i][2], "\n\n", categories[i][4] -1, "\n", categories[i][5])
 					fileinfos.append(instance)
 		else:
 			if fileinfo_container.get_child_count() != 0:
@@ -82,15 +83,16 @@ var fileinfo_state : bool = false:
 
 const PATH = "user://GoLogger/settings.ini"
 var config = ConfigFile.new()
+var categories 
 #endregion
 
 
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and Log.hotkey_toggle_controller.shortcut.matches_event(event) and event.is_released():	
+	if event is InputEventKey and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():	
 		visible = !visible
-	if event is InputEventJoypadButton and Log.hotkey_toggle_controller.shortcut.matches_event(event) and event.is_released():
+	if event is InputEventJoypadButton and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():
 		visible = !visible
 
 func _input(event: InputEvent) -> void:
@@ -99,6 +101,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
+	config.load(PATH)
+	categories = config.get_value("plugin", "categories")
 	#region Signal connections
 	drag_button.button_up.connect(_on_drag_button.bind(false))
 	drag_button.button_down.connect(_on_drag_button.bind(true))
@@ -131,12 +135,12 @@ func _ready() -> void:
 	fileinfo_panel.visible = fileinfo_state
 
 
-	if Log.hide_contoller_on_start: hide()
+	if config.get_value("settings", "show_controller"): hide()
 	else: show()
 	await get_tree().process_frame
 	session_timer_pgb.min_value = 0
-	session_timer_pgb.max_value = Log.session_timer_wait_time
-	session_timer_pgb.step = Log.session_timer_wait_time / Log.session_timer_wait_time 
+	session_timer_pgb.max_value = config.get_value("settings", "session_duration")
+	session_timer_pgb.step = config.get_value("settings", "session_duration") / config.get_value("settings", "session_duration") 
 	await get_tree().process_frame 
 	Log.session_timer.timeout.connect(_on_session_timer_timeout)
 	session_timer_pgb.modulate = Color.BLACK if Log.session_timer.is_stopped() else Color.FOREST_GREEN
