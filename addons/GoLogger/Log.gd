@@ -135,8 +135,8 @@ func _input(event: InputEvent) -> void:
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
 	
-		# if event is InputEventKey and event.keycode == KEY_E and event.is_released():
-		# 	entry("testtesttesttest 123123123123123123", 0)
+		if event is InputEventKey and event.keycode == KEY_E and event.is_released():
+			entry("testtesttesttest 123123123123123123", 0)
 
 
 func _ready() -> void:
@@ -155,9 +155,6 @@ func _ready() -> void:
 	if get_value("autostart_session"):
 		start_session()
 	add_hotkeys()
-	entry("testtesttesttest 123123123123123123", 0)
-	entry("testtesttesttest 123123123123123123", 0)
-	entry("testtesttesttest 123123123123123123", 0)
 
 
 
@@ -404,41 +401,69 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	# 4 = file count
 	# 5 = entry count 
 	# 6 = is locked
-	categories = get_value("categories")
-	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
 
+	# Error check: Categories are valid
+	print(config.get_value("plugin", "categories"))
+	# if temp.is_empty():
+	# 	return
+	# else:
+	# Error check: Categories has a valid name
+	categories = config.get_value("plugin", "categories")
+	if !categories.is_empty() or categories != null:
+		if categories[category_index][0] == "": 
+			if get_value("error_reporting") != 2:
+				printerr("GoLogger Error: Attempted to log on a category without a name.")
+			return
+	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ")
+
+	# Error check: Ensure session_status isn't inactive
 	if !session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Failed to log entry due to inactive session.")
 		return
 	else:
+
+		# Open directory of the category
 		var _f = FileAccess.open(categories[category_index][3], FileAccess.READ)
+		print("aiosdfioasdf", _f)
 		if !_f:
 			var _err = FileAccess.get_open_error()
 			if _err != OK and get_value("error_reporting") != 2: push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
+			return 
 		
-		var _c = _f.get_as_text()
+		# Store old entries before the file is truncated
+		var _c = _f.get_as_text() 
 		var lines : Array[String] = []
+		print(str("_c = ", _c, "\t_f"))
 		while not _f.eof_reached():
 			var _l = _f.get_line().strip_edges(false, true)
+			print(str("_l = ", _l, "\t_f= ", _f))
 			if _l != "":
 				lines.append(_l)
-			_f.close()
+				print(str("_l = ", _l))
+		_f.close()
 
-			# Remove old entries at line 1 until entry count is less than limit.
-			if get_value("limit_method") == 0 or get_value("limit_method") == 2:
-				while lines.size() > get_value("entry_cap"):
-					lines.remove_at(1)
-			categories[category_index][4] = lines.size()
-			# Open file with write and store the new entry
-			var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE)
-			if !_fw and get_value("error_reporting") != 2:
-				var err = FileAccess.get_open_error()
-				if err != OK: push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
-			var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
-			_fw.store_line(str(_c, _entry))
-			_fw.close()
-	config.set_value("plugin", "categories", categories)
-	config.save(PATH)
+		# Remove old entries at line 1 until entry count is < limit.
+		if get_value("limit_method") == 0 or get_value("limit_method") == 2:
+			while lines.size() >= get_value("entry_cap"):
+				lines.remove_at(1)
+		categories[category_index][4] = lines.size()
+		
+		# Open file with write and store the new entry
+		var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE)
+		print(str("_fw = ", _fw, "     Error = ", FileAccess.get_open_error()))
+		if !_fw and get_value("error_reporting") != 2:
+			var err = FileAccess.get_open_error()
+			if err != OK: push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
+		
+		# Append the new entry and re-enter the old entries
+		var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
+		lines.append(_entry)
+		for i in range(lines.size()):
+			_fw.store_line(str(lines[i], _entry))
+		_fw.close()
+
+	# config.set_value("plugin", "categories", categories) #! These are uneeded
+	# config.save(PATH) #! These are uneeded
 
 
 ## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and 

@@ -483,7 +483,7 @@ func update_tooltip(node : Control) -> void:
 		
 		# Int settings [SpinBoxes]
 		entry_count_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit of any log. Used when 'Limit Method' is set to use Entry Count."
+			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit of any log. Used when 'Limit Method' is set to use Entry Count.[color=red] Lower this value if you experience performance issues."
 		session_duration_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]Session Duration:[color=white][font_size=11]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer."
 		file_count_spinbox:
