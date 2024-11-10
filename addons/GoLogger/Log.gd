@@ -136,7 +136,7 @@ func _input(event: InputEvent) -> void:
 				save_copy()
 	
 		if event is InputEventKey and event.keycode == KEY_E and event.is_released():
-			entry("testtesttesttest 123123123123123123", 0)
+			entry("[Test entry start        Test entry end]", 0)
 
 
 func _ready() -> void:
@@ -393,77 +393,71 @@ func start_session(start_delay : float = 0.0) -> void:
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
 ## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
-	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
-	# 0 = category name
-	# 1 = category index
-	# 2 = current file name(with timestamp)
-	# 3 = current file path
-	# 4 = file count
-	# 5 = entry count 
-	# 6 = is locked
-
-	# Error check: Categories are valid
-	print(config.get_value("plugin", "categories"))
-	# if temp.is_empty():
-	# 	return
-	# else:
-	# Error check: Categories has a valid name
+	#?                         0               1           2               3                  4              5
+	#? Category array = [category name, category index, is locked, current file name, current filepath, entry count]
 	categories = config.get_value("plugin", "categories")
-	if !categories.is_empty() or categories != null:
-		if categories[category_index][0] == "": 
-			if get_value("error_reporting") != 2:
-				printerr("GoLogger Error: Attempted to log on a category without a name.")
-			return
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ")
-
-	# Error check: Ensure session_status isn't inactive
+	
+	#region Error Check
+	# Error check: Valid category and name 
+	if categories == null or categories.is_empty():
+		if get_value("error_reporting") != 2: 
+			printerr("GoLogger Error: No valid categories to log in.")
+		return
+			
+	if categories[category_index][0] == "": 
+		if get_value("error_reporting") != 2:
+			printerr("GoLogger Error: Attempted to log on a nameless category.")
+	
+	# Error check: Proper session_status 
 	if !session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Failed to log entry due to inactive session.")
 		return
-	else:
+	#endregion
+	
 
-		# Open directory of the category
-		var _f = FileAccess.open(categories[category_index][3], FileAccess.READ)
-		print("aiosdfioasdf", _f)
-		if !_f:
-			var _err = FileAccess.get_open_error()
-			if _err != OK and get_value("error_reporting") != 2: push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
-			return 
-		
-		# Store old entries before the file is truncated
-		var _c = _f.get_as_text() 
-		var lines : Array[String] = []
-		print(str("_c = ", _c, "\t_f"))
-		while not _f.eof_reached():
-			var _l = _f.get_line().strip_edges(false, true)
-			print(str("_l = ", _l, "\t_f= ", _f))
-			if _l != "":
-				lines.append(_l)
-				print(str("_l = ", _l))
-		_f.close()
+	#? Open directory of the category
+	var _f = FileAccess.open(categories[category_index][3], FileAccess.READ) 
+	if !_f: # Error check 
+		var _err = FileAccess.get_open_error()
+		if _err != OK and get_value("error_reporting") != 2: 
+			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
+		return 
+	
+	
+	#? Store old entries before the file is truncated
+	var lines : Array[String] = [] 
+	while not _f.eof_reached():
+		var _l = _f.get_line().strip_edges(false, true)
+		if _l != "":
+			lines.append(_l) 
+	_f.close()
 
-		# Remove old entries at line 1 until entry count is < limit.
-		if get_value("limit_method") == 0 or get_value("limit_method") == 2:
-			while lines.size() >= get_value("entry_cap"):
-				lines.remove_at(1)
-		categories[category_index][4] = lines.size()
-		
-		# Open file with write and store the new entry
-		var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE)
-		print(str("_fw = ", _fw, "     Error = ", FileAccess.get_open_error()))
-		if !_fw and get_value("error_reporting") != 2:
-			var err = FileAccess.get_open_error()
-			if err != OK: push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
-		
-		# Append the new entry and re-enter the old entries
-		var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
-		lines.append(_entry)
-		for i in range(lines.size()):
-			_fw.store_line(str(lines[i], _entry))
-		_fw.close()
+	#? Remove old entries at line 1 until entry count is < limit.
+	if get_value("limit_method") == 0 or get_value("limit_method") == 2:
+		while lines.size() >= get_value("entry_cap"):
+			lines.remove_at(1)# Keep header line at 0
+	
+	categories[category_index][4] = lines.size() 
+	
 
-	# config.set_value("plugin", "categories", categories) #! These are uneeded
-	# config.save(PATH) #! These are uneeded
+	#? Open file with write and store the new entry
+	var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE) 
+	if !_fw:
+		var err = FileAccess.get_open_error()
+		if err != OK and get_value("error_reporting") != 2: 
+			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
+	
+	#? Write lines back into file sequentially
+	for line in lines:
+		_fw.store_line(str(line))
+
+	#? Add the new entry at end
+	var _entry : String = str("\n\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
+	_fw.store_line(_entry)
+	
+	_fw.store_line(str(_entry))
+	_fw.close() 
 
 
 ## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and 
