@@ -10,6 +10,8 @@ extends TabContainer
 @onready var open_dir_btn : Button = %OpenDirCatButton
 ## Reset to default categories [Button] node. Removes all existing categories and adds "game" and "player" categories.
 @onready var defaults_btn : Button = %DefaultsCatButton
+## Displays a warning when a category name is unapplied or empty.
+@onready var category_warning_lbl : Label = %CategoryWarningLabel
 
 ## LogCategory scene. Instantiated into [param LogCategory].
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
@@ -103,10 +105,9 @@ var container_array : Array[Control] = []
 #endregion
 
 
-#TODO Add a 'validate settings' function
-
 # Debug
 # func _physics_process(delta: float) -> void:
+# 	print(str("startpos update_tooltip() is connected = ", controller_xpos_spinbox.mouse_entered.is_connected(update_tooltip)))
 # 	$Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column/Label2.text = str("FileCount status: ", file_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted))
 # 	var _c = config.get_value("plugin", "categories") 
 # 	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current .ini setting(size = ", _c.size(), "):\n      ", _c, "\nCurrent GridContainer.get_children()[size = ",category_container.get_children().size(), "]:\n      ", category_container.get_children())
@@ -136,7 +137,7 @@ func _ready() -> void:
 		# Load categories as saved in settings.ini
 		load_categories()
 
-		
+		#region Connect signals
 		# Settings	
 		reset_settings_btn.button_up.connect(reset_to_default.bind(1))
 		reset_settings_btn.mouse_entered.connect(update_tooltip.bind(reset_settings_btn))
@@ -162,6 +163,8 @@ func _ready() -> void:
 			session_print_btn,
 			disable_warn1_btn,
 			disable_warn2_btn,
+			controller_xpos_spinbox,
+			controller_ypos_spinbox,
 			drag_offset_x,
 			drag_offset_y,
 			controller_start_btn,
@@ -175,8 +178,7 @@ func _ready() -> void:
 				btn_array[i].mouse_entered.disconnect(update_tooltip)
 			btn_array[i].mouse_entered.connect(update_tooltip.bind(btn_array[i]))
 			# Connect focus_entered signal(regardless of type) to update tooltip
-			if btn_array[i].focus_entered.is_connected(update_tooltip):
-				print(str(btn_array[i].get_name(), " is already connected"))
+			if btn_array[i].focus_entered.is_connected(update_tooltip): 
 				btn_array[i].focus_entered.disconnect(update_tooltip)
 			btn_array[i].focus_entered.connect(update_tooltip.bind(btn_array[i]))
 
@@ -197,6 +199,10 @@ func _ready() -> void:
 				btn_array[i].item_selected.connect(_on_optbtn_item_selected.bind(btn_array[i]))
 			
 			elif btn_array[i] is LineEdit:
+				if btn_array[i].text_changed.is_connected(_on_line_edit_text_changed):
+					btn_array[i].text_changed.disconnect(_on_line_edit_text_changed)
+				btn_array[i].text_changed.connect(_on_line_edit_text_changed.bind(btn_array[i]))
+
 				if btn_array[i].text_submitted.is_connected(_on_line_edit_text_submitted):
 					btn_array[i].text_submitted.disconnect(_on_line_edit_text_submitted)
 				btn_array[i].text_submitted.connect(_on_line_edit_text_submitted.bind(btn_array[i]))
@@ -204,27 +210,48 @@ func _ready() -> void:
 			elif btn_array[i] is SpinBox:
 				if btn_array[i].value_changed.is_connected(_on_spinbox_value_changed):
 					btn_array[i].value_changed.disconnect(_on_spinbox_value_changed)
-				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i]))
-			# printerr(str(btn_array[i].get_name(), " mouse_entered signal connection status: ", btn_array[i].mouse_entered.is_connected(update_tooltip)))
+				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i])) 
 
 
-		# Connect the "text submitted" signa of SpinBoxes underlying LineEdit node
+		# Connect the "text submitted" signal of SpinBoxes underlying LineEdit node
 		if canvas_spinbox_line == null: canvas_spinbox_line = canvas_layer_spinbox.get_line_edit()
-		canvas_spinbox_line.text_submitted.connect(_on_line_edit_text_submitted.bind(canvas_spinbox_line))
+		if canvas_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+			canvas_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+		canvas_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(canvas_spinbox_line))
 
 		if file_count_spinbox_line == null: file_count_spinbox_line = file_count_spinbox.get_line_edit()
-		file_count_spinbox_line.text_submitted.connect(_on_line_edit_text_submitted.bind(file_count_spinbox_line))
+		if file_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+			file_count_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+		file_count_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(file_count_spinbox_line))
 
 		if entry_count_spinbox_line == null: entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
-		entry_count_spinbox_line.text_submitted.connect(_on_line_edit_text_submitted.bind(entry_count_spinbox_line))
+		if entry_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+			entry_count_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+		entry_count_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(entry_count_spinbox_line))
 
 		if session_duration_spinbox_line == null: session_duration_spinbox_line = session_duration_spinbox.get_line_edit()
-		session_duration_spinbox_line.text_submitted.connect(_on_line_edit_text_submitted.bind(session_duration_spinbox_line))
+		if session_duration_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+			session_duration_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+		session_duration_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(session_duration_spinbox_line))
+
+		if controller_xpos_line == null: controller_xpos_line = controller_xpos_spinbox.get_line_edit()
+		if controller_xpos_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+			controller_xpos_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+		controller_xpos_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(controller_xpos_line))
+
+		if controller_ypos_line == null: controller_ypos_line = controller_ypos_spinbox.get_line_edit()
+		if controller_ypos_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+			controller_ypos_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+		controller_ypos_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(controller_ypos_line))
 
 		if dragx_line == null: dragx_line = drag_offset_x.get_line_edit()
-		dragx_line.focus_entered.connect(update_tooltip.bind(dragx_line))
+		if dragx_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+			dragx_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+		dragx_line.text_submitted.connect(update_tooltip.bind(dragx_line))
 
 		if dragy_line == null: dragy_line = drag_offset_y.get_line_edit()
+		if dragy_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+			dragy_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
 		dragy_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(dragy_line))
 	
 		
@@ -261,14 +288,16 @@ func _ready() -> void:
 			if container_array[i].mouse_entered.is_connected(update_tooltip):
 				container_array[i].mouse_entered.disconnect(update_tooltip)
 			container_array[i].mouse_entered.connect(update_tooltip.bind(corresponding_btns[i]))
-			
-			# printerr(str(container_array[i].get_name(), " mouse_entered signal connection status: ", container_array[i].mouse_entered.is_connected(update_tooltip)))
+		#endregion 
+
 		load_settings_state()
 	
 
 #region settings.ini
 func create_settings_file() -> void:
-	var _a : Array[Array] = [["game", 0, "null", "null", 0, true], ["player", 1, "null", "null", 0, true]]
+	#        0                1                2                 3             4           5           6
+	# [category_name, category_index, current_filename, current_filepath, file_count, entry_count, is_locked]
+	var _a : Array[Array] = [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
 
@@ -363,7 +392,7 @@ func validate_settings() -> bool:
 		var value = config.get_value(splits[0], splits[1])
 
 		if typeof(value) != expected_type:
-			push_error("Gologger Error: Validate settings failed. Invalid type for setting '" + splits[1] + "'. Expected " + str(expected_type) + " but got " + str(typeof(value)) + ".")
+			printerr("Gologger Error: Validate settings failed. Invalid type for setting '" + splits[1] + "'. Expected " + str(expected_type) + " but got " + str(typeof(value)) + ".")
 			faults += 1
 	
 	return faults == 0
@@ -386,7 +415,7 @@ func reset_to_default(tab : int) -> void:
 		defaults_btn.disabled = true
 		add_category_btn.disabled = true
 		await get_tree().create_timer(0.5).timeout
-		config.set_value("plugin", "categories", [["game", 0, "null", "null", 0, false], ["player", 1, "null", "null", 0, false]])
+		config.set_value("plugin", "categories", [["game", 0, "null", "null", 0, 0, false], ["player", 1, "null", "null", 0, 0, false]])
 		load_categories()
 		defaults_btn.disabled = false
 		add_category_btn.disabled = false
@@ -462,14 +491,15 @@ func update_tooltip(node : Control) -> void:
 		canvas_layer_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]CanvasLayer Layer:[color=white][font_size=11]\nSets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
 		controller_xpos_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Position of GoLoggerController:[color=white][font_size=11]\nSets the original/start position of the GoLoggerController."
+			tooltip_lbl.text = "[font_size=14][color=green]GoLogger Start Position:[color=white][font_size=11]\nSets the original/start position of the GoLoggerController."
 		controller_ypos_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Position of GoLoggerController:[color=white][font_size=11]\nSets the original/start position of the GoLoggerController."
+			tooltip_lbl.text = "[font_size=14][color=green]GoLogger Start Position:[color=white][font_size=11]\nSets the original/start position of the GoLoggerController."
 		drag_offset_x:
-			tooltip_lbl.text = "[font_size=14][color=green]Controller Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
+			tooltip_lbl.text = "[font_size=14][color=green]GoLoggerController Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
 		drag_offset_y:
-			tooltip_lbl.text = "[font_size=14][color=green]Controller Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
+			tooltip_lbl.text = "[font_size=14][color=green]GoLoggerController Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
 #endregion
+
 
 
 #region Buttons
@@ -494,7 +524,14 @@ func _on_button_button_up(node : Button) -> void:
 #endregion
 
 
+
+
 #region LineEdits
+func _on_line_edit_text_changed(new_text : String, node : LineEdit) -> void:
+	if node.get_caret_column() == node.text.length() - 1:
+		node.set_caret_column(node.text.length())
+	else: node.set_caret_column(node.get_caret_column() + 1)
+
 func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 	match node:
 		base_dir_line:
@@ -512,6 +549,8 @@ func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 #endregion
 
 
+
+
 #region OptionButtons
 func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 	match node:
@@ -526,7 +565,10 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 				1: # Project name
 					log_header_string = str(ProjectSettings.get_setting("application/config/name"))
 				2: # Version
-					log_header_string = str(ProjectSettings.get_setting("application/config/version"))
+					log_header_string = str("Version.", ProjectSettings.get_setting("application/config/version"))
+				3: # None
+					log_header_string = ""
+			print(log_header_string)
 			config.set_value("settings", "log_header", index)
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
@@ -542,6 +584,8 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 #endregion
+
+
 
 
 #region CheckButtons
@@ -570,23 +614,28 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 #endregion
 
 
+
+
 #region Spinboxes
 func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 	var u_line = node.get_line_edit()
 	# printerr(str("textsubmit connx status = ", u_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted)))
-	u_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(u_line))
+	# u_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(u_line))
 	# printerr(str("textsubmit connx status = ", u_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted)))
 	u_line.set_caret_column(u_line.text.length())
+	if u_line.get_caret_column() == u_line.text.length() - 1:
+		u_line.set_caret_column(u_line.text.length())
+	else: u_line.set_caret_column(u_line.get_caret_column() + 1)
 	# print(str("Line Edit value_changed: ", node.get_name, " - ", value, ". ", u_line.get_name()))
 	match node:
 		entry_count_spinbox:
-			config.set_value("settings", "entry_cap", value)
+			config.set_value("settings", "entry_cap", int(value))
 		session_duration_spinbox:
-			config.set_value("settings", "session_duration", value)
+			config.set_value("settings", "session_duration", int(value))
 		file_count_spinbox:
-			config.set_value("settings", "file_cap", value)
+			config.set_value("settings", "file_cap", int(value))
 		canvas_layer_spinbox:
-			config.set_value("settings", "canvaslayer_layer", value)
+			config.set_value("settings", "canvaslayer_layer", int(value))
 		controller_xpos_spinbox:
 			config.set_value("settings", "controller_start_pos_x", value)
 		controller_ypos_spinbox:
@@ -600,6 +649,9 @@ func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
+
+
+
 func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 	print(str("Line Edit text_submitted: ", node.get_name, " - ", new_text, "."))
 	match node:
@@ -608,27 +660,70 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 			config.set_value("settings", "canvaslayer_layer", value)
 			canvas_layer_spinbox.release_focus()
 			canvas_spinbox_line.release_focus()
+		
 		file_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "file_cap", value)
 			file_count_spinbox_line.release_focus()
 			file_count_spinbox.release_focus()
+		
 		entry_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "entry_cap", value)
 			entry_count_spinbox.release_focus()
 			entry_count_spinbox_line.release_focus()
+		
 		session_duration_spinbox_line:
 			var value = float(new_text)
 			config.set_value("settings", "session_duration", value)
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus()
+		
+		controller_xpos_spinbox:
+			var value = float(new_text)
+			if value >= controller_xpos_spinbox.min_value or value <= controller_xpos_line.max_value:
+				config.set_value("settings", "controller_start_pos_x", value)
+				controller_xpos_spinbox.release_focus()
+				controller_xpos_line.release_focus()
+		controller_xpos_line: 
+			var value = float(new_text)
+			if value >= controller_xpos_spinbox.min_value or value <= controller_xpos_line.max_value:
+				config.set_value("settings", "controller_start_pos_x", value)
+				controller_xpos_spinbox.release_focus()
+				controller_xpos_line.release_focus()
+		
+		controller_ypos_spinbox:
+			var value = float(new_text)
+			if value >= controller_ypos_spinbox.min_value or value <= controller_ypos_line.max_value:
+				config.set_value("settings", "controller_start_pos_x", value)
+				controller_ypos_spinbox.release_focus()
+				controller_ypos_line.release_focus()
+		controller_ypos_line:  
+			var value = float(new_text)
+			if value >= controller_ypos_spinbox.min_value or value <= controller_ypos_line.max_value:
+				config.set_value("settings", "controller_start_pos_x", value)
+				controller_ypos_spinbox.release_focus()
+				controller_ypos_line.release_focus()
+		
+		drag_offset_x:
+			var value = float(new_text)
+			if value >= drag_offset_x.min_value or value <= drag_offset_x.max_value:
+				config.set_value("settings", "controller_drag_offset_x", value)
+				drag_offset_x.release_focus()
+				dragx_line.release_focus()
 		dragx_line:
 			var value = float(new_text)
 			if value >= drag_offset_x.min_value or value <= drag_offset_x.max_value:
 				config.set_value("settings", "controller_drag_offset_x", value)
 				drag_offset_x.release_focus()
 				dragx_line.release_focus()
+		
+		drag_offset_y:
+			var value = float(new_text)
+			if value >= drag_offset_y.min_value or value <= drag_offset_y.max_value:
+				config.set_value("settings", "controller_drag_offset_y", value)
+				drag_offset_y.release_focus()
+				dragy_line.release_focus()
 		dragy_line:
 			var value = float(new_text)
 			if value >= drag_offset_y.min_value or value <= drag_offset_y.max_value:
@@ -656,9 +751,12 @@ func load_categories(deferred : bool = false) -> void:
 		_n.category_name = _c[i][0]
 		_n.index = i 
 		_n.is_locked = _c[i][6]
+		_n.name_warning.connect(_on_name_warning)
 		category_container.add_child(_n)
 		category_container.move_child(_n, _n.index)
 	update_indices()
+
+
 
 
 ## Adds a new category instance to the dock.
@@ -674,6 +772,8 @@ func add_category() -> void:
 	_n.line_edit.grab_focus()
 
 
+
+
 ## Saves categories by looping through each category element. Storing and appending its 
 ## name, index and locked status into an array and then saving it into a [ConfigFile].[br]
 ## [param deferred] is used when removing a category. Deferring the function ensures that
@@ -685,72 +785,22 @@ func save_categories(deferred : bool = false) -> void:
 	var main : Array # Main array
 	var children = category_container.get_children()
 	for i in range(children.size()): # Loop through each child
-		# Create and append a nested array inside main 
-		# [name index, filename, filepath, locked]
-		var _n : Array = [children[i].category_name, children[i].index, "null", "null", 0, 0, children[i].is_locked] 
+		# Create and append a nested array inside main
+		var _n : Array = [children[i].category_name, children[i].index, children[i].file_name, children[i].file_path, children[i].file_count, children[i].entry_count, children[i].is_locked] 
 		main.append(_n)
-	# config.set_value("plugin", "base_directory", config.get_value("plugin", "base_directory"))
-	config.set_value("plugin", "categories", main)
-	var _s = config.save(PATH)
-	if _s != OK:
-		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+	save_setting("categories", "plugin") 
 
 
 
-### Helpers ###
-## Updates the name of a category, then saves all categories.
-func update_category_name(obj : Panel, new_name : String) -> void:
-	var final_name = new_name
-	var add_name : int = 1
-	while check_conflict_name(obj, final_name):
-		final_name = new_name + str(add_name)
-		add_name += 1
-	if obj.category_name != final_name:
-		obj.category_name = final_name
-	save_categories()
 
-## Helper function - Iterates through all children and compares the name of other nodes. 
-func check_conflict_name(obj : Panel, name : String) -> bool:
-	for i in category_container.get_children():
-		# Continue if the current loop 
-		# is the object being renamed
-		if i == obj:
-			continue
-		elif i.category_name == name:
-			# printerr(str("Found conflicting category name on: ", i.category_name, "[", i, "] - ", obj.category_name, "[", obj, "]\nall children: ", category_container.get_children()))
-			if name == "": return false
-			return true
-	return false
-
-## Helper function - Updates indices of all the categories.
-func update_indices(deferred : bool = false) -> void:
-	if deferred:
-		await get_tree().physics_frame
-	var refresh_table = []
-	var _c = category_container.get_children()
-	for i in range(_c.size()):
-		_c[i].index = i # updates actual dock elements
-		_c[i].refresh_index_label(i)
-		var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c.file_count, _c[i].entry_count, _c[i].is_locked]
-		refresh_table.append(_e)
-	config.set_value("plugin", "categories", refresh_table)
-	var _s = config.save(PATH)
-	if _s != OK:
-		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
-	# printt("Update indices:\n", refresh_table)
-#endregion
-
-
-
-#region Settings
 func save_setting(value, key : String, section : String = "settings") -> void:
 	config.set_value(section, key, value)
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+
+
 
 
 func open_directory() -> void:
@@ -762,6 +812,65 @@ func open_directory() -> void:
 
 
 
+### Helpers ###
+## Displays a warning whenever a category has an invalid or empty name.
+func _on_name_warning(toggled_on : bool, type : int) -> void:
+	if toggled_on:
+		category_warning_lbl.visible = true
+		match type:
+			0: # Empty name
+				category_warning_lbl.text = "Empty category names are not used. Please enter a unique name."
+			1: # Unapplied name
+				category_warning_lbl.text = "Names are not changed if they're not applied."
+	else:
+		category_warning_lbl.visible = false
+
+
+
+
+## Updates the name of a category, then saves all categories.
+func update_category_name(obj : PanelContainer, new_name : String) -> void:
+	var final_name = new_name
+	var add_name : int = 1
+	while check_conflict_name(obj, final_name):
+		final_name = new_name + str(add_name)
+		add_name += 1
+	if obj.category_name != final_name:
+		obj.category_name = final_name
+	save_categories()
+
+
+
+
+## Helper function - Iterates through all children and compares the name of other nodes. 
+func check_conflict_name(obj : PanelContainer, name : String) -> bool:
+	for i in category_container.get_children():
+		if i == obj:
+			continue
+		elif i.category_name == name:
+			if name == "": return false
+			return true
+	return false
+
+
+
+
+## Helper function - Updates indices of all the categories.
+func update_indices(deferred : bool = false) -> void:
+	if deferred:
+		await get_tree().physics_frame
+	var refresh_table = []
+	var _c = category_container.get_children()
+	for i in range(_c.size()):
+		_c[i].index = i
+		_c[i].refresh_index_label(i)
+		var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c[i].file_count, _c[i].entry_count, _c[i].is_locked]
+		refresh_table.append(_e)
+	config.set_value("plugin", "categories", refresh_table)
+	var _s = config.save(PATH)
+	if _s != OK:
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile"))) 
 
 
 
@@ -817,3 +926,4 @@ static func get_error(error : int, object_type : String = "") -> String:
 		47: return str("Error[46] ", object_type, " Help error")
 		48: return str("Error[47] ", object_type, " Bug error")
 	return "N/A"
+#endregion

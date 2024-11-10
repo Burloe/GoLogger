@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_d1jly"]
 [ext_resource type="Script" path="res://addons/GoLogger/LogController/GoLoggerController.gd" id="1_sp6vx"]
-[ext_resource type="Texture2D" uid="uid://dk2bskiyrkq7d" path="res://addons/GoLogger/Resources/GoLogger_Icon_Flat.svg" id="3_wib7l"]
+[ext_resource type="Texture2D" uid="uid://dk2bskiyrkq7d" path="res://addons/GoLogger/GoLogger_Icon_Flat.svg" id="3_wib7l"]
 
 [node name="GoLoggerController" type="Panel"]
 z_index = 10

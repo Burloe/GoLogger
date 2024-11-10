@@ -76,18 +76,18 @@ var session_status : bool = false:
 		session_status = value
 		session_status_changed.emit()
 
-@export_group("Hotkeys")
+
 ## Hotkey used to start session manually. Default hotkey: [kbd]Ctrl + Shift + O[/kbd]
-@export var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/Resources/StartSessionShortcut.tres")
+var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
 
 ## Hotkey used to stop session manually. Default hotkey: [kbd]Ctrl + Shift + P[/kbd]
-@export var hotkey_stop_session	: InputEventShortcut = preload("res://addons/GoLogger/Resources/StopSessionShortcut.tres")			
+var hotkey_stop_session	: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")			
 
 ## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
-@export var hotkey_copy_session : InputEventShortcut = preload("res://addons/GoLogger/Resources/CopySessionShortcut.tres")		
+var hotkey_copy_session : InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres")		
 
 ## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
-@export var hotkey_controller_toggle: InputEventShortcut = preload("res://addons/GoLogger/Resources/ToggleControllerShortcut.tres") 	
+var hotkey_controller_toggle: InputEventShortcut = preload("res://addons/GoLogger/ToggleControllerShortcut.tres") 	
 
 
 
@@ -134,6 +134,9 @@ func _input(event: InputEvent) -> void:
 				stop_session()
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
+	
+		# if event is InputEventKey and event.keycode == KEY_E and event.is_released():
+		# 	entry("testtesttesttest 123123123123123123", 0)
 
 
 func _ready() -> void:
@@ -152,8 +155,10 @@ func _ready() -> void:
 	if get_value("autostart_session"):
 		start_session()
 	add_hotkeys()
+	entry("testtesttesttest 123123123123123123", 0)
+	entry("testtesttesttest 123123123123123123", 0)
+	entry("testtesttesttest 123123123123123123", 0)
 
-	
 
 
 ## Creates a settings.ini file.
@@ -187,6 +192,7 @@ func create_settings_file() -> void:
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
+
 
 ## Validates settings by ensuring their type are correct when loading them.
 func validate_settings() -> bool:
@@ -254,14 +260,15 @@ func validate_settings() -> bool:
 		"PackedVector3Array",
 		"PackedColorArray"   
 	]
-	
+	var faulty_setting = []
+	var faulty_type = []
 	for setting_key in expected_types.keys(): 
 		var splits = setting_key.split("/") 
 		var expected_type = expected_types[setting_key]
 		var value = config.get_value(splits[0], splits[1])
 
 		if typeof(value) != expected_type:
-			push_error(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
+			push_warning(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
 			faults += 1
 	return faults == 0
 
@@ -272,7 +279,7 @@ func get_value(value : String) -> Variant:
 	var _config = ConfigFile.new()
 	var _result = _config.load(PATH)
 	var section : String = "settings"
-	validate_settings() 
+	# validate_settings() 
 	
 	if !FileAccess.file_exists(PATH):
 		push_warning(str("GoLogger Warning: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
@@ -289,7 +296,6 @@ func get_value(value : String) -> Variant:
 	if _val == null:
 		push_error(str("GoLogger Error: ConfigFile failed to load settings value from file."))
 	return _val
-
 
 
 
@@ -352,12 +358,12 @@ func start_session(start_delay : float = 0.0) -> void:
 				if _err != OK: push_warning("GoLogger Error: ", get_error(_err, "DirAccess"), " (", _path, ").")
 				return
 			else:
+				
 				# Assign file name
-				categories[i][2] = get_file_name(categories[i][0])
-				print(str("changed current_filename to ", categories[i][2], "."))
+				categories[i][2] = get_file_name(categories[i][0]) 
 				# Assign file path
-				categories[i][3] = str(_path, categories[i][2])
-				print(str("changed current_filepath to ", categories[i][3]))
+				categories[i][3] = str(_path, categories[i][2]) 
+				
 				var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
 				var _files = _dir.get_files()
 				#TODO Check if files are .log files > add them to an array and use that to detect/delete files 
@@ -381,13 +387,12 @@ func start_session(start_delay : float = 0.0) -> void:
 	session_started.emit()
 
 
-
 ## Stores a log entry into the a .log file. You can add data to the log entry(as long as the data 
 ## can be converted into a string) and specify which category the entry should be store in.[br][br] 
 ## [param category_index] determine which log category this entry will be stored in. The category_index 
-## index corresponds to the order of [LogFileResource] entries in 
-## the [param categories] array. Note that leaving this parameter undefined will store the entry in 
-## category of when the entry was added to your log.[br][br]Example usage:[codeblock]
+## index corresponds to the order of [LogFileResource] entries in the [param categories] array. Note 
+## that leaving this parameter undefined will store the entry in category of when the entry was added 
+## to your log.[br][br]Example usage:[codeblock]
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
 ## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
@@ -410,6 +415,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 		if !_f:
 			var _err = FileAccess.get_open_error()
 			if _err != OK and get_value("error_reporting") != 2: push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
+		
 		var _c = _f.get_as_text()
 		var lines : Array[String] = []
 		while not _f.eof_reached():
@@ -435,12 +441,10 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	config.save(PATH)
 
 
-
 ## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and 
 ## confirmed. [method complete_copy] is called.
 func save_copy() -> void:
 	popup_state = !popup_state
-
 
 
 ## Saves the actual copies of the current log session in "saved_logs" sub-folders. [br][b]Note:[br][/b]   
@@ -450,13 +454,13 @@ func save_copy() -> void:
 ## [/codeblock]
 func complete_copy() -> void: 
 	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
-	# 0 = category name
-	# 1 = category index
-	# 2 = current file name(with timestamp)
-	# 3 = current file path
-	# 4 = file count
-	# 5 = entry count 
-	# 6 = is locked
+	# 0 = Category name
+	# 1 = Category index
+	# 2 = Current file name(with timestamp)
+	# 3 = Current file path
+	# 4 = File count
+	# 5 = Entry count 
+	# 6 = Is locked
 	popup_state = false
 	categories = get_value("categories")
 	# If user entered a name with .log, trim it
@@ -519,7 +523,6 @@ func complete_copy() -> void:
 	config.save(PATH)
 
 
-
 ## Stops the current session. Preventing further entries to be logged. In order to log again, a new 
 ## session must be started using [method start_session] which creates a new categories.[br] 
 func stop_session() -> void:
@@ -564,21 +567,35 @@ func stop_session() -> void:
 #endregion
 
 
-
 #region Helper functions
 ## Helper function that returns an appropriate log header string depending on [param log_header].
 func get_header() -> String:
 	match get_value("log_header"):
-		0: # Project name + version
-			return str(
-				ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != "" else "",
-				ProjectSettings.get_setting("application/config/version") + " " if ProjectSettings.get_setting("application/config/version") != "" else "")
+		0: # Project name and version
+			var _n = str(ProjectSettings.get_setting("application/config/name"))
+			var _v = str(ProjectSettings.get_setting("application/config/version"))
+			if _n == "": 
+				printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
+				_n = "Untitled Project"
+			if _v == "": 
+				printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
+				_v = "v0.0"
+			return str(_n, " v", _v, " ")
 		1: # Project name
-			return str(ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != "" else "")
-		2: # Project version
-			return str(ProjectSettings.get_setting("application/config/name") + " " if ProjectSettings.get_setting("application/config/name") != "" else "")
-	return ""
-
+			var _n = str(ProjectSettings.get_setting("application/config/name"))
+			if _n == "": 
+				printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
+				_n = "Untitled Project"
+			return str(_n, " ")
+		2: # Version
+			var _v = str(ProjectSettings.get_setting("application/config/version"))
+			if _v == "": 
+				printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
+				_v = "v0.0"
+			return str(_v, " ")
+		3: # None
+			return ""
+	return "N/A "
 
 ## Helper function that determines whether or not any [param category_name] was found more than once 
 ## in [param categories].
@@ -654,13 +671,12 @@ static func get_error(error : int, object_type : String = "") -> String:
 		48: return str("Error[47] ", object_type, " Bug error")
 	return "N/A"
 
-
 ## Helper function that returns a date/timestamped file name for your log containing using the 
 ## prefix category name.[br]Example usage [code]get_file_name(categories[0][2]})[/code]
 ## [color=red]WARNING: [color=white]Change this at your own discretion! Removing the "0" from 
 ## single ints("09") will cause sorting issues > May result in improper file deletion.
 func get_file_name(prefix_name : String) -> String:
-	var dict  : Dictionary = Time.get_datetime_dict_from_system()
+	var dict  : Dictionary = Time.get_datetime_dict_from_system(get_value("use_utc"))
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 	# Add 0 to single-numbered dates and times
 	var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
@@ -673,7 +689,6 @@ func get_file_name(prefix_name : String) -> String:
 	# Result > "prefix(yy-mm-dd_hh-mm-ss).log"   OR   "prefix(yymmdd_hhmmss.log)
 	fin = str(prefix_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if get_value("dash_separator") else str(prefix_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
 	return fin 
-
 
 
 ## Adds actions and events to [InputMap]. This only adds it for the runtime instance, meaning it 
@@ -714,6 +729,8 @@ func add_hotkeys() -> void:
 ## Uses [param limit_action] to determine which action should be taken when [param session_timer] timeout 
 ## occurs. 
 func _on_session_timer_timeout() -> void:
+	if config.get_value("settings", "error_reporting") != 2:
+		print("GoLogger: Session timeout!")
 	match get_value("limit_method"):
 		0: # Entry count limit
 			pass
@@ -732,7 +749,6 @@ func _on_session_timer_timeout() -> void:
 		3: # None
 			pass
 	session_timer.wait_time = get_value("session_duration")
-
 
 
 func _on_line_edit_text_changed(new_text : String) -> void:
@@ -756,11 +772,9 @@ func _on_line_edit_text_submitted(new_text : String) -> void:
 		popup_line_edit.release_focus()
 
 
-
 func _on_no_button_button_up() -> void:
 	popup_state = false
 	popup_line_edit.text = ""
-
 
 
 func _on_yes_button_button_up() -> void:

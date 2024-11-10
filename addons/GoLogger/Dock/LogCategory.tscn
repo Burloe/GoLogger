@@ -1,22 +1,47 @@
-[gd_scene load_steps=3 format=3 uid="uid://c3n416c5fajm5"]
+[gd_scene load_steps=10 format=3 uid="uid://c3n416c5fajm5"]
 
 [ext_resource type="Script" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
-[ext_resource type="Texture2D" uid="uid://b33lx2cjw84p0" path="res://addons/GoLogger/Resources/Lock.svg" id="2_b4ns3"]
+[ext_resource type="Texture2D" uid="uid://b33lx2cjw84p0" path="res://addons/GoLogger/Resources/icons/Lock.svg" id="2_b4ns3"]
 
-[node name="Panel" type="Panel"]
-custom_minimum_size = Vector2(205, 111)
-offset_right = 205.0
-offset_bottom = 100.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ilabp"]
+bg_color = Color(0, 0, 0, 0.294118)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.08, 0.08, 0.08, 1)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ro8u2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pa4nv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s8lq7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bh0gd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lxpmq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7d3nf"]
+
+[node name="Panel" type="PanelContainer"]
+custom_minimum_size = Vector2(205, 0)
+offset_right = 225.0
+offset_bottom = 120.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ilabp")
 script = ExtResource("1_8da2w")
-file_count = null
+
+[node name="UpdateTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.5
+autostart = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 6
@@ -24,27 +49,31 @@ theme_override_constants/margin_bottom = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 150
 alignment = 1
 
-[node name="iLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="IndexLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "0"
 
 [node name="LockButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/icon_pressed_color = Color(0.96, 0.64672, 0.1056, 1)
 toggle_mode = true
 icon = ExtResource("2_b4ns3")
 
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+[node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Enter category name"
+alignment = 1
 max_length = 20
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -52,6 +81,7 @@ layout_mode = 2
 theme_override_constants/separation = 39
 
 [node name="ApplyButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
 modulate = Color(0.45308, 0.94, 0.1504, 1)
 custom_minimum_size = Vector2(107, 0)
 layout_mode = 2
@@ -59,7 +89,53 @@ disabled = true
 text = "Apply Name"
 
 [node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
 modulate = Color(1, 0.34, 0.34, 1)
 layout_mode = 2
 focus_mode = 0
 text = "Delete"
+
+[node name="FileNameLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxEmpty_ro8u2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_ro8u2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ro8u2")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ro8u2")
+bbcode_enabled = true
+text = "[center]File name:[font_size=12][color=yellow]
+	as"
+
+[node name="CountContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+alignment = 1
+
+[node name="FileCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/CountContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/fill = SubResource("StyleBoxEmpty_pa4nv")
+theme_override_styles/background = SubResource("StyleBoxEmpty_s8lq7")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bh0gd")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lxpmq")
+bbcode_enabled = true
+text = "[left][font_size=14][color=white]File Count:[font_size=12][color=orange]
+10"
+
+[node name="EntryCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/CountContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/fill = SubResource("StyleBoxEmpty_7d3nf")
+theme_override_styles/background = SubResource("StyleBoxEmpty_7d3nf")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7d3nf")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7d3nf")
+bbcode_enabled = true
+text = "[right][font_size=14][color=white]Entry Count:[font_size=12][color=skyblue]
+0"

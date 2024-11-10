@@ -133,7 +133,8 @@ func _ready() -> void:
 	tooltip.visible = get_value("show_controller")
 	fileinfo_side = get_value("controller_monitor_side")
 	fileinfo_panel.visible = fileinfo_state
-
+	
+	Log.entry(str("test"), 0)
 
 	if config.get_value("settings", "show_controller"): hide()
 	else: show()

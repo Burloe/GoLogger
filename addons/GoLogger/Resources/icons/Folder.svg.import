@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dk2bskiyrkq7d"
-path="res://.godot/imported/GoLogger_Icon_Flat.svg-870b90665554224d2389404dccc96559.ctex"
+uid="uid://dmgcuimjr0v26"
+path="res://.godot/imported/Folder.svg-5ab90d551df363b2702df5f58c9332fa.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/GoLogger/Resources/GoLogger_Icon_Flat.svg"
-dest_files=["res://.godot/imported/GoLogger_Icon_Flat.svg-870b90665554224d2389404dccc96559.ctex"]
+source_file="res://addons/GoLogger/Resources/icons/Folder.svg"
+dest_files=["res://.godot/imported/Folder.svg-5ab90d551df363b2702df5f58c9332fa.ctex"]
 
 [params]
 
@@ -35,4 +35,4 @@ process/size_limit=0
 detect_3d/compress_to=1
 svg/scale=1.0
 editor/scale_with_editor_scale=true
-editor/convert_colors_with_editor_theme=false
+editor/convert_colors_with_editor_theme=true
