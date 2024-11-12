@@ -1,11 +1,12 @@
+@tool
 extends Panel 
-
 #region Documentation and declarations
 ## An optional controller to help manage logging sessions along with some additional features and information.
 
-
-## Drag the controller while pressing this button.
-@onready var drag_button : Button = %DragButton
+@onready var main_hbox : HBoxContainer = %MainHBoxContainer
+@onready var gologger_icon : TextureRect = %GoLoggerIconFlat
+@onready var session_status_panel : Panel = %SessionStatusPanel
+@onready var btn_container : HBoxContainer = %FuncButtonContainer
 ## Session status button.
 @onready var session_status_label : RichTextLabel = %SessionStatusLabel
 
@@ -19,67 +20,37 @@ extends Panel
 ## Stop session button.
 @onready var stop_btn : Button = %StopButton
 
+## Toggles the visibility state of the controller.
+@onready var toggle_btn : Button = %ToggleButton
 
-## Session timer progressbar.
-@onready var session_timer_pgb : ProgressBar = %SessionTimerPGB
+var icons : Array = [
+	preload("res://addons/GoLogger/Resources/icons/ArrowUp.svg"),
+	preload("res://addons/GoLogger/Resources/icons/ArrowRight.svg"),
+	preload("res://addons/GoLogger/Resources/icons/ArrowDown.svg"),
+	preload("res://addons/GoLogger/Resources/icons/ArrowLeft.svg")
+]
 
-## Timer status label.
-@onready var timer_status_label : RichTextLabel = %TimerStatusLabel
+@export var visible_state : bool = false 
 
-## Timer left label.
-@onready var timer_left_label : RichTextLabel = %TimerLeftLabel
+var hidepos : Vector2 = Vector2.ZERO
+var showpos : Vector2 = Vector2.ZERO
+var toggle_btn_pos : Vector2 = Vector2.ZERO
 
-## Tooltip root node.
-@onready var tooltip : Panel = %Tooltip
+enum CONTROLLER_POSITION {
+	CENTER_TOP,
+	RIGHT_TOP,
+	RIGHT_CENTER,
+	RIGHT_BOTTOM,
+	CENTER_BOTTOM,
+	LEFT_BOTTOM,
+	LEFT_CENTER,
+	LEFT_TOP
+}
 
-## Tooltip Label.
-@onready var tooltip_label : RichTextLabel = %TooltipLabel
-
-
-## FileInfo root node.
-@onready var fileinfo_panel : Panel = %FileInfoPanel
-
-## Container LogFiles are instantiated into.
-@onready var fileinfo_container : VBoxContainer	= %FileInfoContainer
-
-## FileInfo toggle button.
-@onready var fileinfo_button : Button = %ShowLogFileButton
-
-## Positional toggle button for FileInfo panel.
-@onready var fileinfo_side_button : Button = %FileInfoSide_Button
-
-## Flags whether or not the controller is dragged 
-var is_dragging : bool = false 
-
-## Shifts side of file info panel. false = left - right = true
-var fileinfo_side : bool = true: 																									
+@export var current_position = CONTROLLER_POSITION.LEFT_TOP:
 	set(value):
-		fileinfo_side = value
-		fileinfo_panel.position = Vector2(213, 0) if value else Vector2(-273, 0)
-
-## Gets instantiated depending on the number of file categories.
-var fileinfo_scene := preload("res://addons/GoLogger/Resources/FileInfo.tscn")
-## Array containing each instance.
-var fileinfos : Array
-## State whether or not the file info panel is shown or not.
-var fileinfo_state : bool = false:
-	set(value):
-		fileinfo_state = value
-		fileinfo_panel.visible = value
-		categories = config.get_value("plugin", "categories")
-		if value:
-				for i in range(Log.categories.size()):
-					var instance = fileinfo_scene.instantiate()
-					fileinfo_container.add_child(instance)
-					instance.name_label.text = str("[center]", categories[i][0])
-					instance.left_label.text = str("[font_size=10]File:\n\nFile count:\nEntry count:")
-					instance.right_label.text = str("[right][font_size=10]", categories[i][2], "\n\n", categories[i][4] -1, "\n", categories[i][5])
-					fileinfos.append(instance)
-		else:
-			if fileinfo_container.get_child_count() != 0:
-				for i in fileinfo_container.get_children():
-					if i is Panel and i.get_name().contains("FileInfo"):
-						i.queue_free()
+		# printt(main_hbox, gologger_icon, session_status_panel, btn_container, session_status_label)
+		set_positions()
 
 const PATH = "user://GoLogger/settings.ini"
 var config = ConfigFile.new()
@@ -90,162 +61,254 @@ var categories
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():	
-		visible = !visible
-	if event is InputEventJoypadButton and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():
-		visible = !visible
+	# if event is InputEventKey and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():	
+	# 	visible = !visible
+	# if event is InputEventJoypadButton and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():
+	# 	visible = !visible
+	
+	if event is InputEventKey and event.keycode == KEY_C and event.is_released():
+		current_position = randi_range(0, 7)
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and is_dragging:
-		position = Vector2(Vector2(get_value("drag_offset_x"), get_value("drag_offset_y")))
 
 
 func _ready() -> void:
-	config.load(PATH)
-	categories = config.get_value("plugin", "categories")
-	#region Signal connections
-	drag_button.button_up.connect(_on_drag_button.bind(false))
-	drag_button.button_down.connect(_on_drag_button.bind(true))
-	Log.session_status_changed.connect(_on_session_status_changed)
-	Log.session_timer_started.connect(_on_session_timer_started)
+	if !Engine.is_editor_hint():
+		config.load(PATH)
+		categories = config.get_value("plugin", "categories")
+		
+		Log.session_status_changed.connect(_on_session_status_changed) 
+		Log.toggle_controller.connect(_on_visibility_toggle)
+		start_btn.button_up.connect(_on_button_up.bind(start_btn)) 
+		copy_btn.button_up.connect(_on_button_up.bind(copy_btn))
+		stop_btn.button_up.connect(_on_button_up.bind(stop_btn)) 
+		toggle_btn.button_up.connect(_on_button_up.bind(toggle_btn))
+		
+		session_status_label.text = str("[font_size=6]\n[center][font_size=11] Session status:\n[center][color=green]ON") if Log.session_status else str("[font_size=6]\n[center][font_size=12] Session status:\n[center][color=red]OFF")
 
-	start_btn.button_up.connect(_on_start_button_button_up)
-	start_btn.mouse_entered.connect(_on_start_button_mouse_entered)
-	start_btn.mouse_exited.connect(_on_start_button_mouse_exited)
-
-	copy_btn.button_up.connect(_on_copy_button_button_up)
-	copy_btn.mouse_entered.connect(_on_copy_button_mouse_entered)
-	copy_btn.mouse_exited.connect(_on_copy_button_mouse_exited)
-
-	stop_btn.button_up.connect(_on_stop_button_button_up)
-	stop_btn.mouse_entered.connect(_on_stop_button_mouse_entered)
-	stop_btn.mouse_exited.connect(_on_stop_button_mouse_exited)
-
-	fileinfo_button.button_up.connect(_on_fileinfo_button_up)
-	fileinfo_button.mouse_entered.connect(_on_fileinfo_mouse_entered)
-	fileinfo_button.mouse_exited.connect(_on_fileinfo_mouse_exited)
-
-	fileinfo_side_button.button_up.connect(_on_fileinfo_side_button_up)
-	fileinfo_side_button.mouse_entered.connect(_on_fileinfo_pos_mouse_entered)
-	fileinfo_side_button.mouse_exited.connect(_on_fileinfo_pos_mouse_exited)
-	#endregion
-	set_position(Vector2(get_value("controller_xpos"), get_value("controller_ypos")))
-	tooltip.visible = get_value("show_controller")
-	fileinfo_side = get_value("controller_monitor_side")
-	fileinfo_panel.visible = fileinfo_state
-	
-
-	if config.get_value("settings", "show_controller"): hide()
-	else: show()
-	await get_tree().process_frame
-	session_timer_pgb.min_value = 0
-	session_timer_pgb.max_value = config.get_value("settings", "session_duration")
-	session_timer_pgb.step = config.get_value("settings", "session_duration") / config.get_value("settings", "session_duration") 
-	await get_tree().process_frame 
-	Log.session_timer.timeout.connect(_on_session_timer_timeout)
-	session_timer_pgb.modulate = Color.BLACK if Log.session_timer.is_stopped() else Color.FOREST_GREEN
-	session_status_label.text = str("[center][font_size=18] Session status:\n[center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:\n[center][color=red]OFF")
-
-
-## Returns any setting value from 'settings.ini'. Also preforms some crucial error checks, pushes errors and creates 
-## a default .ini file if one doesn't exist.
-func get_value(value : String) -> Variant:
-	var _config = ConfigFile.new()
-	var _result = _config.load(PATH) 
-	
-	if !FileAccess.file_exists(PATH):
-		push_warning(str("GoLogger Warning: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
-	
-	if _result != OK:
-		push_error(str("GoLogger Error: ConfigFile failed to load settings.ini file."))
-		return null
-	
-	var _val = _config.get_value("settings", value)
-	if _val == null:
-		push_error(str("GoLogger Error: ConfigFile failed to load settings value from file."))
-	return _val
+		set_positions()
+		match current_position:
+			CONTROLLER_POSITION.CENTER_TOP:
+				if visible_state:
+					toggle_btn.icon = icons[0]
+				else:
+					toggle_btn.icon = icons[2]
+			CONTROLLER_POSITION.RIGHT_TOP:
+				if visible_state:
+					toggle_btn.icon = icons[3]
+				else:
+					toggle_btn.icon = icons[1]
+			CONTROLLER_POSITION.RIGHT_CENTER:
+				if visible_state:
+					toggle_btn.icon = icons[3]
+				else:
+					toggle_btn.icon = icons[1]
+			CONTROLLER_POSITION.RIGHT_BOTTOM:
+				if visible_state:
+					toggle_btn.icon = icons[3]
+				else:
+					toggle_btn.icon = icons[1]
+			CONTROLLER_POSITION.CENTER_BOTTOM:
+				if visible_state:
+					toggle_btn.icon = icons[2]
+				else:
+					toggle_btn.icon = icons[0]
+			CONTROLLER_POSITION.LEFT_TOP:
+				if visible_state:
+					toggle_btn.icon = icons[3]
+				else:
+					toggle_btn.icon = icons[1]
+			CONTROLLER_POSITION.LEFT_CENTER:
+				if visible_state:
+					toggle_btn.icon = icons[3]
+				else:
+					toggle_btn.icon = icons[1]
+			CONTROLLER_POSITION.LEFT_BOTTOM:
+				if visible_state:
+					toggle_btn.icon = icons[3]
+				else:
+					toggle_btn.icon = icons[1]
 
 
+
+func set_positions() -> void:
+	if visible_state:
+		start_btn.disabled = false
+		copy_btn.disabled  = false
+		stop_btn.disabled  = false
+	else:
+		start_btn.disabled = true
+		copy_btn.disabled  = true
+		stop_btn.disabled  = true
+
+	match current_position:
+		CONTROLLER_POSITION.CENTER_TOP:
+			main_hbox.move_child(gologger_icon, 0)
+			main_hbox.move_child(session_status_panel, 1)
+			main_hbox.move_child(btn_container, 2)
+			btn_container.move_child(stop_btn,  0)
+			btn_container.move_child(copy_btn,  1)
+			btn_container.move_child(start_btn, 2)
+			hidepos  = Vector2(779, -62)
+			showpos  = Vector2(779, 5) 
+			toggle_btn.icon = icons[2]
+			toggle_btn.size = Vector2(62, 32)
+			toggle_btn_pos = Vector2(150, 67) 
+		CONTROLLER_POSITION.RIGHT_TOP:
+			main_hbox.move_child(btn_container, 0)
+			main_hbox.move_child(session_status_panel, 1)
+			main_hbox.move_child(gologger_icon, 2)
+			btn_container.move_child(stop_btn,  0)
+			btn_container.move_child(copy_btn,  1)
+			btn_container.move_child(start_btn, 2)
+			hidepos  = Vector2(1920, 5)
+			showpos  = Vector2(1553, 5) 
+			toggle_btn.icon = icons[3]
+			toggle_btn.size = Vector2(32, 62)
+			toggle_btn_pos = Vector2(-37, 0) 
+		CONTROLLER_POSITION.RIGHT_CENTER:
+			main_hbox.move_child(btn_container, 0)
+			main_hbox.move_child(session_status_panel, 1)
+			main_hbox.move_child(gologger_icon, 2)
+			btn_container.move_child(stop_btn,  0)
+			btn_container.move_child(copy_btn,  1)
+			btn_container.move_child(start_btn, 2)
+			hidepos  = Vector2(1920, 509)
+			showpos  = Vector2(1553, 509) 
+			toggle_btn.icon = icons[3]
+			toggle_btn.size = Vector2(32, 62)
+			toggle_btn_pos = Vector2(-37, 0) 
+		CONTROLLER_POSITION.RIGHT_BOTTOM:
+			main_hbox.move_child(btn_container, 0)
+			main_hbox.move_child(session_status_panel, 1)
+			main_hbox.move_child(gologger_icon, 2)
+			btn_container.move_child(stop_btn,  0)
+			btn_container.move_child(copy_btn,  1)
+			btn_container.move_child(start_btn, 2)
+			hidepos  = Vector2(1920, 1013)
+			showpos  = Vector2(1553, 1013) 
+			toggle_btn.icon = icons[3]
+			toggle_btn.size = Vector2(32, 62)
+			toggle_btn_pos = Vector2(-37, 0) 
+		CONTROLLER_POSITION.CENTER_BOTTOM:
+			main_hbox.move_child(btn_container, 0)
+			main_hbox.move_child(session_status_panel, 1)
+			main_hbox.move_child(gologger_icon, 2)
+			btn_container.move_child(start_btn, 0)
+			btn_container.move_child(copy_btn,  1)
+			btn_container.move_child(stop_btn,  2)
+			hidepos  = Vector2(779, 1075)
+			showpos  = Vector2(779, 1013) 
+			toggle_btn.icon = icons[0]
+			toggle_btn.size = Vector2(62, 32)
+			toggle_btn_pos = Vector2(150, -37) 
+		CONTROLLER_POSITION.LEFT_BOTTOM:
+			main_hbox.move_child(gologger_icon, 0)
+			main_hbox.move_child(session_status_panel, 1)
+			main_hbox.move_child(btn_container, 2)
+			btn_container.move_child(start_btn, 0)
+			btn_container.move_child(copy_btn,  1)
+			btn_container.move_child(stop_btn,  2)
+			hidepos = Vector2(-362, 1013)
+			showpos  = Vector2(5, 1013) 
+			toggle_btn.icon = icons[1]
+			toggle_btn.size = Vector2(32, 62)
+			toggle_btn_pos = Vector2(367, 0) 
+		CONTROLLER_POSITION.LEFT_CENTER:
+			main_hbox.move_child(gologger_icon, 0)
+			main_hbox.move_child(session_status_panel, 1)
+			main_hbox.move_child(btn_container, 2)
+			btn_container.move_child(start_btn, 0)
+			btn_container.move_child(copy_btn,  1)
+			btn_container.move_child(stop_btn,  2)
+			hidepos  = Vector2(-362, 509)
+			showpos  = Vector2(5, 509) 
+			toggle_btn.icon = icons[1]
+			toggle_btn.size = Vector2(32, 62)
+			toggle_btn_pos = Vector2(367, 0) 
+		CONTROLLER_POSITION.LEFT_TOP:
+			main_hbox.move_child(gologger_icon, 0)
+			main_hbox.move_child(session_status_panel, 1)
+			main_hbox.move_child(btn_container, 2)
+			btn_container.move_child(start_btn, 0)
+			btn_container.move_child(copy_btn,  1)
+			btn_container.move_child(stop_btn,  2)
+			hidepos  = Vector2(-362, 5)
+			showpos	 = Vector2(5, 5) 
+			toggle_btn.icon = icons[1]
+			toggle_btn.size = Vector2(32, 62)
+			toggle_btn_pos = Vector2(367, 0) 
+
+	position = showpos if visible_state else hidepos
+	toggle_btn.position = toggle_btn_pos
+
+func toggle_controller() -> void:
+	visible_state = !visible_state
+	var tw = get_tree().create_tween()
+	tw.set_trans(Tween.TRANS_CUBIC)
+	tw.set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(self, "position", showpos if visible_state else hidepos, 0.08) 
+	match current_position:
+		CONTROLLER_POSITION.CENTER_TOP:
+			if visible_state:
+				toggle_btn.icon = icons[0]
+			else:
+				toggle_btn.icon = icons[2]
+		CONTROLLER_POSITION.RIGHT_TOP:
+			if visible_state:
+				toggle_btn.icon = icons[3]
+			else:
+				toggle_btn.icon = icons[1]
+		CONTROLLER_POSITION.RIGHT_CENTER:
+			if visible_state:
+				toggle_btn.icon = icons[3]
+			else:
+				toggle_btn.icon = icons[1]
+		CONTROLLER_POSITION.RIGHT_BOTTOM:
+			if visible_state:
+				toggle_btn.icon = icons[3]
+			else:
+				toggle_btn.icon = icons[1]
+		CONTROLLER_POSITION.CENTER_BOTTOM:
+			if visible_state:
+				toggle_btn.icon = icons[2]
+			else:
+				toggle_btn.icon = icons[0]
+		CONTROLLER_POSITION.LEFT_TOP:
+			if visible_state:
+				toggle_btn.icon = icons[3]
+			else:
+				toggle_btn.icon = icons[1]
+		CONTROLLER_POSITION.LEFT_CENTER:
+			if visible_state:
+				toggle_btn.icon = icons[3]
+			else:
+				toggle_btn.icon = icons[1]
+		CONTROLLER_POSITION.LEFT_BOTTOM:
+			if visible_state:
+				toggle_btn.icon = icons[3]
+			else:
+				toggle_btn.icon = icons[1]
 
 
 #region Signal listeners
 ## Called when [signal session_status_changed] is emitted from [Log].
 func _on_session_status_changed() -> void:
-	session_status_label.text = str("[center][font_size=18] Session status:\n[center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:\n[center][color=red]OFF")
+	session_status_label.text = str("[font_size=6]\n[center][font_size=11] Session status:\n[center][color=green]ON") if Log.session_status else str("[font_size=6]\n[center][font_size=11] Session status:\n[center][color=red]OFF")
 
 
-## Starts value time to update [ProgressBar] when session timer is started.
-func _on_session_timer_started() -> void:
-	session_timer_pgb.modulate = Color.FOREST_GREEN
-## Updates [ProgressBar] modulate depending on session status.
-func _on_session_timer_timeout() -> void:
-	session_timer_pgb.modulate = Color.BLACK
-
-
-## Updates all values on the controller every 0.5 by default. This can be changed with the [param session_timer_wait_time] in [GoLogger].
-func _on_update_timer_timeout() -> void:
-	session_timer_pgb.modulate = Color.BLACK if Log.session_timer.is_stopped() else Color.FOREST_GREEN
-	session_status_label.text = str("[center][font_size=18] Session status:\n[center][color=green]ON") if Log.session_status else str("[center][font_size=18] Session status:\n[center][color=red]OFF")
-	# Session timer
-	session_timer_pgb.value = Log.session_timer.get_time_left() 
-	timer_status_label.text = str("[center][font_size=12]Status:\n[color=red]OFF" if Log.session_timer.is_stopped() else "[color=green]ON")
-	timer_left_label.text = str("[center][font_size=12]TimeLeft:\n[color=light_blue]", snappedi(Log.session_timer.get_time_left(), 1) )
-
-
-## Sets [param is_dragging] depending on the pressed state of the drag button.
-func _on_drag_button(state : bool) -> void:
-	is_dragging = state
-
-
-func _on_start_button_mouse_entered() -> void: 
-	tooltip_label.text = "[font_size=12]Start a new session" 
-
-func _on_start_button_mouse_exited() -> void: 
-	tooltip_label.text = "" 
-
-func _on_start_button_button_up() -> void:
-	Log.start_session()
-
-
-func _on_copy_button_mouse_entered() -> void: 
-	tooltip_label.text = "[font_size=12]Saves a copy of the active session into a separate logs."
-
-func _on_copy_button_mouse_exited() -> void: 
-	tooltip_label.text = ""
-
-func _on_copy_button_button_up() -> void:
-	Log.save_copy()
-
-
-func _on_stop_button_mouse_entered() -> void: 
-	tooltip_label.text = "[font_size=12]Stops the active session."
-
-func _on_stop_button_mouse_exited() -> void: 
-	tooltip_label.text = ""
-
-func _on_stop_button_button_up() -> void:
-	Log.stop_session()
-
-
-func _on_fileinfo_button_up() -> void:
-	fileinfo_state = !fileinfo_state
-
-func _on_fileinfo_mouse_entered() -> void:
-	tooltip_label.text = "[font_size=12]Toggle log category information.\n[i]Not accessible without active session or without log categories."
-
-func _on_fileinfo_mouse_exited() -> void:
-	tooltip_label.text = ""
-
-
-func _on_fileinfo_side_button_up() -> void:
-	fileinfo_side = !fileinfo_side
-	
-
-func _on_fileinfo_pos_mouse_entered() -> void:
-	tooltip_label.text = "[font_size=12]Move category monitoring panel to left." if fileinfo_side else "[font_size=12]Move category monitoring panel to right."
-	fileinfo_side_button.text = "Move to left side" if fileinfo_side else "Move to right side"
-
-func _on_fileinfo_pos_mouse_exited() -> void:
-	tooltip_label.text = ""
-	fileinfo_side_button.text = ""
+func _on_visibility_toggle() -> void:
+	toggle_controller()
+ 
+ 
+func _on_button_up(button : Button) -> void:
+	print("bar")
+	match button:
+		start_btn:
+			Log.start_session()
+		copy_btn:
+			Log.save_copy()
+		stop_btn:
+			Log.stop_session()  
+		toggle_btn: 
+			toggle_controller()
 #endregion

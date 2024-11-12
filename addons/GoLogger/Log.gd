@@ -37,6 +37,9 @@ signal session_status_changed
 ## specific time.
 signal session_timer_started   
 
+## Emitted when [param hotkey_controller_toggle] is released.
+signal toggle_controller
+
 
 
 ## Path to settings.ini file. This path is a contant and doesn't change if you set your own [param base_directory]
@@ -134,6 +137,9 @@ func _input(event: InputEvent) -> void:
 				stop_session()
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
+			if hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():
+				toggle_controller.emit()
+
 	
 		if event is InputEventKey and event.keycode == KEY_E and event.is_released():
 			entry("[Test entry start        Test entry end]", 0)

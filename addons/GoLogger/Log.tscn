@@ -25,10 +25,6 @@ unique_name_in_owner = true
 layer = 50
 
 [node name="GoLoggerController" parent="GoLoggerElements" instance=ExtResource("2_i3pa3")]
-offset_left = 157.6
-offset_top = 71.0
-offset_right = 157.4
-offset_bottom = 71.0
 
 [node name="Popup" type="CenterContainer" parent="GoLoggerElements"]
 unique_name_in_owner = true
