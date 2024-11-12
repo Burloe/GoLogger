@@ -12,13 +12,13 @@ custom_minimum_size = Vector2(192, 225)
 anchors_preset = -1
 anchor_right = 1.012
 anchor_bottom = 0.215
-offset_right = 0.960083
+offset_right = 205.96
 offset_bottom = 23.8
 grow_horizontal = 2
 grow_vertical = 2
 current_tab = 1
 script = ExtResource("2_qhfb3")
-metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0]
+metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0]
 metadata/_edit_horizontal_guides_ = [180.0]
 
 [node name="Categories" type="ScrollContainer" parent="."]
@@ -333,14 +333,14 @@ layout_mode = 2
 [node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 20
-alignment = 1
+theme_override_constants/separation = 34
+alignment = 2
 
 [node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/LimitMethodHBox"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
-text = "Limit method "
+text = "Limit method"
 vertical_alignment = 1
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/LimitMethodHBox"]
@@ -348,7 +348,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-alignment = 2
 selected = 0
 allow_reselect = true
 item_count = 3
@@ -358,25 +357,52 @@ popup/item_1/id = 1
 popup/item_2/text = "EntryCount + SessionTimer"
 popup/item_2/id = 2
 
-[node name="LimitActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
+[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 46
-alignment = 1
+theme_override_constants/separation = 20
+alignment = 2
 
-[node name="LimitActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/LimitActionHBox"]
+[node name="EntryActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/EntryCountActionHBox"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
-text = "Limit action"
+text = "Entry count action"
 vertical_alignment = 1
 
-[node name="LimitActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/LimitActionHBox"]
+[node name="EntryActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/EntryCountActionHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
+selected = 0
+allow_reselect = true
+item_count = 3
+popup/item_0/text = "Remove old entries"
+popup/item_0/id = 2
+popup/item_1/text = "Stop & Start new session"
+popup/item_1/id = 1
+popup/item_2/text = "Stop session"
+popup/item_2/id = 1
+
+[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
 alignment = 2
+
+[node name="SessionTimerActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/SessionTimerActionHBox"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Session Timer action"
+vertical_alignment = 1
+
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/SessionTimerActionHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
 selected = 0
 allow_reselect = true
 item_count = 2
@@ -384,36 +410,11 @@ popup/item_0/text = "Stop & Start new session"
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 125
-alignment = 1
-
-[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/FileCountHBox"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-size_flags_horizontal = 0
-text = "File count limit"
-vertical_alignment = 1
-
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/FileCountHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-min_value = 5.0
-max_value = 30.0
-value = 10.0
-alignment = 2
-update_on_text_changed = true
-custom_arrow_step = 1.0
-
 [node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 112
-alignment = 1
+theme_override_constants/separation = 123
+alignment = 2
 
 [node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/EntryCountHBox"]
 custom_minimum_size = Vector2(0, 32)
@@ -437,8 +438,8 @@ custom_arrow_step = 10.0
 [node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 111
-alignment = 1
+theme_override_constants/separation = 121
+alignment = 2
 
 [node name="SessionDurationLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/SessionDurationHBox"]
 custom_minimum_size = Vector2(0, 32)
@@ -471,15 +472,43 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 theme_override_constants/separation = 3
 
+[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/separation = 82
+alignment = 2
+
+[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/FileCountHBox"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "File count limit"
+vertical_alignment = 1
+
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/FileCountHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+min_value = 5.0
+max_value = 30.0
+value = 10.0
+alignment = 2
+update_on_text_changed = true
+custom_arrow_step = 1.0
+
 [node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 21
 alignment = 2
 
 [node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/ErrorRepHBox"]
-custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Error reporting                            "
+size_flags_horizontal = 0
+text = "Error reporting"
 vertical_alignment = 1
 
 [node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/ErrorRepHBox"]
@@ -499,12 +528,14 @@ popup/item_2/id = 2
 
 [node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
 layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 12
 alignment = 2
 
 [node name="SessionChangeLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/SessionDurationHBox"]
-custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Print session changes              "
+size_flags_horizontal = 0
+text = "Print session changes"
 vertical_alignment = 1
 
 [node name="SessionChangeOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/SessionDurationHBox"]
@@ -517,7 +548,7 @@ selected = 0
 allow_reselect = true
 item_count = 5
 popup/item_0/text = "None"
-popup/item_1/text = "All session changes"
+popup/item_1/text = "All changes"
 popup/item_1/id = 1
 popup/item_2/text = "Start session"
 popup/item_2/id = 2
@@ -526,33 +557,61 @@ popup/item_3/id = 3
 popup/item_4/text = "Stop session"
 popup/item_4/id = 4
 
-[node name="Label" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Disable warnings:"
-vertical_alignment = 2
-
-[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
+[node name="ControllerPosHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
 unique_name_in_owner = true
 layout_mode = 2
-theme = ExtResource("1_y5prw")
-button_pressed = true
-text = "Failed to start session w/o stopping prev"
+size_flags_horizontal = 8
+theme_override_constants/separation = 18
+alignment = 2
 
-[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-theme = ExtResource("1_y5prw")
-button_pressed = true
-text = "No active session, failed to log entry"
-
-[node name="Label2" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
-visible = false
+[node name="ControllerPosLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/ControllerPosHBox"]
 layout_mode = 2
 size_flags_horizontal = 0
-text = "FileCount status: true"
+text = "Controller position"
+vertical_alignment = 1
+
+[node name="ControllerPosOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/ControllerPosHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+action_mode = 1
+selected = 0
+allow_reselect = true
+item_count = 8
+popup/item_0/text = "Center-Top"
+popup/item_1/text = "Right-Top"
+popup/item_1/id = 1
+popup/item_2/text = "Right-Center"
+popup/item_2/id = 2
+popup/item_3/text = "Right-Bottom"
+popup/item_3/id = 3
+popup/item_4/text = "Center-Bottom"
+popup/item_4/id = 4
+popup/item_5/text = "Left-Top"
+popup/item_5/id = 5
+popup/item_6/text = "Left-Center"
+popup/item_6/id = 6
+popup/item_7/text = "Left-Bottom"
+popup/item_7/id = 7
+
+[node name="ShowControllerBtnCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(235, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+icon_alignment = 2
+
+[node name="Label" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/ShowControllerBtnCheckButton"]
+custom_minimum_size = Vector2(235, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Show controller toggle button "
+vertical_alignment = 1
 
 [node name="ColumnE" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
 layout_mode = 2
@@ -564,98 +623,24 @@ theme_override_constants/margin_bottom = 4
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE"]
 layout_mode = 2
 
-[node name="ControllerPosHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 2
-
-[node name="ControllerPosLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer/ControllerPosHBox"]
+[node name="Label" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-text = "Controller start position         "
-vertical_alignment = 1
+text = "Disable warnings:"
 
-[node name="XPosSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer/ControllerPosHBox"]
-unique_name_in_owner = true
-modulate = Color(0.96, 0.34944, 0.2688, 1)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-min_value = -3840.0
-max_value = 3840.0
-alignment = 2
-prefix = "x:"
-
-[node name="YPosSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer/ControllerPosHBox"]
-unique_name_in_owner = true
-modulate = Color(0.4606, 0.98, 0.64239, 1)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-alignment = 2
-prefix = "y:"
-
-[node name="DragOffsetHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
+[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 2
-
-[node name="DragOffsetLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer/DragOffsetHBox"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Controller dragging offset     "
-vertical_alignment = 1
-
-[node name="XOffSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer/DragOffsetHBox"]
-unique_name_in_owner = true
-modulate = Color(0.96, 0.34944, 0.2688, 1)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-min_value = -3840.0
-max_value = 3840.0
-alignment = 2
-prefix = "x:"
-
-[node name="YOffSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer/DragOffsetHBox"]
-unique_name_in_owner = true
-modulate = Color(0.4606, 0.98, 0.64239, 1)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-alignment = 2
-prefix = "y:"
-
-[node name="ShowOnStartCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-icon_alignment = 2
-
-[node name="Label" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer/ShowOnStartCheckButton"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Show Controller on start"
-vertical_alignment = 1
-
-[node name="MonitorSideCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
+theme = ExtResource("1_y5prw")
 button_pressed = true
-alignment = 2
-icon_alignment = 2
+text = "    Failed to start session"
 
-[node name="Label" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer/MonitorSideCheckButton"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Controller Monitor side"
-vertical_alignment = 1
+[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("1_y5prw")
+button_pressed = true
+text = "    Failed to log entry"
 
 [node name="Control" type="Control" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
 custom_minimum_size = Vector2(0, 11)

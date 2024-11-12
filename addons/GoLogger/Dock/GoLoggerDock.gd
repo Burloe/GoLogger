@@ -54,12 +54,13 @@ var canvas_spinbox_line : LineEdit
 
 
 @onready var limit_method_btn : OptionButton = %LimitMethodOptButton
-
 @onready var limit_method_container : HBoxContainer = %LimitMethodHBox
 
-@onready var limit_action_btn : OptionButton = %LimitActionOptButton 
+@onready var entry_count_action_btn : OptionButton = %EntryActionOptButton 
+@onready var entry_count_action_container : HBoxContainer = %EntryCountActionHBox
 
-@onready var limit_action_container : HBoxContainer = %LimitActionHBox
+@onready var session_timer_action_btn : OptionButton = %SessionTimerActionOptButton 
+@onready var session_timer_action_container : HBoxContainer = %SessionTimerActionHBox
 
 @onready var file_count_spinbox : SpinBox = %FileCountSpinBox
 var file_count_spinbox_line : LineEdit
@@ -84,21 +85,9 @@ var session_duration_spinbox_line : LineEdit
 @onready var disable_warn2_btn : CheckButton = %DisableWarn2CheckButton 
 
 # Controller settings
-@onready var controller_xpos_spinbox : SpinBox = %XPosSpinBox
-var controller_xpos_line : LineEdit
-@onready var controller_ypos_spinbox : SpinBox = %YPosSpinBox
-var controller_ypos_line : LineEdit
-
-@onready var drag_offset_x : SpinBox = %XOffSpinBox
-var dragx_line : LineEdit
-
-@onready var drag_offset_y : SpinBox = %YOffSpinBox
-var dragy_line : LineEdit
-@onready var drag_offset_container : HBoxContainer = %DragOffsetHBox
-
-@onready var controller_start_btn : CheckButton = %ShowOnStartCheckButton
-
-@onready var controller_monitor_side_btn : CheckButton = %MonitorSideCheckButton
+@onready var controller_pos_btn : OptionButton = %ControllerPosOptButton 
+@onready var controller_pos_container : HBoxContainer = %ControllerPosHBox
+@onready var show_controller_toggle_btn : CheckButton = %ShowControllerBtnCheckButton 
 
 var btn_array : Array[Control] = []
 var container_array : Array[Control] = []
@@ -155,7 +144,8 @@ func _ready() -> void:
 			timestamp_entries_btn,
 			dash_btn,
 			limit_method_btn,
-			limit_action_btn,
+			entry_count_action_btn,
+			session_timer_action_btn,
 			file_count_spinbox,
 			entry_count_spinbox,
 			session_duration_spinbox,
@@ -163,12 +153,8 @@ func _ready() -> void:
 			session_print_btn,
 			disable_warn1_btn,
 			disable_warn2_btn,
-			controller_xpos_spinbox,
-			controller_ypos_spinbox,
-			drag_offset_x,
-			drag_offset_y,
-			controller_start_btn,
-			controller_monitor_side_btn,
+			controller_pos_btn,
+			show_controller_toggle_btn
 		]
 
 		# Check and disconnect any existing signal connections > Connect the signals
@@ -234,37 +220,19 @@ func _ready() -> void:
 			session_duration_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
 		session_duration_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(session_duration_spinbox_line))
 
-		if controller_xpos_line == null: controller_xpos_line = controller_xpos_spinbox.get_line_edit()
-		if controller_xpos_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-			controller_xpos_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-		controller_xpos_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(controller_xpos_line))
-
-		if controller_ypos_line == null: controller_ypos_line = controller_ypos_spinbox.get_line_edit()
-		if controller_ypos_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-			controller_ypos_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-		controller_ypos_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(controller_ypos_line))
-
-		if dragx_line == null: dragx_line = drag_offset_x.get_line_edit()
-		if dragx_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-			dragx_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-		dragx_line.text_submitted.connect(update_tooltip.bind(dragx_line))
-
-		if dragy_line == null: dragy_line = drag_offset_y.get_line_edit()
-		if dragy_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-			dragy_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-		dragy_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(dragy_line))
-	
 		
+
 		container_array = [
 			base_dir_btn_container,
 			log_header_container,
 			canvas_layer_container,
 			limit_method_container,
-			limit_action_container,
+			entry_count_action_container,
+			session_timer_action_container, 
 			file_count_container,
 			entry_count_container,
 			session_duration_container,
-			drag_offset_container,
+			controller_pos_container,
 			error_rep_container,
 			session_print_container
 		]
@@ -274,11 +242,12 @@ func _ready() -> void:
 			log_header_btn,
 			canvas_layer_spinbox,
 			limit_method_btn,
-			limit_action_btn,
+			entry_count_action_btn,
+			session_timer_action_btn,
 			file_count_spinbox,
 			entry_count_spinbox,
 			session_duration_spinbox,
-			drag_offset_x,
+			controller_pos_btn, 
 			error_rep_btn,
 			session_print_btn
 		]
@@ -308,16 +277,13 @@ func create_settings_file() -> void:
 	config.set_value("settings", "use_utc", false)
 	config.set_value("settings", "dash_separator", false)
 	config.set_value("settings", "limit_method", 0)
-	config.set_value("settings", "limit_action", 0)
+	config.set_value("settings", "entry_count_action", 0)
+	config.set_value("settings", "session_timer_action", 0)
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_cap", 300)
 	config.set_value("settings", "session_duration", 300.0)
-	config.set_value("settings", "controller_xpos", 0.0)
-	config.set_value("settings", "controller_ypos", 0.0)
-	config.set_value("settings", "drag_offset_x", 0.0)
-	config.set_value("settings", "drag_offset_y", 0.0)
-	config.set_value("settings", "show_controller", false)
-	config.set_value("settings", "controller_monitor_side", true)
+	config.set_value("settings", "controller_position", 0)
+	config.set_value("settings", "show_controller_toggle", false)
 	config.set_value("settings", "error_reporting", 0)
 	config.set_value("settings", "session_print", 0)
 	config.set_value("settings", "disable_warn1", false)
@@ -339,16 +305,13 @@ func load_settings_state() -> void:
 	utc_btn.button_pressed = 						config.get_value("settings", "use_utc")
 	dash_btn.button_pressed = 						config.get_value("settings", "dash_separator")
 	limit_method_btn.selected = 					config.get_value("settings", "limit_method")
-	limit_action_btn.selected = 					config.get_value("settings", "limit_action")
+	entry_count_action_btn.selected = 				config.get_value("settings", "entry_count_action")
+	entry_count_action_btn.selected = 				config.get_value("settings", "session_timer_action")
 	file_count_spinbox.value = 						config.get_value("settings", "file_cap")
 	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap")
 	session_duration_spinbox.value = 				config.get_value("settings", "session_duration")
-	controller_xpos_spinbox.value =					config.get_value("settings", "controller_xpos")
-	controller_ypos_spinbox.value =					config.get_value("settings", "controller_ypos")
-	drag_offset_x.value = 							config.get_value("settings", "drag_offset_x")
-	drag_offset_y.value = 							config.get_value("settings", "drag_offset_y")
-	controller_start_btn.button_pressed = 			config.get_value("settings", "show_controller")
-	controller_monitor_side_btn.button_pressed = 	config.get_value("settings", "controller_monitor_side")
+	controller_pos_btn = 							config.get_value("settings", "controller_position")
+	show_controller_toggle_btn = 					config.get_value("settings", "show_controller_toggle")
 	error_rep_btn.selected = 						config.get_value("settings", "error_reporting")
 	session_print_btn.selected =					config.get_value("settings", "session_print")
 	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1")
@@ -369,16 +332,13 @@ func validate_settings() -> bool:
 		"settings/use_utc": TYPE_BOOL,
 		"settings/dash_separator": TYPE_BOOL,
 		"settings/limit_method": TYPE_INT,
-		"settings/limit_action": TYPE_INT,
+		"settings/entry_count_action": TYPE_INT,
+		"settings/session_timer_action": TYPE_INT,
 		"settings/file_cap": TYPE_INT,
 		"settings/entry_cap": TYPE_INT,
 		"settings/session_duration": TYPE_FLOAT,
-		"settings/controller_xpos": TYPE_FLOAT,
-		"settings/controller_ypos": TYPE_FLOAT,
-		"settings/drag_offset_x": TYPE_FLOAT,
-		"settings/drag_offset_y": TYPE_FLOAT,
-		"settings/show_controller": TYPE_BOOL,
-		"settings/controller_monitor_side": TYPE_BOOL,
+		"settings/controller_position": TYPE_INT,
+		"settings/show_controller_toggle": TYPE_BOOL, 
 		"settings/error_reporting": TYPE_INT,
 		"settings/session_print": TYPE_INT,
 		"settings/disable_warn1": TYPE_BOOL,
@@ -460,22 +420,25 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "[font_size=14][color=green]Use UTC:[color=white][font_size=11] Uses UTC time for date/timestamps as opposed to the local system time."
 		dash_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Use '-' Separator:[color=white][font_size=11]\nUses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
-		controller_start_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Show GoLogger Controller at Runtime:[color=white][font_size=11]\nShows the controller by default When running your project."
-		controller_monitor_side_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]LogFile Monitoring Default Side:[color=white][font_size=11]\nSets the side(left or right) of the monitoring panel."
+		
+		show_controller_toggle_btn:
+			tooltip_lbl.text = "[font_size=14][color=green]Show the Controller toggle button:[color=white][font_size=11]\nDisplays a button at the controller location which is used to show/hide the controller. The hotkey can toggle the controller regardless of this setting"
 		disable_warn1_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Disable Warning:[color=white][font_size=11]\nEnable/disable the warning 'Failed to start session without stopping the previous'."
 		disable_warn2_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Disable Warning:[color=white][font_size=11]\nEnable/disable the warning 'Failed to log entry due to no session being active."
+			tooltip_lbl.text = "[font_size=14][color=green]Disable Warning:[color=white][font_size=11]\nEnable/disable the warning 'Failed to log entry due to no session being active'."
 
 		# Enum-style int settings [OptionButtons]
 		log_header_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Log Header:[color=white][font_size=11]\nUsed to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Limit Method:[color=white][font_size=11]\nMethod used to limit log file length/size. Used in conjunction with 'Limit Action' which dictates the action taken when method condition is met."
-		limit_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Limit Action:[color=white][font_size=11]\nAction taken when 'Limit Method' condition is met. "
+		entry_count_action_btn:
+			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Action:[color=white][font_size=11]\nAction taken when the entry count exceeds the limit. Using 'Remove old entries', the oldest entries are removed to make space for the new entries."
+		session_timer_action_btn:
+			tooltip_lbl.text = "[font_size=14][color=green]Session Timer Action:[color=white][font_size=11]\nAction taken when the SessionTimer times out. "
+		controller_pos_btn:
+			tooltip_lbl.text = "[font_size=14][color=green]Determines the controller position.[color=white][font_size=11]\nThe controller is hidden at start but can be toggled with the hotkey or the toggle button(if enabled)."
 		error_rep_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nAllows you to disable non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' turns all warnings and non-critical errors off."
 		session_print_btn:
@@ -490,14 +453,6 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "[font_size=14][color=green]File Limit:[color=white][font_size=11]\nFile count limit. Limits the number of files in any log category folder."
 		canvas_layer_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]CanvasLayer Layer:[color=white][font_size=11]\nSets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
-		controller_xpos_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]GoLogger Start Position:[color=white][font_size=11]\nSets the original/start position of the GoLoggerController."
-		controller_ypos_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]GoLogger Start Position:[color=white][font_size=11]\nSets the original/start position of the GoLoggerController."
-		drag_offset_x:
-			tooltip_lbl.text = "[font_size=14][color=green]GoLoggerController Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
-		drag_offset_y:
-			tooltip_lbl.text = "[font_size=14][color=green]GoLoggerController Drag Offset:[color=white][font_size=11]\nController window drag offset. Used to correct the window position while dragging if needed."
 #endregion
 
 
@@ -571,13 +526,16 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 			config.set_value("settings", "log_header", index)
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
-		limit_action_btn:
-			config.set_value("settings", "limit_action", index)
+		entry_count_action_btn:
+			config.set_value("settings", "entry_count_action", index)
+		session_timer_action_btn:
+			config.set_value("settings", "session_timer_action", index)
 		error_rep_btn:
 			config.set_value("settings", "error_reporting", index)
 		session_print_btn:
 			config.set_value("settings", "print_session_changes", index)
-	
+		controller_pos_btn:
+			config.set_value("settings", "controller_position", index)	
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
@@ -598,10 +556,8 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 			config.set_value("settings", "use_utc", toggled_on)
 		dash_btn:
 			config.set_value("settings", "dash_separator", toggled_on)
-		controller_start_btn:
-			config.set_value("settings", "show_controller", toggled_on)
-		controller_monitor_side_btn:
-			config.set_value("settings", "controller_monitor_side", toggled_on)
+		show_controller_toggle_btn:
+			config.set_value("settings", "show_controller_toggle", toggled_on)
 		disable_warn1_btn:
 			config.set_value("settings", "disable_warn1", toggled_on)
 		disable_warn2_btn:
@@ -635,14 +591,6 @@ func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 			config.set_value("settings", "file_cap", int(value))
 		canvas_layer_spinbox:
 			config.set_value("settings", "canvaslayer_layer", int(value))
-		controller_xpos_spinbox:
-			config.set_value("settings", "controller_start_pos_x", value)
-		controller_ypos_spinbox:
-			config.set_value("settings", "controller_start_pos_y", value)
-		drag_offset_x:
-			config.set_value("settings", "controller_drag_offset_x", value)
-		drag_offset_y:
-			config.set_value("settings", "controller_drag_offset_y", value)
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
@@ -677,58 +625,6 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 			config.set_value("settings", "session_duration", value)
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus()
-		
-		controller_xpos_spinbox:
-			var value = float(new_text)
-			if value >= controller_xpos_spinbox.min_value or value <= controller_xpos_line.max_value:
-				config.set_value("settings", "controller_start_pos_x", value)
-				controller_xpos_spinbox.release_focus()
-				controller_xpos_line.release_focus()
-		controller_xpos_line: 
-			var value = float(new_text)
-			if value >= controller_xpos_spinbox.min_value or value <= controller_xpos_line.max_value:
-				config.set_value("settings", "controller_start_pos_x", value)
-				controller_xpos_spinbox.release_focus()
-				controller_xpos_line.release_focus()
-		
-		controller_ypos_spinbox:
-			var value = float(new_text)
-			if value >= controller_ypos_spinbox.min_value or value <= controller_ypos_line.max_value:
-				config.set_value("settings", "controller_start_pos_x", value)
-				controller_ypos_spinbox.release_focus()
-				controller_ypos_line.release_focus()
-		controller_ypos_line:  
-			var value = float(new_text)
-			if value >= controller_ypos_spinbox.min_value or value <= controller_ypos_line.max_value:
-				config.set_value("settings", "controller_start_pos_x", value)
-				controller_ypos_spinbox.release_focus()
-				controller_ypos_line.release_focus()
-		
-		drag_offset_x:
-			var value = float(new_text)
-			if value >= drag_offset_x.min_value or value <= drag_offset_x.max_value:
-				config.set_value("settings", "controller_drag_offset_x", value)
-				drag_offset_x.release_focus()
-				dragx_line.release_focus()
-		dragx_line:
-			var value = float(new_text)
-			if value >= drag_offset_x.min_value or value <= drag_offset_x.max_value:
-				config.set_value("settings", "controller_drag_offset_x", value)
-				drag_offset_x.release_focus()
-				dragx_line.release_focus()
-		
-		drag_offset_y:
-			var value = float(new_text)
-			if value >= drag_offset_y.min_value or value <= drag_offset_y.max_value:
-				config.set_value("settings", "controller_drag_offset_y", value)
-				drag_offset_y.release_focus()
-				dragy_line.release_focus()
-		dragy_line:
-			var value = float(new_text)
-			if value >= drag_offset_y.min_value or value <= drag_offset_y.max_value:
-				config.set_value("settings", "controller_drag_offset_y", value)
-				drag_offset_y.release_focus()
-				dragy_line.release_focus()
 	# node.release_focus()
 	var _s = config.save(PATH)
 	if _s != OK:
