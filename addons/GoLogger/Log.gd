@@ -173,8 +173,8 @@ func create_settings_file() -> void:
 	config.set_value("settings", "limit_method", 0)
 	config.set_value("settings", "limit_action", 0)
 	config.set_value("settings", "file_cap", 10)
-	config.set_value("settings", "entry_cap", 1000)
-	config.set_value("settings", "session_duration", 600.0)
+	config.set_value("settings", "entry_cap", 300)
+	config.set_value("settings", "session_duration", 300.0)
 	config.set_value("settings", "controller_xpos", 0.0)
 	config.set_value("settings", "controller_ypos", 0.0)
 	config.set_value("settings", "drag_offset_x", 0.0)
@@ -355,7 +355,7 @@ func start_session(start_delay : float = 0.0) -> void:
 				if _err != OK: push_warning("GoLogger Error: ", get_error(_err, "DirAccess"), " (", _path, ").")
 				return
 			else:
-				
+				 
 				# Assign file name
 				categories[i][2] = get_file_name(categories[i][0]) 
 				# Assign file path
@@ -363,6 +363,7 @@ func start_session(start_delay : float = 0.0) -> void:
 				
 				var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
 				var _files = _dir.get_files()
+				print(_files)
 				#TODO Check if files are .log files > add them to an array and use that to detect/delete files 
 				categories[i][4] = _files.size()
 				while _files.size() > get_value("file_cap") -1:
@@ -435,7 +436,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 
 	#? Remove old entries at line 1 until entry count is < limit.
 	if get_value("limit_method") == 0 or get_value("limit_method") == 2:
-		while lines.size() >= get_value("entry_cap"):
+		while lines.size() >= (get_value("entry_cap") - 1):
 			lines.remove_at(1)# Keep header line at 0
 	
 	categories[category_index][4] = lines.size() 
@@ -460,8 +461,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	_fw.close() 
 
 
-## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and 
-## confirmed. [method complete_copy] is called.
+## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and confirmed. [method complete_copy] is called.
 func save_copy() -> void:
 	popup_state = !popup_state
 
@@ -472,14 +472,8 @@ func save_copy() -> void:
 ##     Log.popup_state = !Log.popup_state
 ## [/codeblock]
 func complete_copy() -> void: 
-	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
-	# 0 = Category name
-	# 1 = Category index
-	# 2 = Current file name(with timestamp)
-	# 3 = Current file path
-	# 4 = File count
-	# 5 = Entry count 
-	# 6 = Is locked
+	#?                         0               1           2               3                  4              5
+	#? Category array = [category name, category index, is locked, current file name, current filepath, entry count]
 	popup_state = false
 	categories = get_value("categories")
 	# If user entered a name with .log, trim it
@@ -495,7 +489,7 @@ func complete_copy() -> void:
 		for i in range(categories.size()):
 			var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
 			if !_fr:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i][3]," [/pulse]")
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base of file [", categories[i][3],"].")
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
@@ -503,14 +497,14 @@ func complete_copy() -> void:
 			var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
 			var _fw = FileAccess.open(_path, FileAccess.WRITE)
 			if !_fw:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", _path,"].")
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
 			_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
 			_fw.close()
 		if get_value("session_print") == 1 or get_value("session_print") == 3:
-			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
+			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name [", copy_name, "]."))
 		copy_name = ""
 		popup_line_edit.text = ""
 	if !session_status:
@@ -520,7 +514,7 @@ func complete_copy() -> void:
 		for i in range(categories.size()):
 			var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
 			if !_fr:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to open base file: ", categories[i][3]," [/pulse]")
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base file: ", categories[i][3],"].")
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
@@ -528,14 +522,14 @@ func complete_copy() -> void:
 			var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
 			var _fw = FileAccess.open(_path, FileAccess.WRITE)
 			if !_fw:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Failed to create copy file: ", _path," [/pulse]")
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", _path,".")
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
 			_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
 			_fw.close()
 		if get_value("session_print") == 1 or get_value("session_print") == 3:
-			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "."))
+			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "]."))
 		copy_name = ""
 		popup_line_edit.text = ""
 	config.set_value("plugin", "categories", categories)
@@ -594,10 +588,8 @@ func get_header() -> String:
 			var _n = str(ProjectSettings.get_setting("application/config/name"))
 			var _v = str(ProjectSettings.get_setting("application/config/version"))
 			if _n == "": 
-				printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
 				_n = "Untitled Project"
-			if _v == "": 
-				printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
+			if _v == "":  
 				_v = "v0.0"
 			return str(_n, " v", _v, " ")
 		1: # Project name
@@ -614,7 +606,7 @@ func get_header() -> String:
 			return str(_v, " ")
 		3: # None
 			return ""
-	return "N/A "
+	return ""
 
 ## Helper function that determines whether or not any [param category_name] was found more than once 
 ## in [param categories].

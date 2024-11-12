@@ -134,7 +134,6 @@ func _ready() -> void:
 	fileinfo_side = get_value("controller_monitor_side")
 	fileinfo_panel.visible = fileinfo_state
 	
-	
 
 	if config.get_value("settings", "show_controller"): hide()
 	else: show()

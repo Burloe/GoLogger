@@ -310,8 +310,8 @@ func create_settings_file() -> void:
 	config.set_value("settings", "limit_method", 0)
 	config.set_value("settings", "limit_action", 0)
 	config.set_value("settings", "file_cap", 10)
-	config.set_value("settings", "entry_cap", 1000)
-	config.set_value("settings", "session_duration", 600.0)
+	config.set_value("settings", "entry_cap", 300)
+	config.set_value("settings", "session_duration", 300.0)
 	config.set_value("settings", "controller_xpos", 0.0)
 	config.set_value("settings", "controller_ypos", 0.0)
 	config.set_value("settings", "drag_offset_x", 0.0)
@@ -455,7 +455,7 @@ func update_tooltip(node : Control) -> void:
 		autostart_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Autostart Session:[color=white][font_size=11]\nAutostarts a session when running your project."
 		timestamp_entries_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nEnables whether or not entries are timestamped inside the log files.\n[i]Recommended to turn on.[/i]"
+			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nEnables whether or not entries are timestamped inside the log files."
 		utc_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Use UTC:[color=white][font_size=11] Uses UTC time for date/timestamps as opposed to the local system time."
 		dash_btn:
@@ -483,9 +483,9 @@ func update_tooltip(node : Control) -> void:
 		
 		# Int settings [SpinBoxes]
 		entry_count_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit of any log. Used when 'Limit Method' is set to use Entry Count.[color=red] Lower this value if you experience performance issues."
+			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit of any log. Used when 'Limit Method' is set to use Entry Count.[color=yellow]\nRecommended value 300-500.[color=red] Lower the limit if you're getting stutterings."
 		session_duration_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Session Duration:[color=white][font_size=11]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer."
+			tooltip_lbl.text = "[font_size=14][color=green]Session Duration:[color=white][font_size=11]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer.[color=yellow]\nDepending on the frequency of entries, you should lower the duration."
 		file_count_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]File Limit:[color=white][font_size=11]\nFile count limit. Limits the number of files in any log category folder."
 		canvas_layer_spinbox:
@@ -543,7 +543,6 @@ func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 			if _e == OK:
 				save_setting("plugin", "base_directory", new_text)
 			else:
-				print(_e)
 				base_dir_line.text = old_dir
 			base_dir_line.release_focus()
 #endregion

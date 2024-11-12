@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ducpkyyco24la"
-path="res://.godot/imported/GoLogger_Icon_Flat.png-bb923d8ed41c1d9f507fbe78f0dc2407.ctex"
+uid="uid://dcvcwmc8a3ei1"
+path="res://.godot/imported/GoLogger_Icon_Title.png-5b92e2c8889b5e3d882b37227c5f3188.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/GoLogger/GoLogger_Icon_Flat.png"
-dest_files=["res://.godot/imported/GoLogger_Icon_Flat.png-bb923d8ed41c1d9f507fbe78f0dc2407.ctex"]
+source_file="res://addons/GoLogger/GoLogger_Icon_Title.png"
+dest_files=["res://.godot/imported/GoLogger_Icon_Title.png-5b92e2c8889b5e3d882b37227c5f3188.ctex"]
 
 [params]
 
