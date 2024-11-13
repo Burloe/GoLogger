@@ -333,7 +333,7 @@ layout_mode = 2
 [node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 34
+theme_override_constants/separation = 106
 alignment = 2
 
 [node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/LimitMethodHBox"]
@@ -354,13 +354,13 @@ item_count = 3
 popup/item_0/text = "Entry Count"
 popup/item_1/text = "SessionTimer"
 popup/item_1/id = 1
-popup/item_2/text = "EntryCount + SessionTimer"
+popup/item_2/text = "Both"
 popup/item_2/id = 2
 
 [node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 42
 alignment = 2
 
 [node name="EntryActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/EntryCountActionHBox"]
@@ -380,7 +380,7 @@ allow_reselect = true
 item_count = 3
 popup/item_0/text = "Remove old entries"
 popup/item_0/id = 2
-popup/item_1/text = "Stop & Start new session"
+popup/item_1/text = "Stop & Start session"
 popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
@@ -388,7 +388,7 @@ popup/item_2/id = 1
 [node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 28
 alignment = 2
 
 [node name="SessionTimerActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/SessionTimerActionHBox"]
@@ -406,14 +406,14 @@ size_flags_vertical = 4
 selected = 0
 allow_reselect = true
 item_count = 2
-popup/item_0/text = "Stop & Start new session"
+popup/item_0/text = "Stop & Start session"
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
 [node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 123
+theme_override_constants/separation = 119
 alignment = 2
 
 [node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/EntryCountHBox"]
@@ -430,7 +430,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 min_value = 1.0
 max_value = 5000.0
-value = 10.0
+value = 300.0
 alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 10.0
@@ -438,7 +438,7 @@ custom_arrow_step = 10.0
 [node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 121
+theme_override_constants/separation = 117
 alignment = 2
 
 [node name="SessionDurationLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/SessionDurationHBox"]
@@ -454,7 +454,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 max_value = 1200.0
-value = 600.0
+value = 300.0
 alignment = 2
 update_on_text_changed = true
 suffix = "sec"

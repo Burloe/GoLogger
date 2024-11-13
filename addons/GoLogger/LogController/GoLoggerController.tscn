@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_d1jly"]
 [ext_resource type="Script" path="res://addons/GoLogger/LogController/GoLoggerController.gd" id="1_sp6vx"]
 [ext_resource type="Texture2D" uid="uid://gux11f2yqngh" path="res://addons/GoLogger/GoLogger_Icon_Flat.svg" id="3_wib7l"]
-[ext_resource type="Texture2D" uid="uid://bbo35s71jewxs" path="res://addons/GoLogger/Resources/icons/ArrowDown.svg" id="4_b5chq"]
+[ext_resource type="Texture2D" uid="uid://behxo6vcb5ubp" path="res://addons/GoLogger/Resources/icons/ArrowRight.svg" id="4_steiu"]
 
 [node name="GoLoggerController" type="Panel"]
 z_index = 10
@@ -11,9 +11,9 @@ custom_minimum_size = Vector2(362, 62)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 779.0
+offset_left = 5.0
 offset_top = 5.0
-offset_right = -779.0
+offset_right = -1553.0
 offset_bottom = -1013.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -106,10 +106,9 @@ text = "Stop"
 [node name="ToggleButton" type="Button" parent="."]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 150.0
-offset_top = 67.0
-offset_right = 212.0
-offset_bottom = 99.0
-icon = ExtResource("4_b5chq")
+offset_left = 367.0
+offset_right = 399.0
+offset_bottom = 62.0
+icon = ExtResource("4_steiu")
 icon_alignment = 1
 expand_icon = true

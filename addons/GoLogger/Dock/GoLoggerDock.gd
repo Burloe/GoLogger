@@ -415,7 +415,7 @@ func update_tooltip(node : Control) -> void:
 		autostart_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Autostart Session:[color=white][font_size=11]\nAutostarts a session when running your project."
 		timestamp_entries_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nEnables whether or not entries are timestamped inside the log files."
+			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nWhen enabled, entries are timestamped inside the log files with:\n\t[color=orange][08:13:47][color=white] Entry string."
 		utc_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Use UTC:[color=white][font_size=11] Uses UTC time for date/timestamps as opposed to the local system time."
 		dash_btn:
@@ -432,11 +432,11 @@ func update_tooltip(node : Control) -> void:
 		log_header_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Log Header:[color=white][font_size=11]\nUsed to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Limit Method:[color=white][font_size=11]\nMethod used to limit log file length/size. Used in conjunction with 'Limit Action' which dictates the action taken when method condition is met."
+			tooltip_lbl.text = "[font_size=14][color=green]Limit Method:[color=white][font_size=11]\nMethod used to limit log file length/size.\n[color=ff669e]Using both methods, you can only choose between using 'stop & start session' and 'stop_session' actions which you set using the 'Session Timer Action' setting."
 		entry_count_action_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Action:[color=white][font_size=11]\nAction taken when the entry count exceeds the limit. Using 'Remove old entries', the oldest entries are removed to make space for the new entries."
 		session_timer_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Session Timer Action:[color=white][font_size=11]\nAction taken when the SessionTimer times out. "
+			tooltip_lbl.text = "[font_size=14][color=green]Session Timer Action:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]When Limit Method is set to 'Both'. This setting is used to determine the action taken when either method's condition is met."
 		controller_pos_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Determines the controller position.[color=white][font_size=11]\nThe controller is hidden at start but can be toggled with the hotkey or the toggle button(if enabled)."
 		error_rep_btn:
@@ -450,7 +450,7 @@ func update_tooltip(node : Control) -> void:
 		session_duration_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]Session Duration:[color=white][font_size=11]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer.[color=yellow]\nDepending on the frequency of entries, you should lower the duration."
 		file_count_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]File Limit:[color=white][font_size=11]\nFile count limit. Limits the number of files in any log category folder."
+			tooltip_lbl.text = "[font_size=14][color=green]File Count Limit:[color=white][font_size=11]\nLimits the number of files in any log category folder. [color=red][b]NOT RECOMMENDED:[/b] [color=ff4040]Set to 0 if you want to disable this feature."
 		canvas_layer_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]CanvasLayer Layer:[color=white][font_size=11]\nSets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
 #endregion
@@ -526,6 +526,12 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 			config.set_value("settings", "log_header", index)
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
+			if index == 2:
+				entry_count_action_btn.disabled = true
+				entry_count_action_btn.focus_mode = Control.FOCUS_NONE
+			else:
+				entry_count_action_btn.disabled = false
+				entry_count_action_btn.focus_mode = Control.FOCUS_ALL
 		entry_count_action_btn:
 			config.set_value("settings", "entry_count_action", index)
 		session_timer_action_btn:
