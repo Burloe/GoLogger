@@ -1,22 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://dm7mwwoselesw"]
+[gd_scene load_steps=4 format=3 uid="uid://dm7mwwoselesw"]
 
 [ext_resource type="Script" path="res://addons/GoLogger/Log.gd" id="1_qpie0"]
-[ext_resource type="Script" path="res://addons/GoLogger/Resources/LogFileResource.gd" id="2_46rht"]
 [ext_resource type="PackedScene" uid="uid://quridjl6aioe" path="res://addons/GoLogger/LogController/GoLoggerController.tscn" id="2_i3pa3"]
-[ext_resource type="Resource" uid="uid://d2u8mtobg80fu" path="res://addons/GoLogger/Resources/DefaultLogFile.tres" id="3_56q28"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="5_e13q5"]
-
-[sub_resource type="Resource" id="Resource_a7gom"]
-script = ExtResource("2_46rht")
-category_name = "player"
-
-[sub_resource type="Resource" id="Resource_gg1lx"]
-script = ExtResource("2_46rht")
-category_name = "network"
 
 [node name="Log" type="Node"]
 script = ExtResource("1_qpie0")
-categories = [ExtResource("3_56q28"), SubResource("Resource_a7gom"), SubResource("Resource_gg1lx")]
 
 [node name="SessionTimer" type="Timer" parent="."]
 
@@ -25,6 +14,10 @@ unique_name_in_owner = true
 layer = 50
 
 [node name="GoLoggerController" parent="GoLoggerElements" instance=ExtResource("2_i3pa3")]
+unique_name_in_owner = true
+grow_vertical = 1
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="Popup" type="CenterContainer" parent="GoLoggerElements"]
 unique_name_in_owner = true
@@ -33,6 +26,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme = ExtResource("5_e13q5")
 
 [node name="Panel" type="Panel" parent="GoLoggerElements/Popup"]

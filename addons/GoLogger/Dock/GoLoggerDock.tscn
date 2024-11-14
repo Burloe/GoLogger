@@ -561,7 +561,7 @@ popup/item_4/id = 4
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_constants/separation = 18
+theme_override_constants/separation = 27
 alignment = 2
 
 [node name="ControllerPosLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/ControllerPosHBox"]
@@ -576,30 +576,31 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 action_mode = 1
+button_mask = 3
 selected = 0
 allow_reselect = true
-item_count = 8
-popup/item_0/text = "Center-Top"
-popup/item_1/text = "Right-Top"
+item_count = 7
+popup/item_0/text = "Left-Top"
+popup/item_1/text = "Left-Center"
 popup/item_1/id = 1
-popup/item_2/text = "Right-Center"
+popup/item_2/text = "Left-Bottom"
 popup/item_2/id = 2
-popup/item_3/text = "Right-Bottom"
-popup/item_3/id = 3
-popup/item_4/text = "Center-Bottom"
-popup/item_4/id = 4
-popup/item_5/text = "Left-Top"
-popup/item_5/id = 5
-popup/item_6/text = "Left-Center"
-popup/item_6/id = 6
-popup/item_7/text = "Left-Bottom"
-popup/item_7/id = 7
+popup/item_3/id = 9
+popup/item_3/disabled = true
+popup/item_3/separator = true
+popup/item_4/text = "Right-Top"
+popup/item_4/id = 3
+popup/item_5/text = "Right-Center"
+popup/item_5/id = 4
+popup/item_6/text = "Right-Bottom"
+popup/item_6/id = 5
 
 [node name="ShowControllerBtnCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(235, 0)
 layout_mode = 2
 size_flags_horizontal = 8
+button_pressed = true
 icon_alignment = 2
 
 [node name="Label" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/ShowControllerBtnCheckButton"]
@@ -632,14 +633,12 @@ text = "Disable warnings:"
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_y5prw")
-button_pressed = true
 text = "    Failed to start session"
 
 [node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_y5prw")
-button_pressed = true
 text = "    Failed to log entry"
 
 [node name="Control" type="Control" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]

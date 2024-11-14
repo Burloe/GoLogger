@@ -159,7 +159,8 @@ func _on_del_button_up() -> void:
 
 
 func _on_update_timer_timeout() -> void:
-	var _c = config.get_value("plugin", "categories", [])
+	config.load(PATH)
+	var _c = config.get_value("plugin", "categories") # var _c = config.get_value("plugin", "categories", [])
 	if _c != null and !_c.is_empty():
 		categories = _c 
 		

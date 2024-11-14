@@ -21,6 +21,8 @@ var config = ConfigFile.new()
 const PATH = "user://GoLogger/settings.ini"
 ## Emitted whenever an action that changes the display order is potentially made. Updates the index of all LogCategories.
 signal update_index
+## Emitted to the Controller script to update visual elements in the editor.
+signal update_controller(setting : String, value : Variant)
 #endregion
 
 
@@ -220,8 +222,6 @@ func _ready() -> void:
 			session_duration_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
 		session_duration_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(session_duration_spinbox_line))
 
-		
-
 		container_array = [
 			base_dir_btn_container,
 			log_header_container,
@@ -310,8 +310,8 @@ func load_settings_state() -> void:
 	file_count_spinbox.value = 						config.get_value("settings", "file_cap")
 	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap")
 	session_duration_spinbox.value = 				config.get_value("settings", "session_duration")
-	controller_pos_btn = 							config.get_value("settings", "controller_position")
-	show_controller_toggle_btn = 					config.get_value("settings", "show_controller_toggle")
+	controller_pos_btn.selected = 					config.get_value("settings", "controller_position")
+	show_controller_toggle_btn.button_pressed =		config.get_value("settings", "show_controller_toggle")
 	error_rep_btn.selected = 						config.get_value("settings", "error_reporting")
 	session_print_btn.selected =					config.get_value("settings", "session_print")
 	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1")
@@ -542,6 +542,7 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 			config.set_value("settings", "print_session_changes", index)
 		controller_pos_btn:
 			config.set_value("settings", "controller_position", index)	
+			update_controller.emit("controller_position", index)
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
@@ -689,7 +690,8 @@ func save_categories(deferred : bool = false) -> void:
 		# Create and append a nested array inside main
 		var _n : Array = [children[i].category_name, children[i].index, children[i].file_name, children[i].file_path, children[i].file_count, children[i].entry_count, children[i].is_locked] 
 		main.append(_n)
-	save_setting("categories", "plugin") 
+	config.set_value("plugin", "categories", main)
+	config.save(PATH)
 
 
 

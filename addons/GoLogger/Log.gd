@@ -35,10 +35,7 @@ signal session_status_changed
 ## Emitted when the [param session_timer] is started. Useful to sync up sessions with systems/features for other 
 ## applications than simple file management. E.g. when stress testing some system or feather or to log for a 
 ## specific time.
-signal session_timer_started   
-
-## Emitted when [param hotkey_controller_toggle] is released.
-signal toggle_controller
+signal session_timer_started  
 
 
 
@@ -53,7 +50,7 @@ var config = ConfigFile.new()
 ## [/b][br]Changing this parameter at runtime will likely cause errors.
 var base_directory : String = "user://GoLogger/"
 
-## Array containing [LogFileResource]s that each corresponds to a log category. They define the category name.
+## Array containing category data that each corresponds to a log category. They define the category name.
 @export var categories : Array =[]
 
 
@@ -62,6 +59,7 @@ var header_string : String
 
 @onready var elements_canvaslayer : CanvasLayer = %GoLoggerElements
 
+@onready var controller : Control = %GoLoggerController
 
 ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
 @onready var session_timer : Timer = $SessionTimer
@@ -137,8 +135,6 @@ func _input(event: InputEvent) -> void:
 				stop_session()
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
-			if hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():
-				toggle_controller.emit()
 
 	
 		if event is InputEventKey and event.keycode == KEY_E and event.is_released():
@@ -150,7 +146,8 @@ func _ready() -> void:
 	base_directory = config.get_value("plugin", "base_directory")
 	header_string = get_header()
 	elements_canvaslayer.layer = get_value("canvaslayer_layer")
-	session_timer.autostart = get_value("autostart_session") #TODO Check if setting this in _ready() actually starts the session
+	session_timer.autostart = get_value("autostart_session") 
+	update_controller_position()
 
 
 	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
@@ -273,7 +270,7 @@ func validate_settings() -> bool:
 	return faults == 0
 
 
-## Returns any setting value from 'settings.ini'. Also preforms some crucial error checks, pushes errors and creates 
+## DEPRECATED - Returns any setting value from 'settings.ini'. Also preforms some crucial error checks, pushes errors and creates 
 ## a default .ini file if one doesn't exist.
 func get_value(value : String) -> Variant:
 	var _config = ConfigFile.new()
@@ -315,7 +312,7 @@ func start_session(start_delay : float = 0.0) -> void:
 	# 4 = file count
 	# 5 = entry count 
 	# 6 = is locked
-	categories = get_value("categories")
+	categories = config.get_value("plugin", "categories")
 	if categories.is_empty(): 
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
 		return
@@ -365,22 +362,26 @@ func start_session(start_delay : float = 0.0) -> void:
 				categories[i][3] = str(_path, categories[i][2]) 
 				
 				var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
-				var _files = _dir.get_files()
-				print(_files)
+				var _files = _dir.get_files() 
 				#TODO Check if files are .log files > add them to an array and use that to detect/delete files 
 				categories[i][4] = _files.size()
-				while _files.size() > get_value("file_cap") -1:
-					_files.sort()
-					_dir.remove(_files[0])
-					_files.remove_at(0)
-					var _err = DirAccess.get_open_error()
-					if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
+
+				#! Added this feature to disable file count by setting value to 0. Need to test if this actually works.
+				if get_value("file_cap") > 0:
+					while _files.size() > get_value("file_cap") -1:
+						_files.sort()
+						_dir.remove(_files[0])
+						_files.remove_at(0)
+						var _err = DirAccess.get_open_error()
+						if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
+				#! Unindent the while loop and delete the 'if' line to revert this change
+				
 				if !_f and get_value("error_reporting") != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i][3], ").")
 				else:
 					var _s := str(header_string, categories[i][0], " Log session started[", Time.get_datetime_string_from_system(get_value("use_utc"), true), "]:")
 					_f.store_line(_s)
 					categories[i][5] = 0
-					_f.close()
+				_f.close()
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
 	if get_value("session_print") == 1 or get_value("session_print") == 2: print("GoLogger: Started session.")
@@ -478,7 +479,7 @@ func complete_copy() -> void:
 	#?                         0               1           2               3                  4              5
 	#? Category array = [category name, category index, is locked, current file name, current filepath, entry count]
 	popup_state = false
-	categories = get_value("categories")
+	categories = config.get_value("plugin", "categories")
 	# If user entered a name with .log, trim it
 	if copy_name.ends_with(".log") or copy_name.ends_with(".txt"):
 		copy_name = copy_name.substr(0, copy_name.length() - 4)
@@ -550,7 +551,7 @@ func stop_session() -> void:
 	# 4 = file count
 	# 5 = entry count 
 	# 6 = is locked
-	categories = get_value("categories")
+	categories = config.get_value("plugin", "categories")
 	if get_value("session_print") == 1 or get_value("session_print") == 3:
 		print("GoLogger: Session stopped!")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] Stopped log session.")
@@ -621,8 +622,8 @@ func check_filename_conflicts() -> String:
 	# 3 = current file path
 	# 4 = file count
 	# 5 = entry count 
-	# 6 = is locked
-	categories = get_value("categories")
+	# 6 = is locked 
+	categories = config.get_value("plugin", "categories")
 	var seen_resources : Array[String] = []
 	for r in categories:
 		if !seen_resources.is_empty():
@@ -737,6 +738,24 @@ func add_hotkeys() -> void:
 		InputMap.action_add_event("GoLogger_controller_toggle", hotkey_controller_toggle)
 #endregion
 
+
+## Updates Controller anchor position
+func update_controller_position() -> void:
+	var _s = config.get_value("settings", "controller_position")
+	match _s:
+		0:
+			controller.set_anchors_preset(Control.LayoutPreset.PRESET_TOP_LEFT)
+		1:
+			controller.set_anchors_preset(Control.LayoutPreset.PRESET_CENTER_LEFT)
+		2:
+			controller.set_anchors_preset(Control.LayoutPreset.PRESET_BOTTOM_LEFT)
+		3:
+			controller.set_anchors_preset(Control.LayoutPreset.PRESET_TOP_RIGHT)
+		4:
+			controller.set_anchors_preset(Control.LayoutPreset.PRESET_CENTER_RIGHT)
+		5:
+			controller.set_anchors_preset(Control.LayoutPreset.PRESET_BOTTOM_RIGHT)
+	controller.set_positions(_s)
 
 
 #region Signal listeners

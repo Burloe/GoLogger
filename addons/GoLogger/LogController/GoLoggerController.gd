@@ -1,15 +1,14 @@
 @tool
-extends Panel 
+extends Control 
 #region Documentation and declarations
 ## An optional controller to help manage logging sessions along with some additional features and information.
 
-@onready var main_hbox : HBoxContainer = %MainHBoxContainer
-@onready var gologger_icon : TextureRect = %GoLoggerIconFlat
+# @onready var main_hbox : HBoxContainer = %MainHBoxContainer
+@onready var gologger_icon : Button = %GoLoggerIconFlat
 @onready var session_status_panel : Panel = %SessionStatusPanel
-@onready var btn_container : HBoxContainer = %FuncButtonContainer
+
 ## Session status button.
 @onready var session_status_label : RichTextLabel = %SessionStatusLabel
-
 
 ## Start session button.
 @onready var start_btn : Button = %StartButton
@@ -20,295 +19,257 @@ extends Panel
 ## Stop session button.
 @onready var stop_btn : Button = %StopButton
 
-## Toggles the visibility state of the controller.
-@onready var toggle_btn : Button = %ToggleButton
+@onready var update_timer : Timer = %UpdateTimer
 
-var icons : Array = [
-	preload("res://addons/GoLogger/Resources/icons/ArrowUp.svg"),
-	preload("res://addons/GoLogger/Resources/icons/ArrowRight.svg"),
-	preload("res://addons/GoLogger/Resources/icons/ArrowDown.svg"),
-	preload("res://addons/GoLogger/Resources/icons/ArrowLeft.svg")
-]
+var dockscript = preload("res://addons/GoLogger/Dock/GoLoggerDock.gd")
+var dock = dockscript.new()
 
-@export var visible_state : bool = false 
-
-var hidepos : Vector2 = Vector2.ZERO
-var showpos : Vector2 = Vector2.ZERO
-var toggle_btn_pos : Vector2 = Vector2.ZERO
-
-enum CONTROLLER_POSITION {
-	CENTER_TOP,
-	RIGHT_TOP,
-	RIGHT_CENTER,
-	RIGHT_BOTTOM,
-	CENTER_BOTTOM,
-	LEFT_BOTTOM,
-	LEFT_CENTER,
-	LEFT_TOP
-}
-
-@export var current_position = CONTROLLER_POSITION.LEFT_TOP:
+var visible_state : bool = false:
 	set(value):
-		# printt(main_hbox, gologger_icon, session_status_panel, btn_container, session_status_label)
-		set_positions()
+		visible_state      =  value 
+		# start_btn.disabled = !value
+		# copy_btn.disabled  = !value 
+		# stop_btn.disabled  = !value 
+		toggle_controller()
+
+var current_position : int = 0
 
 const PATH = "user://GoLogger/settings.ini"
-var config = ConfigFile.new()
-var categories 
+var config = ConfigFile.new() 
 #endregion
 
 
-
-
 func _unhandled_input(event: InputEvent) -> void:
-	# if event is InputEventKey and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():	
-	# 	visible = !visible
-	# if event is InputEventJoypadButton and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():
-	# 	visible = !visible
-	
-	if event is InputEventKey and event.keycode == KEY_C and event.is_released():
-		current_position = randi_range(0, 7)
-
+	if Engine.is_editor_hint():
+		if event is InputEventKey and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():	
+			visible = !visible
+		if event is InputEventJoypadButton and Log.hotkey_controller_toggle.shortcut.matches_event(event) and event.is_released():
+			visible = !visible
 
 
 func _ready() -> void:
 	if !Engine.is_editor_hint():
-		config.load(PATH)
-		categories = config.get_value("plugin", "categories")
+		config.load(PATH) 
 		
-		Log.session_status_changed.connect(_on_session_status_changed) 
-		Log.toggle_controller.connect(_on_visibility_toggle)
+		# update_timer.timeout.connect(_on_update_timer_timeout)
+		update_timer.start()
+		Log.session_status_changed.connect(_on_session_status_changed)  
+		gologger_icon.mouse_entered.connect(_on_mouse_entered)
+		gologger_icon.mouse_exited.connect(_on_mouse_exited)
+		gologger_icon.button_up.connect(_on_button_up.bind(gologger_icon))
 		start_btn.button_up.connect(_on_button_up.bind(start_btn)) 
 		copy_btn.button_up.connect(_on_button_up.bind(copy_btn))
-		stop_btn.button_up.connect(_on_button_up.bind(stop_btn)) 
-		toggle_btn.button_up.connect(_on_button_up.bind(toggle_btn))
+		stop_btn.button_up.connect(_on_button_up.bind(stop_btn))
 		
-		session_status_label.text = str("[font_size=6]\n[center][font_size=11] Session status:\n[center][color=green]ON") if Log.session_status else str("[font_size=6]\n[center][font_size=12] Session status:\n[center][color=red]OFF")
-
-		set_positions()
-		match current_position:
-			CONTROLLER_POSITION.CENTER_TOP:
-				if visible_state:
-					toggle_btn.icon = icons[0]
-				else:
-					toggle_btn.icon = icons[2]
-			CONTROLLER_POSITION.RIGHT_TOP:
-				if visible_state:
-					toggle_btn.icon = icons[3]
-				else:
-					toggle_btn.icon = icons[1]
-			CONTROLLER_POSITION.RIGHT_CENTER:
-				if visible_state:
-					toggle_btn.icon = icons[3]
-				else:
-					toggle_btn.icon = icons[1]
-			CONTROLLER_POSITION.RIGHT_BOTTOM:
-				if visible_state:
-					toggle_btn.icon = icons[3]
-				else:
-					toggle_btn.icon = icons[1]
-			CONTROLLER_POSITION.CENTER_BOTTOM:
-				if visible_state:
-					toggle_btn.icon = icons[2]
-				else:
-					toggle_btn.icon = icons[0]
-			CONTROLLER_POSITION.LEFT_TOP:
-				if visible_state:
-					toggle_btn.icon = icons[3]
-				else:
-					toggle_btn.icon = icons[1]
-			CONTROLLER_POSITION.LEFT_CENTER:
-				if visible_state:
-					toggle_btn.icon = icons[3]
-				else:
-					toggle_btn.icon = icons[1]
-			CONTROLLER_POSITION.LEFT_BOTTOM:
-				if visible_state:
-					toggle_btn.icon = icons[3]
-				else:
-					toggle_btn.icon = icons[1]
-
-
-
-func set_positions() -> void:
-	if visible_state:
-		start_btn.disabled = false
-		copy_btn.disabled  = false
-		stop_btn.disabled  = false
+		session_status_label.text = str("[font_size=6]\n[center][font_size=11] Session status:\n[center][color=green]ON") if Log.session_status else str("[font_size=6]\n[center][font_size=12] Session status:\n[center][color=red]OFF") 
+		gologger_icon.mouse_filter = Control.MOUSE_FILTER_PASS 
 	else:
-		start_btn.disabled = true
-		copy_btn.disabled  = true
-		stop_btn.disabled  = true
+		config.load(PATH)
+		# update_timer.timeout.connect(_on_update_timer_timeout)
+		update_timer.start()
 
-	match current_position:
-		CONTROLLER_POSITION.CENTER_TOP:
-			main_hbox.move_child(gologger_icon, 0)
-			main_hbox.move_child(session_status_panel, 1)
-			main_hbox.move_child(btn_container, 2)
-			btn_container.move_child(stop_btn,  0)
-			btn_container.move_child(copy_btn,  1)
-			btn_container.move_child(start_btn, 2)
-			hidepos  = Vector2(779, -62)
-			showpos  = Vector2(779, 5) 
-			toggle_btn.icon = icons[2]
-			toggle_btn.size = Vector2(62, 32)
-			toggle_btn_pos = Vector2(150, 67) 
-		CONTROLLER_POSITION.RIGHT_TOP:
-			main_hbox.move_child(btn_container, 0)
-			main_hbox.move_child(session_status_panel, 1)
-			main_hbox.move_child(gologger_icon, 2)
-			btn_container.move_child(stop_btn,  0)
-			btn_container.move_child(copy_btn,  1)
-			btn_container.move_child(start_btn, 2)
-			hidepos  = Vector2(1920, 5)
-			showpos  = Vector2(1553, 5) 
-			toggle_btn.icon = icons[3]
-			toggle_btn.size = Vector2(32, 62)
-			toggle_btn_pos = Vector2(-37, 0) 
-		CONTROLLER_POSITION.RIGHT_CENTER:
-			main_hbox.move_child(btn_container, 0)
-			main_hbox.move_child(session_status_panel, 1)
-			main_hbox.move_child(gologger_icon, 2)
-			btn_container.move_child(stop_btn,  0)
-			btn_container.move_child(copy_btn,  1)
-			btn_container.move_child(start_btn, 2)
-			hidepos  = Vector2(1920, 509)
-			showpos  = Vector2(1553, 509) 
-			toggle_btn.icon = icons[3]
-			toggle_btn.size = Vector2(32, 62)
-			toggle_btn_pos = Vector2(-37, 0) 
-		CONTROLLER_POSITION.RIGHT_BOTTOM:
-			main_hbox.move_child(btn_container, 0)
-			main_hbox.move_child(session_status_panel, 1)
-			main_hbox.move_child(gologger_icon, 2)
-			btn_container.move_child(stop_btn,  0)
-			btn_container.move_child(copy_btn,  1)
-			btn_container.move_child(start_btn, 2)
-			hidepos  = Vector2(1920, 1013)
-			showpos  = Vector2(1553, 1013) 
-			toggle_btn.icon = icons[3]
-			toggle_btn.size = Vector2(32, 62)
-			toggle_btn_pos = Vector2(-37, 0) 
-		CONTROLLER_POSITION.CENTER_BOTTOM:
-			main_hbox.move_child(btn_container, 0)
-			main_hbox.move_child(session_status_panel, 1)
-			main_hbox.move_child(gologger_icon, 2)
-			btn_container.move_child(start_btn, 0)
-			btn_container.move_child(copy_btn,  1)
-			btn_container.move_child(stop_btn,  2)
-			hidepos  = Vector2(779, 1075)
-			showpos  = Vector2(779, 1013) 
-			toggle_btn.icon = icons[0]
-			toggle_btn.size = Vector2(62, 32)
-			toggle_btn_pos = Vector2(150, -37) 
-		CONTROLLER_POSITION.LEFT_BOTTOM:
-			main_hbox.move_child(gologger_icon, 0)
-			main_hbox.move_child(session_status_panel, 1)
-			main_hbox.move_child(btn_container, 2)
-			btn_container.move_child(start_btn, 0)
-			btn_container.move_child(copy_btn,  1)
-			btn_container.move_child(stop_btn,  2)
-			hidepos = Vector2(-362, 1013)
-			showpos  = Vector2(5, 1013) 
-			toggle_btn.icon = icons[1]
-			toggle_btn.size = Vector2(32, 62)
-			toggle_btn_pos = Vector2(367, 0) 
-		CONTROLLER_POSITION.LEFT_CENTER:
-			main_hbox.move_child(gologger_icon, 0)
-			main_hbox.move_child(session_status_panel, 1)
-			main_hbox.move_child(btn_container, 2)
-			btn_container.move_child(start_btn, 0)
-			btn_container.move_child(copy_btn,  1)
-			btn_container.move_child(stop_btn,  2)
-			hidepos  = Vector2(-362, 509)
-			showpos  = Vector2(5, 509) 
-			toggle_btn.icon = icons[1]
-			toggle_btn.size = Vector2(32, 62)
-			toggle_btn_pos = Vector2(367, 0) 
-		CONTROLLER_POSITION.LEFT_TOP:
-			main_hbox.move_child(gologger_icon, 0)
-			main_hbox.move_child(session_status_panel, 1)
-			main_hbox.move_child(btn_container, 2)
-			btn_container.move_child(start_btn, 0)
-			btn_container.move_child(copy_btn,  1)
-			btn_container.move_child(stop_btn,  2)
-			hidepos  = Vector2(-362, 5)
-			showpos	 = Vector2(5, 5) 
-			toggle_btn.icon = icons[1]
-			toggle_btn.size = Vector2(32, 62)
-			toggle_btn_pos = Vector2(367, 0) 
 
-	position = showpos if visible_state else hidepos
-	toggle_btn.position = toggle_btn_pos
+# func _on_update_timer_timeout() -> void:
+# 	config.load(PATH)
+# 	var val = config.get_value("settings", "controller_position")
+# 	if val != null: 
+# 		current_position = val
+# 		set_anchors_preset(val)
+# 		set_positions() 
 
-func toggle_controller() -> void:
-	visible_state = !visible_state
+ 
+
+
+func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		size = Vector2.ZERO
+
+
+func set_positions(pos : int) -> void:
+	current_position = config.get_value("settings", "controller_position")
+	set_anchors_preset(current_position)
+	# match current_position:
+	# 	0: set_anchors_preset(Control.LayoutPreset.PRESET_TOP_LEFT)
+	# 	1: set_anchors_preset(Control.LayoutPreset.PRESET_CENTER_LEFT)
+	# 	2: set_anchors_preset(Control.LayoutPreset.PRESET_BOTTOM_LEFT)
+	# 	3: set_anchors_preset(Control.LayoutPreset.PRESET_TOP_RIGHT)
+	# 	4: set_anchors_preset(Control.LayoutPreset.PRESET_CENTER_RIGHT)
+	# 	5: set_anchors_preset(Control.LayoutPreset.PRESET_BOTTOM_RIGHT)  
+
+	match pos:
+		0: # L-top
+			pivot_offset = Vector2.ZERO
+			gologger_icon.pivot_offset = Vector2.ZERO
+			session_status_panel.pivot_offset = Vector2.ZERO
+			start_btn.pivot_offset = Vector2.ZERO
+			copy_btn.pivot_offset = Vector2.ZERO
+			stop_btn.pivot_offset = Vector2.ZERO
+		1: # L-center
+			pivot_offset = Vector2(0, size.y / 2)
+			gologger_icon.pivot_offset = Vector2(0, gologger_icon.size.y / 2)
+			session_status_panel.pivot_offset = Vector2(0, session_status_panel.size.y / 2)
+			start_btn.pivot_offset = Vector2(0, start_btn.size.y / 2)
+			copy_btn.pivot_offset = Vector2(0, copy_btn.size.y / 2)
+			stop_btn.pivot_offset = Vector2(0, stop_btn.size.y / 2)
+		2: # L-bottom
+			pivot_offset = Vector2(0, size.y)
+			gologger_icon.pivot_offset = Vector2(0, gologger_icon.size.y)
+			session_status_panel.pivot_offset = Vector2(0, session_status_panel.size.y)
+			start_btn.pivot_offset = Vector2(0, start_btn.size.y)
+			copy_btn.pivot_offset = Vector2(0, copy_btn.size.y)
+			stop_btn.pivot_offset = Vector2(0, stop_btn.size.y)
+
+		3: # R-top
+			pivot_offset = Vector2(size.x, 0)
+			gologger_icon.pivot_offset = Vector2(gologger_icon.size.x, 0)
+			session_status_panel.pivot_offset = Vector2(session_status_panel.size.x, 0)
+			start_btn.pivot_offset = Vector2(start_btn.size.x, 0)
+			copy_btn.pivot_offset = Vector2(copy_btn.size.x, 0)
+			stop_btn.pivot_offset = Vector2(stop_btn.size.x, 0)
+
+		4: # R-center
+			pivot_offset = Vector2(size.x, size.y / 2)
+			gologger_icon.pivot_offset = Vector2(gologger_icon.size.x, gologger_icon.size.y / 2)
+			session_status_panel.pivot_offset = Vector2(session_status_panel.size.x, session_status_panel.size.y / 2)
+			start_btn.pivot_offset = Vector2(start_btn.size.x, start_btn.size.y / 2)
+			copy_btn.pivot_offset = Vector2(copy_btn.size.x, copy_btn.size.y / 2)
+			stop_btn.pivot_offset = Vector2(stop_btn.size.x, stop_btn.size.y / 2)
+
+		5: # R-bottom
+			pivot_offset = Vector2(size.x, size.y)
+			gologger_icon.pivot_offset = Vector2(gologger_icon.size.x, gologger_icon.size.y)
+			session_status_panel.pivot_offset = Vector2(session_status_panel.size.x, session_status_panel.size.y)
+			start_btn.pivot_offset = Vector2(start_btn.size.x, start_btn.size.y)
+			copy_btn.pivot_offset = Vector2(copy_btn.size.x, copy_btn.size.y)
+			stop_btn.pivot_offset = Vector2(stop_btn.size.x, stop_btn.size.y)
+	
+	gologger_icon.position = Vector2(5, 5) if current_position < 3 else Vector2(277, 5)
+	session_status_panel.position = gologger_icon.position
+	start_btn.position = gologger_icon.position
+	copy_btn.position = gologger_icon.position
+	stop_btn.position = gologger_icon.position
+	
+	gologger_icon.scale = Vector2(0.5, 0.5)
+	session_status_panel.scale = Vector2(0.5, 0.5)
+	start_btn.scale = Vector2(0.5, 0.5)
+	copy_btn.scale = Vector2(0.5, 0.5)
+	stop_btn.scale = Vector2(0.5, 0.5)
+	
+	gologger_icon.modulate = Color(1, 1, 1, 0.4) 
+	session_status_panel.visible = false
+	session_status_panel.modulate = Color.TRANSPARENT
+	start_btn.visible = false
+	start_btn.modulate = Color.TRANSPARENT
+	copy_btn.visible = false
+	copy_btn.modulate = Color.TRANSPARENT
+	stop_btn.visible = false
+	stop_btn.modulate = Color.TRANSPARENT
+
+
+
+
+
+func toggle_controller() -> void: 
+	
+
+	# pivot_offset.x = 0 if current_position < 2 else 326
+	var left_aligned : Array[Vector2] = [
+		Vector2(5,   5),     # Icon
+		Vector2(56,  5),     # Session Status
+		Vector2(124, 5),     # Start
+		Vector2(192, 5),     # Copy
+		Vector2(260, 5)]     # Stop
+
+	var right_aligned : Array[Vector2] =[
+		Vector2(277, 5),     # Icon
+		Vector2(209, 5),     # Session Status
+		Vector2(141, 5),     # Start
+		Vector2(73,  5),     # Copy
+		Vector2(5,   5)]     # Stop
+	var collapse_pos = Vector2(5, 5)
+
 	var tw = get_tree().create_tween()
 	tw.set_trans(Tween.TRANS_CUBIC)
 	tw.set_ease(Tween.EASE_IN_OUT)
-	tw.tween_property(self, "position", showpos if visible_state else hidepos, 0.08) 
-	match current_position:
-		CONTROLLER_POSITION.CENTER_TOP:
-			if visible_state:
-				toggle_btn.icon = icons[0]
-			else:
-				toggle_btn.icon = icons[2]
-		CONTROLLER_POSITION.RIGHT_TOP:
-			if visible_state:
-				toggle_btn.icon = icons[3]
-			else:
-				toggle_btn.icon = icons[1]
-		CONTROLLER_POSITION.RIGHT_CENTER:
-			if visible_state:
-				toggle_btn.icon = icons[3]
-			else:
-				toggle_btn.icon = icons[1]
-		CONTROLLER_POSITION.RIGHT_BOTTOM:
-			if visible_state:
-				toggle_btn.icon = icons[3]
-			else:
-				toggle_btn.icon = icons[1]
-		CONTROLLER_POSITION.CENTER_BOTTOM:
-			if visible_state:
-				toggle_btn.icon = icons[2]
-			else:
-				toggle_btn.icon = icons[0]
-		CONTROLLER_POSITION.LEFT_TOP:
-			if visible_state:
-				toggle_btn.icon = icons[3]
-			else:
-				toggle_btn.icon = icons[1]
-		CONTROLLER_POSITION.LEFT_CENTER:
-			if visible_state:
-				toggle_btn.icon = icons[3]
-			else:
-				toggle_btn.icon = icons[1]
-		CONTROLLER_POSITION.LEFT_BOTTOM:
-			if visible_state:
-				toggle_btn.icon = icons[3]
-			else:
-				toggle_btn.icon = icons[1]
+	tw.set_parallel(true)
+	printt(str("Controller_toggle(", visible_state, "):\n\tcurrent_position: ", current_position, ))
+	
+	if visible_state:
+		session_status_panel.visible = true
+		start_btn.visible = true
+		copy_btn.visible = true
+		stop_btn.visible = true
+		
+		# Scale
+		tw.tween_property(gologger_icon,        "scale", Vector2(1.0, 1.0),  0.05) 
+		tw.tween_property(session_status_panel, "scale", Vector2(1.0, 1.0),  0.05) 
+		tw.tween_property(start_btn,            "scale", Vector2(1.0, 1.0),  0.05) 
+		tw.tween_property(copy_btn,             "scale", Vector2(1.0, 1.0),  0.05) 
+		tw.tween_property(stop_btn,             "scale", Vector2(1.0, 1.0),  0.05) 
+		# tw.tween_property(self,                 "scale", Vector2(1, 1), 0.05)
+
+		# Position
+		tw.tween_property(session_status_panel, "position", left_aligned[1] if current_position < 3 else right_aligned[1], 0.05) 
+		tw.tween_property(start_btn,            "position", left_aligned[2] if current_position < 3 else right_aligned[2], 0.05)
+		tw.tween_property(copy_btn, 	        "position", left_aligned[3] if current_position < 3 else right_aligned[3], 0.05)
+		tw.tween_property(stop_btn,             "position", left_aligned[4] if current_position < 3 else right_aligned[4], 0.05)
+
+		# Modulate
+		tw.tween_property(session_status_panel, "modulate", Color.WHITE, 0.05)
+		tw.tween_property(start_btn,            "modulate", Color(0.553, 0.859, 0.337), 0.05)
+		tw.tween_property(copy_btn,             "modulate", Color(1, 0.871, 0.141)    , 0.05)
+		tw.tween_property(stop_btn,             "modulate", Color(1, 0.29, 0.29)      , 0.05)
+	else:
+		# Scale
+		tw.tween_property(gologger_icon,        "scale", Vector2(0.5, 0.5),  0.05) 
+		tw.tween_property(session_status_panel, "scale", Vector2(0.5, 0.5),  0.05) 
+		tw.tween_property(start_btn,            "scale", Vector2(0.5, 0.5),  0.05) 
+		tw.tween_property(copy_btn,             "scale", Vector2(0.5, 0.5),  0.05) 
+		tw.tween_property(stop_btn,             "scale", Vector2(0.5, 0.5),  0.05) 
+
+		# Position
+		tw.tween_property(session_status_panel, "position", left_aligned[0] if current_position < 3 else right_aligned[0], 0.05)
+		tw.tween_property(start_btn,            "position", left_aligned[0] if current_position < 3 else right_aligned[0], 0.05)
+		tw.tween_property(copy_btn,             "position", left_aligned[0] if current_position < 3 else right_aligned[0], 0.05)
+		tw.tween_property(stop_btn,             "position", left_aligned[0] if current_position < 3 else right_aligned[0], 0.05)
+		
+		# Modulate
+		tw.tween_property(session_status_panel, "modulate", Color.TRANSPARENT, 0.05)
+		tw.tween_property(start_btn,            "modulate", Color.TRANSPARENT, 0.05)
+		tw.tween_property(copy_btn,             "modulate", Color.TRANSPARENT, 0.05)
+		tw.tween_property(stop_btn,             "modulate", Color.TRANSPARENT, 0.05)
+	 	
+		session_status_panel.visible = false
+		start_btn.visible = false
+		copy_btn.visible = false
+		stop_btn.visible = false
+
+
+func _on_mouse_entered() -> void:
+	gologger_icon.modulate = Color(1, 1, 1, 1)
+
+func _on_mouse_exited() -> void:
+	gologger_icon.modulate = Color(1, 1, 1, 0.4)
 
 
 #region Signal listeners
 ## Called when [signal session_status_changed] is emitted from [Log].
 func _on_session_status_changed() -> void:
-	session_status_label.text = str("[font_size=6]\n[center][font_size=11] Session status:\n[center][color=green]ON") if Log.session_status else str("[font_size=6]\n[center][font_size=11] Session status:\n[center][color=red]OFF")
+	session_status_label.text = str("[font_size=6]\n[center][font_size=11] Session:\n[center][color=green]ON") if Log.session_status else str("[font_size=6]\n[center][font_size=11] Session:\n[center][color=red]OFF")
 
 
 func _on_visibility_toggle() -> void:
 	toggle_controller()
  
  
-func _on_button_up(button : Button) -> void:
-	print("bar")
+func _on_button_up(button : Button) -> void: 
 	match button:
+		gologger_icon:
+			visible_state = !visible_state
 		start_btn:
 			Log.start_session()
 		copy_btn:
 			Log.save_copy()
 		stop_btn:
-			Log.stop_session()  
-		toggle_btn: 
-			toggle_controller()
+			Log.stop_session()   
 #endregion
