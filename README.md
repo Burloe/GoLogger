@@ -9,15 +9,12 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
 ## **Contents**
 1. Installation and setup
 2. How to use GoLogger
-   * Example usage of the main functions
-   * Starting and Stopping Log Sessions
-   * Creating log entries and include data
-   * Accessing the .log files, the plugin settings and GoLoggerController
+   * Example usage of the main functions 
+   * Creating log entries with data
 4. Managing .log file size
    * Entry count limit
    * Sesssion timer
-   * File count limit
-5. Credit and Permission
+5. File count limit
 
 ## Installation and setup:
 ![Install Errors](https://github.com/user-attachments/assets/7edcdc5d-9d10-4e39-83fa-e31a9f2a49c3)<br>
@@ -32,52 +29,54 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
 ![enable_plugin](https://github.com/user-attachments/assets/6d201a57-638d-48a6-a9c0-fc8719beff37)
 
 
-You're all set! Next time you run your project, folders and .log files will be created. It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` in your exit game function. While not stopping a session before closing the game won’t break the plugin, it’s good practice. This can help differentiate between normal exits, crashes, or forced closures, depending on whether the log file ends with "Stopped session."<br><br>
+You're all set! Next time you run your project, folders and .log files will be created. It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` in your exit game function. While not stopping a session before closing the game won’t break the plugin, but it’s good practice. This can help differentiate between normal exits, crashes, or forced closures, depending on whether the log file ends with "Stopped session."<br><br>
 
 
 ## How to use GoLogger:<br>
-### **Example usage of the main functions:**<br>
+GoLogger uses 'sessions' to indicate when its logging or not. Each session creates a new log file with the date- and timestamp of when the session was started. There are three main ways to start and stop sessions. 
+* **Using the `autostart` setting** which starts a session when you run your project.
+* **Hotkeys** can perform the three main functions of the plugin(start, copy and stop)
+* **Calling the functions though code**. You can call the functions through code as well and since the script is an autoload. You can call them from any script.
 
-```GDScript
-var max_health = 100
-var current_health = 94
-var time_of_day = 16.30
+### **Example usage of the main functions:**<br>
+```gdscript
 
 # General use, simply starts the session. 
-Log.start_session![GoLogger_Icon_Title](https://github.com/user-attachments/assets/72726ea4-792d-454d-ad27-ef092057f7d1)
-()
+Log.start_session()
 # Starts session 1.2 seconds after the call.
-await Log.start_session(1.2) 
+await Log.start_session(1.2)
 
-# Not defining a category_index defaults to use category 0
+# No category_index defined > defaults to category 0.
 Log.entry(str("Current game time: ", time_of_day)) # Resulting entry : [2024-11-11 19:17:27] Current game time: 16.30
-# Logs into category 1
+# Logs into category 1.
 Log.entry(str("Player's current health: ", current_health, "(", max_health, ")"), 1) # Resulting entry: [2024-11-11 19:17:27] Player's current health: 94(100)
 
-# Initiates the "copy session" operation by showing the name prompt popup
+# Initiates the "copy session" operation by showing the name prompt popup.
 Log.save_copy()
 
-# Stops an active session
+# Stops an active session.
 Log.stop_session()
- ```
-
-### **Starting and stopping log sessions:**<br>
-GoLogger uses sessions to indicate when it’s actively logging or not, and each session creates a new .log file with the time- and datestamp of creation. The plugin has a .log file limit of 10 by default(can be changed) and once the limit has been hit, the file with the oldest timestamp is deleted. Starting and stopping sessions is as simple as calling `Log.start_session()` and `Log.stop_session()`. The parameter `start_delay` was implemented to add a 1-second delay before starting a new session. This was added to prevent .log files from being created with the same timestamp(if you accidentally add `start_sessions()` in multiple scripts) which can cause sorting issues when deleting the oldest log. Use only if this is affecting you!<br><br>
+```
+*`start_delay` delays the session start by the specifies time. This was added to prevent .log files from being created with the same timestamp which can cause sorting issues when deleting the oldest log.*
 
 
-### **Creating log entries and adding data:**<br>
-Simply installing GoLogger does not log any entries. You still need to define `Log.entry()` in your code, including a string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry. However, be mindful that converting to a string may not always format the data in a human-readable way.<br>
+### **Creating log entries with data:**<br>
+Simply installing GoLogger does not log any entries. You still need to define `Log.entry()` in your code, including a	ny string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry. However, be mindful that converting to a string may not always format the data in a human-readable way.<br>
 
 The `entry()` function has two parameters: `entry(log_entry : String, category_index : int)`
 Only the first parameter mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the formatting of your log entry to your liking.
 * `log_entry` - *Mandatory* - The string that makes up your log entry. Include any data that can be converted to a string can be logged.
-* `category_index` - *Optional* - This parameter determines the category/file the entry is logged into. For example, if you use the default "game" and "player" categories. the game category has the index 0 while player has 1. The category index can be found in the "Categories" tab of the dock at the top left of each category. Additionally, calling this function without defining an index will make it default to log into the category with index 0. <br><br>
+* `category_index` - *Optional* - This parameter specifies the category or file where the entry is logged. For example, with the default categories "game" and "player," the game category is index 0, and player is index 1. Each category’s index is shown in the "Categories" tab of the dock at the top left of each category.<br>
+
+*Calling this function without defining an index will make it default to log into the category with index 0.* <br><br>
 
 
 ## Managing .log file size:
 One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates(deletes the content) the file when used. Therefore, the plugin first stores the old entries with `FileAccess.READ` before truncating the file and adding them back before appending the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings/arrays may cause stuttering or general performance issues. This is especially a concern during long sessions or if multiple systems are logging to the same category. To mitigate this, GoLogger offers two methods for limiting logs files from getting too large:
+
 #### Entry Count Limit(recommended):
-Just as the name suggests. When we load the entries before the file is truncated. Each entry is stored into an array of which we can then check the number of entries. Objectively, this is the better method to this potential issue which is why it is recommended to use this regardless of whether you're experiencing issues or not.
+Just as the name suggests. The number of entries are counted and if they exceed the limit, you can either stop the session, stop and start a new session or you can remove the oldest entries to make space for the new ones. Objectively, this is the better method to this potential issue which is why it is recommended to use this regardless of whether you're experiencing issues or not.
+
 #### Session Timer:
 Whenever a session is started, a Timer is started using the `session_duration` setting as the wait time. This timer wil stop the active session upon timing out and a new session can be started aftewards. The downside of this method is that there's the potential of logging tons of entries within the session duration. However, that doesn't mean that this method doesn't have other uses. In case you want to stress test a particular system or simply log for a specific time. You have the signals `session_timer_started` and `session_timer_stopped` in order to sync up a system or feature with the logging session.
 ```GDScript
@@ -86,7 +85,7 @@ Log.session_timer_started.connect(_on_stress_test_start)
 Log.session_timer_stopped.connect(_on_stress_test_stopped)
 ```
 
-*In case you still experience stutters or slow-downs. You can try lowering the entry count limit and/or session duration. You can also try adding more categories to split up the amount of entries in any one file.*
+*You can also use both at the same time. However, you can't use the 'Remove old entries` action for entry count limit.*
 
 
 ## File count limit:
