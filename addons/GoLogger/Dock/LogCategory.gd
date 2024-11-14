@@ -14,15 +14,15 @@ signal name_warning(toggle_on : bool, type : int)
 @onready var del_btn 	: Button = 		%DeleteButton
 ## Apply [Button] node. Applied the submitted [LineEdit] text.
 @onready var apply_btn 	: Button = 		%ApplyButton
-##
+## File name label.
 @onready var filename_lbl : RichTextLabel = 	%FileNameLabel
-
+## Container that holds the file + entry count label.
 @onready var count_container : HBoxContainer = 	%CountContainer
-##
+## File count label.
 @onready var filecount_lbl : RichTextLabel = 	%FileCountLabel
-##
+## Entry count label.
 @onready var entrycount_lbl : RichTextLabel = 	%EntryCountLabel
-##
+## Updates category data upon [signal timeout].
 @onready var update_timer : Timer = 	%UpdateTimer
 var dock : TabContainer ## Dock root
 
@@ -41,8 +41,6 @@ var invalid_name : bool = false:
 				name_warning.emit(true, 1)
 		else:
 			name_warning.emit(false, 0)
-		
-
 
 ## The prefix name of this log. 
 @export var category_name : String = "":
@@ -58,13 +56,13 @@ var invalid_name : bool = false:
 		index = value
 		if ilbl != null:
 			ilbl.text = str(value)
-
+## File name of the .log file of the active session.
 @export var file_name : String = "null"
-
+## The filepath to the .log file of the active session.
 @export var file_path : String = "null"
-
+## The file count of the active session.
 @export var file_count : int = 0
-
+## The entry count of the active session.
 @export var entry_count : int = 0
 
 const PATH = "user://GoLogger/settings.ini"
@@ -81,8 +79,6 @@ var is_locked : bool = false:
 		if line_edit != null: 	line_edit.editable = !value
 		if del_btn != null: 	del_btn.disabled = value
 		if dock != null: 		dock.save_categories(true)
-
-
 
 
 func _ready() -> void:
@@ -104,8 +100,7 @@ func _ready() -> void:
 			invalid_name = true
 			apply_btn.disabled = true
 		else: 
-			invalid_name = false
-	
+			invalid_name = false	
 
 
 ## Updates the index label when deleting a category.
@@ -147,7 +142,6 @@ func _on_lock_btn_toggled(toggled : bool) -> void:
 	is_locked = toggled
 	
 	
-
 ## Queue free's this category element, save the new categories(deferred) 
 ## and then update the indicies.
 func _on_del_button_up() -> void:
@@ -157,31 +151,66 @@ func _on_del_button_up() -> void:
 		dock.update_indices(true) 
 
 
-
+## Updates the category data upon [signal timeout]. 
 func _on_update_timer_timeout() -> void:
-	config.load(PATH)
-	var _c = config.get_value("plugin", "categories") # var _c = config.get_value("plugin", "categories", [])
-	if _c != null and !_c.is_empty():
-		categories = _c 
-		
-		filename_lbl.visible = true
-		size = Vector2.ZERO
-		for i in range(categories.size()):
-			if categories[i][0] == category_name:
-				if categories[i][0] != "":
-					filename_lbl.text = str("[center]File name:[font_size=12][color=yellow]\n\t", categories[i][0])
-					count_container.visible = true
+	#?                         0               1           2               3                  4              5            6
+	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
+	if !Engine.is_editor_hint(): # during runtime
+		if Log.session_status:
+			config.load(PATH)
+			var _c = config.get_value("plugin", "categories")
+			if _c != null and !_c.is_empty():
+				categories = _c 
+				for i in range(categories.size()):
+					if categories[i][0] == category_name:
+						file_name = categories[i][2]
+						file_path = categories[i][3]
+						file_count = categories[i][4]
+						entry_count = categories[i][5]
 				
-				if categories[i][4] != 0:
-					filecount_lbl.text = str("[left][font_size=14][color=white]File Count:[font_size=12][color=orange]\n", categories[i][4])
-					filecount_lbl.visible = true
-				else: filecount_lbl.visible = false
+				# Show and apply info data to labels if they have a value 
+				filename_lbl.visible = true if file_name != "" else false
+				filename_lbl.text = file_name if file_name != "" else "N/A"
 				
-				if categories[i][5] != 0:
-					entrycount_lbl.text = str("[right][font_size=14][color=white]Entry Count:[font_size=12][color=skyblue]\n", categories[i][5])
-					filename_lbl.visible = true
-				else: filename_lbl.visible = false
-	else:
-		count_container.visible = false
-		filename_lbl.visible = false
-		size = Vector2.ZERO
+
+				var count_status : bool = file_count > 0 or entry_count > 0
+
+				# Eww... Don't look at this
+				# var count_status = true
+				# if file_count > 0:
+				# 	count_status = true
+				# if !count_status:
+				# 	if entry_count > 0:
+				# 		count_status = true
+				# Seriously, it's yuckie.
+				
+				count_container.visible = count_status 
+				
+				filecount_lbl.visible = true
+				filecount_lbl.text = str("[left][font_size=12][color=white]File Count[color=orange]\n", file_count)
+				entrycount_lbl.visible = true
+				entrycount_lbl.text = str("[right][font_size=12][color=white]Entry Count[color=skyblue]\n", entry_count)
+
+				size = Vector2.ZERO
+
+
+
+
+					# if categories[i][0] == category_name:
+					# 	if categories[i][0] != "":
+					# 		filename_lbl.text = str("[center]File name:[font_size=12][color=yellow]\n\t", categories[i][0])
+					# 		count_container.visible = true
+						
+					# 	if categories[i][4] != 0:
+					# 		filecount_lbl.text = str("[left][font_size=12][color=white]File Count[color=orange]\n", categories[i][4])
+					# 		filecount_lbl.visible = true
+					# 	else: filecount_lbl.visible = false
+						
+					# 	if categories[i][5] != 0:
+					# 		entrycount_lbl.text = str("[right][font_size=12][color=white]Entry Count[color=skyblue]\n", categories[i][5])
+					# 		filename_lbl.visible = true
+					# 	else: filename_lbl.visible = false
+			else:
+				count_container.visible = false
+				filename_lbl.visible = false
+				size = Vector2.ZERO

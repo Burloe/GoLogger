@@ -31,7 +31,7 @@ corner_radius_bottom_left = 8
 [node name="Panel" type="PanelContainer"]
 custom_minimum_size = Vector2(205, 0)
 offset_right = 225.0
-offset_bottom = 120.0
+offset_bottom = 210.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilabp")
 script = ExtResource("1_8da2w")
 
@@ -97,7 +97,6 @@ text = "Delete"
 
 [node name="FileNameLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxEmpty_ro8u2")
@@ -105,12 +104,11 @@ theme_override_styles/background = SubResource("StyleBoxEmpty_ro8u2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ro8u2")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ro8u2")
 bbcode_enabled = true
-text = "[center]File name:[font_size=12][color=yellow]
+text = "[center][font_size=12]File name:[color=yellow]
 	as"
 
 [node name="CountContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 alignment = 1
 
@@ -124,7 +122,7 @@ theme_override_styles/background = SubResource("StyleBoxEmpty_s8lq7")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_bh0gd")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_lxpmq")
 bbcode_enabled = true
-text = "[left][font_size=14][color=white]File Count:[font_size=12][color=orange]
+text = "[left][font_size=12][color=white]File Count[color=orange]
 10"
 
 [node name="EntryCountLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/CountContainer"]
@@ -137,5 +135,5 @@ theme_override_styles/background = SubResource("StyleBoxEmpty_7d3nf")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7d3nf")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_7d3nf")
 bbcode_enabled = true
-text = "[right][font_size=14][color=white]Entry Count:[font_size=12][color=skyblue]
+text = "[right][font_size=12][color=white]Entry Count[color=skyblue]
 0"

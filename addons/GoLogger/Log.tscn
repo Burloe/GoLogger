@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://dm7mwwoselesw"]
+[gd_scene load_steps=3 format=3 uid="uid://dm7mwwoselesw"]
 
 [ext_resource type="Script" path="res://addons/GoLogger/Log.gd" id="1_qpie0"]
-[ext_resource type="PackedScene" uid="uid://quridjl6aioe" path="res://addons/GoLogger/LogController/GoLoggerController.tscn" id="2_i3pa3"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="5_e13q5"]
 
 [node name="Log" type="Node"]
@@ -12,12 +11,6 @@ script = ExtResource("1_qpie0")
 [node name="GoLoggerElements" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
 layer = 50
-
-[node name="GoLoggerController" parent="GoLoggerElements" instance=ExtResource("2_i3pa3")]
-unique_name_in_owner = true
-grow_vertical = 1
-size_flags_horizontal = 0
-size_flags_vertical = 0
 
 [node name="Popup" type="CenterContainer" parent="GoLoggerElements"]
 unique_name_in_owner = true

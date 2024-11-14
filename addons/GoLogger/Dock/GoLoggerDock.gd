@@ -20,9 +20,7 @@ var config = ConfigFile.new()
 ## Path to settings.ini file. This path is a contant and doesn't change if you set your own [param base_directory]
 const PATH = "user://GoLogger/settings.ini"
 ## Emitted whenever an action that changes the display order is potentially made. Updates the index of all LogCategories.
-signal update_index
-## Emitted to the Controller script to update visual elements in the editor.
-signal update_controller(setting : String, value : Variant)
+signal update_index 
 #endregion
 
 
@@ -80,16 +78,11 @@ var session_duration_spinbox_line : LineEdit
 @onready var error_rep_container : HBoxContainer = %ErrorRepHBox
 
 @onready var session_print_btn : OptionButton = %SessionChangeOptButton
-@onready var session_print_container : HBoxContainer = %SessionDurationHBox
+@onready var session_print_container : HBoxContainer = %SessionChangeHBox
 
 
 @onready var disable_warn1_btn : CheckButton = %DisableWarn1CheckButton
 @onready var disable_warn2_btn : CheckButton = %DisableWarn2CheckButton 
-
-# Controller settings
-@onready var controller_pos_btn : OptionButton = %ControllerPosOptButton 
-@onready var controller_pos_container : HBoxContainer = %ControllerPosHBox
-@onready var show_controller_toggle_btn : CheckButton = %ShowControllerBtnCheckButton 
 
 var btn_array : Array[Control] = []
 var container_array : Array[Control] = []
@@ -97,8 +90,7 @@ var container_array : Array[Control] = []
 
 
 # Debug
-# func _physics_process(delta: float) -> void:
-# 	print(str("startpos update_tooltip() is connected = ", controller_xpos_spinbox.mouse_entered.is_connected(update_tooltip)))
+# func _physics_process(delta: float) -> void: 
 # 	$Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column/Label2.text = str("FileCount status: ", file_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted))
 # 	var _c = config.get_value("plugin", "categories") 
 # 	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current .ini setting(size = ", _c.size(), "):\n      ", _c, "\nCurrent GridContainer.get_children()[size = ",category_container.get_children().size(), "]:\n      ", category_container.get_children())
@@ -154,9 +146,7 @@ func _ready() -> void:
 			error_rep_btn,
 			session_print_btn,
 			disable_warn1_btn,
-			disable_warn2_btn,
-			controller_pos_btn,
-			show_controller_toggle_btn
+			disable_warn2_btn
 		]
 
 		# Check and disconnect any existing signal connections > Connect the signals
@@ -231,8 +221,7 @@ func _ready() -> void:
 			session_timer_action_container, 
 			file_count_container,
 			entry_count_container,
-			session_duration_container,
-			controller_pos_container,
+			session_duration_container, 
 			error_rep_container,
 			session_print_container
 		]
@@ -247,7 +236,6 @@ func _ready() -> void:
 			file_count_spinbox,
 			entry_count_spinbox,
 			session_duration_spinbox,
-			controller_pos_btn, 
 			error_rep_btn,
 			session_print_btn
 		]
@@ -282,8 +270,6 @@ func create_settings_file() -> void:
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_cap", 300)
 	config.set_value("settings", "session_duration", 300.0)
-	config.set_value("settings", "controller_position", 0)
-	config.set_value("settings", "show_controller_toggle", false)
 	config.set_value("settings", "error_reporting", 0)
 	config.set_value("settings", "session_print", 0)
 	config.set_value("settings", "disable_warn1", false)
@@ -310,8 +296,6 @@ func load_settings_state() -> void:
 	file_count_spinbox.value = 						config.get_value("settings", "file_cap")
 	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap")
 	session_duration_spinbox.value = 				config.get_value("settings", "session_duration")
-	controller_pos_btn.selected = 					config.get_value("settings", "controller_position")
-	show_controller_toggle_btn.button_pressed =		config.get_value("settings", "show_controller_toggle")
 	error_rep_btn.selected = 						config.get_value("settings", "error_reporting")
 	session_print_btn.selected =					config.get_value("settings", "session_print")
 	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1")
@@ -336,9 +320,7 @@ func validate_settings() -> bool:
 		"settings/session_timer_action": TYPE_INT,
 		"settings/file_cap": TYPE_INT,
 		"settings/entry_cap": TYPE_INT,
-		"settings/session_duration": TYPE_FLOAT,
-		"settings/controller_position": TYPE_INT,
-		"settings/show_controller_toggle": TYPE_BOOL, 
+		"settings/session_duration": TYPE_FLOAT, 
 		"settings/error_reporting": TYPE_INT,
 		"settings/session_print": TYPE_INT,
 		"settings/disable_warn1": TYPE_BOOL,
@@ -399,7 +381,7 @@ func reset_to_default(tab : int) -> void:
 func update_tooltip(node : Control) -> void:
 	match node:
 		reset_settings_btn:
-			tooltip_lbl.text = "[font_size=14][color=red]Reset Settings to Default:[color=white][font_size=11]\nReset all settings to their default values."
+			tooltip_lbl.text = "[font_size=14][color=red]Reset Settings to Default:[color=white][font_size=11]\nReset all settings to their default values. This generates a new 'settings.ini' file with default values."
 
 		# String settings [LineEdits]
 		base_dir_line:
@@ -417,12 +399,10 @@ func update_tooltip(node : Control) -> void:
 		timestamp_entries_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nWhen enabled, entries are timestamped inside the log files with:\n\t[color=orange][08:13:47][color=white] Entry string."
 		utc_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Use UTC:[color=white][font_size=11] Uses UTC time for date/timestamps as opposed to the local system time."
+			tooltip_lbl.text = "[font_size=14][color=green]Use UTC:[color=white][font_size=11]\nUses UTC time for date/timestamps as opposed to the local system time."
 		dash_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Use '-' Separator:[color=white][font_size=11]\nUses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
-		
-		show_controller_toggle_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Show the Controller toggle button:[color=white][font_size=11]\nDisplays a button at the controller location which is used to show/hide the controller. The hotkey can toggle the controller regardless of this setting"
+
 		disable_warn1_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Disable Warning:[color=white][font_size=11]\nEnable/disable the warning 'Failed to start session without stopping the previous'."
 		disable_warn2_btn:
@@ -432,13 +412,11 @@ func update_tooltip(node : Control) -> void:
 		log_header_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Log Header:[color=white][font_size=11]\nUsed to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Limit Method:[color=white][font_size=11]\nMethod used to limit log file length/size.\n[color=ff669e]Using both methods, you can only choose between using 'stop & start session' and 'stop_session' actions which you set using the 'Session Timer Action' setting."
+			tooltip_lbl.text = "[font_size=14][color=green]Limit Method:[color=white][font_size=11]\nMethod used to limit log file length/size.\n[color=ff669e]Using [b]both[/b], only [b]Stop & start[/b] and [b]stop session[/b] actions are available.\n[color=ff5757][b]None[/b] option is NOT recommended."
 		entry_count_action_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Action:[color=white][font_size=11]\nAction taken when the entry count exceeds the limit. Using 'Remove old entries', the oldest entries are removed to make space for the new entries."
 		session_timer_action_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Session Timer Action:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]When Limit Method is set to 'Both'. This setting is used to determine the action taken when either method's condition is met."
-		controller_pos_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Determines the controller position.[color=white][font_size=11]\nThe controller is hidden at start but can be toggled with the hotkey or the toggle button(if enabled)."
 		error_rep_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nAllows you to disable non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' turns all warnings and non-critical errors off."
 		session_print_btn:
@@ -446,9 +424,9 @@ func update_tooltip(node : Control) -> void:
 		
 		# Int settings [SpinBoxes]
 		entry_count_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit of any log. Used when 'Limit Method' is set to use Entry Count.[color=yellow]\nRecommended value 300-500.[color=red] Lower the limit if you're getting stutterings."
+			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit used in conjunction with the Limit Method. Recommended value 200.\n[color=ff5757]Consider lowering this limit if you're getting stutterings."
 		session_duration_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Session Duration:[color=white][font_size=11]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer.[color=yellow]\nDepending on the frequency of entries, you should lower the duration."
+			tooltip_lbl.text = "[font_size=14][color=green]Session Duration:[color=white][font_size=11]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer.\n[color=ff5757]Consider lowering this limit if you're getting stutterings."
 		file_count_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]File Count Limit:[color=white][font_size=11]\nLimits the number of files in any log category folder. [color=red][b]NOT RECOMMENDED:[/b] [color=ff4040]Set to 0 if you want to disable this feature."
 		canvas_layer_spinbox:
@@ -539,10 +517,7 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 		error_rep_btn:
 			config.set_value("settings", "error_reporting", index)
 		session_print_btn:
-			config.set_value("settings", "print_session_changes", index)
-		controller_pos_btn:
-			config.set_value("settings", "controller_position", index)	
-			update_controller.emit("controller_position", index)
+			config.set_value("settings", "print_session_changes", index) 
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
@@ -562,9 +537,7 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 		utc_btn:
 			config.set_value("settings", "use_utc", toggled_on)
 		dash_btn:
-			config.set_value("settings", "dash_separator", toggled_on)
-		show_controller_toggle_btn:
-			config.set_value("settings", "show_controller_toggle", toggled_on)
+			config.set_value("settings", "dash_separator", toggled_on) 
 		disable_warn1_btn:
 			config.set_value("settings", "disable_warn1", toggled_on)
 		disable_warn2_btn:
@@ -580,15 +553,11 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 
 #region Spinboxes
 func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
-	var u_line = node.get_line_edit()
-	# printerr(str("textsubmit connx status = ", u_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted)))
-	# u_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(u_line))
-	# printerr(str("textsubmit connx status = ", u_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted)))
+	var u_line = node.get_line_edit() 
 	u_line.set_caret_column(u_line.text.length())
 	if u_line.get_caret_column() == u_line.text.length() - 1:
 		u_line.set_caret_column(u_line.text.length())
-	else: u_line.set_caret_column(u_line.get_caret_column() + 1)
-	# print(str("Line Edit value_changed: ", node.get_name, " - ", value, ". ", u_line.get_name()))
+	else: u_line.set_caret_column(u_line.get_caret_column() + 1) 
 	match node:
 		entry_count_spinbox:
 			config.set_value("settings", "entry_cap", int(value))
@@ -606,8 +575,7 @@ func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 
 
 
-func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
-	print(str("Line Edit text_submitted: ", node.get_name, " - ", new_text, "."))
+func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void: 
 	match node:
 		canvas_spinbox_line:
 			var value = int(new_text)

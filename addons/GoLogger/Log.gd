@@ -59,8 +59,6 @@ var header_string : String
 
 @onready var elements_canvaslayer : CanvasLayer = %GoLoggerElements
 
-@onready var controller : Control = %GoLoggerController
-
 ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
 @onready var session_timer : Timer = $SessionTimer
 
@@ -80,15 +78,10 @@ var session_status : bool = false:
 
 ## Hotkey used to start session manually. Default hotkey: [kbd]Ctrl + Shift + O[/kbd]
 var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
-
 ## Hotkey used to stop session manually. Default hotkey: [kbd]Ctrl + Shift + P[/kbd]
 var hotkey_stop_session	: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")			
-
 ## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
-var hotkey_copy_session : InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres")		
-
-## Shortcut binding used to toggle the controller's visibility(supports joypad bindings).
-var hotkey_controller_toggle: InputEventShortcut = preload("res://addons/GoLogger/ToggleControllerShortcut.tres") 	
+var hotkey_copy_session : InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres") 
 
 
 
@@ -146,8 +139,7 @@ func _ready() -> void:
 	base_directory = config.get_value("plugin", "base_directory")
 	header_string = get_header()
 	elements_canvaslayer.layer = get_value("canvaslayer_layer")
-	session_timer.autostart = get_value("autostart_session") 
-	update_controller_position()
+	session_timer.autostart = get_value("autostart_session")
 
 
 	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
@@ -182,16 +174,14 @@ func create_settings_file() -> void:
 	config.set_value("settings", "error_reporting", 0)
 	config.set_value("settings", "session_print", 0)
 	config.set_value("settings", "disable_warn1", false)
-	config.set_value("settings", "disable_warn2", false)
-	config.set_value("settings", "controller_position", 0)
-	config.set_value("settings", "show_controller_toggle", false)
+	config.set_value("settings", "disable_warn2", false) 
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
-## Validates settings by ensuring their type are correct when loading them.
+##DEPRECATED Validates settings by ensuring their type are correct when loading them.
 func validate_settings() -> bool:
 	var faults : int = 0
 	var expected_types = {
@@ -209,12 +199,6 @@ func validate_settings() -> bool:
 		"settings/file_cap": TYPE_INT,
 		"settings/entry_cap": TYPE_INT,
 		"settings/session_duration": TYPE_FLOAT,
-		"settings/controller_xpos": TYPE_FLOAT,
-		"settings/controller_ypos": TYPE_FLOAT,
-		"settings/drag_offset_x": TYPE_FLOAT,
-		"settings/drag_offset_y": TYPE_FLOAT,
-		"settings/show_controller": TYPE_BOOL,
-		"settings/controller_monitor_side": TYPE_BOOL,
 		"settings/error_reporting": TYPE_INT,
 		"settings/session_print": TYPE_INT,
 		"settings/disable_warn1": TYPE_BOOL,
@@ -275,8 +259,7 @@ func validate_settings() -> bool:
 func get_value(value : String) -> Variant:
 	var _config = ConfigFile.new()
 	var _result = _config.load(PATH)
-	var section : String = "settings"
-	# validate_settings() 
+	var section : String = "settings" 
 	
 	if !FileAccess.file_exists(PATH):
 		push_warning(str("GoLogger Warning: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
@@ -304,14 +287,8 @@ func get_value(value : String) -> Variant:
 ##	Log.start_session()                       # Normal call
 ##	await Log.start session(1.2)              # Calling with a start delay[/codeblock]
 func start_session(start_delay : float = 0.0) -> void:
-	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
-	# 0 = category name
-	# 1 = category index
-	# 2 = current file name(with timestamp)
-	# 3 = current file path
-	# 4 = file count
-	# 5 = entry count 
-	# 6 = is locked
+	#?                         0               1           2               3                  4              5            6
+	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
 	categories = config.get_value("plugin", "categories")
 	if categories.is_empty(): 
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
@@ -367,6 +344,7 @@ func start_session(start_delay : float = 0.0) -> void:
 				categories[i][4] = _files.size()
 
 				#! Added this feature to disable file count by setting value to 0. Need to test if this actually works.
+				#TODO Check that setting file cap to 0 works 
 				if get_value("file_cap") > 0:
 					while _files.size() > get_value("file_cap") -1:
 						_files.sort()
@@ -398,8 +376,8 @@ func start_session(start_delay : float = 0.0) -> void:
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
 ## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
-	#?                         0               1           2               3                  4              5
-	#? Category array = [category name, category index, is locked, current file name, current filepath, entry count]
+	#?                         0               1           2               3                  4              5            6
+	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
 	categories = config.get_value("plugin", "categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ")
 	
@@ -443,7 +421,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 		while lines.size() >= (get_value("entry_cap") - 1):
 			lines.remove_at(1)# Keep header line at 0
 	
-	categories[category_index][4] = lines.size() 
+	categories[category_index][5] = lines.size() 
 	
 
 	#? Open file with write and store the new entry
@@ -476,8 +454,8 @@ func save_copy() -> void:
 ##     Log.popup_state = !Log.popup_state
 ## [/codeblock]
 func complete_copy() -> void: 
-	#?                         0               1           2               3                  4              5
-	#? Category array = [category name, category index, is locked, current file name, current filepath, entry count]
+	#?                         0               1           2               3                  4              5            6
+	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
 	popup_state = false
 	categories = config.get_value("plugin", "categories")
 	# If user entered a name with .log, trim it
@@ -728,34 +706,9 @@ func add_hotkeys() -> void:
 		InputMap.add_action("GoLogger_stop_session")
 	
 	if InputMap.action_get_events("GoLogger_stop_session").is_empty():
-		InputMap.action_add_event("GoLogger_stop_session", hotkey_stop_session)
-	
-	# Controller toggle
-	if !InputMap.has_action("GoLogger_controller_toggle"):
-		InputMap.add_action("GoLogger_controller_toggle")
-	
-	if InputMap.action_get_events("GoLogger_controller_toggle").is_empty():
-		InputMap.action_add_event("GoLogger_controller_toggle", hotkey_controller_toggle)
+		InputMap.action_add_event("GoLogger_stop_session", hotkey_stop_session) 
 #endregion
 
-
-## Updates Controller anchor position
-func update_controller_position() -> void:
-	var _s = config.get_value("settings", "controller_position")
-	match _s:
-		0:
-			controller.set_anchors_preset(Control.LayoutPreset.PRESET_TOP_LEFT)
-		1:
-			controller.set_anchors_preset(Control.LayoutPreset.PRESET_CENTER_LEFT)
-		2:
-			controller.set_anchors_preset(Control.LayoutPreset.PRESET_BOTTOM_LEFT)
-		3:
-			controller.set_anchors_preset(Control.LayoutPreset.PRESET_TOP_RIGHT)
-		4:
-			controller.set_anchors_preset(Control.LayoutPreset.PRESET_CENTER_RIGHT)
-		5:
-			controller.set_anchors_preset(Control.LayoutPreset.PRESET_BOTTOM_RIGHT)
-	controller.set_positions(_s)
 
 
 #region Signal listeners
