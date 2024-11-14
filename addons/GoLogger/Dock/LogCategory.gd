@@ -103,6 +103,7 @@ func _ready() -> void:
 			invalid_name = false	
 
 
+
 ## Updates the index label when deleting a category.
 func refresh_index_label(idx : int) -> void:
 	ilbl.text = str(idx)
@@ -155,62 +156,37 @@ func _on_del_button_up() -> void:
 func _on_update_timer_timeout() -> void:
 	#?                         0               1           2               3                  4              5            6
 	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
-	if !Engine.is_editor_hint(): # during runtime
-		if Log.session_status:
-			config.load(PATH)
-			var _c = config.get_value("plugin", "categories")
-			if _c != null and !_c.is_empty():
-				categories = _c 
-				for i in range(categories.size()):
-					if categories[i][0] == category_name:
-						file_name = categories[i][2]
-						file_path = categories[i][3]
-						file_count = categories[i][4]
-						entry_count = categories[i][5]
-				
-				# Show and apply info data to labels if they have a value 
-				filename_lbl.visible = true if file_name != "" else false
-				filename_lbl.text = file_name if file_name != "" else "N/A"
-				
+	if Engine.is_editor_hint(): # during runtime
+		print("11111")
+		config.load(PATH)
+		var _c = config.get_value("plugin", "categories")
+		if _c != null and !_c.is_empty():
+			print("22222")
+			categories = _c 
+			for i in range(categories.size()):
+				if categories[i][0] == category_name:
+					file_name =   categories[i][2]
+					file_path =   categories[i][3]
+					file_count =  categories[i][4]
+					entry_count = categories[i][5]
+			
+			# Show and apply info data to labels if they have a value 
+			filename_lbl.visible = true if file_name != "null" else false
+			filename_lbl.text = file_name
 
-				var count_status : bool = file_count > 0 or entry_count > 0
+			var count_status : bool = file_count > 0 or entry_count > 0 
+			
+			count_container.visible = count_status 
+			
+			filecount_lbl.visible = true
+			filecount_lbl.text = str("[left][font_size=12][color=white]File Count[color=orange]\n", file_count)
+			entrycount_lbl.visible = true
+			entrycount_lbl.text = str("[right][font_size=12][color=white]Entry Count[color=skyblue]\n", entry_count)
 
-				# Eww... Don't look at this
-				# var count_status = true
-				# if file_count > 0:
-				# 	count_status = true
-				# if !count_status:
-				# 	if entry_count > 0:
-				# 		count_status = true
-				# Seriously, it's yuckie.
-				
-				count_container.visible = count_status 
-				
-				filecount_lbl.visible = true
-				filecount_lbl.text = str("[left][font_size=12][color=white]File Count[color=orange]\n", file_count)
-				entrycount_lbl.visible = true
-				entrycount_lbl.text = str("[right][font_size=12][color=white]Entry Count[color=skyblue]\n", entry_count)
+			printerr(str("name: ", file_name, "\tfile count: ", file_count, "\tentry_count: ", entry_count))
 
-				size = Vector2.ZERO
-
-
-
-
-					# if categories[i][0] == category_name:
-					# 	if categories[i][0] != "":
-					# 		filename_lbl.text = str("[center]File name:[font_size=12][color=yellow]\n\t", categories[i][0])
-					# 		count_container.visible = true
-						
-					# 	if categories[i][4] != 0:
-					# 		filecount_lbl.text = str("[left][font_size=12][color=white]File Count[color=orange]\n", categories[i][4])
-					# 		filecount_lbl.visible = true
-					# 	else: filecount_lbl.visible = false
-						
-					# 	if categories[i][5] != 0:
-					# 		entrycount_lbl.text = str("[right][font_size=12][color=white]Entry Count[color=skyblue]\n", categories[i][5])
-					# 		filename_lbl.visible = true
-					# 	else: filename_lbl.visible = false
-			else:
-				count_container.visible = false
-				filename_lbl.visible = false
-				size = Vector2.ZERO
+			size = Vector2.ZERO 
+		else:
+			count_container.visible = false
+			filename_lbl.visible = false
+			size = Vector2.ZERO
