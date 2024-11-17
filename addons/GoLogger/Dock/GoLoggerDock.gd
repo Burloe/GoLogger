@@ -429,27 +429,27 @@ func reset_to_default(tab : int) -> void:
 func update_tooltip(node : Control) -> void:
 	match node:
 		reset_settings_btn:
-			tooltip_lbl.text = "[font_size=14][color=red]Reset Settings to Default:[color=white][font_size=11]\nReset all settings to their default values. This generates a new 'settings.ini' file with default values."
+			tooltip_lbl.text = "[font_size=14][color=red]Reset Settings to Default:[color=white][font_size=11]\nReset all settings to their default values. This can be used to generate a settings.ini file is yours has been delete or somehow corrupted."
 
 		# String settings [LineEdits]
 		base_dir_line:
-			tooltip_lbl.text = "[font_size=14][color=green]Base Directory:[color=white][font_size=11]\nThe base directory used to create and store log files within."
+			tooltip_lbl.text = "[font_size=14][color=green]Base Directory where category folders are created:[color=white][font_size=11]\nSupports absolute paths(not only 'res://' or 'user://')Remember to use the apply button or press enter to apply your custom directory."
 		base_dir_reset_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Base Directory:[color=white][font_size=11]\nThe base directory used to create and store log files within.\n[color=orange]Resets the base directory to the default:\n[center]user://GoLogger/"
+			tooltip_lbl.text = "[font_size=14][color=green]Base Directory where category folders are created:[color=white][font_size=11]\nThe base directory used to create and store log files within.\n[color=orange]Resets the base directory to the default:\n[color=yellow]user://GoLogger/"
 		base_dir_opendir_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Base Directory:[color=white][font_size=11]\nThe base directory used to create and store log files within.\n[color=orange]Opens the currently applied base directory folder."
+			tooltip_lbl.text = "[font_size=14][color=green]Base Directory where category folders are created:[color=white][font_size=11]\n[color=orange]Opens the currently applied base directory folder using the file explorer of your OS."
 		base_dir_apply_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Base Directory:[color=white][font_size=11]\nThe base directory used to create and store log files within.\n[color=orange]Reverts back if directory creation/access failed."
+			tooltip_lbl.text = "[font_size=14][color=green]Base Directory where category folders are created:[color=white][font_size=11]\nThe apply button will create the base directory. If the path is invalid or fails to create a directory, the path reverts back to the previous."
 
 		# Bool settings [CheckButtons]
 		autostart_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Autostart Session:[color=white][font_size=11]\nAutostarts a session when running your project."
+			tooltip_lbl.text = "[font_size=14][color=green]Autostarts a session:[color=white][font_size=11]\nAutostarts a session in Log.gd's _ready(). Note that if you have other autoloads that are loaded before Log.tscn that attempts to log entries will fail. Move Log.tscn higher in the autoload list to load it before."
 		timestamp_entries_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nWhen enabled, entries are timestamped inside the log files with:\n\t[color=orange][08:13:47][color=white] Entry string."
+			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nWhen enabled, entries are timestamped inside the log files with:\n[color=orange][08:13:47][color=white] Entry string."
 		utc_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Use UTC:[color=white][font_size=11]\nUses UTC time for date/timestamps as opposed to the local system time."
+			tooltip_lbl.text = "[font_size=14][color=green]Timestamp files & entries with UTC Time:[color=white][font_size=11]\nUses UTC time for date/timestamps as opposed to the local system time."
 		dash_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Use '-' Separator:[color=white][font_size=11]\nUses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
+			tooltip_lbl.text = "[font_size=14][color=green]Use - to separate timestamps:[color=white][font_size=11]\nUses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
 
 		disable_warn1_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Disable Warning:[color=white][font_size=11]\nEnable/disable the warning 'Failed to start session without stopping the previous'."
@@ -462,7 +462,7 @@ func update_tooltip(node : Control) -> void:
 		limit_method_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Method used to limit log file length/size:[color=white][font_size=11]\n[color=white]When using [b]'both'[/b], you still determine the action taken by both method independently with the corresponding action settings.\n[color=ff5757][b]Using 'None' is not recommended, use at your own risk![/b]"
 		entry_count_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Action taken when count exceeds limit:[color=white][font_size=11]\n[b]'Remove old entries'[/b]: Oldest entries are removed to make space for the new entries.\n[b]Stop/start:[/b] Stops and starts a new session.\n[b]Stop:[/b] Stops session only." 
+			tooltip_lbl.text = "[font_size=14][color=green]Action taken when count exceeds limit:[color=white][font_size=11]\n[b]'Remove old entries'[/b]: Oldest entries are removed to make space for the new entries.\n[b]Stop/start[/b]: Stops and starts a new session.\n[b]Stop[/b]: Stops session only." 
 		session_timer_action_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Action taken upon Session Timer timeout:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]GoLogger features [color=39d7e6]'session_timer_started'[color=ff669e] and [color=39d7e6]'session_timer_ended'[color=ff669e] to sync any systems or tests to the sessions."
 		error_rep_btn:
@@ -472,13 +472,13 @@ func update_tooltip(node : Control) -> void:
 		
 		# Int settings [SpinBoxes]
 		entry_count_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit used in conjunction with the Limit Method. Recommended value 200.\n[color=ff5757]Consider lowering this limit if you're getting stutterings."
+			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit used in conjunction with the Limit Method. Recommended value 300.\n[color=ff5757]Consider lowering this limit if you're getting stutterings."
 		session_duration_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]Session Duration:[color=white][font_size=11]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer.\n[color=ff5757]Consider lowering this limit if you're getting stutterings."
 		file_count_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]File Count Limit:[color=white][font_size=11]\nLimits the number of files in any log category folder. [color=red][b]NOT RECOMMENDED:[/b] [color=ff4040]Set to 0 if you want to disable this feature."
 		canvas_layer_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]CanvasLayer Layer:[color=white][font_size=11]\nSets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
+			tooltip_lbl.text = "[font_size=14][color=green]CanvasLayer Layer:[color=white][font_size=11]\nSets the layer of the CanvasLayer node that contains the 'Save copy' popup and any future in-game visual elements that might be added. Use this if the elements are obscured by your UI or vice versa."
 
 func _on_dock_mouse_entered(node : Label) -> void:
 	node.add_theme_color_override("font_color", c_font_hover)
@@ -566,7 +566,7 @@ func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 			var _e = DirAccess.get_open_error()
 			# Create directory was successful > Allow/set as new directory
 			if _e == OK:
-				save_setting("plugin", "base_directory", new_text)
+				config.set_value("plugin", "base_directory", new_text)
 			else:
 				base_dir_line.text = old_dir
 			base_dir_line.release_focus()
@@ -749,17 +749,7 @@ func save_categories(deferred : bool = false) -> void:
 
 
 
-
-func save_setting(value, key : String, section : String = "settings") -> void:
-	config.set_value(section, key, value)
-	var _s = config.save(PATH)
-	if _s != OK:
-		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
-
-
-
-
+## Opens the [param base_directory] path with the OS file explorer. 
 func open_directory() -> void:
 	var abs_path = ProjectSettings.globalize_path(config.get_value("plugin", "base_directory"))
 	print(abs_path)

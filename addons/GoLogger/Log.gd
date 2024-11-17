@@ -318,7 +318,7 @@ func start_session(start_delay : float = 0.0) -> void:
 		else:
 			_path = str(base_directory, categories[i][0], "_Gologs\\")
 
-		if _path == "": # Error check
+		if _path == "": # ERROR CHECK
 			if get_value("error_reporting") == 0: 
 				push_error(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
 			if get_value("error_reporting") == 1:
@@ -339,9 +339,8 @@ func start_session(start_delay : float = 0.0) -> void:
 				return
 			else:
 				 
-				# Assign file name
-				categories[i][2] = get_file_name(categories[i][0]) 
-				# Assign file path
+				# Assign file name and path
+				categories[i][2] = get_file_name(categories[i][0])
 				categories[i][3] = str(_path, categories[i][2]) 
 				
 				var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
@@ -516,16 +515,19 @@ func complete_copy() -> void:
 				await get_tree().create_timer(4.0).timeout
 				return
 			
-			# Open file successful, get file contents create a new file and
+			# Open file successful > get file contents and create a new file
 			var _c = _fr.get_as_text()
 			var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
 			var _fw = FileAccess.open(_path, FileAccess.WRITE)
-			if !_fw:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", _path,"].")
+			
+			if !_fw: # ERROR CHECK
+				var _e = FileAccess.get_open_error()
+				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", _path,"] - ", get_error(_e), ".")
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
 			
+			# Store contents + cleanup
 			_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
 			_fw.close()
 		copy_name = ""
@@ -545,15 +547,15 @@ func stop_session() -> void:
 	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
 	if !session_status:
 		return
-	categories = config.get_value("plugin", "categories")
-	if get_value("session_print") == 0 or get_value("session_print") == 3:
-		print("GoLogger: Session stopped!")
-	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] Stopped log session.")
-
-	if session_status:
+	
+	else:
+		categories = config.get_value("plugin", "categories")
+		var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] Stopped log session.")
+		
 		for i in range(categories.size()):
+
+			# Open file
 			var _f = FileAccess.open(categories[i][3], FileAccess.READ)
-			
 			if !_f:
 				var _err = FileAccess.get_open_error()
 				if get_value("error_reporting") != 2:
@@ -563,6 +565,7 @@ func stop_session() -> void:
 				session_status_changed.emit()
 				return
 			
+			# Open file successfull > store old contents + "stopped session" entry and cleanup
 			var _content := _f.get_as_text()
 			_f.close()
 			var _fw = FileAccess.open(categories[i][3], FileAccess.WRITE)
@@ -577,6 +580,8 @@ func stop_session() -> void:
 			categories[i][2] = ""
 			categories[i][3] = ""
 			categories[i][5] = 0
+
+		
 		if get_value("session_print") == 1 or get_value("session_print") == 4: print("GoLogger: Stopped log session.")
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
