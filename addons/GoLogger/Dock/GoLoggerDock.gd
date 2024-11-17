@@ -512,7 +512,7 @@ func _on_button_button_up(node : Button) -> void:
 				# Check if new_dir is valid
 				if _res != OK:
 					if config.get_value("settings", "error_reporting") != 2:
-						push_warning("GoLogger Warning: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+						push_warning("GoLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
 					base_dir_line.text = old_dir
 					return
 				
@@ -521,7 +521,7 @@ func _on_button_button_up(node : Button) -> void:
 			# Check if new dir is accessible
 			if _d == null or DirAccess.get_open_error() != OK:
 				if config.get_value("settings", "error_reporting") != 2:
-					push_warning("GoLogger Warning: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+					push_warning("GoLogger: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
 				base_dir_line.text = old_dir
 				return
 			print(new_dir)
@@ -596,19 +596,6 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 			config.set_value("settings", "log_header", index)
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
-			# Set to "Both" > Enable additional options
-			# if index == 2:
-			# 	entry_count_action_btn.set_item_disabled(0, false)
-			# 	entry_count_action_btn.set_item_disabled(3, false)
-			# 	entry_count_action_btn.set_item_disabled(4, false)
-			# 	session_timer_action_btn.disabled = true
-			# 	session_timer_action_btn.focus_mode = Control.FOCUS_NONE
-			# else:
-			# 	entry_count_action_btn.set_item_disabled(0, true)
-			# 	entry_count_action_btn.set_item_disabled(3, true)
-			# 	entry_count_action_btn.set_item_disabled(4, true)
-			# 	session_timer_action_btn.disabled = false
-			# 	session_timer_action_btn.focus_mode = Control.FOCUS_ALL
 		entry_count_action_btn:
 			config.set_value("settings", "entry_count_action", index)
 		session_timer_action_btn:

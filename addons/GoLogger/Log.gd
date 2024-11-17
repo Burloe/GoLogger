@@ -146,7 +146,7 @@ func _ready() -> void:
 	popup.visible = popup_state
 	popup_errorlbl.visible = false
 	
-	assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
+	assert(check_filename_conflicts() == "", str("GoLogger: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
 	
 	add_hotkeys()
 	if get_value("autostart_session"):
@@ -264,11 +264,11 @@ func get_value(value : String) -> Variant:
 	var section : String = "settings" 
 	
 	if !FileAccess.file_exists(PATH):
-		push_warning(str("GoLogger Warning: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
+		push_warning(str("GoLogger: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
 		create_settings_file()
 	
 	if _result != OK:
-		push_error(str("GoLogger Error: ConfigFile failed to load settings.ini file."))
+		push_error(str("GoLogger: ConfigFile failed to load settings.ini file."))
 		return null
 	
 	if value == "base_directory" or value == "categories":
@@ -276,7 +276,7 @@ func get_value(value : String) -> Variant:
 
 	var _val = _config.get_value(section, value)
 	if _val == null:
-		push_error(str("GoLogger Error: ConfigFile failed to load settings value from file."))
+		push_error(str("GoLogger: ConfigFile failed to load settings value from file."))
 	return _val
 
 
@@ -293,7 +293,7 @@ func start_session(start_delay : float = 0.0) -> void:
 	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
 	if session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn1"):
-			push_warning("GoLogger Warning: Failed to start session, a session is already active.")
+			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 	
 	categories = config.get_value("plugin", "categories")
@@ -320,9 +320,9 @@ func start_session(start_delay : float = 0.0) -> void:
 
 		if _path == "": # Error check
 			if get_value("error_reporting") == 0: 
-				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
+				push_error(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
 			if get_value("error_reporting") == 1:
-				push_warning(str("GoLogger Error: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
+				push_warning(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
 			return
 		
 		else:
@@ -335,7 +335,7 @@ func start_session(start_delay : float = 0.0) -> void:
 			_dir = DirAccess.open(_path)
 			if !_dir and get_value("error_reporting") != 2:
 				var _err = DirAccess.get_open_error()
-				if _err != OK: push_warning("GoLogger Error: ", get_error(_err, "DirAccess"), " (", _path, ").")
+				if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _path, ").")
 				return
 			else:
 				 
@@ -356,7 +356,7 @@ func start_session(start_delay : float = 0.0) -> void:
 						var _err = DirAccess.get_open_error()
 						if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 				
-				if !_f and get_value("error_reporting") != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i][3], ").")
+				if !_f and get_value("error_reporting") != 2: push_warning("GoLogger: Failed to create log file(", categories[i][3], ").")
 				else:
 					var _s := str(header_string, categories[i][0], " Log session started[", Time.get_datetime_string_from_system(get_value("use_utc"), true), "]:")
 					_f.store_line(_s)
@@ -391,16 +391,16 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	# Error check: Valid category and name 
 	if categories == null or categories.is_empty():
 		if get_value("error_reporting") != 2: 
-			printerr("GoLogger Error: No valid categories to log in.")
+			printerr("GoLogger: No valid categories to log in.")
 		return
 			
 	if categories[category_index][0] == "": 
 		if get_value("error_reporting") != 2:
-			printerr("GoLogger Error: Attempted to log on a nameless category.")
+			printerr("GoLogger: Attempted to log on a nameless category.")
 	
 	# Error check: Proper session_status 
 	if !session_status:
-		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Failed to log entry due to inactive session.")
+		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger: Failed to log entry due to inactive session.")
 		return
 	#endregion
 
@@ -482,7 +482,8 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 
 ## Initiates the "save copy" operation by displaying the "enter name" prompt. Once a name has been entered and confirmed. [method complete_copy] is called.
 func save_copy() -> void:
-	popup_state = !popup_state
+	if session_status:
+		popup_state = !popup_state
 
 
 ## Saves the actual copies of the current log session in "saved_logs" sub-folders. [br][b]Note:[/b][br]   
@@ -490,8 +491,11 @@ func save_copy() -> void:
 func complete_copy() -> void: 
 	#?                         0               1           2               3                  4              5            6
 	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
-	popup_state = false
 	categories = config.get_value("plugin", "categories")
+	if categories.is_empty():
+		if config.get_value("plugin", "error_reporting"):
+			push_warning("GoLogger: Unable to complete copy action. No categories are present.")
+	popup_state = false
 	# If user entered a name with .log, trim it
 	if copy_name.ends_with(".log") or copy_name.ends_with(".txt"):
 		copy_name = copy_name.substr(0, copy_name.length() - 4)
@@ -499,16 +503,20 @@ func complete_copy() -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
 
 	if !session_status:
-		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
+		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger: Attempt to log entry failed due to inactive session.")
 		return
 	else:
 		for i in range(categories.size()):
+
+			# Open file 
 			var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
 			if !_fr:
 				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base of file [", categories[i][3],"].")
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
+			
+			# Open file successful, get file contents create a new file and
 			var _c = _fr.get_as_text()
 			var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
 			var _fw = FileAccess.open(_path, FileAccess.WRITE)
@@ -517,41 +525,16 @@ func complete_copy() -> void:
 				popup_errorlbl.visible = true
 				await get_tree().create_timer(4.0).timeout
 				return
+			
 			_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
 			_fw.close()
-		if get_value("session_print") == 1 or get_value("session_print") == 3:
-			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name [", copy_name, "]."))
 		copy_name = ""
 		popup_line_edit.text = ""
-	if !session_status:
-		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Attempt to log entry failed due to inactive session.")
-		return
-	else:
-		for i in range(categories.size()):
-			var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
-			if !_fr:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base file: ", categories[i][3],"].")
-				popup_errorlbl.visible = true
-				await get_tree().create_timer(4.0).timeout
-				return
-			var _c = _fr.get_as_text()
-			var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
-			var _fw = FileAccess.open(_path, FileAccess.WRITE)
-			if !_fw:
-				popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", _path,".")
-				popup_errorlbl.visible = true
-				await get_tree().create_timer(4.0).timeout
-				return
-			_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
-			_fw.close()
-		if get_value("session_print") == 1 or get_value("session_print") == 3:
-			print(str("GoLogger: Saved persistent copies of current file(s) into 'saved_logs' sub-folder using the name ", copy_name, "]."))
-		copy_name = ""
-		popup_line_edit.text = ""
-	config.set_value("plugin", "categories", categories)
+		config.set_value("plugin", "categories", categories)
 	config.save(PATH)
 	if get_value("session_print") == 0 or get_value("session_print") == 2:
-		print("GoLogger: Copy of the active session was created.")
+		print("GoLogger: Persistent copies of the active session was created.")
+	
 
 
 ## Stops the current session. Preventing further entries to be logged into the file of the current session. 
@@ -574,8 +557,8 @@ func stop_session() -> void:
 			if !_f:
 				var _err = FileAccess.get_open_error()
 				if get_value("error_reporting") != 2:
-					if _err != OK: push_warning("GoLogger Warning: Failed to open file ", categories[i][3], " with READ ", get_error(_err))
-				push_warning("GoLogger Warning: Stopped session but failed to do so properly. Couldn't open the file.")
+					if _err != OK: push_warning("GoLogger: Failed to open file ", categories[i][3], " with READ ", get_error(_err))
+				push_warning("GoLogger: Stopped session but failed to do so properly. Couldn't open the file.")
 				session_status = false
 				session_status_changed.emit()
 				return
@@ -586,7 +569,7 @@ func stop_session() -> void:
 			if !_fw and get_value("error_reporting") != 2:
 				var _err = FileAccess.get_open_error()
 				if _err != OK: 
-					push_warning("GoLogger Error: Attempting to stop session by writing to file (", categories[i][3], ") -> Error[", _err, "]")
+					push_warning("GoLogger: Attempting to stop session by writing to file (", categories[i][3], ") -> Error[", _err, "]")
 					return
 			var _s := str(_content, str(_timestamp + "Stopped Log Session.") if get_value("timestamp_entries") else "Stopped Log Session.")
 			_fw.store_line(_s)
