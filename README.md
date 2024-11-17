@@ -2,7 +2,7 @@
 
 GoLogger is a simple yet flexible logging framework for Godot 4, designed to log game events and data to external .log files accessible by both developers and players. With minimal setup required, GoLogger can be integrated quickly and easily into any project. GoLogger runs in the background, capturing the data you define with timestamps, providing a snapshot of events leading up to crashes, bugs, or other issues, making it easier for users to share logs and investigate problems.
 
-Log entries are as simple as calling `Log.entry()`(similar and as easy to use as `print()`) and can include any data that can be converted into a string. The framework is fully customizable, allowing you to log as much or as little information as needed. For convenience, GoLogger includes an optional controller (toggleable with F9) for managing the current session directly within the game.
+Log entries are as simple as calling `Log.entry()`(similar and as easy to use as `print()`) and can include any data that can be converted into a string. The framework is fully customizable, allowing you to log as much or as little information as you require.
 
 	Log.entry("Player picked up", item, " x", item.amount, ".")	     # Result: [14:44:44] Player picked up MedKit x3. 
 
@@ -94,8 +94,8 @@ Log.session_timer_stopped.connect(_on_stress_test_stopped)
 ```
 
 #### Both Entry Count Limit and Session Timer:
-You can use both as well which allows you to use some additional actions. When selecting the "Both" option. GoLogger will use both "Entry Count Action" and "Session Timer Action" settings to independently set the actions taken. That way, you can remove old entries with Entry Count and still restart or stop a session entirely once the Session Timer times-out.
+You can use also use both as well which allows you to use some additional actions. When selecting the "Both" option. GoLogger will still use both "Entry Count Action" and "Session Timer Action" settings to independently set the actions taken. That way, you can remove old entries with Entry Count and restart or stop a session entirely once the Session Timer times-out.
 
 
 ## File count limit:
-Despite .log files taking minimal storage space, generating an endless amount of files is never a good idea. Therefore, GoLogger has an adjustable `file count limit` setting. By default, this limit is set to 10 and will delete the log file with the oldest date- and timestamp. If you have a log file that you didn't save a copy of, you can simply move the file to another folder(the `saved_logs` folder is recommended) to save it and exempt it from being deleted. 
+Despite .log files taking minimal storage space, generating an endless amount of files is never a good idea. Therefore, GoLogger has an adjustable `file count limit` setting. By default, this limit is set to 10 and will delete the log file with the oldest date- and timestamp. Of course, this means it only deletes files in that directory, meaning you can move a log out of the folder to save it. 
