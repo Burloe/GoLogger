@@ -404,44 +404,45 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	categories[category_index][5] = lines.size()
 
 	# Limit method logic
-	match get_value("limit_method"): 
-		0: # Entry count
-			match get_value("entry_count_action"):
-				0: # Remove old entries
-					while lines.size() >= get_value("entry_cap"):
-						lines.remove_at(1) # Keeping header line 0
-				1: # Stop & start
-					if lines.size() >= get_value("entry_cap"):
+	if !popup_state: #! Need to test out this excemption features
+		match get_value("limit_method"): 
+			0: # Entry count
+				match get_value("entry_count_action"):
+					0: # Remove old entries
+						while lines.size() >= get_value("entry_cap"):
+							lines.remove_at(1) # Keeping header line 0
+					1: # Stop & start
+						if lines.size() >= get_value("entry_cap"):
+							stop_session()
+							start_session()
+							entry(log_entry, category_index)
+							return
+					2: # Stop only
+						if lines.size() >= get_value("entry_cap"):
+							stop_session()
+							return
+			1: # Session timer
+				match get_value("session_timer_action"):
+					0: # Stop & start session
 						stop_session()
 						start_session()
 						entry(log_entry, category_index)
 						return
-				2: # Stop only
-					if lines.size() >= get_value("entry_cap"):
+					1: # Stop session 
 						stop_session()
 						return
-		1: # Session timer
-			match get_value("session_timer_action"):
-				0: # Stop & start session
-					stop_session()
-					start_session()
-					entry(log_entry, category_index)
-					return
-				1: # Stop session 
-					stop_session()
-					return
-		2: # Both Entry count limit and Session Timer
-			match get_value("entry_count_action"):
-				0: # Stop & start session
-					if lines.size() >= get_value("entry_cap"):
-						stop_session()
-						start_session()
-						entry(log_entry, category_index)
-						return
-				1: # Stop session 
-					if lines.size() >= get_value("entry_cap"):
-						stop_session()
-						return
+			2: # Both Entry count limit and Session Timer
+				match get_value("entry_count_action"):
+					0: # Stop & start session
+						if lines.size() >= get_value("entry_cap"):
+							stop_session()
+							start_session()
+							entry(log_entry, category_index)
+							return
+					1: # Stop session 
+						if lines.size() >= get_value("entry_cap"):
+							stop_session()
+							return
 
 	categories[category_index][5] = lines.size() 
 
