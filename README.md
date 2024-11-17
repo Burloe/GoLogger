@@ -1,6 +1,6 @@
 # ![GoLoggerTitleBase-export2x](https://github.com/user-attachments/assets/df721f9e-4d14-48bb-ae60-1fafcd03745a)
 
-**GoLogger 1.2 will soon be released** - This update includes a major rewrite of the entire plugin and a ton of QoL features. Unless any major bugs or issues. It'll most likely be up sometime this week.
+**GoLogger 1.2 will soon be released** - This update includes a major rewrite of the entire plugin and a ton of QoL features. Unless any major bugs or issues. It'll most likely be up sometime this week.<br>
 *You can view/grab it right now on the 1.2 branch but use it at your own risk as it's likely to contain issues.*
 
 GoLogger is a simple yet flexible logging framework for Godot 4, designed to log game events and data to external .log files accessible by both developers and players. With minimal setup required, GoLogger can be integrated quickly and easily into any project. GoLogger runs in the background, capturing the data you define with timestamps, providing a snapshot of events leading up to crashes, bugs, or other issues, making it easier for users to share logs and investigate problems.
