@@ -460,11 +460,11 @@ func update_tooltip(node : Control) -> void:
 		log_header_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Log Header:[color=white][font_size=11]\nUsed to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Method used to limit log file length/size:[color=white][font_size=11]\n[color=white]When using [b]'both'[/b], entry count action determines the action.\n[color=ff5757][b]'None' option is NOT recommended. Use at your own risk.[/b]"
+			tooltip_lbl.text = "[font_size=14][color=green]Method used to limit log file length/size:[color=white][font_size=11]\n[color=white]When using [b]'both'[/b], you still determine the action taken by both method independently with the corresponding action settings.\n[color=ff5757][b]Using 'None' is not recommended, use at your own risk![/b]"
 		entry_count_action_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Action taken when count exceeds limit:[color=white][font_size=11]\n[b]'Remove old entries'[/b]: Oldest entries are removed to make space for the new entries.\n[b]Stop/start:[/b] Stops and starts a new session.\n[b]Stop:[/b] Stops session only." 
 		session_timer_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Session Timer Action:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]When Limit Method is set to 'Both'. This setting is used to determine the action taken when either method's condition is met."
+			tooltip_lbl.text = "[font_size=14][color=green]Action taken upon Session Timer timeout:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]GoLogger features [color=39d7e6]'session_timer_started'[color=ff669e] and [color=39d7e6]'session_timer_ended'[color=ff669e] to sync any systems or tests to the sessions."
 		error_rep_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nAllows you to disable non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' turns all warnings and non-critical errors off."
 		session_print_btn:
@@ -491,18 +491,64 @@ func _on_dock_mouse_exited(node : Label) -> void:
 
 #region Buttons
 func _on_button_button_up(node : Button) -> void:
+	config.load(PATH)
 	match node:
 		base_dir_apply_btn:
+			# Store old + new dir and attempt to open new_dir path
 			var old_dir = config.get_value("plugin", "base_directory")
-			var new = base_dir_line.text
-			var _d = DirAccess.open(new)
-			_d.make_dir(new)
-			var _e = DirAccess.get_open_error()
-			if _e == OK: # New directory approved and created
-				save_setting("plugin", "base_directory", new)
-			else: # New directory rejected
-				base_dir_line = old_dir
-		
+			var new_dir = base_dir_line.text
+			var _d = DirAccess.open(new_dir)
+			print(new_dir)
+			
+			# New dir doesn't exist > attempt to create it and see if it's valid
+			if _d == null:
+				var _res : int
+				_d = DirAccess.open(".")
+				if new_dir.begins_with("res://") or new_dir.begins_with("user://"):
+					_res = _d.make_dir(new_dir)
+				else:
+					_res = _d.make_dir_absolute(new_dir)
+				print(new_dir)
+				# Check if new_dir is valid
+				if _res != OK:
+					if config.get_value("settings", "error_reporting") != 2:
+						push_warning("GoLogger Warning: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+					base_dir_line.text = old_dir
+					return
+				
+				_d = DirAccess.open(new_dir)
+			print(new_dir)
+			# Check if new dir is accessible
+			if _d == null or DirAccess.get_open_error() != OK:
+				if config.get_value("settings", "error_reporting") != 2:
+					push_warning("GoLogger Warning: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+				base_dir_line.text = old_dir
+				return
+			print(new_dir)
+			# Save new directory to "settings.ini".
+			config.set_value("plugin", "base_directory", new_dir)
+			config.save(PATH)
+			print(new_dir, config.get_value("plugin", "base_directory"))
+			
+
+
+
+			# if !_d:
+			# 	if config.get_value("settings", "error_reporting") != 2:
+			# 		printerr("GoLogger: Unable to use path[", base_dir_line.text, "]")
+			# 		base_dir_line.text = old_dir
+			# 		return
+			# if _d == null: # Not an existing directory > Create one
+			# 	if new_dir.begins_with("res://") or new_dir.begins_with("user://"):
+			# 		_d.make_dir(new_dir)
+			# 	else:
+			# 		_d.make_dir_absolute(new_dir)
+			# var _e = DirAccess.get_open_error()
+			# if _e == OK: # New directory approved and created
+			# 	save_setting("plugin", "base_directory", new_dir)
+			# else: # New directory rejected > revert to previous directory
+			# 	base_dir_line = old_dir
+			
 		base_dir_opendir_btn:
 			open_directory()
 
@@ -559,18 +605,18 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
 			# Set to "Both" > Enable additional options
-			if index == 2:
-				entry_count_action_btn.set_item_disabled(0, false)
-				entry_count_action_btn.set_item_disabled(3, false)
-				entry_count_action_btn.set_item_disabled(4, false)
-				session_timer_action_btn.disabled = true
-				session_timer_action_btn.focus_mode = Control.FOCUS_NONE
-			else:
-				entry_count_action_btn.set_item_disabled(0, true)
-				entry_count_action_btn.set_item_disabled(3, true)
-				entry_count_action_btn.set_item_disabled(4, true)
-				session_timer_action_btn.disabled = false
-				session_timer_action_btn.focus_mode = Control.FOCUS_ALL
+			# if index == 2:
+			# 	entry_count_action_btn.set_item_disabled(0, false)
+			# 	entry_count_action_btn.set_item_disabled(3, false)
+			# 	entry_count_action_btn.set_item_disabled(4, false)
+			# 	session_timer_action_btn.disabled = true
+			# 	session_timer_action_btn.focus_mode = Control.FOCUS_NONE
+			# else:
+			# 	entry_count_action_btn.set_item_disabled(0, true)
+			# 	entry_count_action_btn.set_item_disabled(3, true)
+			# 	entry_count_action_btn.set_item_disabled(4, true)
+			# 	session_timer_action_btn.disabled = false
+			# 	session_timer_action_btn.focus_mode = Control.FOCUS_ALL
 		entry_count_action_btn:
 			config.set_value("settings", "entry_count_action", index)
 		session_timer_action_btn:

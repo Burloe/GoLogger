@@ -309,7 +309,12 @@ func start_session(start_delay : float = 0.0) -> void:
 	for i in range(categories.size()): 
 
 		categories[i][3] = get_file_name(categories[i][0])
-		var _path : String = str(base_directory, categories[i][0], "_Gologs/") # Result: user://GoLogger/category_GoLogs
+		var _path : String
+		if _path.begins_with("res://") or _path.begins_with("user://"):
+			_path = str(base_directory, categories[i][0], "_Gologs/") # Result: user://GoLogger/category_GoLogs
+		else:
+			_path = str(base_directory, categories[i][0], "_Gologs\\")
+
 		if _path == "": 
 			if get_value("error_reporting") == 0: 
 				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
@@ -449,7 +454,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 					stop_session()
 					return
 		2: #? Both Entry count limit and Session Timer
-			match get_value("session_timer_action"):
+			match get_value("entry_count_action"):
 				0: # Stop & start session
 					if lines.size() >= get_value("entry_cap"):
 						stop_session()

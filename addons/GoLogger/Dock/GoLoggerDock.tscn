@@ -401,19 +401,13 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 selected = 0
 allow_reselect = true
-item_count = 5
+item_count = 3
 popup/item_0/text = "Remove old entries"
 popup/item_0/id = 2
 popup/item_1/text = "Stop & Start session"
 popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
-popup/item_3/text = "Remove, stop & start"
-popup/item_3/id = 3
-popup/item_3/disabled = true
-popup/item_4/text = "Remove & Stop"
-popup/item_4/id = 4
-popup/item_4/disabled = true
 
 [node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
