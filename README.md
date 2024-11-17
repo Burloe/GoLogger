@@ -9,8 +9,9 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
 ## **Contents**
 1. Installation and setup
 2. How to use GoLogger
-   * Example usage of the main functions 
+   * Example usage of the main functions
    * Creating log entries with data
+   * Managing log categories
 4. Managing .log file size
    * Entry count limit
    * Sesssion timer
@@ -46,10 +47,13 @@ Log.start_session()
 # Starts session 1.2 seconds after the call.
 await Log.start_session(1.2)
 
-# No category_index defined > defaults to category 0.
-Log.entry(str("Current game time: ", time_of_day)) # Resulting entry : [2024-11-11 19:17:27] Current game time: 16.30
-# Logs into category 1.
-Log.entry(str("Player's current health: ", current_health, "(", max_health, ")"), 1) # Resulting entry: [2024-11-11 19:17:27] Player's current health: 94(100)
+# No category_index defined > defaults to category 0("game" category by default).
+Log.entry(str("Current game time: ", time_of_day))
+# Resulting entry : [2024-11-11 19:17:27] Current game time: 16.30
+
+# Logs into category 1("player" category by default).
+Log.entry(str("Player's current health: ", current_health, "(", max_health, ")"), 1)
+# Resulting entry: [2024-11-11 19:17:27] Player's current health: 94(100)
 
 # Initiates the "copy session" operation by showing the name prompt popup.
 Log.save_copy()
@@ -57,11 +61,11 @@ Log.save_copy()
 # Stops an active session.
 Log.stop_session()
 ```
-*`start_delay` delays the session start by the specifies time. This was added to prevent .log files from being created with the same timestamp which can cause sorting issues when deleting the oldest log.*
+*`start_delay` delays the session start by the specifies time. This was added to prevent .log files from being created with the same timestamp/name which can cause sorting issues when identifying and deleting the oldest log.*
 
 
 ### **Creating log entries with data:**<br>
-Simply installing GoLogger does not log any entries. You still need to define `Log.entry()` in your code, including a	ny string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry. However, be mindful that converting to a string may not always format the data in a human-readable way.<br>
+Simply installing GoLogger does not log any entries. You still need to define `Log.entry()` in your code, including any string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry..<br>
 
 The `entry()` function has two parameters: `entry(log_entry : String, category_index : int)`
 Only the first parameter mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the formatting of your log entry to your liking.
@@ -70,6 +74,10 @@ Only the first parameter mandatory and needs to be defined when calling the func
 
 *Calling this function without defining an index will make it default to log into the category with index 0.* <br><br>
 
+## Managing log categories:
+GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your project's need. When a category name is applied, folders are created with the name of each category within the `base_directory` and once a session is started, a .log file is created inside of each category folder. The number at the top left of each category is the `category_index` of that category. Meaning if you want to log an entry into the "player" category, use the index as the last parameter when calling the function. Example `Log.entry("My player entry", 1)` 
+![image](https://github.com/user-attachments/assets/b1f32712-c7c4-4c80-a5fb-a2d299e859ea)
+<br>*Note: Category folders aren't deleted when you delete a category in the dock. This is to prevent accidental deletion of log files. Open the directory using the "Open" button and manually delete the corresponding folder of the category you've deleted.*
 
 ## Managing .log file size:
 One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates(deletes the content) the file when used. Therefore, the plugin first stores the old entries with `FileAccess.READ` before truncating the file and adding them back before appending the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings/arrays may cause stuttering or general performance issues. This is especially a concern during long sessions or if multiple systems are logging to the same category. To mitigate this, GoLogger offers two methods for limiting logs files from getting too large:
@@ -85,7 +93,8 @@ Log.session_timer_started.connect(_on_stress_test_start)
 Log.session_timer_stopped.connect(_on_stress_test_stopped)
 ```
 
-*You can also use both at the same time. However, you can't use the 'Remove old entries` action for entry count limit.*
+#### Both Entry Count Limit and Session Timer:
+You can use both as well which allows you to use some additional actions. When selecting the "Both" option. GoLogger will use both "Entry Count Action" and "Session Timer Action" settings to independently set the actions taken. That way, you can remove old entries with Entry Count and still restart or stop a session entirely once the Session Timer times-out.
 
 
 ## File count limit:
