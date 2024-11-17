@@ -172,7 +172,7 @@ custom_minimum_size = Vector2(198, 36)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 text = "user://GoLogger/"
-placeholder_text = "user://logs/"
+placeholder_text = "user://GoLogger/"
 alignment = 1
 
 [node name="BaseDirBtnContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox"]

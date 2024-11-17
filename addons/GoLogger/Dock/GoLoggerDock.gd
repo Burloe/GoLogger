@@ -548,9 +548,18 @@ func _on_line_edit_text_changed(new_text : String, node : LineEdit) -> void:
 		node.set_caret_column(node.text.length())
 	else: node.set_caret_column(node.get_caret_column() + 1)
 
+	if node == base_dir_line:
+		if new_text == "":
+			base_dir_apply_btn.disabled = true
+		else:
+			base_dir_apply_btn.disabled = false
+
 func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 	match node:
 		base_dir_line:
+			if new_text == "":
+				base_dir_apply_btn.disabled = true
+				return
 			var old_dir = config.get_value("plugin", "base_directory")
 			var _d = DirAccess.open(new_text)
 			_d.make_dir(new_text)

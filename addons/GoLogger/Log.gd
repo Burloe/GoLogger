@@ -51,8 +51,7 @@ var config = ConfigFile.new()
 var base_directory : String = "user://GoLogger/"
 
 ## Array containing category data that each corresponds to a log category. They define the category name.
-@export var categories : Array =[]
-
+@export var categories : Array = []
 
 ## Contains the resulting string as determined by [param log_header].
 var header_string : String
@@ -347,11 +346,8 @@ func start_session(start_delay : float = 0.0) -> void:
 				
 				var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
 				var _files = _dir.get_files() 
-				#TODO Check if files are .log files > add them to an array and use that to detect/delete files 
 				categories[i][4] = _files.size()
 
-				#! Added this feature to disable file count by setting value to 0. Need to test if this actually works.
-				#TODO Check that setting file cap to 0 works 
 				if get_value("file_cap") > 0:
 					while _files.size() > get_value("file_cap") -1:
 						_files.sort()
@@ -359,7 +355,6 @@ func start_session(start_delay : float = 0.0) -> void:
 						_files.remove_at(0)
 						var _err = DirAccess.get_open_error()
 						if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
-				#! Unindent the while loop and delete the 'if' line to revert this change
 				
 				if !_f and get_value("error_reporting") != 2: push_warning("GoLogger Error: Failed to create log file(", categories[i][3], ").")
 				else:
@@ -565,6 +560,8 @@ func complete_copy() -> void:
 func stop_session() -> void:
 	#?                         0               1           2               3                  4              5            6
 	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
+	if !session_status:
+		return
 	categories = config.get_value("plugin", "categories")
 	if get_value("session_print") == 0 or get_value("session_print") == 3:
 		print("GoLogger: Session stopped!")
