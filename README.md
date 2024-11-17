@@ -60,11 +60,11 @@ Log.save_copy()
 # Stops an active session.
 Log.stop_session()
 ```
-*`start_delay` delays the session start by the specifies time. This was added to prevent .log files from being created with the same timestamp which can cause sorting issues when deleting the oldest log.*
+*`start_delay` delays the session start by the specifies time. This was added to prevent .log files from being created with the same timestamp/name which can cause sorting issues when identifying and deleting the oldest log.*
 
 
 ### **Creating log entries with data:**<br>
-Simply installing GoLogger does not log any entries. You still need to define `Log.entry()` in your code, including a	ny string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry. However, be mindful that converting to a string may not always format the data in a human-readable way.<br>
+Simply installing GoLogger does not log any entries. You still need to define `Log.entry()` in your code, including any string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry..<br>
 
 The `entry()` function has two parameters: `entry(log_entry : String, category_index : int)`
 Only the first parameter mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the formatting of your log entry to your liking.
@@ -88,7 +88,8 @@ Log.session_timer_started.connect(_on_stress_test_start)
 Log.session_timer_stopped.connect(_on_stress_test_stopped)
 ```
 
-*You can also use both at the same time. However, you can't use the 'Remove old entries` action for entry count limit.*
+#### Both Entry Count Limit and Session Timer:
+You can use both as well which allows you to use some additional actions. When selecting the "Both" option. GoLogger will use both "Entry Count Action" and "Session Timer Action" settings to independently set the actions taken. That way, you can remove old entries with Entry Count and still restart or stop a session entirely once the Session Timer times-out.
 
 
 ## File count limit:
