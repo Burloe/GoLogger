@@ -153,6 +153,8 @@ theme = ExtResource("1_y5prw")
 theme_override_constants/separation = 6
 
 [node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox"]
+unique_name_in_owner = true
+modulate = Color(0.615686, 0.619608, 0.627451, 1)
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
@@ -228,6 +230,7 @@ layout_mode = 2
 alignment = 2
 
 [node name="LogHeaderLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -266,6 +269,7 @@ layout_mode = 2
 alignment = 2
 
 [node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -293,6 +297,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
+theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "Autostart session"
 
@@ -301,6 +306,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
+theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "Timestamp log entries"
 
@@ -309,6 +315,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
+theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "Use UTC time"
 
 [node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnB/VBoxContainer"]
@@ -316,6 +323,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
+theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "Use - separator in timestamps"
 
 [node name="ColumnC" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
@@ -336,10 +344,11 @@ layout_mode = 2
 [node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 69
+theme_override_constants/separation = 61
 alignment = 2
 
 [node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/LimitMethodHBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -348,11 +357,11 @@ vertical_alignment = 1
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/LimitMethodHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(141, 0)
+custom_minimum_size = Vector2(148, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-selected = 0
+selected = 2
 allow_reselect = true
 item_count = 5
 popup/item_0/text = "Entry Count"
@@ -369,10 +378,11 @@ popup/item_4/id = 3
 [node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 42
+theme_override_constants/separation = 34
 alignment = 2
 
 [node name="EntryActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/EntryCountActionHBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -381,26 +391,34 @@ vertical_alignment = 1
 
 [node name="EntryActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/EntryCountActionHBox"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(148, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-selected = 0
+selected = 1
 allow_reselect = true
-item_count = 3
+item_count = 5
 popup/item_0/text = "Remove old entries"
 popup/item_0/id = 2
 popup/item_1/text = "Stop & Start session"
 popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
+popup/item_3/text = "Remove, stop & start"
+popup/item_3/id = 3
+popup/item_3/disabled = true
+popup/item_4/text = "Remove & Stop"
+popup/item_4/id = 4
+popup/item_4/disabled = true
 
 [node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 28
+theme_override_constants/separation = 20
 alignment = 2
 
 [node name="SessionTimerActionLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/SessionTimerActionHBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -409,6 +427,7 @@ vertical_alignment = 1
 
 [node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/SessionTimerActionHBox"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(148, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -426,6 +445,7 @@ theme_override_constants/separation = 119
 alignment = 2
 
 [node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/EntryCountHBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -439,7 +459,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 min_value = 1.0
 max_value = 5000.0
-value = 300.0
+value = 10.0
 alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 10.0
@@ -451,6 +471,7 @@ theme_override_constants/separation = 117
 alignment = 2
 
 [node name="SessionDurationLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnC/VBoxContainer/SessionDurationHBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -463,7 +484,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 max_value = 1200.0
-value = 300.0
+value = 10.0
 alignment = 2
 update_on_text_changed = true
 suffix = "sec"
@@ -490,6 +511,7 @@ theme_override_constants/separation = 82
 alignment = 2
 
 [node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/FileCountHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "File count limit"
@@ -515,6 +537,7 @@ theme_override_constants/separation = 21
 alignment = 2
 
 [node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/ErrorRepHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Error reporting"
@@ -546,6 +569,7 @@ theme_override_constants/separation = 12
 alignment = 2
 
 [node name="SessionChangeLabel" type="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnD/Column/SessionChangeHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Print session changes"

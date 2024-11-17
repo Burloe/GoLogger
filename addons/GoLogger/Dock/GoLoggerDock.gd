@@ -30,6 +30,7 @@ signal update_index
 @onready var reset_settings_btn : Button = %ResetSettingsButton
 
 @onready var base_dir_line : LineEdit = %BaseDirLineEdit
+@onready var base_dir_lbl : Label = %BaseDirLabel
 @onready var base_dir_apply_btn : Button = %BaseDirApplyButton
 @onready var base_dir_opendir_btn : Button = %BaseDirOpenDirButton
 @onready var base_dir_reset_btn : Button = %BaseDirResetButton
@@ -37,9 +38,11 @@ signal update_index
 
 @onready var log_header_btn : OptionButton = %LogHeaderOptButton
 @onready var log_header_container : HBoxContainer = %LogHeaderHBox
+@onready var log_header_lbl : Label = %LogHeaderLabel
 var log_header_string : String
 
 @onready var canvas_layer_spinbox : SpinBox = %CanvasLayerSpinBox
+@onready var canvas_layer_lbl : Label = %CanvasLayerLabel
 var canvas_spinbox_line : LineEdit
 @onready var canvas_layer_container : HBoxContainer = %CanvasLayerHBox
 
@@ -54,30 +57,38 @@ var canvas_spinbox_line : LineEdit
 
 
 @onready var limit_method_btn : OptionButton = %LimitMethodOptButton
+@onready var limit_method_lbl : Label = %LimitMethodLabel
 @onready var limit_method_container : HBoxContainer = %LimitMethodHBox
 
 @onready var entry_count_action_btn : OptionButton = %EntryActionOptButton 
+@onready var entry_count_action_lbl : Label = %EntryActionLabel
 @onready var entry_count_action_container : HBoxContainer = %EntryCountActionHBox
 
 @onready var session_timer_action_btn : OptionButton = %SessionTimerActionOptButton 
+@onready var session_timer_action_lbl : Label = %SessionTimerActionLabel
 @onready var session_timer_action_container : HBoxContainer = %SessionTimerActionHBox
 
 @onready var file_count_spinbox : SpinBox = %FileCountSpinBox
+@onready var file_count_lbl : Label = %FileCountLabel
 var file_count_spinbox_line : LineEdit
 @onready var file_count_container : HBoxContainer = %FileCountHBox
 
 @onready var entry_count_spinbox : SpinBox = %EntryCountSpinBox
+@onready var entry_count_lbl : Label = %EntryCountLabel
 var entry_count_spinbox_line : LineEdit
 @onready var entry_count_container : HBoxContainer = %EntryCountHBox
 
 @onready var session_duration_spinbox : SpinBox = %SessionDurationHBox/SessionDurationSpinBox
+@onready var session_duration_lbl : Label = %SessionDurationLabel
 var session_duration_spinbox_line : LineEdit
 @onready var session_duration_container : HBoxContainer = %SessionDurationHBox
 
 @onready var error_rep_btn : OptionButton = %ErrorRepOptButton
+@onready var error_rep_lbl : Label = %ErrorRepLabel
 @onready var error_rep_container : HBoxContainer = %ErrorRepHBox
 
 @onready var session_print_btn : OptionButton = %SessionChangeOptButton
+@onready var session_print_lbl : Label = %SessionChangeLabel
 @onready var session_print_container : HBoxContainer = %SessionChangeHBox
 
 
@@ -86,6 +97,8 @@ var session_duration_spinbox_line : LineEdit
 
 var btn_array : Array[Control] = []
 var container_array : Array[Control] = []
+var c_font_normal := Color("9d9ea0")# 9d9ea0 # dfdfdf
+var c_font_hover := Color("f2f2f2") 
 #endregion
 
 
@@ -125,7 +138,8 @@ func _ready() -> void:
 		reset_settings_btn.button_up.connect(reset_to_default.bind(1))
 		reset_settings_btn.mouse_entered.connect(update_tooltip.bind(reset_settings_btn))
 		reset_settings_btn.focus_entered.connect(update_tooltip.bind(reset_settings_btn))
-		
+		base_dir_lbl.modulate = c_font_normal
+
 		btn_array = [
 			base_dir_line,
 			base_dir_apply_btn,
@@ -226,7 +240,7 @@ func _ready() -> void:
 			session_print_container
 		]
 		
-		var corresponding_btns = [
+		var btns_array = [
 			base_dir_line,
 			log_header_btn,
 			canvas_layer_spinbox,
@@ -240,15 +254,53 @@ func _ready() -> void:
 			session_print_btn
 		]
 
+		var corresponding_lbls = [
+			base_dir_lbl,
+			log_header_lbl,
+			canvas_layer_lbl,
+			limit_method_lbl,
+			entry_count_action_lbl,
+			session_timer_action_lbl,
+			file_count_lbl,
+			entry_count_lbl,
+			session_duration_lbl,
+			error_rep_lbl,
+			session_print_lbl
+		]
+
 		# Connect mouse + focus_entered signals to container nodes
 		for i in range(container_array.size()):
+			# Update tooltip signals
 			if container_array[i].mouse_entered.is_connected(update_tooltip):
 				container_array[i].mouse_entered.disconnect(update_tooltip)
-			container_array[i].mouse_entered.connect(update_tooltip.bind(corresponding_btns[i]))
+			container_array[i].mouse_entered.connect(update_tooltip.bind(btns_array[i]))
+			# Update mouse over on Containers font color signals
+			if container_array[i].mouse_entered.is_connected(_on_dock_mouse_entered):
+				container_array[i].mouse_entered.disconnect(_on_dock_mouse_entered)
+			container_array[i].mouse_entered.connect(_on_dock_mouse_entered.bind(corresponding_lbls[i]))
+			
+			if container_array[i].mouse_exited.is_connected(_on_dock_mouse_exited):
+				container_array[i].mouse_exited.disconnect(_on_dock_mouse_exited)
+			container_array[i].mouse_exited.connect(_on_dock_mouse_exited.bind(corresponding_lbls[i]))
+
+			# Update mouse over on Buttons font color signals
+			if btns_array[i].mouse_entered.is_connected(_on_dock_mouse_entered):
+				btns_array[i].mouse_entered.disconnect(_on_dock_mouse_entered)
+			btns_array[i].mouse_entered.connect(_on_dock_mouse_entered.bind(corresponding_lbls[i]))
+			
+			if btns_array[i].mouse_exited.is_connected(_on_dock_mouse_exited):
+				btns_array[i].mouse_exited.disconnect(_on_dock_mouse_exited)
+			btns_array[i].mouse_exited.connect(_on_dock_mouse_exited.bind(corresponding_lbls[i]))
 		#endregion 
 
 		load_settings_state()
 	
+func _on_dock_mouse_entered(node : Label) -> void:
+	node.add_theme_color_override("font_color", c_font_hover)
+
+func _on_dock_mouse_exited(node : Label) -> void:
+	node.add_theme_color_override("font_color", c_font_normal) 
+
 
 #region settings.ini
 func create_settings_file() -> void:
@@ -504,12 +556,19 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 			config.set_value("settings", "log_header", index)
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
+			# Set to "Both" > Enable additional options
 			if index == 2:
-				entry_count_action_btn.disabled = true
-				entry_count_action_btn.focus_mode = Control.FOCUS_NONE
+				entry_count_action_btn.set_item_disabled(0, false)
+				entry_count_action_btn.set_item_disabled(3, false)
+				entry_count_action_btn.set_item_disabled(4, false)
+				session_timer_action_btn.disabled = true
+				session_timer_action_btn.focus_mode = Control.FOCUS_NONE
 			else:
-				entry_count_action_btn.disabled = false
-				entry_count_action_btn.focus_mode = Control.FOCUS_ALL
+				entry_count_action_btn.set_item_disabled(0, true)
+				entry_count_action_btn.set_item_disabled(3, true)
+				entry_count_action_btn.set_item_disabled(4, true)
+				session_timer_action_btn.disabled = false
+				session_timer_action_btn.focus_mode = Control.FOCUS_ALL
 		entry_count_action_btn:
 			config.set_value("settings", "entry_count_action", index)
 		session_timer_action_btn:

@@ -13,19 +13,7 @@ signal name_warning(toggle_on : bool, type : int)
 ## Delete [Button] node. Deletes this log category
 @onready var del_btn 	: Button = 		%DeleteButton
 ## Apply [Button] node. Applied the submitted [LineEdit] text.
-@onready var apply_btn 	: Button = 		%ApplyButton
-## Opens the log file of the active/last session.
-@onready var openlog_btn : Button =     %OpenLogButton
-## File name label.
-@onready var filename_lbl : RichTextLabel = 	%FileNameLabel
-## Container that holds the file + entry count label.
-@onready var count_container : HBoxContainer = 	%CountContainer
-## File count label.
-@onready var filecount_lbl : RichTextLabel = 	%FileCountLabel
-## Entry count label.
-@onready var entrycount_lbl : RichTextLabel = 	%EntryCountLabel
-## Updates category data upon [signal timeout].
-@onready var update_timer : Timer = 	%UpdateTimer
+@onready var apply_btn 	: Button = 		%ApplyButton 
 var dock : TabContainer ## Dock root
 
 ## Flags if the name is invalid or not. If true, emit 
@@ -90,19 +78,15 @@ func _ready() -> void:
 		line_edit.text_changed.connect(_on_text_changed)
 		line_edit.text_submitted.connect(_on_text_submitted)
 		lock_btn.toggled.connect(_on_lock_btn_toggled)
-		if update_timer.is_stopped(): update_timer.start()
 		line_edit.text = category_name
 		ilbl.text = str(index)
 		lock_btn.button_pressed = is_locked
-		count_container.visible = false
-		openlog_btn.visible = false
 		size = Vector2.ZERO
 		if line_edit.text == "":
 			invalid_name = true
 			apply_btn.disabled = true
 		else: 
 			invalid_name = false	
-
 
 
 ## Updates the index label when deleting a category.

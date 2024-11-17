@@ -183,7 +183,7 @@ func create_settings_file() -> void:
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
-##DEPRECATED Validates settings by ensuring their type are correct when loading them.
+## Validates settings by ensuring their type are correct when loading them.
 func validate_settings() -> bool:
 	var faults : int = 0
 	var expected_types = {
@@ -197,7 +197,8 @@ func validate_settings() -> bool:
 		"settings/use_utc": TYPE_BOOL,
 		"settings/dash_separator": TYPE_BOOL,
 		"settings/limit_method": TYPE_INT,
-		"settings/limit_action": TYPE_INT,
+		"settings/entry_count_action": TYPE_INT,
+		"settings/session_timer_action": TYPE_INT,
 		"settings/file_cap": TYPE_INT,
 		"settings/entry_cap": TYPE_INT,
 		"settings/session_duration": TYPE_FLOAT,
@@ -304,7 +305,6 @@ func start_session(start_delay : float = 0.0) -> void:
 	if get_value("session_print") < 2:
 		print("GoLogger: Session started.")
 
-
 	# Iterate over each LogFileResource in [param categories] array > Create directories and files 
 	for i in range(categories.size()): 
 
@@ -366,6 +366,9 @@ func start_session(start_delay : float = 0.0) -> void:
 	config.save(PATH)
 	if get_value("session_print") == 1 or get_value("session_print") == 2: print("GoLogger: Started session.")
 	session_status = true
+	if session_timer.is_stopped() and get_value("session_timer_action") == 1 or session_timer.is_stopped() and get_value("session_timer_action") == 2:
+		session_timer.start()
+		session_timer_started.emit()
 	session_started.emit()
 
 
@@ -477,16 +480,13 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	_fw.close() 
 
 
-## Initiates the "save copy" operation by displaying the popup prompt. Once a name has been entered and confirmed. [method complete_copy] is called.
+## Initiates the "save copy" operation by displaying the "enter name" prompt. Once a name has been entered and confirmed. [method complete_copy] is called.
 func save_copy() -> void:
 	popup_state = !popup_state
 
 
-## Saves the actual copies of the current log session in "saved_logs" sub-folders. [br][b]Note:[br][/b]   
-## This function should never be called to perform the "save copy" operation. Instead, use [method save_copy].
-## func _on_copy_button_up() -> void:
-##     Log.popup_state = !Log.popup_state
-## [/codeblock]
+## Saves the actual copies of the current log session in "saved_logs" sub-folders. [br][b]Note:[/b][br]   
+##     [b]This function should never be called[/b] to perform the "save copy" operation. Instead, use [method save_copy] which initiates the process. 
 func complete_copy() -> void: 
 	#?                         0               1           2               3                  4              5            6
 	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
@@ -757,6 +757,7 @@ func _on_session_timer_timeout() -> void:
 				start_session()
 			else: # Stop only
 				stop_session()
+				session_timer.stop()
 		2: # Both Count limit + Session timer
 			if get_value("session_timer_action") == 0: # Stop & Start
 				stop_session()
@@ -764,6 +765,7 @@ func _on_session_timer_timeout() -> void:
 				start_session()
 			else: # Stop only
 				stop_session()
+				session_timer.stop()
 		3: # None
 			pass
 	session_timer.wait_time = get_value("session_duration")
