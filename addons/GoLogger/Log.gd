@@ -292,6 +292,11 @@ func get_value(value : String) -> Variant:
 func start_session(start_delay : float = 0.0) -> void:
 	#?                         0               1           2               3                  4              5            6
 	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
+	if session_status:
+		if get_value("error_reporting") != 2 and !get_value("disable_warn1"):
+			push_warning("GoLogger Warning: Failed to start session, a session is already active.")
+		return
+	
 	categories = config.get_value("plugin", "categories")
 	if categories.is_empty(): 
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
@@ -305,7 +310,6 @@ func start_session(start_delay : float = 0.0) -> void:
 	if get_value("session_print") < 2:
 		print("GoLogger: Session started.")
 
-	# Iterate over each LogFileResource in [param categories] array > Create directories and files 
 	for i in range(categories.size()): 
 
 		categories[i][3] = get_file_name(categories[i][0])
@@ -315,17 +319,13 @@ func start_session(start_delay : float = 0.0) -> void:
 		else:
 			_path = str(base_directory, categories[i][0], "_Gologs\\")
 
-		if _path == "": 
+		if _path == "": # Error check
 			if get_value("error_reporting") == 0: 
 				push_error(str("GoLogger Error: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
 			if get_value("error_reporting") == 1:
 				push_warning(str("GoLogger Error: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
 			return
-		if session_status:
-			if get_value("error_reporting") != 2 and !get_value("disable_warn1"):
-				push_warning("GoLogger Warning: Failed to start session, a session is already active.")
-			return
-
+		
 		else:
 			var _dir : DirAccess
 			if !DirAccess.dir_exists_absolute(_path):
@@ -573,9 +573,16 @@ func stop_session() -> void:
 	if session_status:
 		for i in range(categories.size()):
 			var _f = FileAccess.open(categories[i][3], FileAccess.READ)
-			if !_f and get_value("error_reporting") != 2:
+			
+			if !_f:
 				var _err = FileAccess.get_open_error()
-				if _err != OK: push_warning("GoLogger Warning: Failed to open file ", categories[i][3], " with READ ", get_error(_err))
+				if get_value("error_reporting") != 2:
+					if _err != OK: push_warning("GoLogger Warning: Failed to open file ", categories[i][3], " with READ ", get_error(_err))
+				push_warning("GoLogger Warning: Stopped session but failed to do so properly. Couldn't open the file.")
+				session_status = false
+				session_status_changed.emit()
+				return
+			
 			var _content := _f.get_as_text()
 			_f.close()
 			var _fw = FileAccess.open(categories[i][3], FileAccess.WRITE)
