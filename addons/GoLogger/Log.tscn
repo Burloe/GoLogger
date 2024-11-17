@@ -23,12 +23,18 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource("5_e13q5")
 
-[node name="Panel" type="Panel" parent="GoLoggerElements/Popup"]
-custom_minimum_size = Vector2(400, 110)
+[node name="VBoxContainer" type="VBoxContainer" parent="GoLoggerElements/Popup"]
+custom_minimum_size = Vector2(0, 187)
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Panel" type="Panel" parent="GoLoggerElements/Popup/VBoxContainer"]
+custom_minimum_size = Vector2(400, 126)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
 
-[node name="MarginContainer" type="MarginContainer" parent="GoLoggerElements/Popup/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="GoLoggerElements/Popup/VBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,19 +47,20 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GoLoggerElements/Popup/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer"]
 layout_mode = 2
 theme = ExtResource("5_e13q5")
-theme_override_constants/separation = 4
+theme_override_constants/separation = 9
 
-[node name="RichTextLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/Panel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 55)
+[node name="RichTextLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
 bbcode_enabled = true
-text = "[center] Do you want to save copies of the current log(s)? [font_size=12]These copies are safe from potential deletion."
+text = "[center] Do you want to save copies of the current log(s)? [font_size=12]
+[color=lightblue]Session timer is paused during this prompt"
 
-[node name="CopyNameLineEdit" type="LineEdit" parent="GoLoggerElements/Popup/Panel/MarginContainer/VBoxContainer"]
+[node name="CopyNameLineEdit" type="LineEdit" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(60, 40)
 layout_mode = 2
@@ -65,41 +72,34 @@ context_menu_enabled = false
 middle_mouse_paste_enabled = false
 structured_text_bidi_override = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GoLoggerElements/Popup/Panel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GoLoggerElements/Popup/VBoxContainer"]
 layout_mode = 2
-offset_left = 4.0
-offset_top = 118.0
-offset_right = 396.0
-offset_bottom = 159.0
 theme = ExtResource("5_e13q5")
 theme_override_constants/separation = 12
 
-[node name="PopupYesButton" type="Button" parent="GoLoggerElements/Popup/Panel/HBoxContainer"]
+[node name="PopupYesButton" type="Button" parent="GoLoggerElements/Popup/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 modulate = Color(0.16, 1, 0.16, 1)
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
-text = "Yes"
+text = "Confirm"
 
-[node name="PopupNoButton" type="Button" parent="GoLoggerElements/Popup/Panel/HBoxContainer"]
+[node name="PopupNoButton" type="Button" parent="GoLoggerElements/Popup/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 modulate = Color(1, 0.16, 0.16, 1)
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
-text = "No"
+text = "Cancel"
 
-[node name="PopupErrorLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/Panel"]
+[node name="PopupErrorLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/VBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 9.0
-offset_top = 171.0
-offset_right = 392.0
-offset_bottom = 211.0
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
 theme = ExtResource("5_e13q5")
 bbcode_enabled = true
 text = "[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Error attempting to open file: [/pulse]"
 
-[connection signal="button_up" from="GoLoggerElements/Popup/Panel/HBoxContainer/PopupYesButton" to="." method="_on_yes_button_button_up"]
-[connection signal="button_up" from="GoLoggerElements/Popup/Panel/HBoxContainer/PopupNoButton" to="." method="_on_no_button_button_up"]
+[connection signal="button_up" from="GoLoggerElements/Popup/VBoxContainer/HBoxContainer/PopupYesButton" to="." method="_on_yes_button_button_up"]
+[connection signal="button_up" from="GoLoggerElements/Popup/VBoxContainer/HBoxContainer/PopupNoButton" to="." method="_on_no_button_button_up"]
