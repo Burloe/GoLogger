@@ -43,7 +43,7 @@ var log_header_string : String
 
 @onready var canvas_layer_spinbox : SpinBox = %CanvasLayerSpinBox
 @onready var canvas_layer_lbl : Label = %CanvasLayerLabel
-var canvas_spinbox_line : LineEdit
+var canvas_spinbox_line : LineEdit # Underlying LineEdit node of SpinBox
 @onready var canvas_layer_container : HBoxContainer = %CanvasLayerHBox
 
 
@@ -70,17 +70,17 @@ var canvas_spinbox_line : LineEdit
 
 @onready var file_count_spinbox : SpinBox = %FileCountSpinBox
 @onready var file_count_lbl : Label = %FileCountLabel
-var file_count_spinbox_line : LineEdit
+var file_count_spinbox_line : LineEdit # Underlying LineEdit node of SpinBox
 @onready var file_count_container : HBoxContainer = %FileCountHBox
 
 @onready var entry_count_spinbox : SpinBox = %EntryCountSpinBox
 @onready var entry_count_lbl : Label = %EntryCountLabel
-var entry_count_spinbox_line : LineEdit
+var entry_count_spinbox_line : LineEdit # Underlying LineEdit node of SpinBox
 @onready var entry_count_container : HBoxContainer = %EntryCountHBox
 
 @onready var session_duration_spinbox : SpinBox = %SessionDurationHBox/SessionDurationSpinBox
 @onready var session_duration_lbl : Label = %SessionDurationLabel
-var session_duration_spinbox_line : LineEdit
+var session_duration_spinbox_line : LineEdit # Underlying LineEdit node of SpinBox
 @onready var session_duration_container : HBoxContainer = %SessionDurationHBox
 
 @onready var error_rep_btn : OptionButton = %ErrorRepOptButton
@@ -295,18 +295,14 @@ func _ready() -> void:
 
 		load_settings_state()
 	
-func _on_dock_mouse_entered(node : Label) -> void:
-	node.add_theme_color_override("font_color", c_font_hover)
-
-func _on_dock_mouse_exited(node : Label) -> void:
-	node.add_theme_color_override("font_color", c_font_normal) 
+ 
 
 
 #region settings.ini
 func create_settings_file() -> void:
 	#        0                1                2                 3             4           5           6
 	# [category_name, category_index, current_filename, current_filepath, file_count, entry_count, is_locked]
-	var _a : Array[Array] = [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]]
+	var _a = [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
 
@@ -464,9 +460,9 @@ func update_tooltip(node : Control) -> void:
 		log_header_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Log Header:[color=white][font_size=11]\nUsed to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Limit Method:[color=white][font_size=11]\nMethod used to limit log file length/size.\n[color=ff669e]Using [b]both[/b], only [b]Stop & start[/b] and [b]stop session[/b] actions are available.\n[color=ff5757][b]None[/b] option is NOT recommended."
+			tooltip_lbl.text = "[font_size=14][color=green]Method used to limit log file length/size:[color=white][font_size=11]\n[color=white]When using [b]'both'[/b], entry count action determines the action.\n[color=ff5757][b]'None' option is NOT recommended. Use at your own risk.[/b]"
 		entry_count_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Action:[color=white][font_size=11]\nAction taken when the entry count exceeds the limit. Using 'Remove old entries', the oldest entries are removed to make space for the new entries."
+			tooltip_lbl.text = "[font_size=14][color=green]Action taken when count exceeds limit:[color=white][font_size=11]\n[b]'Remove old entries'[/b]: Oldest entries are removed to make space for the new entries.\n[b]Stop/start:[/b] Stops and starts a new session.\n[b]Stop:[/b] Stops session only." 
 		session_timer_action_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Session Timer Action:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]When Limit Method is set to 'Both'. This setting is used to determine the action taken when either method's condition is met."
 		error_rep_btn:
@@ -483,6 +479,12 @@ func update_tooltip(node : Control) -> void:
 			tooltip_lbl.text = "[font_size=14][color=green]File Count Limit:[color=white][font_size=11]\nLimits the number of files in any log category folder. [color=red][b]NOT RECOMMENDED:[/b] [color=ff4040]Set to 0 if you want to disable this feature."
 		canvas_layer_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]CanvasLayer Layer:[color=white][font_size=11]\nSets the layer of the CanvasLayer node that contains the in-game Controller and the 'Save copy' popup."
+
+func _on_dock_mouse_entered(node : Label) -> void:
+	node.add_theme_color_override("font_color", c_font_hover)
+
+func _on_dock_mouse_exited(node : Label) -> void:
+	node.add_theme_color_override("font_color", c_font_normal)
 #endregion
 
 

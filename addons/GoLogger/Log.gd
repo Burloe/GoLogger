@@ -157,7 +157,7 @@ func _ready() -> void:
 
 ## Creates a settings.ini file.
 func create_settings_file() -> void:
-	var _a : Array[Array] = [["game", 0, "null", "null", 0, true], ["player", 1, "null", "null", 0, true]]
+	var _a : Array[Array] = [["game", 0, "null", "null", 0, 0, false], ["player", 1, "null", "null", 0, 0, false]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
 
