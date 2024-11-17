@@ -530,30 +530,13 @@ func _on_button_button_up(node : Button) -> void:
 			config.save(PATH)
 			print(new_dir, config.get_value("plugin", "base_directory"))
 			
-
-
-
-			# if !_d:
-			# 	if config.get_value("settings", "error_reporting") != 2:
-			# 		printerr("GoLogger: Unable to use path[", base_dir_line.text, "]")
-			# 		base_dir_line.text = old_dir
-			# 		return
-			# if _d == null: # Not an existing directory > Create one
-			# 	if new_dir.begins_with("res://") or new_dir.begins_with("user://"):
-			# 		_d.make_dir(new_dir)
-			# 	else:
-			# 		_d.make_dir_absolute(new_dir)
-			# var _e = DirAccess.get_open_error()
-			# if _e == OK: # New directory approved and created
-			# 	save_setting("plugin", "base_directory", new_dir)
-			# else: # New directory rejected > revert to previous directory
-			# 	base_dir_line = old_dir
-			
 		base_dir_opendir_btn:
 			open_directory()
 
 		base_dir_reset_btn:
 			config.set_value("plugin", "base_directory", "user://GoLogger/")
+			config.save(PATH)
+			base_dir_line.text = config.get_value("plugin", "base_directory")
 #endregion
 
 
