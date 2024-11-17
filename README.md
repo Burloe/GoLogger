@@ -9,8 +9,9 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
 ## **Contents**
 1. Installation and setup
 2. How to use GoLogger
-   * Example usage of the main functions 
+   * Example usage of the main functions
    * Creating log entries with data
+   * Managing log categories
 4. Managing .log file size
    * Entry count limit
    * Sesssion timer
@@ -73,6 +74,10 @@ Only the first parameter mandatory and needs to be defined when calling the func
 
 *Calling this function without defining an index will make it default to log into the category with index 0.* <br><br>
 
+## Managing log categories:
+GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your project's need. When a category name is applied, folders are created with the name of each category within the `base_directory` and once a session is started, a .log file is created inside of each category folder. The number at the top left of each category is the `category_index` of that category. Meaning if you want to log an entry into the "player" category, use the index as the last parameter when calling the function. Example `Log.entry("My player entry", 1)` 
+![image](https://github.com/user-attachments/assets/b1f32712-c7c4-4c80-a5fb-a2d299e859ea)
+<br>*Note: Category folders aren't deleted when you delete a category in the dock. This is to prevent accidental deletion of log files. Open the directory using the "Open" button and manually delete the corresponding folder of the category you've deleted.*
 
 ## Managing .log file size:
 One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates(deletes the content) the file when used. Therefore, the plugin first stores the old entries with `FileAccess.READ` before truncating the file and adding them back before appending the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings/arrays may cause stuttering or general performance issues. This is especially a concern during long sessions or if multiple systems are logging to the same category. To mitigate this, GoLogger offers two methods for limiting logs files from getting too large:
