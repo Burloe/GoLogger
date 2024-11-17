@@ -13,7 +13,7 @@ anchors_preset = -1
 anchor_right = 1.012
 anchor_bottom = 0.215
 offset_right = 205.96
-offset_bottom = 23.8
+offset_bottom = 8.8
 grow_horizontal = 2
 grow_vertical = 2
 current_tab = 1
@@ -111,7 +111,7 @@ Current GridContainer.get_children()[size = 2]:
       [Panel:<Panel#1846332685425>, @Panel@17348:<Panel#1846752115849>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
-custom_minimum_size = Vector2(0, 225)
+custom_minimum_size = Vector2(0, 210)
 layout_mode = 2
 follow_focus = true
 metadata/_tab_index = 1
@@ -208,7 +208,7 @@ theme_override_constants/margin_bottom = 4
 
 [node name="Label" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer" index="0"]
 custom_minimum_size = Vector2(0, 80)
-text = "The base directory used to create and store log files within.\\nAttempts to apply and create the base directory folder using the entered path. The directory path resets to the previously saved path if the new path was rejected."
+text = " "
 
 [node name="ColumnB" type="MarginContainer" parent="Settings/MarginContainer/Panel/HBoxContainer"]
 custom_minimum_size = Vector2(266, 0)

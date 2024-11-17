@@ -5,6 +5,7 @@
 
 [node name="Log" type="Node"]
 script = ExtResource("1_qpie0")
+categories = null
 
 [node name="SessionTimer" type="Timer" parent="."]
 

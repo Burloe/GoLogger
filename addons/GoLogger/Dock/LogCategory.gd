@@ -14,6 +14,8 @@ signal name_warning(toggle_on : bool, type : int)
 @onready var del_btn 	: Button = 		%DeleteButton
 ## Apply [Button] node. Applied the submitted [LineEdit] text.
 @onready var apply_btn 	: Button = 		%ApplyButton
+## Opens the log file of the active/last session.
+@onready var openlog_btn : Button =     %OpenLogButton
 ## File name label.
 @onready var filename_lbl : RichTextLabel = 	%FileNameLabel
 ## Container that holds the file + entry count label.
@@ -25,7 +27,6 @@ signal name_warning(toggle_on : bool, type : int)
 ## Updates category data upon [signal timeout].
 @onready var update_timer : Timer = 	%UpdateTimer
 var dock : TabContainer ## Dock root
-
 
 ## Flags if the name is invalid or not. If true, emit 
 ## [signal name_warning] to Dock to display warning.
@@ -69,6 +70,7 @@ const PATH = "user://GoLogger/settings.ini"
 var config = ConfigFile.new()
 var categories : Array
 
+var pause : bool = false
 
 ## Flags whether or not this log is locked. I.e. safe from being deleted or renamed.
 var is_locked : bool = false:
@@ -88,13 +90,12 @@ func _ready() -> void:
 		line_edit.text_changed.connect(_on_text_changed)
 		line_edit.text_submitted.connect(_on_text_submitted)
 		lock_btn.toggled.connect(_on_lock_btn_toggled)
-		update_timer.timeout.connect(_on_update_timer_timeout)
 		if update_timer.is_stopped(): update_timer.start()
 		line_edit.text = category_name
 		ilbl.text = str(index)
 		lock_btn.button_pressed = is_locked
 		count_container.visible = false
-		filename_lbl.visible = false
+		openlog_btn.visible = false
 		size = Vector2.ZERO
 		if line_edit.text == "":
 			invalid_name = true
@@ -152,41 +153,3 @@ func _on_del_button_up() -> void:
 		dock.update_indices(true) 
 
 
-## Updates the category data upon [signal timeout]. 
-func _on_update_timer_timeout() -> void:
-	#?                         0               1           2               3                  4              5            6
-	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
-	if Engine.is_editor_hint(): # during runtime
-		print("11111")
-		config.load(PATH)
-		var _c = config.get_value("plugin", "categories")
-		if _c != null and !_c.is_empty():
-			print("22222")
-			categories = _c 
-			for i in range(categories.size()):
-				if categories[i][0] == category_name:
-					file_name =   categories[i][2]
-					file_path =   categories[i][3]
-					file_count =  categories[i][4]
-					entry_count = categories[i][5]
-			
-			# Show and apply info data to labels if they have a value 
-			filename_lbl.visible = true if file_name != "null" else false
-			filename_lbl.text = file_name
-
-			var count_status : bool = file_count > 0 or entry_count > 0 
-			
-			count_container.visible = count_status 
-			
-			filecount_lbl.visible = true
-			filecount_lbl.text = str("[left][font_size=12][color=white]File Count[color=orange]\n", file_count)
-			entrycount_lbl.visible = true
-			entrycount_lbl.text = str("[right][font_size=12][color=white]Entry Count[color=skyblue]\n", entry_count)
-
-			printerr(str("name: ", file_name, "\tfile count: ", file_count, "\tentry_count: ", entry_count))
-
-			size = Vector2.ZERO 
-		else:
-			count_container.visible = false
-			filename_lbl.visible = false
-			size = Vector2.ZERO

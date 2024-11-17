@@ -130,8 +130,9 @@ func _input(event: InputEvent) -> void:
 				save_copy()
 
 	
-		if event is InputEventKey and event.keycode == KEY_E and event.is_released():
-			entry("[Test entry start        Test entry end]", 0)
+		if event is InputEventKey and event.is_released():
+			entry(str("[TEST ENTRY] ", event.as_text()), 0) 
+			printerr("testentry - " + event.as_text())
 
 
 func _ready() -> void:
@@ -139,17 +140,18 @@ func _ready() -> void:
 	base_directory = config.get_value("plugin", "base_directory")
 	header_string = get_header()
 	elements_canvaslayer.layer = get_value("canvaslayer_layer")
-	session_timer.autostart = get_value("autostart_session")
 
-
+	session_timer.timeout.connect(_on_session_timer_timeout)
 	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
 	popup_line_edit.text_submitted.connect(_on_line_edit_text_submitted)
 	popup.visible = popup_state
 	popup_errorlbl.visible = false
+	
 	assert(check_filename_conflicts() == "", str("GoLogger Error: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
+	
+	add_hotkeys()
 	if get_value("autostart_session"):
 		start_session()
-	add_hotkeys()
 
 
 
@@ -299,8 +301,8 @@ func start_session(start_delay : float = 0.0) -> void:
 	if get_value("limit_method") == 1 or get_value("limit_method") == 2:
 		session_timer.start(get_value("session_duration"))
 		session_timer_started.emit()
-	if get_value("session_print") == 1 or get_value("session_print") == 3:
-		print("GoLogger: Session started!")
+	if get_value("session_print") < 2:
+		print("GoLogger: Session started.")
 
 
 	# Iterate over each LogFileResource in [param categories] array > Create directories and files 
@@ -376,6 +378,7 @@ func start_session(start_delay : float = 0.0) -> void:
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
 ## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
+	printerr("Entry() called")
 	#?                         0               1           2               3                  4              5            6
 	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
 	categories = config.get_value("plugin", "categories")
@@ -397,7 +400,6 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger Warning: Failed to log entry due to inactive session.")
 		return
 	#endregion
-	
 
 	#? Open directory of the category
 	var _f = FileAccess.open(categories[category_index][3], FileAccess.READ) 
@@ -407,7 +409,6 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return 
 	
-	
 	#? Store old entries before the file is truncated
 	var lines : Array[String] = [] 
 	while not _f.eof_reached():
@@ -415,14 +416,49 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 		if _l != "":
 			lines.append(_l) 
 	_f.close()
+	categories[category_index][5] = lines.size()
 
-	#? Remove old entries at line 1 until entry count is < limit.
-	if get_value("limit_method") == 0 or get_value("limit_method") == 2:
-		while lines.size() >= (get_value("entry_cap") - 1):
-			lines.remove_at(1)# Keep header line at 0
-	
+	#? Limit method logic
+	match get_value("limit_method"): 
+		0: #? Entry count
+			match get_value("entry_count_action"):
+				0: # Remove old entries
+					while lines.size() >= get_value("entry_cap"):
+						lines.remove_at(1) # Keeping header line 0
+				1: # Stop & start
+					if lines.size() >= get_value("entry_cap"):
+						stop_session()
+						start_session()
+						entry(log_entry, category_index)
+						return
+				2: # Stop only
+					if lines.size() >= get_value("entry_cap"):
+						stop_session()
+						return
+		1: #? Session timer
+			match get_value("session_timer_action"):
+				0: # Stop & start session
+					stop_session()
+					start_session()
+					entry(log_entry, category_index)
+					return
+				1: # Stop session 
+					stop_session()
+					return
+		2: #? Both Entry count limit and Session Timer
+			match get_value("session_timer_action"):
+				0: # Stop & start session
+					if lines.size() >= get_value("entry_cap"):
+						stop_session()
+						start_session()
+						entry(log_entry, category_index)
+						return
+				1: # Stop session 
+					if lines.size() >= get_value("entry_cap"):
+						stop_session()
+						return
+
 	categories[category_index][5] = lines.size() 
-	
 
 	#? Open file with write and store the new entry
 	var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE) 
@@ -435,11 +471,9 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	for line in lines:
 		_fw.store_line(str(line))
 
-	#? Add the new entry at end
-	var _entry : String = str("\n\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
+	#? Add the new entry at end and close FileAccess object
+	var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
 	_fw.store_line(_entry)
-	
-	_fw.store_line(str(_entry))
 	_fw.close() 
 
 
@@ -516,21 +550,18 @@ func complete_copy() -> void:
 		popup_line_edit.text = ""
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
+	if get_value("session_print") == 0 or get_value("session_print") == 2:
+		print("GoLogger: Copy of the active session was created.")
 
 
-## Stops the current session. Preventing further entries to be logged. In order to log again, a new 
-## session must be started using [method start_session] which creates a new categories.[br] 
+## Stops the current session. Preventing further entries to be logged into the file of the current session. 
+## In order to log again, a new session must be started using [method start_session] which creates a new 
+## session and file. This is done automatically if your settings allows it.[br] 
 func stop_session() -> void:
-	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
-	# 0 = category name
-	# 1 = category index
-	# 2 = current file name(with timestamp)
-	# 3 = current file path
-	# 4 = file count
-	# 5 = entry count 
-	# 6 = is locked
+	#?                         0               1           2               3                  4              5            6
+	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
 	categories = config.get_value("plugin", "categories")
-	if get_value("session_print") == 1 or get_value("session_print") == 3:
+	if get_value("session_print") == 0 or get_value("session_print") == 3:
 		print("GoLogger: Session stopped!")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] Stopped log session.")
 
@@ -715,20 +746,21 @@ func add_hotkeys() -> void:
 ## Uses [param limit_action] to determine which action should be taken when [param session_timer] timeout 
 ## occurs. 
 func _on_session_timer_timeout() -> void:
-	if config.get_value("settings", "error_reporting") != 2:
-		print("GoLogger: Session timeout!")
+	print("session_timer timed out") 
 	match get_value("limit_method"):
 		0: # Entry count limit
 			pass
 		1: # Session Timer
-			if get_value("limit_action") == 0: # Stop & Start
+			if get_value("session_timer_action") == 0: # Stop & Start
 				stop_session()
+				await get_tree().physics_frame
 				start_session()
 			else: # Stop only
 				stop_session()
 		2: # Both Count limit + Session timer
-			if get_value("limit_action") == 0: # Stop & Start
+			if get_value("session_timer_action") == 0: # Stop & Start
 				stop_session()
+				await get_tree().physics_frame
 				start_session()
 			else: # Stop only
 				stop_session()

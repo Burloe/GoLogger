@@ -420,7 +420,7 @@ func update_tooltip(node : Control) -> void:
 		error_rep_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nAllows you to disable non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' turns all warnings and non-critical errors off."
 		session_print_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Print Session Changes:[color=white][font_size=11]\nGoLogger can print to Output whenever its base functions are called."
+			tooltip_lbl.text = "[font_size=14][color=green]Print Session Changes:[color=white][font_size=11]\nGoLogger can print to Output whenever session status is changed."
 		
 		# Int settings [SpinBoxes]
 		entry_count_spinbox:
