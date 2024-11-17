@@ -46,10 +46,13 @@ Log.start_session()
 # Starts session 1.2 seconds after the call.
 await Log.start_session(1.2)
 
-# No category_index defined > defaults to category 0.
-Log.entry(str("Current game time: ", time_of_day)) # Resulting entry : [2024-11-11 19:17:27] Current game time: 16.30
-# Logs into category 1.
-Log.entry(str("Player's current health: ", current_health, "(", max_health, ")"), 1) # Resulting entry: [2024-11-11 19:17:27] Player's current health: 94(100)
+# No category_index defined > defaults to category 0("game" category by default).
+Log.entry(str("Current game time: ", time_of_day))
+# Resulting entry : [2024-11-11 19:17:27] Current game time: 16.30
+
+# Logs into category 1("player" category by default).
+Log.entry(str("Player's current health: ", current_health, "(", max_health, ")"), 1)
+# Resulting entry: [2024-11-11 19:17:27] Player's current health: 94(100)
 
 # Initiates the "copy session" operation by showing the name prompt popup.
 Log.save_copy()
