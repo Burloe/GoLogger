@@ -96,6 +96,7 @@ func _ready() -> void:
 func refresh_index_label(idx : int) -> void:
 	ilbl.text = str(idx)
 
+
 ## Checks the name against existing category names in the saved
 ## categories settings.ini file.
 func check_existing_conflicts(name : String) -> bool: 
@@ -113,7 +114,6 @@ func apply_name(name : String) -> void:
 	category_name = name
 	line_edit.release_focus()
 	apply_btn.disabled = true
-	pass
 
 
 ## Enables/disables the Apply button when the [LineEdit] text changes IF

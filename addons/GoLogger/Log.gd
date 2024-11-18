@@ -110,10 +110,8 @@ func _input(event: InputEvent) -> void:
 			if hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
 				stop_session()
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
-
 				save_copy()
 
-	
 		# if event is InputEventKey and event.is_released():
 		# 	entry(str("[TEST ENTRY] ", event.as_text()), 0)
 
@@ -291,6 +289,7 @@ func start_session(start_delay : float = 0.0) -> void:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 	
+	config.load(PATH)
 	categories = config.get_value("plugin", "categories")
 	if categories.is_empty(): 
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
@@ -378,6 +377,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	printerr("Entry() called")
 	#?        0               1                2                 3             4            5            6
 	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
+	config.load(PATH)
 	categories = config.get_value("plugin", "categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ")
 	
@@ -493,6 +493,7 @@ func complete_copy() -> void:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger: Attempt to log entry failed due to inactive session.")
 		return
 
+	config.load(PATH)
 	categories = config.get_value("plugin", "categories")
 	if categories.is_empty():
 		if config.get_value("plugin", "error_reporting"):
@@ -509,7 +510,7 @@ func complete_copy() -> void:
 		# Open file 
 		var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
 		if !_fr:
-			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base of file [", categories[i][3],"].")
+			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base file to copy the session [", categories[i][3],"].")
 			popup_errorlbl.visible = true
 			await get_tree().create_timer(4.0).timeout
 			return
@@ -547,6 +548,7 @@ func stop_session() -> void:
 		return
 	
 	else:
+		config.load(PATH)
 		categories = config.get_value("plugin", "categories")
 		var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] Stopped log session.")
 		
@@ -613,6 +615,7 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 #region Helper functions
 ## Helper function that returns an appropriate log header string depending on [param log_header].
 func get_header() -> String:
+	config.load(PATH)
 	match get_value("log_header"):
 		0: # Project name and version
 			var _n = str(ProjectSettings.get_setting("application/config/name"))

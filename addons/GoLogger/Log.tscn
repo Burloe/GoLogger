@@ -82,7 +82,8 @@ structured_text_bidi_override = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="GoLoggerElements/Popup/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("5_e13q5")
-theme_override_constants/separation = 12
+theme_override_constants/separation = 20
+alignment = 1
 
 [node name="PopupYesButton" type="Button" parent="GoLoggerElements/Popup/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true

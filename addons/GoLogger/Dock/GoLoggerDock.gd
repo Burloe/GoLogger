@@ -300,8 +300,8 @@ func _ready() -> void:
 
 #region settings.ini
 func create_settings_file() -> void:
-	#        0                1                2                 3             4           5           6
-	# [category_name, category_index, current_filename, current_filepath, file_count, entry_count, is_locked]
+	#?        0                1                2                 3             4           5           6
+	#? [category_name, category_index, current_filename, current_filepath, file_count, entry_count, is_locked]
 	var _a = [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
@@ -328,9 +328,10 @@ func create_settings_file() -> void:
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
-## Sets the state of all the buttons in the dock depending on the settings retrived
+## Sets the state of all the buttons in the dock depending on the settings retreived
 ## from the settings.ini.
 func load_settings_state() -> void:
+	config.load(PATH)
 	base_dir_line.text = 							config.get_value("plugin", 	 "base_directory")
 	log_header_btn.selected = 						config.get_value("settings", "log_header")
 	canvas_layer_spinbox.value = 					config.get_value("settings", "canvaslayer_layer")
@@ -557,6 +558,7 @@ func _on_line_edit_text_changed(new_text : String, node : LineEdit) -> void:
 func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 	match node:
 		base_dir_line:
+			config.load(PATH)
 			if new_text == "":
 				base_dir_apply_btn.disabled = true
 				return
@@ -700,6 +702,7 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 func load_categories(deferred : bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
+	config.load(PATH)
 	var _c = config.get_value("plugin", "categories")
 	for i in range(_c.size()):
 		var _n = category_scene.instantiate()
@@ -760,7 +763,6 @@ func open_directory() -> void:
 
 
 
-
 ### Helpers ###
 ## Displays a warning whenever a category has an invalid or empty name.
 func _on_name_warning(toggled_on : bool, type : int) -> void:
@@ -801,7 +803,6 @@ func check_conflict_name(obj : PanelContainer, name : String) -> bool:
 
 
 
-
 ## Helper function - Updates indices of all the categories.
 func update_indices(deferred : bool = false) -> void:
 	if deferred:
@@ -818,7 +819,6 @@ func update_indices(deferred : bool = false) -> void:
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile"))) 
-
 
 
 
