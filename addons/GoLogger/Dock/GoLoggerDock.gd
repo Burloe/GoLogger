@@ -114,6 +114,7 @@ func _ready() -> void:
 		# Load/create settings.ini
 		var _d = DirAccess.open("user://GoLogger/")
 		if !_d:
+			_d = DirAccess.open(".")
 			_d.make_dir("user://GoLogger/")
 
 
