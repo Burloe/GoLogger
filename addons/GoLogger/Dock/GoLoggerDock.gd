@@ -99,19 +99,13 @@ var btn_array : Array[Control] = []
 var container_array : Array[Control] = []
 var c_font_normal := Color("9d9ea0")# 9d9ea0 # dfdfdf
 var c_font_hover := Color("f2f2f2") 
-#endregion
+#endregion 
 
-
-# Debug
-# func _physics_process(delta: float) -> void: 
-# 	$Settings/MarginContainer/Panel/HBoxContainer/ColumnE/Column/Label2.text = str("FileCount status: ", file_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted))
-# 	var _c = config.get_value("plugin", "categories") 
-# 	$Categories/MarginContainer/VBoxContainer/Label.text = str("Current .ini setting(size = ", _c.size(), "):\n      ", _c, "\nCurrent GridContainer.get_children()[size = ",category_container.get_children().size(), "]:\n      ", category_container.get_children())
 
 
 func _ready() -> void: 
 	if Engine.is_editor_hint():
-		# Load/create settings.ini
+		# Ensure or create settings.ini
 		var _d = DirAccess.open("user://GoLogger/")
 		if !_d:
 			_d = DirAccess.open(".")
@@ -324,9 +318,8 @@ func create_settings_file() -> void:
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false)
 	var _s = config.save(PATH)
-	if _s != OK:
-		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
+	if _s != OK: 
+		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_s, "ConfigFile")))
 
 
 ## Sets the state of all the buttons in the dock depending on the settings retreived
