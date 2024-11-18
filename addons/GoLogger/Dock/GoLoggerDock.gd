@@ -109,7 +109,7 @@ func _ready() -> void:
 		var _d = DirAccess.open("user://GoLogger/")
 		if !_d:
 			_d = DirAccess.open(".")
-			_d.make_dir("user://GoLogger/")
+			_d.make_dir_absolute("user://GoLogger/")
 
 
 		if !FileAccess.file_exists(PATH):
