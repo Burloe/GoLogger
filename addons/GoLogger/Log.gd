@@ -130,6 +130,7 @@ func _ready() -> void:
 	popup_line_edit.text_submitted.connect(_on_line_edit_text_submitted)
 	popup.visible = popup_state
 	popup_errorlbl.visible = false
+	popup_yesbtn.disabled = true
 	
 	assert(check_filename_conflicts() == "", str("GoLogger: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
 	
