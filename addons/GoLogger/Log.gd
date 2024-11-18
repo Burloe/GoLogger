@@ -59,7 +59,7 @@ var header_string : String
 @onready var elements_canvaslayer : CanvasLayer = %GoLoggerElements
 
 ## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
-@onready var session_timer : Timer = $SessionTimer 
+@onready var session_timer : Timer = %SessionTimer 
 
 ## Flags whether or not a session is active.
 var session_status : bool = false: 
@@ -136,11 +136,9 @@ func _ready() -> void:
 		start_session()
 
 
-func _physics_process(delta: float) -> void:
-	if !Engine.is_editor_hint():
-		print(str("Popup state: ", popup_state, "\tInactionTimer stopped: ", inaction_timer.is_stopped(), "\tInactionTimer time left: ", snapped(inaction_timer.time_left, 1.0)))
-		if popup_state and !inaction_timer.is_stopped():
-			print("asdf")
+func _physics_process(_delta: float) -> void:
+	if !Engine.is_editor_hint(): 
+		if popup_state and !inaction_timer.is_stopped(): 
 			prompt_label.text = str("[center] Save copies of the current logs? [font_size=12]\nAction will be automatically cancelled in ", snapped(inaction_timer.time_left, 1.0),"s!\n[color=lightblue]SessionTimer & Entry Count is paused during this prompt.")
 
 
