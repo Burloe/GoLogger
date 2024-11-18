@@ -624,10 +624,7 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 			config.set_value("settings", "disable_warn1", toggled_on)
 		disable_warn2_btn:
 			config.set_value("settings", "disable_warn2", toggled_on)
-	var _s = config.save(PATH)
-	if _s != OK:
-		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+	config.save(PATH) 
 #endregion
 
 
@@ -809,10 +806,7 @@ func update_indices(deferred : bool = false) -> void:
 		var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c[i].file_count, _c[i].entry_count, _c[i].is_locked]
 		refresh_table.append(_e)
 	config.set_value("plugin", "categories", refresh_table)
-	var _s = config.save(PATH)
-	if _s != OK:
-		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile"))) 
+	config.save(PATH) 
 
 
 

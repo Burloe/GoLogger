@@ -75,7 +75,7 @@ var is_locked : bool = false:
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
-		categories = config.get_value("plugin", "categories")
+		categories = config.get_value("plugin", "categories", [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]])
 		del_btn.button_up.connect(_on_del_button_up)
 		apply_btn.button_up.connect(_on_apply_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
