@@ -23,6 +23,11 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource("5_e13q5")
 
+[node name="InactionTimer" type="Timer" parent="GoLoggerElements/Popup"]
+unique_name_in_owner = true
+wait_time = 30.0
+one_shot = true
+
 [node name="VBoxContainer" type="VBoxContainer" parent="GoLoggerElements/Popup"]
 custom_minimum_size = Vector2(0, 187)
 layout_mode = 2
@@ -52,13 +57,15 @@ layout_mode = 2
 theme = ExtResource("5_e13q5")
 theme_override_constants/separation = 9
 
-[node name="RichTextLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="PromptLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
 bbcode_enabled = true
-text = "[center] Do you want to save copies of the current log(s)? [font_size=12]
-[color=lightblue]Session timer is paused during this prompt"
+text = "[center] Save copies of the current logs? [font_size=12]
+This action is cancelled in 18s!
+[color=lightblue]SessionTimer & Entry Count is paused during this prompt."
 
 [node name="CopyNameLineEdit" type="LineEdit" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true

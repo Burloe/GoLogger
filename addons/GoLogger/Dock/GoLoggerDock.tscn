@@ -16,13 +16,12 @@ offset_right = -0.52002
 offset_bottom = 0.159988
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 1
+current_tab = 0
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0]
 
 [node name="Categories" type="ScrollContainer" parent="."]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -111,6 +110,7 @@ Current GridContainer.get_children()[size = 2]:
       [Panel:<Panel#1846332685425>, @Panel@17348:<Panel#1846752115849>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(0, 210)
 layout_mode = 2
 follow_focus = true
@@ -521,7 +521,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 max_value = 30.0
-value = 5.0
+value = 10.0
 alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
@@ -614,12 +614,14 @@ text = "Disable warnings:"
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_y5prw")
+button_pressed = true
 text = "    Failed to start session"
 
 [node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_y5prw")
+button_pressed = true
 text = "    Failed to log entry"
 
 [node name="Control" type="Control" parent="Settings/MarginContainer/Panel/HBoxContainer/ColumnE/VBoxContainer"]

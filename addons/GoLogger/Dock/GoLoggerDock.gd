@@ -736,6 +736,8 @@ func add_category() -> void:
 ## categories are saved the next frame after [method queue_free] is completed at the end 
 ## of the frame it's called.
 func save_categories(deferred : bool = false) -> void:
+	#?        0               1                2                 3             4            5            6
+	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	if deferred:
 		await get_tree().physics_frame
 	var main : Array # Main array
@@ -774,8 +776,7 @@ func _on_name_warning(toggled_on : bool, type : int) -> void:
 
 
 
-
-## Updates the name of a category, then saves all categories.
+## Checks the name against other LogCategories, updates the name of the category, then saves all categories.
 func update_category_name(obj : PanelContainer, new_name : String) -> void:
 	var final_name = new_name
 	var add_name : int = 1
@@ -785,7 +786,6 @@ func update_category_name(obj : PanelContainer, new_name : String) -> void:
 	if obj.category_name != final_name:
 		obj.category_name = final_name
 	save_categories()
-
 
 
 

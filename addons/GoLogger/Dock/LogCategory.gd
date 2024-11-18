@@ -39,6 +39,7 @@ var invalid_name : bool = false:
 			if line_edit != null: line_edit.text = category_name
 			if dock != null: dock.update_category_name(self, value)
 
+
 ## Index/order of categories as they're displayed in the dock.
 @export var index : int = 0:
 	set(value):
@@ -56,7 +57,7 @@ var invalid_name : bool = false:
 
 const PATH = "user://GoLogger/settings.ini"
 var config = ConfigFile.new()
-var categories : Array
+var categories : Array 
 
 var pause : bool = false
 
@@ -73,8 +74,10 @@ var is_locked : bool = false:
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
+		config.load(PATH)
+		categories = config.get_value("plugin", "categories")
 		del_btn.button_up.connect(_on_del_button_up)
-		apply_btn.button_up.connect(_on_text_submitted)
+		apply_btn.button_up.connect(_on_apply_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
 		line_edit.text_submitted.connect(_on_text_submitted)
 		lock_btn.toggled.connect(_on_lock_btn_toggled)
@@ -86,41 +89,57 @@ func _ready() -> void:
 			invalid_name = true
 			apply_btn.disabled = true
 		else: 
-			invalid_name = false	
+			invalid_name = false
 
 
 ## Updates the index label when deleting a category.
 func refresh_index_label(idx : int) -> void:
 	ilbl.text = str(idx)
 
+## Checks the name against existing category names in the saved
+## categories settings.ini file.
+func check_existing_conflicts(name : String) -> bool: 
+	config.load(PATH)
+	categories = config.get_value("plugin", "categories")
+
+	for i in range(categories.size()):
+		if categories[i][0] == name:
+			return true
+		else: return false
+	return false
+
+
+func apply_name(name : String) -> void:
+	category_name = name
+	line_edit.release_focus()
+	apply_btn.disabled = true
+	pass
+
 
 ## Enables/disables the Apply button when the [LineEdit] text changes IF
 ## the new text is either "" or the current category name.
 func _on_text_changed(new_text : String) -> void:
-	var categories = config.get_value("plugin", "categories")
-	if   new_text == "":
-		invalid_name = true
-	
-	elif !categories.is_empty() and new_text == categories[index][0]:
+	if new_text == "" or check_existing_conflicts(new_text):
 		apply_btn.disabled = true
 		invalid_name = true
-	
 	else:
 		apply_btn.disabled = false
+		invalid_name = false
 
 	if line_edit.get_caret_column() == line_edit.text.length() - 1:
 		line_edit.set_caret_column(line_edit.text.length())
 	else: line_edit.set_caret_column(line_edit.get_caret_column() + 1)
 
 
+func _on_apply_button_up() -> void:
+	apply_name(line_edit.text)
+
+
 ## Applies a new category name when [LineEdit]'s text is submitted either 
 ## by using the Apply button or pressing the Enter key while [LineEdit] 
 ## is focused. 
 func _on_text_submitted(new_text : String) -> void:
-	# Conflict checking is done in category_name's set()
-	category_name = new_text
-	line_edit.release_focus()
-	apply_btn.disabled = true
+	apply_name(new_text)
 
 
 ## Locks this category from being removed or renamed.

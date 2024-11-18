@@ -82,11 +82,13 @@ var hotkey_copy_session : InputEventShortcut = preload("res://addons/GoLogger/Co
 @onready var popup_line_edit 	: LineEdit = 		%CopyNameLineEdit
 @onready var popup_yesbtn 		: Button = 			%PopupYesButton
 @onready var popup_nobtn 		: Button =			%PopupNoButton
+@onready var prompt_label       : RichTextLabel =   %PromptLabel
 @onready var popup_errorlbl 	: RichTextLabel = 	%PopupErrorLabel
-
+@onready var inaction_timer     : Timer =           %InactionTimer
 ## When true, this bool activates the popup prompt that allows you to enter a file copy name. 
 var popup_state : bool = false: 
 	set(value):
+		popup_state = value
 		if session_status:
 			toggle_copy_popup(value)
 
@@ -108,6 +110,7 @@ func _input(event: InputEvent) -> void:
 			if hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
 				stop_session()
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
+
 				save_copy()
 
 	
@@ -122,6 +125,7 @@ func _ready() -> void:
 	elements_canvaslayer.layer = get_value("canvaslayer_layer")
 
 	session_timer.timeout.connect(_on_session_timer_timeout)
+	inaction_timer.timeout.connect(_on_inaction_timer_timeout)
 	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
 	popup_line_edit.text_submitted.connect(_on_line_edit_text_submitted)
 	popup.visible = popup_state
@@ -132,6 +136,13 @@ func _ready() -> void:
 	if get_value("autostart_session"):
 		start_session()
 
+
+func _physics_process(delta: float) -> void:
+	if !Engine.is_editor_hint():
+		print(str("Popup state: ", popup_state, "\tInactionTimer stopped: ", inaction_timer.is_stopped(), "\tInactionTimer time left: ", snapped(inaction_timer.time_left, 1.0)))
+		if popup_state and !inaction_timer.is_stopped():
+			print("asdf")
+			prompt_label.text = str("[center] Save copies of the current logs? [font_size=12]\nAction will be automatically cancelled in ", snapped(inaction_timer.time_left, 1.0),"s!\n[color=lightblue]SessionTimer & Entry Count is paused during this prompt.")
 
 
 ## Creates a settings.ini file.
@@ -272,8 +283,8 @@ func get_value(value : String) -> Variant:
 ##	Log.start_session()                       # Normal call
 ##	await Log.start session(1.2)              # Calling with a start delay[/codeblock]
 func start_session(start_delay : float = 0.0) -> void:
-	#?                         0               1           2               3                  4              5            6
-	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
+	#?        0               1                2                 3             4            5            6
+	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	if session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn1"):
 			push_warning("GoLogger: Failed to start session, a session is already active.")
@@ -364,8 +375,8 @@ func start_session(start_delay : float = 0.0) -> void:
 ## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
 	printerr("Entry() called")
-	#?                         0               1           2               3                  4              5            6
-	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
+	#?        0               1                2                 3             4            5            6
+	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	categories = config.get_value("plugin", "categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ")
 	
@@ -466,7 +477,8 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 ## Initiates the "save copy" operation by displaying the "enter name" prompt. Once a name has been entered and confirmed. [method complete_copy] is called.
 func save_copy() -> void:
 	if session_status:		
-		popup_state = !popup_state
+		popup_state = true if popup_state == false else false
+		print(str("PopupState = ", popup_state))
 		
 
 
@@ -474,8 +486,8 @@ func save_copy() -> void:
 ## Saves the actual copies of the current log session in "saved_logs" sub-folders. [br][b]Note:[/b][br]   
 ##     [b]This function should never be called[/b] to perform the "save copy" operation. Instead, use [method save_copy] which initiates the process. 
 func complete_copy() -> void: 
-	#?                         0               1           2               3                  4              5            6
-	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
+	#?        0               1                2                 3             4            5            6
+	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	if !session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger: Attempt to log entry failed due to inactive session.")
 		return
@@ -484,7 +496,6 @@ func complete_copy() -> void:
 	if categories.is_empty():
 		if config.get_value("plugin", "error_reporting"):
 			push_warning("GoLogger: Unable to complete copy action. No categories are present.")
-	popup_state = false
 	
 	# Trim name if user entered a name with .log
 	if copy_name.ends_with(".log") or copy_name.ends_with(".txt"):
@@ -517,10 +528,9 @@ func complete_copy() -> void:
 		# Store contents + cleanup
 		_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
 		_fw.close()
-	copy_name = ""
-	popup_line_edit.text = ""
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
+	popup_state = false
 	if get_value("session_print") == 0 or get_value("session_print") == 2:
 		print("GoLogger: Persistent copies of the active session was created.")
 	
@@ -530,8 +540,8 @@ func complete_copy() -> void:
 ## In order to log again, a new session must be started using [method start_session] which creates a new 
 ## session and file. This is done automatically if your settings allows it.[br] 
 func stop_session() -> void:
-	#?                         0               1           2               3                  4              5            6
-	#? Category array = [category name, category index, current file name, current filepath, file count, entry count, is locked]
+	#?        0               1                2                 3             4            5            6
+	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	if !session_status:
 		return
 	
@@ -576,18 +586,26 @@ func stop_session() -> void:
 	session_stopped.emit()
 
 
-## Toggles the "copy session" popup state. Also pauses the SessionTimer if the limit method is set to use it.
+## Toggles the "copy session" popup state by handling visibilities, disable states, focus modes etc.
 func toggle_copy_popup(toggle_on : bool) -> void: 
 	# ensuring session_status is done popup_state's set()
-	popup.visible = toggle_on
-	popup_line_edit.editable = toggle_on
-	popup_nobtn.disabled  = !toggle_on
-	popup_line_edit.focus_mode = Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
-	popup_yesbtn.focus_mode   = Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
-	popup_nobtn.focus_mode    = Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
-	popup_line_edit.grab_focus()
+	popup.visible              =  toggle_on
+	popup_line_edit.editable   =  toggle_on
+	popup_nobtn.disabled       = !toggle_on
+	popup_yesbtn.disabled      = !toggle_on
+	popup_line_edit.focus_mode =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
+	popup_yesbtn.focus_mode    =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
+	popup_nobtn.focus_mode     =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
 	if !session_timer.is_stopped(): 
-		session_timer.paused = toggle_on
+		session_timer.paused   =  toggle_on
+	
+	if toggle_on:
+		popup_line_edit.grab_focus()
+		inaction_timer.start(30)
+	else:
+		copy_name = ""
+		popup_line_edit.text = ""
+		popup_line_edit.release_focus()
 #endregion
 
 
@@ -622,14 +640,8 @@ func get_header() -> String:
 ## Helper function that determines whether or not any [param category_name] was found more than once 
 ## in [param categories].
 func check_filename_conflicts() -> String:
-	# Category array = [category name, category index, is locked, current file name, current filepath, entry count]
-	# 0 = category name
-	# 1 = category index
-	# 2 = current file name(with timestamp)
-	# 3 = current file path
-	# 4 = file count
-	# 5 = entry count 
-	# 6 = is locked 
+	#?        0               1                2                 3             4            5            6
+	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	categories = config.get_value("plugin", "categories")
 	var seen_resources : Array[String] = []
 	for r in categories:
@@ -768,8 +780,14 @@ func _on_session_timer_timeout() -> void:
 			pass
 	session_timer.wait_time = get_value("session_duration")
 
+## Copy session 
+func _on_inaction_timer_timeout() -> void:
+	popup_state = false
+
 
 func _on_line_edit_text_changed(new_text : String) -> void:
+	if !inaction_timer.is_stopped(): inaction_timer.stop()
+	inaction_timer.start(30)
 	if new_text != "":
 		popup_yesbtn.disabled = false
 		popup_line_edit.set_caret_column(popup_line_edit.text.length())
@@ -787,12 +805,10 @@ func _on_line_edit_text_submitted(new_text : String) -> void:
 		else:
 			copy_name = popup_line_edit.text
 		complete_copy()
-		popup_line_edit.release_focus()
 
 
 func _on_no_button_button_up() -> void:
 	popup_state = false
-	popup_line_edit.text = ""
 
 
 func _on_yes_button_button_up() -> void:
