@@ -138,7 +138,7 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	if !Engine.is_editor_hint(): 
-		if popup_state and !inaction_timer.is_stopped(): 
+		if popup_state and inaction_timer != null and !inaction_timer.is_stopped(): 
 			prompt_label.text = str("[center] Save copies of the current logs? [font_size=12]\nAction will be automatically cancelled in ", snapped(inaction_timer.time_left, 1.0),"s!\n[color=lightblue]SessionTimer & Entry Count is paused during this prompt.")
 
 
@@ -234,8 +234,7 @@ func validate_settings() -> bool:
 		"PackedVector3Array",
 		"PackedColorArray"   
 	]
-	var faulty_setting = []
-	var faulty_type = []
+	
 	for setting_key in expected_types.keys(): 
 		var splits = setting_key.split("/") 
 		var expected_type = expected_types[setting_key]
@@ -357,9 +356,10 @@ func start_session(start_delay : float = 0.0) -> void:
 	config.save(PATH)
 	if get_value("session_print") == 1 or get_value("session_print") == 2: print("GoLogger: Started session.")
 	session_status = true
-	if session_timer.is_stopped() and get_value("session_timer_action") == 1 or session_timer.is_stopped() and get_value("session_timer_action") == 2:
-		session_timer.start()
-		session_timer_started.emit()
+	if session_timer != null:
+		if session_timer.is_stopped() and get_value("session_timer_action") == 1 or session_timer.is_stopped() and get_value("session_timer_action") == 2:
+			session_timer.start()
+			session_timer_started.emit()
 	session_started.emit()
 
 
@@ -597,7 +597,7 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 	popup_line_edit.focus_mode =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
 	popup_yesbtn.focus_mode    =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
 	popup_nobtn.focus_mode     =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
-	if !session_timer.is_stopped(): 
+	if session_timer != null and !session_timer.is_stopped(): 
 		session_timer.paused   =  toggle_on
 	
 	if toggle_on:
@@ -788,7 +788,8 @@ func _on_inaction_timer_timeout() -> void:
 
 
 func _on_line_edit_text_changed(new_text : String) -> void:
-	if !inaction_timer.is_stopped(): inaction_timer.stop()
+	if inaction_timer != null and !inaction_timer.is_stopped(): 
+		inaction_timer.stop()
 	inaction_timer.start(30)
 	if new_text != "":
 		popup_yesbtn.disabled = false
