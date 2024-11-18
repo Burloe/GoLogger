@@ -43,7 +43,7 @@ GoLogger uses 'sessions' to indicate when its logging or not. Each session creat
 ```gdscript
 
 # General use, simply starts the session. 
-Log.start_session()
+Log.start_session() # In-game hotkey:  Ctrl + Shift + O
 # Starts session 1.2 seconds after the call.
 await Log.start_session(1.2)
 
@@ -56,11 +56,12 @@ Log.entry(str("Player's current health: ", current_health, "(", max_health, ")")
 # Resulting entry: [2024-11-11 19:17:27] Player's current health: 94(100)
 
 # Initiates the "copy session" operation by showing the name prompt popup.
-Log.save_copy()
+Log.save_copy() # In-game hotkey:  Ctrl + Shift + U
 
 # Stops an active session.
-Log.stop_session()
+Log.stop_session() # In-game hotkey:  Ctrl + Shift + P
 ```
+
 *`start_delay` delays the session start by the specifies time. This was added to prevent .log files from being created with the same timestamp/name which can cause sorting issues when identifying and deleting the oldest log.*
 
 
@@ -75,9 +76,12 @@ Only the first parameter mandatory and needs to be defined when calling the func
 *Calling this function without defining an index will make it default to log into the category with index 0.* <br><br>
 
 ## Managing log categories:
-GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your project's need. When a category name is applied, folders are created with the name of each category within the `base_directory` and once a session is started, a .log file is created inside of each category folder. The number at the top left of each category is the `category_index` of that category. Meaning if you want to log an entry into the "player" category, use the index as the last parameter when calling the function. Example `Log.entry("My player entry", 1)` 
-![image](https://github.com/user-attachments/assets/b1f32712-c7c4-4c80-a5fb-a2d299e859ea)
-<br>*Note: Category folders aren't deleted when you delete a category in the dock. This is to prevent accidental deletion of log files. Open the directory using the "Open" button and manually delete the corresponding folder of the category you've deleted.*
+GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your project's need. When a category name is applied, folders are created with the name of each category within the `base_directory` and once a session is started, the folders for all categories with applied names are created(if they don't already exist) and a .log file are saved inside. The number at the top left of each category is the `category_index` of that category. Meaning if you want to log an entry into the "player" category, use the index as the last parameter when calling the function. Example `Log.entry("My player entry", 1)` 
+![GoLoggerCategoryDock](https://github.com/user-attachments/assets/f4346da0-a9b5-4b00-83ba-147bcfdd3481)
+
+*Notes:*
+* *The lock button disables the the text field, delete and apply button but doesn't protect against using the Reset button.*
+* *Category folders aren't deleted when you delete a category in the dock. This is to prevent accidental deletion of log files. Open the directory using the "Open" button and manually delete the corresponding folder of the category you've deleted.*
 
 ## Managing .log file size:
 One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates(deletes the content) the file when used. Therefore, the plugin first stores the old entries with `FileAccess.READ` before truncating the file and adding them back before appending the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings/arrays may cause stuttering or general performance issues. This is especially a concern during long sessions or if multiple systems are logging to the same category. To mitigate this, GoLogger offers two methods for limiting logs files from getting too large:
