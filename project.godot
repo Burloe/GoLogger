@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="GoLogger"
-config/version="1.1"
+config/version="1.2"
+config/tags=PackedStringArray("plugin", "tool")
 run/main_scene="res://Showcase/main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 

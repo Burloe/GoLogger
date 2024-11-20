@@ -1,0 +1,13 @@
+[gd_resource type="InputEventShortcut" load_steps=3 format=3 uid="uid://n4t5k7np2380"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_xopda"]
+device = -1
+shift_pressed = true
+ctrl_pressed = true
+keycode = 79
+
+[sub_resource type="Shortcut" id="Shortcut_g3g2u"]
+events = [SubResource("InputEventKey_xopda")]
+
+[resource]
+shortcut = SubResource("Shortcut_g3g2u")

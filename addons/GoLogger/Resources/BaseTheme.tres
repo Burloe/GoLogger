@@ -1,0 +1,5 @@
+[gd_resource type="Theme" format=3 uid="uid://cfawl7b2vkeh"]
+
+[resource]
+CheckButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+CheckButton/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)

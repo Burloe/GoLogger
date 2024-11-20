@@ -1,17 +1,114 @@
-[gd_scene load_steps=4 format=3 uid="uid://dm7mwwoselesw"]
+[gd_scene load_steps=3 format=3 uid="uid://dm7mwwoselesw"]
 
 [ext_resource type="Script" path="res://addons/GoLogger/Log.gd" id="1_qpie0"]
-[ext_resource type="PackedScene" uid="uid://quridjl6aioe" path="res://addons/GoLogger/LogController/GoLoggerController.tscn" id="2_i3pa3"]
-[ext_resource type="InputEventShortcut" uid="uid://cxkuwhx4np0m7" path="res://addons/GoLogger/LogController/ControllerToggleShortcut.tres" id="2_yjbc5"]
+[ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="5_e13q5"]
 
 [node name="Log" type="Node"]
 script = ExtResource("1_qpie0")
-controller_toggle_binding = ExtResource("2_yjbc5")
 
 [node name="SessionTimer" type="Timer" parent="."]
+unique_name_in_owner = true
 
-[node name="GoLoggerController" parent="." instance=ExtResource("2_i3pa3")]
-offset_left = 157.6
-offset_top = 71.0
-offset_right = 157.4
-offset_bottom = 71.0
+[node name="GoLoggerElements" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+layer = 50
+
+[node name="Popup" type="CenterContainer" parent="GoLoggerElements"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("5_e13q5")
+
+[node name="InactionTimer" type="Timer" parent="GoLoggerElements/Popup"]
+unique_name_in_owner = true
+wait_time = 30.0
+one_shot = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GoLoggerElements/Popup"]
+custom_minimum_size = Vector2(0, 187)
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Panel" type="Panel" parent="GoLoggerElements/Popup/VBoxContainer"]
+custom_minimum_size = Vector2(400, 126)
+layout_mode = 2
+theme = ExtResource("5_e13q5")
+
+[node name="MarginContainer" type="MarginContainer" parent="GoLoggerElements/Popup/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("5_e13q5")
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("5_e13q5")
+theme_override_constants/separation = 9
+
+[node name="PromptLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+theme = ExtResource("5_e13q5")
+bbcode_enabled = true
+text = "[center] Save copies of the current logs? [font_size=12]
+This action is cancelled in 18s!
+[color=lightblue]SessionTimer & Entry Count is paused during this prompt."
+
+[node name="CopyNameLineEdit" type="LineEdit" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 40)
+layout_mode = 2
+theme = ExtResource("5_e13q5")
+placeholder_text = "Enter a file name"
+alignment = 1
+max_length = 20
+context_menu_enabled = false
+middle_mouse_paste_enabled = false
+structured_text_bidi_override = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GoLoggerElements/Popup/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_e13q5")
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="PopupYesButton" type="Button" parent="GoLoggerElements/Popup/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+modulate = Color(0.16, 1, 0.16, 1)
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme = ExtResource("5_e13q5")
+text = "Confirm"
+
+[node name="PopupNoButton" type="Button" parent="GoLoggerElements/Popup/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+modulate = Color(1, 0.16, 0.16, 1)
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme = ExtResource("5_e13q5")
+text = "Cancel"
+
+[node name="PopupErrorLabel" type="RichTextLabel" parent="GoLoggerElements/Popup/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme = ExtResource("5_e13q5")
+bbcode_enabled = true
+text = "[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Error attempting to open file: [/pulse]"
+
+[connection signal="button_up" from="GoLoggerElements/Popup/VBoxContainer/HBoxContainer/PopupYesButton" to="." method="_on_yes_button_button_up"]
+[connection signal="button_up" from="GoLoggerElements/Popup/VBoxContainer/HBoxContainer/PopupNoButton" to="." method="_on_no_button_button_up"]
