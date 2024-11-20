@@ -56,12 +56,10 @@ var invalid_name : bool = false:
 @export var entry_count : int = 0
 
 const PATH = "user://GoLogger/settings.ini"
-var config = ConfigFile.new()
+var config = ConfigFile.new() 
 var categories : Array 
 
-var pause : bool = false
-
-## Flags whether or not this log is locked. I.e. safe from being deleted or renamed.
+## Flags whether or not the category is locked.
 var is_locked : bool = false:
 	set(value):
 		# print(str(category_name, " > is_locked = ", is_locked, ". new_value = ", value))
@@ -70,6 +68,8 @@ var is_locked : bool = false:
 		if line_edit != null: 	line_edit.editable = !value
 		if del_btn != null: 	del_btn.disabled = value
 		if dock != null: 		dock.save_categories(true)
+
+
 
 
 func _ready() -> void:
@@ -99,7 +99,7 @@ func refresh_index_label(idx : int) -> void:
 
 ## Checks the name against existing category names in the saved
 ## categories settings.ini file.
-func check_existing_conflicts(name : String) -> bool: 
+func check_existing_conflicts(new_name : String) -> bool: 
 	config.load(PATH)
 	categories = config.get_value("plugin", "categories")
 
@@ -110,14 +110,13 @@ func check_existing_conflicts(name : String) -> bool:
 	return false
 
 
-func apply_name(name : String) -> void:
-	category_name = name
+func apply_name(new_name : String) -> void:
+	category_name = new_name
 	line_edit.release_focus()
 	apply_btn.disabled = true
 
 
-## Enables/disables the Apply button when the [LineEdit] text changes IF
-## the new text is either "" or the current category name.
+## Category name LineEdit
 func _on_text_changed(new_text : String) -> void:
 	if new_text == "" or check_existing_conflicts(new_text):
 		apply_btn.disabled = true
@@ -131,24 +130,22 @@ func _on_text_changed(new_text : String) -> void:
 	else: line_edit.set_caret_column(line_edit.get_caret_column() + 1)
 
 
+## Category apply button
 func _on_apply_button_up() -> void:
 	apply_name(line_edit.text)
 
 
-## Applies a new category name when [LineEdit]'s text is submitted either 
-## by using the Apply button or pressing the Enter key while [LineEdit] 
-## is focused. 
+## Apply category name on Enter key submit + apply button
 func _on_text_submitted(new_text : String) -> void:
 	apply_name(new_text)
 
 
-## Locks this category from being removed or renamed.
+## Lock category button
 func _on_lock_btn_toggled(toggled : bool) -> void:
 	is_locked = toggled
 	
 	
-## Queue free's this category element, save the new categories(deferred) 
-## and then update the indicies.
+## Delete category button
 func _on_del_button_up() -> void:
 	if dock != null: 
 		queue_free() 

@@ -44,7 +44,7 @@ var log_header_string : String
 @onready var canvas_layer_spinbox : SpinBox = %CanvasLayerSpinBox
 @onready var canvas_layer_lbl : Label = %CanvasLayerLabel
 var canvas_spinbox_line : LineEdit # Underlying LineEdit node of SpinBox
-@onready var canvas_layer_container : HBoxContainer = %CanvasLayerHBox
+@onready var canvas_layer_container : HBoxContainer = %CanvasLayerHBox 
 
 
 @onready var autostart_btn : CheckButton = %AutostartCheckButton
@@ -109,7 +109,7 @@ func _ready() -> void:
 		var _d = DirAccess.open("user://GoLogger/")
 		if !_d:
 			_d = DirAccess.open(".")
-			_d.make_dir_absolute("user://GoLogger/")
+			DirAccess.make_dir_absolute("user://GoLogger/")
 
 
 		if !FileAccess.file_exists(PATH):
@@ -128,8 +128,7 @@ func _ready() -> void:
 		# Load categories as saved in settings.ini
 		load_categories()
 
-		#region Connect signals
-		# Settings	
+		#region Connect dock signals
 		reset_settings_btn.button_up.connect(reset_to_default.bind(1))
 		reset_settings_btn.mouse_entered.connect(update_tooltip.bind(reset_settings_btn))
 		reset_settings_btn.focus_entered.connect(update_tooltip.bind(reset_settings_btn))
@@ -157,8 +156,7 @@ func _ready() -> void:
 			disable_warn1_btn,
 			disable_warn2_btn
 		]
-
-		# Check and disconnect any existing signal connections > Connect the signals
+		
 		for i in range(btn_array.size()):
 			# Connect mouse_entered signal(regardless of type) to update tooltip
 			if btn_array[i].mouse_entered.is_connected(update_tooltip):
@@ -263,7 +261,6 @@ func _ready() -> void:
 			session_print_lbl
 		]
 
-		# Connect mouse + focus_entered signals to container nodes
 		for i in range(container_array.size()):
 			# Update tooltip signals
 			if container_array[i].mouse_entered.is_connected(update_tooltip):
@@ -388,15 +385,11 @@ func validate_settings() -> bool:
 ## overwriting the saved categories in the .ini file and then loading default 
 ## categories "game" and "player".
 func reset_to_default(tab : int) -> void:
-	if tab == 0: # Categories
-		# Remove existing category elements from dock
+	if tab == 0: # Categories tab
 		var children = category_container.get_children()
 		for i in range(children.size()):
 			children[i].queue_free()
 
-		# Set/load default categories deferred to ensure completed deletion
-		# Preventative "cooldown" added to disable reset and add to be called
-		# during this cooldown period.
 		defaults_btn.disabled = true
 		add_category_btn.disabled = true
 		await get_tree().create_timer(0.5).timeout
@@ -408,9 +401,7 @@ func reset_to_default(tab : int) -> void:
 		if !config:
 			var _e = config.get_open_error()
 			printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
-
-	# Settings
-	else: 
+	else: # Settings tab
 		config.clear()
 		create_settings_file()
 		load_settings_state()
@@ -502,8 +493,7 @@ func _on_button_button_up(node : Button) -> void:
 				if new_dir.begins_with("res://") or new_dir.begins_with("user://"):
 					_res = _d.make_dir(new_dir)
 				else:
-					_res = _d.make_dir_absolute(new_dir)
-				print(new_dir)
+					_res = DirAccess.make_dir_absolute(new_dir) 
 				# Check if new_dir is valid
 				if _res != OK:
 					if config.get_value("settings", "error_reporting") != 2:
@@ -783,7 +773,7 @@ func update_category_name(obj : PanelContainer, new_name : String) -> void:
 
 
 ## Helper function - Iterates through all children and compares the name of other nodes. 
-func check_conflict_name(obj : PanelContainer, name : String) -> bool:
+func check_conflict_name(obj : PanelContainer, new_name : String) -> bool:
 	for i in category_container.get_children():
 		if i == obj:
 			continue

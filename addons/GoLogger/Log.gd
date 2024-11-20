@@ -5,23 +5,7 @@ extends Node
 ##
 ## The GitHub repository [url]https://github.com/Burloe/GoLogger[/url] will always have the latest version of 
 ## GoLogger to download. For installation, setup and how to use instructions, see the README.md or in the Github 
-## repo.[br][br] This framework will create folders for each log category in the directory specified in 
-## [param base_directory] in which .log files are created. You can add however many log categories you want by 
-## adding more [LogFileResource]s into the arrray [param categories]. This plugin uses 'sessions' to indicate 
-## when it's logging and each session creates one .log file. To use this plugin, there are four main functions 
-## when using this plugin which can be called from any script in your project:[br][br][method start_session]: 
-## Starts a session and creates a .log file. When [param autostart_session] is enabled, the plugin calls this 
-## function by itself when running your project.[br][method entry]: Main bread and butter of this plugin. Call 
-## this in your code to log entries into the .log file. In order to log an entry into different categories, 
-## you specify the category by the category's array position in [param categories].[codeblock]
-## Log.entry("My first game log entry", 0) # Logs entry into category 0 named 'game'.
-## Log.entry("My first game log entry") # Alternative. Not specifying the category will log into category 0.
-## Log.entry("My first player log entry", 1) # Log entry into category 1 named 'player[/codeblock]
-## [method save_copy]: Copies the active session log into a separate .log file that's saved into 
-## [code]base_directory/categoryname_Gologs/saved_logs/[/code]. 
-## Files saved into the subfolder are exempt from being deleted. This plugin will delete the oldest entry when 
-## the number of logs exceeds [param file_cap] so log files aren't created endlessly.[br][method stop_session]: 
-## Stops the active session and stops logging to the corresponding .log file.
+## repo. 
 
 ## Emitted when a log session has started.
 signal session_started 
@@ -38,15 +22,13 @@ signal session_status_changed
 signal session_timer_started  
 
 
-
 ## Path to settings.ini file. This path is a contant and doesn't change if you set your own [param base_directory]
 const PATH = "user://GoLogger/settings.ini"
 
 ## [ConfigFile] object that settings from 'settings.ini' is loaded into and used throughout the framework.
 var config = ConfigFile.new()
 
-## Set the base filepath where folders for each log category are created. For each [LogFileResource] within 
-## [param file], a corresponding folder is created where the logs are stored.[br][color=red][b]Warning:
+## Set the base filepath where folders for each log category are created.[br][color=red][b]Warning:
 ## [/b][br]Changing this parameter at runtime will likely cause errors.
 var base_directory : String = "user://GoLogger/"
 
@@ -76,7 +58,6 @@ var hotkey_stop_session	: InputEventShortcut = preload("res://addons/GoLogger/St
 var hotkey_copy_session : InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres") 
 
 
-
 # Popup
 @onready var popup 				: CenterContainer = %Popup
 @onready var popup_line_edit 	: LineEdit = 		%CopyNameLineEdit
@@ -92,11 +73,11 @@ var popup_state : bool = false:
 		if session_status:
 			toggle_copy_popup(value)
 
-
-
-## When saving  file copies of the current session, the entered name is stored in this variable.
+## Stores the session copy name entered.
 var copy_name : String = "" 
 #endregion
+
+
 
 
 func _input(event: InputEvent) -> void:
@@ -112,8 +93,8 @@ func _input(event: InputEvent) -> void:
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
 
-		# if event is InputEventKey and event.is_released():
-		# 	entry(str("[TEST ENTRY] ", event.as_text()), 0)
+		if event is InputEventKey and event.is_released():
+			entry(str("[TEST ENTRY] ", event.as_text()), 0)
 
 
 func _ready() -> void:
@@ -121,7 +102,6 @@ func _ready() -> void:
 	base_directory = config.get_value("plugin", "base_directory")
 	header_string = get_header()
 	elements_canvaslayer.layer = get_value("canvaslayer_layer")
-
 	session_timer.timeout.connect(_on_session_timer_timeout)
 	inaction_timer.timeout.connect(_on_inaction_timer_timeout)
 	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
@@ -130,7 +110,7 @@ func _ready() -> void:
 	popup_errorlbl.visible = false
 	popup_yesbtn.disabled = true
 	
-	assert(check_filename_conflicts() == "", str("GoLogger: Conflicting category_name '", check_filename_conflicts(), "' found more than once in LogFileResource. Please assign a unique name to all LogFileResources in the 'categories' array."))
+	assert(check_filename_conflicts() == "", str("GoLogger: Conflicting category_name [", check_filename_conflicts(), "] found in two(or more) categories."))
 	
 	if get_value("autostart_session"):
 		start_session()
@@ -172,7 +152,7 @@ func create_settings_file() -> void:
 
 ## Validates settings by ensuring their type are correct when loading them. Returns false if valid
 ## and true if corrupted.[bt]
-## This was made for developing the plugin but can be used to make sure your settings haven't been 
+## This was made for developing the plugin but can be used to make sure settings.ini haven't been 
 ## corrupted.
 func validate_settings() -> bool:
 	var faults : int = 0
@@ -272,10 +252,7 @@ func get_value(value : String) -> Variant:
 
 
 #region Main Plugin Functions
-## Initiates a log session, recording user defined game events in the .log categories.
-## [br][param start_delay] can be used to prevent log files with the same timestamp from being generated, but 
-## requires function to be called using the "await" keyword: [code]await Log.start_session(1.0)[/code]. See 
-## README[Starting and stopping sessions] for more info.[br]Example usage:[codeblock]
+## Initiates a log session.[br]Example usage:[codeblock]
 ##	Log.start_session()                       # Normal call
 ##	await Log.start session(1.2)              # Calling with a start delay[/codeblock]
 func start_session(start_delay : float = 0.0) -> void:
@@ -330,7 +307,7 @@ func start_session(start_delay : float = 0.0) -> void:
 				return
 			else:
 				 
-				# Assign file name and path
+				# Assign file the name and path
 				categories[i][2] = get_file_name(categories[i][0])
 				categories[i][3] = str(_path, categories[i][2]) 
 				
@@ -363,34 +340,24 @@ func start_session(start_delay : float = 0.0) -> void:
 	session_started.emit()
 
 
-## Stores a log entry into the a .log file. You can add data to the log entry(as long as the data 
-## can be converted into a string) and specify which category the entry should be store in.[br][br] 
-## [param category_index] determine which log category this entry will be stored in. The category_index 
-## index corresponds to the order of [LogFileResource] entries in the [param categories] array. Note 
-## that leaving this parameter undefined will store the entry in category of when the entry was added 
-## to your log.[br][br]Example usage:[codeblock]
-## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)
-## # Resulting log entry stored in category 1: [16:34:59] Player healed for 55HP by consuming Medkit.[/codeblock]
+## Stores a log entry into the a .log file. [br]Example usage:[codeblock]
+## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
-	printerr("Entry() called")
 	#?        0               1                2                 3             4            5            6
 	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	config.load(PATH)
 	categories = config.get_value("plugin", "categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ")
 	
-
 	# Error check: Valid category and name 
 	if categories == null or categories.is_empty():
 		if get_value("error_reporting") != 2: 
 			printerr("GoLogger: No valid categories to log in.")
-		return
-			
+		return		
 	if categories[category_index][0] == "": 
 		if get_value("error_reporting") != 2:
 			printerr("GoLogger: Attempted to log on a nameless category.")
 			return
-
 	if !session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger: Failed to log entry due to inactive session.")
 		return
@@ -504,8 +471,6 @@ func complete_copy() -> void:
 
 
 	for i in range(categories.size()):
-
-		# Open file 
 		var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
 		if !_fr:
 			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base file to copy the session [", categories[i][3],"].")
@@ -513,7 +478,6 @@ func complete_copy() -> void:
 			await get_tree().create_timer(4.0).timeout
 			return
 		
-		# Open file successful > get file contents and create a new file
 		var _c = _fr.get_as_text()
 		var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
 		var _fw = FileAccess.open(_path, FileAccess.WRITE)
@@ -563,7 +527,7 @@ func stop_session() -> void:
 				session_status_changed.emit()
 				return
 			
-			# Open file successfull > store old contents + "stopped session" entry and cleanup
+			# Open file successfull > store old contents + "stopped session" line to log and cleanup
 			var _content := _f.get_as_text()
 			_f.close()
 			var _fw = FileAccess.open(categories[i][3], FileAccess.WRITE)
@@ -642,17 +606,15 @@ func get_header() -> String:
 ## Helper function that determines whether or not any [param category_name] was found more than once 
 ## in [param categories].
 func check_filename_conflicts() -> String:
-	#?        0               1                2                 3             4            5            6
-	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	categories = config.get_value("plugin", "categories")
 	var seen_resources : Array[String] = []
 	for r in categories:
 		if !seen_resources.is_empty():
 			if r[0] in seen_resources:
-				return r[0] # Conflict found -> return the conflicting name for assert error 
+				return r[0] 
 			else: seen_resources.append(r[0])
 		else: seen_resources.append(r[0])
-	return ""# If no conflicts found -> return empty string and resume execution
+	return ""
 
 
 ## Returns error string from the error code passed.
@@ -707,11 +669,8 @@ static func get_error(error : int, object_type : String = "") -> String:
 		48: return str("Error[47] ", object_type, " Bug error")
 	return "N/A"
 
-## Helper function that returns a date/timestamped file name for your log containing using the 
-## prefix category name.[br]Example usage [code]get_file_name(categories[0][2]})[/code]
-## [color=red]WARNING: [color=white]Change this at your own discretion! Removing the "0" from 
-## single ints("09") will cause sorting issues > May result in improper file deletion.
-func get_file_name(prefix_name : String) -> String:
+## Helper function that returns a date/timestamped file name for a log file.
+func get_file_name(category_name : String) -> String:
 	var dict  : Dictionary = Time.get_datetime_dict_from_system(get_value("use_utc"))
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 	# Add 0 to single-numbered dates and times
@@ -723,12 +682,11 @@ func get_file_name(prefix_name : String) -> String:
 	# Format the final string
 	var fin : String 
 	# Result > "prefix(yy-mm-dd_hh-mm-ss).log"   OR   "prefix(yymmdd_hhmmss.log)
-	fin = str(prefix_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if get_value("dash_separator") else str(prefix_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
+	fin = str(category_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if get_value("dash_separator") else str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
 	return fin 
 
 
-## DEPRECATED - Adds actions and events to [InputMap]. This only adds it for the runtime instance, meaning it 
-## doesn't clutter the [InputMap].
+## DEPRECATED - Adds actions and events to [InputMap].
 func add_hotkeys() -> void:
 	# Start session
 	if !InputMap.has_action("GoLogger_start_session"):
@@ -760,8 +718,6 @@ func add_hotkeys() -> void:
 func _on_session_timer_timeout() -> void:
 	print("session_timer timed out") 
 	match get_value("limit_method"):
-		0: # Entry count limit
-			pass
 		1: # Session Timer
 			if get_value("session_timer_action") == 0: # Stop & Start
 				stop_session()
@@ -778,19 +734,18 @@ func _on_session_timer_timeout() -> void:
 			else: # Stop only
 				stop_session()
 				session_timer.stop()
-		3: # None
-			pass
 	session_timer.wait_time = get_value("session_duration")
 
-## Copy session 
+## Copy session timer. Counts down since the last [signal text_changed] and chancels the operation upon [signal timeout].
 func _on_inaction_timer_timeout() -> void:
 	popup_state = false
 
-
+## [LineEdit] For the Copy Session popup.
 func _on_line_edit_text_changed(new_text : String) -> void:
 	if inaction_timer != null and !inaction_timer.is_stopped(): 
 		inaction_timer.stop()
 	inaction_timer.start(30)
+	
 	if new_text != "":
 		popup_yesbtn.disabled = false
 		popup_line_edit.set_caret_column(popup_line_edit.text.length())
@@ -816,5 +771,4 @@ func _on_no_button_button_up() -> void:
 
 func _on_yes_button_button_up() -> void:
 	complete_copy()
-
 #endregion
