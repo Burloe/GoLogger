@@ -12,10 +12,10 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
    * Example usage of the main functions
    * Creating log entries with data
    * Managing log categories
-4. Managing .log file size
+4. Managing .log files
    * Entry count limit
    * Sesssion timer
-5. File count limit
+   * File count limit
 
 ## Installation and setup:
 ![Install Errors](https://github.com/user-attachments/assets/7edcdc5d-9d10-4e39-83fa-e31a9f2a49c3)<br>
@@ -76,7 +76,7 @@ Only the first parameter mandatory and needs to be defined when calling the func
 *Calling this function without defining an index will make it default to log into the category with index 0.* <br><br>
 
 ## Managing log categories:
-GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your project's need. When a category name is applied, folders are created with the name of each category within the `base_directory` and once a session is started, the folders for all categories with applied names are created(if they don't already exist) and a .log file are saved inside. The number at the top left of each category is the `category_index` of that category. Meaning if you want to log an entry into the "player" category, use the index as the last parameter when calling the function. Example `Log.entry("My player entry", 1)` 
+GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your project's need. When a category name is applied, folders are created with the name of each category within the `base_directory` and once a session is started, the folders for all categories with applied names are created(if they don't already exist) and a .log file are saved inside. The number at the top left of each category is the `category_index` of that category. Meaning if you want to log an entry into the "player" category, use the index as the last parameter when calling the function. Example `Log.entry("My player entry", 1)`.<br> 
 ![GoLoggerCategoryDock](https://github.com/user-attachments/assets/f4346da0-a9b5-4b00-83ba-147bcfdd3481)
 
 *Notes:*
@@ -84,13 +84,13 @@ GoLogger will create directories for each category in the dock's "category" tab.
 * *Category folders aren't deleted when you delete a category in the dock. This is to prevent accidental deletion of log files. Open the directory using the "Open" button and manually delete the corresponding folder of the category you've deleted.*
 
 ## Managing .log file size:
-One potential pitfall to be aware of when logging large or ever-increasing amounts of data is how Godot's `FileAccess` handles writing to files. To write log entries, `FileAccess.WRITE` is used which truncates(deletes the content) the file when used. Therefore, the plugin first stores the old entries with `FileAccess.READ` before truncating the file and adding them back before appending the new entry. This can result in performance issues when files grow excessively large, as loading and unloading large strings/arrays may cause stuttering or general performance issues. This is especially a concern during long sessions or if multiple systems are logging to the same category. To mitigate this, GoLogger offers two methods for limiting logs files from getting too large:
+A potential pitfall to consider when logging large or growing amounts of data is how Godot's `FileAccess` handles file writing. The `FileAccess.WRITE` mode truncates(deletes) the file's content, so the plugin first reads and stores old entries with `FileAccess.READ`, then re-enters them before appending a new entry. This process can cause performance issues when files become excessively large, leading to stuttering or slowdowns, especially during long sessions or with multiple systems logging to the same category. To address this, GoLogger provides two methods to limit log file sizes:
 
 #### Entry Count Limit(recommended):
 Just as the name suggests. The number of entries are counted and if they exceed the limit, you can either stop the session, stop and start a new session or you can remove the oldest entries to make space for the new ones. Objectively, this is the better method to this potential issue which is why it is recommended to use this regardless of whether you're experiencing issues or not.
 
 #### Session Timer:
-Whenever a session is started, a Timer is started using the `session_duration` setting as the wait time. This timer wil stop the active session upon timing out and a new session can be started aftewards. The downside of this method is that there's the potential of logging tons of entries within the session duration. However, that doesn't mean that this method doesn't have other uses. In case you want to stress test a particular system or simply log for a specific time. You have the signals `session_timer_started` and `session_timer_stopped` in order to sync up a system or feature with the logging session.
+Whenever a session is started, a Timer is started using the `session_duration` setting as the wait time. This timer will stop the active session upon timing out and a new session can be started aftewards. The downside of this method is that there's still the potential of logging tons of entries within the session duration. However, the Session Timer still has other uses, stress testing a new system or you simply need to log for a specific time window and dont need continuous logging. The signals `session_timer_started` and `session_timer_stopped` were added to sync up a system or feature with the logging session.
 ```GDScript
 # Can be added to any script since Log.gd is an autoload
 Log.session_timer_started.connect(_on_stress_test_start)
@@ -98,8 +98,7 @@ Log.session_timer_stopped.connect(_on_stress_test_stopped)
 ```
 
 #### Both Entry Count Limit and Session Timer:
-You can use also use both as well which allows you to use some additional actions. When selecting the "Both" option. GoLogger will still use both "Entry Count Action" and "Session Timer Action" settings to independently set the actions taken. That way, you can remove old entries with Entry Count and restart or stop a session entirely once the Session Timer times-out.
+You can use also use both as well and GoLogger will still use both "Entry Count Action" and "Session Timer Action" settings to independently set the actions taken. That way, you can remove old entries with Entry Count and restart or stop a session entirely once the Session Timer times-out. 
 
-
-## File count limit:
-Despite .log files taking minimal storage space, generating an endless amount of files is never a good idea. Therefore, GoLogger has an adjustable `file count limit` setting. By default, this limit is set to 10 and will delete the log file with the oldest date- and timestamp. Of course, this means it only deletes files in that directory, meaning you can move a log out of the folder to save it. 
+#### File count limit:
+Despite .log files taking minimal storage space, generating an endless amount of files is never a good idea. Therefore, GoLogger has an adjustable `file count limit` setting. By default, this limit is set to 10 and will delete the log file with the oldest date- and timestamp. Of course, this means it only deletes files in that directory, meaning you can move a log out of the folder to save it. It's possible to turn this off by setting the value to 0 but it is **NOT** recommended!
