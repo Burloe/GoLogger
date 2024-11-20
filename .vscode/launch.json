@@ -11,7 +11,7 @@
             "project": "${workspaceFolder}",
             "address": "127.0.0.1",
             "port": 6007,
-            // "scene": "main|current|pinned|<path>",
+            // "scene": "main|current|pinned|<path>" ,
             "editor_path": "godotTools.editorPath.godot4",
             // engine command line flags
             "profiling": false,
