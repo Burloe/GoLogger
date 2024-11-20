@@ -419,7 +419,7 @@ func update_tooltip(node : Control) -> void:
 
 		# String settings [LineEdits]
 		base_dir_line:
-			tooltip_lbl.text = "[font_size=14][color=green]Base Directory where category folders are created:[color=white][font_size=11]\nSupports absolute paths(not only 'res://' or 'user://')Remember to use the apply button or press enter to apply your custom directory."
+			tooltip_lbl.text = "[font_size=14][color=green]Base Directory where category folders are created:[color=white][font_size=11]\nSupports absolute paths. Remember to use the apply button or press enter to apply your custom directory."
 		base_dir_reset_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Base Directory where category folders are created:[color=white][font_size=11]\nThe base directory used to create and store log files within.\n[color=orange]Resets the base directory to the default:\n[color=yellow]user://GoLogger/"
 		base_dir_opendir_btn:
@@ -433,7 +433,7 @@ func update_tooltip(node : Control) -> void:
 		timestamp_entries_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Timestamp entries inside log files:[color=white][font_size=11]\nWhen enabled, entries are timestamped inside the log files with:\n[color=orange][08:13:47][color=white] Entry string."
 		utc_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Timestamp files & entries with UTC Time:[color=white][font_size=11]\nUses UTC time for date/timestamps as opposed to the local system time."
+			tooltip_lbl.text = "[font_size=14][color=green]Timestamp files & entries using UTC Time:[color=white][font_size=11]\nUses UTC time as opposed to the local system time."
 		dash_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Use - to separate timestamps:[color=white][font_size=11]\nUses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
 
@@ -446,19 +446,19 @@ func update_tooltip(node : Control) -> void:
 		log_header_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Log Header:[color=white][font_size=11]\nUsed to set what to include in the log header. Project name and version is fetched from Project Settings."
 		limit_method_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Method used to limit log file length/size:[color=white][font_size=11]\n[color=white]When using [b]'both'[/b], you still determine the action taken by both method independently with the corresponding action settings.\n[color=ff5757][b]Using 'None' is not recommended, use at your own risk![/b]"
+			tooltip_lbl.text = "[font_size=14][color=green]Method used to limit log file length/size:[color=white][font_size=11]\n[color=white][b]Both[/b]: Each method’s action is set independently via its action settings.\n[color=ff5757][b]None[/b]: Not recommended, use at your own risk!"
 		entry_count_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Action taken when count exceeds limit:[color=white][font_size=11]\n[b]'Remove old entries'[/b]: Oldest entries are removed to make space for the new entries.\n[b]Stop/start[/b]: Stops and starts a new session.\n[b]Stop[/b]: Stops session only." 
+			tooltip_lbl.text = "[font_size=14][color=green]Action taken when count exceeds limit:[color=white][font_size=11]\n[b]'Remove old entries'[/b]: Removes oldest entries to make space for new ones.\n[b]Stop/start[/b]: Stops and starts a new session.\n[b]Stop[/b]: Stops session only." 
 		session_timer_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Action taken upon Session Timer timeout:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]GoLogger features [color=39d7e6]'session_timer_started'[color=ff669e] and [color=39d7e6]'session_timer_ended'[color=ff669e] to sync any systems or tests to the sessions."
+			tooltip_lbl.text = "[font_size=14][color=green]Action taken upon Session Timer timeout:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]Signals [color=39d7e6]'session_timer_started'[color=ff669e] and [color=39d7e6]'session_timer_ended'[color=ff669e] can be used to sync any systems or tests to the sessions."
 		error_rep_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nAllows you to disable non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' turns all warnings and non-critical errors off."
+			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nDisables non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' disables all non-critical warnings &errors."
 		session_print_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Print Session Changes:[color=white][font_size=11]\nGoLogger can print to Output whenever session status is changed."
 		
 		# Int settings [SpinBoxes]
 		entry_count_spinbox:
-			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nEntry count limit used in conjunction with the Limit Method. Recommended value 300.\n[color=ff5757]Consider lowering this limit if you're getting stutterings."
+			tooltip_lbl.text = "[font_size=14][color=green]Entry Count Limit:[color=white][font_size=11]\nUsed with Limit Method by limiting the number of entries in any log file. Recommended value 300.\n[color=ff5757]Consider lowering this limit if you're getting stutterings."
 		session_duration_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]Session Duration:[color=white][font_size=11]\nWait time for the Session Timer. Used when 'Limit Method' is set to use Session Timer.\n[color=ff5757]Consider lowering this limit if you're getting stutterings."
 		file_count_spinbox:

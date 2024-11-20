@@ -119,7 +119,7 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if !Engine.is_editor_hint(): 
 		if popup_state and inaction_timer != null and !inaction_timer.is_stopped(): 
-			prompt_label.text = str("[center] Save copies of the current logs? [font_size=12]\nAction will be automatically cancelled in ", snapped(inaction_timer.time_left, 1.0),"s!\n[color=lightblue]SessionTimer & Entry Count is paused during this prompt.")
+			prompt_label.text = str("[center]Save copies of the current logs?[font_size=12]\nAutomatically cancelled in ", snapped(inaction_timer.time_left, 1.0),"s!\n[color=lightblue]Limit methods are paused during this prompt.")
 
 
 ## Creates a settings.ini file.
