@@ -62,7 +62,7 @@ Log.save_copy() # In-game hotkey:  Ctrl + Shift + U
 Log.stop_session() # In-game hotkey:  Ctrl + Shift + P
 ```
 
-*`start_delay` delays the session start by the specifies time. This was added to prevent .log files from being created with the same timestamp/name which can cause sorting issues when identifying and deleting the oldest log.*
+*The parameter `start_delay` provides the option to delay the start of a session by the specified time in seconds*
 
 
 ### **Creating log entries with data:**<br>
