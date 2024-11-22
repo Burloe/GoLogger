@@ -25,8 +25,8 @@ signal update_index
 
 
 #region Settings tab
-@onready var tooltip : Panel = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip
-@onready var tooltip_lbl : RichTextLabel = $Settings/MarginContainer/Panel/HBoxContainer/ColumnA/VBox/ToolTip/MarginContainer/Label
+@onready var tooltip : Panel = %ToolTip
+@onready var tooltip_lbl : RichTextLabel = %TooltipLabel
 @onready var reset_settings_btn : Button = %ResetSettingsButton
 
 @onready var base_dir_line : LineEdit = %BaseDirLineEdit

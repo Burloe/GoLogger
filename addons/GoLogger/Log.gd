@@ -159,7 +159,6 @@ func validate_settings() -> bool:
 	var expected_types = {
 		"plugin/base_directory": TYPE_STRING,
 		"plugin/categories": TYPE_ARRAY,
-		
 		"settings/log_header": TYPE_INT,
 		"settings/canvaslayer_layer": TYPE_INT,
 		"settings/autostart_session": TYPE_BOOL,
@@ -252,9 +251,10 @@ func get_value(value : String) -> Variant:
 
 
 #region Main Plugin Functions
-## Initiates a log session.[br]Example usage:[codeblock]
-##	Log.start_session()                       # Normal call
-##	await Log.start session(1.2)              # Calling with a start delay[/codeblock]
+## Initiates a log session, creating new .log files for each category to log into. You can also specify a delay to start the session in a desired time from calling the function.
+## However, the [code]await[/code] keyword [b]must[/b] be used.[br]Example usage:[codeblock]
+##	Log.start_session()             # Normal call
+##	await Log.start session(1.2)    # Calling with a start delay[/codeblock]
 func start_session(start_delay : float = 0.0) -> void:
 	#?        0               1                2                 3             4            5            6
 	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
