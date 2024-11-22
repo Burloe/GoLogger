@@ -34,7 +34,7 @@ You're all set! Next time you run your project, folders and .log files will be c
 
 
 ## How to use GoLogger:<br>
-GoLogger uses 'sessions' to indicate when its logging or not. Each session creates a new log file with the date- and timestamp of when the session was started. There are three main ways to start and stop sessions. 
+GoLogger uses 'sessions' to indicate when its logging or not. Each session creates a new log file with the date- and timestamp of when the session was started. Sessions are also **global**, meaning that stopping a session will stop logging and starting a new session creates a new file for all categories to log to. There are three main ways to start and stop sessions. 
 * **Using the `autostart` setting** which starts a session when you run your project.
 * **Hotkeys** can perform the three main functions of the plugin(start, copy and stop)
 * **Calling the functions though code**. You can call the functions through code as well and since the script is an autoload. You can call them from any script.
@@ -88,6 +88,7 @@ A potential pitfall to consider when logging large or growing amounts of data is
 
 #### Entry Count Limit(recommended):
 Just as the name suggests. The number of entries are counted and if they exceed the limit, you can either stop the session, stop and start a new session or you can remove the oldest entries to make space for the new ones. Objectively, this is the better method to this potential issue which is why it is recommended to use this regardless of whether you're experiencing issues or not.
+*Note that using stop/restart session with entry count stops logging for all categories. For example, if CategoryA hits a 200 entry count limit while CategoryB only has 10 entries. This stops the session and stops logging to both files.*
 
 #### Session Timer:
 Whenever a session is started, a Timer is started using the `session_duration` setting as the wait time. This timer will stop the active session upon timing out and a new session can be started aftewards. The downside of this method is that there's still the potential of logging tons of entries within the session duration. However, the Session Timer still has other uses, stress testing a new system or you simply need to log for a specific time window and dont need continuous logging. The signals `session_timer_started` and `session_timer_stopped` were added to sync up a system or feature with the logging session.
