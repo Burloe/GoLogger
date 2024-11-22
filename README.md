@@ -66,14 +66,14 @@ Log.stop_session() # In-game hotkey:  Ctrl + Shift + P
 
 
 ### **Creating log entries with data:**<br>
-Simply installing GoLogger does not log any entries. You still need to define `Log.entry()` in your code, including any string message and any data you want to log. Any data that can be converted to a string by using `str()` can be added to an entry..<br>
+**Simply installing GoLogger does not log any entries**. This plugin is a frame work for you to define your own log entries in your code, including any string message and any data you want to log. Any data that can be converted to a string by using `str(data)` can be added to an entry.<br>
 
 The `entry()` function has two parameters: `entry(log_entry : String, category_index : int)`
 Only the first parameter mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the formatting of your log entry to your liking.
 * `log_entry` - *Mandatory* - The string that makes up your log entry. Include any data that can be converted to a string can be logged.
-* `category_index` - *Optional* - This parameter specifies the category or file where the entry is logged. For example, with the default categories "game" and "player," the game category is index 0, and player is index 1. Each category’s index is shown in the "Categories" tab of the dock at the top left of each category.<br>
+* `category_index` - *Optional* - This parameter specifies the category or file where the entry is logged. The index of every category is shown in the "Categories" tab of the dock at the top left of each category.<br>
 
-*Calling this function without defining an index will make it default to log into the category with index 0.* <br><br>
+*Calling this function without defining an index will make it default to log into the category with index 0 which is why it's recommended to have your "base" category(like "game") as the 0 indexed category.* <br><br>
 
 ## Managing log categories:
 GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your project's need. When a category name is applied, folders are created with the name of each category within the `base_directory` and once a session is started, the folders for all categories with applied names are created(if they don't already exist) and a .log file are saved inside. The number at the top left of each category is the `category_index` of that category. Meaning if you want to log an entry into the "player" category, use the index as the last parameter when calling the function. Example `Log.entry("My player entry", 1)`.<br> 
