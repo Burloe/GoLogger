@@ -577,8 +577,7 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 				2: # Version
 					log_header_string = str("Version.", ProjectSettings.get_setting("application/config/version"))
 				3: # None
-					log_header_string = ""
-			print(log_header_string)
+					log_header_string = "" 
 			config.set_value("settings", "log_header", index)
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)

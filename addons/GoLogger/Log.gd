@@ -755,7 +755,7 @@ func _on_line_edit_text_changed(new_text : String) -> void:
 	else:
 		popup_yesbtn.disabled = true
 
-
+## [LineEdit] For the Copy Session popup.
 func _on_line_edit_text_submitted(new_text : String) -> void:
 	if new_text != "":
 		if new_text.ends_with(".log") or new_text.ends_with(".txt"):
@@ -764,11 +764,11 @@ func _on_line_edit_text_submitted(new_text : String) -> void:
 			copy_name = popup_line_edit.text
 		complete_copy()
 
-
+## [LineEdit] For the Copy Session popup.
 func _on_no_button_button_up() -> void:
 	popup_state = false
 
-
+## [LineEdit] For the Copy Session popup.
 func _on_yes_button_button_up() -> void:
 	complete_copy()
 #endregion
