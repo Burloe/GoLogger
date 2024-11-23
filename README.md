@@ -18,9 +18,7 @@ Log entries are as simple as calling `Log.entry()`(similar and as easy to use as
    * File count limit
 
 ## Installation and setup:
-![Install Errors](https://github.com/user-attachments/assets/7edcdc5d-9d10-4e39-83fa-e31a9f2a49c3)<br>
-
-**Note: Godot will print several errors upon importing the plugin and is expected!** *GoLogger requires an autoload, which isn't added until the plugin is enabled.*
+**Note: Godot will print several errors upon importing the plugin and is expected!** *GoLogger simply requires the main script to be an autoload, which isn't added until the plugin is enabled.*
 
 * **Importing the plugin:** Only import the "addons" into your project's root directory. The folder structure should look like `res://addons/GoLogger`.
 
@@ -34,16 +32,20 @@ You're all set! Next time you run your project, folders and .log files will be c
 
 
 ## How to use GoLogger:<br>
-GoLogger uses 'sessions' to indicate when its logging or not. Each session creates a new log file with the date- and timestamp of when the session was started. Sessions are also **global**, meaning that stopping a session will stop logging and starting a new session creates a new file for all categories to log to. There are three main ways to start and stop sessions. 
+GoLogger uses 'sessions' to indicate when its logging or not. Each session creates a new log file with the timestamp of when the session was started. Sessions are also **global**, meaning that stopping a session will stop logging for all categories simultaneously. Similarly, starting a session creates a new file for all categories to log to. There are three main ways to start and stop sessions. 
 * **Using the `autostart` setting** which starts a session when you run your project.
 * **Hotkeys** can perform the three main functions of the plugin(start, copy and stop)
 * **Calling the functions though code**. You can call the functions through code as well and since the script is an autoload. You can call them from any script.
 
+In version 1.2, the `Save Session Copy` feature was introduced, allowing users to save the current session's logs into each respective category's subfolder. This feature serves two key purposes:
+* **Prevent Deletion:** Oldest logs are automatically deleted when the file limit is reached. Saving a copy protects specific logs from being removed.
+* **Preserve Important Data:** When using the **Entry Count Limit** + **Remove Old Entries** options, older entries are deleted to make room for new ones. If a bug or unexpected event occurs during playtesting, you can use this feature to save the log without stopping the session or your game without the risk of overwriting the important log entries.
+
 ### **Example usage of the main functions:**<br>
 ```gdscript
 
-# General use, simply starts the session. 
-Log.start_session() # In-game hotkey:  Ctrl + Shift + O
+# General use, simply starts the session. Hotkey:  Ctrl + Shift + O
+Log.start_session()
 # Starts session 1.2 seconds after the call.
 await Log.start_session(1.2)
 
@@ -55,11 +57,11 @@ Log.entry(str("Current game time: ", time_of_day))
 Log.entry(str("Player's current health: ", current_health, "(", max_health, ")"), 1)
 # Resulting entry: [2024-11-11 19:17:27] Player's current health: 94(100)
 
-# Initiates the "copy session" operation by showing the name prompt popup.
-Log.save_copy() # In-game hotkey:  Ctrl + Shift + U
+# Initiates the "copy session" operation by showing the name prompt popup. Hotkey:  Ctrl + Shift + U
+Log.save_copy()
 
-# Stops an active session.
-Log.stop_session() # In-game hotkey:  Ctrl + Shift + P
+# Stops an active session. Hotkey:  Ctrl + Shift + P
+Log.stop_session() 
 ```
 
 *The parameter `start_delay` provides the option to delay the start of a session by the specified time in seconds*
@@ -87,7 +89,7 @@ GoLogger will create directories for each category in the dock's "category" tab.
 A potential pitfall to consider when logging large or growing amounts of data is how Godot's `FileAccess` handles file writing. The `FileAccess.WRITE` mode truncates(deletes) the file's content, so the plugin first reads and stores old entries with `FileAccess.READ`, then re-enters them before appending a new entry. This process can cause performance issues when files become excessively large, leading to stuttering or slowdowns, especially during long sessions or with multiple systems logging to the same category. To address this, GoLogger provides two methods to limit log file sizes:
 
 #### Entry Count Limit(recommended):
-Just as the name suggests. The number of entries are counted and if they exceed the limit, you can either stop the session, stop and start a new session or you can remove the oldest entries to make space for the new ones. Objectively, this is the better method to this potential issue which is why it is recommended to use this regardless of whether you're experiencing issues or not.
+Just as the name suggests. The number of entries are counted and if they exceed the limit, you can either stop the session, stop and start a new session or you can remove the oldest entries to make space for the new ones. Objectively, this is the better method to this potential issue which is why it is recommended to use this regardless of whether you're experiencing issues or not.<br>
 *Note that using stop/restart session with entry count stops logging for all categories. For example, if CategoryA hits a 200 entry count limit while CategoryB only has 10 entries. This stops the session and stops logging to both files.*
 
 #### Session Timer:
