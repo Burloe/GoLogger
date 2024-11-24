@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcvcwmc8a3ei1"
-path="res://.godot/imported/GoLogger_Icon_Title.png-5b92e2c8889b5e3d882b37227c5f3188.ctex"
+path="res://.godot/imported/gologger_icon_title.png-68f7fe2d46f803d750c320095d66336b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/GoLogger/GoLogger_Icon_Title.png"
-dest_files=["res://.godot/imported/GoLogger_Icon_Title.png-5b92e2c8889b5e3d882b37227c5f3188.ctex"]
+source_file="res://addons/GoLogger/gologger_icon_title.png"
+dest_files=["res://.godot/imported/gologger_icon_title.png-68f7fe2d46f803d750c320095d66336b.ctex"]
 
 [params]
 
