@@ -96,7 +96,7 @@ A potential pitfall to consider when logging large/growing data is how Godot's `
 As the name suggests, the number of entries are counted and is used in conjunction with the settings `entry cap`. When the entry count exceeds the `entry cap`, the `Limit Action` is triggered. Actions available for this method:<br>
 * `Remove old entries` removes the oldest entries as new ones are written. This is the safest and objectively better option to use. **However**, this will potentially delete entries. So be mindful that you should either stop the session or quit the game so your log entries aren't overwritten.
 * `Stop session` will of course stop the session once the cap is hit. Requires you to start the session either manually or through code to log again.
-* `Stop & start session` restarts a sessios, creating a new log file.<br>
+* `Stop & start session` restarts a session, creating a new log file.<br>
 
 #### Session Timer:
 As any session is started, a timer is started alongside it that triggers the `Limit Action` upon timeout. The session timer has uses not limited to solve this problem. If you don't want to log at all times, only when testing or performing a stress test that requires you to log for X amount of time. The session timer allows you to sync up the session and a test with the `session_timer_started` and `session_timer_stopped` signals. Actions available for this method:<br>
