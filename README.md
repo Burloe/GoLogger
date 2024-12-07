@@ -1,17 +1,12 @@
-![GoLogger_Icon_Title](https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a)
+# ![GoLogger_Icon_Title](https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a)<br>
+**GoLogger** is a simple yet flexible logging framework for *Godot 4.3+*, designed to capture and store game events and data into external `.log` files accessible by both developers and players. With minimal setup, With minimal setup, it can be quickly integrated into any project to run in the background at all times or log specific events during testing. GoLogger allows you to customize its settings to suit your project's needs, providing timestamped logs entries that make debugging and investigating issues easier.
 
-GoLogger is a simple yet flexible logging framework for Godot 4, designed to log game events and data to external .log files accessible by both developers and players. With minimal setup required, GoLogger can be integrated quickly and easily into any project. GoLogger runs in the background, capturing the data you define with timestamps, providing a snapshot of events leading up to crashes, bugs, or other issues, making it easier for users to share logs and investigate problems.
-
-Whether you need a logger to run in the background at all times, or log at specific times while testing certain features or systems. GoLogger can be customized to run in any way you need for your project, all accessible in the editor through the bottom dock panel. 
-
-Log entries are as simple as calling `Log.entry()`(similar and as easy to use as `print()`) and can include any data that can be converted into a string. The framework is fully customizable, allowing you to log as much or as little information as you require. Format strings in whichever way you prefer. 
+Defining log entries are simple and only requires you to pass in a string, which can include any data that can be converted into a string. Allowing you to log as much or as little information as you require. Formatting strings to include/convert data can be done in multiple ways, only note that the data is not always legible. Here are two example usages which both results in the same log entry:
 ```gdscript
 Log.entry("Current Player health is %s/%s." % (current_health, max_health))
 Log.entry(str("Current Player health is", current_health, "/", max_health, "."))
-# Resulting entry: [14:44:44] Current Player health is 85/100.
+# Resulting entry: [07:14:28] Current Player health is 85/100.
 ```
-
-
 
 ## **Contents**
 1. Installation and setup
@@ -72,7 +67,7 @@ Log.stop_session()
 
 
 ### **Creating log entries with data:**<br>
-**Simply installing GoLogger does not log any entries**. This plugin is a frame work for you to define your own log entries in your code, including any string message and any data you want to log. Any data that can be converted to a string by using `str(data)` can be added to an entry.<br>
+**Simply installing GoLogger does not log any entries**. This plugin is a framework for you to define your own log entries in your code, including any string message and any data you want to log. Any data that can be converted to a string by using `str(data)` can be added to an entry.<br>
 
 The `entry()` function has two parameters: `entry(log_entry : String, category_index : int)`
 Only the first parameter mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the formatting of your log entry to your liking.
