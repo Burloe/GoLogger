@@ -88,23 +88,23 @@ GoLogger will create directories for each category in the dock's "category" tab.
 ## Managing .log file size:
 A potential pitfall to consider when logging large/growing data is how Godot's `FileAccess` API handles file writing. The `FileAccess.WRITE` mode truncates(deletes) the file's content, meaning we can't simply add a new entry to a file. The plugin first reads the file and stores each entry in an array. The entries are then re-entered sequentially before appending a new entry. **This process can cause performance issues** as the number of entries in any log file grows, potentially leading to stuttering and/or slowdowns. It is therefore vital to have limiters in place to prevent log files from becoming too large. GoLogger has a setting that you can change in the editor dock under the name `Limit Method`. Each method has it's own `Action` setting which dictates the action taken once the method condition is fullfilled.<br><br>
 
-### Entry Count Limit(recommended):
+#### Entry Count Limit(recommended):
 As the name suggests, the number of entries are counted and is used in conjunction with the settings `entry cap`. When the entry count exceeds the `entry cap`, the `Entry Count Action` is triggered. Actions available for this method:<br>
 * `Remove old entries` removes the oldest entries as new ones are written. This is the safest and objectively better option to use. **However**, this will potentially delete entries. So be mindful that you should either stop the session or quit the game so your log entries aren't overwritten.
 * `Stop session` will of course stop the session once the cap is hit. Requires you to start the session either manually or through code to log again.
 * `Stop & start session` restarts a session, creating a new log file.<br>
 
-### Session Timer:
+#### Session Timer:
 As any session is started, a timer is started alongside it that triggers the `Session Timer Action` upon timeout. The session timer has uses not limited to solve this problem. If you don't want to log at all times, only when testing or performing a stress test that requires you to log for X amount of time. The session timer allows you to sync up the session and a test with the `session_timer_started` and `session_timer_stopped` signals. Actions available for this method:<br>
 * `Stop session` will of course stop the session once the cap is hit. Requires you to start the session either manually or through code to log again.
 * `Stop & start session` restarts a session, creating a new log file.
 
 *You can also use both Entry Count Limit and Session Timer simultaneously!*<br>
 
-### None(beware):
+#### None(beware):
 You can also choose to use none of the `Limit Method` options. This is useful if you don't have logging sessions running in the background at all times. For example, if you use GoLogger only when you want to test a specific feature or system and you're manually stopping and starting the sessions as you need them. This is **NOT RECOMMENDED** unless you're aware of the problems that can occur. Use at your own risk!<br><br>
 
 
-### File count limit:
+#### File count limit:
 Despite .log files taking minimal storage space, generating an endless amount of files is never a good idea. Therefore, GoLogger has an adjustable `file count limit` setting that limits the number of .log files allowed in the category folders. By default, this limit is set to 10 and will overwrite the log file with the oldest date- and timestamp. Moving a .log file out of the folder saves it from this overwrite action.<br>
 *It's possible to turn this off by setting the value to 0 but it is **NOT recommended**!*
