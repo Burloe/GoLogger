@@ -7,74 +7,44 @@ extends Node
 ## GoLogger to download. For installation, setup and how to use instructions, see the README.md or in the Github 
 ## repo. 
 
-## Emitted when a log session has started.
-signal session_started 
 
-## Emitted when a log session has been stopped.
-signal session_stopped
+signal session_started ## Emitted when a log session has started.
+signal session_stopped ## Emitted when a log session has been stopped.
+signal session_status_changed ## Emitted when the session status has changed.  
+signal session_timer_started ## Emitted when the [param session_timer] is started.
 
-## Emitted when the session status has changed.  
-signal session_status_changed 
-
-## Emitted when the [param session_timer] is started. Useful to sync up sessions with systems/features for other 
-## applications than simple file management. E.g. when stress testing some system or feather or to log for a 
-## specific time.
-signal session_timer_started  
-
-
-## Path to settings.ini file. This path is a contant and doesn't change if you set your own [param base_directory]
-const PATH = "user://GoLogger/settings.ini"
-
-## [ConfigFile] object that settings from 'settings.ini' is loaded into and used throughout the framework.
-var config = ConfigFile.new()
-
-## Set the base filepath where folders for each log category are created.[br][color=red][b]Warning:
-## [/b][br]Changing this parameter at runtime will likely cause errors.
-var base_directory : String = "user://GoLogger/"
-
-## Array containing category data that each corresponds to a log category. They define the category name.
-@export var categories : Array = []
-
-## Contains the resulting string as determined by [param log_header].
-var header_string : String
-
-@onready var elements_canvaslayer : CanvasLayer = %GoLoggerElements
-
-## Timer node that tracks the session time. Will stop and start new sessions on [signal timeout].
-@onready var session_timer : Timer = %SessionTimer 
-
-## Flags whether or not a session is active.
-var session_status : bool = false: 
+const PATH = "user://GoLogger/settings.ini" 
+var config := ConfigFile.new()
+var base_directory: String = "user://GoLogger/" 
+var categories: Array = []
+var header_string: String
+var copy_name : String = "" 
+var session_status: bool = false: 
 	set(value):
 		session_status = value
 		session_status_changed.emit()
 
-
-## Hotkey used to start session manually. Default hotkey: [kbd]Ctrl + Shift + O[/kbd]
-var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
-## Hotkey used to stop session manually. Default hotkey: [kbd]Ctrl + Shift + P[/kbd]
-var hotkey_stop_session	: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")			
-## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
-var hotkey_copy_session : InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres") 
-
-
-# Popup
-@onready var popup 				: CenterContainer = %Popup
-@onready var popup_line_edit 	: LineEdit = 		%CopyNameLineEdit
-@onready var popup_yesbtn 		: Button = 			%PopupYesButton
-@onready var popup_nobtn 		: Button =			%PopupNoButton
-@onready var prompt_label       : RichTextLabel =   %PromptLabel
-@onready var popup_errorlbl 	: RichTextLabel = 	%PopupErrorLabel
-@onready var inaction_timer     : Timer =           %InactionTimer
-## When true, this bool activates the popup prompt that allows you to enter a file copy name. 
+@onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements 
+@onready var session_timer: Timer = %SessionTimer 
+@onready var popup: CenterContainer = %Popup
+@onready var popup_line_edit: LineEdit = %CopyNameLineEdit
+@onready var popup_yesbtn: Button = %PopupYesButton
+@onready var popup_nobtn: Button = %PopupNoButton
+@onready var prompt_label: RichTextLabel = %PromptLabel
+@onready var popup_errorlbl: RichTextLabel = %PopupErrorLabel
+@onready var inaction_timer: Timer = %InactionTimer
 var popup_state : bool = false: 
 	set(value):
 		popup_state = value
 		if session_status:
 			toggle_copy_popup(value)
 
-## Stores the session copy name entered.
-var copy_name : String = "" 
+## Hotkey used to start session manually. Default hotkey: [kbd]Ctrl + Shift + O[/kbd]
+var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
+## Hotkey used to stop session manually. Default hotkey: [kbd]Ctrl + Shift + P[/kbd]
+var hotkey_stop_session: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")			
+## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
+var hotkey_copy_session: InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres") 
 #endregion
 
 
@@ -150,10 +120,8 @@ func create_settings_file() -> void:
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
-## Validates settings by ensuring their type are correct when loading them. Returns false if valid
-## and true if corrupted.[bt]
-## This was made for developing the plugin but can be used to make sure settings.ini haven't been 
-## corrupted.
+## Validates settings by ensuring their type are correct when loading them. Returns false if valid and true if corrupted.[br]
+## This was made to aid development of the plugin but can be used to make sure settings.ini haven't been corrupted.
 func validate_settings() -> bool:
 	var faults : int = 0
 	var expected_types = {
@@ -225,7 +193,7 @@ func validate_settings() -> bool:
 	return faults == 0
 
 
-## DEPRECATED - Returns any setting value from 'settings.ini'. Also preforms some crucial error checks, pushes errors and creates 
+## Returns any setting value from 'settings.ini'. Also preforms some crucial error checks, pushes errors and creates 
 ## a default .ini file if one doesn't exist.
 func get_value(value : String) -> Variant:
 	var _config = ConfigFile.new()
@@ -249,15 +217,9 @@ func get_value(value : String) -> Variant:
 	return _val
 
 
-
 #region Main Plugin Functions
-## Initiates a log session, creating new .log files for each category to log into. You can also specify a delay to start the session in a desired time from calling the function.
-## However, the [code]await[/code] keyword [b]must[/b] be used.[br]Example usage:[codeblock]
-##	Log.start_session()             # Normal call
-##	await Log.start session(1.2)    # Calling with a start delay[/codeblock]
-func start_session(start_delay : float = 0.0) -> void:
-	#?        0               1                2                 3             4            5            6
-	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
+## Initiates a log session, creating new .log files for each category to log into.
+func start_session() -> void: 
 	if session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn1"):
 			push_warning("GoLogger: Failed to start session, a session is already active.")
@@ -268,9 +230,6 @@ func start_session(start_delay : float = 0.0) -> void:
 	if categories.is_empty(): 
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
 		return
-	
-	if start_delay > 0.0:
-		await get_tree().create_timer(start_delay).timeout
 	if get_value("limit_method") == 1 or get_value("limit_method") == 2:
 		session_timer.start(get_value("session_duration"))
 		session_timer_started.emit()
@@ -278,14 +237,12 @@ func start_session(start_delay : float = 0.0) -> void:
 		print("GoLogger: Session started.")
 
 	for i in range(categories.size()): 
-
 		categories[i][3] = get_file_name(categories[i][0])
 		var _path : String
 		if _path.begins_with("res://") or _path.begins_with("user://"):
-			_path = str(base_directory, categories[i][0], "_Gologs/") # Result: user://GoLogger/category_GoLogs
+			_path = str(base_directory, categories[i][0], "_Gologs/")
 		else:
 			_path = str(base_directory, categories[i][0], "_Gologs\\")
-
 		if _path == "": # ERROR CHECK
 			if get_value("error_reporting") == 0: 
 				push_error(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
@@ -299,22 +256,17 @@ func start_session(start_delay : float = 0.0) -> void:
 				DirAccess.make_dir_recursive_absolute(_path) 
 			if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
 				DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
-
 			_dir = DirAccess.open(_path)
 			if !_dir and get_value("error_reporting") != 2:
 				var _err = DirAccess.get_open_error()
 				if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _path, ").")
 				return
 			else:
-				 
-				# Assign file the name and path
 				categories[i][2] = get_file_name(categories[i][0])
 				categories[i][3] = str(_path, categories[i][2]) 
-				
 				var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
 				var _files = _dir.get_files() 
 				categories[i][4] = _files.size()
-
 				if get_value("file_cap") > 0:
 					while _files.size() > get_value("file_cap") -1:
 						_files.sort()
@@ -322,13 +274,13 @@ func start_session(start_delay : float = 0.0) -> void:
 						_files.remove_at(0)
 						var _err = DirAccess.get_open_error()
 						if _err != OK and get_value("error_reporting") != 2: push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
-				
 				if !_f and get_value("error_reporting") != 2: push_warning("GoLogger: Failed to create log file(", categories[i][3], ").")
 				else:
 					var _s := str(header_string, categories[i][0], " Log session started[", Time.get_datetime_string_from_system(get_value("use_utc"), true), "]:")
 					_f.store_line(_s)
 					categories[i][5] = 0
 				_f.close()
+
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
 	if get_value("session_print") == 1 or get_value("session_print") == 2: print("GoLogger: Started session.")
@@ -343,8 +295,6 @@ func start_session(start_delay : float = 0.0) -> void:
 ## Stores a log entry into the a .log file. [br]Example usage:[codeblock]
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
-	#?        0               1                2                 3             4            5            6
-	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	config.load(PATH)
 	categories = config.get_value("plugin", "categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ")
@@ -362,8 +312,6 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger: Failed to log entry due to inactive session.")
 		return
 	
-
-	# Open directory of the category
 	var _f = FileAccess.open(categories[category_index][3], FileAccess.READ) 
 	if !_f: # Error check 
 		var _err = FileAccess.get_open_error()
@@ -371,7 +319,6 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return 
 	
-	# Store old entries before the file is truncated
 	var lines : Array[String] = [] 
 	while not _f.eof_reached():
 		var _l = _f.get_line().strip_edges(false, true)
@@ -380,8 +327,7 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	_f.close()
 	categories[category_index][5] = lines.size()
 
-	# Limit method logic
-	if !popup_state: #! Need to test out this excemption features
+	if !popup_state:
 		match get_value("limit_method"): 
 			0: # Entry count
 				match get_value("entry_count_action"):
@@ -421,39 +367,28 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 							stop_session()
 							return
 
-	categories[category_index][5] = lines.size() 
-
-	# Open file with write and store the new entry
+	categories[category_index][5] = lines.size()
 	var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE) 
 	if !_fw:
 		var err = FileAccess.get_open_error()
 		if err != OK and get_value("error_reporting") != 2: 
-			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
-	
-	# Write lines back into file sequentially
+			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "") 
 	for line in lines:
 		_fw.store_line(str(line))
-
-	# Add the new entry at end and close FileAccess object
 	var _entry : String = str("\t", _timestamp, log_entry) if get_value("timestamp_entries") else str("\t", log_entry)
 	_fw.store_line(_entry)
 	_fw.close() 
 
 
-## Initiates the "save copy" operation by displaying the "enter name" prompt. Once a name has been entered and confirmed. [method complete_copy] is called.
+## Initiates the "save copy" operation by displaying the "enter name" prompt. 
+## Once a name has been entered and confirmed. [method complete_copy] is called.
 func save_copy() -> void:
 	if session_status:		
-		popup_state = true if popup_state == false else false
-		print(str("PopupState = ", popup_state))
-		
+		popup_state = true if popup_state == false else false 
 
 
-
-## Saves the actual copies of the current log session in "saved_logs" sub-folders. [br][b]Note:[/b][br]   
-##     [b]This function should never be called[/b] to perform the "save copy" operation. Instead, use [method save_copy] which initiates the process. 
-func complete_copy() -> void: 
-	#?        0               1                2                 3             4            5            6
-	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
+## Saves the copies after copy prompts is done in "saved_logs" sub-folders.
+func complete_copy() -> void:
 	if !session_status:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger: Attempt to log entry failed due to inactive session.")
 		return
@@ -464,11 +399,9 @@ func complete_copy() -> void:
 		if config.get_value("plugin", "error_reporting"):
 			push_warning("GoLogger: Unable to complete copy action. No categories are present.")
 	
-	# Trim name if user entered a name with .log
 	if copy_name.ends_with(".log") or copy_name.ends_with(".txt"):
 		copy_name = copy_name.substr(0, copy_name.length() - 4)
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ") 
-
 
 	for i in range(categories.size()):
 		var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
@@ -481,15 +414,12 @@ func complete_copy() -> void:
 		var _c = _fr.get_as_text()
 		var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", get_file_name(copy_name))
 		var _fw = FileAccess.open(_path, FileAccess.WRITE)
-		
-		if !_fw: # ERROR CHECK
+		if !_fw: 
 			var _e = FileAccess.get_open_error()
 			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", _path,"] - ", get_error(_e), ".")
 			popup_errorlbl.visible = true
 			await get_tree().create_timer(4.0).timeout
 			return
-		
-		# Store contents + cleanup
 		_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
 		_fw.close()
 	config.set_value("plugin", "categories", categories)
@@ -499,13 +429,8 @@ func complete_copy() -> void:
 		print("GoLogger: Persistent copies of the active session was created.")
 	
 
-
-## Stops the current session. Preventing further entries to be logged into the file of the current session. 
-## In order to log again, a new session must be started using [method start_session] which creates a new 
-## session and file. This is done automatically if your settings allows it.[br] 
+## Stops the current session. Preventing further entries to be logged into the file of the current session.
 func stop_session() -> void:
-	#?        0               1                2                 3             4            5            6
-	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
 	if !session_status:
 		return
 	
@@ -526,8 +451,6 @@ func stop_session() -> void:
 				session_status = false
 				session_status_changed.emit()
 				return
-			
-			# Open file successfull > store old contents + "stopped session" line to log and cleanup
 			var _content := _f.get_as_text()
 			_f.close()
 			var _fw = FileAccess.open(categories[i][3], FileAccess.WRITE)
@@ -551,9 +474,7 @@ func stop_session() -> void:
 	session_stopped.emit()
 
 
-## Toggles the "copy session" popup state by handling visibilities, disable states, focus modes etc.
-func toggle_copy_popup(toggle_on : bool) -> void: 
-	# ensuring session_status is done popup_state's set()
+func toggle_copy_popup(toggle_on : bool) -> void:
 	popup.visible              =  toggle_on
 	popup_line_edit.editable   =  toggle_on
 	popup_nobtn.disabled       = !toggle_on
@@ -563,7 +484,6 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 	popup_nobtn.focus_mode     =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
 	if session_timer != null and !session_timer.is_stopped(): 
 		session_timer.paused   =  toggle_on
-	
 	if toggle_on:
 		popup_line_edit.grab_focus()
 		inaction_timer.start(30)
@@ -573,38 +493,35 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 		popup_line_edit.release_focus()
 #endregion
 
-
 #region Helper functions
-## Helper function that returns an appropriate log header string depending on [param log_header].
 func get_header() -> String:
 	config.load(PATH)
 	match get_value("log_header"):
 		0: # Project name and version
-			var _n = str(ProjectSettings.get_setting("application/config/name"))
-			var _v = str(ProjectSettings.get_setting("application/config/version"))
-			if _n == "": 
-				_n = "Untitled Project"
-			if _v == "":  
-				_v = "v0.0"
-			return str(_n, " v", _v, " ")
+			var _p_name = str(ProjectSettings.get_setting("application/config/name"))
+			var _version = str(ProjectSettings.get_setting("application/config/version"))
+			if _p_name == "": 
+				_p_name = "Untitled Project"
+			if _version == "":  
+				_version = "v0.0"
+			return str(_p_name, " v", _version, " ")
 		1: # Project name
-			var _n = str(ProjectSettings.get_setting("application/config/name"))
-			if _n == "": 
+			var _p_name = str(ProjectSettings.get_setting("application/config/name"))
+			if _p_name == "": 
 				printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
-				_n = "Untitled Project"
-			return str(_n, " ")
+				_p_name = "Untitled Project"
+			return str(_p_name, " ")
 		2: # Version
-			var _v = str(ProjectSettings.get_setting("application/config/version"))
-			if _v == "": 
+			var _version = str(ProjectSettings.get_setting("application/config/version"))
+			if _version == "": 
 				printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
-				_v = "v0.0"
-			return str(_v, " ")
+				_version = "v0.0"
+			return str(_version, " ")
 		3: # None
 			return ""
 	return ""
 
-## Helper function that determines whether or not any [param category_name] was found more than once 
-## in [param categories].
+
 func check_filename_conflicts() -> String:
 	categories = config.get_value("plugin", "categories")
 	var seen_resources : Array[String] = []
@@ -617,7 +534,6 @@ func check_filename_conflicts() -> String:
 	return ""
 
 
-## Returns error string from the error code passed.
 static func get_error(error : int, object_type : String = "") -> String:
 	match error: 
 		1:  return str("Error[1] ",  object_type, " Failed")
@@ -669,24 +585,20 @@ static func get_error(error : int, object_type : String = "") -> String:
 		48: return str("Error[47] ", object_type, " Bug error")
 	return "N/A"
 
-## Helper function that returns a date/timestamped file name for a log file.
+
 func get_file_name(category_name : String) -> String:
 	var dict  : Dictionary = Time.get_datetime_dict_from_system(get_value("use_utc"))
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
-	# Add 0 to single-numbered dates and times
 	var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
 	var dd  : String = str(dict["day"]    if dict["day"]    > 9 else str("0", dict["day"]))
 	var hh  : String = str(dict["hour"]   if dict["hour"]   > 9 else str("0", dict["hour"]))
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
-	# Format the final string
 	var fin : String 
-	# Result > "prefix(yy-mm-dd_hh-mm-ss).log"   OR   "prefix(yymmdd_hhmmss.log)
 	fin = str(category_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if get_value("dash_separator") else str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
 	return fin 
 
-
-## DEPRECATED - Adds actions and events to [InputMap].
+## DEPRECATED
 func add_hotkeys() -> void:
 	# Start session
 	if !InputMap.has_action("GoLogger_start_session"):
@@ -713,10 +625,8 @@ func add_hotkeys() -> void:
 
 
 #region Signal listeners
-## Uses [param limit_action] to determine which action should be taken when [param session_timer] timeout 
-## occurs. 
-func _on_session_timer_timeout() -> void:
-	print("session_timer timed out") 
+## Uses [param limit_action] to determine which action should be taken when [param session_timer] timeout occurs.
+func _on_session_timer_timeout() -> void: 
 	match get_value("limit_method"):
 		1: # Session Timer
 			if get_value("session_timer_action") == 0: # Stop & Start
@@ -764,11 +674,11 @@ func _on_line_edit_text_submitted(new_text : String) -> void:
 			copy_name = popup_line_edit.text
 		complete_copy()
 
-## [LineEdit] For the Copy Session popup.
+## Copy Session popup.
 func _on_no_button_button_up() -> void:
 	popup_state = false
 
-## [LineEdit] For the Copy Session popup.
+## Copy Session popup.
 func _on_yes_button_button_up() -> void:
 	complete_copy()
 #endregion

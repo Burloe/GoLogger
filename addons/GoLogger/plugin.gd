@@ -2,7 +2,7 @@
 extends EditorPlugin
 
 var dock 
-var icon = preload("res://addons/GoLogger/GoLogger_Icon_Flat.svg")
+var icon = preload("res://addons/GoLogger/gologger_icon.png")
 
 
 func _enter_tree() -> void:
