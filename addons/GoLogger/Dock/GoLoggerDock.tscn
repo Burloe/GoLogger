@@ -420,9 +420,9 @@ size_flags_vertical = 4
 selected = 0
 allow_reselect = true
 item_count = 3
-popup/item_0/text = "Remove old entries"
+popup/item_0/text = "Overwrite entries"
 popup/item_0/id = 2
-popup/item_1/text = "Stop & Start session"
+popup/item_1/text = "Restart session"
 popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
@@ -449,7 +449,7 @@ size_flags_vertical = 4
 selected = 0
 allow_reselect = true
 item_count = 2
-popup/item_0/text = "Stop & Start session"
+popup/item_0/text = "Restart session"
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
@@ -518,7 +518,7 @@ layout_mode = 2
 theme_override_constants/separation = 3
 
 [node name="Spacer" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column"]
-custom_minimum_size = Vector2(0, 2)
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column"]
@@ -627,7 +627,7 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnE/VBoxContainer"]
-custom_minimum_size = Vector2(0, 2)
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnE/VBoxContainer"]

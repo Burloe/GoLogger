@@ -579,9 +579,9 @@ func update_tooltip(node : Control) -> void:
 		limit_method_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Method used to limit log file length/size:[color=white][font_size=11]\n[color=white][b]Both[/b]: Each method’s action is set independently via its action settings.\n[color=ff5757][b]None[/b]: Not recommended, use at your own risk!"
 		entry_count_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Action taken when count exceeds limit:[color=white][font_size=11]\n[b]Remove old entries[/b]: Removes oldest entries to make space for new ones.\n[b]Stop/start[/b]: Stops and starts a new session.\n[b]Stop[/b]: Stops session only." 
+			tooltip_lbl.text = "[font_size=14][color=green]Action taken when count exceeds limit:[color=white][font_size=11]\n[b]Overwrite entries[/b]: Removes the oldest entries as new ones are written.\n[b]Stop/start[/b]: Stops and starts a new session.\n[b]Stop[/b]: Stops session only." 
 		session_timer_action_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Action taken upon Session Timer timeout:[color=white][font_size=11]\nAction taken when the SessionTimer times out.\n[color=ff669e]Signals [color=39d7e6]'session_timer_started'[color=ff669e] and [color=39d7e6]'session_timer_ended'[color=ff669e] can be used to sync any systems or tests to the sessions."
+			tooltip_lbl.text = "[font_size=14][color=green]Action taken upon Session Timer timeout:[color=white][font_size=11]\n[color=ff669e]Signals [color=39d7e6]'session_timer_started'[color=ff669e] and [color=39d7e6]'session_timer_ended'[color=ff669e] can be used to sync any systems or tests to the sessions."
 		error_rep_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Error Reporting:[color=white][font_size=11]\nDisables non-critical errors and/or warnings. Using 'Warnings only' converts non-critical errors to warnings, 'None' disables all non-critical warnings &errors."
 		session_print_btn:
