@@ -56,7 +56,7 @@ Log.entry(str("Current game time: ", time_of_day))
 
 # Logs into category 1("player" category by default).
 Log.entry(str("Player's current health: %s/%s" % current_health, max_health), 1)
-Log.entry(str("Player's current health: ", current_health, "(", max_health, ")"), 1)
+Log.entry(str("Player's current health: ", current_health, "/", max_health), 1)
 # Resulting entry: [19:17:27] Player's current health: 94(100)
 
 # Initiates the "copy session" operation by showing the name prompt popup. Hotkey:  Ctrl + Shift + U
