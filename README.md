@@ -86,7 +86,9 @@ GoLogger will create directories for each category in the dock's "category" tab.
 * *Folders for categories created by the plugin aren't deleted when you delete a category in the dock. This is to prevent accidental deletion of log files. It's best to open the directory using the "Open" button and manually delete the corresponding folder of any deleted category.*
 
 ## Managing .log file size:
-A potential pitfall to consider when logging large/growing data is how Godot's `FileAccess` API handles file writing. The `FileAccess.WRITE` mode truncates(deletes) the file's content, meaning we can't simply add a new entry to a file. The plugin first reads the file and stores each entry in an array. The entries are then re-entered sequentially before appending a new entry. **This process can cause performance issues** as the number of entries in any log file grows, potentially leading to stuttering and/or slowdowns. It is therefore vital to have limiters in place to prevent log files from becoming too large. GoLogger has a setting that you can change in the editor dock under the name `Limit Method`. Each method has it's own `Action` setting which dictates the action taken once the method condition is fullfilled.<br><br>
+A potential pitfall to consider when logging large/growing data is how Godot's `FileAccess` API handles file writing. The `FileAccess.WRITE` mode truncates(deletes) the file's content, meaning we can't simply add new entries to a file. The plugin first reads the file and stores each entry in an array which are then re-entered sequentially before appending a new entry. **This process can cause performance issues as the entry count grows**, potentially leading to stuttering and/or slowdowns. 
+
+It is therefore vital to put limitations in place, which GoLogger offers a couple of options. In the settings, you can find `Limit Method` and each method has their own `Action` to determine the action taken once the method's condition is fullfilled.<br><br>
 
 #### Entry Count Limit(recommended):
 As the name suggests, the number of entries are counted and is used in conjunction with the settings `entry cap`. When the entry count exceeds the `entry cap`, the `Entry Count Action` is triggered. Actions available for this method:<br>
@@ -95,9 +97,9 @@ As the name suggests, the number of entries are counted and is used in conjuncti
 * `Restart session` restarts a session, creating a new log file.<br>
 
 #### Session Timer:
-As any session is started, a timer is started alongside it that triggers the `Session Timer Action` upon timeout. The session timer has uses not limited to solve this problem. If you don't want to log at all times, only when testing or performing a stress test that requires you to log for X amount of time. The session timer allows you to sync up the session and a test with the `session_timer_started` and `session_timer_stopped` signals. Actions available for this method:<br>
-* `Stop session` will of course stop the session once the cap is hit. Requires you to start the session either manually or through code to log again.
-* `Restart session` restarts a session, creating a new log file.
+A timer is started alongside sessions and the `Action` is triggered upon timeout. The session timer has uses outside of solving the file size issue. For example, if you don't want to log at all times, only when testing or stress testing that requires you to log during certain times. The session timer allows you to sync up the session and a test with the `session_timer_started` and `session_timer_stopped` signals. Actions available for this method:<br>
+* `Stop session` will stops sessions on session timer timeout. Requires you to start the session either manually or through code to log again.
+* `Restart session` restarts sessions, creating a new log file.
 
 *You can also use both Entry Count Limit and Session Timer simultaneously!*<br>
 
