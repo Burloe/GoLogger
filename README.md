@@ -1,12 +1,17 @@
 # ![GoLogger_Icon_Title](https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a)<br>
 **GoLogger** is a simple yet flexible logging framework for *Godot 4.3+*, which captures and store game events(and data) into external `.log` files accessible by both developers and players to aid in development and maintenence of your projects. With minimal setup, it can be quickly integrated into any project to run in the background at all times or log specific events during testing. GoLogger allows you to customize its settings to suit your project's needs, providing timestamped logs entries that make debugging and investigating issues easier.
 
-Defining log entries are simple and only requires you to pass in a string, which can include any data that can be converted into a string. Allowing you to log as much or as little information as you require. Formatting strings to include/convert data can be done in multiple ways, only note that the data is not always legible. Here are two example usages which both results in the same log entry:
+Defining log entries are simple and only requires you to pass in a string, which can include any data that can be converted into a string. Formatting strings to include/convert data can be done in multiple ways and is done no differently than normal. Here are 3 examples which both results in the same log entry:
 ```gdscript
-Log.entry("Current Player health is %s/%s." % (current_health, max_health))
-Log.entry(str("Current Player health is", current_health, "/", max_health, "."))
-# Resulting entry: [07:14:28] Current Player health is 85/100.
+Log.entry("Player's current health: " + str(current_health) + " / " + str(max_health), 1)
+
+Log.entry(str("Player's current health: ", current_health, " / ", max_health), 1)
+
+Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 1)
+
+# Resulting entry: [19:17:27] Player's current health: 74 / 100
 ```
+*The integer at the end dictates which log category(log file) the entry should be stored in.*
 
 ## **Contents**
 1. Installation and setup
