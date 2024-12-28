@@ -43,7 +43,7 @@ GoLogger uses 'sessions' to indicate when its logging or not. Each session creat
 * **Preserve Important Data:** When using the **Entry Count Limit** + **Remove Old Entries** options, older entries are deleted to make room for new ones. If a bug or unexpected event occurs during playtesting, you can use this feature to save the log without stopping the session or your game without the risk of overwriting the important log entries.
 
 ### **Example usage of the main functions:**<br>
-In Godot, strings can be formatted in many ways. All of which can be done when creating log entries. Use any 
+In Godot, strings can be formatted in many ways. All of which can be done when creating log entries. Use the method of concatenating strings you're most comfortable with(including a couple examples below).
 ```gdscript
 # General use, simply starts the session. Hotkey:  Ctrl + Shift + O
 Log.start_session()
@@ -54,31 +54,29 @@ await Log.start_session(1.2)
 Log.entry(str("Current game time: ", time_of_day))
 # Resulting entry : [2024-11-11 19:17:27] Current game time: 16.30
 
-# Logs into category 1("player" category by default).
+# Logs into category 1("player" category by default). Different methods of formatting the same string.
 Log.entry(str("Player's current health: %s/%s" % current_health, max_health), 1)
+Log.entry(str("Player's current health: " + str(current_health) + "/" + str(max_health), 1)
 Log.entry(str("Player's current health: ", current_health, "/", max_health), 1)
 # Resulting entry: [19:17:27] Player's current health: 94(100)
 
-# Initiates the "copy session" operation by showing the name prompt popup. Hotkey:  Ctrl + Shift + U
+# Initiates the create copy operation. Hotkey:  Ctrl + Shift + U
 Log.save_copy()
 
 # Stops an active session. Hotkey:  Ctrl + Shift + P
 Log.stop_session() 
 ```
+*The index of every category is shown in the "Categories" tab of the dock at the top left of each category.* <br>
 
 
 ### **Creating log entries with data:**<br>
-**Simply installing GoLogger does not log any entries**. This plugin is a framework for you to define your own log entries in your code, including any string message and any data you want to log. Any data that can be converted to a string by using `str(data)` can be added to an entry.<br>
+**Simply installing GoLogger will not log any entries or data**. This plugin is a framework for you to define your own log entries in your code as you develop your project. Entries are simple strings, meaning any data that can be converted to a string by using `str(data)` can be added to an entry.<br>
 
-The `entry()` function has two parameters: `entry(log_entry : String, category_index : int)`
-Only the first parameter mandatory and needs to be defined when calling the function while the rest are optional and allow you to customize the formatting of your log entry to your liking.
-* `log_entry` - *Mandatory* - The string that makes up your log entry. Include any data that can be converted to a string can be logged.
-* `category_index` - *Optional* - This parameter specifies the category or file where the entry is logged. The index of every category is shown in the "Categories" tab of the dock at the top left of each category.<br>
-
-*Calling this function without defining an index will make it default to log into the category with index 0 which is why it's recommended to have your "base" category(like "game") as the 0 indexed category.* <br><br>
+When creating a log entry, you only need to create a string and concatenate any data you might want. The only need to be mindful of specifying the `category_index` which depends on the categories you use. If you for example want to log the current time in your game and the players current position in two separate entries when you've loaded your game(also assuming you have the default categories). See the `Example Usage of the main functions` paragraph for real world examples of how entries can be made.<br><br>
+*Without defining a `category_index` when creating log entries(i.e. `Log.entry("This is a log entry.")`). Entries are logged into the category with the index 0.*<br><br>
 
 ## Managing log categories:
-GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your project's need. When a category name is applied, folders are created with the name of each category within the `base_directory` and once a session is started, the folders for all categories with applied names are created(if they don't already exist) and a .log file are saved inside. The number at the top left of each category is the `category_index` of that category. Meaning if you want to log an entry into the "player" category, use the index as the last parameter when calling the function. Example `Log.entry("My player entry", 1)`.<br> 
+GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your needs. The number at the  top left of each category is the `category_index` which dictates which category each entry is logged into. When your project runs, folders are created with the name of each category within the `base_directory` and ones a session is started. A .log file is created for each category and is stored in the category's folder.<br> 
 ![GoLoggerCategoryDock](https://github.com/user-attachments/assets/f4346da0-a9b5-4b00-83ba-147bcfdd3481)
 
 *Notes:*
