@@ -43,7 +43,7 @@ GoLogger uses 'sessions' to indicate when its logging or not. Each session creat
 * **Preserve Important Data:** When using the **Entry Count Limit** + **Remove Old Entries** options, older entries are deleted to make room for new ones. If a bug or unexpected event occurs during playtesting, you can use this feature to save the log without stopping the session or your game without the risk of overwriting the important log entries.
 
 ### **Example usage of the main functions:**<br>
-In Godot, strings can be formatted in many ways. All of which can be done when creating log entries. Use the method of concatenating strings you're most comfortable with(including a couple examples below).
+In Godot, strings can be concatenated with data in many ways and it's no different when creating strings for log entries. Use the method you're most comfortable with. Below are some examples of how to call the main methods of this framework, including a examples of how to format log entries.
 ```gdscript
 # General use, simply starts the session. Hotkey:  Ctrl + Shift + O
 Log.start_session()
@@ -54,11 +54,11 @@ await Log.start_session(1.2)
 Log.entry(str("Current game time: ", time_of_day))
 # Resulting entry : [2024-11-11 19:17:27] Current game time: 16.30
 
-# Logs into category 1("player" category by default). 3 methods to formatting the same string.
+# Logs into category 1("player" category by default). 3 ways to formatting the same string.
 Log.entry("Player's current health: " + str(current_health) + "/" + str(max_health), 1)
 Log.entry(str("Player's current health: ", current_health, "/", max_health), 1)
 Log.entry(str("Player's current health: %s/%s" % current_health, max_health), 1)
-# Resulting entry: [19:17:27] Player's current health: 94(100)
+# Resulting entry: [19:17:27] Player's current health: 74 / 100
 
 # Initiates the create copy operation. Hotkey:  Ctrl + Shift + U
 Log.save_copy()
