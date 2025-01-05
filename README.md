@@ -34,7 +34,7 @@ Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 
 *If errors persist, ensure "GoLogger.tscn" was added properly as an autoload and then restart Godot.*<br>
 ![enable_plugin](https://github.com/user-attachments/assets/6d201a57-638d-48a6-a9c0-fc8719beff37)
 
-You're all set! Next time you run your project, directories and .log files will be created according to the settings and categories you've setup in the dock. It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` in your exit game function to help differentiate between normal exits, crashes, or forced closures, since the log file will end with a "Stopped session" entry.<br><br>
+You're all set! Next time you run your project, directories and .log files will be created according to the settings and categories you've setup in the dock. It’s recommended to add `Log.stop_session()` before calling `get_tree().quit()` as this helps differentiate between normal exits, crashes, or forced closures, since the log file will end with a "Stopped session" entry.<br><br>
 
 
 ## How to use GoLogger:<br>
