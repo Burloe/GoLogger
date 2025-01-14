@@ -60,10 +60,10 @@ Log.entry(str("Current game time: ", time_of_day))
 # Resulting entry : [19:17:27] Current game time: 16.30
 
 # Logs into category 1("player" category by default). 3 ways to format the same string.
-Log.entry("Player's current health: " + str(current_health) + "/" + str(max_health), 1)
-Log.entry(str("Player's current health: ", current_health, "/", max_health), 1)
-Log.entry(str("Player's current health: %s/%s" % current_health, max_health), 1)
-# Resulting entry: [19:17:27] Player's current health: 74/100
+Log.entry("Current Player health: " + str(current_health) + "/" + str(max_health), 1)
+Log.entry(str("Current Player health: ", current_health, "/", max_health), 1)
+Log.entry(str("Current Player health: %s/%s" % current_health, max_health), 1)
+# Resulting entry: [19:17:27] Current Player health: 74/100
 
 # Initiates the create copy operation. Hotkey:  Ctrl + Shift + U
 Log.save_copy()
