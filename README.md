@@ -59,7 +59,7 @@ await Log.start_session(1.2)
 Log.entry(str("Current game time: ", time_of_day))
 # Resulting entry : [19:17:27] Current game time: 16.30
 
-# Logs into category 1("player" category by default). 3 ways to formatting the same string.
+# Logs into category 1("player" category by default). 3 ways to format the same string.
 Log.entry("Player's current health: " + str(current_health) + "/" + str(max_health), 1)
 Log.entry(str("Player's current health: ", current_health, "/", max_health), 1)
 Log.entry(str("Player's current health: %s/%s" % current_health, max_health), 1)
