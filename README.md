@@ -48,7 +48,7 @@ GoLogger uses 'sessions' to indicate when its logging or not. Each session creat
 * **Preserve Important Data:** When using the **Entry Count Limit** + **Remove Old Entries** options, older entries are deleted to make room for new ones. If a bug or unexpected event occurs during playtesting, you can use this feature to save the log without stopping the session or your game without the risk of overwriting the important log entries.
 
 ### **Example usage of the main functions:**<br>
-There are many ways to include data in strings and it's no different when creating strings for log entries. Use the method you're most comfortable with. Below are some examples of how to call the main methods of this framework, including a examples of how to format log entries.
+Concatenating data and strings can be done though many ways, and creating strings for log entries are no different. Use your prefered method, but below are some examples of how to use the main methods of this framework.
 ```gdscript
 # General use, simply starts the session. Hotkey:  Ctrl + Shift + O
 Log.start_session()
