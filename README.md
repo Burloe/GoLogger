@@ -94,7 +94,7 @@ A potential pitfall to consider when logging large/growing data is how Godot's `
 It is therefore vital to put limitations in place, which GoLogger offers a couple of options. In the settings tab of the dock, you can find `Limit Method`, each method has its own `Action` to determine the action taken once the condition of the method is fullfilled.<br><br>
 
 #### Entry Count Limit(recommended):
-As the name suggests, the number of entries are counted and is used in conjunction with the settings `entry cap`. When the entry count exceeds the `entry cap`, the `Entry Count Action` is triggered. Actions available for this method:<br>
+As the name suggests, the number of entries are counted and is used together with the settings `Entry Count Action` and `entry cap`. The `Entry Count Action` is triggered once the entry count exceeds the set `entry cap`. Actions available for this method:<br>
 * `Overwrite entries` removes the oldest entries as new ones are written. This is the safest and objectively better option to use. **However**, this potentially deletes important logs. So be mindful that you should either stop the session manually, copy the session or quit your game to prevent any entry loss.
 * `Stop session` will of course stop the session once the cap is hit. Requires you to start the session either manually or through code to log again.
 * `Restart session` restarts a session, creating a new log file.<br>
