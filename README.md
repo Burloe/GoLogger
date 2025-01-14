@@ -1,7 +1,7 @@
 # ![GoLogger_Icon_Title](https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a)<br>
 **GoLogger** is a simple yet flexible logging framework for *Godot 4.3+*, which captures and store game events(and data) into external `.log` files accessible and by both developers and players to aid in development and maintenence of your projects. With minimal setup, it can be quickly integrated into any project to run in the background at all times or log specific events during testing. GoLogger allows you to customize its settings to suit your needs, providing timestamped logs entries that make debugging and investigating issues easier. 
 
-Defining log entries are simple and only requires a string, which can include any data(that can be converted into a string). Formatting strings to include/convert data can be done in multiple ways and is done no differently than normal. Here are 3 examples which both results in the same log entry:
+Defining log entries are simple and only requires a string, which can include any data(that can be converted into a string). Formatting strings to include data can be done in multiple ways and is no different than normal. Here are 3 examples that results in the same log entry:
 ```gdscript
 Log.entry("Player's current health: " + str(current_health) + " / " + str(max_health), 1)
 
