@@ -11,7 +11,7 @@ Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 
 
 # Resulting entry: [19:17:27] Player's current health: 74 / 100
 ```
-*The integer at the end dictates which log category(log file) the entry should be stored in.*
+*The integer value defined after the log entry string dictates which log category(or log file) the entry should be stored in. Each category respectively has their own number at the top-left hand corner in the dock's Category tab.*
 
 ## **Contents**
 1. Installation and setup
