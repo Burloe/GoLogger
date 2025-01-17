@@ -566,7 +566,7 @@ func update_tooltip(node : Control) -> void:
 		utc_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Timestamp files & entries using UTC Time:[color=white][font_size=11]\nUses UTC time as opposed to the local system time."
 		dash_btn:
-			tooltip_lbl.text = "[font_size=14][color=green]Use - to separate timestamps:[color=white][font_size=11]\nUses dashes(-) to separate date/timestamps. \nEnabled: category_name(yy-mm-dd_hh-mm-ss).log\nDisabled: category_name(yymmdd_hhmmss).log"
+			tooltip_lbl.text = "[font_size=14][color=green]Use - to separate timestamps:[color=white][font_size=11]\nUses dashes(-) to separate date/timestamps. \nOn: yy-mm-dd_hh-mm-ss\nOff: yymmdd_hhmmss"
 
 		disable_warn1_btn:
 			tooltip_lbl.text = "[font_size=14][color=green]Disable Warning:[color=white][font_size=11]\nEnable/disable the warning 'Failed to start session without stopping the previous'."

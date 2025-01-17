@@ -1,8 +1,7 @@
 @tool
 extends EditorPlugin
 
-var dock 
-var icon = preload("res://addons/GoLogger/gologger_icon.png")
+var dock  
 
 
 func _enter_tree() -> void:
