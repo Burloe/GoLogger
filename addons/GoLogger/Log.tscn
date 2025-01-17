@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dm7mwwoselesw"]
 
-[ext_resource type="Script" path="res://addons/GoLogger/Log.gd" id="1_qpie0"]
+[ext_resource type="Script" uid="uid://dwsq1eyit7cex" path="res://addons/GoLogger/Log.gd" id="1_qpie0"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="5_e13q5"]
 
 [node name="Log" type="Node"]

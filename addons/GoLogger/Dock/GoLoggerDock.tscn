@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
-[ext_resource type="Script" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
+[ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
 
 [node name="GoLoggerDock" type="TabContainer"]
@@ -258,7 +258,7 @@ text = "  Log Header"
 vertical_alignment = 1
 
 [node name="Spacer" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox"]
-custom_minimum_size = Vector2(68, 0)
+custom_minimum_size = Vector2(74, 0)
 layout_mode = 2
 mouse_filter = 2
 
@@ -273,6 +273,7 @@ selected = 0
 allow_reselect = true
 item_count = 5
 popup/item_0/text = "Project Name & Version"
+popup/item_0/id = 0
 popup/item_1/text = "Project Name"
 popup/item_1/id = 1
 popup/item_2/text = "Version"
@@ -300,7 +301,7 @@ text = " CanvasLayer"
 vertical_alignment = 1
 
 [node name="Control" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(167, 0)
 layout_mode = 2
 mouse_filter = 2
 
@@ -339,7 +340,7 @@ custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
-text = "Use UTC time"
+text = "UTC time"
 
 [node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
 unique_name_in_owner = true
@@ -347,7 +348,7 @@ custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
-text = "Use - separator in timestamps"
+text = "Use separator in timestamps"
 
 [node name="ColumnC" type="MarginContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
@@ -368,7 +369,7 @@ layout_mode = 2
 [node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 61
+theme_override_constants/separation = 75
 alignment = 2
 
 [node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/LimitMethodHBox"]
@@ -388,6 +389,7 @@ selected = 0
 allow_reselect = true
 item_count = 5
 popup/item_0/text = "Entry Count"
+popup/item_0/id = 0
 popup/item_1/text = "SessionTimer"
 popup/item_1/id = 1
 popup/item_2/text = "Both"
@@ -401,7 +403,7 @@ popup/item_4/id = 3
 [node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 34
+theme_override_constants/separation = 44
 alignment = 2
 
 [node name="EntryActionLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/EntryCountActionHBox"]
@@ -430,7 +432,7 @@ popup/item_2/id = 1
 [node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 28
 alignment = 2
 
 [node name="SessionTimerActionLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/SessionTimerActionHBox"]
@@ -450,6 +452,7 @@ selected = 0
 allow_reselect = true
 item_count = 2
 popup/item_0/text = "Restart session"
+popup/item_0/id = 0
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
@@ -526,7 +529,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-theme_override_constants/separation = 82
+theme_override_constants/separation = 90
 alignment = 2
 
 [node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column/FileCountHBox"]
@@ -571,6 +574,7 @@ selected = 0
 allow_reselect = true
 item_count = 4
 popup/item_0/text = "Warnings & Errors"
+popup/item_0/id = 0
 popup/item_1/text = "Warnings Only"
 popup/item_1/id = 1
 popup/item_2/id = 3

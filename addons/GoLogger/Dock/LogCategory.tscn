@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://c3n416c5fajm5"]
 
-[ext_resource type="Script" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
+[ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
 [ext_resource type="Texture2D" uid="uid://b33lx2cjw84p0" path="res://addons/GoLogger/Resources/icons/Lock.svg" id="2_b4ns3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ilabp"]
