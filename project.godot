@@ -14,7 +14,7 @@ config/name="GoLogger"
 config/version="1.2"
 config/tags=PackedStringArray("plugin", "tool")
 run/main_scene="res://test_scene.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 
 [autoload]
 
