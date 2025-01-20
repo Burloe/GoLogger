@@ -38,14 +38,14 @@ You're all set! Next time you run your project, directories and .log files will 
 
 
 ## How to use GoLogger:<br>
-GoLogger uses 'sessions' to indicate when its logging or not. Each session creates a new log file with the timestamp of when the session was started. Sessions are also **global**, meaning that stopping a session will start and stop logging for all categories simultaneously. There are three main ways to start and stop sessions. 
+GoLogger uses 'sessions' to indicate when the plugin is logging or not. Each session creates new log files for every category you've setup with the timestamp of when the session was started. Sessions are also **global**, meaning that stopping a session will start and stop logging for all categories simultaneously. There are three main ways to start and stop sessions. 
 * **Using the `autostart` setting** will start a session when you run your project.
 * **Hotkeys** can perform the three main functions of the plugin(start, copy and stop)
-* **Calling the functions though code**. You can call the functions through code as well and since the script is an autoload. You can call them from any script.
+* **Calling the functions though code**. You can call the functions through code from any script or scene since the script is an autoload.
 
-`Save Session Copy` feature was introduced in v1.2, allowing users to saves the logs of the current session into each respective category's `saved_logs` subfolder. All copies are saved into these folders and the ability to name the copies allow for easy identifiers. This feature serves two key purposes:
-* **Prevent Deletion:** Oldest logs are automatically deleted when the file limit is reached. Saving a copy protects specific logs from being removed. *Simply moving a log file out of the category folder will of course also prevent deletion.*
-* **Preserve Important Data:** When using the **Entry Count Limit** + **Remove Old Entries** options, older entries are deleted to make room for new ones. If a bug or unexpected event occurs during playtesting, you can use this feature to save the log without stopping the session or your game without the risk of overwriting the important log entries.
+`Save Session Copy` feature was introduced in v1.2, allows users to save copies of the logs of the current session into each category's respective `saved_logs` subfolder. All copies are saved into these folders and you specify a name for the copies allows for easy identification. This feature serves two key purposes:
+* **Prevent Deletion:** Log files are automatically deleted when the file limit is reached. Saving a copy protects specific logs from being removed. *You can also manually move any log file(s) out of the category folder will of course also prevent deletion.*
+* **Preserve Important Data:** When using the **Entry Count Limit** + **Overwrite Entries** options to limit file size, older entries are deleted to make room for new ones. If a bug or unexpected event occurs during playtesting, you can use this feature to save the log without requiring you to stop and start the session or your game without the risk of overwriting the important log entries.
 
 ### **Example usage of the main functions:**<br>
 Concatenating data and strings can be done though many ways, and creating strings for log entries are no different. Use your prefered method, but below are some examples of how to use the main methods of this framework.
@@ -65,8 +65,9 @@ Log.entry(str("Current Player health: ", current_health, "/", max_health), 1)
 Log.entry(str("Current Player health: %s/%s" % current_health, max_health), 1)
 # Resulting entry: [19:17:27] Current Player health: 74/100
 
-# Initiates the create copy operation. Hotkey:  Ctrl + Shift + U
-Log.save_copy()
+# Copy session anytime the "player_death" signal is emitted. Hotkey:  Ctrl + Shift + U
+func _on_player_death() -> void:
+  Log.save_copy()
 
 # Stops an active session. Hotkey:  Ctrl + Shift + P
 Log.stop_session() 
@@ -81,7 +82,7 @@ When creating a log entry, you only need to create a string and concatenate any 
 *Without defining a `category_index` when creating log entries(i.e. `Log.entry("This is a log entry.")`). Entries are logged into the category with the index 0.*<br><br>
 
 ## Managing log categories:
-GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your needs. The number at the  top left of each category is the `category_index` which dictates which category each entry is logged into. When your project runs, folders are created with the name of each category within the `base_directory` and ones a session is started. A .log file is created for each category and is stored in the category's folder.<br> 
+GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your needs. The top-left number of each category is the `category_index` which you use whenever you create log entries in your code. When your project runs, folders are created with the name of each category within the `base_directory` and ones a session is started. A .log file is created for each category and is stored in the category's folder.<br> 
 ![GoLoggerCategoryDock](https://github.com/user-attachments/assets/f4346da0-a9b5-4b00-83ba-147bcfdd3481)
 
 *Notes:*
@@ -89,7 +90,7 @@ GoLogger will create directories for each category in the dock's "category" tab.
 * *Folders for categories created by the plugin aren't deleted when you delete a category in the dock. This is to prevent accidental deletion of log files. It's best to open the directory using the "Open" button and manually delete the corresponding folder of any deleted category.*
 
 ## Managing .log file size:
-A potential pitfall to consider when logging large/growing data is how Godot's `FileAccess` API handles file writing. The `FileAccess.WRITE` mode truncates(deletes) the file's content, meaning we can't simply add new entries to a file. The plugin first reads the file and stores each entry in an array which are then re-entered sequentially before appending a new entry. **This process can cause performance issues as the entry count grows, thereby creating larger arrays that are prone to performance issues**. 
+A potential pitfall to consider when logging large/growing data is how Godot's `FileAccess` API handles file writing. The `FileAccess.WRITE` mode truncates(deletes) the file's content, meaning we can't simply append new entries to a file. The plugin first reads the file and stores each entry in an array which are then re-entered sequentially before appending a new entry. **This process can cause performance issues as the entry count grows, thereby creating larger arrays that are prone to performance issues**. 
 
 It is therefore vital to put limitations in place, which GoLogger offers a couple of options. In the settings tab of the dock, you can find `Limit Method`, each method has its own `Action` to determine the action taken once the condition of the method is fullfilled.<br><br>
 
@@ -107,7 +108,7 @@ A timer is started alongside sessions and the `Action` is triggered upon timeout
 *You can also use both Entry Count Limit and Session Timer simultaneously!*<br>
 
 #### None(beware):
-You can also choose to use none of the `Limit Method` options. This is useful if you don't have logging sessions running in the background at all times. For example, if you use GoLogger only when you want to test a specific feature or system and you're manually stopping and starting the sessions as you need them. This is **NOT RECOMMENDED** unless you're aware of the problems that can occur. Use at your own risk!<br><br>
+You can also choose to use none of the `Limit Method` options. This can be useful if you don't have sessions running in the background at all times. For example, if you use GoLogger only when you want to test a specific feature or system and you're manually stopping and starting the sessions as you need them. This is **NOT RECOMMENDED** unless you're aware of the problems that can occur. Use at your own risk!<br><br>
 
 
 #### File count limit:
