@@ -40,11 +40,11 @@ You're all set! Next time you run your project, directories and .log files will 
 
 ## How to use GoLogger:<br>
 GoLogger uses 'sessions' to indicate when the plugin is logging or not. Each session creates new log files for every category you've setup with the timestamp of when the session was started. Sessions are also **global**, meaning that stopping a session will start and stop logging for all categories simultaneously. There are three main ways to start and stop sessions. 
-* **Using the `autostart` setting** will start a session when you run your project.
-* **Hotkeys** can perform the three main functions of the plugin(start, copy and stop)
+* **Using the `autostart` setting** which is on by default.
+* **Hotkeys** can perform the three main functions of the plugin - start `Ctrl + Shift + O`, copy - `Ctrl + Shift + U` and stop - `Ctrl + Shift + P`
 * **Calling the functions though code**. You can call the functions through code from any script or scene since the script is an autoload.
 
-`Save Session Copy` feature was introduced in v1.2, allows users to save copies of the logs of the current session into each category's respective `saved_logs` subfolder. All copies are saved into these folders and you specify a name for the copies allows for easy identification. This feature serves two key purposes:
+ The 'Save copy' feature was introduced in v1.2 which allows users to save copies of the logs of an active session into each category's respective `saved_logs` subfolder. When this is initiates, a text prompt is activated for you to specify a name of the copied log. This feature serves two key purposes:
 * **Prevent Deletion:** Log files are automatically deleted when the file limit is reached. Saving a copy protects specific logs from being removed. *You can also manually move any log file(s) out of the category folder will of course also prevent deletion.*
 * **Preserve Important Data:** When using the **Entry Count Limit** + **Overwrite Entries** options to limit file size, older entries are deleted to make room for new ones. If a bug or unexpected event occurs during playtesting, you can use this feature to save the log without requiring you to stop and start the session or your game without the risk of overwriting the important log entries.
 
