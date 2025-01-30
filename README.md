@@ -83,7 +83,7 @@ When creating a log entry, you only need to create a string and concatenate any 
 *Without defining a `category_index` when creating log entries(i.e. `Log.entry("This is a log entry.")`). Entries are logged into the category with the index 0.*<br><br>
 
 ## Managing log categories:
-GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your needs. The top-left number of each category is the `category_index` which you use whenever you create log entries in your code. When your project runs, folders are created with the name of each category within the `base_directory` and ones a session is started. A .log file is created for each category and is stored in the category's folder.<br> 
+GoLogger will create directories for each category in the dock's "category" tab. By default, a "game" and a "player" category is added for you but you can add, remove or rename them to fit your needs. The top-left number of each category is the `category_index` which you use whenever you create log entries in your code. When your project runs, folders are created with the name of each category within the `base_directory` and ones a session is started. A .log file is created for each category and is stored in the category's folder.<br><br>
 ![GoLoggerCategoryDock](https://github.com/user-attachments/assets/f4346da0-a9b5-4b00-83ba-147bcfdd3481)
 
 *Notes:*
