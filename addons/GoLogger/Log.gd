@@ -242,7 +242,7 @@ func start_session() -> void:
 		if _path.begins_with("res://") or _path.begins_with("user://"):
 			_path = str(base_directory, categories[i][0], "_Gologs/")
 		else:
-			_path = str(base_directory, categories[i][0], "_Gologs\\")
+			_path = str(base_directory, categories[i][0], "_Gologs/")
 		if _path == "": # ERROR CHECK
 			if get_value("error_reporting") == 0: 
 				push_error(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
