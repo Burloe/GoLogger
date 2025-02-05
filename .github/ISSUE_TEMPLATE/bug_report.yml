@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Please provide a detailed description of the bug you're experiencing and include screenshots if applicable.
+        Please provide a detailed description of the bug or issue you're experiencing with accompanying screenshots if applicable. Code to fix issues are welcome too.
 
   - type: textarea
     attributes:
@@ -26,17 +26,9 @@ body:
 
   - type: textarea
     attributes:
-      label: Expected behavior
+      label: Expected behavior and steps to reproduce
       description: |
-        Detail what you expected/wanted to achieve and how it failed if applicable.
+        Detail the expected behavior and/or steps to reproduce.
     validations:
       placeholder: Describe the expected behavior
-      required: false
-
-  - type: textarea
-    attributes:
-      label: Steps to reproduce
-      description: |
-        List of steps to reproduce, code or images that displays the issue.
-    validations:
       required: false
