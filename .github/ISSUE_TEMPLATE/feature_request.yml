@@ -14,12 +14,3 @@ body:
         Detail your proposal and how it would improve GoLogger for everyone. Please provide screenshots and/or mockups if possible.
     validations:
       required: true
-
-  - type: textarea
-    attributes:
-      label: Describe the issue your proposal would solve.
-      description: |
-        Please describe your issue in detail and provide code or screenshots if applicable.
-    validations:
-      placeholder: Describe in detail the issue, why it's a hinderance for you and how your proposal would solve this problem.
-      required: true
