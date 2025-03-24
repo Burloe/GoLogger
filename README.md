@@ -16,4 +16,4 @@ Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 
 ![GoLoggerCategoryDock](https://github.com/user-attachments/assets/f4346da0-a9b5-4b00-83ba-147bcfdd3481)<br><br>
 
 ## Wiki for more information
-See the [Wiki](https://github.com/Burloe/GoLogger/wiki/) for more information on [Installation % Setup](https://github.com/Burloe/GoLogger/wiki/Installation-&-Setup), [How to use GoLogger](https://github.com/Burloe/GoLogger/wiki/Getting-Started) and [How it works](https://github.com/Burloe/GoLogger/wiki#how-gologger-works)
+See the [Wiki](https://github.com/Burloe/GoLogger/wiki/) for more information on [Installation & Setup](https://github.com/Burloe/GoLogger/wiki/Installation-&-Setup), [How to use GoLogger](https://github.com/Burloe/GoLogger/wiki/Getting-Started) and [How it works](https://github.com/Burloe/GoLogger/wiki#how-gologger-works)
