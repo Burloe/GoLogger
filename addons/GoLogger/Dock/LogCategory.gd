@@ -54,12 +54,13 @@ var is_locked : bool = false:
 		if line_edit != null: 	line_edit.editable = !value
 		if del_btn != null: 	del_btn.disabled = value
 		if dock != null: 		dock.save_categories(true)
-		if cat_idx_l_e == null: 
-			cat_idx_l_e = cat_idx.get_line_edit()
-		if cat_idx_l_e != null:
-			cat_idx_l_e.editable = !value
-			cat_idx.editable = !value
-			
+		if cat_idx != null:
+			if cat_idx_l_e == null: 
+				cat_idx_l_e = cat_idx.get_line_edit()
+			if cat_idx_l_e != null:
+				cat_idx_l_e.editable = !value
+				cat_idx.editable = !value
+
 
 
 
@@ -108,10 +109,12 @@ func apply_name(new_name : String) -> void:
 
 
 func _on_category_index_text_changed(new_index : String) -> void:
+	print("Category index was changed: ", new_index)
 	pass
 
 
 func _on_category_index_text_submitted(new_index : String) -> void:
+	print("Category index was submitted: ", new_index)
 	index_changed.emit(self, index)
 
 

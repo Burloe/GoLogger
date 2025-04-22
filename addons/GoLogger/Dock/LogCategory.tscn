@@ -17,8 +17,8 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [node name="LogCategory" type="PanelContainer"]
-custom_minimum_size = Vector2(205, 0)
-offset_right = 288.0
+custom_minimum_size = Vector2(200, 0)
+offset_right = 261.0
 offset_bottom = 130.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilabp")
 script = ExtResource("1_8da2w")
@@ -34,12 +34,19 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="IndexSpinbox" type="SpinBox" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 13
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Category Index"
+
+[node name="IndexSpinbox" type="SpinBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(170, 0)
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 rounded = true
-prefix = "Category Index:"
 custom_arrow_step = 1.0
 
 [node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
@@ -56,7 +63,7 @@ clear_button_enabled = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 39
+theme_override_constants/separation = 12
 
 [node name="ApplyButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
@@ -68,12 +75,14 @@ text = "Apply Name"
 
 [node name="LockButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/icon_pressed_color = Color(0.96, 0.64672, 0.1056, 1)
-theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 0.813167, 0.41, 1)
 toggle_mode = true
 icon = ExtResource("2_b4ns3")
+icon_alignment = 1
 
 [node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
