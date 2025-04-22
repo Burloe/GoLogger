@@ -1,10 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=8 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
+[ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_huqok"]
+bg_color = Color(0.25, 0.246667, 0.245, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.05, 0.05, 0.05, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 18
 
 [node name="GoLoggerDock" type="TabContainer"]
 custom_minimum_size = Vector2(192, 225)
@@ -15,18 +29,54 @@ offset_right = -0.52002
 offset_bottom = 0.359985
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 1
+current_tab = 0
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="ScrollContainer" parent="."]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
+[node name="MoreInfoPopup" type="Control" parent="Categories"]
+unique_name_in_owner = true
+top_level = true
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Categories/MoreInfoPopup"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 84.0
+offset_right = 237.0
+offset_bottom = 204.0
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_huqok")
+
+[node name="MarginContainer" type="MarginContainer" parent="Categories/MoreInfoPopup/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Categories/MoreInfoPopup/Panel/MarginContainer"]
+layout_mode = 2
+mouse_filter = 1
+bbcode_enabled = true
+text = "[font_size=14][u]Category Index[/u][font_size=12] determines the 
+[color=green]index integer[color=white] you specify when calling:
+[color=3da8ff]Log.entry(\"My log entry\", [color=green]1[color=white])
+
+[font_size=14][u]Category Name[/u][font_size=12] is the name of the category files and their directories."
+
 [node name="MarginContainer" type="MarginContainer" parent="Categories"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 4
@@ -37,7 +87,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="Panel" type="Panel" parent="Categories/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(1890, 41)
+custom_minimum_size = Vector2(0, 41)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Categories/MarginContainer/VBoxContainer/Panel"]
@@ -70,6 +120,15 @@ modulate = Color(1, 0.34902, 0.34902, 1)
 layout_mode = 2
 text = "Reset "
 icon = ExtResource("3_y66hb")
+
+[node name="MoreInfoButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+focus_mode = 0
+icon = ExtResource("4_tw6vk")
+icon_alignment = 1
+expand_icon = true
 
 [node name="CategoryWarningLabel" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
@@ -110,6 +169,7 @@ Current GridContainer.get_children()[size = 2]:
       [Panel:<Panel#1846332685425>, @Panel@17348:<Panel#1846752115849>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(0, 210)
 layout_mode = 2
 follow_focus = true

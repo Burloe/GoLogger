@@ -1,7 +1,12 @@
 @tool
 extends TabContainer
 
+signal update_index 
+
+
 #region Category tab
+@onready var more_info_btn: Button = %MoreInfoButton
+@onready var more_info_popup: Control = %MoreInfoPopup
 ## Add category [Button]. Instantiates a [param category_scene] and adds it as a child of [param category_container].
 @onready var add_category_btn: Button = %AddCategoryButton
 ## Category [GridContainer] node. Holds all the LogCategory nodes that represent each category.
@@ -20,7 +25,6 @@ var config = ConfigFile.new()
 ## Path to settings.ini file. This path is a contant and doesn't change if you set your own [param base_directory]
 const PATH = "user://GoLogger/settings.ini"
 ## Emitted whenever an action that changes the display order is potentially made.
-signal update_index 
 #endregion
 
 
@@ -92,7 +96,7 @@ var session_duration_spinbox_line: LineEdit
 @onready var disable_warn2_btn: CheckButton = %DisableWarn2CheckButton 
 
 var btn_array: Array[Control] = []
-var container_array: Array[Control] = []
+var container_array: Array[Control] = [] ## Array containing references to the [LogCategory] objects.
 var c_font_normal := Color("9d9ea0") 
 var c_font_hover := Color("f2f2f2") 
 #endregion 
@@ -129,6 +133,10 @@ func _ready() -> void:
 		reset_settings_btn.mouse_entered.connect(update_tooltip.bind(reset_settings_btn))
 		reset_settings_btn.focus_entered.connect(update_tooltip.bind(reset_settings_btn))
 		base_dir_lbl.modulate = c_font_normal
+		more_info_btn.mouse_entered.connect(_on_more_info_mouse_entered)
+		more_info_btn.focus_entered.connect(_on_more_info_mouse_exited)
+		more_info_popup.visible = false
+
 
 		btn_array = [
 			base_dir_line,
@@ -297,9 +305,10 @@ func load_categories(deferred : bool = false) -> void:
 		_n.category_name = _c[i][0]
 		_n.index = i 
 		_n.is_locked = _c[i][6]
-		_n.name_warning.connect(_on_name_warning)
 		category_container.add_child(_n)
 		category_container.move_child(_n, _n.index)
+		_n.name_warning.connect(_on_name_warning)
+		_n.index_changed.connect(_on_index_changed)
 	update_indices()
 
 
@@ -310,6 +319,8 @@ func add_category() -> void:
 	_n.is_locked = false
 	category_container.add_child(_n)
 	category_container.move_child(_n, _n.index)
+	_n.name_warning.connect(_on_name_warning)
+	_n.index_changed.connect(_on_index_changed)
 	update_indices()
 	save_categories()
 	_n.line_edit.grab_focus()
@@ -329,6 +340,14 @@ func save_categories(deferred : bool = false) -> void:
 	config.set_value("plugin", "categories", main)
 	config.save(PATH)
 
+## Reorders the categories in the [param category_container] to match 
+## the order of the indices. Used when a category's index is changed. 
+func reorder_categories() -> void:
+	var _c = category_container.get_children()
+	for i in range(_c.size()):
+		if _c[i].index == i: continue
+		else: category_container.move_child(_c[i], i)
+
 
 func open_directory() -> void:
 	var abs_path = ProjectSettings.globalize_path(config.get_value("plugin", "base_directory"))
@@ -347,20 +366,20 @@ func _on_name_warning(toggled_on : bool, type : int) -> void:
 		category_warning_lbl.visible = false
 
 
-func update_category_name(obj : PanelContainer, new_name : String) -> void:
+func update_category_name(cat_obj : LogCategory, new_name : String) -> void:
 	var final_name = new_name
 	var add_name : int = 1
-	while check_conflict_name(obj, final_name):
+	while check_conflict_name(cat_obj, final_name):
 		final_name = new_name + str(add_name)
 		add_name += 1
-	if obj.category_name != final_name:
-		obj.category_name = final_name
+	if cat_obj.category_name != final_name:
+		cat_obj.category_name = final_name
 	save_categories()
 
 
-func check_conflict_name(obj : PanelContainer, new_name : String) -> bool:
+func check_conflict_name(cat_obj : LogCategory, new_name : String) -> bool:
 	for i in category_container.get_children():
-		if i == obj: # Disregard category being checked
+		if i == cat_obj: # Disregard category being checked
 			continue
 		elif i.category_name == name:
 			if name == "": return false
@@ -722,7 +741,11 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 			config.set_value("settings", "disable_warn2", toggled_on)
 	config.save(PATH) 
 
+func _on_more_info_mouse_entered() -> void:
+	more_info_popup.show()
 
+func _on_more_info_mouse_exited() -> void:
+	more_info_popup.hide()
 
 func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 	var u_line = node.get_line_edit() 
@@ -775,5 +798,45 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+
+
+func _on_index_changed(category: LogCategory, new_index: int) -> void:
+
+	# First find if there's a conflict
+	var _c = category_container.get_children()
+	var conflict_cat: LogCategory = null
+	for i in range(_c.size()):
+		if _c[i] != category and _c[i].index == new_index:
+			conflict_cat = _c[i]
+			break
+	
+	# If there's a conflict, resolve it by shifting the conflicting category
+	if conflict_cat:
+		# Find the next available index (not used by any category)
+		var used_indices = []
+		for i in range(_c.size()):
+			if _c[i] != conflict_cat:  # Skip the conflicting category itself
+				used_indices.append(_c[i].index)
+		
+		# Find the next natural index not in use
+		var next_index = 0
+		while next_index in used_indices:
+			next_index += 1
+		
+		# Update the conflicting category's index
+		conflict_cat.index = next_index
+		conflict_cat.refresh_index_label(next_index)
+	
+	# Update the moved category
+	category.index = new_index
+	category.refresh_index_label(new_index)
+	
+	# Reorder categories in the container
+	reorder_categories()
+	
+	# Save the changes
+	save_categories()
+			
+			
 
 

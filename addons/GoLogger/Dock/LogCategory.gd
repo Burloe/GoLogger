@@ -1,21 +1,24 @@
 @tool
-extends PanelContainer
+class_name LogCategory extends PanelContainer
 
 ## Emitted when a [LineEdit] category name is empty.
 signal name_warning(toggle_on : bool, type : int)
+## Emitted when the category index is changed to the GoLoggerDock.gd to check to reorder the categories and resolve conflicting indices.
+signal index_changed(category: LogCategory, new_index: int)
 
-@onready var ilbl 		: Label = 		%IndexLabel
-@onready var lock_btn 	: Button = 		%LockButton
-@onready var line_edit 	: LineEdit = 	%CategoryNameLineEdit
-@onready var del_btn 	: Button = 		%DeleteButton
-@onready var apply_btn 	: Button = 		%ApplyButton 
+@onready var cat_idx: 	SpinBox = 		%IndexSpinbox
+@onready var cat_idx_l_e: LineEdit = 	%IndexSpinbox.get_line_edit()
+@onready var lock_btn:	Button = 		%LockButton
+@onready var line_edit: LineEdit = 		%CategoryNameLineEdit
+@onready var del_btn:	Button = 		%DeleteButton
+@onready var apply_btn: Button = 		%ApplyButton 
 
 
-@export var file_name : String = "null"
-@export var file_path : String = "null"
-@export var file_count : int = 0
-@export var entry_count : int = 0
-@export var category_name : String = "":
+@export var file_name: String = 	"null"
+@export var file_path: String = 	"null"
+@export var file_count: int = 		0
+@export var entry_count: int = 		0
+@export var category_name: String = "":
 	set(value):
 		if category_name != value:
 			category_name = value
@@ -25,8 +28,8 @@ signal name_warning(toggle_on : bool, type : int)
 @export var index : int = 0:
 	set(value):
 		index = value
-		if ilbl != null:
-			ilbl.text = str(value)
+		if cat_idx != null:
+			cat_idx_l_e.text = str(value)
 
 var dock : TabContainer ## Dock root
 var invalid_name : bool = false:
@@ -51,6 +54,8 @@ var is_locked : bool = false:
 		if line_edit != null: 	line_edit.editable = !value
 		if del_btn != null: 	del_btn.disabled = value
 		if dock != null: 		dock.save_categories(true)
+		cat_idx_l_e.editable = !value
+		cat_idx.editable = !value
 
 
 
@@ -58,13 +63,15 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
 		categories = config.get_value("plugin", "categories", [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]])
+		cat_idx_l_e.text_changed.connect(_on_category_index_text_changed)
+		cat_idx_l_e.text_submitted.connect(_on_category_index_text_submitted)
 		del_btn.button_up.connect(_on_del_button_up)
 		apply_btn.button_up.connect(_on_apply_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
 		line_edit.text_submitted.connect(_on_text_submitted)
 		lock_btn.toggled.connect(_on_lock_btn_toggled)
 		line_edit.text = category_name
-		ilbl.text = str(index)
+		cat_idx_l_e.text = str(index)
 		lock_btn.button_pressed = is_locked
 		size = Vector2.ZERO
 		if line_edit.text == "":
@@ -74,8 +81,9 @@ func _ready() -> void:
 			invalid_name = false
 
 
+
 func refresh_index_label(idx : int) -> void:
-	ilbl.text = str(idx)
+	cat_idx_l_e.text = str(idx)
 
 
 func check_existing_conflicts(new_name : String) -> bool: 
@@ -92,6 +100,15 @@ func apply_name(new_name : String) -> void:
 	category_name = new_name
 	line_edit.release_focus()
 	apply_btn.disabled = true
+
+
+
+func _on_category_index_text_changed(new_index : String) -> void:
+	pass
+
+
+func _on_category_index_text_submitted(new_index : String) -> void:
+	index_changed.emit(self, index)
 
 
 func _on_text_changed(new_text : String) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://c3n416c5fajm5"]
+[gd_scene load_steps=5 format=3 uid="uid://c3n416c5fajm5"]
 
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
 [ext_resource type="Texture2D" uid="uid://b33lx2cjw84p0" path="res://addons/GoLogger/Resources/icons/Lock.svg" id="2_b4ns3"]
@@ -16,12 +16,56 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[node name="Panel" type="PanelContainer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dilox"]
+bg_color = Color(0.25, 0.246667, 0.245, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.05, 0.05, 0.05, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 18
+
+[node name="LogCategory" type="PanelContainer"]
 custom_minimum_size = Vector2(205, 0)
-offset_right = 225.0
-offset_bottom = 118.0
+offset_right = 288.0
+offset_bottom = 130.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilabp")
 script = ExtResource("1_8da2w")
+
+[node name="Control" type="Control" parent="."]
+top_level = true
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = -48.0
+offset_right = 240.0
+offset_bottom = 11.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dilox")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/Panel/MarginContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=12]Category index determines the 
+[color=green]index integer[color=white] you specify when calling:
+[color=3da8ff]Log.entry(\"My log entry\", [color=green]1[color=3da8ff])"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -34,30 +78,25 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 150
-alignment = 1
-
-[node name="IndexLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="IndexSpinbox" type="SpinBox" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
-text = "0"
-
-[node name="LockButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-focus_mode = 0
-theme_override_colors/icon_pressed_color = Color(0.96, 0.64672, 0.1056, 1)
-toggle_mode = true
-icon = ExtResource("2_b4ns3")
+rounded = true
+prefix = "Category Index:"
+custom_arrow_step = 1.0
 
 [node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_selected_color = Color(0.2236, 0.86, 0.594833, 1)
+theme_override_colors/font_uneditable_color = Color(0.960784, 0.647059, 0.105882, 1)
+theme_override_colors/font_color = Color(0.35, 1, 0.22, 1)
+theme_override_font_sizes/font_size = 20
 placeholder_text = "Enter category name"
 alignment = 1
 max_length = 20
+clear_button_enabled = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -70,6 +109,15 @@ custom_minimum_size = Vector2(107, 0)
 layout_mode = 2
 disabled = true
 text = "Apply Name"
+
+[node name="LockButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_pressed_color = Color(0.96, 0.64672, 0.1056, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+toggle_mode = true
+icon = ExtResource("2_b4ns3")
 
 [node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
