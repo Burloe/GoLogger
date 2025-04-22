@@ -63,9 +63,6 @@ func _input(event: InputEvent) -> void:
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
 
-		if event is InputEventKey and event.is_released():
-			entry(str("[TEST ENTRY] ", event.as_text()), 0)
-
 
 func _ready() -> void:
 	config.load(PATH)
