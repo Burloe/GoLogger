@@ -38,42 +38,6 @@ metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="MoreInfoPopup" type="Control" parent="Categories"]
-unique_name_in_owner = true
-top_level = true
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="Categories/MoreInfoPopup"]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 84.0
-offset_right = 237.0
-offset_bottom = 204.0
-mouse_filter = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_huqok")
-
-[node name="MarginContainer" type="MarginContainer" parent="Categories/MoreInfoPopup/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Categories/MoreInfoPopup/Panel/MarginContainer"]
-layout_mode = 2
-mouse_filter = 1
-bbcode_enabled = true
-text = "[font_size=14][u]Category Index[/u][font_size=12] determines the 
-[color=green]index integer[color=white] you specify when calling:
-[color=3da8ff]Log.entry(\"My log entry\", [color=green]1[color=white])
-
-[font_size=14][u]Category Name[/u][font_size=12] is the name of the category files and their directories."
-
 [node name="MarginContainer" type="MarginContainer" parent="Categories"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -152,6 +116,35 @@ custom_minimum_size = Vector2(80, 111)
 layout_mode = 2
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
+
+[node name="MoreInfoPopup" type="Panel" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_huqok")
+
+[node name="MarginContainer" type="MarginContainer" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer/MoreInfoPopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer/MoreInfoPopup/MarginContainer"]
+layout_mode = 2
+mouse_filter = 1
+bbcode_enabled = true
+text = "[font_size=14][color=white][u]Category Index[/u][font_size=12] determines the 
+[color=green]index integer[color=white] you specify when calling:
+[color=3da8ff]Log.entry(\"My log entry\", [color=green]1[color=white])
+
+[font_size=14][u]Category Name[/u][font_size=12] is the name of the category files and their directories."
 
 [node name="CategoryGridContainer" type="GridContainer" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true

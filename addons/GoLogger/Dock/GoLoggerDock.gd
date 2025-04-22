@@ -6,7 +6,7 @@ signal update_index
 
 #region Category tab
 @onready var more_info_btn: Button = %MoreInfoButton
-@onready var more_info_popup: Control = %MoreInfoPopup
+@onready var more_info_popup: Panel = %MoreInfoPopup
 ## Add category [Button]. Instantiates a [param category_scene] and adds it as a child of [param category_container].
 @onready var add_category_btn: Button = %AddCategoryButton
 ## Category [GridContainer] node. Holds all the LogCategory nodes that represent each category.
@@ -134,7 +134,7 @@ func _ready() -> void:
 		reset_settings_btn.focus_entered.connect(update_tooltip.bind(reset_settings_btn))
 		base_dir_lbl.modulate = c_font_normal
 		more_info_btn.mouse_entered.connect(_on_more_info_mouse_entered)
-		more_info_btn.focus_entered.connect(_on_more_info_mouse_exited)
+		more_info_btn.mouse_exited.connect(_on_more_info_mouse_exited)
 		more_info_popup.visible = false
 
 
