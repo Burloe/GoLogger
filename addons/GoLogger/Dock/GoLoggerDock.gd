@@ -96,7 +96,7 @@ var session_duration_spinbox_line: LineEdit
 @onready var disable_warn2_btn: CheckButton = %DisableWarn2CheckButton 
 
 var btn_array: Array[Control] = []
-var container_array: Array[Control] = [] ## Array containing references to the [LogCategory] objects.
+var container_array: Array[Control] = []
 var c_font_normal := Color("9d9ea0") 
 var c_font_hover := Color("f2f2f2") 
 #endregion 
@@ -292,6 +292,14 @@ func _ready() -> void:
 		load_settings_state()
 	
 
+# func _physics_process(delta: float) -> void:
+# 	if Engine.is_editor_hint():
+# 		for i in category_container.get_children():
+# 			if i is LogCategory:
+# 				if i.index_changed.is_connected(_on_index_changed):
+# 					print("Connected")
+# 				else:
+# 					print("Not connected")
 
 
 func load_categories(deferred : bool = false) -> void:
@@ -302,25 +310,27 @@ func load_categories(deferred : bool = false) -> void:
 	for i in range(_c.size()):
 		var _n = category_scene.instantiate()
 		_n.dock = self
-		_n.category_name = _c[i][0]
-		_n.index = i 
 		_n.is_locked = _c[i][6]
 		category_container.add_child(_n)
 		category_container.move_child(_n, _n.index)
 		_n.name_warning.connect(_on_name_warning)
 		_n.index_changed.connect(_on_index_changed)
+		_n.category_name = _c[i][0]
+		_n.index = i 
+		_n.cat_idx.apply()
 	update_indices()
 
 
 func add_category() -> void:
 	var _n = category_scene.instantiate()
 	_n.dock = self 
-	_n.index = category_container.get_children().size()
 	_n.is_locked = false
 	category_container.add_child(_n)
 	category_container.move_child(_n, _n.index)
 	_n.name_warning.connect(_on_name_warning)
 	_n.index_changed.connect(_on_index_changed)
+	_n.index = category_container.get_children().size()
+	_n.cat_idx.apply()
 	update_indices()
 	save_categories()
 	_n.line_edit.grab_focus()
@@ -345,8 +355,8 @@ func save_categories(deferred : bool = false) -> void:
 func reorder_categories() -> void:
 	var _c = category_container.get_children()
 	for i in range(_c.size()):
-		if _c[i].index == i: continue
-		else: category_container.move_child(_c[i], i)
+		category_container.move_child(_c[i], i)
+	category_container.queue_sort()
 
 
 func open_directory() -> void:
@@ -801,7 +811,7 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 
 
 func _on_index_changed(category: LogCategory, new_index: int) -> void:
-
+	print("Category index changed: ", category.category_name, " to ", new_index)
 	# First find if there's a conflict
 	var _c = category_container.get_children()
 	var conflict_cat: LogCategory = null

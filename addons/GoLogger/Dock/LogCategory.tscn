@@ -18,7 +18,7 @@ corner_radius_bottom_left = 8
 
 [node name="LogCategory" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 261.0
+offset_right = 270.0
 offset_bottom = 130.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilabp")
 script = ExtResource("1_8da2w")
@@ -37,6 +37,7 @@ theme_override_constants/separation = 4
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 13
+alignment = 1
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -47,6 +48,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 rounded = true
+alignment = 2
 custom_arrow_step = 1.0
 
 [node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]

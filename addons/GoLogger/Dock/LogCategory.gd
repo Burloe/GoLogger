@@ -68,15 +68,17 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
 		categories = config.get_value("plugin", "categories", [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]])
-		cat_idx_l_e.text_changed.connect(_on_category_index_text_changed)
+		# cat_idx_l_e.text_changed.connect(_on_category_index_text_changed)
 		cat_idx_l_e.text_submitted.connect(_on_category_index_text_submitted)
 		del_btn.button_up.connect(_on_del_button_up)
 		apply_btn.button_up.connect(_on_apply_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
 		line_edit.text_submitted.connect(_on_text_submitted)
 		lock_btn.toggled.connect(_on_lock_btn_toggled)
-		line_edit.text = category_name
+		cat_idx_l_e.context_menu_enabled = false
+		cat_idx_l_e.select_all_on_focus = true
 		cat_idx_l_e.text = str(index)
+		line_edit.text = category_name
 		lock_btn.button_pressed = is_locked
 		size = Vector2.ZERO
 		if line_edit.text == "":
@@ -85,6 +87,10 @@ func _ready() -> void:
 		else: 
 			invalid_name = false
 
+# func _physics_process(delta: float) -> void:
+# 	if Engine.is_editor_hint():
+# 		print(cat_idx, " ", cat_idx_l_e)
+# 		print(cat_idx_l_e.text_changed.is_connected(_on_category_index_text_changed), " ", cat_idx_l_e.text_submitted.is_connected(_on_category_index_text_submitted))
 
 
 func refresh_index_label(idx : int) -> void:
@@ -108,14 +114,15 @@ func apply_name(new_name : String) -> void:
 
 
 
-func _on_category_index_text_changed(new_index : String) -> void:
-	print("Category index was changed: ", new_index)
-	pass
+# func _on_category_index_text_changed(new_index : String) -> void:
+# 	print("Category index was changed: ", new_index)
+# 	index_changed.emit(self, index) 
 
 
 func _on_category_index_text_submitted(new_index : String) -> void:
 	print("Category index was submitted: ", new_index)
-	index_changed.emit(self, index)
+	index = int(new_index)
+	index_changed.emit(self, int(index))
 
 
 func _on_text_changed(new_text : String) -> void:
@@ -133,6 +140,7 @@ func _on_text_changed(new_text : String) -> void:
 
 func _on_apply_button_up() -> void:
 	apply_name(line_edit.text)
+	# index_changed.emit(self, index)
 
 
 func _on_text_submitted(new_text : String) -> void:
