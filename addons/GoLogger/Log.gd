@@ -3,6 +3,7 @@ extends Node
 #region Documentation & Declarations
 ## Autoload containing the entire framework that makes up the framework. 
 ##
+## The GoLogger Wiki can be found at [url]https://github.com/Burloe/GoLogger/wiki[/url] with information on how to use the plugin, how it works and more information. 
 ## The GitHub repository [url]https://github.com/Burloe/GoLogger[/url] will always have the latest version of 
 ## GoLogger to download. For installation, setup and how to use instructions, see the README.md or in the Github 
 ## repo. 
@@ -95,6 +96,7 @@ func create_settings_file() -> void:
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
 
+	config.set_value("settings", "columns", 6)
 	config.set_value("settings", "log_header", 0)
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
@@ -124,6 +126,7 @@ func validate_settings() -> bool:
 	var expected_types = {
 		"plugin/base_directory": TYPE_STRING,
 		"plugin/categories": TYPE_ARRAY,
+		"settings/columns": TYPE_INT,
 		"settings/log_header": TYPE_INT,
 		"settings/canvaslayer_layer": TYPE_INT,
 		"settings/autostart_session": TYPE_BOOL,
@@ -376,12 +379,20 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	_fw.store_line(_entry)
 	_fw.close() 
 
+## Creates a copied log file of the current session in it's current state at the time it's called.
+## You can either call this method programmatically by calling this method and passing in a predetermined name or call it without and use the prompt to enter a name.
+## You can also use the hotkey to initiate the prompt at runtime if you ever want to save a copy of the current session.
+func save_copy(_name: String = "") -> void:
+	if session_status:
+		# No specified name -> prompt popup for name
+		if _name == "":	
+			popup_state = true if popup_state == false else false 
+		# Name specified, i.e. called programmatically -> save copy using predetermines name
+		else:
+			copy_name = _name
+			complete_copy()
 
-## Initiates the "save copy" operation by displaying the "enter name" prompt. 
-## Once a name has been entered and confirmed. [method complete_copy] is called.
-func save_copy() -> void:
-	if session_status:		
-		popup_state = true if popup_state == false else false 
+
 
 
 ## Saves the copies after copy prompts is done in "saved_logs" sub-folders.
