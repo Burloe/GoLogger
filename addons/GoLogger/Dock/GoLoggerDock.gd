@@ -18,6 +18,8 @@ signal update_index
 ## Displays a warning when a category name is unapplied or empty.
 @onready var category_warning_lbl: Label = %CategoryWarningLabel
 
+@onready var columns_slider: HSlider = %ColumnsHSlider
+
 ## LogCategory scene. Instantiated into [param LogCategory].
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
 ## [ConfigFile]. All settings are added to this instance and then saves the stored settings to the settings.ini file.
@@ -120,6 +122,7 @@ func _ready() -> void:
 		add_category_btn.button_up.connect(add_category)
 		open_dir_btn.button_up.connect(open_directory)
 		defaults_btn.button_up.connect(reset_to_default.bind(0))
+		columns_slider.value_changed.connect(_on_columns_slider_value_changed)
 
 		# Remove any existing categories
 		for i in category_container.get_children():
@@ -292,15 +295,6 @@ func _ready() -> void:
 		load_settings_state()
 	
 
-# func _physics_process(delta: float) -> void:
-# 	if Engine.is_editor_hint():
-# 		for i in category_container.get_children():
-# 			if i is LogCategory:
-# 				if i.index_changed.is_connected(_on_index_changed):
-# 					print("Connected")
-# 				else:
-# 					print("Not connected")
-
 
 func load_categories(deferred : bool = false) -> void:
 	if deferred:
@@ -311,27 +305,23 @@ func load_categories(deferred : bool = false) -> void:
 		var _n = category_scene.instantiate()
 		_n.dock = self
 		_n.is_locked = _c[i][6]
-		category_container.add_child(_n)
-		category_container.move_child(_n, _n.index)
+		category_container.add_child(_n) 
 		_n.name_warning.connect(_on_name_warning)
 		_n.index_changed.connect(_on_index_changed)
 		_n.category_name = _c[i][0]
-		_n.index = i 
-		_n.cat_idx.apply()
-	update_indices()
+		_n.index = i
+	# update_indices()
 
 
 func add_category() -> void:
 	var _n = category_scene.instantiate()
 	_n.dock = self 
 	_n.is_locked = false
-	category_container.add_child(_n)
-	category_container.move_child(_n, _n.index)
+	category_container.add_child(_n) 
 	_n.name_warning.connect(_on_name_warning)
 	_n.index_changed.connect(_on_index_changed)
-	_n.index = category_container.get_children().size()
-	_n.cat_idx.apply()
-	update_indices()
+	_n.index = category_container.get_children().size() - 1
+	# update_indices()
 	save_categories()
 	_n.line_edit.grab_focus()
 
@@ -350,13 +340,7 @@ func save_categories(deferred : bool = false) -> void:
 	config.set_value("plugin", "categories", main)
 	config.save(PATH)
 
-## Reorders the categories in the [param category_container] to match 
-## the order of the indices. Used when a category's index is changed. 
-func reorder_categories() -> void:
-	var _c = category_container.get_children()
-	for i in range(_c.size()):
-		category_container.move_child(_c[i], i)
-	category_container.queue_sort()
+
 
 
 func open_directory() -> void:
@@ -397,18 +381,7 @@ func check_conflict_name(cat_obj : LogCategory, new_name : String) -> bool:
 	return false
 
 
-func update_indices(deferred : bool = false) -> void:
-	if deferred:
-		await get_tree().physics_frame
-	var refresh_table = []
-	var _c = category_container.get_children()
-	for i in range(_c.size()):
-		_c[i].index = i
-		_c[i].refresh_index_label(i)
-		var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c[i].file_count, _c[i].entry_count, _c[i].is_locked]
-		refresh_table.append(_e)
-	config.set_value("plugin", "categories", refresh_table)
-	config.save(PATH) 
+
 
 
 static func get_error(error : int, object_type : String = "") -> String:
@@ -468,6 +441,7 @@ func create_settings_file() -> void:
 	var _a = [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
+	config.set_value("settings", "columns", 6)
 	config.set_value("settings", "log_header", 0)
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
@@ -810,43 +784,125 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
+func _on_columns_slider_value_changed(value: int) -> void:
+	category_container.columns = value
+	config.set_value("settings", "columns", value)
+	config.save(PATH)
+
 func _on_index_changed(category: LogCategory, new_index: int) -> void:
-	print("Category index changed: ", category.category_name, " to ", new_index)
-	# First find if there's a conflict
+	print("Setting category index [", category.category_name, "] to: ", new_index)
+
+	var conflict_found := false
 	var _c = category_container.get_children()
-	var conflict_cat: LogCategory = null
-	for i in range(_c.size()):
-		if _c[i] != category and _c[i].index == new_index:
-			conflict_cat = _c[i]
+
+	for other_category in _c:
+		if other_category != category and other_category.index == new_index:
+			print("Index conflict with [", other_category.category_name, "]")
+
+			# Swap indices
+			var temp_index = category.index
+			category.index = new_index
+			other_category.index = temp_index
+
+			conflict_found = true
 			break
-	
-	# If there's a conflict, resolve it by shifting the conflicting category
-	if conflict_cat:
-		# Find the next available index (not used by any category)
-		var used_indices = []
-		for i in range(_c.size()):
-			if _c[i] != conflict_cat:  # Skip the conflicting category itself
-				used_indices.append(_c[i].index)
-		
-		# Find the next natural index not in use
-		var next_index = 0
-		while next_index in used_indices:
-			next_index += 1
-		
-		# Update the conflicting category's index
-		conflict_cat.index = next_index
-		conflict_cat.refresh_index_label(next_index)
-	
-	# Update the moved category
-	category.index = new_index
-	category.refresh_index_label(new_index)
-	
-	# Reorder categories in the container
+
+	if !conflict_found:
+		# No conflict, just assign the new index
+		category.index = new_index
+
+	# Now reorder based on updated indices
+	# call_deferred("reorder_categories")
 	reorder_categories()
-	
-	# Save the changes
 	save_categories()
-			
-			
 
 
+
+## Reorders the categories in the [param category_container] to match 
+## the order of the indices. Used when a category's index is changed. 
+func reorder_categories() -> void:
+	# var sorted := category_container.get_children().duplicate()
+
+	# # DEBUG
+	# print("Before sorting:")
+	# for child in sorted:
+	# 	print("\t", child.category_name, " -> Index: ", child.index)
+
+	# sorted.sort_custom(_compare_category_indices)
+	# print("Sorted order:")
+	# for child in sorted:
+	# 	print("\t", child.category_name, " -> Index: ", child.index)
+
+	# Actual reordering
+	# Step 1: Get all children and store them in an array
+	var children = category_container.get_children()
+	var temp: Array[LogCategory] = []
+	
+	# Step 2: Remove all children from the container
+	for child in children:
+		temp.append(child)
+		category_container.remove_child(child)
+	
+	# Step 3: Sort the array based on the `index` property
+	temp.sort_custom(_compare_category_indices)
+	
+	# Step 4: Add the sorted children back to the container
+	for child in temp:
+		category_container.add_child(child)
+	
+	# Step 5: Force the GridContainer to update its layout
+	# category_container.queue_sort()
+
+	# Debugging output
+	print("After manual sorting:")
+	for child in category_container.get_children():
+		print("\t", child.category_name, " -> Index: ", child.index)
+		
+
+
+
+
+	# for i in range(sorted.size()):
+	# 	var child = sorted[i]
+	# 	category_container.move_child(child, i)
+	# 	print("[INSERTED CHILD]: ", child.category_name, " -> Index: ", child.index)
+
+	# category_container.queue_sort()
+
+
+	# DEBUG
+	# print("After sorting:")
+	# for child in category_container.get_children():
+	# 	print("\t", child.category_name, " -> Index: ", child.index)
+
+	# printerr("Final Tree Hierarchy:")
+	# for i in range(category_container.get_child_count()):
+	# 	var c = category_container.get_child(i)
+	# 	print("\t", i, ": ", c.category_name, " \t-> Index: ", c.index)
+
+
+func _compare_category_indices(a: LogCategory, b: LogCategory) -> int:
+	if a.index < b.index:
+		return -1
+	elif a.index > b.index:
+		return 1
+	return 0
+
+
+# func update_indices(deferred : bool = false) -> void:
+# 	if deferred:
+# 		await get_tree().physics_frame
+
+# 	var _c = category_container.get_children()
+# 	for i in range(_c.size()):
+# 		_c[i].index = i
+		
+	# var refresh_table = []
+	# var _c = category_container.get_children()
+	# for i in range(_c.size()):
+	# 	_c[i].index = i
+	# 	_c[i].refresh_index_label(i)
+	# 	var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c[i].file_count, _c[i].entry_count, _c[i].is_locked]
+	# 	refresh_table.append(_e)
+	# config.set_value("plugin", "categories", refresh_table)
+	# config.save(PATH) 

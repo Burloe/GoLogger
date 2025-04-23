@@ -66,26 +66,29 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer"]
+[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer"]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="OpenDirCatButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+[node name="OpenDirCatButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
 modulate = Color(1, 0.67451, 0.25098, 1)
 layout_mode = 2
 text = "Open"
 icon = ExtResource("2_6725a")
 
-[node name="DefaultsCatButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+[node name="DefaultsCatButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
 modulate = Color(1, 0.34902, 0.34902, 1)
 layout_mode = 2
 text = "Reset "
 icon = ExtResource("3_y66hb")
 
-[node name="MoreInfoButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+[node name="MoreInfoButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
@@ -94,7 +97,7 @@ icon = ExtResource("4_tw6vk")
 icon_alignment = 1
 expand_icon = true
 
-[node name="CategoryWarningLabel" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer"]
+[node name="CategoryWarningLabel" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 0.26, 0.26, 1)
@@ -104,6 +107,24 @@ size_flags_horizontal = 8
 text = "Empty category names are not used. Please enter a unique name."
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+layout_mode = 2
+text = "Columns: "
+
+[node name="ColumnsHSlider" type="HSlider" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = 1.0
+max_value = 10.0
+value = 1.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -142,17 +163,24 @@ layout_mode = 2
 mouse_filter = 1
 bbcode_enabled = true
 text = "[font_size=14][color=white][u]Category Index[/u][font_size=12] determines the 
-[color=green]index integer[color=white] you specify when calling:
-[color=dbaf46]Log.[color=3da8ff]entry[color=white]([color=4abd42]\"My log entry\"[color=white], [color=green]1[color=white])
+[color=violet]index integer[color=white] you specify when calling:
+[color=dbaf46]Log.[color=3da8ff]entry[color=white]([color=4abd42]\"My log entry\"[color=white], [color=violet]1[color=white])
 
 [font_size=14][u]Category Name[/u][font_size=12] is the name of the category files and their directories."
+
+[node name="CategoryGridContainerOLD" type="GridContainer" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 5
+columns = 8
 
 [node name="CategoryGridContainer" type="GridContainer" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 8
+columns = 6
 
 [node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer"]
 visible = false

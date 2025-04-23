@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://c3n416c5fajm5"]
+[gd_scene load_steps=6 format=3 uid="uid://c3n416c5fajm5"]
 
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
+[ext_resource type="Texture2D" uid="uid://dt4rwugiiq5qf" path="res://addons/GoLogger/Resources/icons/ArrowLeft.svg" id="2_82h6l"]
 [ext_resource type="Texture2D" uid="uid://b33lx2cjw84p0" path="res://addons/GoLogger/Resources/icons/Lock.svg" id="2_b4ns3"]
+[ext_resource type="Texture2D" uid="uid://behxo6vcb5ubp" path="res://addons/GoLogger/Resources/icons/ArrowRight.svg" id="3_hkawy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ilabp"]
 bg_color = Color(0, 0, 0, 0.294118)
@@ -41,15 +43,24 @@ alignment = 1
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Category Index"
+text = "Category Index:"
 
-[node name="IndexSpinbox" type="SpinBox" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="MoveLeftButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-rounded = true
-alignment = 2
-custom_arrow_step = 1.0
+icon = ExtResource("2_82h6l")
+
+[node name="CategoryIndex" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+text = "0"
+horizontal_alignment = 1
+
+[node name="MoveRightButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_hkawy")
 
 [node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
