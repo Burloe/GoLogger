@@ -603,7 +603,9 @@ func update_tooltip(node : Control) -> void:
 ## Reorders the categories in the [param category_container] to match 
 ## the order of the indices. Used when a category's index is changed. 
 func reorder_categories() -> void:
-	#* If this sorting method fails. Try swapping the conflicting category's category_name instead of the index.
+	#* If this sorting method fails or causes issues. 
+	#* Instead of re-sorting the entire LogCategory objects to accommodate the new index,
+	#* simply swap the two LogCategory objects category_name rather than the entire object.
 	var children = category_container.get_children()
 	var temp: Array[LogCategory] = []
 	
@@ -626,6 +628,7 @@ func reorder_categories() -> void:
 	for child in category_container.get_children():
 		new_categories.append(child)
 	config.set_value("plugin", "categories", new_categories)
+	config.save(PATH)
 
 
 ## Highlight label text on mouse entered

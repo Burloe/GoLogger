@@ -28,8 +28,7 @@ signal index_changed(category: LogCategory, new_index: int)
 
 @export var index : int = 0:
 	set(value):
-		index = value
-		printerr("[", category_name, "]\tSetting new index to: ", value)
+		index = value 
 		if index_lbl != null:
 			index_lbl.text = str(index)
 

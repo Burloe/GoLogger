@@ -78,6 +78,7 @@ theme_override_constants/separation = 12
 unique_name_in_owner = true
 modulate = Color(1, 0.67451, 0.25098, 1)
 layout_mode = 2
+disabled = true
 text = "Open"
 icon = ExtResource("2_6725a")
 
