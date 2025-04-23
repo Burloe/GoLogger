@@ -11,7 +11,7 @@ extends Node
 
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
-signal session_status_changed ## Emitted when the session status has changed.  
+signal session_status_changed ## Emitted when the session status has started or stopped.
 signal session_timer_started ## Emitted when the [param session_timer] is started.
 
 const PATH = "user://GoLogger/settings.ini" 
@@ -24,6 +24,8 @@ var session_status: bool = false:
 	set(value):
 		session_status = value
 		session_status_changed.emit()
+		if value: session_started.emit()
+		else: session_stopped.emit()
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements 
 @onready var session_timer: Timer = %SessionTimer 
@@ -47,7 +49,6 @@ var hotkey_stop_session: InputEventShortcut = preload("res://addons/GoLogger/Sto
 ## Hotkey used to save the currently active session with a unique filename. Default hotkey: [kbd]Ctrl + Shift + U[/kbd]
 var hotkey_copy_session: InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres") 
 #endregion
-
 
 
 
@@ -217,7 +218,7 @@ func get_value(value : String) -> Variant:
 	return _val
 
 
-#region Main Plugin Functions
+#region Main Functions
 ## Initiates a log session, creating new .log files for each category to log into.
 func start_session() -> void: 
 	if session_status:
@@ -479,7 +480,6 @@ func stop_session() -> void:
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
 	session_status = false
-	session_stopped.emit()
 
 
 func toggle_copy_popup(toggle_on : bool) -> void:
