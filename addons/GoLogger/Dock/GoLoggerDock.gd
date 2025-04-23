@@ -600,6 +600,34 @@ func update_tooltip(node : Control) -> void:
 		canvas_layer_spinbox:
 			tooltip_lbl.text = "[font_size=14][color=green]CanvasLayer Layer:[color=white][font_size=11]\nSets the layer of the CanvasLayer node that contains the 'Save copy' popup and any future in-game visual elements that might be added. Use this if the elements are obscured by your UI or vice versa."
 
+## Reorders the categories in the [param category_container] to match 
+## the order of the indices. Used when a category's index is changed. 
+func reorder_categories() -> void:
+	#* If this sorting method fails. Try swapping the conflicting category's category_name instead of the index.
+	var children = category_container.get_children()
+	var temp: Array[LogCategory] = []
+	
+	for child in children:
+		temp.append(child)
+		category_container.remove_child(child)
+	
+	for i in range(temp.size() - 1):
+		for j in range(i + 1, temp.size()):
+			if temp[i].index > temp[j].index:
+				# Swap elements
+				var temp_child = temp[i]
+				temp[i] = temp[j]
+				temp[j] = temp_child
+	
+	for child in temp:
+		category_container.add_child(child)
+	category_container.queue_sort()
+	var new_categories: Array[LogCategory] = []
+	for child in category_container.get_children():
+		new_categories.append(child)
+	config.set_value("plugin", "categories", new_categories)
+
+
 ## Highlight label text on mouse entered
 func _on_dock_mouse_entered(node : Label) -> void:
 	node.add_theme_color_override("font_color", c_font_hover)
@@ -789,17 +817,15 @@ func _on_columns_slider_value_changed(value: int) -> void:
 	config.set_value("settings", "columns", value)
 	config.save(PATH)
 
-func _on_index_changed(category: LogCategory, new_index: int) -> void:
-	print("Setting category index [", category.category_name, "] to: ", new_index)
 
+func _on_index_changed(category: LogCategory, new_index: int) -> void:
+	# print("Setting category index [", category.category_name, "] to: ", new_index)
 	var conflict_found := false
 	var _c = category_container.get_children()
 
 	for other_category in _c:
 		if other_category != category and other_category.index == new_index:
-			print("Index conflict with [", other_category.category_name, "]")
-
-			# Swap indices
+			# print("Index conflict with [", other_category.category_name, "]")
 			var temp_index = category.index
 			category.index = new_index
 			other_category.index = temp_index
@@ -808,101 +834,7 @@ func _on_index_changed(category: LogCategory, new_index: int) -> void:
 			break
 
 	if !conflict_found:
-		# No conflict, just assign the new index
 		category.index = new_index
 
-	# Now reorder based on updated indices
-	# call_deferred("reorder_categories")
 	reorder_categories()
 	save_categories()
-
-
-
-## Reorders the categories in the [param category_container] to match 
-## the order of the indices. Used when a category's index is changed. 
-func reorder_categories() -> void:
-	# var sorted := category_container.get_children().duplicate()
-
-	# # DEBUG
-	# print("Before sorting:")
-	# for child in sorted:
-	# 	print("\t", child.category_name, " -> Index: ", child.index)
-
-	# sorted.sort_custom(_compare_category_indices)
-	# print("Sorted order:")
-	# for child in sorted:
-	# 	print("\t", child.category_name, " -> Index: ", child.index)
-
-	# Actual reordering
-	# Step 1: Get all children and store them in an array
-	var children = category_container.get_children()
-	var temp: Array[LogCategory] = []
-	
-	# Step 2: Remove all children from the container
-	for child in children:
-		temp.append(child)
-		category_container.remove_child(child)
-	
-	# Step 3: Sort the array based on the `index` property
-	temp.sort_custom(_compare_category_indices)
-	
-	# Step 4: Add the sorted children back to the container
-	for child in temp:
-		category_container.add_child(child)
-	
-	# Step 5: Force the GridContainer to update its layout
-	# category_container.queue_sort()
-
-	# Debugging output
-	print("After manual sorting:")
-	for child in category_container.get_children():
-		print("\t", child.category_name, " -> Index: ", child.index)
-		
-
-
-
-
-	# for i in range(sorted.size()):
-	# 	var child = sorted[i]
-	# 	category_container.move_child(child, i)
-	# 	print("[INSERTED CHILD]: ", child.category_name, " -> Index: ", child.index)
-
-	# category_container.queue_sort()
-
-
-	# DEBUG
-	# print("After sorting:")
-	# for child in category_container.get_children():
-	# 	print("\t", child.category_name, " -> Index: ", child.index)
-
-	# printerr("Final Tree Hierarchy:")
-	# for i in range(category_container.get_child_count()):
-	# 	var c = category_container.get_child(i)
-	# 	print("\t", i, ": ", c.category_name, " \t-> Index: ", c.index)
-
-
-func _compare_category_indices(a: LogCategory, b: LogCategory) -> int:
-	if a.index < b.index:
-		return -1
-	elif a.index > b.index:
-		return 1
-	return 0
-
-
-# func update_indices(deferred : bool = false) -> void:
-# 	if deferred:
-# 		await get_tree().physics_frame
-
-# 	var _c = category_container.get_children()
-# 	for i in range(_c.size()):
-# 		_c[i].index = i
-		
-	# var refresh_table = []
-	# var _c = category_container.get_children()
-	# for i in range(_c.size()):
-	# 	_c[i].index = i
-	# 	_c[i].refresh_index_label(i)
-	# 	var _e : Array = [_c[i].category_name, i, _c[i].file_name, _c[i].file_path, _c[i].file_count, _c[i].entry_count, _c[i].is_locked]
-	# 	refresh_table.append(_e)
-	# config.set_value("plugin", "categories", refresh_table)
-	# config.save(PATH) 
