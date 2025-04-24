@@ -5,6 +5,8 @@ class_name LogCategory extends PanelContainer
 signal name_warning(toggle_on : bool, type : int)
 ## Emitted when the category index is changed to the GoLoggerDock.gd to check to reorder the categories and resolve conflicting indices.
 signal index_changed(category: LogCategory, new_index: int)
+## Emitted when a category is deleted so GoLoggerDock.gd can update the indices of the remaining categories.
+signal category_deleted()
 
 @onready var index_lbl: 	Label = 		%CategoryIndex 
 @onready var move_left_btn: Button = 	%MoveLeftButton
@@ -28,11 +30,19 @@ signal index_changed(category: LogCategory, new_index: int)
 
 @export var index : int = 0:
 	set(value):
-		index = value 
+		index = value
+		move_left_btn.disabled = true if index == 0 else false
+		move_right_btn.disabled = true if index == dock.category_container.get_child_count() - 1 else false
 		if index_lbl != null:
 			index_lbl.text = str(index)
 
-var dock : TabContainer ## Dock root
+var dock : TabContainer:
+	set(value):
+		dock = value
+		if dock != null:
+			# dock.category_count_changed.connect(_on_category_count_changed) 
+			if move_right_btn != null:
+				move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
 var invalid_name : bool = false:
 	set(value):
 		invalid_name = value
@@ -70,6 +80,7 @@ func _ready() -> void:
 		move_left_btn.button_up.connect(_on_move_left_btn_up)
 		move_right_btn.button_up.connect(_on_move_right_btn_up)
 		lock_btn.toggled.connect(_on_lock_btn_toggled)
+		# dock.category_count_changed.connect(_on_category_count_changed)
 		line_edit.text = category_name
 		lock_btn.button_pressed = is_locked
 		size = Vector2.ZERO
@@ -78,11 +89,6 @@ func _ready() -> void:
 			apply_btn.disabled = true
 		else: 
 			invalid_name = false
-
-# func _physics_process(delta: float) -> void:
-# 	if Engine.is_editor_hint():
-# 		print(index_lbl, " ", index_lbl_l_e)
-# 		print(index_lbl_l_e.text_changed.is_connected(_on_category_index_text_changed), " ", index_lbl_l_e.text_submitted.is_connected(_on_category_index_text_submitted))
 
 
 func check_existing_conflicts(new_name : String) -> bool: 
@@ -139,7 +145,11 @@ func _on_lock_btn_toggled(toggled : bool) -> void:
 func _on_del_button_up() -> void:
 	if dock != null: 
 		queue_free() 
-		dock.save_categories(true)
-		dock.update_indices(true) 
+		dock.save_categories(true) 
+		category_deleted.emit()
 
 
+# func _on_category_count_changed(count: int) -> void: 
+# 	print("Category count[", index, "] changed signal received: ", count)
+# 	await get_tree().create_timer(0.1).timeout
+# 	move_right_btn.disabled = true if count >= index - 1 else false

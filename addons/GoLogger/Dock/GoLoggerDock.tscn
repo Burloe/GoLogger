@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=11 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
+[ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/GoLogger/Resources/icons/Close.svg" id="3_11ofg"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
 [ext_resource type="Texture2D" uid="uid://rsgyd2ce2sad" path="res://addons/GoLogger/Resources/icons/VSeparator.svg" id="4_ui2qu"]
@@ -76,15 +77,27 @@ theme_override_constants/separation = 12
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Opens the base directory folder using your file browser"
+theme_override_colors/font_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/font_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
 text = "Open"
 icon = ExtResource("2_6725a")
 
 [node name="DefaultsCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Reset to default"
-text = "Reset "
-icon = ExtResource("3_y66hb")
+tooltip_text = "Delete all existing categories"
+theme_override_colors/font_hover_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/icon_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
+theme_override_colors/font_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
+text = "Clear"
+icon = ExtResource("3_11ofg")
 
 [node name="CategoryWarningLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
@@ -132,10 +145,10 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Log category columns: 5"
+tooltip_text = "4"
 min_value = 1.0
 max_value = 10.0
-value = 5.0
+value = 4.0
 
 [node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 visible = false
@@ -170,6 +183,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 111)
 layout_mode = 2
 tooltip_text = "Add a new log category"
+theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
+theme_override_colors/font_hover_color = Color(0.2542, 0.76342, 0.82, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
+theme_override_colors/icon_hover_color = Color(0.254902, 0.764706, 0.819608, 1)
+theme_override_colors/icon_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
+theme_override_colors/font_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
 
@@ -178,7 +197,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 5
+columns = 4
 
 [node name="Label" type="Label" parent="Categories/VBoxContainer"]
 visible = false
@@ -271,6 +290,8 @@ layout_mode = 2
 tooltip_text = "Applies a new base directory"
 theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
+theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 text = "Apply"
 icon = ExtResource("8_11ofg")
 
@@ -280,6 +301,8 @@ layout_mode = 2
 tooltip_text = "Open the base directory folder using your file browser"
 theme_override_colors/font_hover_pressed_color = Color(0.73, 0.352347, 0.0219, 1)
 theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
 text = "Open Folder"
 icon = ExtResource("2_6725a")
 

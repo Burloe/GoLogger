@@ -2,6 +2,7 @@
 extends TabContainer
 
 signal update_index 
+signal category_count_changed(count: int)
 
 
 #region Category tab 
@@ -91,6 +92,12 @@ var session_duration_spinbox_line: LineEdit
 
 var btn_array: Array[Control] = [] ## Reference array of all interactive settings elements
 var container_array: Array[Control] = [] ## Reference array of all the containers that hold the settings elements
+var category_count: int = 0:
+	set(value):
+		category_count = value
+		category_count_changed.emit(category_count)
+		print("Category count: ", category_count)
+
 var c_font_normal := Color("9d9ea0") 
 var c_font_hover := Color("f2f2f2") 
 #endregion 
@@ -117,8 +124,9 @@ func _ready() -> void:
 
 		# Remove any existing categories
 		for i in category_container.get_children():
-			if i is not Button:
+			if i is LogCategory:
 				i.queue_free()
+			else: print_rich("GoLogger error: Uknown node in category container. Expected LogCategory, got ", i.get_name(), "\nThis is a bug, please report it to the developer @[url]https://github.com/Burloe/GoLogger/issues[/url]")
 		# Load categories as saved in settings.ini
 		load_categories()
 
@@ -279,6 +287,8 @@ func load_categories(deferred : bool = false) -> void:
 		_n.index_changed.connect(_on_index_changed)
 		_n.category_name = _c[i][0]
 		_n.index = i
+	category_count = category_container.get_child_count()
+	update_move_buttons()
 	# update_indices()
 
 
@@ -289,15 +299,16 @@ func add_category() -> void:
 	category_container.add_child(_n) 
 	_n.name_warning.connect(_on_name_warning)
 	_n.index_changed.connect(_on_index_changed)
+	_n.category_deleted.connect(_on_category_deleted)
 	_n.index = category_container.get_children().size() - 1
-	# update_indices()
 	save_categories()
 	_n.line_edit.grab_focus()
+	category_count = category_container.get_child_count()
+	update_move_buttons()
 
 
 func save_categories(deferred : bool = false) -> void:
-	#?        0               1                2                 3             4            5            6
-	#? [category name, category index, current filename, current filepath, file count, entry count, is locked]
+	#? [0 category name, 1 category index, 2 current filename, 3 current filepath, 4 file count, 5 entry count, 6 is locked]
 	if deferred:
 		await get_tree().physics_frame
 	var main : Array # Main array
@@ -310,23 +321,9 @@ func save_categories(deferred : bool = false) -> void:
 	config.save(PATH)
 
 
-
-
 func open_directory() -> void:
 	var abs_path = ProjectSettings.globalize_path(config.get_value("plugin", "base_directory"))
-	print(abs_path)
 	OS.shell_open(abs_path)
-
-
-
-func _on_name_warning(toggled_on : bool, type : int) -> void:
-	if toggled_on:
-		category_warning_lbl.visible = true
-		match type:
-			0: category_warning_lbl.text = "Empty category names are not used. Please enter a unique name."
-			1: category_warning_lbl.text = "Names are not changed if they're not applied."
-	else:
-		category_warning_lbl.visible = false
 
 
 func update_category_name(cat_obj : LogCategory, new_name : String) -> void:
@@ -344,13 +341,10 @@ func check_conflict_name(cat_obj : LogCategory, new_name : String) -> bool:
 	for i in category_container.get_children():
 		if i == cat_obj: # Disregard category being checked
 			continue
-		elif i.category_name == name:
+		elif i.category_name == new_name:
 			if name == "": return false
 			return true
 	return false
-
-
-
 
 
 static func get_error(error : int, object_type : String = "") -> String:
@@ -403,7 +397,6 @@ static func get_error(error : int, object_type : String = "") -> String:
 		47: return str("Error[46] ", object_type, " Help error")
 		48: return str("Error[47] ", object_type, " Bug error")
 	return "N/A"
-
 
 
 func create_settings_file() -> void:
@@ -491,6 +484,7 @@ func validate_settings() -> bool:
 
 
 func reset_to_default(tab : int) -> void:
+	#? [0 category name, 1 category index, 2 current filename, 3 current filepath, 4 file count, 5 entry count, 6 is locked]
 	if tab == 0: # Categories tab
 		var children = category_container.get_children()
 		for i in range(children.size()):
@@ -499,11 +493,12 @@ func reset_to_default(tab : int) -> void:
 		defaults_btn.disabled = true
 		add_category_btn.disabled = true
 		await get_tree().create_timer(0.5).timeout
-		config.set_value("plugin", "categories", [["game", 0, "null", "null", 0, 0, false], ["player", 1, "null", "null", 0, 0, false]])
+		config.set_value("plugin", "categories", [
+			])
+		config.save(PATH)
 		load_categories()
 		defaults_btn.disabled = false
 		add_category_btn.disabled = false
-		config.save(PATH)
 		if !config:
 			var _e = config.get_open_error()
 			printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
@@ -542,9 +537,17 @@ func reorder_categories() -> void:
 		new_categories.append(child)
 	config.set_value("plugin", "categories", new_categories)
 	config.save(PATH)
+	update_move_buttons()
 
 
-## Highlight label text on mouse entered
+func update_move_buttons() -> void:
+	for i in range(category_container.get_child_count()):
+		var category = category_container.get_child(i)
+		category.move_left_btn.disabled = (category.index == 0)
+		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
+
+
+## Highlights label text on mouse entered
 func _on_dock_mouse_entered(node : Label) -> void:
 	node.add_theme_color_override("font_color", c_font_hover)
 
@@ -582,6 +585,8 @@ func _on_button_button_up(node : Button) -> void:
 			config.save(PATH) 
 			
 		base_dir_opendir_btn:
+			if config.get_value("plugin", "base_directory") == "":
+				push_warning("GoLogger: Base directory path isn't set. Please set a valid directory path before opening the directory.")
 			open_directory()
 
 		base_dir_reset_btn:
@@ -723,28 +728,44 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 
 func _on_columns_slider_value_changed(value: int) -> void:
 	category_container.columns = value
-	columns_slider.tooltip_text = str("Log category columns: ", value)
+	columns_slider.tooltip_text = str(value)
 	config.set_value("settings", "columns", value)
 	config.save(PATH)
 
 
+func _on_name_warning(toggled_on : bool, type : int) -> void:
+	if toggled_on:
+		category_warning_lbl.visible = true
+		match type:
+			0: category_warning_lbl.text = "Empty category names are not used. Please enter a unique name."
+			1: category_warning_lbl.text = "Names are not changed if they're not applied."
+	else:
+		category_warning_lbl.visible = false
+
+
 func _on_index_changed(category: LogCategory, new_index: int) -> void:
-	# print("Setting category index [", category.category_name, "] to: ", new_index)
 	var conflict_found := false
 	var _c = category_container.get_children()
 
 	for other_category in _c:
 		if other_category != category and other_category.index == new_index:
-			# print("Index conflict with [", other_category.category_name, "]")
 			var temp_index = category.index
 			category.index = new_index
 			other_category.index = temp_index
-
 			conflict_found = true
 			break
-
 	if !conflict_found:
 		category.index = new_index
-
 	reorder_categories()
 	save_categories()
+
+
+func _on_category_deleted() -> void:
+	# Force delay to ensure category is properly queue freed
+	await get_tree().create_timer(0.1).timeout 
+	category_count = category_container.get_child_count()
+	for i in range(category_count):
+		var category = category_container.get_child(i)
+		category.index = i
+	update_move_buttons()
+
