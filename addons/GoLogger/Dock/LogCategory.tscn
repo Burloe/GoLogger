@@ -1,18 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://c3n416c5fajm5"]
+[gd_scene load_steps=7 format=3 uid="uid://c3n416c5fajm5"]
 
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
 [ext_resource type="Texture2D" uid="uid://dt4rwugiiq5qf" path="res://addons/GoLogger/Resources/icons/ArrowLeft.svg" id="2_82h6l"]
 [ext_resource type="Texture2D" uid="uid://b33lx2cjw84p0" path="res://addons/GoLogger/Resources/icons/Lock.svg" id="2_b4ns3"]
 [ext_resource type="Texture2D" uid="uid://behxo6vcb5ubp" path="res://addons/GoLogger/Resources/icons/ArrowRight.svg" id="3_hkawy"]
+[ext_resource type="Texture2D" uid="uid://goc0tdkq3dym" path="res://addons/GoLogger/Resources/icons/Remove.svg" id="5_hkawy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ilabp"]
 bg_color = Color(0, 0, 0, 0.294118)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
 border_color = Color(0.08, 0.08, 0.08, 1)
-border_blend = true
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -20,8 +16,8 @@ corner_radius_bottom_left = 8
 
 [node name="LogCategory" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 270.0
-offset_bottom = 130.0
+offset_right = 252.0
+offset_bottom = 115.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilabp")
 script = ExtResource("1_8da2w")
 
@@ -48,6 +44,7 @@ text = "Category Index:"
 [node name="MoveLeftButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Move down"
 icon = ExtResource("2_82h6l")
 
 [node name="CategoryIndex" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
@@ -60,6 +57,7 @@ horizontal_alignment = 1
 [node name="MoveRightButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Move up"
 icon = ExtResource("3_hkawy")
 
 [node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
@@ -67,7 +65,8 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_selected_color = Color(0.2236, 0.86, 0.594833, 1)
 theme_override_colors/font_uneditable_color = Color(0.960784, 0.647059, 0.105882, 1)
-theme_override_colors/font_color = Color(0.35, 1, 0.22, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 20
 placeholder_text = "Enter category name"
 alignment = 1
@@ -80,9 +79,10 @@ theme_override_constants/separation = 12
 
 [node name="ApplyButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
-modulate = Color(0.45308, 0.94, 0.1504, 1)
 custom_minimum_size = Vector2(107, 0)
 layout_mode = 2
+tooltip_text = "Apply and save the category name"
+theme_override_colors/font_hover_color = Color(0.443417, 0.85, 0.255, 1)
 disabled = true
 text = "Apply Name"
 
@@ -90,16 +90,23 @@ text = "Apply Name"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+tooltip_text = "Lock"
 focus_mode = 0
+theme_override_colors/icon_hover_color = Color(0.96, 0.75584, 0.4032, 1)
 theme_override_colors/icon_pressed_color = Color(0.96, 0.64672, 0.1056, 1)
-theme_override_colors/icon_normal_color = Color(1, 0.813167, 0.41, 1)
 toggle_mode = true
 icon = ExtResource("2_b4ns3")
 icon_alignment = 1
 
 [node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
-modulate = Color(1, 0.34, 0.34, 1)
+custom_minimum_size = Vector2(59, 0)
 layout_mode = 2
+tooltip_text = "Delete log category"
 focus_mode = 0
-text = "Delete"
+theme_override_colors/icon_hover_color = Color(0.85, 0.1785, 0.1785, 1)
+text = "
+"
+icon = ExtResource("5_hkawy")
+icon_alignment = 1
+expand_icon = true

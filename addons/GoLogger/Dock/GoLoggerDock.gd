@@ -97,8 +97,8 @@ var session_duration_spinbox_line: LineEdit
 @onready var disable_warn1_btn: CheckButton = %DisableWarn1CheckButton
 @onready var disable_warn2_btn: CheckButton = %DisableWarn2CheckButton 
 
-var btn_array: Array[Control] = []
-var container_array: Array[Control] = []
+var btn_array: Array[Control] = [] ## Reference array of all interactive settings elements
+var container_array: Array[Control] = [] ## Reference array of all the containers that hold the settings elements
 var c_font_normal := Color("9d9ea0") 
 var c_font_hover := Color("f2f2f2") 
 #endregion 
@@ -112,8 +112,7 @@ func _ready() -> void:
 		if !_d:
 			_d = DirAccess.open(".")
 			DirAccess.make_dir_absolute("user://GoLogger/")
-
-
+		
 		if !FileAccess.file_exists(PATH):
 			create_settings_file()
 		else:
@@ -483,6 +482,7 @@ func load_settings_state() -> void:
 	session_print_btn.selected =					config.get_value("settings", "session_print")
 	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1")
 	disable_warn2_btn.button_pressed = 				config.get_value("settings", "disable_warn2")
+	columns_slider.value = 							config.get_value("settings", "columns")
 
 
 
@@ -817,6 +817,7 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 
 func _on_columns_slider_value_changed(value: int) -> void:
 	category_container.columns = value
+	columns_slider.tooltip_text = str("Log category columns: ", value)
 	config.set_value("settings", "columns", value)
 	config.save(PATH)
 

@@ -29,32 +29,30 @@ offset_right = -0.52002
 offset_bottom = 0.359985
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 0
+current_tab = 1
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
-[node name="Categories" type="ScrollContainer" parent="."]
-layout_mode = 2
-metadata/_tab_index = 0
-
-[node name="MarginContainer" type="MarginContainer" parent="Categories"]
+[node name="Categories" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 8
+metadata/_tab_index = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Categories/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Categories"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Panel" type="Panel" parent="Categories/MarginContainer/VBoxContainer"]
+[node name="TopButtonPanel" type="Panel" parent="Categories/VBoxContainer"]
 custom_minimum_size = Vector2(0, 41)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/MarginContainer/VBoxContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -66,39 +64,43 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer"]
+[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer"]
 layout_mode = 2
 
-[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer"]
+[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer"]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="OpenDirCatButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
+[node name="OpenDirCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
-modulate = Color(1, 0.67451, 0.25098, 1)
 layout_mode = 2
-disabled = true
+tooltip_text = "Opens the base directory folder using your file browser"
 text = "Open"
 icon = ExtResource("2_6725a")
 
-[node name="DefaultsCatButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
+[node name="DefaultsCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
-modulate = Color(1, 0.34902, 0.34902, 1)
 layout_mode = 2
+tooltip_text = "Reset to default"
 text = "Reset "
 icon = ExtResource("3_y66hb")
 
-[node name="MoreInfoButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
+[node name="MoreInfoButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
+tooltip_text = "Category Index determines the 
+index integer you specify when calling:
+Log.entry(\"My log entry\", 1)
+
+Category Name is the name of the category files and their directories."
 focus_mode = 0
 icon = ExtResource("4_tw6vk")
 icon_alignment = 1
 expand_icon = true
 
-[node name="CategoryWarningLabel" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
+[node name="CategoryWarningLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 0.26, 0.26, 1)
@@ -109,37 +111,44 @@ text = "Empty category names are not used. Please enter a unique name."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer"]
+[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
-[node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
-layout_mode = 2
-text = "Columns: "
-
-[node name="ColumnsHSlider" type="HSlider" parent="Categories/MarginContainer/VBoxContainer/Panel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+[node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 4
+tooltip_text = "Log category columns: 4"
 min_value = 1.0
 max_value = 10.0
-value = 1.0
+value = 4.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Categories/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Columns"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer"]
+custom_minimum_size = Vector2(0, 132)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="AddCategoryButton" type="Button" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="AddCategoryButton" type="Button" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer"]
 unique_name_in_owner = true
-modulate = Color(0.24, 0.784667, 1, 1)
 custom_minimum_size = Vector2(80, 111)
 layout_mode = 2
+tooltip_text = "Add a new log category"
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
 
-[node name="MoreInfoPopup" type="Panel" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="MoreInfoPopup" type="Panel" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer"]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(250, 0)
@@ -147,7 +156,7 @@ layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_huqok")
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer/MoreInfoPopup"]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer/MoreInfoPopup"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -159,7 +168,7 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer/MoreInfoPopup/MarginContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer/MoreInfoPopup/MarginContainer"]
 layout_mode = 2
 mouse_filter = 1
 bbcode_enabled = true
@@ -169,21 +178,14 @@ text = "[font_size=14][color=white][u]Category Index[/u][font_size=12] determine
 
 [font_size=14][u]Category Name[/u][font_size=12] is the name of the category files and their directories."
 
-[node name="CategoryGridContainerOLD" type="GridContainer" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 5
-columns = 8
-
-[node name="CategoryGridContainer" type="GridContainer" parent="Categories/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="CategoryGridContainer" type="GridContainer" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 6
+columns = 4
 
-[node name="Label" type="Label" parent="Categories/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Categories/VBoxContainer"]
 visible = false
 layout_mode = 2
 text = "Current .ini setting(size = 2):
@@ -192,7 +194,6 @@ Current GridContainer.get_children()[size = 2]:
       [Panel:<Panel#1846332685425>, @Panel@17348:<Panel#1846752115849>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
-visible = false
 custom_minimum_size = Vector2(0, 210)
 layout_mode = 2
 follow_focus = true
@@ -269,22 +270,28 @@ alignment = 1
 
 [node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
 unique_name_in_owner = true
-modulate = Color(0.46148, 0.83, 0.2324, 1)
 layout_mode = 2
+tooltip_text = "Applies a new base directory"
+theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
+theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 text = "Apply"
 icon = ExtResource("2_fkrom")
 
 [node name="BaseDirOpenDirButton" type="Button" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
 unique_name_in_owner = true
-modulate = Color(1, 0.675, 0.25, 1)
 layout_mode = 2
+tooltip_text = "Open the base directory folder using your file browser"
+theme_override_colors/font_hover_pressed_color = Color(0.73, 0.352347, 0.0219, 1)
+theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
 text = "Open Folder"
 icon = ExtResource("2_6725a")
 
 [node name="BaseDirResetButton" type="Button" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
 unique_name_in_owner = true
-self_modulate = Color(1, 0.35, 0.35, 1)
 layout_mode = 2
+tooltip_text = "Reset base directory to default user://GoLogger/"
+theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
 text = "Default"
 icon = ExtResource("3_y66hb")
 
@@ -350,6 +357,8 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+tooltip_text = "Used to set what to include in the log header.
+Retreived from Project Settings > Config > Name / Version"
 theme = ExtResource("1_y5prw")
 alignment = 2
 selected = 0
@@ -380,11 +389,11 @@ alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
-text = " CanvasLayer"
+text = " Save copy popup canvas layer"
 vertical_alignment = 1
 
 [node name="Control" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox"]
-custom_minimum_size = Vector2(167, 0)
+custom_minimum_size = Vector2(55, 0)
 layout_mode = 2
 mouse_filter = 2
 
