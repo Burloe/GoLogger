@@ -1,6 +1,6 @@
 <h1 align="center">
   <img src="https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a" alt="GoLogger Icon" height="120">
-  <a href="https://godotengine.org/download/windows/"><img src="https://img.shields.io/static/v1?label=Godot&message=4.3%2B&color=blue&logo=godotengine" alt="Godot 4.3+"></a> <a href="https://github.com/Burloe/GoLogger/archive/refs/tags/1.3.zip"><img alt="Download" src="https://img.shields.io/badge/Download-29903b?style=plastic&color=limegreen"></a>
+  <a href="https://godotengine.org/download/windows/"><img src="https://img.shields.io/static/v1?label=Godot&message=4.3%2B&color=blue&logo=godotengine" alt="Godot 4.3+"></a> <a href="https://github.com/Burloe/GoLogger/archive/refs/tags/1.3.zip"><img alt="Download" src="https://img.shields.io/badge/Download-29903b?color=limegreen"></a>
 </h1>
 
 
