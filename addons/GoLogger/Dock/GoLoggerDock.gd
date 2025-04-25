@@ -442,7 +442,6 @@ func validate_settings() -> bool:
 	var expected_types = {
 		"plugin/base_directory": TYPE_STRING,
 		"plugin/categories": TYPE_ARRAY,
-		
 		"settings/log_header": TYPE_INT,
 		"settings/canvaslayer_layer": TYPE_INT,
 		"settings/autostart_session": TYPE_BOOL,
@@ -735,7 +734,6 @@ func _on_name_warning(toggled_on : bool, type : int) -> void:
 func _on_index_changed(category: LogCategory, new_index: int) -> void:
 	var conflict_found := false
 	var _c = category_container.get_children()
-
 	for other_category in _c:
 		if other_category != category and other_category.index == new_index:
 			var temp_index = category.index
@@ -756,4 +754,3 @@ func _on_category_deleted() -> void:
 		var category = category_container.get_child(i)
 		category.index = i
 	update_move_buttons()
-

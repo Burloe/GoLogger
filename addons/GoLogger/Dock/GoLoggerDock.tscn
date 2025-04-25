@@ -31,12 +31,13 @@ offset_right = -0.52002
 offset_bottom = 0.359985
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 0
+current_tab = 1
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -208,7 +209,6 @@ Current GridContainer.get_children()[size = 2]:
       [Panel:<Panel#1846332685425>, @Panel@17348:<Panel#1846752115849>]"
 
 [node name="Settings" type="ScrollContainer" parent="."]
-visible = false
 custom_minimum_size = Vector2(0, 210)
 layout_mode = 2
 follow_focus = true
@@ -264,6 +264,8 @@ unique_name_in_owner = true
 modulate = Color(0.615686, 0.619608, 0.627451, 1)
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
+tooltip_text = "The directory where logs are stored in. 
+Default path is \"user://GoLogger/\". "
 theme = ExtResource("1_y5prw")
 text = "Base Directory"
 horizontal_alignment = 1
@@ -273,6 +275,8 @@ vertical_alignment = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(198, 36)
 layout_mode = 2
+tooltip_text = "The directory where logs are stored in. 
+Default path is \"user://GoLogger/\". "
 theme = ExtResource("1_y5prw")
 text = "user://GoLogger/"
 placeholder_text = "user://GoLogger/"
