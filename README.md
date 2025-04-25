@@ -28,9 +28,9 @@ See the [Wiki](https://github.com/Burloe/GoLogger/wiki/) for more information on
 ## Latest Patch Notes - 1.3:
 See ![release page](https://github.com/Burloe/GoLogger/releases/tag/1.3) for more info
 * Cleaner visuals and theme.
-* #20 'Unsaved changes' problem fixed.
-* #19 You can now call `Log.save_copy("my_copy")` in your code. Bypassing the popup and giving you control to setup save copy automatically. 
-* #18 The category index can be manually changed in the 'Categories' tab! The index is also numerically ordered automatically.
+* 'Unsaved changes' problem fixed.
+* You can now call `Log.save_copy("my_copy")` in your code. Bypassing the popup and giving you control to setup save copy automatically. 
+* The category index can be manually changed in the 'Categories' tab! The index is also numerically ordered automatically.
 * Column slider allows you to set the number of columns visible in the GridContainer holding the categories. 
 * Proper tooltips have been added that shows on mouse over which de-clutters the dock massively.
 * Removed excessive settings.
