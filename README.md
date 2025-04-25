@@ -1,4 +1,6 @@
-# ![GoLogger_Icon_Title](https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a) ![](https://img.shields.io/static/v1?label=Godot&message=4.3&color=blue&logo=godotengine)   ![](https://img.shields.io/static/v1?label=Godot&message=4.4&color=blue&logo=godotengine) <img alt="Static Badge" src="https://img.shields.io/badge/Download-29903b?style=plastic&logoColor=%20&color=29903b&link=https%3A%2F%2Fgithub.com%2FBurloe%2FGoLogger%2Farchive%2Fcd8622ea9334b866652ed254d2d55c3037d408bf.zip&link=https%3A%2F%2Fgithub.com%2FBurloe%2FGoLogger%2Farchive%2Fcd8622ea9334b866652ed254d2d55c3037d408bf.zip">
+# ![GoLogger_Icon_Title](https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a) ![](https://img.shields.io/static/v1?label=Godot&message=4.3&color=blue&logo=godotengine)   ![](https://img.shields.io/static/v1?label=Godot&message=4.4&color=blue&logo=godotengine) <img alt="Static Badge" src="https://img.shields.io/badge/Download-29903b?style=plastic&logoColor=%20&color=29903b&link=https%3A%2F%2Fgithub.com%2FBurloe%2FGoLogger%2Farchive%2Frefs%2Ftags%2F1.3.zip">
+
+
 
 
 <br>
