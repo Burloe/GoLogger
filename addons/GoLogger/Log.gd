@@ -110,8 +110,7 @@ func create_settings_file() -> void:
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_cap", 300)
 	config.set_value("settings", "session_duration", 300.0)
-	config.set_value("settings", "error_reporting", 0)
-	config.set_value("settings", "session_print", 0)
+	config.set_value("settings", "error_reporting", 0) 
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false) 
 	var _s = config.save(PATH)
@@ -140,8 +139,7 @@ func validate_settings() -> bool:
 		"settings/file_cap": TYPE_INT,
 		"settings/entry_cap": TYPE_INT,
 		"settings/session_duration": TYPE_FLOAT,
-		"settings/error_reporting": TYPE_INT,
-		"settings/session_print": TYPE_INT,
+		"settings/error_reporting": TYPE_INT, 
 		"settings/disable_warn1": TYPE_BOOL,
 		"settings/disable_warn2": TYPE_BOOL
 	}
@@ -233,9 +231,7 @@ func start_session() -> void:
 		return
 	if get_value("limit_method") == 1 or get_value("limit_method") == 2:
 		session_timer.start(get_value("session_duration"))
-		session_timer_started.emit()
-	if get_value("session_print") < 2:
-		print("GoLogger: Session started.")
+		session_timer_started.emit() 
 
 	for i in range(categories.size()): 
 		categories[i][3] = get_file_name(categories[i][0])
@@ -283,8 +279,7 @@ func start_session() -> void:
 				_f.close()
 
 	config.set_value("plugin", "categories", categories)
-	config.save(PATH)
-	if get_value("session_print") == 1 or get_value("session_print") == 2: print("GoLogger: Started session.")
+	config.save(PATH) 
 	session_status = true
 	if session_timer != null:
 		if session_timer.is_stopped() and get_value("session_timer_action") == 1 or session_timer.is_stopped() and get_value("session_timer_action") == 2:
@@ -433,9 +428,7 @@ func complete_copy() -> void:
 		_fw.close()
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
-	popup_state = false
-	if get_value("session_print") == 0 or get_value("session_print") == 2:
-		print("GoLogger: Persistent copies of the active session was created.")
+	popup_state = false 
 	
 
 ## Stops the current session. Preventing further entries to be logged into the file of the current session.
@@ -475,8 +468,7 @@ func stop_session() -> void:
 			categories[i][3] = ""
 			categories[i][5] = 0
 
-		
-		if get_value("session_print") == 1 or get_value("session_print") == 4: print("GoLogger: Stopped log session.")
+		 
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
 	session_status = false

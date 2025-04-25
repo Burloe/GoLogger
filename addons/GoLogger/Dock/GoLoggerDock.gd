@@ -404,8 +404,7 @@ func create_settings_file() -> void:
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_cap", 300)
 	config.set_value("settings", "session_duration", 300.0)
-	config.set_value("settings", "error_reporting", 0)
-	config.set_value("settings", "session_print", 0)
+	config.set_value("settings", "error_reporting", 0) 
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false)
 	config.set_value("settings", "columns", 6)
@@ -454,8 +453,7 @@ func validate_settings() -> bool:
 		"settings/file_cap": TYPE_INT,
 		"settings/entry_cap": TYPE_INT,
 		"settings/session_duration": TYPE_FLOAT, 
-		"settings/error_reporting": TYPE_INT,
-		"settings/session_print": TYPE_INT,
+		"settings/error_reporting": TYPE_INT, 
 		"settings/disable_warn1": TYPE_BOOL,
 		"settings/disable_warn2": TYPE_BOOL
 	}
