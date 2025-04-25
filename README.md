@@ -1,4 +1,7 @@
-# ![GoLogger_Icon_Title](https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a)![](https://img.shields.io/static/v1?label=Godot&message=4.3&color=blue&logo=godotengine)   ![](https://img.shields.io/static/v1?label=Godot&message=4.4&color=blue&logo=godotengine)<br>
+# ![GoLogger_Icon_Title](https://github.com/user-attachments/assets/2856b4fb-8d18-49b5-bd60-8a8015b6723a) ![](https://img.shields.io/static/v1?label=Godot&message=4.3&color=blue&logo=godotengine)   ![](https://img.shields.io/static/v1?label=Godot&message=4.4&color=blue&logo=godotengine) <img alt="Static Badge" src="https://img.shields.io/badge/Download-29903b?style=plastic&logoColor=%20&color=29903b&link=https%3A%2F%2Fgithub.com%2FBurloe%2FGoLogger%2Farchive%2Fcd8622ea9334b866652ed254d2d55c3037d408bf.zip&link=https%3A%2F%2Fgithub.com%2FBurloe%2FGoLogger%2Farchive%2Fcd8622ea9334b866652ed254d2d55c3037d408bf.zip">
+
+
+<br>
 
 **GoLogger** is a simple yet flexible logging framework for *Godot 4.3+*, which captures and store game events(and data) into external `.log` files accessible by both developers and players to aid in development and maintenence of your projects. With minimal setup, it can be quickly integrated into any project to run in the background at all times or log specific events during testing. GoLogger allows you to customize its settings to suit your needs, providing timestamped logs entries that make debugging and investigating issues easier.
 ![image](https://github.com/user-attachments/assets/a2b43670-e2ff-4450-a6d1-373ee9df3658)
