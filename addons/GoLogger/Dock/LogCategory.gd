@@ -40,7 +40,6 @@ var dock : TabContainer:
 	set(value):
 		dock = value
 		if dock != null:
-			# dock.category_count_changed.connect(_on_category_count_changed) 
 			if move_right_btn != null:
 				move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
 var invalid_name : bool = false:
@@ -80,7 +79,6 @@ func _ready() -> void:
 		move_left_btn.button_up.connect(_on_move_left_btn_up)
 		move_right_btn.button_up.connect(_on_move_right_btn_up)
 		lock_btn.toggled.connect(_on_lock_btn_toggled)
-		# dock.category_count_changed.connect(_on_category_count_changed)
 		line_edit.text = category_name
 		lock_btn.button_pressed = is_locked
 		size = Vector2.ZERO
@@ -147,9 +145,3 @@ func _on_del_button_up() -> void:
 		queue_free() 
 		dock.save_categories(true) 
 		category_deleted.emit()
-
-
-# func _on_category_count_changed(count: int) -> void: 
-# 	print("Category count[", index, "] changed signal received: ", count)
-# 	await get_tree().create_timer(0.1).timeout
-# 	move_right_btn.disabled = true if count >= index - 1 else false

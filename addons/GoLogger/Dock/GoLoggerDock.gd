@@ -2,8 +2,6 @@
 extends TabContainer
 
 signal update_index 
-signal category_count_changed(count: int)
-
 
 #region Category tab 
 ## Add category [Button]. Instantiates a [param category_scene] and adds it as a child of [param category_container].
@@ -92,12 +90,6 @@ var session_duration_spinbox_line: LineEdit
 
 var btn_array: Array[Control] = [] ## Reference array of all interactive settings elements
 var container_array: Array[Control] = [] ## Reference array of all the containers that hold the settings elements
-var category_count: int = 0:
-	set(value):
-		category_count = value
-		category_count_changed.emit(category_count)
-		print("Category count: ", category_count)
-
 var c_font_normal := Color("9d9ea0") 
 var c_font_hover := Color("f2f2f2") 
 #endregion 
@@ -287,9 +279,7 @@ func load_categories(deferred : bool = false) -> void:
 		_n.index_changed.connect(_on_index_changed)
 		_n.category_name = _c[i][0]
 		_n.index = i
-	category_count = category_container.get_child_count()
-	update_move_buttons()
-	# update_indices()
+	update_move_buttons() 
 
 
 func add_category() -> void:
@@ -303,7 +293,6 @@ func add_category() -> void:
 	_n.index = category_container.get_children().size() - 1
 	save_categories()
 	_n.line_edit.grab_focus()
-	category_count = category_container.get_child_count()
 	update_move_buttons()
 
 
@@ -403,7 +392,6 @@ func create_settings_file() -> void:
 	var _a = [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
-	config.set_value("settings", "columns", 6)
 	config.set_value("settings", "log_header", 0)
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
@@ -420,6 +408,7 @@ func create_settings_file() -> void:
 	config.set_value("settings", "session_print", 0)
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false)
+	config.set_value("settings", "columns", 6)
 	var _s = config.save(PATH)
 	if _s != OK: 
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_s, "ConfigFile")))
@@ -762,9 +751,8 @@ func _on_index_changed(category: LogCategory, new_index: int) -> void:
 
 func _on_category_deleted() -> void:
 	# Force delay to ensure category is properly queue freed
-	await get_tree().create_timer(0.1).timeout 
-	category_count = category_container.get_child_count()
-	for i in range(category_count):
+	await get_tree().create_timer(0.1).timeout  
+	for i in range(category_container.get_child_count()):
 		var category = category_container.get_child(i)
 		category.index = i
 	update_move_buttons()
