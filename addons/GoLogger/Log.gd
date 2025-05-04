@@ -11,8 +11,9 @@ extends Node
 
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
-signal session_status_changed ## Emitted when the session status has started or stopped.
+signal session_status_changed(changed_to: bool) ## Emitted when the session status has started or stopped.
 signal session_timer_started ## Emitted when the [param session_timer] is started.
+signal session_timer_stopped ## Emitted when the [param session_timer] is stopped.
 
 const PATH = "user://GoLogger/settings.ini" 
 var config := ConfigFile.new()
@@ -644,6 +645,7 @@ func _on_session_timer_timeout() -> void:
 			else: # Stop only
 				stop_session()
 				session_timer.stop()
+	session_timer_stopped.emit()
 	session_timer.wait_time = get_value("session_duration")
 
 ## Copy session timer. Counts down since the last [signal text_changed] and chancels the operation upon [signal timeout].
