@@ -8,6 +8,7 @@ var dock
 func _enter_tree() -> void:
 	dock = preload("res://addons/GoLogger/Dock/GoLoggerDock.tscn").instantiate()
 	add_control_to_bottom_panel(dock, "GoLogger")
+	dock.plugin_version = get_plugin_version()
 	
 func _exit_tree() -> void:
 	dock.save_categories()

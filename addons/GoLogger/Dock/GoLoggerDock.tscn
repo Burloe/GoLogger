@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=12 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
@@ -22,6 +22,10 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
+font_size = 12
+font_color = Color(1, 1, 1, 0.352941)
+
 [node name="GoLoggerDock" type="TabContainer"]
 anchors_preset = -1
 anchor_right = 0.721
@@ -30,6 +34,7 @@ offset_right = 1.67993
 offset_bottom = -0.320007
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/side_margin = 8
 current_tab = 1
 all_tabs_in_front = true
 script = ExtResource("2_qhfb3")
@@ -146,10 +151,10 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "4"
+tooltip_text = "8"
 min_value = 1.0
 max_value = 10.0
-value = 4.0
+value = 8.0
 
 [node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 visible = false
@@ -198,7 +203,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 4
+columns = 8
 
 [node name="Label" type="Label" parent="Categories/VBoxContainer"]
 visible = false
@@ -223,10 +228,23 @@ size_flags_vertical = 3
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
 
 [node name="Panel" type="Panel" parent="Settings/MarginContainer"]
 layout_mode = 2
+
+[node name="GoLoggerVersionLabel" type="Label" parent="Settings/MarginContainer/Panel"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 1380.0
+offset_bottom = 237.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/Panel"]
 layout_mode = 1
@@ -685,7 +703,7 @@ size_flags_horizontal = 2
 tooltip_text = "Limits the number of files in any log category folder.
 Setting this to 0 will disable this(use with caution)."
 mouse_filter = 0
-text = "File count limit"
+text = " File count limit"
 vertical_alignment = 1
 
 [node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column/FileCountHBox"]
@@ -719,7 +737,7 @@ tooltip_text = "Determines how you want GoLogger to report errors and warnings.
 'Warnings only' coverts non-critical errors into warnings.
 'None' disables all warnings and errors except for critical errors. "
 mouse_filter = 0
-text = "Error reporting"
+text = " Error reporting"
 vertical_alignment = 1
 
 [node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column/ErrorRepHBox"]
@@ -750,7 +768,7 @@ layout_mode = 2
 tooltip_text = "Enables the 'Failed to start log session without stopping the previous session' warning. "
 theme = ExtResource("1_y5prw")
 button_pressed = true
-text = "    Failed to start session"
+text = "Failed to start session"
 
 [node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column"]
 unique_name_in_owner = true
@@ -758,4 +776,172 @@ layout_mode = 2
 tooltip_text = "Enables the 'Failed to log entry due to no session being active' warning."
 theme = ExtResource("1_y5prw")
 button_pressed = true
-text = "    Failed to log entry"
+text = "Failed to log entry"
+
+[node name="Help" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+metadata/_tab_index = 2
+
+[node name="TabContainer" type="TabContainer" parent="Help"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+current_tab = 2
+
+[node name="Getting Started" type="MarginContainer" parent="Help/TabContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+metadata/_tab_index = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Getting Started"]
+layout_mode = 2
+scroll_vertical_custom_step = 20.0
+
+[node name="Sessions" type="RichTextLabel" parent="Help/TabContainer/Getting Started/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[font_size=20][color=fc4674]Setup:[font_size=14][color=white]
+When you run your project after installing and enabling GoLogger, directories for the categories are created and you're ready to start logging. You're setup with two log categories for 'game' and 'errors' by default with category index 0 and 1 respectively. To log an entry, use the added 'Log' autoload to call [color=violet]Log.[color=cornflowerblue]entry([color=lawngreen]\"My log entry into the game category.\"[color=cornflowerblue], 0)[color=white]. Use the Category tab to add, remove and rename categories.   
+
+[font_size=20][color=fc4674]Sessions:[font_size=14][color=white]
+'Sessions' are used to determine when logging is active or not. Sessions can be stopped and started at runtime anytime. Session autostarts by default when running your project(can be disabled in the Settings tab). 
+You can control sessions by calling[color=violet]Log. [color=cornflowerblue][u]start_session()[/u][color=white] and [color=violet]Log.[color=cornflowerblue][u]stop_session()[/u][color=white], or using hotkeys.
+
+[font_size=20][color=fc4674]Categories:[font_size=14][color=white]
+Each category in the category tab adds a folder inside the base directory and when a session is started. A .log file is created with the date- and timestamp, and category name. 
+Each category has an assigned [color=violet]category_index[color=white] that is used to identify which category the entry is logged into.
+
+[font_size=20][color=fc4674]Entries:[font_size=14][color=white]
+Entries are plain strings, offering flexibility by allowing concatenation with any data that can be converted to a string. 
+[color=turquoise]Log[color=white].[color=cornflowerblue]entry([color=lawngreen]\"Player's current health: \"[color=cornflowerblue] + str([color=violet]current_health[color=cornflowerblue]) + [color=lawngreen]\" / \" [color=cornflowerblue]+ str([color=violet]max_health[color=cornflowerblue]), 1)
+
+[font_size=20][color=fc4674]Save Copy:[font_size=14][color=white]
+In case an event happens of note, you can use [color=violet]Log.[color=cornflowerblue]save_copy(\"MyCopyName\")[color=white](or hotkey) to create a separate copy of the active session. This saves a unique file of every category that is stored in each category's [color=violet]saved_logs[color=white] folder. "
+
+[node name="Methods & hotkeys" type="MarginContainer" parent="Help/TabContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+metadata/_tab_index = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Methods & hotkeys"]
+layout_mode = 2
+
+[node name="TitleLabel" type="RichTextLabel" parent="Help/TabContainer/Methods & hotkeys/ScrollContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[font_size=20][color=fc4674]Methods:[color=white]
+[font_size=14]All methods are accessible using the [color=violet]Log [color=white]autoload. 
+Hotkeys can be changed by navigating to [color=darkgray][i]res://addons/GoLogger/[/i][color=white], where you'll find the shortcut resources.
+
+	[font_size=16][color=violet]Log.[color=cornflowerblue]start_session([color=cornflowerblue])
+		[color=darkgray]Starts a logging session, creating new .log files and allowing for entries to be logged.
+			[i]Hotkey: Ctrl + Shift + O[/i]
+
+	[font_size=16][color=violet]Log.[color=cornflowerblue]entry([color=darkgray]entry: String, category_index: int = 0[color=cornflowerblue])
+		[color=darkgray]Logs an entry into the defined [i]category_index[/i].
+			Example: 
+				[color=turquoise]Log[color=white].[color=cornflowerblue]entry([color=lawngreen]\"Player's current health: \"[color=cornflowerblue] + str([color=violet]current_health[color=cornflowerblue]) + [color=lawngreen]\" / \" [color=cornflowerblue]+ str([color=violet]max_health[color=cornflowerblue]), 1)
+
+	[font_size=16[color=violet]Log.[color=cornflowerblue]save_copy(copy_name: String = \"\")
+		[color=darkgray]Creates a copy of the active session in its current state. Calling this without 
+		naming it will bring up a popup in-game that prompts you to enter a name.
+			[i]Hotkey: Ctrl + Shift + U[/i]
+
+	[font_size=16[color=violet]Log.[color=cornflowerblue]stop_session()
+		[color=darkgray]Stops a logging session.
+			[i]Hotkey: Ctrl + Shift + P[/i]
+"
+
+[node name="More Info" type="MarginContainer" parent="Help/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 6
+metadata/_tab_index = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/More Info"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -1
+
+[node name="Label" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+text = "Latest version of GoLogger is always available on "
+
+[node name="LinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Github repository"
+uri = "https://github.com/Burloe/GoLogger/wiki"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -1
+
+[node name="Label" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+text = "More in-depth information can be found on the "
+
+[node name="LinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Github Wiki"
+uri = "https://github.com/Burloe/GoLogger/wiki"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -1
+
+[node name="Label" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+text = "Please report issues, feature requests and feedback on "
+
+[node name="LinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "issues page"
+uri = "https://github.com/Burloe/GoLogger/issues"
+
+[node name="GoLoggerVersionLabel" type="Label" parent="Help/TabContainer/More Info"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
+vertical_alignment = 2

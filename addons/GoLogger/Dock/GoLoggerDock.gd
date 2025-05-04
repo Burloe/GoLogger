@@ -88,6 +88,14 @@ var session_duration_spinbox_line: LineEdit
 @onready var disable_warn1_btn: CheckButton = %DisableWarn1CheckButton
 @onready var disable_warn2_btn: CheckButton = %DisableWarn2CheckButton 
 
+@onready var gologger_version_lbl: Label = %GoLoggerVersionLabel
+
+
+var plugin_version: String =  "1.3.1":
+	set(value): 
+		plugin_version = value
+		if gologger_version_lbl != null:
+			gologger_version_lbl.text = str("GoLogger v.", value)
 var btn_array: Array[Control] = [] ## Reference array of all interactive settings elements
 var container_array: Array[Control] = [] ## Reference array of all the containers that hold the settings elements
 var c_font_normal := Color("9d9ea0") 
@@ -212,7 +220,7 @@ func _ready() -> void:
 			file_count_container,
 			entry_count_container,
 			session_duration_container, 
-			error_rep_container, 
+			error_rep_container
 		]
 		
 		var btns_array = [
@@ -225,7 +233,7 @@ func _ready() -> void:
 			file_count_spinbox,
 			entry_count_spinbox,
 			session_duration_spinbox,
-			error_rep_btn,
+			error_rep_btn
 		]
 
 		var corresponding_lbls = [
@@ -242,7 +250,7 @@ func _ready() -> void:
 		]
 
 		for i in range(container_array.size()):
-			# Update mouse over on Containers font color signals
+			# Update font color on mouse over containers signals
 			if container_array[i].mouse_entered.is_connected(_on_dock_mouse_entered):
 				container_array[i].mouse_entered.disconnect(_on_dock_mouse_entered)
 			container_array[i].mouse_entered.connect(_on_dock_mouse_entered.bind(corresponding_lbls[i]))
@@ -251,7 +259,7 @@ func _ready() -> void:
 				container_array[i].mouse_exited.disconnect(_on_dock_mouse_exited)
 			container_array[i].mouse_exited.connect(_on_dock_mouse_exited.bind(corresponding_lbls[i]))
 
-			# Update mouse over on Buttons font color signals
+			# Update font color on mouse over Buttons signals
 			if btns_array[i].mouse_entered.is_connected(_on_dock_mouse_entered):
 				btns_array[i].mouse_entered.disconnect(_on_dock_mouse_entered)
 			btns_array[i].mouse_entered.connect(_on_dock_mouse_entered.bind(corresponding_lbls[i]))
@@ -388,6 +396,7 @@ static func get_error(error : int, object_type : String = "") -> String:
 	return "N/A"
 
 
+## Creates a new settings.ini file in the base directory.
 func create_settings_file() -> void:
 	var _a = [["game", 0, "null", "null", 0, 0, true], ["player", 1, "null", "null", 0, 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
@@ -416,23 +425,24 @@ func create_settings_file() -> void:
 
 func load_settings_state() -> void:
 	config.load(PATH)
-	base_dir_line.text = 							config.get_value("plugin", 	 "base_directory")
-	log_header_btn.selected = 						config.get_value("settings", "log_header")
-	canvas_layer_spinbox.value = 					config.get_value("settings", "canvaslayer_layer")
-	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session")
-	timestamp_entries_btn.button_pressed = 			config.get_value("settings", "timestamp_entries")
-	utc_btn.button_pressed = 						config.get_value("settings", "use_utc")
-	dash_btn.button_pressed = 						config.get_value("settings", "dash_separator")
-	limit_method_btn.selected = 					config.get_value("settings", "limit_method")
-	entry_count_action_btn.selected = 				config.get_value("settings", "entry_count_action")
-	entry_count_action_btn.selected = 				config.get_value("settings", "session_timer_action")
-	file_count_spinbox.value = 						config.get_value("settings", "file_cap")
-	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap")
-	session_duration_spinbox.value = 				config.get_value("settings", "session_duration")
-	error_rep_btn.selected = 						config.get_value("settings", "error_reporting") 
-	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1")
-	disable_warn2_btn.button_pressed = 				config.get_value("settings", "disable_warn2")
-	columns_slider.value = 							config.get_value("settings", "columns")
+	base_dir_line.text = 							config.get_value("plugin", 	 "base_directory", "user://GoLogger/")
+	log_header_btn.selected = 						config.get_value("settings", "log_header", 0)
+	canvas_layer_spinbox.value = 					config.get_value("settings", "canvaslayer_layer", 5)
+	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session", true)
+	timestamp_entries_btn.button_pressed = 			config.get_value("settings", "timestamp_entries", true)
+	utc_btn.button_pressed = 						config.get_value("settings", "use_utc", false)
+	dash_btn.button_pressed = 						config.get_value("settings", "dash_separator", false)
+	limit_method_btn.selected = 					config.get_value("settings", "limit_method", 0)
+	entry_count_action_btn.selected = 				config.get_value("settings", "entry_count_action", 0)
+	entry_count_action_btn.selected = 				config.get_value("settings", "session_timer_action", 0)
+	file_count_spinbox.value = 						config.get_value("settings", "file_cap", 10)
+	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap", 300)
+	session_duration_spinbox.value = 				config.get_value("settings", "session_duration", 300.0)
+	error_rep_btn.selected = 						config.get_value("settings", "error_reporting", 0) 
+	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1", false)
+	disable_warn2_btn.button_pressed = 				config.get_value("settings", "disable_warn2", false)
+	columns_slider.value = 							config.get_value("settings", "columns", 6)
+	config.save(PATH)
 
 
 
@@ -498,8 +508,8 @@ func reset_to_default(tab : int) -> void:
 ## the order of the indices. Used when a category's index is changed. 
 func reorder_categories() -> void:
 	#* If this sorting method fails or causes issues. 
-	#* Instead of re-sorting the entire LogCategory objects to accommodate the new index,
-	#* simply swap the two LogCategory objects category_name rather than the entire object.
+	#* Instead of re-sorting the entire LogCategory objects to accommodate the new index.
+	#* Simply swap the two LogCategory object's category_name rather than the entire object.
 	var children = category_container.get_children()
 	var temp: Array[LogCategory] = []
 	
@@ -533,10 +543,10 @@ func update_move_buttons() -> void:
 		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
 
 
-## Highlights label text on mouse entered
+## Highlights label on mouse entered
 func _on_dock_mouse_entered(node : Label) -> void:
 	node.add_theme_color_override("font_color", c_font_hover)
-
+## Revert highlighted label on mouse exited
 func _on_dock_mouse_exited(node : Label) -> void:
 	node.add_theme_color_override("font_color", c_font_normal)
 
