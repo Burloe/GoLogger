@@ -28,14 +28,14 @@ corner_radius_bottom_left = 4
 
 [node name="GoLoggerDock" type="TabContainer"]
 anchors_preset = -1
-anchor_right = 0.721
-anchor_bottom = 0.292
-offset_right = 1.67993
-offset_bottom = -0.359985
-grow_horizontal = 2
-grow_vertical = 2
+anchor_right = 0.686
+anchor_bottom = 0.281
+offset_right = -0.120117
+offset_bottom = -0.480011
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 2
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -43,7 +43,6 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -133,6 +132,9 @@ label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 2
 vertical_alignment = 1
 
+[node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+layout_mode = 2
+
 [node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -162,10 +164,10 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "4"
+tooltip_text = "5"
 min_value = 1.0
 max_value = 10.0
-value = 4.0
+value = 5.0
 
 [node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 visible = false
@@ -187,7 +189,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer"]
-custom_minimum_size = Vector2(0, 132)
+custom_minimum_size = Vector2(0, 115)
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -214,19 +216,11 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 4
-
-[node name="Label" type="Label" parent="Categories/VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "Current .ini setting(size = 2):
-      [[\"game1\", 0, false], [\"player1\", 1, false]]
-Current GridContainer.get_children()[size = 2]:
-      [Panel:<Panel#1846332685425>, @Panel@17348:<Panel#1846752115849>]"
+columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="."]
 visible = false
-custom_minimum_size = Vector2(20, 20)
+custom_minimum_size = Vector2(0, 272)
 layout_mode = 2
 follow_focus = true
 scroll_horizontal_custom_step = 10.0
@@ -242,6 +236,7 @@ theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer"]
+custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 
 [node name="TopBarPanel" type="Panel" parent="Settings/MarginContainer/VBoxContainer"]
@@ -346,11 +341,14 @@ label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 2
 vertical_alignment = 1
 
+[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
+layout_mode = 2
+
 [node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
 unique_name_in_owner = true
 modulate = Color(1, 0.24, 0.24, 1)
 layout_mode = 2
-tooltip_text = "Resets all settings to the default values."
+tooltip_text = "Resets all settings."
 text = "Reset to default"
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer"]
@@ -363,7 +361,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="ColumnA" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(323, 226)
+custom_minimum_size = Vector2(323, 210)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA"]
@@ -494,7 +492,7 @@ theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "Use separator in timestamps"
 
 [node name="ColumnB" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(362, 226)
+custom_minimum_size = Vector2(362, 210)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB"]
@@ -685,7 +683,7 @@ custom_arrow_step = 1.0
 select_all_on_focus = true
 
 [node name="ColumnC" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(323, 226)
+custom_minimum_size = Vector2(323, 210)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC"]
@@ -778,10 +776,9 @@ text = "Failed to log entry"
 
 [node name="Help" type="MarginContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
-theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 6
 metadata/_tab_index = 2
 
@@ -795,9 +792,7 @@ current_tab = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
 metadata/_tab_index = 0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Getting Started"]
@@ -838,17 +833,16 @@ Each category in the category tab adds a folder inside the base directory and wh
 	Each category has an assigned [color=violet]category_index[color=white] that is used to identify which category the entry is logged into. These can be changed and reordered in the category tab but it is recommended to try and change the indices as little as possible. Just beware that you need to use find & replace to update indices in your code as well.
 
 [font_size=16][color=fc4674]Entries:[font_size=14][color=white]
-Entries are plain strings, offering flexibility by allowing concatenation with any data that can be converted to a string.
+Entries are plain strings, offering flexibility and allowing concatenation with any data that can be converted to a string. Entries can be as simple or detailed as you want.
 
 [font_size=16][color=fc4674]Save Copy:[font_size=14][color=white]
-In case an event happens of note, you can use the save copy feature which allows you to save the active session in a separate file. This creates copies of all categories and is stored in each category's saved_logs folder. "
+In case an event of note occurs, you can use the save copy feature which allows you to save the active session in a separate file, without needing to stop and start a new session. This creates copies of all categories and is stored in each category's saved_logs folder. 
+This feature is helpful when multiple factors or a history of actions is needed to aid in debugging. If for instance, your have a bug that you know the outcome, like the player clips out of bounds in a certain spot. You can set it up so that a copy gets saved when the player's global position is greater/lower than the out of bounds position. "
 
 [node name="File Limitations" type="MarginContainer" parent="Help/TabContainer"]
 visible = false
 layout_mode = 2
-theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
 metadata/_tab_index = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/File Limitations"]
@@ -878,46 +872,50 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Importance of setting limitations:[color=white]
-[font_size=14]While log file's are very lightweight, generating endless amount of files or logging long sessions is never ideal. GoLogger has a couple of features to do just that. You can disable all of these limitations but do so at your own risk. If you experience micro stuttering or any issues, try turning them on or turning the limitations down. The default values are set to a very low value to reduce the 
-possibility of issues upon installation. 
+[font_size=14]While log file's are very lightweight, generating endless amount of files or logging long sessions is never ideal. GoLogger has a couple of features to do just that. You can disable all of these limitations but do so at your own risk. If you experience micro stuttering or any issues, try turning them on or turning the limitation settings down. 
+
+The default settings are intentionally set to a very low value to reduce the possibility of issues upon installation. You can safely increase them([b]within reason[/b).
 
 [font_size=16][color=fc4674]File Count:[color=white][font_size=14]
 This sets the limit of .log files that are allowed in a category folder. Default limit is 10 and once the limit is hit, the oldest file is overwritten with a new one. 
+[color=darkgray][i]Recommended:[/i]
+[i]Using a file count limit of 10-20 is recommended for general use, but you shouldn't have any issues going higher.[/i]
+
 
 [font_size=16][color=fc4674]Limit Method:[color=white][font_size=14]
-[font_size=14][b]Entry count[/b] - [color=darkgray]Used in combination with Entry Count Action and Entry Count Limit. [color=white]As new ones are logged, entries are counted and once the the Entry Count Limit is reached. 
+[font_size=14][b]Entry count[/b] - [color=darkgray]Used in combination with Entry Count Action and Entry Count Limit. 
+[color=white]As new ones are logged, entries are counted and once the the Entry Count Limit is reached. 
 	* Overwrite Entries - Overwrites the oldest entries as new ones are added.
 	* Restart Session - Restart the session, creating a new .log file. 
 	* Stop Session - Stops session entirely. Requiring you to manually restart it 	with hotkeys or via code.
 			
 [b]Session timer[/b] - [color=darkgray]Used in combination with Session Timer Action and Session Duration.[color=white]
-Starts a timer with the start of sessions and lasts as long as defined by the Session Duration setting. This is a good option for specific testing. You set the action with the Session Timer Action setting. Session Timer has [color=turquoise]session_timer_started [color=white]and [color=turquoise]session_timer_timeout[color=white] so you can synchronize sessions with a system or feature.
+Starts a timer with the start of sessions and lasts as long as defined by the Session Duration setting. This is a good option for specific testing. You set the action with the Session Timer Action setting. Session Timer has the signals [color=turquoise]session_timer_started [color=white]and [color=turquoise]session_timer_timeout[color=white] so you can synchronize sessions with a system or feature.
 	* Restart Session - Restart the session, creating a new .log file. 
 	* Stop Session - Stops session entirely. Requiring you to manually restart it with hotkeys or via code.
 		
 [color=darkgray][i]Recommended:
-Using Overwrite entries is objectively the best option, but may result in lost entries if you continue to play and entries are overwritten. Familiarizing yourself with the stop and start session hotkeys if something of note happens in this case."
+Using [b]Entry Count[/b] and [b]Overwrite Entries[/b] is objectively the best option, but may result in lost data/entries if you continue to play and entries are overwritten. Familiarizing yourself with the stop and start session hotkeys is recommended. 
+Start session: Ctrl + Shift + O 
+Stop session: Ctrl + Shift + P"
 
-[node name="Methods & hotkeys" type="MarginContainer" parent="Help/TabContainer"]
+[node name="Methods & Hotkeys" type="MarginContainer" parent="Help/TabContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
 metadata/_tab_index = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Methods & hotkeys"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Methods & Hotkeys"]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="Help/TabContainer/Methods & hotkeys/ScrollContainer"]
+[node name="Panel" type="Panel" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/Methods & hotkeys/ScrollContainer/Panel"]
-custom_minimum_size = Vector2(560, 0)
+[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -929,8 +927,7 @@ theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/Methods & hotkeys/ScrollContainer/Panel/MarginContainer"]
-custom_minimum_size = Vector2(0, 30)
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer/Panel/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -956,28 +953,13 @@ Hotkeys can be changed by navigating to [color=darkgray][i]res://addons/GoLogger
 	[color=violet]Log.[color=cornflowerblue]stop_session()
 		[color=white]Stops a logging session.
 			[color=darkgray][i]Hotkey: Ctrl + Shift + P[/i]
-
-[color=fc4674][b]How to change hotkey binding:[/b][color=white]
-	You can find the shortcut resources in res://addons/GoLogger/. There are 3 hotkeys available:
-		[color=violet]Start Session: [color=white]  Ctrl + Shift + O
-		[color=violet]Save Copy: [color=white]       Ctrl + Shift + U
-		[color=violet]Stop Session: [color=white]  Ctrl + Shift + P
-
-[font_size=16][color=fc4674][b]Signals:[/b][color=turquoise][font_size=14]
-	session_started
-	session_stopped 
-	session_status_changed([color=darkgray]changed_to: bool[color=turquoise]) 
-	session_timer_started 
-	session_timer_stopped 
 	
 "
 
 [node name="More Info" type="MarginContainer" parent="Help/TabContainer"]
 visible = false
 layout_mode = 2
-theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
 metadata/_tab_index = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/More Info"]
