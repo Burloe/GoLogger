@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/GoLogger/Resources/icons/Close.svg" id="3_11ofg"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
+[ext_resource type="StyleBox" uid="uid://4f0tjmydxdih" path="res://addons/GoLogger/Resources/framed_flat_stylebox.tres" id="4_7ntic"]
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
 [ext_resource type="Texture2D" uid="uid://rsgyd2ce2sad" path="res://addons/GoLogger/Resources/icons/VSeparator.svg" id="4_ui2qu"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
@@ -13,18 +14,6 @@
 [sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
 font_size = 12
 font_color = Color(1, 1, 1, 0.352941)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ntic"]
-draw_center = false
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.239216, 0.235294, 0.231373, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
 
 [node name="GoLoggerDock" type="TabContainer"]
 anchors_preset = -1
@@ -139,7 +128,7 @@ layout_mode = 2
 [node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7ntic")
+theme_override_styles/panel = ExtResource("4_7ntic")
 
 [node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel"]
 layout_mode = 1
@@ -287,6 +276,7 @@ text = "user://GoLogger/"
 placeholder_text = "user://GoLogger/"
 alignment = 1
 expand_to_text_length = true
+emoji_menu_enabled = false
 
 [node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
 unique_name_in_owner = true
@@ -391,9 +381,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 1
-tooltip_text = "Used to set what to include in the log header.
-Retreived from Project Settings > Config > Name / Version."
-mouse_filter = 0
 text = " Log Header"
 vertical_alignment = 1
 
@@ -435,8 +422,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
-mouse_filter = 0
 text = " Save Copy canvas layer"
 vertical_alignment = 1
 
@@ -522,9 +507,6 @@ alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
-tooltip_text = "Limits the number of files in any log category folder.
-Setting this to 0 will disable this(use with caution)."
-mouse_filter = 0
 text = "File count limit"
 vertical_alignment = 1
 
@@ -553,9 +535,6 @@ alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
-tooltip_text = "Method used to limit file size. 
-Use the selected Actions below to determine what happens once the method condition is fullfilled."
-mouse_filter = 0
 text = "Limit method"
 vertical_alignment = 1
 
@@ -595,10 +574,6 @@ alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
-tooltip_text = "Action taken when Limit Method is set to Entry Count.
-Overwrite Entries removes the oldest entry as new ones are logged.
-"
-mouse_filter = 0
 text = "Entry Count action"
 vertical_alignment = 1
 
@@ -632,8 +607,6 @@ alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
-tooltip_text = "Action taken when Limit Method is set to Session Timer. "
-mouse_filter = 0
 text = "Session Timer action"
 vertical_alignment = 1
 
@@ -664,8 +637,6 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
-tooltip_text = "Number of entries until the entry count action is triggered."
-mouse_filter = 0
 text = "Entry count limit"
 vertical_alignment = 1
 
@@ -694,8 +665,6 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
-tooltip_text = "The duration of a logging session if Limit method is set to Session Timer."
-mouse_filter = 0
 text = "Session duration"
 vertical_alignment = 1
 
@@ -735,6 +704,7 @@ theme_override_constants/separation = 2
 [node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Sets the level of error reporting."
 alignment = 2
 
 [node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox"]
@@ -746,6 +716,7 @@ text = " Error reporting"
 [node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Sets the level of error reporting."
 selected = 0
 item_count = 4
 popup/item_0/text = "Warnings & Errors"
