@@ -25,9 +25,9 @@ Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 
 
 <p><em>The integer identifier <code>category_index</code> defined after the log entry string dictates which log category (or log file) the entry should be stored in. Each category respectively has their own integer identifier at the top in the dock's Categories tab.</em></p>
 
-<p><img src="https://github.com/user-attachments/assets/5ca86c2b-326b-4897-b954-1df829f986ca" alt="Category Index Showcase"></p>
+<p><img src="https://github.com/user-attachments/assets/5ca86c2b-326b-4897-b954-1df829f986ca" alt="Category Index Showcase" align=center></p>
 
-<p><img src="https://github.com/user-attachments/assets/8f5de66b-3bb0-48d6-9c74-2171b0b7bd1c"></p>
+<p><img src="https://github.com/user-attachments/assets/8f5de66b-3bb0-48d6-9c74-2171b0b7bd1c" align=center></p>
 
 
 
