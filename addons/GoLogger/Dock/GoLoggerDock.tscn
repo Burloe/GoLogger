@@ -492,7 +492,7 @@ theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "Use separator in timestamps"
 
 [node name="ColumnB" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(362, 210)
+custom_minimum_size = Vector2(368, 210)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB"]
@@ -509,6 +509,37 @@ theme_override_constants/margin_right = 6
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 2
+
+[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Limits the number of files in any log category folder.
+Setting this to 0 will disable this(use with caution)."
+alignment = 2
+
+[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/FileCountHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+tooltip_text = "Limits the number of files in any log category folder.
+Setting this to 0 will disable this(use with caution)."
+mouse_filter = 0
+text = "File count limit"
+vertical_alignment = 1
+
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/FileCountHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Limits the number of files in any log category folder.
+Setting this to 0 will disable this(use with caution)."
+max_value = 30.0
+value = 10.0
+alignment = 2
+update_on_text_changed = true
+custom_arrow_step = 1.0
 
 [node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -530,7 +561,7 @@ vertical_alignment = 1
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/LimitMethodHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(148, 0)
+custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -568,12 +599,12 @@ tooltip_text = "Action taken when Limit Method is set to Entry Count.
 Overwrite Entries removes the oldest entry as new ones are logged.
 "
 mouse_filter = 0
-text = "Entry count action"
+text = "Entry Count action"
 vertical_alignment = 1
 
 [node name="EntryActionOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountActionHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(148, 0)
+custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -608,7 +639,7 @@ vertical_alignment = 1
 
 [node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionTimerActionHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(148, 0)
+custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -700,37 +731,6 @@ theme_override_constants/margin_right = 6
 [node name="Column" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 2
-
-[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-tooltip_text = "Limits the number of files in any log category folder.
-Setting this to 0 will disable this(use with caution)."
-alignment = 2
-
-[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/FileCountHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 2
-tooltip_text = "Limits the number of files in any log category folder.
-Setting this to 0 will disable this(use with caution)."
-mouse_filter = 0
-text = " File count limit"
-vertical_alignment = 1
-
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/FileCountHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Limits the number of files in any log category folder.
-Setting this to 0 will disable this(use with caution)."
-max_value = 30.0
-value = 10.0
-alignment = 2
-update_on_text_changed = true
-custom_arrow_step = 1.0
 
 [node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
 unique_name_in_owner = true
