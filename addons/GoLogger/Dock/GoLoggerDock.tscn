@@ -136,7 +136,7 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7ntic")
 
@@ -161,7 +161,7 @@ text = "Columns:"
 
 [node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "5"
@@ -839,73 +839,13 @@ Entries are plain strings, offering flexibility and allowing concatenation with 
 In case an event of note occurs, you can use the save copy feature which allows you to save the active session in a separate file, without needing to stop and start a new session. This creates copies of all categories and is stored in each category's saved_logs folder. 
 This feature is helpful when multiple factors or a history of actions is needed to aid in debugging. If for instance, your have a bug that you know the outcome, like the player clips out of bounds in a certain spot. You can set it up so that a copy gets saved when the player's global position is greater/lower than the out of bounds position. "
 
-[node name="File Limitations" type="MarginContainer" parent="Help/TabContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/margin_top = 6
-metadata/_tab_index = 1
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/File Limitations"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="Help/TabContainer/File Limitations/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel"]
-custom_minimum_size = Vector2(560, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-bbcode_enabled = true
-text = "[font_size=16][color=fc4674]Importance of setting limitations:[color=white]
-[font_size=14]While log file's are very lightweight, generating endless amount of files or logging long sessions is never ideal. GoLogger has a couple of features to do just that. You can disable all of these limitations but do so at your own risk. If you experience micro stuttering or any issues, try turning them on or turning the limitation settings down. 
-
-The default settings are intentionally set to a very low value to reduce the possibility of issues upon installation. You can safely increase them([b]within reason[/b).
-
-[font_size=16][color=fc4674]File Count:[color=white][font_size=14]
-This sets the limit of .log files that are allowed in a category folder. Default limit is 10 and once the limit is hit, the oldest file is overwritten with a new one. 
-[color=darkgray][i]Recommended:[/i]
-[i]Using a file count limit of 10-20 is recommended for general use, but you shouldn't have any issues going higher.[/i]
-
-
-[font_size=16][color=fc4674]Limit Method:[color=white][font_size=14]
-[font_size=14][b]Entry count[/b] - [color=darkgray]Used in combination with Entry Count Action and Entry Count Limit. 
-[color=white]As new ones are logged, entries are counted and once the the Entry Count Limit is reached. 
-	* Overwrite Entries - Overwrites the oldest entries as new ones are added.
-	* Restart Session - Restart the session, creating a new .log file. 
-	* Stop Session - Stops session entirely. Requiring you to manually restart it 	with hotkeys or via code.
-			
-[b]Session timer[/b] - [color=darkgray]Used in combination with Session Timer Action and Session Duration.[color=white]
-Starts a timer with the start of sessions and lasts as long as defined by the Session Duration setting. This is a good option for specific testing. You set the action with the Session Timer Action setting. Session Timer has the signals [color=turquoise]session_timer_started [color=white]and [color=turquoise]session_timer_timeout[color=white] so you can synchronize sessions with a system or feature.
-	* Restart Session - Restart the session, creating a new .log file. 
-	* Stop Session - Stops session entirely. Requiring you to manually restart it with hotkeys or via code.
-		
-[color=darkgray][i]Recommended:
-Using [b]Entry Count[/b] and [b]Overwrite Entries[/b] is objectively the best option, but may result in lost data/entries if you continue to play and entries are overwritten. Familiarizing yourself with the stop and start session hotkeys is recommended. 
-Start session: Ctrl + Shift + O 
-Stop session: Ctrl + Shift + P"
-
 [node name="Methods & Hotkeys" type="MarginContainer" parent="Help/TabContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_top = 6
-metadata/_tab_index = 2
+metadata/_tab_index = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Methods & Hotkeys"]
 layout_mode = 2
@@ -941,7 +881,7 @@ Hotkeys can be changed by navigating to [color=darkgray][i]res://addons/GoLogger
 			[color=darkgray][i]Hotkey: Ctrl + Shift + O[/i]
 
 	[color=violet]Log.[color=cornflowerblue]entry([color=darkgray][i]entry: String, category_index: int = 0[/i][color=cornflowerblue])
-		[color=white]Logs an entry into the defined [i]category_index[/i].
+		[color=white]Logs an entry into the specified [i]category_index[/i].
 			Example: 
 				[color=turquoise]Log[color=white].[color=cornflowerblue]entry([color=lawngreen]\"Player's current health: \"[color=cornflowerblue] + str([color=violet]current_health[color=cornflowerblue]) + [color=lawngreen]\" / \" [color=cornflowerblue]+ str([color=violet]max_health[color=cornflowerblue]), 1)
 
@@ -954,7 +894,73 @@ Hotkeys can be changed by navigating to [color=darkgray][i]res://addons/GoLogger
 		[color=white]Stops a logging session.
 			[color=darkgray][i]Hotkey: Ctrl + Shift + P[/i]
 	
-"
+
+[font_size=16][color=fc4674][b]Signals:[/b][color=white]
+There are four signals available to help you synchronize sessions.[color=palegolderod]
+	session_started
+	session_stopped
+	session_timer_started
+	session_timer_stopped"
+
+[node name="File Limitations" type="MarginContainer" parent="Help/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_top = 6
+metadata/_tab_index = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/File Limitations"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Help/TabContainer/File Limitations/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[font_size=16][color=fc4674]Importance of setting limitations:[color=white]
+[font_size=14]While log file's are very lightweight, generating endless amount of files or logging long sessions is never ideal. GoLogger has a couple of features to do just that. You can disable all of these limitations but do so at your own risk. If you experience micro stuttering or any issues, try turning them on or turning the limitation settings down. 
+
+The default settings are intentionally set to a very low value to reduce the possibility of issues upon installation. You can safely increase them([b]within reason[/b]).
+
+[font_size=16][color=fc4674]File Count:[color=white][font_size=14]
+This sets the limit of .log files that are allowed in a category folder. Default limit is 10 and once the limit is hit, the oldest file is overwritten with a new one. 
+[color=darkgray][i]Recommended:[/i]
+[i]Using a file count limit of 10-20 is recommended for general use, but you shouldn't have any issues going higher.[/i]
+
+
+[font_size=16][color=fc4674]Limit Method:[color=white][font_size=14]
+[font_size=14][b]Entry count[/b] - [color=darkgray]Used in combination with Entry Count Action and Entry Count Limit. 
+[color=white]As new ones are logged, entries are counted and once the the Entry Count Limit is reached. 
+	* Overwrite Entries - Overwrites the oldest entries as new ones are added.
+	* Restart Session - Restart the session, creating a new .log file. 
+	* Stop Session - Stops session entirely. Requiring you to manually restart it 	with hotkeys or via code.
+			
+[b]Session timer[/b] - [color=darkgray]Used in combination with Session Timer Action and Session Duration.[color=white]
+Starts a timer with the start of sessions and lasts as long as defined by the Session Duration setting. This is a good option for specific testing. You set the action with the Session Timer Action setting. Session Timer has the signals [color=turquoise]session_timer_started [color=white]and [color=turquoise]session_timer_timeout[color=white] so you can synchronize sessions with a system or feature.
+	* Restart Session - Restart the session, creating a new .log file. 
+	* Stop Session - Stops session entirely. Requiring you to manually restart it with hotkeys or via code.
+		
+[color=darkgray][i]Recommended:
+Using [b]Entry Count[/b] and [b]Overwrite Entries[/b] is objectively the best option, but may result in lost data/entries if you continue to play and entries are overwritten. Familiarizing yourself with the stop and start session hotkeys is recommended. 
+Start session: Ctrl + Shift + O 
+Stop session: Ctrl + Shift + P"
 
 [node name="More Info" type="MarginContainer" parent="Help/TabContainer"]
 visible = false
@@ -974,10 +980,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -1
 
-[node name="LinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="RepoLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "https://github.com/Burloe/GoLogger"
 text = "Github repository"
-uri = "https://github.com/Burloe/GoLogger/wiki"
+uri = "https://github.com/Burloe/GoLogger"
 
 [node name="Label" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -985,29 +994,24 @@ size_flags_horizontal = 0
 size_flags_vertical = 3
 text = "  -  "
 
-[node name="LinkButton2" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="WikiLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Github Wiki"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
+text = "Wiki contains more in-depth information and resources"
 uri = "https://github.com/Burloe/GoLogger/wiki"
-
-[node name="Label2" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-text = " contains more in-depth information and resources"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -1
 
-[node name="Label" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2"]
+[node name="IssuesLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-text = "Please report issues, make feature requests and post feedback on "
-
-[node name="LinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "issues page"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "https://github.com/Burloe/GoLogger/issues"
+text = "Please report issues!"
 uri = "https://github.com/Burloe/GoLogger/issues"
