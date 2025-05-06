@@ -145,3 +145,8 @@ func _on_del_button_up() -> void:
 		queue_free() 
 		dock.save_categories(true) 
 		category_deleted.emit()
+var current_health
+var max_health
+		
+func _on_player_take_damage(amount) -> void:
+	Log.entry("Player's current health: " + str(current_health) + " / " + str(max_health), 1)

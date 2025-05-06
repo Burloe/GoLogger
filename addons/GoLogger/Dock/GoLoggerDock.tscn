@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=12 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
@@ -6,32 +6,27 @@
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/GoLogger/Resources/icons/Close.svg" id="3_11ofg"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
+[ext_resource type="StyleBox" uid="uid://4f0tjmydxdih" path="res://addons/GoLogger/Resources/framed_flat_stylebox.tres" id="4_7ntic"]
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
 [ext_resource type="Texture2D" uid="uid://rsgyd2ce2sad" path="res://addons/GoLogger/Resources/icons/VSeparator.svg" id="4_ui2qu"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ntic"]
-draw_center = false
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.239216, 0.235294, 0.231373, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
+font_size = 12
+font_color = Color(1, 1, 1, 0.352941)
 
 [node name="GoLoggerDock" type="TabContainer"]
-custom_minimum_size = Vector2(192, 225)
 anchors_preset = -1
-anchor_right = 0.906
-anchor_bottom = 0.233
-offset_right = -0.52002
-offset_bottom = 0.359985
-grow_horizontal = 2
-grow_vertical = 2
+anchor_right = 0.686
+anchor_bottom = 0.281
+offset_right = -0.120117
+offset_bottom = -0.480011
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/side_margin = 8
 current_tab = 1
+all_tabs_in_front = true
+tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
@@ -117,10 +112,23 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 11
 alignment = 2
 
-[node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
-custom_minimum_size = Vector2(250, 0)
+[node name="PluginVersionCatLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7ntic")
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("4_7ntic")
 
 [node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel"]
 layout_mode = 1
@@ -143,13 +151,13 @@ text = "Columns:"
 
 [node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "4"
+tooltip_text = "5"
 min_value = 1.0
 max_value = 10.0
-value = 4.0
+value = 5.0
 
 [node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 visible = false
@@ -171,7 +179,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer"]
-custom_minimum_size = Vector2(0, 132)
+custom_minimum_size = Vector2(0, 115)
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -198,98 +206,79 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 4
-
-[node name="Label" type="Label" parent="Categories/VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "Current .ini setting(size = 2):
-      [[\"game1\", 0, false], [\"player1\", 1, false]]
-Current GridContainer.get_children()[size = 2]:
-      [Panel:<Panel#1846332685425>, @Panel@17348:<Panel#1846752115849>]"
+columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="."]
-custom_minimum_size = Vector2(0, 210)
+custom_minimum_size = Vector2(0, 272)
 layout_mode = 2
 follow_focus = true
+scroll_horizontal_custom_step = 10.0
 metadata/_tab_index = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings"]
-custom_minimum_size = Vector2(1684, 202)
+custom_minimum_size = Vector2(800, 284)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
 
-[node name="Panel" type="Panel" parent="Settings/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer"]
+custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/Panel"]
+[node name="TopBarPanel" type="Panel" parent="Settings/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+theme_override_constants/margin_left = 9
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 9
+theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer"]
 layout_mode = 2
-tooltip_text = "Sets the canvas layer of the save copy popup."
-theme_override_constants/separation = 12
 
-[node name="ColumnA" type="MarginContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 202)
+[node name="BaseDirHBX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+theme_override_constants/separation = 11
 
-[node name="VBox" type="VBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-theme = ExtResource("1_y5prw")
-theme_override_constants/separation = 4
-
-[node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox"]
+[node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
 unique_name_in_owner = true
-modulate = Color(0.615686, 0.619608, 0.627451, 1)
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". "
 mouse_filter = 0
 theme = ExtResource("1_y5prw")
+theme_override_font_sizes/font_size = 14
 text = "Base Directory"
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox"]
+[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(198, 36)
+custom_minimum_size = Vector2(172, 0)
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". "
 theme = ExtResource("1_y5prw")
+theme_override_font_sizes/font_size = 14
 text = "user://GoLogger/"
 placeholder_text = "user://GoLogger/"
 alignment = 1
+expand_to_text_length = true
+emoji_menu_enabled = false
 
-[node name="BaseDirBtnContainer" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 9
-alignment = 1
-
-[node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
+[node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Applies a new base directory"
@@ -297,63 +286,97 @@ theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_font_sizes/font_size = 14
+disabled = true
 text = "Apply"
 icon = ExtResource("8_11ofg")
 
-[node name="BaseDirOpenDirButton" type="Button" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
+[node name="BaseDirOpenDirButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Open the base directory folder using your file browser"
+tooltip_text = "Open the base directory folder using your external file browser"
 theme_override_colors/font_hover_pressed_color = Color(0.73, 0.352347, 0.0219, 1)
 theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-text = "Open Folder"
+theme_override_font_sizes/font_size = 14
 icon = ExtResource("2_6725a")
 
-[node name="BaseDirResetButton" type="Button" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox/BaseDirBtnContainer"]
+[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
+layout_mode = 2
+
+[node name="BaseDirResetButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Reset base directory to default user://GoLogger/"
+tooltip_text = "Reset base directory to default path: user://GoLogger/"
 theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
 theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-text = "Default"
+theme_override_font_sizes/font_size = 14
 icon = ExtResource("3_y66hb")
 
-[node name="Control" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox"]
-custom_minimum_size = Vector2(0, 55)
+[node name="ResetHBX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-
-[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnA/VBox"]
-unique_name_in_owner = true
-modulate = Color(0.9, 0.315, 0.315, 1)
-layout_mode = 2
-tooltip_text = "Resets all settings to the default values."
-text = "Reset Settings to default"
-
-[node name="ColumnB" type="MarginContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(266, 0)
-layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB"]
-layout_mode = 2
-theme_override_constants/separation = -1
-
-[node name="Spacer" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
-custom_minimum_size = Vector2(0, 10)
-layout_mode = 2
-
-[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 16
 alignment = 2
 
-[node name="LogHeaderLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox"]
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
+layout_mode = 2
+
+[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
+unique_name_in_owner = true
+modulate = Color(1, 0.24, 0.24, 1)
+layout_mode = 2
+tooltip_text = "Resets all settings."
+text = "Reset to default"
+
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ColumnA" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(323, 210)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Used to set what to include in the log header.
+Retreived from Project Settings > Config > Name / Version."
+alignment = 2
+
+[node name="LogHeaderLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/LogHeaderHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -361,13 +384,13 @@ size_flags_vertical = 1
 text = " Log Header"
 vertical_alignment = 1
 
-[node name="LogHeaderOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer/LogHeaderHBox"]
+[node name="LogHeaderOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/LogHeaderHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "Used to set what to include in the log header.
-Retreived from Project Settings > Config > Name / Version"
+Retreived from Project Settings > Config > Name / Version."
 theme = ExtResource("1_y5prw")
 alignment = 2
 selected = 0
@@ -385,46 +408,45 @@ popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
 
-[node name="Spacer2" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
-custom_minimum_size = Vector2(0, 8)
+[node name="Spacer" type="Control" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
+[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
 alignment = 2
 
-[node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox"]
+[node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/CanvasLayerHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = " Save copy popup canvas layer"
+text = " Save Copy canvas layer"
 vertical_alignment = 1
 
-[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer/CanvasLayerHBox"]
+[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/CanvasLayerHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "Save copy"
+tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
 value = 5.0
 rounded = true
-alignment = 2
 update_on_text_changed = true
 prefix = "Layer"
 
-[node name="AutostartCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
+[node name="AutostartCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-tooltip_text = "Autostarts session at runtime"
+tooltip_text = "Autostarts session at runtime."
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "Autostart session"
 
-[node name="TimestampEntriesButton" type="CheckButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
+[node name="TimestampEntriesButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -434,7 +456,7 @@ theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "Timestamp log entries"
 
-[node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
+[node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -443,51 +465,87 @@ theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "UTC time"
 
-[node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnB/VBoxContainer"]
+[node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-tooltip_text = "Adds a dash separator in date- and timestamps(yy-mm-dd_hh-mm-ss)."
+tooltip_text = "Adds a dash separator in date- and timestamps.
+With - (yy-mm-dd_hh-mm-ss)
+Without - (yymmdd_hhmmss)"
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "Use separator in timestamps"
 
-[node name="ColumnC" type="MarginContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC"]
-layout_mode = 2
-theme_override_constants/separation = 3
-
-[node name="Spacer" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
-custom_minimum_size = Vector2(0, 5)
+[node name="ColumnB" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(368, 210)
 layout_mode = 2
 
-[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 75
+size_flags_vertical = 4
+tooltip_text = "Limits the number of files in any log category folder.
+Setting this to 0 will disable this(use with caution)."
 alignment = 2
 
-[node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/LimitMethodHBox"]
+[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/FileCountHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
-text = "Limit method"
+size_flags_horizontal = 2
+text = "File count limit"
 vertical_alignment = 1
 
-[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/LimitMethodHBox"]
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/FileCountHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(148, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "Method used to limit file size. Use the selected Actions below to determine what happens once the method condition is fullfilled."
+tooltip_text = "Limits the number of files in any log category folder.
+Setting this to 0 will disable this(use with caution)."
+max_value = 30.0
+value = 10.0
+alignment = 2
+update_on_text_changed = true
+custom_arrow_step = 1.0
+
+[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Method used to limit file size. 
+Use the selected Actions below to determine what happens once the method condition is fullfilled."
+theme_override_constants/separation = 75
+alignment = 2
+
+[node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/LimitMethodHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Limit method"
+vertical_alignment = 1
+
+[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/LimitMethodHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(168, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Method used to limit file size. 
+Use the selected Actions below to determine what happens once the method condition is fullfilled."
 selected = 0
 allow_reselect = true
 item_count = 5
@@ -503,26 +561,29 @@ popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
 
-[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
+[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Action taken when Limit Method is set to Entry Count.
+Overwrite Entries removes the oldest entry as new ones are logged.
+"
 theme_override_constants/separation = 44
 alignment = 2
 
-[node name="EntryActionLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/EntryCountActionHBox"]
+[node name="EntryActionLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountActionHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
-text = "Entry count action"
+size_flags_horizontal = 2
+text = "Entry Count action"
 vertical_alignment = 1
 
-[node name="EntryActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/EntryCountActionHBox"]
+[node name="EntryActionOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountActionHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(148, 0)
+custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "Action taken when Limit Method is set to Entry Count. 
+tooltip_text = "Action taken when Limit Method is set to Entry Count.
 Overwrite Entries removes the oldest entry as new ones are logged.
 "
 selected = 0
@@ -535,22 +596,23 @@ popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
 
-[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
+[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 theme_override_constants/separation = 28
 alignment = 2
 
-[node name="SessionTimerActionLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/SessionTimerActionHBox"]
+[node name="SessionTimerActionLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionTimerActionHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 2
 text = "Session Timer action"
 vertical_alignment = 1
 
-[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/SessionTimerActionHBox"]
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionTimerActionHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(148, 0)
+custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -563,21 +625,22 @@ popup/item_0/id = 0
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
+[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Number of entries until the entry count action is triggered."
 theme_override_constants/separation = 119
 alignment = 2
 
-[node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/EntryCountHBox"]
+[node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 2
 text = "Entry count limit"
 vertical_alignment = 1
 
-[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/EntryCountHBox"]
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -590,21 +653,22 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 10.0
 
-[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer"]
+[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "The duration of a logging session if Limit method is set to Session Timer."
 theme_override_constants/separation = 117
 alignment = 2
 
-[node name="SessionDurationLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/SessionDurationHBox"]
+[node name="SessionDurationLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionDurationHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 2
 text = "Session duration"
 vertical_alignment = 1
 
-[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnC/VBoxContainer/SessionDurationHBox"]
+[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionDurationHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -618,97 +682,307 @@ suffix = "sec"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="ColumnD" type="MarginContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="Column" type="VBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD"]
-layout_mode = 2
-theme_override_constants/separation = 3
-
-[node name="Spacer" type="Control" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column"]
-custom_minimum_size = Vector2(0, 5)
+[node name="ColumnC" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(323, 210)
 layout_mode = 2
 
-[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column"]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+
+[node name="Column" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-theme_override_constants/separation = 90
+tooltip_text = "Sets the level of error reporting."
 alignment = 2
 
-[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column/FileCountHBox"]
+[node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
-text = "File count limit"
-vertical_alignment = 1
+size_flags_horizontal = 3
+text = " Error reporting"
 
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column/FileCountHBox"]
+[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Limits the number of files in any log category folder. 
-Setting this to 0 will disable this(use with caution)."
-max_value = 30.0
-value = 10.0
-alignment = 2
-update_on_text_changed = true
-custom_arrow_step = 1.0
-
-[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_constants/separation = 21
-alignment = 2
-
-[node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column/ErrorRepHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Error reporting"
-vertical_alignment = 1
-
-[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column/ErrorRepHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Determines how you want GoLogger to report errors and warnings.
-'Warnings only' coverts non-critical errors into warnings.
-'None' disables all warnings and errors except for critical errors. "
-alignment = 2
+tooltip_text = "Sets the level of error reporting."
 selected = 0
-allow_reselect = true
 item_count = 4
 popup/item_0/text = "Warnings & Errors"
 popup/item_0/id = 0
-popup/item_1/text = "Warnings Only"
+popup/item_1/text = "Errors only"
 popup/item_1/id = 1
-popup/item_2/id = 3
+popup/item_2/id = 2
 popup/item_2/disabled = true
 popup/item_2/separator = true
 popup/item_3/text = "None"
-popup/item_3/id = 2
+popup/item_3/id = 3
 
-[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column"]
+[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enables the 'Failed to start log session without stopping the previous session' warning. "
 theme = ExtResource("1_y5prw")
 button_pressed = true
-text = "    Failed to start session"
+text = "Failed to start session"
 
-[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/Panel/MarginContainer/HBoxContainer/ColumnD/Column"]
+[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enables the 'Failed to log entry due to no session being active' warning."
 theme = ExtResource("1_y5prw")
 button_pressed = true
-text = "    Failed to log entry"
+text = "Failed to log entry"
+
+[node name="Help" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_bottom = 6
+metadata/_tab_index = 2
+
+[node name="TabContainer" type="TabContainer" parent="Help"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Getting Started" type="MarginContainer" parent="Help/TabContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_top = 6
+metadata/_tab_index = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Getting Started"]
+layout_mode = 2
+scroll_vertical_custom_step = 20.0
+
+[node name="Panel" type="Panel" parent="Help/TabContainer/Getting Started/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/Getting Started/ScrollContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/Getting Started/ScrollContainer/Panel/MarginContainer"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[font_size=16][color=fc4674]Setup:[font_size=14][color=white]
+Using the default categories and settings will allow you to start logging instantly. You're setup with two log categories for 'game' and 'errors' by default with category index 0 and 1 respectively. Use the Category tab to add, remove and rename categories.
+	Note that GoLogger uses an autoload [b]Log[/b] in order for its method's are accessible in all scenes and scripts.
+
+[font_size=16][color=fc4674]Sessions:[font_size=14][color=white]
+'Sessions' are used to determine when the plugin is actively logging or not. Sessions can be stopped and started at runtime anytime using hotkeys or through code. Session autostarts by default when running your project(can be disabled in the Settings tab).
+
+[font_size=16][color=fc4674]Categories:[font_size=14][color=white]
+Each category in the category tab adds a folder inside the base directory and when a session is started. A .log file is created with the date- and timestamp, and category name. 
+	Each category has an assigned [color=violet]category_index[color=white] that is used to identify which category the entry is logged into. These can be changed and reordered in the category tab but it is recommended to try and change the indices as little as possible. Just beware that you need to use find & replace to update indices in your code as well.
+
+[font_size=16][color=fc4674]Entries:[font_size=14][color=white]
+Entries are plain strings, offering flexibility and allowing concatenation with any data that can be converted to a string. Entries can be as simple or detailed as you want.
+
+[font_size=16][color=fc4674]Save Copy:[font_size=14][color=white]
+In case an event of note occurs, you can use the save copy feature which allows you to save the active session in a separate file, without needing to stop and start a new session. This creates copies of all categories and is stored in each category's saved_logs folder. 
+This feature is helpful when multiple factors or a history of actions is needed to aid in debugging. If for instance, your have a bug that you know the outcome, like the player clips out of bounds in a certain spot. You can set it up so that a copy gets saved when the player's global position is greater/lower than the out of bounds position. "
+
+[node name="Methods & Hotkeys" type="MarginContainer" parent="Help/TabContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_top = 6
+metadata/_tab_index = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Methods & Hotkeys"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer/Panel/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[font_size=16][color=fc4674][b]Methods:[/b][color=white]
+[font_size=14]All methods are accessible using the [color=violet]Log [color=white]autoload. 
+Hotkeys can be changed by navigating to [color=darkgray][i]res://addons/GoLogger/[/i][color=white], where you'll find the shortcut resources.
+
+	[color=violet]Log.[color=cornflowerblue]start_session()
+		[color=white]Starts a logging session, creating new .log files and allowing for entries to be logged.
+			[color=darkgray][i]Hotkey: Ctrl + Shift + O[/i]
+
+	[color=violet]Log.[color=cornflowerblue]entry([color=darkgray][i]entry: String, category_index: int = 0[/i][color=cornflowerblue])
+		[color=white]Logs an entry into the specified [i]category_index[/i].
+			Example: 
+				[color=turquoise]Log[color=white].[color=cornflowerblue]entry([color=lawngreen]\"Player's current health: \"[color=cornflowerblue] + str([color=violet]current_health[color=cornflowerblue]) + [color=lawngreen]\" / \" [color=cornflowerblue]+ str([color=violet]max_health[color=cornflowerblue]), 1)
+
+	[color=violet]Log.[color=cornflowerblue]save_copy([color=darkgray][i]copy_name: String = \"\"[/i][color=cornflowerblue])
+		[color=white]Creates a copy of the active session in its current state. Calling this without 
+		naming it will bring up a popup in-game that prompts you to enter a name.
+			[color=darkgray][i]Hotkey: Ctrl + Shift + U[/i]
+
+	[color=violet]Log.[color=cornflowerblue]stop_session()
+		[color=white]Stops a logging session.
+			[color=darkgray][i]Hotkey: Ctrl + Shift + P[/i]
+	
+
+[font_size=16][color=fc4674][b]Signals:[/b][color=white]
+There are four signals available to help you synchronize sessions.[color=palegolderod]
+	session_started
+	session_stopped
+	session_timer_started
+	session_timer_stopped"
+
+[node name="File Limitations" type="MarginContainer" parent="Help/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_top = 6
+metadata/_tab_index = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/File Limitations"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Help/TabContainer/File Limitations/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[font_size=16][color=fc4674]Importance of setting limitations:[color=white]
+[font_size=14]While log file's are very lightweight, generating endless amount of files or logging long sessions is never ideal. GoLogger has a couple of features to do just that. You can disable all of these limitations but do so at your own risk. If you experience micro stuttering or any issues, try turning them on or turning the limitation settings down. 
+
+The default settings are intentionally set to a very low value to reduce the possibility of issues upon installation. You can safely increase them([b]within reason[/b]).
+
+[font_size=16][color=fc4674]File Count:[color=white][font_size=14]
+This sets the limit of .log files that are allowed in a category folder. Default limit is 10 and once the limit is hit, the oldest file is overwritten with a new one. 
+[color=darkgray][i]Recommended:[/i]
+[i]Using a file count limit of 10-20 is recommended for general use, but you shouldn't have any issues going higher.[/i]
+
+
+[font_size=16][color=fc4674]Limit Method:[color=white][font_size=14]
+[font_size=14][b]Entry count[/b] - [color=darkgray]Used in combination with Entry Count Action and Entry Count Limit. 
+[color=white]As new ones are logged, entries are counted and once the the Entry Count Limit is reached. 
+	* Overwrite Entries - Overwrites the oldest entries as new ones are added.
+	* Restart Session - Restart the session, creating a new .log file. 
+	* Stop Session - Stops session entirely. Requiring you to manually restart it 	with hotkeys or via code.
+			
+[b]Session timer[/b] - [color=darkgray]Used in combination with Session Timer Action and Session Duration.[color=white]
+Starts a timer with the start of sessions and lasts as long as defined by the Session Duration setting. This is a good option for specific testing. You set the action with the Session Timer Action setting. Session Timer has the signals [color=turquoise]session_timer_started [color=white]and [color=turquoise]session_timer_timeout[color=white] so you can synchronize sessions with a system or feature.
+	* Restart Session - Restart the session, creating a new .log file. 
+	* Stop Session - Stops session entirely. Requiring you to manually restart it with hotkeys or via code.
+		
+[color=darkgray][i]Recommended:
+Using [b]Entry Count[/b] and [b]Overwrite Entries[/b] is objectively the best option, but may result in lost data/entries if you continue to play and entries are overwritten. Familiarizing yourself with the stop and start session hotkeys is recommended. 
+Start session: Ctrl + Shift + O 
+Stop session: Ctrl + Shift + P"
+
+[node name="More Info" type="MarginContainer" parent="Help/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_top = 6
+metadata/_tab_index = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/More Info"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -1
+
+[node name="RepoLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "https://github.com/Burloe/GoLogger"
+text = "Github repository"
+uri = "https://github.com/Burloe/GoLogger"
+
+[node name="Label" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+text = "  -  "
+
+[node name="WikiLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
+text = "Wiki contains more in-depth information and resources"
+uri = "https://github.com/Burloe/GoLogger/wiki"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -1
+
+[node name="IssuesLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "https://github.com/Burloe/GoLogger/issues"
+text = "Please report issues!"
+uri = "https://github.com/Burloe/GoLogger/issues"
