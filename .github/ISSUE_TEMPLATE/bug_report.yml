@@ -4,7 +4,7 @@ description: Create a report to help improve GoLogger
 body:
   - type: markdown
     attributes:
-      value: "Basic troubleshooting steps to try:<br> * Delete `settings.ini` in `user://GoLogger/settings.ini`. <br> * Uninstall GoLogger. Make sure to delete the classes created by the plugin in `global_script_class_cache.cfg`(found in `res://.godot/global_script_class_cache.cfg`, I think it's just `LogCategory`). Then restart Godot and reinstall the plugin."
+      value: "<br>Basic troubleshooting steps to try:<br> * Delete `settings.ini` in `user://GoLogger/settings.ini`. <br> * Uninstall GoLogger. Make sure to delete the classes created by the plugin in `global_script_class_cache.cfg`(found in `res://.godot/global_script_class_cache.cfg`, I think it's just `LogCategory`). Then restart Godot and reinstall the plugin.<br><br>"
   - type: markdown
     attributes:
       value: |
@@ -35,4 +35,5 @@ body:
     validations:
       placeholder: Describe the expected behavior
       required: false
+
 
