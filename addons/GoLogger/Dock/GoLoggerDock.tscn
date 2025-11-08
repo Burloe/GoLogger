@@ -24,7 +24,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 0
+current_tab = 2
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -32,6 +32,7 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -334,10 +335,9 @@ layout_mode = 2
 
 [node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
 unique_name_in_owner = true
-modulate = Color(1, 0.24, 0.24, 1)
 layout_mode = 2
-tooltip_text = "Resets all settings."
-text = "Reset to default"
+tooltip_text = "Resets all settings to default"
+text = "Reset"
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -418,7 +418,7 @@ alignment = 2
 [node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/CanvasLayerHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 2
 size_flags_vertical = 1
 text = " Save Copy canvas layer"
 vertical_alignment = 1
@@ -442,7 +442,7 @@ tooltip_text = "Autostarts session at runtime."
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
-text = "Autostart session"
+text = "  Autostart session"
 
 [node name="TimestampEntriesButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -452,7 +452,7 @@ tooltip_text = "Entries inside the .log files are timestamped."
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
-text = "Timestamp log entries"
+text = "  Timestamp log entries"
 
 [node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -461,7 +461,7 @@ layout_mode = 2
 tooltip_text = "Uses UTC as opposed to the local system time when timestamping files and entries."
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
-text = "UTC time"
+text = "  UTC time"
 
 [node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -472,7 +472,7 @@ With - (yy-mm-dd_hh-mm-ss)
 Without - (yymmdd_hhmmss)"
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
-text = "Use separator in timestamps"
+text = "  Use separator in timestamps"
 
 [node name="ColumnB" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(368, 210)
@@ -708,7 +708,7 @@ alignment = 2
 [node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 2
 text = " Error reporting"
 
 [node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox"]
@@ -733,7 +733,7 @@ layout_mode = 2
 tooltip_text = "Enables the 'Failed to start log session without stopping the previous session' warning. "
 theme = ExtResource("1_y5prw")
 button_pressed = true
-text = "Failed to start session"
+text = "  Failed to start session"
 
 [node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
 unique_name_in_owner = true
@@ -741,11 +741,10 @@ layout_mode = 2
 tooltip_text = "Enables the 'Failed to log entry due to no session being active' warning."
 theme = ExtResource("1_y5prw")
 button_pressed = true
-text = "Failed to log entry"
+text = "  Failed to log entry"
 
 [node name="Help" type="MarginContainer" parent="."]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
@@ -755,9 +754,10 @@ metadata/_tab_index = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 1
 
 [node name="Getting Started" type="MarginContainer" parent="Help/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -791,26 +791,29 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Setup:[font_size=14][color=white]
-Using the default categories and settings will allow you to start logging instantly. You're setup with two log categories for 'game' and 'errors' by default with category index 0 and 1 respectively. Use the Category tab to add, remove and rename categories.
+GoLogger works immediately with the default configuration. Two log categories are available by default: game(index 0) and errors(index 1).
+Use the Category tab to add, remove, or rename categories.
 
-[i]Note that GoLogger uses an autoload [b]Log[/b] in order for its method's are accessible in all scenes and scripts.[/i]
+[i]GoLogger uses an autoload [b]Log[/b] singleton, making its methods accessible from all scenes and scripts.[/i]
 
 [font_size=16][color=fc4674]Sessions:[font_size=14][color=white]
-'Sessions' are used to determine when the plugin is actively logging or not. Sessions can be stopped and started at runtime anytime using hotkeys or through code. Session autostarts by default when running your project(can be disabled in the Settings tab).
+A session defines when logging is active. Sessions can be started or stopped at any time using hotkeys or through code.
+By default, a session starts automatically when the project runs (this can be disabled in the Settings tab).
 
 [font_size=16][color=fc4674]Categories:[font_size=14][color=white]
-Each category in the category tab adds a folder inside the base directory and when a session is started. A .log file is created with the date- and timestamp, and category name. 
-Each category has an assigned [color=violet]category_index[color=white] that is used to identify which category the entry is logged into. These can be changed and reordered in the category tab but it is recommended to try and change the indices as little as possible. Just beware that you need to use find & replace to update indices in your code as well.
+Each category in the Category tab corresponds to a folder in the base directory. When a session starts, a .log file is created inside that folder, named with the date, timestamp, and category.
+
+Each category has a [color=violet]category_index[color=white] used to determine where entries are logged. Indices can be changed or reordered in the Category tab, but doing so may require updating index references in your code.
 
 [font_size=16][color=fc4674]Entries:[font_size=14][color=white]
-Entries are plain strings, offering flexibility and allowing concatenation with any data that can be converted to a string. Entries can be as simple or detailed as you want.
+Entries are plain text strings. They can include any data that can be converted to a string, allowing flexible and descriptive logging.
 
 [font_size=16][color=fc4674]Save Copy:[font_size=14][color=white]
-In case an event of note occurs, you can use the save copy feature which allows you to save the active session in a separate file, without needing to stop and start a new session. This creates copies of all categories and is stored in each category's saved_logs folder. 
-This feature is helpful when multiple factors or a history of actions is needed to aid in debugging. If for instance, your have a bug that you know the outcome, like the player clips out of bounds in a certain spot. You can set it up so that a copy gets saved when the player's global position is greater/lower than the out of bounds position. "
+The Save Copy feature creates a copy of the active session without stopping it. This saves the current logs for all categories into their respective saved_logs folders.
+
+This feature is useful for capturing logs at specific moments, such as when a known bug occurs or when logged data is needed to be preserved at the moment of occurance for debugging."
 
 [node name="Methods & Hotkeys" type="MarginContainer" parent="Help/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -842,31 +845,31 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=16][color=fc4674][b]Methods:[/b][color=white]
-[font_size=14]All methods are accessible using the [color=violet]Log [color=white]autoload. 
-Hotkeys can be changed by navigating to [color=darkgray][i]res://addons/GoLogger/[/i][color=white], where you'll find the shortcut resources.
+text = "[font_size=16][color=fc4674]Methods:[color=white]
+[font_size=14]All methods are accessible through the [color=violet]Log[color=white] autoload.
+Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GoLogger/[/i][color=white], where the shortcut resources are located.
 
-	[color=violet]Log.[color=cornflowerblue]start_session()
-		[color=white]Starts a logging session, creating new .log files and allowing for entries to be logged.
-			[color=darkgray][i]Hotkey: Ctrl + Shift + O[/i]
+	[color=violet]Log.[color=cornflowerblue]start_session()[color=white]  
+	Starts a logging session, creating new .log files and enabling entry logging.  
+	[color=darkgray][i]Hotkey: Ctrl + Shift + O[/i]  
 
-	[color=violet]Log.[color=cornflowerblue]entry([color=darkgray][i]entry: String, category_index: int = 0[/i][color=cornflowerblue])
-		[color=white]Logs an entry into the specified [i]category_index[/i].
-			Example: 
-				[color=turquoise]Log[color=white].[color=cornflowerblue]entry([color=lawngreen]\"Player's current health: \"[color=cornflowerblue] + str([color=violet]current_health[color=cornflowerblue]) + [color=lawngreen]\" / \" [color=cornflowerblue]+ str([color=violet]max_health[color=cornflowerblue]), 1)
+	[color=violet]Log.[color=cornflowerblue]entry([color=darkgray][i]entry: String, category_index: int = 0[/i][color=cornflowerblue])[color=white]  
+	Logs an entry into the specified [i]category_index[/i].  
+	Example:  
+		[color=turquoise]Log[color=white].[color=cornflowerblue]entry([color=lawngreen]\"Player's current health: \"[color=cornflowerblue] + str([color=violet]current_health[color=cornflowerblue]) + [color=lawngreen]\" / \"[color=cornflowerblue] + str([color=violet]max_health[color=cornflowerblue]), 1)  
 
-	[color=violet]Log.[color=cornflowerblue]save_copy([color=darkgray][i]copy_name: String = \"\"[/i][color=cornflowerblue])
-		[color=white]Creates a copy of the active session in its current state. Calling this without 
-		naming it will bring up a popup in-game that prompts you to enter a name.
-			[color=darkgray][i]Hotkey: Ctrl + Shift + U[/i]
+	[color=violet]Log.[color=cornflowerblue]save_copy([color=darkgray][i]copy_name: String = \"\"[/i][color=cornflowerblue])[color=white]  
+	Creates a copy of the current session in its active state. If no name is provided, an in-game popup prompts for one.  
+		[color=darkgray][i]Hotkey: Ctrl + Shift + U[/i]  
 
-	[color=violet]Log.[color=cornflowerblue]stop_session()
-		[color=white]Stops a logging session.
-			[color=darkgray][i]Hotkey: Ctrl + Shift + P[/i]
+	[color=violet]Log.[color=cornflowerblue]stop_session()[color=white]  
+	Stops the active logging session.  
+		[color=darkgray][i]Hotkey: Ctrl + Shift + P[/i]  
+
 	
 
 [font_size=16][color=fc4674][b]Signals:[/b][color=white]
-There are four signals available to help you synchronize sessions.[color=palegolderod]
+There are two signals available to help you synchronize sessions with game logic.[color=palegolderod]
 	session_started
 	session_stopped"
 
@@ -902,30 +905,37 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=16][color=fc4674]Importance of setting limitations:[color=white]
-[font_size=14]While log files are very lightweight, generating an endless amount of files or logging long sessions is never ideal. GoLogger has a couple of features to do just that. You can disable all of these limitations, but do so at your own risk. If you experience micro-stuttering or any issues, try turning them on or lowering the limitation settings.
+text = "[font_size=16][color=fc4674]Setting Limitations:[color=white]
+[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is not recommended. GoLogger includes several features to control logging behavior. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
 
-The default settings are intentionally set to very low values to reduce the possibility of issues upon installation. You can safely increase them ([b]within reason[/b]).
+The default settings are intentionally conservative to minimize potential issues after installation. You can safely increase them within reasonable bounds.
 
 [font_size=16][color=fc4674]File Count:[color=white][font_size=14]
-This sets the limit on the number of .log files that are allowed in a category folder. The default limit is 10, and once the limit is reached, the oldest file is overwritten with a new one.
+This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one.
 [color=darkgray][i]Recommended:[/i]
-[i]Using a file count limit of 10–20 is recommended for general use, but you shouldn’t have any issues going higher.[/i]
+[i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported.[/i]
 
 [font_size=16][color=fc4674]Limit Method:[color=white][font_size=14]
-[font_size=14][b]Entry count[/b] - [color=darkgray]Used in combination with Entry Count Action and Entry Count Limit.[color=white]
-As new ones are logged, entries are counted, and once the Entry Count Limit is reached:
-* Overwrite Entries - Overwrites the oldest entries as new ones are added.
-* Restart Session - Restarts the session, creating a new .log file.
-* Stop Session - Stops the session entirely, requiring you to manually restart it with hotkeys or via code.
+[color=white]Two methods are available for controlling session limits.
 
-[b]Session timer[/b] - [color=darkgray]Used in combination with Session Timer Action and Session Duration.[color=white]
-Starts a timer at the beginning of a session and lasts as long as defined by the Session Duration setting. This is a good option for specific testing. You set the action with the Session Timer Action setting. Session Timer has the signals [color=turquoise]session_started[color=white] and [color=turquoise]session_stopped[color=white], allowing you to synchronize sessions with a system or feature.
-* Restart Session - Restarts the session, creating a new .log file.
-* Stop Session - Stops the session entirely, requiring you to manually restart it with hotkeys or via code.
+[color=white][font_size=16][b]Entry count[/b][font_size=14] – [color=darkgray]Used with Entry Count Action and Entry Count Limit.[color=white]
+As new entries are logged, they are counted, and once the limit is reached, one of the following actions is triggered:
+
+Overwrite Entries – Replaces the oldest entries as new ones are added.
+
+Restart Session – Ends the current session and starts a new one, creating a new .log file.
+
+Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
+
+[color=white][font_size=16][b]Session timer[/b][font_size=14] – [color=darkgray]Used with Session Timer Action and Session Duration.[color=white]
+Starts a timer at the beginning of a session and runs for the duration specified in the Session Duration setting. This method is useful for time-based testing. The Session Timer emits the signals [color=turquoise]session_started[color=white] and [color=turquoise]session_stopped[color=white], which can be used to synchronize with other systems or features.
+
+Restart Session – Ends the current session and starts a new one, creating a new .log file.
+
+Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
 
 [color=darkgray][i]Recommended:[/i]
-[i]Using [b]Entry Count[/b] and [b]Overwrite Entries[/b] is objectively the best option but may result in lost data or entries if you continue to play and entries are overwritten. Familiarizing yourself with the start and stop session hotkeys is recommended.[/i]
+[i]Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed.[/i]
 [i]Start session: Ctrl + Shift + O[/i]
 [i]Stop session: Ctrl + Shift + P[/i]"
 
