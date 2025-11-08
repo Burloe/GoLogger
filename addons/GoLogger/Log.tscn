@@ -109,6 +109,3 @@ layout_mode = 2
 theme = ExtResource("5_e13q5")
 bbcode_enabled = true
 text = "[outline_size=8][center][color=#e84346][pulse freq=4.0 color=#ffffffa1 ease=-1.0]Error attempting to open file: [/pulse]"
-
-[connection signal="button_up" from="GoLoggerElements/Popup/VBoxContainer/HBoxContainer/PopupYesButton" to="." method="_on_yes_button_button_up"]
-[connection signal="button_up" from="GoLoggerElements/Popup/VBoxContainer/HBoxContainer/PopupNoButton" to="." method="_on_no_button_button_up"]

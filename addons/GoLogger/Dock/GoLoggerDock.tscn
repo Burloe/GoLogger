@@ -872,9 +872,7 @@ Hotkeys can be changed by navigating to [color=darkgray][i]res://addons/GoLogger
 [font_size=16][color=fc4674][b]Signals:[/b][color=white]
 There are four signals available to help you synchronize sessions.[color=palegolderod]
 	session_started
-	session_stopped
-	session_timer_started
-	session_timer_stopped"
+	session_stopped"
 
 [node name="File Limitations" type="MarginContainer" parent="Help/TabContainer"]
 visible = false

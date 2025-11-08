@@ -1,14 +1,14 @@
 @tool
 extends TabContainer
 
-signal update_index 
+signal update_index
 
-#region Category tab 
+#region Category tab
 ## Add category [Button]. Instantiates a [param category_scene] and adds it as a child of [param category_container].
 @onready var add_category_btn: Button = %AddCategoryButton
 ## Category [GridContainer] node. Holds all the LogCategory nodes that represent each category.
 @onready var category_container: GridContainer = %CategoryGridContainer
-## Open directory [Button] node. Opens the [param base_directory] folder using the OS file explorer. 
+## Open directory [Button] node. Opens the [param base_directory] folder using the OS file explorer.
 @onready var open_dir_btn: Button = %OpenDirCatButton
 ## Reset to default categories [Button] node. Removes all existing categories and adds "game" and "player" categories.
 @onready var defaults_btn: Button = %DefaultsCatButton
@@ -30,10 +30,10 @@ const PATH = "user://GoLogger/settings.ini"
 #region Settings tab
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
-@onready var base_dir_line: LineEdit = %BaseDirLineEdit 
+@onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_apply_btn: Button = %BaseDirApplyButton
 @onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
-@onready var base_dir_reset_btn: Button = %BaseDirResetButton 
+@onready var base_dir_reset_btn: Button = %BaseDirResetButton
 
 @onready var log_header_btn: OptionButton = %LogHeaderOptButton
 @onready var log_header_container: HBoxContainer = %LogHeaderHBox
@@ -43,7 +43,7 @@ var log_header_string: String
 var canvas_spinbox_line: LineEdit
 @onready var canvas_layer_spinbox: SpinBox = %CanvasLayerSpinBox
 @onready var canvas_layer_lbl: Label = %CanvasLayerLabel
-@onready var canvas_layer_container: HBoxContainer = %CanvasLayerHBox 
+@onready var canvas_layer_container: HBoxContainer = %CanvasLayerHBox
 
 
 @onready var autostart_btn: CheckButton = %AutostartCheckButton
@@ -56,11 +56,11 @@ var canvas_spinbox_line: LineEdit
 @onready var limit_method_lbl: Label = %LimitMethodLabel
 @onready var limit_method_container: HBoxContainer = %LimitMethodHBox
 
-@onready var entry_count_action_btn: OptionButton = %EntryActionOptButton 
+@onready var entry_count_action_btn: OptionButton = %EntryActionOptButton
 @onready var entry_count_action_lbl: Label = %EntryActionLabel
 @onready var entry_count_action_container: HBoxContainer = %EntryCountActionHBox
 
-@onready var session_timer_action_btn: OptionButton = %SessionTimerActionOptButton 
+@onready var session_timer_action_btn: OptionButton = %SessionTimerActionOptButton
 @onready var session_timer_action_lbl: Label = %SessionTimerActionLabel
 @onready var session_timer_action_container: HBoxContainer = %SessionTimerActionHBox
 
@@ -84,14 +84,14 @@ var session_duration_spinbox_line: LineEdit
 @onready var error_rep_container: HBoxContainer = %ErrorRepHBox
 
 @onready var disable_warn1_btn: CheckButton = %DisableWarn1CheckButton
-@onready var disable_warn2_btn: CheckButton = %DisableWarn2CheckButton 
+@onready var disable_warn2_btn: CheckButton = %DisableWarn2CheckButton
 
 @onready var plugin_version_cat_lbl: Label = %PluginVersionCatLabel
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
 
 var plugin_version: String =  "1.3.1":
-	set(value): 
+	set(value):
 		plugin_version = value
 		if plugin_version_cat_lbl != null:
 			plugin_version_cat_lbl.text = str("GoLogger v.", value)
@@ -99,20 +99,20 @@ var plugin_version: String =  "1.3.1":
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
 var btn_array: Array[Control] = [] ## Reference array of all interactive settings elements
 var container_array: Array[Control] = [] ## Reference array of all the containers that hold the settings elements
-var c_font_normal := Color("9d9ea0") 
-var c_font_hover := Color("f2f2f2") 
-#endregion 
+var c_font_normal := Color("9d9ea0")
+var c_font_hover := Color("f2f2f2")
+#endregion
 
 
 
-func _ready() -> void: 
+func _ready() -> void:
 	if Engine.is_editor_hint():
 		# Ensure or create settings.ini
 		var _d = DirAccess.open("user://GoLogger/")
 		if !_d:
 			_d = DirAccess.open(".")
 			DirAccess.make_dir_absolute("user://GoLogger/")
-		
+
 		if !FileAccess.file_exists(PATH):
 			create_settings_file()
 		else:
@@ -131,8 +131,7 @@ func _ready() -> void:
 		# Load categories as saved in settings.ini
 		load_categories()
 
-		#region Connect dock signals
-		reset_settings_btn.button_up.connect(reset_to_default.bind(1)) 
+		reset_settings_btn.button_up.connect(reset_to_default.bind(1))
 
 
 		btn_array = [
@@ -156,24 +155,24 @@ func _ready() -> void:
 			disable_warn1_btn,
 			disable_warn2_btn
 		]
-		
+
 		for i in range(btn_array.size()):
 			# Connect signal of each type that performs the action of the button
 			if btn_array[i] is Button:
 				if btn_array[i].button_up.is_connected(_on_button_button_up):
 					btn_array[i].button_up.disconnect(_on_button_button_up)
 				btn_array[i].button_up.connect(_on_button_button_up.bind(btn_array[i]))
-			
+
 			if btn_array[i] is CheckButton:
 				if btn_array[i].toggled.is_connected(_on_checkbutton_toggled):
 					btn_array[i].toggled.disconnect(_on_checkbutton_toggled)
 				btn_array[i].toggled.connect(_on_checkbutton_toggled.bind(btn_array[i]))
-			
+
 			elif btn_array[i] is OptionButton:
 				if btn_array[i].item_selected.is_connected(_on_optbtn_item_selected):
 					btn_array[i].item_selected.disconnect(_on_optbtn_item_selected)
 				btn_array[i].item_selected.connect(_on_optbtn_item_selected.bind(btn_array[i]))
-			
+
 			elif btn_array[i] is LineEdit:
 				if btn_array[i].text_changed.is_connected(_on_line_edit_text_changed):
 					btn_array[i].text_changed.disconnect(_on_line_edit_text_changed)
@@ -182,11 +181,11 @@ func _ready() -> void:
 				if btn_array[i].text_submitted.is_connected(_on_line_edit_text_submitted):
 					btn_array[i].text_submitted.disconnect(_on_line_edit_text_submitted)
 				btn_array[i].text_submitted.connect(_on_line_edit_text_submitted.bind(btn_array[i]))
-			
+
 			elif btn_array[i] is SpinBox:
 				if btn_array[i].value_changed.is_connected(_on_spinbox_value_changed):
 					btn_array[i].value_changed.disconnect(_on_spinbox_value_changed)
-				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i])) 
+				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i]))
 
 
 		# Connect the "text submitted" signal of SpinBoxes underlying LineEdit node
@@ -210,18 +209,18 @@ func _ready() -> void:
 			session_duration_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
 		session_duration_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(session_duration_spinbox_line))
 
-		container_array = [ 
+		container_array = [
 			log_header_container,
 			canvas_layer_container,
 			limit_method_container,
 			entry_count_action_container,
-			session_timer_action_container, 
+			session_timer_action_container,
 			file_count_container,
 			entry_count_container,
-			session_duration_container, 
+			session_duration_container,
 			error_rep_container
 		]
-		
+
 		var btns_array = [
 			# base_dir_line,
 			log_header_btn,
@@ -235,7 +234,7 @@ func _ready() -> void:
 			error_rep_btn
 		]
 
-		var corresponding_lbls = [ 
+		var corresponding_lbls = [
 			log_header_lbl,
 			canvas_layer_lbl,
 			limit_method_lbl,
@@ -244,31 +243,20 @@ func _ready() -> void:
 			file_count_lbl,
 			entry_count_lbl,
 			session_duration_lbl,
-			error_rep_lbl, 
+			error_rep_lbl,
 		]
 
 		for i in range(container_array.size()):
 			# Update font color on mouse over containers signals
-			if container_array[i].mouse_entered.is_connected(_on_dock_mouse_entered):
-				container_array[i].mouse_entered.disconnect(_on_dock_mouse_entered)
-			container_array[i].mouse_entered.connect(_on_dock_mouse_entered.bind(corresponding_lbls[i]))
-			
-			if container_array[i].mouse_exited.is_connected(_on_dock_mouse_exited):
-				container_array[i].mouse_exited.disconnect(_on_dock_mouse_exited)
-			container_array[i].mouse_exited.connect(_on_dock_mouse_exited.bind(corresponding_lbls[i]))
+			container_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
+			container_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
 
 			# Update font color on mouse over Buttons signals
-			if btns_array[i].mouse_entered.is_connected(_on_dock_mouse_entered):
-				btns_array[i].mouse_entered.disconnect(_on_dock_mouse_entered)
-			btns_array[i].mouse_entered.connect(_on_dock_mouse_entered.bind(corresponding_lbls[i]))
-			
-			if btns_array[i].mouse_exited.is_connected(_on_dock_mouse_exited):
-				btns_array[i].mouse_exited.disconnect(_on_dock_mouse_exited)
-			btns_array[i].mouse_exited.connect(_on_dock_mouse_exited.bind(corresponding_lbls[i]))
-		#endregion 
+			btns_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
+			btns_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
 
 		load_settings_state()
-	
+
 
 
 func load_categories(deferred : bool = false) -> void:
@@ -280,19 +268,19 @@ func load_categories(deferred : bool = false) -> void:
 		var _n = category_scene.instantiate()
 		_n.dock = self
 		_n.is_locked = _c[i][6]
-		category_container.add_child(_n) 
+		category_container.add_child(_n)
 		_n.name_warning.connect(_on_name_warning)
 		_n.index_changed.connect(_on_index_changed)
 		_n.category_name = _c[i][0]
 		_n.index = i
-	update_move_buttons() 
+	update_move_buttons()
 
 
 func add_category() -> void:
 	var _n = category_scene.instantiate()
-	_n.dock = self 
+	_n.dock = self
 	_n.is_locked = false
-	category_container.add_child(_n) 
+	category_container.add_child(_n)
 	_n.name_warning.connect(_on_name_warning)
 	_n.index_changed.connect(_on_index_changed)
 	_n.category_deleted.connect(_on_category_deleted)
@@ -310,7 +298,7 @@ func save_categories(deferred : bool = false) -> void:
 	var children = category_container.get_children()
 	for i in range(children.size()): # Loop through each child
 		# Create and append a nested array inside main
-		var _n : Array = [children[i].category_name, children[i].index, children[i].file_name, children[i].file_path, children[i].file_count, children[i].entry_count, children[i].is_locked] 
+		var _n : Array = [children[i].category_name, children[i].index, children[i].file_name, children[i].file_path, children[i].file_count, children[i].entry_count, children[i].is_locked]
 		main.append(_n)
 	config.set_value("plugin", "categories", main)
 	config.save(PATH)
@@ -343,7 +331,7 @@ func check_conflict_name(cat_obj : LogCategory, new_name : String) -> bool:
 
 
 static func get_error(error : int, object_type : String = "") -> String:
-	match error: 
+	match error:
 		1:  return str("Error[1] ",  object_type, " Failed")
 		2:  return str("Error[2] ",  object_type, " Unavailable")
 		3:  return str("Error[3] ",  object_type, " Unconfigured")
@@ -394,7 +382,7 @@ static func get_error(error : int, object_type : String = "") -> String:
 	return "N/A"
 
 
-## Creates a new settings.ini file in the base directory.
+
 func create_settings_file() -> void:
 	var _a = [["game", 0, "null", "null", 0, 0, true], ["error", 1, "null", "null", 0, 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
@@ -411,14 +399,13 @@ func create_settings_file() -> void:
 	config.set_value("settings", "file_cap", 10)
 	config.set_value("settings", "entry_cap", 300)
 	config.set_value("settings", "session_duration", 300.0)
-	config.set_value("settings", "error_reporting", 0) 
+	config.set_value("settings", "error_reporting", 0)
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false)
 	config.set_value("settings", "columns", 6)
 	var _s = config.save(PATH)
-	if _s != OK: 
+	if _s != OK:
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_s, "ConfigFile")))
-
 
 
 func load_settings_state() -> void:
@@ -437,12 +424,11 @@ func load_settings_state() -> void:
 	file_count_spinbox.value = 						config.get_value("settings", "file_cap", 10)
 	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap", 300)
 	session_duration_spinbox.value = 				config.get_value("settings", "session_duration", 300.0)
-	error_rep_btn.selected = 						config.get_value("settings", "error_reporting", 0) 
+	error_rep_btn.selected = 						config.get_value("settings", "error_reporting", 0)
 	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1", false)
 	disable_warn2_btn.button_pressed = 				config.get_value("settings", "disable_warn2", false)
 	columns_slider.value = 							config.get_value("settings", "columns", 6)
 	config.save(PATH)
-
 
 
 func validate_settings() -> bool:
@@ -461,21 +447,20 @@ func validate_settings() -> bool:
 		"settings/session_timer_action": TYPE_INT,
 		"settings/file_cap": TYPE_INT,
 		"settings/entry_cap": TYPE_INT,
-		"settings/session_duration": TYPE_FLOAT, 
-		"settings/error_reporting": TYPE_INT, 
+		"settings/session_duration": TYPE_FLOAT,
+		"settings/error_reporting": TYPE_INT,
 		"settings/disable_warn1": TYPE_BOOL,
 		"settings/disable_warn2": TYPE_BOOL
 	}
-	
-	for setting_key in expected_types.keys(): 
-		var splits = setting_key.split("/") 
+
+	for setting_key in expected_types.keys():
+		var splits = setting_key.split("/")
 		var expected_type = expected_types[setting_key]
 		var value = config.get_value(splits[0], splits[1])
 		if typeof(value) != expected_type:
 			printerr("Gologger Error: Validate settings failed. Invalid type for setting '" + splits[1] + "'. Expected " + str(expected_type) + " but got " + str(typeof(value)) + ".")
 			faults += 1
 	return faults == 0
-
 
 
 func reset_to_default(tab : int) -> void:
@@ -503,19 +488,17 @@ func reset_to_default(tab : int) -> void:
 		load_settings_state()
 
 
-## Reorders the categories in the [param category_container] to match 
-## the order of the indices. Used when a category's index is changed. 
 func reorder_categories() -> void:
-	#* If this sorting method fails or causes issues. 
+	#* If this sorting method fails or causes issues.
 	#* Instead of re-sorting the entire LogCategory objects to accommodate the new index.
 	#* Simply swap the two LogCategory object's category_name rather than the entire object.
 	var children = category_container.get_children()
 	var temp: Array[LogCategory] = []
-	
+
 	for child in children:
 		temp.append(child)
 		category_container.remove_child(child)
-	
+
 	for i in range(temp.size() - 1):
 		for j in range(i + 1, temp.size()):
 			if temp[i].index > temp[j].index:
@@ -523,7 +506,7 @@ func reorder_categories() -> void:
 				var temp_child = temp[i]
 				temp[i] = temp[j]
 				temp[j] = temp_child
-	
+
 	for child in temp:
 		category_container.add_child(child)
 	category_container.queue_sort()
@@ -542,10 +525,16 @@ func update_move_buttons() -> void:
 		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
 
 
-## Highlights label on mouse entered
+func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
+	if is_hovered:
+		node.add_theme_color_override("font_color", c_font_hover)
+	else:
+		node.add_theme_color_override("font_color", c_font_normal)
+
+
 func _on_dock_mouse_entered(node : Label) -> void:
 	node.add_theme_color_override("font_color", c_font_hover)
-## Revert highlighted label on mouse exited
+
 func _on_dock_mouse_exited(node : Label) -> void:
 	node.add_theme_color_override("font_color", c_font_normal)
 
@@ -557,7 +546,7 @@ func _on_button_button_up(node : Button) -> void:
 		base_dir_apply_btn:
 			var old_dir = config.get_value("plugin", "base_directory")
 			var new_dir = base_dir_line.text
-			var _d = DirAccess.open(new_dir) 
+			var _d = DirAccess.open(new_dir)
 			if _d == null:
 				var _res : int
 				_d = DirAccess.open(".")
@@ -577,10 +566,10 @@ func _on_button_button_up(node : Button) -> void:
 					push_warning("GoLogger: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
 				base_dir_line.text = old_dir
 				base_dir_apply_btn.disabled = true
-				return 
+				return
 			config.set_value("plugin", "base_directory", new_dir)
-			config.save(PATH) 
-			
+			config.save(PATH)
+
 		base_dir_opendir_btn:
 			if config.get_value("plugin", "base_directory") == "":
 				push_warning("GoLogger: Base directory path isn't set. Please set a valid directory path before opening the directory.")
@@ -603,8 +592,7 @@ func _on_line_edit_text_changed(new_text : String, node : LineEdit) -> void:
 		if new_text != config.get_value("plugin", "base_directory"):
 			base_dir_apply_btn.disabled = false
 		else:
-			base_dir_apply_btn.disabled = true 
-		
+			base_dir_apply_btn.disabled = true
 
 
 func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
@@ -617,7 +605,7 @@ func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 			var old_dir = config.get_value("plugin", "base_directory")
 			var _d = DirAccess.open(new_text)
 			_d.make_dir(new_text)
-			var _e = DirAccess.get_open_error() 
+			var _e = DirAccess.get_open_error()
 			if _e == OK:
 				config.set_value("plugin", "base_directory", new_text)
 			else:
@@ -640,7 +628,7 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 				2: # Version
 					log_header_string = str("Version.", ProjectSettings.get_setting("application/config/version"))
 				3: # None
-					log_header_string = "" 
+					log_header_string = ""
 			config.set_value("settings", "log_header", index)
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
@@ -649,7 +637,7 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 		session_timer_action_btn:
 			config.set_value("settings", "session_timer_action", index)
 		error_rep_btn:
-			config.set_value("settings", "error_reporting", index) 
+			config.set_value("settings", "error_reporting", index)
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
@@ -665,7 +653,7 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 		utc_btn:
 			config.set_value("settings", "use_utc", toggled_on)
 		dash_btn:
-			config.set_value("settings", "dash_separator", toggled_on) 
+			config.set_value("settings", "dash_separator", toggled_on)
 		disable_warn1_btn:
 			config.set_value("settings", "disable_warn1", toggled_on)
 		disable_warn2_btn:
@@ -674,11 +662,11 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 
 
 func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
-	var u_line = node.get_line_edit() 
+	var u_line = node.get_line_edit()
 	u_line.set_caret_column(u_line.text.length())
 	if u_line.get_caret_column() == u_line.text.length() - 1:
 		u_line.set_caret_column(u_line.text.length())
-	else: u_line.set_caret_column(u_line.get_caret_column() + 1) 
+	else: u_line.set_caret_column(u_line.get_caret_column() + 1)
 	match node:
 		entry_count_spinbox:
 			config.set_value("settings", "entry_cap", int(value))
@@ -694,26 +682,26 @@ func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
-func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void: 
+func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 	match node:
 		canvas_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "canvaslayer_layer", value)
 			canvas_layer_spinbox.release_focus()
 			canvas_spinbox_line.release_focus()
-		
+
 		file_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "file_cap", value)
 			file_count_spinbox_line.release_focus()
 			file_count_spinbox.release_focus()
-		
+
 		entry_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "entry_cap", value)
 			entry_count_spinbox.release_focus()
 			entry_count_spinbox_line.release_focus()
-		
+
 		session_duration_spinbox_line:
 			var value = float(new_text)
 			config.set_value("settings", "session_duration", value)
@@ -761,7 +749,7 @@ func _on_index_changed(category: LogCategory, new_index: int) -> void:
 
 func _on_category_deleted() -> void:
 	# Force delay to ensure proper deletion
-	await get_tree().create_timer(0.1).timeout  
+	await get_tree().create_timer(0.1).timeout
 	print("Category deleted -> reordering category indices:\n")
 	for i in range(category_container.get_child_count()):
 		var category: LogCategory = category_container.get_child(i)
