@@ -24,7 +24,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 2
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -32,8 +32,6 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
-visible = false
-custom_minimum_size = Vector2(0, 272)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -180,7 +178,6 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer"]
-custom_minimum_size = Vector2(0, 115)
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -211,7 +208,6 @@ columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="."]
 visible = false
-custom_minimum_size = Vector2(0, 272)
 layout_mode = 2
 follow_focus = true
 scroll_horizontal_custom_step = 10.0
@@ -749,7 +745,7 @@ text = "Failed to log entry"
 
 [node name="Help" type="MarginContainer" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 272)
+visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6

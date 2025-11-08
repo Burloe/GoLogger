@@ -66,12 +66,10 @@ func _ready() -> void:
 		start_session()
 
 
-
 func _physics_process(_delta: float) -> void:
 	if !Engine.is_editor_hint():
 		if popup_state and inaction_timer != null and !inaction_timer.is_stopped():
 			prompt_label.text = str("[center]Save copies of the current logs?[font_size=12]\nAutomatically cancelled in ", snapped(inaction_timer.time_left, 1.0),"s!\n[color=lightblue]Limit methods are paused during this prompt.")
-
 
 
 func _input(event: InputEvent) -> void:
@@ -86,7 +84,6 @@ func _input(event: InputEvent) -> void:
 				stop_session()
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
-
 
 
 
@@ -164,7 +161,6 @@ func start_session() -> void:
 		if session_timer.is_stopped() and _get_settings_value("session_timer_action") == 1 or session_timer.is_stopped() and _get_settings_value("session_timer_action") == 2:
 			session_timer.start()
 	session_started.emit()
-
 
 
 func entry(log_entry : String, category_index : int = 0) -> void:
@@ -257,7 +253,6 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 	_fw.close()
 
 
-
 func save_copy(_name: String = "") -> void:
 	if session_status:
 		# No specified name -> prompt popup for name
@@ -267,7 +262,6 @@ func save_copy(_name: String = "") -> void:
 		else:
 			copy_name = _name
 			complete_copy()
-
 
 
 func complete_copy() -> void:
@@ -308,7 +302,6 @@ func complete_copy() -> void:
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
 	popup_state = false
-
 
 
 func stop_session() -> void:
@@ -352,6 +345,7 @@ func stop_session() -> void:
 	session_status = false
 
 
+
 func toggle_copy_popup(toggle_on : bool) -> void:
 	popup.visible              =  toggle_on
 	popup_line_edit.editable   =  toggle_on
@@ -369,7 +363,6 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 		copy_name = ""
 		popup_line_edit.text = ""
 		popup_line_edit.release_focus()
-
 
 
 func create_settings_file() -> void:
