@@ -370,17 +370,17 @@ theme_override_constants/separation = 23
 [node name="NewLogHeaderHBOX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Any text and symbol formatting can be used but avoid using curly braces for anything other than tags. 
+tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
 Example: 
-\"{project_name} {version} [{category}] log session started [{yy-mm-dd} {yy:mi:ss}]:\" 
+\"{project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:\" 
 Results:
-\"GoLogger v1.3.2 [game] log session started [2025-08-23 15:36:08]:
+\"GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
 	{project_name}
 	{version}
-	{yy mm dd} - Any combination of year, month, day
-	{hh mi ss} - Any combination of hour, minute, second"
+	{yy} {mm} {dd}
+	{hh} {mi} {ss}"
 
 [node name="Label" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2/NewLogHeaderHBOX"]
 layout_mode = 2
@@ -389,17 +389,17 @@ text = "Log header format:"
 [node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2/NewLogHeaderHBOX"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Any text and symbol formatting can be used but avoid using curly braces for anything other than tags. 
+tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
 Example: 
-\"{project_name} {version} [{category}] log session started [{yy-mm-dd} {yy:mi:ss}]:\" 
+\"{project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:\" 
 Results:
-\"GoLogger v1.3.2 [game] log session started [2025-08-23 15:36:08]:
+\"GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
 	{project_name}
 	{version}
-	{yy mm dd} - Any combination of year, month, day
-	{hh mi ss} - Any combination of hour, minute, second"
+	{yy} {mm} {dd}
+	{hh} {mi} {ss}"
 text = "{project_name} {version} {category} {yy-mm-dd} {hh:mi:ss}:"
 placeholder_text = "{project_name} {version} {category} {yy-mm-dd} {hh:mi:ss}:"
 expand_to_text_length = true
@@ -411,8 +411,11 @@ theme_override_styles/separator = SubResource("StyleBoxLine_7ntic")
 [node name="EntryFormat" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 2
-tooltip_text = "Any text and symbol formatting can be used aside from curly braces. 
-Example: \"[{hh:mi:ss}] - \" results in \"[09:32:16] - entry\"
+tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
+Example: 
+	\"[{hh}:{mi}:{ss}]
+Results: 
+	\"[09:32:16] - entry\"
 
 Supported tags:
 	{hh mi ss} - And any combination of hour, minute, second."
@@ -424,8 +427,11 @@ text = "Entry format: "
 [node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2/EntryFormat"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Any text and symbol formatting can be used aside from curly braces. 
-Example: \"[{hh:mi:ss}] - \" results in \"[09:32:16] - entry\"
+tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
+Example: 
+	\"[{hh}:{mi}:{ss}]
+Results: 
+	\"[09:32:16] - entry\"
 
 Supported tags:
 	{hh mi ss} - And any combination of hour, minute, second."

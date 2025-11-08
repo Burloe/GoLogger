@@ -88,6 +88,14 @@ var container_array: Array[Control] = []
 var c_font_normal := Color("9d9ea0")
 var c_font_hover := Color("f2f2f2")
 
+# When adding new settings, add the Labels and any Control nodes to the
+# container_array, btns_array, corresponding_lbls arrays respectively in
+# _ready() to enable the label highlighting feature.
+
+# TODO:
+	# Implement a print_rich() calls whenever a setting is changed to notify the user of the change in the output console.
+	# Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
+
 
 
 func _ready() -> void:

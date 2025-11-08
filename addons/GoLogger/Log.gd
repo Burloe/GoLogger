@@ -563,6 +563,51 @@ func _check_filename_conflicts() -> String:
 
 func _get_header() -> String:
 	config.load(PATH)
+
+	#TODO: Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
+
+	var _value: String = _get_settings_value("log_header_format")
+	var _header
+	var _tags: Array[String] = [
+		"{project_name}",
+		"{version}",
+		"{yy}",
+		"{mm}",
+		"{dd}",
+		"{hh}",
+		"{mi}",
+		"{ss}"
+	]
+
+	if _value != null and _value != "":
+		var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))
+		var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
+		var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
+		var dd  : String = str(dict["day"]    if dict["day"]    > 9 else str("0", dict["day"]))
+		var hh  : String = str(dict["hour"]   if dict["hour"]   > 9 else str("0", dict["hour"]))
+		var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
+		var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
+
+		var replacements: Dictionary = {
+			"{project_name}": str(ProjectSettings.get_setting("application/config/name")),
+			"{version}": str(ProjectSettings.get_setting("application/config/version")),
+			"{yy}": yy,
+			"{mm}": mm,
+			"{dd}": dd,
+			"{hh}": hh,
+			"{mi}": mi,
+			"{ss}": ss
+		}
+
+		_header = _value
+		for tag in _tags:
+			if tag in replacements:
+				_header = _header.replace(tag, replacements[tag])
+
+		return str(_header, " ")
+
+
+
 	match _get_settings_value("log_header"):
 		0: # Project name and version
 			var _p_name = str(ProjectSettings.get_setting("application/config/name"))
