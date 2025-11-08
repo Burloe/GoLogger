@@ -85,6 +85,10 @@ func _input(event: InputEvent) -> void:
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
 
+		# Test entry logging with Comma Key. 
+		# if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
+		# 	entry("Test entry", 0, true)
+
 
 
 func start_session() -> void:
@@ -163,9 +167,9 @@ func start_session() -> void:
 	session_started.emit()
 
 
-func entry(log_entry : String, category_index : int = 0) -> void:
+func entry(log_entry : String, category_index : int = 0, print_entry_to_output: bool = false) -> void:
 	config.load(PATH)
-	categories = config._get_settings_value("plugin", "categories")
+	categories = config.get_value("plugin", "categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] ")
 
 	if categories == null or categories.is_empty():
@@ -248,9 +252,11 @@ func entry(log_entry : String, category_index : int = 0) -> void:
 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 	for line in lines:
 		_fw.store_line(str(line))
-	var _entry : String = str("\t", _timestamp, log_entry) if _get_settings_value("timestamp_entries") else str("\t", log_entry)
-	_fw.store_line(_entry)
+	var new_entry : String = str("\t", _timestamp, log_entry) if _get_settings_value("timestamp_entries") else str("\t", log_entry)
+	_fw.store_line(new_entry)
 	_fw.close()
+	if print_entry_to_output:
+		print(new_entry)
 
 
 func save_copy(_name: String = "") -> void:

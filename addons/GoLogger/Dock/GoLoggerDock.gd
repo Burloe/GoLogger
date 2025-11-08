@@ -514,14 +514,6 @@ func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
 		node.add_theme_color_override("font_color", c_font_normal)
 
 
-# func _on_dock_mouse_entered(node: Label) -> void: #Decrecated -> _on_dock_mouse_hover_changed
-# 	node.add_theme_color_override("font_color", c_font_hover)
-
-# func _on_dock_mouse_exited(node: Label) -> void: #Decrecated -> _on_dock_mouse_hover_changed
-# 	node.add_theme_color_override("font_color", c_font_normal)
-
-
-
 func _on_button_button_up(node: Button) -> void:
 	config.load(PATH)
 	match node:
