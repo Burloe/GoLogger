@@ -85,9 +85,10 @@ func _input(event: InputEvent) -> void:
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
 
-		# Test entry logging with Comma Key. 
+		# Test entry logging with Comma Key.
 		# if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
 		# 	entry("Test entry", 0, true)
+
 
 
 
@@ -178,7 +179,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 		return
 	if categories[category_index][0] == "":
 		if _get_settings_value("error_reporting") != 2:
-			printerr("GoLogger: Attempted to log on a nameless category.")
+			printerr("GoLogger: Attempted to log entry on an invalid category.")
 			return
 	if !session_status:
 		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"): push_warning("GoLogger: Failed to log entry due to inactive session.")
@@ -209,12 +210,14 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 					0: # Remove old entries
 						while lines.size() >= _get_settings_value("entry_cap"):
 							lines.remove_at(1) # Keeping header line 0
+
 					1: # Stop & start
 						if lines.size() >= _get_settings_value("entry_cap"):
 							stop_session()
 							start_session()
 							entry(log_entry, category_index)
 							return
+
 					2: # Stop only
 						if lines.size() >= _get_settings_value("entry_cap"):
 							stop_session()
@@ -227,6 +230,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 						start_session()
 						entry(log_entry, category_index)
 						return
+
 					1: # Stop session
 						stop_session()
 						return
@@ -239,6 +243,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 							start_session()
 							entry(log_entry, category_index)
 							return
+
 					1: # Stop session
 						if lines.size() >= _get_settings_value("entry_cap"):
 							stop_session()
@@ -256,7 +261,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 	_fw.store_line(new_entry)
 	_fw.close()
 	if print_entry_to_output:
-		print(new_entry)
+		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", categories[category_index][0], "> ", new_entry.dedent())
 
 
 func save_copy(_name: String = "") -> void:

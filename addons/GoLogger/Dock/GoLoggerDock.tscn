@@ -454,15 +454,6 @@ theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "  Timestamp log entries"
 
-[node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-tooltip_text = "Uses UTC as opposed to the local system time when timestamping files and entries."
-theme = ExtResource("1_y5prw")
-theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
-text = "  UTC time"
-
 [node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
@@ -473,6 +464,15 @@ Without - (yymmdd_hhmmss)"
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "  Use separator in timestamps"
+
+[node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+tooltip_text = "Uses UTC as opposed to the local system time when timestamping files and entries."
+theme = ExtResource("1_y5prw")
+theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
+text = "  UTC time"
 
 [node name="ColumnB" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(374, 210)
