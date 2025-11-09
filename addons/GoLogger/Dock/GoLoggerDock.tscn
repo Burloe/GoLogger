@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=15 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
@@ -15,13 +15,22 @@
 font_size = 12
 font_color = Color(1, 1, 1, 0.352941)
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_7ntic"]
-content_margin_left = 0.0
-content_margin_top = 4.0
-content_margin_right = 0.0
-content_margin_bottom = 4.0
-color = Color(0.48, 0.48, 0.48, 1)
-vertical = true
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ntic"]
+bg_color = Color(0.05, 0.05, 0.05, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.4, 0.4, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 2
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_tayiv"]
 content_margin_left = 4.0
@@ -29,6 +38,14 @@ content_margin_top = 0.0
 content_margin_right = 4.0
 content_margin_bottom = 0.0
 color = Color(0.47843137, 0.47843137, 0.47843137, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_7ntic"]
+content_margin_left = 0.0
+content_margin_top = 4.0
+content_margin_right = 0.0
+content_margin_bottom = 4.0
+color = Color(0.48, 0.48, 0.48, 1)
+vertical = true
 
 [node name="GoLoggerDock" type="TabContainer"]
 anchors_preset = -1
@@ -243,7 +260,7 @@ layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="TopBarPanel" type="Panel" parent="Settings/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 92)
+custom_minimum_size = Vector2(0, 148)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel"]
@@ -258,58 +275,31 @@ theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 9
 theme_override_constants/margin_bottom = 9
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer"]
 layout_mode = 2
 
-[node name="BaseDirHBX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="LineEditVBox" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 11
+size_flags_horizontal = 3
 
-[node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/BaseDirHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
+size_flags_horizontal = 3
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". "
 mouse_filter = 0
 theme = ExtResource("1_y5prw")
 theme_override_font_sizes/font_size = 14
-text = "Base Directory"
-horizontal_alignment = 1
+text = "Base Directory:"
 vertical_alignment = 2
 
-[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/BaseDirHBX"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(172, 0)
-layout_mode = 2
-tooltip_text = "The directory where logs are stored in. 
-Default path is \"user://GoLogger/\". "
-theme = ExtResource("1_y5prw")
-theme_override_font_sizes/font_size = 14
-text = "user://GoLogger/"
-placeholder_text = "user://GoLogger/"
-alignment = 1
-expand_to_text_length = true
-emoji_menu_enabled = false
-
-[node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/BaseDirHBX"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Applies a new base directory"
-theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
-theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
-theme_override_font_sizes/font_size = 14
-disabled = true
-text = "Apply"
-icon = ExtResource("8_11ofg")
-
-[node name="BaseDirOpenDirButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirOpenDirButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/BaseDirHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Open the base directory folder using your external file browser"
@@ -320,11 +310,34 @@ theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_font_sizes/font_size = 14
 icon = ExtResource("2_6725a")
 
-[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/BaseDirHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(172, 0)
 layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_7ntic")
+tooltip_text = "The directory where logs are stored in. 
+Default path is \"user://GoLogger/\". "
+theme = ExtResource("1_y5prw")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_7ntic")
+text = "user://GoLogger/"
+placeholder_text = "user://GoLogger/"
+alignment = 1
+expand_to_text_length = true
+emoji_menu_enabled = false
 
-[node name="BaseDirResetButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/BaseDirHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Applies a new base directory"
+theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
+theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
+theme_override_font_sizes/font_size = 14
+disabled = true
+icon = ExtResource("8_11ofg")
+
+[node name="BaseDirResetButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/BaseDirHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Reset base directory to default path: user://GoLogger/"
@@ -334,42 +347,13 @@ theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 14
 icon = ExtResource("3_y66hb")
 
-[node name="ResetHBX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme_override_constants/separation = 16
-alignment = 2
-
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/ResetHBX"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/ResetHBX"]
-layout_mode = 2
-
-[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer/ResetHBX"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Resets all settings to default"
-text = "Reset"
-
-[node name="HSeparator" type="HSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_tayiv")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer"]
+[node name="NewLogHeaderHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox"]
 layout_mode = 2
-theme_override_constants/separation = 23
-
-[node name="NewLogHeaderHBOX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
+size_flags_vertical = 3
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
 Example: 
 \"{project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:\" 
@@ -382,11 +366,12 @@ Supported format tags:
 	{yy} {mm} {dd}
 	{hh} {mi} {ss}"
 
-[node name="Label" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2/NewLogHeaderHBOX"]
+[node name="Label" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/NewLogHeaderHBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Log header format:"
 
-[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2/NewLogHeaderHBOX"]
+[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/NewLogHeaderHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
@@ -400,33 +385,42 @@ Supported format tags:
 	{version}
 	{yy} {mm} {dd}
 	{hh} {mi} {ss}"
-text = "{project_name} {version} {category} {yy-mm-dd} {hh:mi:ss}:"
+theme_override_styles/normal = SubResource("StyleBoxFlat_7ntic")
+text = "{project_name} {version} {category} session {yy-mm-dd} {hh:mi:ss}:"
 placeholder_text = "{project_name} {version} {category} {yy-mm-dd} {hh:mi:ss}:"
+max_length = 80
 expand_to_text_length = true
 
-[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_7ntic")
-
-[node name="EntryFormat" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 2
-tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
-Example: 
-	\"[{hh}:{mi}:{ss}]
-Results: 
-	\"[09:32:16] - entry\"
-
-Supported tags:
-	{hh mi ss} - And any combination of hour, minute, second."
-
-[node name="Label" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2/EntryFormat"]
-layout_mode = 2
-text = "Entry format: "
-
-[node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/VBoxContainer/HBoxContainer2/EntryFormat"]
+[node name="LogHeaderApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/NewLogHeaderHBox"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Applies a new base directory"
+theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
+theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
+theme_override_font_sizes/font_size = 14
+disabled = true
+icon = ExtResource("8_11ofg")
+
+[node name="LogHeaderResetButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/NewLogHeaderHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reset base directory to default path: user://GoLogger/"
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+icon = ExtResource("3_y66hb")
+
+[node name="HSeparator2" type="HSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_tayiv")
+
+[node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
 Example: 
 	\"[{hh}:{mi}:{ss}]
@@ -435,9 +429,77 @@ Results:
 
 Supported tags:
 	{hh mi ss} - And any combination of hour, minute, second."
+
+[node name="Label" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/EntryFormatHBox"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Entry format: "
+
+[node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/EntryFormatHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
+Example: 
+	\"[{hh}:{mi}:{ss}]
+Results: 
+	\"[09:32:16] - entry\"
+
+Supported tags:
+	{hh mi ss} - And any combination of hour, minute, second."
+theme_override_styles/normal = SubResource("StyleBoxFlat_7ntic")
 text = "{hh:mi:ss}:"
 placeholder_text = "{hh:mi:ss}:"
 expand_to_text_length = true
+
+[node name="EntryFormatApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/EntryFormatHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Applies a new base directory"
+theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
+theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
+theme_override_font_sizes/font_size = 14
+disabled = true
+icon = ExtResource("8_11ofg")
+
+[node name="EntryFormatResetButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/EntryFormatHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reset base directory to default path: user://GoLogger/"
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+icon = ExtResource("3_y66hb")
+
+[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_7ntic")
+
+[node name="EndHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/EndHBox"]
+layout_mode = 2
+
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/EndHBox/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
+
+[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/EndHBox/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Resets all settings to default"
+text = "Reset to default"
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -451,6 +513,7 @@ theme_override_constants/separation = 8
 [node name="ColumnA" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(331, 212)
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA"]
 layout_mode = 1
@@ -578,6 +641,7 @@ text = "  UTC time"
 [node name="ColumnB" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(374, 210)
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB"]
 layout_mode = 1
@@ -785,6 +849,7 @@ select_all_on_focus = true
 [node name="ColumnC" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(323, 210)
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC"]
 layout_mode = 1

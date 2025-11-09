@@ -8,6 +8,10 @@ extends Node
 ## GoLogger to download. For installation, setup and how to use instructions, see the README.md or in the Github
 ## repo.
 
+#TODO:
+	# Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
+	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
+	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
 
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
@@ -382,10 +386,12 @@ func create_settings_file() -> void:
 	config.set_value("plugin", "categories", _a)
 
 	config.set_value("settings", "columns", 6)
-	config.set_value("settings", "log_header", 0)
+	config.set_value("settings", "log_header_format", "{project_name} {version} {category} [{yy}-{mm}-{dd} | {hh:mi:ss}]:")
+	config.set_value("settings", "entry_format", "\t[{hh}:{mi}:{ss}]")
+	# config.set_value("settings", "log_header", 0) # Deprecated -> Using custom header format instead with log_header_format
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
-	config.set_value("settings", "timestamp_entries", true)
+	# config.set_value("settings", "timestamp_entries", true) # Deprecated -> Using entry_format instead which can be left blank to remove timestamps if desired
 	config.set_value("settings", "use_utc", false)
 	config.set_value("settings", "dash_separator", false)
 	config.set_value("settings", "limit_method", 0)
@@ -409,10 +415,10 @@ func validate_settings() -> bool:
 		"plugin/base_directory": TYPE_STRING,
 		"plugin/categories": TYPE_ARRAY,
 		"settings/columns": TYPE_INT,
-		"settings/log_header": TYPE_INT,
+		"settings/log_header_format": TYPE_STRING,
+		"settings/entry_format" : TYPE_STRING,
 		"settings/canvaslayer_layer": TYPE_INT,
 		"settings/autostart_session": TYPE_BOOL,
-		"settings/timestamp_entries": TYPE_BOOL,
 		"settings/use_utc": TYPE_BOOL,
 		"settings/dash_separator": TYPE_BOOL,
 		"settings/limit_method": TYPE_INT,
@@ -425,6 +431,9 @@ func validate_settings() -> bool:
 		"settings/disable_warn1": TYPE_BOOL,
 		"settings/disable_warn2": TYPE_BOOL
 	}
+	# "settings/log_header": TYPE_INT, # Deprecated -> Using custom header format instead with log_header_format
+	# "settings/timestamp_entries": TYPE_BOOL, # Deprecated -> Using entry_format instead which can be left blank to remove timestamps if desired
+
 	var types : Array[String] = [
 		"Nil",
 		"Bool",
@@ -437,30 +446,10 @@ func validate_settings() -> bool:
 		"Rect2i",
 		"Vector3",
 		"Vector3i",
-		"Transform2D",
-		"Plane",
-		"Quaternion",
-		"AABB",
-		"Basis",
-		"Transform3D",
 		"Color",
 		"StringName",
-		"NodePath",
-		"RID",
-		"Object",
-		"Callable",
-		"Signal",
 		"Dictionary",
 		"Array",
-		"PackedByteArray",
-		"PackedInt32Array",
-		"PackedInt64Array",
-		"PackedFloat32Array",
-		"PackedFloat64Array",
-		"PackedStringArray",
-		"PackedVector2Array",
-		"PackedVector3Array",
-		"PackedColorArray"
 	]
 
 	for setting_key in expected_types.keys():

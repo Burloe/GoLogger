@@ -1,6 +1,10 @@
 @tool
 extends TabContainer
 
+# TODO:
+	# Implement a print_rich() calls whenever a setting is changed to notify the user of the change in the output console.
+	# Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
+
 signal update_index
 
 @onready var add_category_btn: Button = %AddCategoryButton
@@ -10,14 +14,15 @@ signal update_index
 @onready var category_warning_lbl: Label = %CategoryWarningLabel
 
 @onready var columns_slider: HSlider = %ColumnsHSlider
-
-
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_apply_btn: Button = %BaseDirApplyButton
 @onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
 @onready var base_dir_reset_btn: Button = %BaseDirResetButton
+
+@onready var log_header_line: LineEdit = %LogHeaderLineEdit
+@onready var entry_format_line: LineEdit = %EntryFormatLineEdit
 
 @onready var log_header_btn: OptionButton = %LogHeaderOptButton
 @onready var log_header_container: HBoxContainer = %LogHeaderHBox
@@ -92,10 +97,6 @@ var c_font_hover := Color("f2f2f2")
 # container_array, btns_array, corresponding_lbls arrays respectively in
 # _ready() to enable the label highlighting feature.
 
-# TODO:
-	# Implement a print_rich() calls whenever a setting is changed to notify the user of the change in the output console.
-	# Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
-
 
 
 func _ready() -> void:
@@ -131,6 +132,8 @@ func _ready() -> void:
 			base_dir_apply_btn,
 			base_dir_opendir_btn,
 			base_dir_reset_btn,
+			log_header_line,
+			entry_format_line,
 			log_header_btn,
 			canvas_layer_spinbox,
 			autostart_btn,
@@ -567,23 +570,31 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 	if node.get_caret_column() == node.text.length() - 1:
 		node.set_caret_column(node.text.length())
 	else: node.set_caret_column(node.get_caret_column() + 1)
-
-	if node == base_dir_line:
-		if new_text == "":
-			base_dir_apply_btn.disabled = true
-		if new_text != config.get_value("plugin", "base_directory"):
-			base_dir_apply_btn.disabled = false
-		else:
-			base_dir_apply_btn.disabled = true
-
+	
+	match node:
+		base_dir_line:
+			if new_text == "":
+				base_dir_apply_btn.disabled = true
+			if new_text != config.get_value("plugin", "base_directory"):
+				base_dir_apply_btn.disabled = false
+			else:
+				base_dir_apply_btn.disabled = true
+		log_header_line:
+			pass
+		entry_format_line:
+			pass
+			
+	
+	
 
 func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 	match node:
 		base_dir_line:
-			config.load(PATH)
 			if new_text == "":
 				base_dir_apply_btn.disabled = true
 				return
+			
+			config.load(PATH)
 			var old_dir = config.get_value("plugin", "base_directory")
 			var _d = DirAccess.open(new_text)
 			_d.make_dir(new_text)
@@ -593,6 +604,26 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			else:
 				base_dir_line.text = old_dir
 			base_dir_line.release_focus()
+		
+		log_header_line:
+			if new_text == "": return
+			
+			config.load(PATH)
+			var old_header = config.get_value("settings", "log_header_format", "")
+			
+			if new_text != old_header:
+				config.set_value("settings", "log_header_format", new_text)
+				var _s = config.save(PATH)
+				if _s != OK:
+					var _e = config.get_open_error()
+					printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+				
+			
+			pass
+		
+		entry_format_line:
+			pass
+			
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
