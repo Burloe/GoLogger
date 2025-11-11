@@ -605,6 +605,11 @@ func update_move_buttons() -> void:
 		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
 
 
+func _check_valid_entry_format(format: String) -> bool:
+	# Simple check to ensure {entry} tag is present to display error warning in the dock
+	return true if format.contains("{entry}") else false
+
+
 func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
 	if is_hovered:
 		node.add_theme_color_override("font_color", c_font_hover)
@@ -650,30 +655,48 @@ func _on_button_button_up(node: Button) -> void:
 
 		base_dir_reset_btn:
 			config.set_value("plugin", "base_directory", "user://GoLogger/")
-			config.save(PATH)
+			var err :=config.save(PATH)
+			if err != OK:
+				var _e = config.get_open_error()
+				print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 			base_dir_line.text = config.get_value("plugin", "base_directory")
 			print_rich("[color=878787][GoLogger] Base directory reset to default.")
 
 		log_header_apply_btn:
 			config.set_value("settings", "log_header_format", log_header_line.text)
-			config.save(PATH)
+			var err :=config.save(PATH)
+			if err != OK:
+				var _e = config.get_open_error()
+				print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 		log_header_reset_btn:
 			log_header_line.text = default_settings["log_header_format"]
 			config.set_value("settings", "log_header_format", default_settings["log_header_format"])
-			config.save(PATH)
+			var err := config.save(PATH)
+			if err != OK:
+				var _e = config.get_open_error()
+				print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 			print_rich("[color=878787][GoLogger] Log header option reset to default.")
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
-			config.save(PATH)
+			var err := config.save(PATH)
 			print_rich("[color=878787][GoLogger] Entry format changed to: ", entry_format_line.text)
+			if err != OK:
+				var _e = config.get_open_error()
+				print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+
+			entry_format_apply_btn.disabled = true
 
 		entry_format_reset_btn:
 			entry_format_line.text = config.get_value("settings", "entry_format", default_settings["entry_format"])
 			config.set_value("settings", "entry_format", default_settings["entry_format"])
-			config.save(PATH)
+			var err :=config.save(PATH)
+			if err != OK:
+				var _e = config.get_open_error()
+				print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 			print_rich("[color=878787][GoLogger] Entry format reset to default.")
+			entry_format_apply_btn.disabled = true
 
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
@@ -744,10 +767,6 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			if new_text == "":
 				entry_format_line.text = "{entry}"
 			entry_format_line.release_focus()
-
-
-func _check_valid_entry_format(format: String) -> bool:
-	return true if format.contains("{entry}") else false
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
