@@ -428,12 +428,13 @@ func create_settings_file() -> void:
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
-func validate_settings() -> bool:
+# Note that this function is also present in GoLoggerDock.gd. If you update it here, update it there too.
+func validate_settings() -> void:
 	var present_settings_faults : int = 0
 	var value_type_faults : int = 0
 	var expected_settings ={
 		"base_directory": "plugin/base_directory",
-		"category": "plugins/categories",
+		"categories": "plugin/categories",
 		"columns": "settings/columns",
 		"log_header_format": "settings/log_header_format",
 		"entry_format": "settings/entry_format",
@@ -489,26 +490,27 @@ func validate_settings() -> bool:
 		"Array",
 	]
 
-	# Validate existence of settings
+	# Validate presence of settings -> Apply default if missing
 	for setting in expected_settings.keys():
 		var splits = expected_settings[setting].split("/")
-		if !config.has_section(splits[0]) or !config.has_property(splits[0], splits[1]):
-			push_warning(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
+		if !config.has_section(splits[0]) or !config.has_section_key(splits[0], splits[1]):
+			printerr(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
 			present_settings_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 	if present_settings_faults > 0: push_warning("GoLogger: One or more settings were missing from the settings.ini file. Default values have been restored for the missing settings.")
-	config.save(PATH)
 
-	# Valodate types of settings
+	# Valodate types of settings -> Apply default if type mismatch
 	for setting_key in expected_types.keys():
 		var splits = setting_key.split("/")
 		var expected_type = expected_types[setting_key]
 		var value = config.get_value(splits[0], splits[1])
 
 		if typeof(value) != expected_type:
-			push_warning(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
+			printerr(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
 			value_type_faults += 1
-	return value_type_faults == 0
+			config.set_value(splits[0], splits[1], default_settings[splits[1]])
+
+	config.save(PATH)
 
 
 static func get_error(error : int, object_type : String = "") -> String:
@@ -565,6 +567,7 @@ static func get_error(error : int, object_type : String = "") -> String:
 
 
 func _get_settings_value(value : String) -> Variant:
+	validate_settings()
 	var _config = ConfigFile.new()
 	var _result = _config.load(PATH)
 	var section : String = "settings"

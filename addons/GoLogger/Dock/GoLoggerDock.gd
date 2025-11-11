@@ -460,17 +460,38 @@ func load_settings_state() -> void:
 	config.save(PATH)
 
 
-func validate_settings() -> bool:
-	var faults : int = 0
+func validate_settings() -> void:
+	var present_settings_faults : int = 0
+	var value_type_faults : int = 0
+	var expected_settings ={
+		"base_directory": "plugin/base_directory",
+		"categories": "plugin/categories",
+		"columns": "settings/columns",
+		"log_header_format": "settings/log_header_format",
+		"entry_format": "settings/entry_format",
+		"canvaslayer_layer": "settings/canvaslayer_layer",
+		"autostart_session": "settings/autostart_session",
+		"use_utc": "settings/use_utc",
+		"limit_method": "settings/limit_method",
+		"entry_count_action": "settings/entry_count_action",
+		"session_timer_action": "settings/session_timer_action",
+		"file_cap": "settings/file_cap",
+		"entry_cap": "settings/entry_cap",
+		"session_duration": "settings/session_duration",
+		"error_reporting": "settings/error_reporting",
+		"disable_warn1": "settings/disable_warn1",
+		"disable_warn2": "settings/disable_warn2"
+	}
+
 	var expected_types = {
 		"plugin/base_directory": TYPE_STRING,
 		"plugin/categories": TYPE_ARRAY,
-		"settings/log_header": TYPE_INT,
+		"settings/columns": TYPE_INT,
+		"settings/log_header_format": TYPE_STRING,
+		"settings/entry_format" : TYPE_STRING,
 		"settings/canvaslayer_layer": TYPE_INT,
 		"settings/autostart_session": TYPE_BOOL,
-		"settings/timestamp_entries": TYPE_BOOL,
 		"settings/use_utc": TYPE_BOOL,
-		"settings/dash_separator": TYPE_BOOL,
 		"settings/limit_method": TYPE_INT,
 		"settings/entry_count_action": TYPE_INT,
 		"settings/session_timer_action": TYPE_INT,
@@ -482,14 +503,45 @@ func validate_settings() -> bool:
 		"settings/disable_warn2": TYPE_BOOL
 	}
 
+	var types : Array[String] = [
+		"Nil",
+		"Bool",
+		"Integer",
+		"Float",
+		"String",
+		"Vector2",
+		"Vector2i",
+		"Rect2",
+		"Rect2i",
+		"Vector3",
+		"Vector3i",
+		"Color",
+		"StringName",
+		"Dictionary",
+		"Array",
+	]
+
+	# Validate presence of settings -> Apply default if missing
+	for setting in expected_settings.keys():
+		var splits = expected_settings[setting].split("/")
+		if !config.has_section(splits[0]) or !config.has_section_key(splits[0], splits[1]):
+			printerr(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
+			present_settings_faults += 1
+			config.set_value(splits[0], splits[1], default_settings[splits[1]])
+	if present_settings_faults > 0: push_warning("GoLogger: One or more settings were missing from the settings.ini file. Default values have been restored for the missing settings.")
+
+	# Valodate types of settings -> Apply default if type mismatch
 	for setting_key in expected_types.keys():
 		var splits = setting_key.split("/")
 		var expected_type = expected_types[setting_key]
 		var value = config.get_value(splits[0], splits[1])
+
 		if typeof(value) != expected_type:
-			printerr("Gologger Error: Validate settings failed. Invalid type for setting '" + splits[1] + "'. Expected " + str(expected_type) + " but got " + str(typeof(value)) + ".")
-			faults += 1
-	return faults == 0
+			printerr(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
+			value_type_faults += 1
+			config.set_value(splits[0], splits[1], default_settings[splits[1]])
+
+	config.save(PATH)
 
 
 func reset_to_default(tab : int) -> void:
