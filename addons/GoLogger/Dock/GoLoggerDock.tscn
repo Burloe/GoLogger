@@ -285,6 +285,7 @@ size_flags_horizontal = 3
 [node name="BaseDirHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 8
 
 [node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/BaseDirHBox"]
 unique_name_in_owner = true
@@ -365,6 +366,7 @@ Supported format tags:
 	{version}
 	{yy} {mm} {dd}
 	{hh} {mi} {ss}"
+theme_override_constants/separation = 8
 
 [node name="Label" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/NewLogHeaderHBox"]
 layout_mode = 2
@@ -388,6 +390,7 @@ Supported format tags:
 theme_override_styles/normal = SubResource("StyleBoxFlat_7ntic")
 text = "{project_name} {version} {category} session {yy-mm-dd} {hh:mi:ss}:"
 placeholder_text = "{project_name} {version} {category} {yy-mm-dd} {hh:mi:ss}:"
+alignment = 1
 max_length = 80
 expand_to_text_length = true
 
@@ -429,6 +432,7 @@ Results:
 
 Supported tags:
 	{hh mi ss} - And any combination of hour, minute, second."
+theme_override_constants/separation = 8
 
 [node name="Label" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/EntryFormatHBox"]
 layout_mode = 2
@@ -448,8 +452,9 @@ Results:
 Supported tags:
 	{hh mi ss} - And any combination of hour, minute, second."
 theme_override_styles/normal = SubResource("StyleBoxFlat_7ntic")
-text = "{hh:mi:ss}:"
-placeholder_text = "{hh:mi:ss}:"
+text = "[{hh}:{mi}:{ss}]: {entry}"
+placeholder_text = "[{hh}:{mi}:{ss}]: {entry}"
+alignment = 1
 expand_to_text_length = true
 
 [node name="EntryFormatApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/LineEditVBox/EntryFormatHBox"]

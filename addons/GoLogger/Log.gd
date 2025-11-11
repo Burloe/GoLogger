@@ -623,6 +623,23 @@ func _get_header() -> String:
 	return ""
 
 
+func _get_entry_format(entry: String) -> String:
+	var _tags: Array[String] = [
+		"{project_name}",
+		"{version}",
+		"{yy}",
+		"{mm}",
+		"{dd}",
+		"{hh}",
+		"{mi}",
+		"{ss}",
+		"{entry}"
+	]
+
+
+	return entry # Placeholder for future implementation
+
+
 func _get_file_name(category_name : String) -> String:
 	var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024

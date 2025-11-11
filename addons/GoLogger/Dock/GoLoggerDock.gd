@@ -22,7 +22,12 @@ signal update_index
 @onready var base_dir_reset_btn: Button = %BaseDirResetButton
 
 @onready var log_header_line: LineEdit = %LogHeaderLineEdit
+@onready var log_header_apply_btn: Button = %LogHeaderApplyButton
+@onready var log_header_reset_btn: Button = %LogHeaderResetButton
+
 @onready var entry_format_line: LineEdit = %EntryFormatLineEdit
+@onready var entry_format_apply_btn: Button = %EntryFormatApplyButton
+@onready var entry_format_reset_btn: Button = %EntryFormatResetButton
 
 @onready var log_header_btn: OptionButton = %LogHeaderOptButton
 @onready var log_header_container: HBoxContainer = %LogHeaderHBox
@@ -92,6 +97,7 @@ var btn_array: Array[Control] = []
 var container_array: Array[Control] = []
 var c_font_normal := Color("9d9ea0")
 var c_font_hover := Color("f2f2f2")
+var c_print_history := Color("878787")
 
 # When adding new settings, add the Labels and any Control nodes to the
 # container_array, btns_array, corresponding_lbls arrays respectively in
@@ -133,7 +139,9 @@ func _ready() -> void:
 			base_dir_opendir_btn,
 			base_dir_reset_btn,
 			log_header_line,
+			log_header_apply_btn,
 			entry_format_line,
+			entry_format_apply_btn,
 			log_header_btn,
 			canvas_layer_spinbox,
 			autostart_btn,
@@ -554,6 +562,7 @@ func _on_button_button_up(node: Button) -> void:
 				return
 			config.set_value("plugin", "base_directory", new_dir)
 			config.save(PATH)
+			print_rich("[color=878787][GoLogger] Base directory changed to: ", new_dir)
 
 		base_dir_opendir_btn:
 			if config.get_value("plugin", "base_directory") == "":
@@ -564,13 +573,31 @@ func _on_button_button_up(node: Button) -> void:
 			config.set_value("plugin", "base_directory", "user://GoLogger/")
 			config.save(PATH)
 			base_dir_line.text = config.get_value("plugin", "base_directory")
+			print_rich("[color=878787][GoLogger] Base directory changed to default.")
+
+		log_header_apply_btn:
+			pass
+
+		log_header_reset_btn:
+			log_header_btn.selected = 0
+			config.set_value("settings", "log_header", 0)
+			config.save(PATH)
+			print_rich("[color=878787][GoLogger] Log header option reset to default.")
+
+		entry_format_apply_btn:
+			config.set_value("settings", "entry_format", entry_format_line.text)
+			config.save(PATH)
+			print_rich("[color=878787][GoLogger] Entry format changed to: ", entry_format_line.text)
+
+		entry_format_reset_btn:
+			config.set_value("settings", "entry_format", "[{hh}:{mi}:{ss}] {entry}")
 
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 	if node.get_caret_column() == node.text.length() - 1:
 		node.set_caret_column(node.text.length())
 	else: node.set_caret_column(node.get_caret_column() + 1)
-	
+
 	match node:
 		base_dir_line:
 			if new_text == "":
@@ -580,12 +607,18 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			else:
 				base_dir_apply_btn.disabled = true
 		log_header_line:
-			pass
+			if new_text != config.get_value("settings", "log_header_format", ""):
+				log_header_apply_btn.disabled = false
+			else:
+				log_header_apply_btn.disabled = true
 		entry_format_line:
-			pass
-			
-	
-	
+			if new_text != config.get_value("settings", "entry_format", ""):
+				entry_format_apply_btn.disabled = false
+			else:
+				entry_format_apply_btn.disabled = true
+
+
+
 
 func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 	match node:
@@ -593,7 +626,7 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			if new_text == "":
 				base_dir_apply_btn.disabled = true
 				return
-			
+
 			config.load(PATH)
 			var old_dir = config.get_value("plugin", "base_directory")
 			var _d = DirAccess.open(new_text)
@@ -604,26 +637,24 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			else:
 				base_dir_line.text = old_dir
 			base_dir_line.release_focus()
-		
+
 		log_header_line:
 			if new_text == "": return
-			
+
 			config.load(PATH)
 			var old_header = config.get_value("settings", "log_header_format", "")
-			
+
 			if new_text != old_header:
 				config.set_value("settings", "log_header_format", new_text)
-				var _s = config.save(PATH)
-				if _s != OK:
-					var _e = config.get_open_error()
-					printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
-				
-			
-			pass
-		
+			log_header_line.release_focus()
+
 		entry_format_line:
-			pass
-			
+			config.load(PATH)
+			var old_format = config.get_value("settings", "entry_format", "")
+			if new_text != old_format:
+				config.set_value("settings", "entry_format", new_text)
+			entry_format_line.release_focus()
+
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
