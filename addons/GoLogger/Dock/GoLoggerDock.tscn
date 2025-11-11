@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=17 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
@@ -10,27 +10,11 @@
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
 [ext_resource type="Texture2D" uid="uid://rsgyd2ce2sad" path="res://addons/GoLogger/Resources/icons/VSeparator.svg" id="4_ui2qu"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
+[ext_resource type="StyleBox" uid="uid://b8w5i8chks7st" path="res://addons/GoLogger/Resources/line_edit_stylebox_valid.tres" id="9_qo8nw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
 font_size = 12
 font_color = Color(1, 1, 1, 0.352941)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ntic"]
-bg_color = Color(0.05, 0.05, 0.05, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.4, 0.4, 0.4, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-shadow_size = 2
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_tayiv"]
 content_margin_left = 4.0
@@ -38,6 +22,23 @@ content_margin_top = 0.0
 content_margin_right = 4.0
 content_margin_bottom = 0.0
 color = Color(0.47843137, 0.47843137, 0.47843137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tayiv"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.1, 0.1, 0.1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.86, 0.17199999, 0.17199999, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_7ntic"]
 content_margin_left = 0.0
@@ -314,13 +315,13 @@ icon = ExtResource("2_6725a")
 
 [node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/BaseDirHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(172, 0)
+custom_minimum_size = Vector2(358, 0)
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". "
 theme = ExtResource("1_y5prw")
 theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = SubResource("StyleBoxFlat_7ntic")
+theme_override_styles/normal = ExtResource("9_qo8nw")
 text = "user://GoLogger/"
 placeholder_text = "user://GoLogger/"
 alignment = 1
@@ -377,6 +378,7 @@ text = "Log header format:"
 
 [node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/NewLogHeaderHBox"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(358, 0)
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
 Example: 
@@ -389,9 +391,9 @@ Supported format tags:
 	{version}
 	{yy} {mm} {dd}
 	{hh} {mi} {ss}"
-theme_override_styles/normal = SubResource("StyleBoxFlat_7ntic")
-text = "{project_name} {version} {category} session {yy-mm-dd} {hh:mi:ss}:"
-placeholder_text = "{project_name} {version} {category} {yy-mm-dd} {hh:mi:ss}:"
+theme_override_styles/normal = ExtResource("9_qo8nw")
+text = "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:"
+placeholder_text = "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:"
 alignment = 1
 max_length = 80
 expand_to_text_length = true
@@ -444,21 +446,53 @@ text = "Entry format: "
 
 [node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(358, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
+tooltip_text = "Any text and symbol formatting can be used. Avoid using curly braces for anything other than tags. Cannot be empty, requires \"{entry}\" at minimum.
 Example: 
-	\"[{hh}:{mi}:{ss}]
+	\"[{hh}:{mi}:{ss}] 
 Results: 
-	\"[09:32:16] - entry\"
+	\"[09:32:16] This is an example entry.\"
 
 Supported tags:
-	{hh mi ss} - And any combination of hour, minute, second."
-theme_override_styles/normal = SubResource("StyleBoxFlat_7ntic")
+	{hh}, {mi}, {ss} - And any combination of hour, minute, second."
+theme_override_styles/normal = ExtResource("9_qo8nw")
 text = "[{hh}:{mi}:{ss}]: {entry}"
 placeholder_text = "[{hh}:{mi}:{ss}]: {entry}"
 alignment = 1
 expand_to_text_length = true
+
+[node name="EntryFormatWarning" type="Panel" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox/EntryFormatLineEdit"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -187.0
+offset_top = -19.5
+offset_right = -12.0
+offset_bottom = 21.5
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
+
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+
+[node name="Label" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning/MarginContainer"]
+layout_mode = 2
+text = "{entry} tag required"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="EntryFormatApplyButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox"]
 unique_name_in_owner = true
@@ -551,28 +585,6 @@ theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "  Autostart session"
-
-[node name="TimestampEntriesButton" type="CheckButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-tooltip_text = "Entries inside the .log files are timestamped."
-theme = ExtResource("1_y5prw")
-theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
-button_pressed = true
-text = "  Timestamp log entries"
-
-[node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-tooltip_text = "Adds a dash separator in date- and timestamps.
-With - (yy-mm-dd_hh-mm-ss)
-Without - (yymmdd_hhmmss)"
-theme = ExtResource("1_y5prw")
-theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
-text = "  Use separator in timestamps"
 
 [node name="UTCCheckButton" type="CheckButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
 unique_name_in_owner = true

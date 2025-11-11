@@ -43,6 +43,26 @@ var popup_state : bool = false:
 		if session_status:
 			toggle_copy_popup(value)
 
+# Note that this dictionary is also present in GoLoggerDock.gd. If you update it here, update it there too.
+var default_settings := {
+		"base_directory": "user://GoLogger/",
+		"log_header_format": "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:",
+		"entry_format": "[{hh}:{mi}:{ss}]: {entry}",
+		"canvaslayer_layer": 5,
+		"autostart_session": true,
+		"use_utc": false,
+		"limit_method": 0,
+		"entry_count_action": 0,
+		"session_timer_action": 0,
+		"file_cap": 10,
+		"entry_cap": 300,
+		"session_duration": 300.0,
+		"error_reporting": 0,
+		"disable_warn1": false,
+		"disable_warn2": false,
+		"columns": 6
+}
+
 var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
 var hotkey_stop_session: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")
 var hotkey_copy_session: InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres")
@@ -65,6 +85,8 @@ func _ready() -> void:
 	popup_yesbtn.disabled = true
 
 	assert(_check_filename_conflicts() == "", str("GoLogger: Conflicting category_name [", _check_filename_conflicts(), "] found in two(or more) categories."))
+
+	validate_settings()
 
 	if _get_settings_value("autostart_session"):
 		start_session()
@@ -388,12 +410,9 @@ func create_settings_file() -> void:
 	config.set_value("settings", "columns", 6)
 	config.set_value("settings", "log_header_format", "{project_name} {version} {category} [{yy}-{mm}-{dd} | {hh:mi:ss}]:")
 	config.set_value("settings", "entry_format", "\t[{hh}:{mi}:{ss}]")
-	# config.set_value("settings", "log_header", 0) # Deprecated -> Using custom header format instead with log_header_format
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
-	# config.set_value("settings", "timestamp_entries", true) # Deprecated -> Using entry_format instead which can be left blank to remove timestamps if desired
 	config.set_value("settings", "use_utc", false)
-	config.set_value("settings", "dash_separator", false)
 	config.set_value("settings", "limit_method", 0)
 	config.set_value("settings", "entry_count_action", 0)
 	config.set_value("settings", "session_timer_action", 0)
@@ -410,7 +429,28 @@ func create_settings_file() -> void:
 
 
 func validate_settings() -> bool:
-	var faults : int = 0
+	var present_settings_faults : int = 0
+	var value_type_faults : int = 0
+	var expected_settings ={
+		"base_directory": "plugin/base_directory",
+		"category": "plugins/categories",
+		"columns": "settings/columns",
+		"log_header_format": "settings/log_header_format",
+		"entry_format": "settings/entry_format",
+		"canvaslayer_layer": "settings/canvaslayer_layer",
+		"autostart_session": "settings/autostart_session",
+		"use_utc": "settings/use_utc",
+		"limit_method": "settings/limit_method",
+		"entry_count_action": "settings/entry_count_action",
+		"session_timer_action": "settings/session_timer_action",
+		"file_cap": "settings/file_cap",
+		"entry_cap": "settings/entry_cap",
+		"session_duration": "settings/session_duration",
+		"error_reporting": "settings/error_reporting",
+		"disable_warn1": "settings/disable_warn1",
+		"disable_warn2": "settings/disable_warn2"
+	}
+
 	var expected_types = {
 		"plugin/base_directory": TYPE_STRING,
 		"plugin/categories": TYPE_ARRAY,
@@ -420,7 +460,6 @@ func validate_settings() -> bool:
 		"settings/canvaslayer_layer": TYPE_INT,
 		"settings/autostart_session": TYPE_BOOL,
 		"settings/use_utc": TYPE_BOOL,
-		"settings/dash_separator": TYPE_BOOL,
 		"settings/limit_method": TYPE_INT,
 		"settings/entry_count_action": TYPE_INT,
 		"settings/session_timer_action": TYPE_INT,
@@ -431,8 +470,6 @@ func validate_settings() -> bool:
 		"settings/disable_warn1": TYPE_BOOL,
 		"settings/disable_warn2": TYPE_BOOL
 	}
-	# "settings/log_header": TYPE_INT, # Deprecated -> Using custom header format instead with log_header_format
-	# "settings/timestamp_entries": TYPE_BOOL, # Deprecated -> Using entry_format instead which can be left blank to remove timestamps if desired
 
 	var types : Array[String] = [
 		"Nil",
@@ -452,6 +489,17 @@ func validate_settings() -> bool:
 		"Array",
 	]
 
+	# Validate existence of settings
+	for setting in expected_settings.keys():
+		var splits = expected_settings[setting].split("/")
+		if !config.has_section(splits[0]) or !config.has_property(splits[0], splits[1]):
+			push_warning(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
+			present_settings_faults += 1
+			config.set_value(splits[0], splits[1], default_settings[splits[1]])
+	if present_settings_faults > 0: push_warning("GoLogger: One or more settings were missing from the settings.ini file. Default values have been restored for the missing settings.")
+	config.save(PATH)
+
+	# Valodate types of settings
 	for setting_key in expected_types.keys():
 		var splits = setting_key.split("/")
 		var expected_type = expected_types[setting_key]
@@ -459,8 +507,8 @@ func validate_settings() -> bool:
 
 		if typeof(value) != expected_type:
 			push_warning(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
-			faults += 1
-	return faults == 0
+			value_type_faults += 1
+	return value_type_faults == 0
 
 
 static func get_error(error : int, object_type : String = "") -> String:
@@ -551,12 +599,11 @@ func _check_filename_conflicts() -> String:
 
 
 func _get_header() -> String:
-	config.load(PATH)
-
 	#TODO: Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
 
-	var _value: String = _get_settings_value("log_header_format")
-	var _header
+	config.load(PATH)
+	var format: String = _get_settings_value("log_header_format")
+	var _header: String = ""
 	var _tags: Array[String] = [
 		"{project_name}",
 		"{version}",
@@ -568,7 +615,7 @@ func _get_header() -> String:
 		"{ss}"
 	]
 
-	if _value != null and _value != "":
+	if format != null and format != "":
 		var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))
 		var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 		var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
@@ -588,7 +635,7 @@ func _get_header() -> String:
 			"{ss}": ss
 		}
 
-		_header = _value
+		_header = format
 		for tag in _tags:
 			if tag in replacements:
 				_header = _header.replace(tag, replacements[tag])
@@ -636,8 +683,25 @@ func _get_entry_format(entry: String) -> String:
 		"{entry}"
 	]
 
+	var replacements: Dictionary = {
+		"{project_name}": str(ProjectSettings.get_setting("application/config/name")),
+		"{version}": str(ProjectSettings.get_setting("application/config/version")),
+		"{yy}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["year"]).substr(2, 2),
+		"{mm}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["month"]),
+		"{dd}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["day"]),
+		"{hh}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["hour"]),
+		"{mi}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["minute"]),
+		"{ss}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["second"]),
+		"{entry}": entry
+	}
 
-	return entry # Placeholder for future implementation
+	var format: String = _get_settings_value("entry_format")
+	var final_entry: String = format
+	for tag in _tags:
+		if tag in replacements:
+			final_entry = final_entry.replace(tag, replacements[tag])
+
+	return final_entry
 
 
 func _get_file_name(category_name : String) -> String:

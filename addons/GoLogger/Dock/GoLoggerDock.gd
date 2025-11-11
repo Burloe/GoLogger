@@ -28,6 +28,7 @@ signal update_index
 @onready var entry_format_line: LineEdit = %EntryFormatLineEdit
 @onready var entry_format_apply_btn: Button = %EntryFormatApplyButton
 @onready var entry_format_reset_btn: Button = %EntryFormatResetButton
+@onready var entry_format_warning: Panel = %EntryFormatWarning
 
 @onready var log_header_btn: OptionButton = %LogHeaderOptButton
 @onready var log_header_container: HBoxContainer = %LogHeaderHBox
@@ -83,6 +84,8 @@ var session_duration_spinbox_line: LineEdit
 
 const PATH = "user://GoLogger/settings.ini"
 
+var valid_line_edit_stylebox := preload("uid://b8w5i8chks7st")
+var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
 var config = ConfigFile.new()
 var log_header_string: String
@@ -99,6 +102,26 @@ var c_font_normal := Color("9d9ea0")
 var c_font_hover := Color("f2f2f2")
 var c_print_history := Color("878787")
 
+# Note that this dictionary is also present in Log.gd. If you update it here, update it there too.
+var default_settings := {
+		"base_directory": "user://GoLogger/",
+		"log_header_format": "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:",
+		"entry_format": "[{hh}:{mi}:{ss}]: {entry}",
+		"canvaslayer_layer": 5,
+		"autostart_session": true,
+		"use_utc": false,
+		"limit_method": 0,
+		"entry_count_action": 0,
+		"session_timer_action": 0,
+		"file_cap": 10,
+		"entry_cap": 300,
+		"session_duration": 300.0,
+		"error_reporting": 0,
+		"disable_warn1": false,
+		"disable_warn2": false,
+		"columns": 6
+}
+
 # When adding new settings, add the Labels and any Control nodes to the
 # container_array, btns_array, corresponding_lbls arrays respectively in
 # _ready() to enable the label highlighting feature.
@@ -107,6 +130,8 @@ var c_print_history := Color("878787")
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
+		entry_format_warning.visible = !_check_valid_entry_format(entry_format_line.text)
+
 		# Ensure or create settings.ini
 		var _d = DirAccess.open("user://GoLogger/")
 		if !_d:
@@ -389,10 +414,12 @@ func create_settings_file() -> void:
 	var _a = [["game", 0, "null", "null", 0, 0, true], ["error", 1, "null", "null", 0, 0, true]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
-	config.set_value("settings", "log_header", 0)
+	config.set_value("settings", "log_header_format", "{project_name} {version} {category} session {yy-mm-dd} {hh:mi:ss}:")
+	config.set_value("settings", "entry_format", "[{hh}:{mi}:{ss}]: {entry}")
+	# config.set_value("settings", "log_header", 0)
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
-	config.set_value("settings", "timestamp_entries", true)
+	# config.set_value("settings", "timestamp_entries", true)
 	config.set_value("settings", "use_utc", false)
 	config.set_value("settings", "dash_separator", false)
 	config.set_value("settings", "limit_method", 0)
@@ -573,14 +600,15 @@ func _on_button_button_up(node: Button) -> void:
 			config.set_value("plugin", "base_directory", "user://GoLogger/")
 			config.save(PATH)
 			base_dir_line.text = config.get_value("plugin", "base_directory")
-			print_rich("[color=878787][GoLogger] Base directory changed to default.")
+			print_rich("[color=878787][GoLogger] Base directory reset to default.")
 
 		log_header_apply_btn:
-			pass
+			config.set_value("settings", "log_header_format", log_header_line.text)
+			config.save(PATH)
 
 		log_header_reset_btn:
-			log_header_btn.selected = 0
-			config.set_value("settings", "log_header", 0)
+			log_header_line.text = default_settings["log_header_format"]
+			config.set_value("settings", "log_header_format", default_settings["log_header_format"])
 			config.save(PATH)
 			print_rich("[color=878787][GoLogger] Log header option reset to default.")
 
@@ -590,13 +618,16 @@ func _on_button_button_up(node: Button) -> void:
 			print_rich("[color=878787][GoLogger] Entry format changed to: ", entry_format_line.text)
 
 		entry_format_reset_btn:
-			config.set_value("settings", "entry_format", "[{hh}:{mi}:{ss}] {entry}")
+			entry_format_line.text = config.get_value("settings", "entry_format", default_settings["entry_format"])
+			config.set_value("settings", "entry_format", default_settings["entry_format"])
+			config.save(PATH)
+			print_rich("[color=878787][GoLogger] Entry format reset to default.")
 
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
-	if node.get_caret_column() == node.text.length() - 1:
-		node.set_caret_column(node.text.length())
-	else: node.set_caret_column(node.get_caret_column() + 1)
+	# if node.get_caret_column() == node.text.length() - 1:
+	# 	node.set_caret_column(node.text.length())
+	# else: node.set_caret_column(node.get_caret_column() + 1)
 
 	match node:
 		base_dir_line:
@@ -606,13 +637,22 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 				base_dir_apply_btn.disabled = false
 			else:
 				base_dir_apply_btn.disabled = true
+
 		log_header_line:
 			if new_text != config.get_value("settings", "log_header_format", ""):
 				log_header_apply_btn.disabled = false
 			else:
 				log_header_apply_btn.disabled = true
+
 		entry_format_line:
-			if new_text != config.get_value("settings", "entry_format", ""):
+			if _check_valid_entry_format(new_text):
+				entry_format_line.add_theme_stylebox_override("normal", valid_line_edit_stylebox)
+				entry_format_warning.visible = false
+			else:
+				entry_format_line.add_theme_stylebox_override("normal", invalid_line_edit_stylebox)
+				entry_format_warning.visible = true
+
+			if new_text != config.get_value("settings", "entry_format", "") and _check_valid_entry_format(new_text):
 				entry_format_apply_btn.disabled = false
 			else:
 				entry_format_apply_btn.disabled = true
@@ -652,9 +692,14 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			config.load(PATH)
 			var old_format = config.get_value("settings", "entry_format", "")
 			if new_text != old_format:
-				config.set_value("settings", "entry_format", new_text)
+				entry_format_apply_btn.disabled = false
+			if new_text == "":
+				entry_format_line.text = "{entry}"
 			entry_format_line.release_focus()
 
+
+func _check_valid_entry_format(format: String) -> bool:
+	return true if format.contains("{entry}") else false
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
