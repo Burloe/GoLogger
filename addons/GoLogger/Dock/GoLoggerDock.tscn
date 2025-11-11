@@ -456,7 +456,7 @@ Results:
 	\"[09:32:16] This is an example entry.\"
 
 Supported tags:
-	{hh}, {mi}, {ss} - And any combination of hour, minute, second."
+	{hh}, {mi}, {ss} - And any combination of hour, minute and second."
 theme_override_styles/normal = ExtResource("9_qo8nw")
 text = "[{hh}:{mi}:{ss}]: {entry}"
 placeholder_text = "[{hh}:{mi}:{ss}]: {entry}"

@@ -409,19 +409,18 @@ static func get_error(error: int, object_type: String = "") -> String:
 	return "N/A"
 
 
-
+# Note mirror function also present in Log.gd. e
 func create_settings_file() -> void:
-	var _a = [["game", 0, "null", "null", 0, 0, true], ["error", 1, "null", "null", 0, 0, true]]
+	var _a : Array[Array] = [["game", 0, "null", "null", 0, 0, false], ["player", 1, "null", "null", 0, 0, false]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
-	config.set_value("settings", "log_header_format", "{project_name} {version} {category} session {yy-mm-dd} {hh:mi:ss}:")
-	config.set_value("settings", "entry_format", "[{hh}:{mi}:{ss}]: {entry}")
-	# config.set_value("settings", "log_header", 0)
+
+	config.set_value("settings", "columns", 6)
+	config.set_value("settings", "log_header_format", "{project_name} {version} {category} [{yy}-{mm}-{dd} | {hh:mi:ss}]:")
+	config.set_value("settings", "entry_format", "\t[{hh}:{mi}:{ss}]")
 	config.set_value("settings", "canvaslayer_layer", 5)
 	config.set_value("settings", "autostart_session", true)
-	# config.set_value("settings", "timestamp_entries", true)
 	config.set_value("settings", "use_utc", false)
-	config.set_value("settings", "dash_separator", false)
 	config.set_value("settings", "limit_method", 0)
 	config.set_value("settings", "entry_count_action", 0)
 	config.set_value("settings", "session_timer_action", 0)
@@ -431,10 +430,10 @@ func create_settings_file() -> void:
 	config.set_value("settings", "error_reporting", 0)
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false)
-	config.set_value("settings", "columns", 6)
 	var _s = config.save(PATH)
 	if _s != OK:
-		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_s, "ConfigFile")))
+		var _e = config.get_open_error()
+		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 func load_settings_state() -> void:
@@ -460,6 +459,7 @@ func load_settings_state() -> void:
 	config.save(PATH)
 
 
+# Note mirror function also present in Log.gd. ensure both are kept in sync.
 func validate_settings() -> void:
 	var present_settings_faults : int = 0
 	var value_type_faults : int = 0
@@ -677,10 +677,6 @@ func _on_button_button_up(node: Button) -> void:
 
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
-	# if node.get_caret_column() == node.text.length() - 1:
-	# 	node.set_caret_column(node.text.length())
-	# else: node.set_caret_column(node.get_caret_column() + 1)
-
 	match node:
 		base_dir_line:
 			if new_text == "":

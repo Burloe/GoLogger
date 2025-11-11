@@ -13,6 +13,9 @@ extends Node
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
 	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
 
+# Release Checklist:
+	# Test manual test entry with KEY_COMMA in _input()
+
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
 
@@ -112,8 +115,8 @@ func _input(event: InputEvent) -> void:
 				save_copy()
 
 		# Test entry logging with Comma Key.
-		# if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
-		# 	entry("Test entry", 0, true)
+		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
+			entry("Test entry", 0, true)
 
 
 
@@ -283,7 +286,8 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 	for line in lines:
 		_fw.store_line(str(line))
-	var new_entry : String = str("\t", _timestamp, log_entry) if _get_settings_value("timestamp_entries") else str("\t", log_entry)
+	# var new_entry : String = str("\t", _timestamp, log_entry) if _get_settings_value("timestamp_entries") else str("\t", log_entry)
+	var new_entry: String = _get_entry_format(log_entry)
 	_fw.store_line(new_entry)
 	_fw.close()
 	if print_entry_to_output:
@@ -402,6 +406,7 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 		popup_line_edit.release_focus()
 
 
+# Note mirror function also present in GoLoggerDock.gd. Keep both in sunc.
 func create_settings_file() -> void:
 	var _a : Array[Array] = [["game", 0, "null", "null", 0, 0, false], ["player", 1, "null", "null", 0, 0, false]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
@@ -428,7 +433,7 @@ func create_settings_file() -> void:
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
-# Note that this function is also present in GoLoggerDock.gd. If you update it here, update it there too.
+# Note mirror function also present in GoLoggerDock.gd. Keep both in sunc.
 func validate_settings() -> void:
 	var present_settings_faults : int = 0
 	var value_type_faults : int = 0
@@ -602,8 +607,6 @@ func _check_filename_conflicts() -> String:
 
 
 func _get_header() -> String:
-	#TODO: Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
-
 	config.load(PATH)
 	var format: String = _get_settings_value("log_header_format")
 	var _header: String = ""
@@ -644,33 +647,34 @@ func _get_header() -> String:
 				_header = _header.replace(tag, replacements[tag])
 
 		return str(_header, " ")
-
-
-
-	match _get_settings_value("log_header"):
-		0: # Project name and version
-			var _p_name = str(ProjectSettings.get_setting("application/config/name"))
-			var _version = str(ProjectSettings.get_setting("application/config/version"))
-			if _p_name == "":
-				_p_name = "Untitled Project"
-			if _version == "":
-				_version = "v0.0"
-			return str(_p_name, " v", _version, " ")
-		1: # Project name
-			var _p_name = str(ProjectSettings.get_setting("application/config/name"))
-			if _p_name == "":
-				printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
-				_p_name = "Untitled Project"
-			return str(_p_name, " ")
-		2: # Version
-			var _version = str(ProjectSettings.get_setting("application/config/version"))
-			if _version == "":
-				printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
-				_version = "v0.0"
-			return str(_version, " ")
-		3: # None
-			return ""
 	return ""
+
+
+
+	# match _get_settings_value("log_header"):
+	# 	0: # Project name and version
+	# 		var _p_name = str(ProjectSettings.get_setting("application/config/name"))
+	# 		var _version = str(ProjectSettings.get_setting("application/config/version"))
+	# 		if _p_name == "":
+	# 			_p_name = "Untitled Project"
+	# 		if _version == "":
+	# 			_version = "v0.0"
+	# 		return str(_p_name, " v", _version, " ")
+	# 	1: # Project name
+	# 		var _p_name = str(ProjectSettings.get_setting("application/config/name"))
+	# 		if _p_name == "":
+	# 			printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
+	# 			_p_name = "Untitled Project"
+	# 		return str(_p_name, " ")
+	# 	2: # Version
+	# 		var _version = str(ProjectSettings.get_setting("application/config/version"))
+	# 		if _version == "":
+	# 			printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
+	# 			_version = "v0.0"
+	# 		return str(_version, " ")
+	# 	3: # None
+	# 		return ""
+	# return ""
 
 
 func _get_entry_format(entry: String) -> String:
@@ -686,15 +690,24 @@ func _get_entry_format(entry: String) -> String:
 		"{entry}"
 	]
 
+	var dt: Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))
+
+	var yy: String = str(dt["year"]).substr(2, 2)
+	var mm: String = str(dt["month"]  if dt["month"]  > 9 else str("0", dt["month"]))
+	var dd: String = str(dt["day"]    if dt["day"]    > 9 else str("0", dt["day"]))
+	var hh: String = str(dt["hour"]   if dt["hour"]   > 9 else str("0", dt["hour"]))
+	var mi: String = str(dt["minute"] if dt["minute"] > 9 else str("0", dt["minute"]))
+	var ss: String = str(dt["second"] if dt["second"] > 9 else str("0", dt["second"]))
+
 	var replacements: Dictionary = {
 		"{project_name}": str(ProjectSettings.get_setting("application/config/name")),
 		"{version}": str(ProjectSettings.get_setting("application/config/version")),
-		"{yy}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["year"]).substr(2, 2),
-		"{mm}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["month"]),
-		"{dd}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["day"]),
-		"{hh}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["hour"]),
-		"{mi}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["minute"]),
-		"{ss}": str(Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))["second"]),
+		"{yy}": yy,
+		"{mm}": mm,
+		"{dd}": dd,
+		"{hh}": hh,
+		"{mi}": mi,
+		"{ss}": ss,
 		"{entry}": entry
 	}
 
@@ -705,6 +718,7 @@ func _get_entry_format(entry: String) -> String:
 			final_entry = final_entry.replace(tag, replacements[tag])
 
 	return final_entry
+
 
 
 func _get_file_name(category_name : String) -> String:
