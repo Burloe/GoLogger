@@ -34,6 +34,9 @@ var session_status: bool = false:
 		if value: session_started.emit()
 		else: session_stopped.emit()
 
+## Instance ID is a unique ID for each runtime instance of GoLogger. Used to differentiate between multiple instances when debugging multiplayer projects.
+var instance_id: String = "" 
+
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
 @onready var popup: CenterContainer = %Popup
@@ -727,6 +730,40 @@ func _get_file_name(category_name : String) -> String:
 	fin = str(category_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if _get_settings_value("dash_separator") else str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
 
 	return fin
+
+
+func _get_instance_id() -> String:
+	var rng := RandomNumberGenerator.new()
+	var letters	: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789"
+	var id_len: int = 5
+	var id_str	: String = "_"
+	rng.randomize()
+
+	# Generate initial ID
+	for i in range(id_len):
+		var idx: int = rng.randi_range(0, letters.length() -1)
+		id_str += letters[idx]
+	
+	# Load used IDs and remove last used ID
+	config.load(PATH)
+	var used_ids: Array = config.get_value("instance_id", "ids", [])
+	var _d := DirAccess.open(base_directory)
+	if _d:
+		var _files: Array = _d.get_files()
+		for f in _files:
+			if f.ends_with(".log"):
+				var fname: String = f.substr(0, f.length() - 4)
+				if fname in used_ids:
+					used_ids.erase(fname)
+	
+	# Check for conflicts and regenerate if needed
+	while id_str in used_ids:
+		id_str = "_"
+		for i in range(id_len):
+			var idx: int = rng.randi_range(0, letters.length() -1)
+			id_str += letters[idx]
+
+	return id_str
 
 
 

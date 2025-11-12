@@ -17,22 +17,23 @@ signal update_index
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
+@onready var base_dir_lbl: Label = %BaseDirLabel
 @onready var base_dir_apply_btn: Button = %BaseDirApplyButton
 @onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
 @onready var base_dir_reset_btn: Button = %BaseDirResetButton
 
 @onready var log_header_line: LineEdit = %LogHeaderLineEdit
+@onready var log_header_lbl: Label = %LogHeaderLabel
 @onready var log_header_apply_btn: Button = %LogHeaderApplyButton
 @onready var log_header_reset_btn: Button = %LogHeaderResetButton
+@onready var log_header_container: HBoxContainer = %LogHeaderHbox
 
 @onready var entry_format_line: LineEdit = %EntryFormatLineEdit
+@onready var entry_format_lbl: Label = %EntryFormatLabel
 @onready var entry_format_apply_btn: Button = %EntryFormatApplyButton
 @onready var entry_format_reset_btn: Button = %EntryFormatResetButton
 @onready var entry_format_warning: Panel = %EntryFormatWarning
-
-@onready var log_header_btn: OptionButton = %LogHeaderOptButton
-@onready var log_header_container: HBoxContainer = %LogHeaderHBox
-@onready var log_header_lbl: Label = %LogHeaderLabel
+@onready var entry_format_container: HBoxContainer = %EntryFormatHBox
 
 var canvas_spinbox_line: LineEdit
 @onready var canvas_layer_spinbox: SpinBox = %CanvasLayerSpinBox
@@ -40,9 +41,7 @@ var canvas_spinbox_line: LineEdit
 @onready var canvas_layer_container: HBoxContainer = %CanvasLayerHBox
 
 @onready var autostart_btn: CheckButton = %AutostartCheckButton
-@onready var timestamp_entries_btn: CheckButton = %TimestampEntriesButton
 @onready var utc_btn: CheckButton = %UTCCheckButton
-@onready var dash_btn: CheckButton = %SeparatorCheckButton
 
 @onready var limit_method_btn: OptionButton = %LimitMethodOptButton
 @onready var limit_method_lbl: Label = %LimitMethodLabel
@@ -167,12 +166,9 @@ func _ready() -> void:
 			log_header_apply_btn,
 			entry_format_line,
 			entry_format_apply_btn,
-			log_header_btn,
 			canvas_layer_spinbox,
 			autostart_btn,
 			utc_btn,
-			timestamp_entries_btn,
-			dash_btn,
 			limit_method_btn,
 			entry_count_action_btn,
 			session_timer_action_btn,
@@ -239,6 +235,7 @@ func _ready() -> void:
 
 		container_array = [
 			log_header_container,
+			entry_format_container,
 			canvas_layer_container,
 			limit_method_container,
 			entry_count_action_container,
@@ -251,7 +248,6 @@ func _ready() -> void:
 
 		var btns_array = [
 			# base_dir_line,
-			log_header_btn,
 			canvas_layer_spinbox,
 			limit_method_btn,
 			entry_count_action_btn,
@@ -264,6 +260,7 @@ func _ready() -> void:
 
 		var corresponding_lbls = [
 			log_header_lbl,
+			entry_format_lbl,
 			canvas_layer_lbl,
 			limit_method_lbl,
 			entry_count_action_lbl,
@@ -440,12 +437,11 @@ func load_settings_state() -> void:
 	config.load(PATH)
 	base_dir_line.text = 										config.get_value("plugin", 	 "base_directory", "user://GoLogger/")
 	base_dir_apply_btn.disabled = true
-	log_header_btn.selected = 							config.get_value("settings", "log_header", 0)
+	log_header_line.text = 									config.get_value("settings", "log_header_format", "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:")
+	entry_format_line.text = 								config.get_value("settings", "entry_format", "[{hh}:{mi}:{ss}]: {entry}")
 	canvas_layer_spinbox.value = 						config.get_value("settings", "canvaslayer_layer", 5)
 	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session", true)
-	timestamp_entries_btn.button_pressed = 	config.get_value("settings", "timestamp_entries", true)
 	utc_btn.button_pressed = 								config.get_value("settings", "use_utc", false)
-	dash_btn.button_pressed = 							config.get_value("settings", "dash_separator", false)
 	limit_method_btn.selected = 						config.get_value("settings", "limit_method", 0)
 	entry_count_action_btn.selected = 			config.get_value("settings", "entry_count_action", 0)
 	entry_count_action_btn.selected = 			config.get_value("settings", "session_timer_action", 0)

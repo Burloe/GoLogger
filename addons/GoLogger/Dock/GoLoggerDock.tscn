@@ -285,6 +285,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
 [node name="BaseDirHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 8
@@ -355,7 +356,7 @@ icon = ExtResource("3_y66hb")
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_tayiv")
 
-[node name="NewLogHeaderHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox"]
+[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
@@ -371,20 +372,19 @@ Supported format tags:
 	{hh} {mi} {ss}"
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/NewLogHeaderHBox"]
+[node name="LogHeaderLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Log header format:"
 
-[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/NewLogHeaderHBox"]
+[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(358, 0)
 layout_mode = 2
-tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
-Example: 
-\"{project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:\" 
-Results:
-\"GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
+tooltip_text = "Any text and symbol formatting can be used. 
+
+Example: \"{project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:\" 
+Results: \"GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
 	{project_name}
@@ -398,7 +398,7 @@ alignment = 1
 max_length = 80
 expand_to_text_length = true
 
-[node name="LogHeaderApplyButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/NewLogHeaderHBox"]
+[node name="LogHeaderApplyButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Apply the new log header format"
@@ -410,7 +410,7 @@ theme_override_font_sizes/font_size = 14
 disabled = true
 icon = ExtResource("8_11ofg")
 
-[node name="LogHeaderResetButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/NewLogHeaderHBox"]
+[node name="LogHeaderResetButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Reset to:
@@ -426,6 +426,7 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_tayiv")
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -439,7 +440,8 @@ Supported tags:
 	{hh mi ss} - And any combination of hour, minute, second."
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox"]
+[node name="EntryFormatLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Entry format: "
@@ -645,7 +647,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
-Setting this to 0 will disable this(use with caution)."
+0 value will disable this feature *USE WITH CAUTION*"
 alignment = 2
 
 [node name="FileCountLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/FileCountHBox"]
@@ -661,8 +663,8 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
-Setting this to 0 will disable this(use with caution)."
-max_value = 30.0
+0 value will disable this feature *USE WITH CAUTION*"
+max_value = 50.0
 value = 10.0
 alignment = 2
 update_on_text_changed = true
