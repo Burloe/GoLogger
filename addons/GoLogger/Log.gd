@@ -35,7 +35,7 @@ var session_status: bool = false:
 		else: session_stopped.emit()
 
 ## Instance ID is a unique ID for each runtime instance of GoLogger. Used to differentiate between multiple instances when debugging multiplayer projects.
-var instance_id: String = "" 
+var instance_id: String = ""
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
@@ -96,6 +96,7 @@ func _ready() -> void:
 	assert(_check_filename_conflicts() == "", str("GoLogger: Conflicting category_name [", _check_filename_conflicts(), "] found in two(or more) categories."))
 
 	validate_settings()
+	instance_id = _get_instance_id()
 
 	if _get_settings_value("autostart_session"):
 		start_session()
@@ -151,49 +152,53 @@ func start_session() -> void:
 			_path = str(base_directory, categories[i][0], "_Gologs/")
 
 		if _path == "": # ERROR CHECK
+
 			if _get_settings_value("error_reporting") == 0:
 				push_error(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
+
 			if _get_settings_value("error_reporting") == 1:
 				push_warning(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
+
 			return
 
-		else: # No errors, proceed to create/open directory and log file
-			var _dir : DirAccess
-			if !DirAccess.dir_exists_absolute(_path):
-				DirAccess.make_dir_recursive_absolute(_path)
-			if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
-				DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
-			_dir = DirAccess.open(_path)
 
-			if !_dir and _get_settings_value("error_reporting") != 2:
+		var _dir : DirAccess
+
+		if !DirAccess.dir_exists_absolute(_path):
+			DirAccess.make_dir_recursive_absolute(_path)
+
+		if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
+			DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
+		_dir = DirAccess.open(_path)
+
+		if !_dir and _get_settings_value("error_reporting") != 2:
+			var _err = DirAccess.get_open_error()
+			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _path, ").")
+			return
+
+		categories[i][2] = _get_file_name(categories[i][0])
+		categories[i][3] = str(_path, categories[i][2])
+		var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
+		var _files = _dir.get_files()
+		categories[i][4] = _files.size()
+		if _get_settings_value("file_cap") > 0:
+			while _files.size() > _get_settings_value("file_cap") -1:
+				_files.sort()
+				_dir.remove(_files[0])
+				_files.remove_at(0)
+
 				var _err = DirAccess.get_open_error()
-				if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _path, ").")
-				return
+				if _err != OK and _get_settings_value("error_reporting") != 2:
+					push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 
-			else:
-				categories[i][2] = _get_file_name(categories[i][0])
-				categories[i][3] = str(_path, categories[i][2])
-				var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
-				var _files = _dir.get_files()
-				categories[i][4] = _files.size()
-				if _get_settings_value("file_cap") > 0:
-					while _files.size() > _get_settings_value("file_cap") -1:
-						_files.sort()
-						_dir.remove(_files[0])
-						_files.remove_at(0)
+		if !_f and _get_settings_value("error_reporting") != 2:
+			push_warning("GoLogger: Failed to create log file(", categories[i][3], ").")
 
-						var _err = DirAccess.get_open_error()
-						if _err != OK and _get_settings_value("error_reporting") != 2:
-							push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
-
-				if !_f and _get_settings_value("error_reporting") != 2:
-					push_warning("GoLogger: Failed to create log file(", categories[i][3], ").")
-
-				else:
-					var _s := str(header_string, categories[i][0], " Log session started[", Time.get_datetime_string_from_system(_get_settings_value("use_utc"), true), "]:")
-					_f.store_line(_s)
-					categories[i][5] = 0
-				_f.close()
+		else:
+			var _s := str(header_string, categories[i][0], " Log session started[", Time.get_datetime_string_from_system(_get_settings_value("use_utc"), true), "]:")
+			_f.store_line(_s)
+			categories[i][5] = 0
+		_f.close()
 
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
@@ -727,44 +732,101 @@ func _get_file_name(category_name : String) -> String:
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
 	var fin : String
-	fin = str(category_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if _get_settings_value("dash_separator") else str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
+	fin = str(category_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if _get_settings_value("dash_separator") else str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")", instance_id, ".log")
 
 	return fin
 
 
 func _get_instance_id() -> String:
+	# Create RNG and initial ID (keeps the old leading underscore format)
 	var rng := RandomNumberGenerator.new()
-	var letters	: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789"
+	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789"
 	var id_len: int = 5
-	var id_str	: String = "_"
+	var id_str: String = "_"
 	rng.randomize()
-
-	# Generate initial ID
 	for i in range(id_len):
-		var idx: int = rng.randi_range(0, letters.length() -1)
+		var idx: int = rng.randi_range(0, letters.length() - 1)
 		id_str += letters[idx]
-	
-	# Load used IDs and remove last used ID
+
+	# Collect used IDs by scanning category log folders and their saved_logs subfolders
+	var used_ids: Array = []
 	config.load(PATH)
-	var used_ids: Array = config.get_value("instance_id", "ids", [])
-	var _d := DirAccess.open(base_directory)
-	if _d:
-		var _files: Array = _d.get_files()
-		for f in _files:
-			if f.ends_with(".log"):
-				var fname: String = f.substr(0, f.length() - 4)
-				if fname in used_ids:
-					used_ids.erase(fname)
-	
-	# Check for conflicts and regenerate if needed
-	while id_str in used_ids:
+	var categories_list: Array = config.get_value("plugin", "categories", [])
+	for cat in categories_list:
+		if typeof(cat) != TYPE_ARRAY or cat.size() == 0:
+			continue
+		var cat_name: String = str(cat[0])
+		if cat_name == "":
+			continue
+
+		# Check  main category folder
+		var gologs_path := str(base_directory, cat_name, "_Gologs/")
+		var d := DirAccess.open(gologs_path)
+		if d:
+			var files := d.get_files()
+			for f in files:
+				if f.ends_with(".log"):
+					var base := f.substr(0, f.length() - 4) # remove ".log"
+					var id := _extract_id_from_basename(base)
+					if id != "" and id not in used_ids:
+						used_ids.append(id)
+
+			# Check saved_logs subfolder
+			var saved_path := str(gologs_path, "saved_logs/")
+			var ds := DirAccess.open(saved_path)
+			if ds:
+				var sfiles := ds.get_files()
+				for sf in sfiles:
+					if sf.ends_with(".log"):
+						var sbase := sf.substr(0, sf.length() - 4)
+						var sid := _extract_id_from_basename(sbase)
+						if sid != "" and sid not in used_ids:
+							used_ids.append(sid)
+
+	# Re-generate ID if conflict found
+	while id_str.substr(1) in used_ids:
 		id_str = "_"
 		for i in range(id_len):
-			var idx: int = rng.randi_range(0, letters.length() -1)
+			var idx := rng.randi_range(0, letters.length() - 1)
 			id_str += letters[idx]
 
 	return id_str
 
+
+func _extract_id_from_basename(basename: String) -> String:
+	# Used by _get_instance_id exclusively to extract the ID portion from a filename
+	#
+	# Extracts the ID from a basename like:
+	#   "game(241112_215340)D39fk" -> "D39fk"
+	# Returns "" if none or invalid.
+
+	var pos := basename.rfind(")")
+	if pos == -1 or pos >= basename.length() - 1:
+		return ""
+	var candidate := basename.substr(pos + 1, basename.length() - (pos + 1)).strip_edges()
+	if candidate == "":
+		return ""
+
+	var id_regex := RegEx.new()
+
+	if id_regex.compile(r"^[A-Za-z][A-Za-z0-9_-]*$") == OK:
+		var m := id_regex.search(candidate)
+		return candidate if m else ""
+
+	else: # Ensure first char is a letter (is_valid_ascii_identifier requires the first char to be a letter)
+		if candidate.length() == 0:
+			return ""
+		var first_ch := candidate.substr(0, 1)
+		if not (first_ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"):
+			return ""
+
+		# Validate remaining characters
+		for i in range(1, candidate.length()):
+			var ch := candidate.substr(i, 1)
+			# ch.is_valid_ascii_identifier() covers letters, digits and underscore.
+			if not (ch.is_valid_ascii_identifier() or ch == "-"):
+				return ""
+		return candidate
 
 
 func _on_timer_timeout(_timer: Timer) -> void:
