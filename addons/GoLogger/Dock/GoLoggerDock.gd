@@ -3,7 +3,7 @@ extends TabContainer
 
 # TODO:
 	# Implement a print_rich() calls whenever a setting is changed to notify the user of the change in the output console.
-	# Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
+	# [done]Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
 
 signal update_index
 
@@ -100,7 +100,7 @@ var btn_array: Array[Control] = []
 var container_array: Array[Control] = []
 var c_font_normal := Color("9d9ea0")
 var c_font_hover := Color("f2f2f2")
-var c_print_history := Color("878787")
+var c_print_history := "[color=878787][GoLogger] "
 
 # Note that this dictionary is also present in Log.gd. If you update it here, update it there too.
 var default_settings := {
@@ -515,10 +515,30 @@ func validate_settings() -> void:
 		"Rect2i",
 		"Vector3",
 		"Vector3i",
+		"Transform2D",
+		"Plane",
+		"Quaternion",
+		"AABB",
+		"Basis",
+		"Transform3D",
 		"Color",
 		"StringName",
+		"NodePath",
+		"RID",
+		"Object",
+		"Callable",
+		"Signal",
 		"Dictionary",
 		"Array",
+		"PackedByteArray",
+		"PackedInt32Array",
+		"PackedInt64Array",
+		"PackedFloat32Array",
+		"PackedFloat64Array",
+		"PackedStringArray",
+		"PackedVector2Array",
+		"PackedVector3Array",
+		"PackedColorArray"
 	]
 
 	# Validate presence of settings -> Apply default if missing
@@ -605,8 +625,8 @@ func update_move_buttons() -> void:
 		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
 
 
+
 func _check_valid_entry_format(format: String) -> bool:
-	# Simple check to ensure {entry} tag is present to display error warning in the dock
 	return true if format.contains("{entry}") else false
 
 
@@ -730,7 +750,6 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 
 
 
-
 func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 	match node:
 		base_dir_line:
@@ -771,38 +790,26 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 	match node:
-		log_header_btn:
-			match index:
-				0: # Project name & version
-					var _n = str(ProjectSettings.get_setting("application/config/name"))
-					var _v = str(ProjectSettings.get_setting("application/config/version"))
-					if _n == "": printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
-					if _v == "": printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
-					log_header_string = str(_n, " V.", _v)
-				1: # Project name
-					log_header_string = str(ProjectSettings.get_setting("application/config/name"))
-				2: # Version
-					log_header_string = str("Version.", ProjectSettings.get_setting("application/config/version"))
-				3: # None
-					log_header_string = ""
-			config.set_value("settings", "log_header", index)
-
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
+			print_rich(c_print_history, "Limit method changed.")
 
 		entry_count_action_btn:
 			config.set_value("settings", "entry_count_action", index)
+			print_rich(c_print_history, "Entry Count Action changed")
 
 		session_timer_action_btn:
 			config.set_value("settings", "session_timer_action", index)
+			print_rich(c_print_history, "Session Timer Action changed.")
 
 		error_rep_btn:
 			config.set_value("settings", "error_reporting", index)
+			print_rich(c_print_history, "Error Reporting level changed.")
 
-	var _s = config.save(PATH)
-	if _s != OK:
+	var _err = config.save(PATH)
+	if _err != OK:
 		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+		print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
@@ -810,22 +817,24 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 
 		autostart_btn:
 			config.set_value("settings", "autostart_session", toggled_on)
-
-		timestamp_entries_btn:
-			config.set_value("settings", "timestamp_entries", toggled_on)
+			print_rich(c_print_history + "Autostart session option " + "enabled." if toggled_on else "disabled.")
 
 		utc_btn:
 			config.set_value("settings", "use_utc", toggled_on)
-
-		dash_btn:
-			config.set_value("settings", "dash_separator", toggled_on)
+			print_rich(c_print_history, "Use UTC option " + "enabled." if toggled_on else "disabled.")
 
 		disable_warn1_btn:
 			config.set_value("settings", "disable_warn1", toggled_on)
+			print_rich(c_print_history, "Failed to start session warning " + "disabled." if toggled_on else "enabled.")
 
 		disable_warn2_btn:
 			config.set_value("settings", "disable_warn2", toggled_on)
-	config.save(PATH)
+			print_rich(c_print_history, "Failed to log entry warning " + "disabled." if toggled_on else "enabled.")
+
+	var _err = config.save(PATH)
+	if _err != OK:
+		var _e = config.get_open_error()
+		print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
@@ -838,19 +847,24 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 	match node:
 		entry_count_spinbox:
 			config.set_value("settings", "entry_cap", int(value))
+			print_rich(c_print_history, "Entry cap changed to ", str(int(value)), ".")
 
 		session_duration_spinbox:
 			config.set_value("settings", "session_duration", int(value))
+			print_rich(c_print_history, "Session duration changed to ", str(int(value)), " seconds.")
 
 		file_count_spinbox:
 			config.set_value("settings", "file_cap", int(value))
+			print_rich(c_print_history, "File cap changed to ", str(int(value)), ".")
 
 		canvas_layer_spinbox:
 			config.set_value("settings", "canvaslayer_layer", int(value))
-	var _s = config.save(PATH)
-	if _s != OK:
+			print_rich(c_print_history, "Save Copy canvas layer changed to ", str(int(value)), ".")
+
+	var _err = config.save(PATH)
+	if _err != OK:
 		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+		print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
@@ -879,18 +893,20 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus()
 
-	# node.release_focus()
-	var _s = config.save(PATH)
-	if _s != OK:
+	var _err = config.save(PATH)
+	if _err != OK:
 		var _e = config.get_open_error()
-		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+		print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 func _on_columns_slider_value_changed(value: int) -> void:
 	category_container.columns = value
 	columns_slider.tooltip_text = str(value)
 	config.set_value("settings", "columns", value)
-	config.save(PATH)
+	var _err = config.save(PATH)
+	if _err != OK:
+		var _e = config.get_open_error()
+		print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
 func _on_name_warning(toggled_on: bool, type : int) -> void:
@@ -915,6 +931,8 @@ func _on_index_changed(category: LogCategory, new_index: int) -> void:
 			break
 	if !conflict_found:
 		category.index = new_index
+
+	print_rich(c_print_history, "Category '", category.category_name, "' moved to index ", str(new_index), ".")
 	reorder_categories()
 	save_categories()
 
@@ -925,5 +943,4 @@ func _on_category_deleted() -> void:
 	for i in range(category_container.get_child_count()):
 		var category: LogCategory = category_container.get_child(i)
 		category.index = i
-		print("\t", category.category_name, " Category -> new index: ", category.index)
 	update_move_buttons()

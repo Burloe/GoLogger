@@ -8,13 +8,13 @@ signal index_changed(category: LogCategory, new_index: int)
 ## Emitted when a category is deleted so GoLoggerDock.gd can update the indices of the remaining categories.
 signal category_deleted()
 
-@onready var index_lbl: 	Label = 		%CategoryIndex 
+@onready var index_lbl: 	Label = 		%CategoryIndex
 @onready var move_left_btn: Button = 	%MoveLeftButton
 @onready var move_right_btn: Button = 	%MoveRightButton
 @onready var lock_btn:	Button = 		%LockButton
 @onready var line_edit: LineEdit = 		%CategoryNameLineEdit
 @onready var del_btn:	Button = 		%DeleteButton
-@onready var apply_btn: Button = 		%ApplyButton 
+@onready var apply_btn: Button = 		%ApplyButton
 
 
 @export var file_name: String = 	"null"
@@ -55,10 +55,10 @@ var invalid_name : bool = false:
 		else:
 			name_warning.emit(false, 0)
 const PATH = "user://GoLogger/settings.ini"
-var config = ConfigFile.new() 
-var categories : Array 
+var config = ConfigFile.new()
+var categories : Array
 var is_locked : bool = false:
-	set(value): 
+	set(value):
 		is_locked = value
 		if lock_btn != null: 	lock_btn.button_pressed = is_locked
 		if line_edit != null: 	line_edit.editable = !value
@@ -85,22 +85,35 @@ func _ready() -> void:
 		if line_edit.text == "":
 			invalid_name = true
 			apply_btn.disabled = true
-		else: 
+		else:
 			invalid_name = false
 
 
-func check_existing_conflicts(new_name : String) -> bool: 
+func check_existing_conflicts(new_name : String) -> bool:
 	config.load(PATH)
 	categories = config.get_value("plugin", "categories")
 	for i in range(categories.size()):
-		if categories[i][0] == name:
+		if categories[i][0] == name and categories[i][1] != index:
 			return true
 		else: return false
 	return false
 
 
 func apply_name(new_name : String) -> void:
+	if check_existing_conflicts(new_name):
+		return
+
 	category_name = new_name
+	for i in range(categories.size()):
+		if categories[i][1] == index:
+			categories[i][0] = category_name
+			break
+	config.set_value("plugin", "categories", categories)
+	var _err = config.save(PATH)
+	if _err != OK:
+		print_rich("[color=ff0000][GoLogger] Error saving category name change to config file.")
+	else:
+		print_rich("[color=878787][GoLogger] Category name changed to " + category_name + ".")
 	line_edit.release_focus()
 	apply_btn.disabled = true
 
@@ -135,18 +148,16 @@ func _on_apply_button_up() -> void:
 func _on_text_submitted(new_text : String) -> void:
 	apply_name(new_text)
 
- 
+
 func _on_lock_btn_toggled(toggled : bool) -> void:
 	is_locked = toggled
-	
+
 
 func _on_del_button_up() -> void:
-	if dock != null: 
-		queue_free() 
-		dock.save_categories(true) 
-		category_deleted.emit()
-var current_health
-var max_health
-		
-func _on_player_take_damage(amount) -> void:
-	Log.entry("Player's current health: " + str(current_health) + " / " + str(max_health), 1)
+	if dock != null:
+		return
+
+	print_rich("[color=878787][GoLogger] Category " + category_name + " deleted.")
+	queue_free()
+	dock.save_categories(true)
+	category_deleted.emit()

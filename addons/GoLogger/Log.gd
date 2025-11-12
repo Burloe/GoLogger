@@ -9,12 +9,14 @@ extends Node
 ## repo.
 
 #TODO:
-	# Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
+	# [Done] Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
+	# [Done] Add new setting for the custom entry format called "entry_format" to the config file creation, saving and loading logic
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
 	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
 
-# Release Checklist:
+### Release Checklist: ###
 	# Test manual test entry with KEY_COMMA in _input()
+##########################
 
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
@@ -23,6 +25,7 @@ const PATH = "user://GoLogger/settings.ini"
 var config := ConfigFile.new()
 var base_directory: String = "user://GoLogger/"
 var categories: Array = []
+var temp_categories: Array = []
 var header_string: String
 var copy_name : String = ""
 var session_status: bool = false:
@@ -116,8 +119,9 @@ func _input(event: InputEvent) -> void:
 
 		# Test entry logging with Comma Key.
 		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
-			entry("Test entry", 0, true)
-
+			var v1: int = 1234
+			var v2: float = 56.78
+			entry(str("Test entry %s - %s" % str(v1), str(v2)), 0, true)
 
 
 
@@ -406,8 +410,7 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 		popup_line_edit.release_focus()
 
 
-# Note mirror function also present in GoLoggerDock.gd. Keep both in sunc.
-func create_settings_file() -> void:
+func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
 	var _a : Array[Array] = [["game", 0, "null", "null", 0, 0, false], ["player", 1, "null", "null", 0, 0, false]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
@@ -433,8 +436,7 @@ func create_settings_file() -> void:
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
-# Note mirror function also present in GoLoggerDock.gd. Keep both in sunc.
-func validate_settings() -> void:
+func validate_settings() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
 	var present_settings_faults : int = 0
 	var value_type_faults : int = 0
 	var expected_settings ={
@@ -489,10 +491,30 @@ func validate_settings() -> void:
 		"Rect2i",
 		"Vector3",
 		"Vector3i",
+		"Transform2D",
+		"Plane",
+		"Quaternion",
+		"AABB",
+		"Basis",
+		"Transform3D",
 		"Color",
 		"StringName",
+		"NodePath",
+		"RID",
+		"Object",
+		"Callable",
+		"Signal",
 		"Dictionary",
 		"Array",
+		"PackedByteArray",
+		"PackedInt32Array",
+		"PackedInt64Array",
+		"PackedFloat32Array",
+		"PackedFloat64Array",
+		"PackedStringArray",
+		"PackedVector2Array",
+		"PackedVector3Array",
+		"PackedColorArray"
 	]
 
 	# Validate presence of settings -> Apply default if missing
@@ -650,33 +672,6 @@ func _get_header() -> String:
 	return ""
 
 
-
-	# match _get_settings_value("log_header"):
-	# 	0: # Project name and version
-	# 		var _p_name = str(ProjectSettings.get_setting("application/config/name"))
-	# 		var _version = str(ProjectSettings.get_setting("application/config/version"))
-	# 		if _p_name == "":
-	# 			_p_name = "Untitled Project"
-	# 		if _version == "":
-	# 			_version = "v0.0"
-	# 		return str(_p_name, " v", _version, " ")
-	# 	1: # Project name
-	# 		var _p_name = str(ProjectSettings.get_setting("application/config/name"))
-	# 		if _p_name == "":
-	# 			printerr("GoLogger warning: Undefined project name in 'ProjectSettings/application/config/name'.")
-	# 			_p_name = "Untitled Project"
-	# 		return str(_p_name, " ")
-	# 	2: # Version
-	# 		var _version = str(ProjectSettings.get_setting("application/config/version"))
-	# 		if _version == "":
-	# 			printerr("GoLogger warning: Undefined project version in 'ProjectSettings/application/config/version'.")
-	# 			_version = "v0.0"
-	# 		return str(_version, " ")
-	# 	3: # None
-	# 		return ""
-	# return ""
-
-
 func _get_entry_format(entry: String) -> String:
 	var _tags: Array[String] = [
 		"{project_name}",
@@ -720,7 +715,6 @@ func _get_entry_format(entry: String) -> String:
 	return final_entry
 
 
-
 func _get_file_name(category_name : String) -> String:
 	var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
@@ -731,6 +725,7 @@ func _get_file_name(category_name : String) -> String:
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
 	var fin : String
 	fin = str(category_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if _get_settings_value("dash_separator") else str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
+
 	return fin
 
 
