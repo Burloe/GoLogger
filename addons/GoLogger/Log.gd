@@ -32,13 +32,13 @@ const PATH = "user://GoLogger/settings.ini"
 var config := ConfigFile.new()
 var base_directory: String = "user://GoLogger/"
 ## [
-## 	1 - category_name: String,
-## 	2 - category_index: int,
-## 	3 - current_filenames: Array[String],
-## 	4 - current_filepath: String,
-## 	5 - file_count: int,
-## 	6 - entry_count: int,
-## 	7 - is_locked: bool
+## 	0 - category_name: String,
+## 	1 - category_index: int,
+## 	2 - current_filenames: Array[String],
+## 	3 - current_filepath: String,
+## 	4 - file_count: int,
+## 	5 - entry_count: int,
+## 	6 - is_locked: bool
 ## ]
 var categories: Array = []
 enum CategoryFields {
@@ -150,45 +150,47 @@ func _input(event: InputEvent) -> void:
 		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
 			var v1: int = 1234
 			var v2: float = 56.78
-			entry(str("Test entry %s - %s" % str(v1), str(v2)), 0, true)
+			entry("Test entry " + str(v1) + " - " + str(v2), 0, true)
 
 
 
 func start_session() -> void:
-	if session_status:
+	if session_status: # ErrCheck
 		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn1"):
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 
 	config.load(PATH)
 	categories = config.get_value("plugin", "categories")
-	if categories.is_empty():
+
+	if categories.is_empty(): # ErrCheck
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
 		return
+
+
 	if _get_settings_value("limit_method") == 1 or _get_settings_value("limit_method") == 2:
 		session_timer.start(_get_settings_value("session_duration"))
 
 	for i in range(categories.size()):
-		categories[i][3] = _get_file_name(categories[i][0])
+		categories[i][CategoryFields.CURRENT_FILEPATH] = _get_file_name(categories[i][CategoryFields.CATEGORY_NAME])
 		var _path : String
 		if _path.begins_with("res://") or _path.begins_with("user://"):
-			_path = str(base_directory, categories[i][0], "_Gologs/")
+			_path = str(base_directory, categories[i][CategoryFields.CATEGORY_NAME], "_Gologs/")
 		else:
-			_path = str(base_directory, categories[i][0], "_Gologs/")
+			_path = str(base_directory, categories[i][CategoryFields.CATEGORY_NAME], "_Gologs/")
 
-		if _path == "": # ERROR CHECK
+		if _path == "": # ErrCheck
 
 			if _get_settings_value("error_reporting") == 0:
-				push_error(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
+				push_error(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][CategoryFields.CURRENT_FILEPATH], "). Please assign a valid directory path."))
 
 			if _get_settings_value("error_reporting") == 1:
-				push_warning(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][3], "). Please assign a valid directory path."))
+				push_warning(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][CategoryFields.CURRENT_FILEPATH], "). Please assign a valid directory path."))
 
 			return
 
 
 		var _dir : DirAccess
-
 		if !DirAccess.dir_exists_absolute(_path):
 			DirAccess.make_dir_recursive_absolute(_path)
 
@@ -196,33 +198,33 @@ func start_session() -> void:
 			DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
 		_dir = DirAccess.open(_path)
 
-		if !_dir and _get_settings_value("error_reporting") != 2:
+		if !_dir and _get_settings_value("error_reporting") != 2: # ErrCheck
 			var _err = DirAccess.get_open_error()
 			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _path, ").")
 			return
 
-		categories[i][2] = _get_file_name(categories[i][0])
-		categories[i][3] = str(_path, categories[i][2])
-		var _f = FileAccess.open(categories[i][3], FileAccess.WRITE)
+		categories[i][CategoryFields.CURRENT_FILENAMES] = _get_file_name(categories[i][CategoryFields.CATEGORY_NAME])
+		categories[i][CategoryFields.CURRENT_FILEPATH] = str(_path, categories[i][CategoryFields.CURRENT_FILENAMES])
+		var _f = FileAccess.open(categories[i][CategoryFields.CURRENT_FILEPATH], FileAccess.WRITE)
 		var _files = _dir.get_files()
-		categories[i][4] = _files.size()
+		categories[i][CategoryFields.FILE_COUNT] = _files.size()
 		if _get_settings_value("file_cap") > 0:
 			while _files.size() > _get_settings_value("file_cap") -1:
 				_files.sort()
-				_dir.remove(_files[0])
-				_files.remove_at(0)
+				_dir.remove(_files[CategoryFields.CATEGORY_NAME])
+				_files.remove_at(CategoryFields.CATEGORY_NAME)
 
 				var _err = DirAccess.get_open_error()
 				if _err != OK and _get_settings_value("error_reporting") != 2:
 					push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 
 		if !_f and _get_settings_value("error_reporting") != 2:
-			push_warning("GoLogger: Failed to create log file(", categories[i][3], ").")
+			push_warning("GoLogger: Failed to create log file(", categories[i][CategoryFields.CURRENT_FILEPATH], ").")
 
 		else:
-			var _s := str(header_string, categories[i][0], " Log session started[", Time.get_datetime_string_from_system(_get_settings_value("use_utc"), true), "]:")
+			var _s := str(header_string, categories[i][CategoryFields.CATEGORY_NAME], " Log session started[", Time.get_datetime_string_from_system(_get_settings_value("use_utc"), true), "]:")
 			_f.store_line(_s)
-			categories[i][5] = 0
+			categories[i][CategoryFields.ENTRY_COUNT] = 0
 		_f.close()
 
 	config.set_value("plugin", "categories", categories)
@@ -243,7 +245,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 		if _get_settings_value("error_reporting") != 2:
 			printerr("GoLogger: No valid categories to log in.")
 		return
-	if categories[category_index][0] == "":
+	if categories[category_index][CategoryFields.CATEGORY_NAME] == "":
 		if _get_settings_value("error_reporting") != 2:
 			printerr("GoLogger: Attempted to log entry on an invalid category.")
 			return
@@ -252,7 +254,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 		return
 
 
-	var _f = FileAccess.open(categories[category_index][3], FileAccess.READ)
+	var _f = FileAccess.open(categories[category_index][CategoryFields.CURRENT_FILEPATH], FileAccess.READ)
 
 	if !_f: # Error check
 		var _err = FileAccess.get_open_error()
@@ -266,7 +268,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 		if _l != "":
 			lines.append(_l)
 	_f.close()
-	categories[category_index][5] = lines.size()
+	categories[category_index][CategoryFields.ENTRY_COUNT] = lines.size()
 
 	if !popup_state:
 		match _get_settings_value("limit_method"):
@@ -315,8 +317,8 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 							stop_session()
 							return
 
-	categories[category_index][5] = lines.size()
-	var _fw = FileAccess.open(categories[category_index][3], FileAccess.WRITE)
+	categories[category_index][CategoryFields.ENTRY_COUNT] = lines.size()
+	var _fw = FileAccess.open(categories[category_index][CategoryFields.CURRENT_FILEPATH], FileAccess.WRITE)
 	if !_fw:
 		var err = FileAccess.get_open_error()
 		if err != OK and _get_settings_value("error_reporting") != 2:
@@ -328,18 +330,20 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 	_fw.store_line(new_entry)
 	_fw.close()
 	if print_entry_to_output:
-		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", categories[category_index][0], "> ", new_entry.dedent())
+		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", categories[category_index][CategoryFields.CATEGORY_NAME], "> ", new_entry.dedent())
 
 
 func save_copy(_name: String = "") -> void:
-	if session_status:
-		# No specified name -> prompt popup for name
-		if _name == "":
-			popup_state = true if popup_state == false else false
-		# Name specified, i.e. called programmatically -> save copy using predetermines name
-		else:
-			copy_name = _name
-			complete_copy()
+	if !session_status:
+		return
+
+	# No specified name -> prompt popup for name
+	if _name == "":
+		popup_state = true if popup_state == false else false
+	# Name specified, i.e. called programmatically -> save copy using predetermines name
+	else:
+		copy_name = _name
+		complete_copy()
 
 
 func complete_copy() -> void:
@@ -359,15 +363,15 @@ func complete_copy() -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] ")
 
 	for i in range(categories.size()):
-		var _fr = FileAccess.open(categories[i][3], FileAccess.READ)
+		var _fr = FileAccess.open(categories[i][CategoryFields.CURRENT_FILEPATH], FileAccess.READ)
 		if !_fr:
-			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base file to copy the session [", categories[i][3],"].")
+			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base file to copy the session [", categories[i][CategoryFields.CURRENT_FILEPATH],"].")
 			popup_errorlbl.visible = true
 			await get_tree().create_timer(4.0).timeout
 			return
 
 		var _c = _fr.get_as_text()
-		var _path := str(base_directory, categories[i][0], "_Gologs/saved_logs/", _get_file_name(copy_name))
+		var _path := str(base_directory, categories[i][CategoryFields.CATEGORY_NAME], "_Gologs/saved_logs/", _get_file_name(copy_name))
 		var _fw = FileAccess.open(_path, FileAccess.WRITE)
 		if !_fw:
 			var _e = FileAccess.get_open_error()
@@ -375,7 +379,7 @@ func complete_copy() -> void:
 			popup_errorlbl.visible = true
 			await get_tree().create_timer(4.0).timeout
 			return
-		_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
+		_fw.store_line(str(_c, "\nSaved copy of ", categories[i][CategoryFields.CURRENT_FILENAMES], "."))
 		_fw.close()
 	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
@@ -394,28 +398,28 @@ func stop_session() -> void:
 		for i in range(categories.size()):
 
 			# Open file
-			var _f = FileAccess.open(categories[i][3], FileAccess.READ)
+			var _f = FileAccess.open(categories[i][CategoryFields.CURRENT_FILEPATH], FileAccess.READ)
 			if !_f:
 				var _err = FileAccess.get_open_error()
 				if _get_settings_value("error_reporting") != 2:
-					if _err != OK: push_warning("GoLogger: Failed to open file ", categories[i][3], " with READ ", get_error(_err))
+					if _err != OK: push_warning("GoLogger: Failed to open file ", categories[i][CategoryFields.CURRENT_FILEPATH], " with READ ", get_error(_err))
 				push_warning("GoLogger: Stopped session but failed to do so properly. Couldn't open the file.")
 				session_status = false
 				return
 			var _content := _f.get_as_text()
 			_f.close()
-			var _fw = FileAccess.open(categories[i][3], FileAccess.WRITE)
+			var _fw = FileAccess.open(categories[i][CategoryFields.CURRENT_FILEPATH], FileAccess.WRITE)
 			if !_fw and _get_settings_value("error_reporting") != 2:
 				var _err = FileAccess.get_open_error()
 				if _err != OK:
-					push_warning("GoLogger: Attempting to stop session by writing to file (", categories[i][3], ") -> Error[", _err, "]")
+					push_warning("GoLogger: Attempting to stop session by writing to file (", categories[i][CategoryFields.CURRENT_FILEPATH], ") -> Error[", _err, "]")
 					return
 			var _s := str(_content, str(_timestamp + "Stopped Log Session.") if _get_settings_value("timestamp_entries") else "Stopped Log Session.")
 			_fw.store_line(_s)
 			_fw.close()
-			categories[i][2] = ""
-			categories[i][3] = ""
-			categories[i][5] = 0
+			categories[i][CategoryFields.CURRENT_FILENAMES] = ""
+			categories[i][CategoryFields.CURRENT_FILEPATH] = ""
+			categories[i][CategoryFields.ENTRY_COUNT] = 0
 
 
 	config.set_value("plugin", "categories", categories)
@@ -643,7 +647,7 @@ func _get_settings_value(value : String) -> Variant:
 	if value == "base_directory" or value == "categories":
 		section = "plugin"
 
-	var _val = _config.get_value(section, value)
+	var _val = _config.get_value(section, value, default_settings[value])
 	if _val == null:
 		push_error(str("GoLogger: ConfigFile failed to load settings value from file."))
 	return _val
