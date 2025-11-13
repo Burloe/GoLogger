@@ -408,7 +408,7 @@ static func get_error(error: int, object_type: String = "") -> String:
 
 # Note mirror function also present in Log.gd. e
 func create_settings_file() -> void:
-	var _a : Array[Array] = [["game", 0, "null", "null", 0, 0, false], ["player", 1, "null", "null", 0, 0, false]]
+	var _a : Array[Array] = [["game", 0, [], "null", 0, 0, false]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
 

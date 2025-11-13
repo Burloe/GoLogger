@@ -9,8 +9,15 @@ extends Node
 ## repo.
 
 #TODO:
+	# [Done] Implement the custom header format in start_session()
+	# [Done] Implement the custom entry format in entry()
 	# [Done] Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
 	# [Done] Add new setting for the custom entry format called "entry_format" to the config file creation, saving and loading logic
+	#
+	#	[In progress] Add 'instance_id' to solve issue with concurrency in multiplayer projects
+	# Instance ID's are implemented but entry() and stop_session() do not currently use them in any way. Need to ensure that they write to the correct file based on instance ID.
+	# Consider adding {instance_id} tag to header and entry formats.
+	#
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
 	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
 
@@ -24,7 +31,25 @@ signal session_stopped ## Emitted when a log session has been stopped.
 const PATH = "user://GoLogger/settings.ini"
 var config := ConfigFile.new()
 var base_directory: String = "user://GoLogger/"
+## [
+## 	1 - category_name: String,
+## 	2 - category_index: int,
+## 	3 - current_filenames: Array[String],
+## 	4 - current_filepath: String,
+## 	5 - file_count: int,
+## 	6 - entry_count: int,
+## 	7 - is_locked: bool
+## ]
 var categories: Array = []
+enum CategoryFields {
+	CATEGORY_NAME = 0,
+	CATEGORY_INDEX = 1,
+	CURRENT_FILENAMES = 2,
+	CURRENT_FILEPATH = 3,
+	FILE_COUNT = 4,
+	ENTRY_COUNT = 5,
+	IS_LOCKED = 6
+}
 var temp_categories: Array = []
 var header_string: String
 var copy_name : String = ""
@@ -419,7 +444,7 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 
 
 func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
-	var _a : Array[Array] = [["game", 0, "null", "null", 0, 0, false], ["player", 1, "null", "null", 0, 0, false]]
+	var _a : Array[Array] = [["game", 0, [], "null", 0, 0, false], ["player", 1, [], "null", 0, 0, false]]
 	config.set_value("plugin", "base_directory", "user://GoLogger/")
 	config.set_value("plugin", "categories", _a)
 
