@@ -39,6 +39,52 @@ var session_status: bool = false:
 		if value: session_started.emit()
 		else: session_stopped.emit()
 # var temp_categories: Array = []
+
+var cat_data : Dictionary = {
+	"game": {
+		"category_name": "game",
+		"category_index": 0,
+		"file_count": 0,
+		"is_locked": false,
+		"instances": {
+			"D44r3": {
+				"id": "D44r3",
+				"file_name": "game_D44r3.log",
+				"file_path": "user://GoLogger/game_Gologs/game(251113_161313)_D44r3",
+				"entry_count": 0
+			},
+			"X45jR": {
+				"id": "X45jR",
+				"file_name": "game_X45jR.log",
+				"file_path": "user://GoLogger/game_Gologs/game(251113_161313)_X43jR.log",
+				"entry_count": 0
+			}
+		}
+	},
+	"player": {
+		"category_name": "game",
+		"category_index": 0,
+		"file_count": 0,
+		"is_locked": false,
+		"instances": {
+			"U4j9K": {
+				"id": "U4j9K",
+				"file_name": "player_U4j9K.log",
+				"file_path": "user://GoLogger/player_Gologs/player(251113_161313)_U4j9K.log",
+				"file_count": 0,
+				"instances": {
+					"U4j9K": {
+						"id": "U4j9K",
+						"file_name": "player_U4j9K.log",
+						"file_path": "user://GoLogger/player_Gologs/player(251113_161313)_U4j9K",
+						"entry_count": 0
+					}
+				}
+			}
+		}
+	}
+}
+
 var categories: Array = [] # See CategoryData enum for structure.
 enum CategoryData {
 			CATEGORY_NAME = 0, # String - The name of the category
