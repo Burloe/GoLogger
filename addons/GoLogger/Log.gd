@@ -16,7 +16,9 @@ extends Node
 	#
 	#	[In progress] Add 'instance_id' to solve issue with concurrency in multiplayer projects
 	# Instance ID's are implemented but entry() and stop_session() do not currently use them in any way. Need to ensure that they write to the correct file based on instance ID.
-	# Consider adding {instance_id} tag to header and entry formats.
+	# [In progress] Refactor .ini settings handling <needed to do to finish instance_id task
+	#
+	# [TBD]Consider adding {instance_id} tag to header and entry formats.
 	#
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
 	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
@@ -187,6 +189,61 @@ func _input(event: InputEvent) -> void:
 			var v1: int = 1234
 			var v2: float = 56.78
 			entry("Test entry " + str(v1) + " - " + str(v2), 0, true)
+
+
+
+func load_category_data() -> void:
+	config.load(PATH)
+	cat_data.clear()
+
+	cat_data["categories"]["category_names"].append(config.get_value("categories", "category_names", null))
+	cat_data["categories"]["instance_ids"].append(config.get_value("categories", "instance_ids", instance_id))
+
+	for name in cat_data["categories"]["category_names"]:
+		var data: Dictionary = {}
+		for id in config.get_value("categories", "instance_ids", []):
+			var instance: Dictionary = {
+				"id": id,
+				"file_name": config.get_value("categories." + name + "." + id, "file_name", ""),
+				"file_path": config.get_value("categories." + name + "." + id, "file_path", ""),
+				"entry_count": config.get_value("categories." + name + "." + id, "entry_count", 0)
+			}
+			data[id] = instance
+
+
+		cat_data["categories." + name] = {
+			"category_name": name,
+			"category_index": config.get_value("categories." + name, "category_index", 0),
+			"file_count": config.get_value("categories." + name, "file_count", 0),
+			"is_locked": config.get_value("categories" + name, "is_locked", false),
+			"instances": data
+		}
+
+
+func save_category_data() -> void:
+
+	# [categories]
+	config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
+	config.set_value("categories", "instance_ids", cat_data["categories"]["instance_ids"])
+
+	# [categories.category_name]
+	for c_name in cat_data.keys():
+		config.set_value("categories." + cat_data[c_name]["category_name"], "category_name", 	cat_data[c_name]["category_name"])
+		config.set_value("categories." + cat_data[c_name]["category_name"], "category_index", cat_data[c_name]["category_index"])
+		config.set_value("categories." + cat_data[c_name]["category_name"], "file_count", 		cat_data[c_name]["file_count"])
+		config.set_value("categories." + cat_data[c_name]["category_name"], "is_locked", 			cat_data[c_name]["is_locked"])
+
+		# [categories.category_name.instance_id]
+		for id in cat_data["categories"]["instance_ids"]:
+			var section: String = str("categories." + cat_data[c_name] + "." + id)
+			config.set_value(section, "id", cat_data[c_name]["instances"]["id"])
+			config.set_value(section, "file_name", cat_data[c_name]["instances"]["file-name"])
+			config.set_value(section, "file_path", cat_data[c_name]["instances"]["file_path"])
+			config.set_value(section, "entry_count", cat_data[c_name]["instances"]["entry_count"])
+
+	config.save(PATH)
+
+
 
 
 
