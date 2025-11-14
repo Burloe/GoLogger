@@ -45,8 +45,8 @@ enum CategoryData {
 			CATEGORY_INDEX = 1, # Int - The index of the category in the categories array
 			CURRENT_FILENAMES = 2, # Array[String] - Array of file names for each instance ID of the current files
 			CURRENT_FILEPATHS = 3, # Array[String] - Array of file paths for each instance ID of the current files
-			FILE_COUNT = 4, # Int - Current file count in the category directory
-			ENTRY_COUNT = 5, # Int - Current entry count in the active log file
+			ENTRY_COUNT = 4, # Int - Current entry count in the active log file
+			FILE_COUNT = 5, # Int - Current file count in the category directory
 			IS_LOCKED = 6 # Bool - Whether the category is locked from editing/deletion
 }
 ## Instance ID is a unique ID for each runtime instance of GoLogger. Used to differentiate between multiple instances when debugging multiplayer projects.
