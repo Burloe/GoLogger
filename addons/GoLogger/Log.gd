@@ -13,18 +13,30 @@ extends Node
 	# [Done] Implement the custom entry format in entry()
 	# [Done] Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
 	# [Done] Add new setting for the custom entry format called "entry_format" to the config file creation, saving and loading logic
+	# add proper error codes to all error/warning messages
 	#
 	#	[In progress] Add 'instance_id' to solve issue with concurrency in multiplayer projects
 	# Instance ID's are implemented but entry() and stop_session() do not currently use them in any way. Need to ensure that they write to the correct file based on instance ID.
 	# [In progress] Refactor .ini settings handling <needed to do to finish instance_id task
+	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
 	#
-	# [TBD]Consider adding {instance_id} tag to header and entry formats.
+	#	[TBD] Remove 'category_index' parameter from entry() method, in favor of using category_name only
+	# [TBD] Consider adding {instance_id} tag to header and entry formats.
 	#
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
 	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
 
+#TODO - Debugging:
+	# Check that file count actually deletes old files when file cap is reached
+	# Check that file count deletes the correct files (oldest first)
+
 ### Release Checklist: ###
 	# Test manual test entry with KEY_COMMA in _input()
+	# Check all settings load and save correctly
+	# Check that settings prints when new value is set
+	# Check that file counting and deletion works correctly when file cap is reached
+	# Check that entry counting and limit methods work correctly when entry cap is reached
+	# Check that session timer limit method works correctly when time is up
 ##########################
 
 signal session_started ## Emitted when a log session has started.
@@ -139,6 +151,20 @@ var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/St
 var hotkey_stop_session: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")
 var hotkey_copy_session: InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres")
 
+enum ErrorCodes { #NYI - For future use in error/warning messages
+		ERR_NONE,
+		ERR_LOAD_CATEGORIES_FAILED,
+		ERR_SAVE_CATEGORIES_FAILED,
+		ERR_SESSION_ACTIVE,
+		ERR_INVALID_CATEGORY,
+		ERR_INVALID_ENTRY,
+		ERR_INVALID_FILE_PATH,
+		ERR_NO_CATEGORIES,
+		ERR_SESSION_INACTIVE,
+		ERR_FILE_ACCESS,
+		ERR_DIR_ACCESS
+}
+
 
 
 func _ready() -> void:
@@ -189,10 +215,11 @@ func _input(event: InputEvent) -> void:
 		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
 			var v1: int = 1234
 			var v2: float = 56.78
-			entry("Test entry " + str(v1) + " - " + str(v2), 0, true)
+			entry("Test entry " + str(v1) + " - " + str(v2), "game", true)
 
 
-
+## Loads category data from the config file into the cat_data dictionary.[br]
+## Use instead of 'config.load(PATH)' whenever category data is needed.
 func load_category_data() -> void:
 	config.load(PATH)
 	cat_data.clear()
@@ -224,37 +251,20 @@ func load_category_data() -> void:
 			"instances": instances
 		}
 
-	# cat_data["categories"]["category_names"].append(config.get_value("categories", "category_names", null))
-	# cat_data["categories"]["instance_ids"].append(config.get_value("categories", "instance_ids", instance_id))
 
-	# for name in cat_data["categories"]["category_names"]:
-	# 	var data: Dictionary = {}
-	# 	for id in config.get_value("categories", "instance_ids", []):
-	# 		var instance: Dictionary = {
-	# 			"id": id,
-	# 			"file_name": config.get_value("categories." + name + "." + id, "file_name", ""),
-	# 			"file_path": config.get_value("categories." + name + "." + id, "file_path", ""),
-	# 			"entry_count": config.get_value("categories." + name + "." + id, "entry_count", 0)
-	# 		}
-	# 		data[id] = instance
-
-
-	# 	cat_data["categories." + name] = {
-	# 		"category_name": name,
-	# 		"category_index": config.get_value("categories." + name, "category_index", 0),
-	# 		"file_count": config.get_value("categories." + name, "file_count", 0),
-	# 		"is_locked": config.get_value("categories" + name, "is_locked", false),
-	# 		"instances": data
-	# 	}
-
-
+## Saves category data from the cat_data dictionary into the config file.[br]
+## Use instead of 'config.save(PATH)' whenever category data is modified.
 func save_category_data() -> void:
 	# Ensure there is categories meta to save
 	if !cat_data.has("categories"):
 		return
 
 	# Load existing config so we don't clobber unrelated sections
-	config.load(PATH)
+	var err = config.load(PATH)
+	if err != OK:
+		if _get_settings_value("error_reporting") != 2:
+			push_warning("GoLogger: Failed to load existing config file while saving category data.")
+		return
 
 	# Save meta arrays
 	config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
@@ -285,30 +295,6 @@ func save_category_data() -> void:
 
 	config.save(PATH)
 
-
-
-	# config.load(PATH) #? Ensure settings data isn't overwritten with old data
-
-	# # [categories]
-	# config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
-	# config.set_value("categories", "instance_ids", cat_data["categories"]["instance_ids"])
-
-	# # [categories.category_name]
-	# for c_name in cat_data.keys():
-	# 	config.set_value("categories." + cat_data[c_name]["category_name"], "category_name", 	cat_data[c_name]["category_name"])
-	# 	config.set_value("categories." + cat_data[c_name]["category_name"], "category_index", cat_data[c_name]["category_index"])
-	# 	config.set_value("categories." + cat_data[c_name]["category_name"], "file_count", 		cat_data[c_name]["file_count"])
-	# 	config.set_value("categories." + cat_data[c_name]["category_name"], "is_locked", 			cat_data[c_name]["is_locked"])
-
-	# 	# [categories.category_name.instance_id]
-	# 	for id in cat_data["categories"]["instance_ids"]:
-	# 		var section: String = str("categories." + cat_data[c_name] + "." + id)
-	# 		config.set_value(section, "id", cat_data[c_name]["instances"]["id"])
-	# 		config.set_value(section, "file_name", cat_data[c_name]["instances"]["file-name"])
-	# 		config.set_value(section, "file_path", cat_data[c_name]["instances"]["file_path"])
-	# 		config.set_value(section, "entry_count", cat_data[c_name]["instances"]["entry_count"])
-
-	# config.save(PATH)
 
 
 
@@ -391,125 +377,37 @@ func start_session() -> void:
 
 
 
+func entry(log_entry : String, category_name: String, print_entry_to_output: bool = false) -> void:
+	# Load base category data from file
+	load_category_data()
+	var _d: Dictionary = cat_data.get(category_name, {})
+	var entry: String = _get_entry_format(log_entry)
+	var target_filepath: String = _d["instances"][instance_id].get("file_path", "")
 
-
-### OLD VERSION ###
-func old_start_session() -> void:
-	if session_status: # ErrCheck
-		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn1"):
-			push_warning("GoLogger: Failed to start session, a session is already active.")
-		return
-
-	config.load(PATH)
-	categories = config.get_value("plugin", "categories")
-
-	if categories.is_empty(): # ErrCheck
-		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
-		return
-
-
-	if _get_settings_value("limit_method") == 1 or _get_settings_value("limit_method") == 2:
-		session_timer.start(_get_settings_value("session_duration"))
-
-	for i in range(categories.size()):
-		categories[i][CategoryData.CURRENT_FILEPATHS] = _get_file_name(categories[i][CategoryData.CATEGORY_NAME])
-		var _path : String
-		if _path.begins_with("res://") or _path.begins_with("user://"):
-			_path = str(base_directory, categories[i][CategoryData.CATEGORY_NAME], "_Gologs/")
-		else:
-			_path = str(base_directory, categories[i][CategoryData.CATEGORY_NAME], "_Gologs/")
-
-		if _path == "": # ErrCheck
-
-			if _get_settings_value("error_reporting") == 0:
-				push_error(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][CategoryData.CURRENT_FILEPATHS], "). Please assign a valid directory path."))
-
-			if _get_settings_value("error_reporting") == 1:
-				push_warning(str("GoLogger: Failed to start session due to invalid directory path(", categories[i][CategoryData.CURRENT_FILEPATHS], "). Please assign a valid directory path."))
-
-			return
-
-
-		var _dir : DirAccess
-		if !DirAccess.dir_exists_absolute(_path):
-			DirAccess.make_dir_recursive_absolute(_path)
-
-		if !DirAccess.dir_exists_absolute(str(_path, "saved_logs/")):
-			DirAccess.make_dir_recursive_absolute(str(_path, "saved_logs/"))
-		_dir = DirAccess.open(_path)
-
-		if !_dir and _get_settings_value("error_reporting") != 2: # ErrCheck
-			var _err = DirAccess.get_open_error()
-			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _path, ").")
-			return
-
-		categories[i][CategoryData.CURRENT_FILENAMES] = []
-		categories[i][CategoryData.CURRENT_FILEPATHS]  = []
-		categories[i][CategoryData.CURRENT_FILENAMES].append(_get_file_name(categories[i][CategoryData.CATEGORY_NAME]))
-		categories[i][CategoryData.CURRENT_FILEPATHS].append(str(_path, categories[i][CategoryData.CURRENT_FILENAMES]))
-
-		var _f = FileAccess.open(categories[i][CategoryData.CURRENT_FILEPATHS], FileAccess.WRITE)
-		var _files = _dir.get_files()
-		categories[i][CategoryData.FILE_COUNT] = _files.size()
-		if _get_settings_value("file_cap") > 0:
-			while _files.size() > _get_settings_value("file_cap") -1:
-				_files.sort()
-				_dir.remove(_files[CategoryData.CATEGORY_NAME])
-				_files.remove_at(CategoryData.CATEGORY_NAME)
-
-				var _err = DirAccess.get_open_error()
-				if _err != OK and _get_settings_value("error_reporting") != 2:
-					push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
-
-		if !_f and _get_settings_value("error_reporting") != 2:
-			push_warning("GoLogger: Failed to create log file(", categories[i][CategoryData.CURRENT_FILEPATHS], ").")
-
-		else:
-			var _s := str(header_string, categories[i][CategoryData.CATEGORY_NAME], " Log session started[", Time.get_datetime_string_from_system(_get_settings_value("use_utc"), true), "]:")
-			_f.store_line(_s)
-			categories[i][CategoryData.ENTRY_COUNT] = 0
-		_f.close()
-
-	config.set_value("plugin", "categories", categories)
-	config.save(PATH)
-	session_status = true
-	if session_timer != null:
-		if session_timer.is_stopped() and _get_settings_value("session_timer_action") == 1 or session_timer.is_stopped() and _get_settings_value("session_timer_action") == 2:
-			session_timer.start()
-	session_started.emit()
-
-
-func entry(log_entry : String, category_index : int = 0, print_entry_to_output: bool = false) -> void:
-	config.load(PATH)
-	categories = config.get_value("plugin", "categories")
-	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] ")
-
-	if categories == null or categories.is_empty(): # ErrCheck
+	# Early returns
+	if _d.is_empty(): # ErrCheck
 		if _get_settings_value("error_reporting") != 2:
-			printerr("GoLogger: No valid categories to log in.")
+			printerr("GoLogger: Attempted to log entry without categories.")
 		return
-	if categories[category_index][CategoryData.CATEGORY_NAME] == "": # ErrCheck
+
+	if _d[category_name].is_empty(): # ErrCheck
 		if _get_settings_value("error_reporting") != 2:
-			printerr("GoLogger: Attempted to log entry on an invalid category.")
-			return
+			printerr("GoLogger: Category '" + category_name + "' not found. Check correct spelling.")
+		return
+
 	if !session_status: # ErrCheck
-		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"): push_warning("GoLogger: Failed to log entry due to inactive session.")
+		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"):
+			push_warning("GoLogger: Failed to log entry due to inactive session.")
 		return
 
-
-	# Get target file based on instance ID
-	var target_filepath: String = ""
-	var target_file: String = ""
-	for i in categories[category_index][CategoryData.CURRENT_FILENAMES]:
-		if i.ends_with(str("_", instance_id, ".log")):
-			target_file = i
-	for i in categories[category_index][CategoryData.CURRENT_FILEPATHS]:
-		if i.ends_with(str("_", instance_id, ".log")):
-			target_filepath = i
+	if target_filepath == "": # ErrCheck
+		if _get_settings_value("error_reporting") != 2:
+			printerr("GoLogger: No valid file path found for category '" + category_name + "' instance[" + instance_id + "].")
+		return
 
 
 	# Open file to read existing lines
-	var _f = FileAccess.open(categories[category_index][CategoryData.CURRENT_FILEPATHS], FileAccess.READ)
+	var _f = FileAccess.open(target_filepath, FileAccess.READ)
 	if !_f: # Error check
 		var _err = FileAccess.get_open_error()
 		if _err != OK and _get_settings_value("error_reporting") != 2:
@@ -523,9 +421,8 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 			lines.append(_l)
 	_f.close()
 
-
-		# Handle Limit Methods
-	if !popup_state:
+	# Handle Limit Methods
+	if !popup_state: # Only enforce limits while inactive popup
 		match _get_settings_value("limit_method"):
 
 			0: # Entry count
@@ -538,7 +435,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 						if lines.size() >= _get_settings_value("entry_cap"):
 							stop_session()
 							start_session()
-							entry(log_entry, category_index)
+							entry(log_entry, category_name)
 							return
 
 					2: # Stop only
@@ -551,7 +448,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 					0: # Stop & start session
 						stop_session()
 						start_session()
-						entry(log_entry, category_index)
+						entry(log_entry, category_name)
 						return
 
 					1: # Stop session
@@ -564,7 +461,7 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 						if lines.size() >= _get_settings_value("entry_cap"):
 							stop_session()
 							start_session()
-							entry(log_entry, category_index)
+							entry(log_entry, category_name)
 							return
 
 					1: # Stop session
@@ -572,10 +469,8 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 							stop_session()
 							return
 
-
 	# Rewrite file with existing lines / Update entry count
-	#TODO: Need to account for individual instance ID entry counts here [make into array?]
-	categories[category_index][CategoryData.ENTRY_COUNT] = lines.size()
+	cat_data[category_name]["instances"][instance_id]["entry_count"] = lines.size()
 	var _fw = FileAccess.open(target_filepath, FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
@@ -590,7 +485,127 @@ func entry(log_entry : String, category_index : int = 0, print_entry_to_output: 
 	_fw.store_line(new_entry)
 	_fw.close()
 	if print_entry_to_output:
-		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", categories[category_index][CategoryData.CATEGORY_NAME], "> ", new_entry.dedent())
+		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", category_name, "> ", new_entry.dedent())
+
+
+
+
+# func old_entry(log_entry : String, category_index : int = 0, print_entry_to_output: bool = false) -> void:
+# 	# Deprecated - Use entry() instead
+# 	config.load(PATH)
+# 	categories = config.get_value("plugin", "categories")
+# 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] ")
+
+# 	if categories == null or categories.is_empty(): # ErrCheck
+# 		if _get_settings_value("error_reporting") != 2:
+# 			printerr("GoLogger: No valid categories to log in.")
+# 		return
+# 	if categories[category_index][CategoryData.CATEGORY_NAME] == "": # ErrCheck
+# 		if _get_settings_value("error_reporting") != 2:
+# 			printerr("GoLogger: Attempted to log entry on an invalid category.")
+# 			return
+# 	if !session_status: # ErrCheck
+# 		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"): push_warning("GoLogger: Failed to log entry due to inactive session.")
+# 		return
+
+
+# 	# Get target file based on instance ID
+# 	var target_filepath: String = ""
+# 	var target_file: String = ""
+# 	for i in categories[category_index][CategoryData.CURRENT_FILENAMES]:
+# 		if i.ends_with(str("_", instance_id, ".log")):
+# 			target_file = i
+# 	for i in categories[category_index][CategoryData.CURRENT_FILEPATHS]:
+# 		if i.ends_with(str("_", instance_id, ".log")):
+# 			target_filepath = i
+
+
+# 	# Open file to read existing lines
+# 	var _f = FileAccess.open(categories[category_index][CategoryData.CURRENT_FILEPATHS], FileAccess.READ)
+# 	if !_f: # Error check
+# 		var _err = FileAccess.get_open_error()
+# 		if _err != OK and _get_settings_value("error_reporting") != 2:
+# 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
+# 		return
+
+# 	var lines : Array[String] = []
+# 	while not _f.eof_reached():
+# 		var _l = _f.get_line().strip_edges(false, true)
+# 		if _l != "":
+# 			lines.append(_l)
+# 	_f.close()
+
+
+# 		# Handle Limit Methods
+# 	if !popup_state:
+# 		match _get_settings_value("limit_method"):
+
+# 			0: # Entry count
+# 				match _get_settings_value("entry_count_action"):
+# 					0: # Remove old entries
+# 						while lines.size() >= _get_settings_value("entry_cap"):
+# 							lines.remove_at(1) # Keeping header line 0
+
+# 					1: # Stop & start
+# 						if lines.size() >= _get_settings_value("entry_cap"):
+# 							stop_session()
+# 							start_session()
+# 							entry(log_entry, category_index)
+# 							return
+
+# 					2: # Stop only
+# 						if lines.size() >= _get_settings_value("entry_cap"):
+# 							stop_session()
+# 							return
+
+# 			1: # Session timer
+# 				match _get_settings_value("session_timer_action"):
+# 					0: # Stop & start session
+# 						stop_session()
+# 						start_session()
+# 						entry(log_entry, category_index)
+# 						return
+
+# 					1: # Stop session
+# 						stop_session()
+# 						return
+
+# 			2: # Both Entry count limit and Session Timer
+# 				match _get_settings_value("entry_count_action"):
+# 					0: # Stop & start session
+# 						if lines.size() >= _get_settings_value("entry_cap"):
+# 							stop_session()
+# 							start_session()
+# 							entry(log_entry, category_index)
+# 							return
+
+# 					1: # Stop session
+# 						if lines.size() >= _get_settings_value("entry_cap"):
+# 							stop_session()
+# 							return
+
+
+# 	# Rewrite file with existing lines / Update entry count
+# 	#TODO: Need to account for individual instance ID entry counts here [make into array?]
+# 	categories[category_index][CategoryData.ENTRY_COUNT] = lines.size()
+# 	var _fw = FileAccess.open(target_filepath, FileAccess.WRITE)
+# 	if !_fw: # ErrCheck
+# 		var err = FileAccess.get_open_error()
+# 		if err != OK and _get_settings_value("error_reporting") != 2:
+# 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
+
+# 	for line in lines:
+# 		_fw.store_line(str(line))
+
+# 	# Write new entry
+# 	var new_entry: String = _get_entry_format(log_entry)
+# 	_fw.store_line(new_entry)
+# 	_fw.close()
+# 	if print_entry_to_output:
+# 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", categories[category_index][CategoryData.CATEGORY_NAME], "> ", new_entry.dedent())
+
+
+
 
 
 func save_copy(_name: String = "") -> void:

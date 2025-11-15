@@ -3,7 +3,12 @@ extends TabContainer
 
 # TODO:
 	# Implement a print_rich() calls whenever a setting is changed to notify the user of the change in the output console.
-	# [done]Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
+	# [Done]Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
+	#
+	# DOCK CATEGORY TAB:
+		# [TBD] Remove 'category index' entirely in favor of using strings as unique identifiers for categories with regards to the new .ini format
+		# Handle adding/removing categories with new .ini format
+		# is_locked property handling
 
 signal update_index
 
