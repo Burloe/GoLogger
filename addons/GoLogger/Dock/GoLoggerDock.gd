@@ -104,7 +104,7 @@ var c_print_history := "[color=878787][GoLogger] "
 # Note that this dictionary is also present in Log.gd. If you update it here, update it there too.
 var default_settings := {
 		"base_directory": "user://GoLogger/",
-		"log_header_format": "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:",
+		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": "[{hh}:{mi}:{ss}]: {entry}",
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
@@ -684,6 +684,9 @@ func _on_button_button_up(node: Button) -> void:
 			if err != OK:
 				var _e = config.get_open_error()
 				print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+			print_rich("[color=878787][GoLogger] New Log Header applied.")
+			log_header_apply_btn.disabled = true
+			log_header_line.release_focus()
 
 		log_header_reset_btn:
 			log_header_line.text = default_settings["log_header_format"]
@@ -693,6 +696,8 @@ func _on_button_button_up(node: Button) -> void:
 				var _e = config.get_open_error()
 				print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
 			print_rich("[color=878787][GoLogger] Log header option reset to default.")
+			log_header_apply_btn.disabled = true
+			log_header_line.release_focus()
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
@@ -701,8 +706,9 @@ func _on_button_button_up(node: Button) -> void:
 			if err != OK:
 				var _e = config.get_open_error()
 				print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
-
+			print_rich("[color=878787][GoLogger] New Entry Format Applied.")
 			entry_format_apply_btn.disabled = true
+			entry_format_line.release_focus()
 
 		entry_format_reset_btn:
 			entry_format_line.text = config.get_value("settings", "entry_format", default_settings["entry_format"])

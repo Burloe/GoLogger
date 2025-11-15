@@ -392,8 +392,8 @@ Supported format tags:
 	{yy} {mm} {dd}
 	{hh} {mi} {ss}"
 theme_override_styles/normal = ExtResource("9_qo8nw")
-text = "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:"
-placeholder_text = "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:"
+text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
+placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 alignment = 1
 max_length = 80
 expand_to_text_length = true

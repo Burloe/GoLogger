@@ -33,7 +33,7 @@ signal session_stopped ## Emitted when a log session has been stopped.
 const PATH = "user://GoLogger/settings.ini"
 var config := ConfigFile.new()
 var base_directory: String = "user://GoLogger/"
-var header_string: String
+var header_string: String #Deprecated - Use _get_header() instead
 var copy_name : String = ""
 var session_status: bool = false:
 	set(value):
@@ -52,13 +52,13 @@ var cat_data : Dictionary = {
 			"D44r3": {
 				"id": "D44r3",
 				"file_name": "game_D44r3.log",
-				"file_path": "user://GoLogger/game_Gologs/game(251113_161313)_D44r3",
+				"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3",
 				"entry_count": 0
 			},
 			"X45jR": {
 				"id": "X45jR",
 				"file_name": "game_X45jR.log",
-				"file_path": "user://GoLogger/game_Gologs/game(251113_161313)_X43jR.log",
+				"file_path": "user://GoLogger/game_logs/game(251113_161313)_X43jR.log",
 				"entry_count": 0
 			}
 		}
@@ -72,13 +72,13 @@ var cat_data : Dictionary = {
 			"U4j9K": {
 				"id": "U4j9K",
 				"file_name": "player_U4j9K.log",
-				"file_path": "user://GoLogger/player_Gologs/player(251113_161313)_U4j9K.log",
+				"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K.log",
 				"file_count": 0,
 				"instances": {
 					"U4j9K": {
 						"id": "U4j9K",
 						"file_name": "player_U4j9K.log",
-						"file_path": "user://GoLogger/player_Gologs/player(251113_161313)_U4j9K",
+						"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K",
 						"entry_count": 0
 					}
 				}
@@ -118,7 +118,7 @@ var popup_state : bool = false:
 # Note that this dictionary is also present in GoLoggerDock.gd. If you update it here, update it there too.
 var default_settings := {
 		"base_directory": "user://GoLogger/",
-		"log_header_format": "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:",
+		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": "[{hh}:{mi}:{ss}]: {entry}",
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
@@ -157,9 +157,9 @@ func _ready() -> void:
 	popup_yesbtn.disabled = true
 
 	assert(_check_filename_conflicts() == "", str("GoLogger: Conflicting category_name [", _check_filename_conflicts(), "] found in two(or more) categories."))
+	instance_id = _get_instance_id()
 
 	validate_settings()
-	instance_id = _get_instance_id()
 	load_category_data()
 
 	if _get_settings_value("autostart_session"):
@@ -283,7 +283,6 @@ func save_category_data() -> void:
 			config.set_value(inst_section, "file_path", inst.get("file_path", ""))
 			config.set_value(inst_section, "entry_count", inst.get("entry_count", 0))
 
-	# Persist to disk
 	config.save(PATH)
 
 
@@ -316,6 +315,86 @@ func save_category_data() -> void:
 
 
 func start_session() -> void:
+	if session_status: # ErrCheck -> Session already started
+		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn1"):
+			push_warning("GoLogger: Failed to start session, a session is already active.")
+		return
+
+	config.load(PATH)
+	categories = config.get_value("plugin", "categories")
+
+	if categories.is_empty(): # ErrCheck
+		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
+		return
+
+
+	if _get_settings_value("limit_method") == 1 or _get_settings_value("limit_method") == 2:
+		session_timer.start(_get_settings_value("session_duration"))
+
+
+	for i in cat_data["categories"]["category_names"].size():
+		var c_name: String = cat_data["categories"]["category_names"][i]
+		var f_name: String  = _get_file_name(c_name) # e.g. "game_D44r3.log"
+		var _d: Dictionary = {
+			"id": instance_id,
+			"file_name": f_name,
+			"file_path": str(base_directory, c_name, "_logs/", f_name),
+			"entry_count": 0
+		}
+
+		# Open/create directory
+		var path: String = str(base_directory, c_name, "_logs/")
+		var dir : DirAccess
+		if !DirAccess.dir_exists_absolute(path):
+			DirAccess.make_dir_recursive_absolute(path)
+
+		if !DirAccess.dir_exists_absolute(str(path, "saved_logs/")):
+			DirAccess.make_dir_recursive_absolute(str(path, "saved_logs/"))
+		dir = DirAccess.open(path)
+
+		if !dir and _get_settings_value("error_reporting") != 2: # ErrCheck
+			var _err = DirAccess.get_open_error()
+			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _d["file_path"], ").")
+			return
+
+		# Create/open file
+		var _f = FileAccess.open(_d["file_path"], FileAccess.WRITE)
+		if !_f and _get_settings_value("error_reporting") != 2:
+			push_warning("GoLogger: Failed to create log file for session(", _d["file_path"], ").")
+			return
+
+		var _files = dir.get_files()
+		cat_data[c_name]["file_count"] = _files.size()
+
+		if _get_settings_value("file_cap") > 0:
+			while _files.size() > _get_settings_value("file_cap") -1:
+				_files.sort()
+				dir.remove(_files[0])
+				_files.remove_at(0)
+
+				var _err = DirAccess.get_open_error()
+				if _err != OK and _get_settings_value("error_reporting") != 2:
+					push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
+
+		_f.store_line(_get_header(c_name))
+		_f.close()
+
+		cat_data[c_name]["instances"][instance_id] = _d
+
+	# Update ConfigFile / Start SessionTimer / Close up
+	save_category_data()
+	session_status = true
+	if session_timer.is_stopped() and _get_settings_value("session_timer_action") == 1\
+	or session_timer.is_stopped() and _get_settings_value("session_timer_action") == 2:
+		if session_timer != null: session_timer.start()
+	session_started.emit()
+
+
+
+
+
+### OLD VERSION ###
+func old_start_session() -> void:
 	if session_status: # ErrCheck
 		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn1"):
 			push_warning("GoLogger: Failed to start session, a session is already active.")
@@ -552,7 +631,7 @@ func complete_copy() -> void:
 			return
 
 		var _c = _fr.get_as_text()
-		var _path := str(base_directory, categories[i][CategoryData.CATEGORY_NAME], "_Gologs/saved_logs/", _get_file_name(copy_name))
+		var _path := str(base_directory, categories[i][CategoryData.CATEGORY_NAME], "_logs/saved_logs/", _get_file_name(copy_name))
 		var _fw = FileAccess.open(_path, FileAccess.WRITE)
 		if !_fw:
 			var _e = FileAccess.get_open_error()
@@ -760,53 +839,53 @@ func validate_settings() -> void: # Note mirror function present in GoLoggerDock
 
 static func get_error(error : int, object_type : String = "") -> String:
 	match error:
-		1:  return str("Error[1] ",  object_type, " Failed")
-		2:  return str("Error[2] ",  object_type, " Unavailable")
-		3:  return str("Error[3] ",  object_type, " Unconfigured")
-		4:  return str("Error[4] ",  object_type, " Unauthorized")
-		5:  return str("Error[5] ",  object_type, " Parameter range")
-		6:  return str("Error[6] ",  object_type, " Out of memory")
-		7:  return str("Error[7] ",  object_type, " File: Not found")
-		8:  return str("Error[8] ",  object_type, " File: Bad drive")
-		9:  return str("Error[9] ",  object_type, " File: Bad File path")
-		10: return str("Error[10] ", object_type, " No File permission")
-		11: return str("Error[11] ", object_type, " File already in use")
-		12: return str("Error[12] ", object_type, " Can't open File")
-		13: return str("Error[13] ", object_type, " Can't write to File")
-		14: return str("Error[14] ", object_type, " Can't read to File")
-		15: return str("Error[15] ", object_type, " File unrecognized")
-		16: return str("Error[16] ", object_type, " File corrupt")
-		17: return str("Error[17] ", object_type, " File missing dependencies")
-		18: return str("Error[18] ", object_type, " End of File")
-		19: return str("Error[19] ", object_type, " Can't open")
-		20: return str("Error[20] ", object_type, " Can't create")
-		21: return str("Error[21] ", object_type, " Query failed")
-		22: return str("Error[22] ", object_type, " Already in use")
-		23: return str("Error[23] ", object_type, " Locked")
-		24: return str("Error[24] ", object_type, " Timeout")
-		25: return str("Error[25] ", object_type, " Can't connect")
-		26: return str("Error[26] ", object_type, " Can't resolve")
-		27: return str("Error[27] ", object_type, " Connection error")
-		28: return str("Error[28] ", object_type, " Can't acquire resource")
-		29: return str("Error[29] ", object_type, " Can't fork process")
-		30: return str("Error[30] ", object_type, " Invalid data")
-		31: return str("Error[31] ", object_type, " Invalid parameter")
-		32: return str("Error[32] ", object_type, " Already exists")
-		33: return str("Error[33] ", object_type, " Doesn't exist")
-		34: return str("Error[34] ", object_type, " Database: Can't read")
-		35: return str("Error[35] ", object_type, " Database: Can't write")
-		36: return str("Error[36] ", object_type, " Compilation failed")
-		37: return str("Error[37] ", object_type, " Method not found")
-		38: return str("Error[38] ", object_type, " Link failed")
-		39: return str("Error[39] ", object_type, " Script failed")
-		40: return str("Error[40] ", object_type, " Cyclic link")
-		41: return str("Error[41] ", object_type, " Invalid declaration")
-		42: return str("Error[42] ", object_type, " Duplicate symbol")
-		43: return str("Error[43] ", object_type, " Parse error")
-		44: return str("Error[44] ", object_type, " Busy error")
-		46: return str("Error[45] ", object_type, " Skip error")
-		47: return str("Error[46] ", object_type, " Help error")
-		48: return str("Error[47] ", object_type, " Bug error")
+		1:  return str("<Error[1] ",  object_type, " Failed>")
+		2:  return str("<Error[2] ",  object_type, " Unavailable>")
+		3:  return str("<Error[3] ",  object_type, " Unconfigured>")
+		4:  return str("<Error[4] ",  object_type, " Unauthorized>")
+		5:  return str("<Error[5] ",  object_type, " Parameter range>")
+		6:  return str("<Error[6] ",  object_type, " Out of memory>")
+		7:  return str("<Error[7] ",  object_type, " File: Not found>")
+		8:  return str("<Error[8] ",  object_type, " File: Bad drive>")
+		9:  return str("<Error[9] ",  object_type, " File: Bad File path>")
+		10: return str("<Error[10] ", object_type, " No File permission>")
+		11: return str("<Error[11] ", object_type, " File already in use>")
+		12: return str("<Error[12] ", object_type, " Can't open File>")
+		13: return str("<Error[13] ", object_type, " Can't write to File>")
+		14: return str("<Error[14] ", object_type, " Can't read to File>")
+		15: return str("<Error[15] ", object_type, " File unrecognized>")
+		16: return str("<Error[16] ", object_type, " File corrupt>")
+		17: return str("<Error[17] ", object_type, " File missing dependencies>")
+		18: return str("<Error[18] ", object_type, " End of File>")
+		19: return str("<Error[19] ", object_type, " Can't open>")
+		20: return str("<Error[20] ", object_type, " Can't create>")
+		21: return str("<Error[21] ", object_type, " Query failed>")
+		22: return str("<Error[22] ", object_type, " Already in use>")
+		23: return str("<Error[23] ", object_type, " Locked>")
+		24: return str("<Error[24] ", object_type, " Timeout>")
+		25: return str("<Error[25] ", object_type, " Can't connect>")
+		26: return str("<Error[26] ", object_type, " Can't resolve>")
+		27: return str("<Error[27] ", object_type, " Connection error>")
+		28: return str("<Error[28] ", object_type, " Can't acquire resource>")
+		29: return str("<Error[29] ", object_type, " Can't fork process>")
+		30: return str("<Error[30] ", object_type, " Invalid data>")
+		31: return str("<Error[31] ", object_type, " Invalid parameter>")
+		32: return str("<Error[32] ", object_type, " Already exists>")
+		33: return str("<Error[33] ", object_type, " Doesn't exist>")
+		34: return str("<Error[34] ", object_type, " Database: Can't read>")
+		35: return str("<Error[35] ", object_type, " Database: Can't write>")
+		36: return str("<Error[36] ", object_type, " Compilation failed>")
+		37: return str("<Error[37] ", object_type, " Method not found>")
+		38: return str("<Error[38] ", object_type, " Link failed>")
+		39: return str("<Error[39] ", object_type, " Script failed>")
+		40: return str("<Error[40] ", object_type, " Cyclic link>")
+		41: return str("<Error[41] ", object_type, " Invalid declaration>")
+		42: return str("<Error[42] ", object_type, " Duplicate symbol>")
+		43: return str("<Error[43] ", object_type, " Parse error>")
+		44: return str("<Error[44] ", object_type, " Busy error>")
+		46: return str("<Error[45] ", object_type, " Skip error>")
+		47: return str("<Error[46] ", object_type, " Help error>")
+		48: return str("<Error[47] ", object_type, " Bug error>")
 	return "N/A"
 
 
@@ -846,13 +925,14 @@ func _check_filename_conflicts() -> String:
 	return ""
 
 
-func _get_header() -> String:
+func _get_header(category_name: String = "") -> String:
 	config.load(PATH)
 	var format: String = _get_settings_value("log_header_format")
 	var _header: String = ""
 	var _tags: Array[String] = [
 		"{project_name}",
 		"{version}",
+		"{category}",
 		"{yy}",
 		"{mm}",
 		"{dd}",
@@ -873,6 +953,7 @@ func _get_header() -> String:
 		var replacements: Dictionary = {
 			"{project_name}": str(ProjectSettings.get_setting("application/config/name")),
 			"{version}": str(ProjectSettings.get_setting("application/config/version")),
+			"{category}": category_name,
 			"{yy}": yy,
 			"{mm}": mm,
 			"{dd}": dd,
@@ -942,7 +1023,7 @@ func _get_file_name(category_name : String) -> String:
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
 	var fin : String
-	fin = str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")_", instance_id, ".log")
+	fin = str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")", instance_id, ".log")
 
 	return fin
 
@@ -970,7 +1051,7 @@ func _get_instance_id() -> String:
 			continue
 
 		# Check  main category folder
-		var gologs_path := str(base_directory, cat_name, "_Gologs/")
+		var gologs_path := str(base_directory, cat_name, "_logs/")
 		var d := DirAccess.open(gologs_path)
 		if d:
 			var files := d.get_files()
