@@ -41,18 +41,25 @@ Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 
 
 <h2>Latest Patch Notes - 1.3 / 1.3.1:</h2>
 <p>See the <a href="https://github.com/Burloe/GoLogger/releases/tag/1.3.1">release page</a> for more info</p>
+<ul>
+1.3.2:
+  <li><code>Log</code>
+  <li>BEAKING: New changes to <code>Log.entry(log_entry: String, category_name: String, print_entry: bool = false)</code></li>
+    <ul>
+    <li>Breaking change! Instead of using an int index to determine which category to use. We not use a string to specify the name. You will have to update your existing <code>Log.entry()</code>.</li>
+    <li>New <code>print_entry</code> now allows you to print individual entries to output whenever they're logged.</li>
+    </ul>
+  <li>Removed superfluous signals <code>session_timer_started</code> and <code>session_timer_stopped</code>, settings and more.</li>
+  <li>Help section is more concise and neutral.</li>
+  <li>Dock margins improved and custom minimum size for each tab removed. No more dock size inconsistencies when changing tabs.</li>
+</ul> 
+<ul>
 1.3.1:
 <ul>
   <li>Settings tab remade. </li>
   <li>Fixed settings tab theme and alignment issues on smaller resolutions.</li>
   <li>Added new `Help` tab containing the essential documentation on how to use GoLogger.</li>
 </ul>
-<ul>
-1.3.2:
-  <li><code>Log.entry()</code> now has an additional parameter <code>print_entry_to_output: bool</code>.</li>
-  <li>Removed superfluous signals <code>session_timer_started</code> and <code>session_timer_stopped</code>.</li>
-  <li>Help section is more concise and neutral.</li>
-  <li>Dock margins improved and custom minimum size for each tab removed. No more dock size inconsistencies when changing tabs.</li>
 1.3:
 <ul>
   <li>Cleaner visuals and theme.</li>
