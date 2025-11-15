@@ -160,6 +160,7 @@ func _ready() -> void:
 
 	validate_settings()
 	instance_id = _get_instance_id()
+	load_category_data()
 
 	if _get_settings_value("autostart_session"):
 		start_session()
@@ -196,52 +197,119 @@ func load_category_data() -> void:
 	config.load(PATH)
 	cat_data.clear()
 
-	cat_data["categories"]["category_names"].append(config.get_value("categories", "category_names", null))
-	cat_data["categories"]["instance_ids"].append(config.get_value("categories", "instance_ids", instance_id))
+	var names: Array = config.get_value("categories", "category_names", [])
+	var instance_ids: Array = config.get_value("categories", "instance_ids", [instance_id])
 
-	for name in cat_data["categories"]["category_names"]:
-		var data: Dictionary = {}
-		for id in config.get_value("categories", "instance_ids", []):
-			var instance: Dictionary = {
-				"id": id,
-				"file_name": config.get_value("categories." + name + "." + id, "file_name", ""),
-				"file_path": config.get_value("categories." + name + "." + id, "file_path", ""),
-				"entry_count": config.get_value("categories." + name + "." + id, "entry_count", 0)
+	cat_data["categories"] = {
+		"category_names": names.duplicate(),
+		"instance_ids": instance_ids.duplicate()
+	}
+
+	for name in names:
+		var instances: Dictionary = {}
+		for id in instance_ids:
+			var inst_section := "categories." + str(name) + "." + str(id)
+			instances[id] = {
+				"id": str(id),
+				"file_name": config.get_value(inst_section, "file_name", ""),
+				"file_path": config.get_value(inst_section, "file_path", ""),
+				"entry_count": config.get_value(inst_section, "entry_count", 0)
 			}
-			data[id] = instance
 
-
-		cat_data["categories." + name] = {
+		cat_data[name] = {
 			"category_name": name,
-			"category_index": config.get_value("categories." + name, "category_index", 0),
-			"file_count": config.get_value("categories." + name, "file_count", 0),
-			"is_locked": config.get_value("categories" + name, "is_locked", false),
-			"instances": data
+			"category_index": config.get_value("categories." + str(name), "category_index", 0),
+			"file_count": config.get_value("categories." + str(name), "file_count", 0),
+			"is_locked": config.get_value("categories." + str(name), "is_locked", false),
+			"instances": instances
 		}
+
+	# cat_data["categories"]["category_names"].append(config.get_value("categories", "category_names", null))
+	# cat_data["categories"]["instance_ids"].append(config.get_value("categories", "instance_ids", instance_id))
+
+	# for name in cat_data["categories"]["category_names"]:
+	# 	var data: Dictionary = {}
+	# 	for id in config.get_value("categories", "instance_ids", []):
+	# 		var instance: Dictionary = {
+	# 			"id": id,
+	# 			"file_name": config.get_value("categories." + name + "." + id, "file_name", ""),
+	# 			"file_path": config.get_value("categories." + name + "." + id, "file_path", ""),
+	# 			"entry_count": config.get_value("categories." + name + "." + id, "entry_count", 0)
+	# 		}
+	# 		data[id] = instance
+
+
+	# 	cat_data["categories." + name] = {
+	# 		"category_name": name,
+	# 		"category_index": config.get_value("categories." + name, "category_index", 0),
+	# 		"file_count": config.get_value("categories." + name, "file_count", 0),
+	# 		"is_locked": config.get_value("categories" + name, "is_locked", false),
+	# 		"instances": data
+	# 	}
 
 
 func save_category_data() -> void:
+	# Ensure there is categories meta to save
+	if !cat_data.has("categories"):
+		return
 
-	# [categories]
+	# Load existing config so we don't clobber unrelated sections
+	config.load(PATH)
+
+	# Save meta arrays
 	config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
 	config.set_value("categories", "instance_ids", cat_data["categories"]["instance_ids"])
 
 	# [categories.category_name]
-	for c_name in cat_data.keys():
-		config.set_value("categories." + cat_data[c_name]["category_name"], "category_name", 	cat_data[c_name]["category_name"])
-		config.set_value("categories." + cat_data[c_name]["category_name"], "category_index", cat_data[c_name]["category_index"])
-		config.set_value("categories." + cat_data[c_name]["category_name"], "file_count", 		cat_data[c_name]["file_count"])
-		config.set_value("categories." + cat_data[c_name]["category_name"], "is_locked", 			cat_data[c_name]["is_locked"])
+	for name in cat_data["categories"]["category_names"]:
+		if !cat_data.has(name):
+			continue
+		var c = cat_data[name]
+		var base_section := "categories." + str(c["category_name"])
+
+		config.set_value(base_section, "category_name", c.get("category_name", name))
+		config.set_value(base_section, "category_index", c.get("category_index", 0))
+		config.set_value(base_section, "file_count", c.get("file_count", 0))
+		config.set_value(base_section, "is_locked", c.get("is_locked", false))
 
 		# [categories.category_name.instance_id]
 		for id in cat_data["categories"]["instance_ids"]:
-			var section: String = str("categories." + cat_data[c_name] + "." + id)
-			config.set_value(section, "id", cat_data[c_name]["instances"]["id"])
-			config.set_value(section, "file_name", cat_data[c_name]["instances"]["file-name"])
-			config.set_value(section, "file_path", cat_data[c_name]["instances"]["file_path"])
-			config.set_value(section, "entry_count", cat_data[c_name]["instances"]["entry_count"])
+			if !c.has("instances") or !c["instances"].has(id):
+				continue
+			var inst = c["instances"][id]
+			var inst_section := base_section + "." + str(id)
+			config.set_value(inst_section, "id", inst.get("id", id))
+			config.set_value(inst_section, "file_name", inst.get("file_name", ""))
+			config.set_value(inst_section, "file_path", inst.get("file_path", ""))
+			config.set_value(inst_section, "entry_count", inst.get("entry_count", 0))
 
+	# Persist to disk
 	config.save(PATH)
+
+
+
+	# config.load(PATH) #? Ensure settings data isn't overwritten with old data
+
+	# # [categories]
+	# config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
+	# config.set_value("categories", "instance_ids", cat_data["categories"]["instance_ids"])
+
+	# # [categories.category_name]
+	# for c_name in cat_data.keys():
+	# 	config.set_value("categories." + cat_data[c_name]["category_name"], "category_name", 	cat_data[c_name]["category_name"])
+	# 	config.set_value("categories." + cat_data[c_name]["category_name"], "category_index", cat_data[c_name]["category_index"])
+	# 	config.set_value("categories." + cat_data[c_name]["category_name"], "file_count", 		cat_data[c_name]["file_count"])
+	# 	config.set_value("categories." + cat_data[c_name]["category_name"], "is_locked", 			cat_data[c_name]["is_locked"])
+
+	# 	# [categories.category_name.instance_id]
+	# 	for id in cat_data["categories"]["instance_ids"]:
+	# 		var section: String = str("categories." + cat_data[c_name] + "." + id)
+	# 		config.set_value(section, "id", cat_data[c_name]["instances"]["id"])
+	# 		config.set_value(section, "file_name", cat_data[c_name]["instances"]["file-name"])
+	# 		config.set_value(section, "file_path", cat_data[c_name]["instances"]["file_path"])
+	# 		config.set_value(section, "entry_count", cat_data[c_name]["instances"]["entry_count"])
+
+	# config.save(PATH)
 
 
 
@@ -874,7 +942,7 @@ func _get_file_name(category_name : String) -> String:
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
 	var fin : String
-	fin = str(category_name, "(", yy, "-", mm, "-", dd, "_", hh, "-", mi, "-", ss, ").log") if _get_settings_value("dash_separator") else str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")", instance_id, ".log")
+	fin = str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")_", instance_id, ".log")
 
 	return fin
 
@@ -927,7 +995,7 @@ func _get_instance_id() -> String:
 
 	# Re-generate ID if conflict found
 	while id_str.substr(1) in used_ids:
-		id_str = "_"
+		id_str = ""
 		for i in range(id_len):
 			var idx := rng.randi_range(0, letters.length() - 1)
 			id_str += letters[idx]
