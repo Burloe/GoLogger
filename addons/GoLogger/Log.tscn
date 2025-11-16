@@ -64,9 +64,9 @@ custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 theme = ExtResource("5_e13q5")
 bbcode_enabled = true
-text = "[center] Save copies of the current logs? [font_size=12]
+text = "[center]GoLogger - Save copies of the current logs? [font_size=12]
 This action is cancelled in 18s!
-[color=lightblue]SessionTimer & Entry Count is paused during this prompt."
+[color=lightblue]Limit methods are paused during this prompt."
 
 [node name="CopyNameLineEdit" type="LineEdit" parent="GoLoggerElements/Popup/VBoxContainer/Panel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true

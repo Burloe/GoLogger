@@ -64,7 +64,7 @@ var cat_data : Dictionary = {
 			"D44r3": {
 				"id": "D44r3",
 				"file_name": "game_D44r3.log",
-				"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3",
+				"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3.log",
 				"entry_count": 0
 			},
 			"X45jR": {
@@ -156,10 +156,10 @@ enum ErrorCodes { #NYI - For future use in error/warning messages
 		ERR_LOAD_CATEGORIES_FAILED,
 		ERR_SAVE_CATEGORIES_FAILED,
 		ERR_SESSION_ACTIVE,
+		ERR_NO_CATEGORIES,
 		ERR_INVALID_CATEGORY,
 		ERR_INVALID_ENTRY,
 		ERR_INVALID_FILE_PATH,
-		ERR_NO_CATEGORIES,
 		ERR_SESSION_INACTIVE,
 		ERR_FILE_ACCESS,
 		ERR_DIR_ACCESS
@@ -306,13 +306,14 @@ func start_session() -> void:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 
-	config.load(PATH)
-	categories = config.get_value("plugin", "categories")
+	# config.load(PATH)
+	# categories = config.get_value("plugin", "categories")
 
-	if categories.is_empty(): # ErrCheck
-		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
-		return
+	# if categories.is_empty(): # ErrCheck
+	# 	push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
+	# 	return
 
+	load_category_data()
 
 	if _get_settings_value("limit_method") == 1 or _get_settings_value("limit_method") == 2:
 		session_timer.start(_get_settings_value("session_duration"))
@@ -321,12 +322,13 @@ func start_session() -> void:
 	for i in cat_data["categories"]["category_names"].size():
 		var c_name: String = cat_data["categories"]["category_names"][i]
 		var f_name: String  = _get_file_name(c_name) # e.g. "game_D44r3.log"
-		var _d: Dictionary = {
-			"id": instance_id,
-			"file_name": f_name,
-			"file_path": str(base_directory, c_name, "_logs/", f_name),
-			"entry_count": 0
-		}
+		var _d: Dictionary = cat_data[c_name]["instances"][instance_id].duplicate()
+		# var _d: Dictionary = {
+		# 	"id": instance_id,
+		# 	"file_name": f_name,
+		# 	"file_path": str(base_directory, c_name, "_logs/", f_name),
+		# 	"entry_count": 0
+		# }
 
 		# Open/create directory
 		var path: String = str(base_directory, c_name, "_logs/")
@@ -492,175 +494,74 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 
 
 
-# func old_entry(log_entry : String, category_index : int = 0, print_entry_to_output: bool = false) -> void:
-# 	# Deprecated - Use entry() instead
-# 	config.load(PATH)
-# 	categories = config.get_value("plugin", "categories")
-# 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] ")
-
-# 	if categories == null or categories.is_empty(): # ErrCheck
-# 		if _get_settings_value("error_reporting") != 2:
-# 			printerr("GoLogger: No valid categories to log in.")
-# 		return
-# 	if categories[category_index][CategoryData.CATEGORY_NAME] == "": # ErrCheck
-# 		if _get_settings_value("error_reporting") != 2:
-# 			printerr("GoLogger: Attempted to log entry on an invalid category.")
-# 			return
-# 	if !session_status: # ErrCheck
-# 		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"): push_warning("GoLogger: Failed to log entry due to inactive session.")
-# 		return
-
-
-# 	# Get target file based on instance ID
-# 	var target_filepath: String = ""
-# 	var target_file: String = ""
-# 	for i in categories[category_index][CategoryData.CURRENT_FILENAMES]:
-# 		if i.ends_with(str("_", instance_id, ".log")):
-# 			target_file = i
-# 	for i in categories[category_index][CategoryData.CURRENT_FILEPATHS]:
-# 		if i.ends_with(str("_", instance_id, ".log")):
-# 			target_filepath = i
-
-
-# 	# Open file to read existing lines
-# 	var _f = FileAccess.open(categories[category_index][CategoryData.CURRENT_FILEPATHS], FileAccess.READ)
-# 	if !_f: # Error check
-# 		var _err = FileAccess.get_open_error()
-# 		if _err != OK and _get_settings_value("error_reporting") != 2:
-# 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
-# 		return
-
-# 	var lines : Array[String] = []
-# 	while not _f.eof_reached():
-# 		var _l = _f.get_line().strip_edges(false, true)
-# 		if _l != "":
-# 			lines.append(_l)
-# 	_f.close()
-
-
-# 		# Handle Limit Methods
-# 	if !popup_state:
-# 		match _get_settings_value("limit_method"):
-
-# 			0: # Entry count
-# 				match _get_settings_value("entry_count_action"):
-# 					0: # Remove old entries
-# 						while lines.size() >= _get_settings_value("entry_cap"):
-# 							lines.remove_at(1) # Keeping header line 0
-
-# 					1: # Stop & start
-# 						if lines.size() >= _get_settings_value("entry_cap"):
-# 							stop_session()
-# 							start_session()
-# 							entry(log_entry, category_index)
-# 							return
-
-# 					2: # Stop only
-# 						if lines.size() >= _get_settings_value("entry_cap"):
-# 							stop_session()
-# 							return
-
-# 			1: # Session timer
-# 				match _get_settings_value("session_timer_action"):
-# 					0: # Stop & start session
-# 						stop_session()
-# 						start_session()
-# 						entry(log_entry, category_index)
-# 						return
-
-# 					1: # Stop session
-# 						stop_session()
-# 						return
-
-# 			2: # Both Entry count limit and Session Timer
-# 				match _get_settings_value("entry_count_action"):
-# 					0: # Stop & start session
-# 						if lines.size() >= _get_settings_value("entry_cap"):
-# 							stop_session()
-# 							start_session()
-# 							entry(log_entry, category_index)
-# 							return
-
-# 					1: # Stop session
-# 						if lines.size() >= _get_settings_value("entry_cap"):
-# 							stop_session()
-# 							return
-
-
-# 	# Rewrite file with existing lines / Update entry count
-# 	#TODO: Need to account for individual instance ID entry counts here [make into array?]
-# 	categories[category_index][CategoryData.ENTRY_COUNT] = lines.size()
-# 	var _fw = FileAccess.open(target_filepath, FileAccess.WRITE)
-# 	if !_fw: # ErrCheck
-# 		var err = FileAccess.get_open_error()
-# 		if err != OK and _get_settings_value("error_reporting") != 2:
-# 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
-
-# 	for line in lines:
-# 		_fw.store_line(str(line))
-
-# 	# Write new entry
-# 	var new_entry: String = _get_entry_format(log_entry)
-# 	_fw.store_line(new_entry)
-# 	_fw.close()
-# 	if print_entry_to_output:
-# 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", categories[category_index][CategoryData.CATEGORY_NAME], "> ", new_entry.dedent())
-
-
-
-
-
 func save_copy(_name: String = "") -> void:
 	if !session_status:
 		return
 
 	# No specified name -> prompt popup for name
-	if _name == "":
-		popup_state = true if popup_state == false else false
+	if _name == "" and !popup_state:
+		popup_state = true
+
 	# Name specified, i.e. called programmatically -> save copy using predetermines name
 	else:
 		copy_name = _name
 		complete_copy()
 
 
+
 func complete_copy() -> void:
 	if !session_status:
-		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"): push_warning("GoLogger: Attempt to log entry failed due to inactive session.")
+		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"): push_warning("GoLogger: Failed to save copies due to inactive session.")
 		return
 
-	config.load(PATH)
-	categories = config.get_value("plugin", "categories")
+	load_category_data()
 
-	if categories.is_empty():
+	if config.get_value("categories", "category_names").is_empty():
 		if config.get_value("plugin", "error_reporting"):
 			push_warning("GoLogger: Unable to complete copy action. No categories are present.")
 
-	if copy_name.ends_with(".log") or copy_name.ends_with(".txt"):
-		copy_name = copy_name.substr(0, copy_name.length() - 4)
+	var reject_ch: Array[String] = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+	for ch in reject_ch:
+		if copy_name.find(ch) != -1:
+			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Invalid character [", ch, "] found in file name.")
+			popup_errorlbl.visible = true
+			await get_tree().create_timer(4.0).timeout
+			return
+
+	var reject_str: Array[String] = [".log", ".txt", ".cfg", ".ini", ".json", ".xml", ".yml", ".yaml", ".csv"]
+	for strg in reject_str:
+		if copy_name.ends_with(strg):
+			copy_name.erase(copy_name.length() - strg.length(), strg.length())
+	# if copy_name.ends_with(".log") or copy_name.ends_with(".txt"): # Old
+	# 	copy_name = copy_name.substr(0, copy_name.length() - 4) # Old
+
 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] ")
 
-	for i in range(categories.size()):
-		var _fr = FileAccess.open(categories[i][CategoryData.CURRENT_FILEPATHS], FileAccess.READ)
-		if !_fr:
-			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open base file to copy the session [", categories[i][CategoryData.CURRENT_FILEPATHS],"].")
+
+	for category in range(config.get_value("categories", "category_names").size()):
+		var dirpath: String = str(config.get_value("plugin", "base_directory"), "/", category, "_logs/saved_logs/")
+		var _f := FileAccess.open(dirpath, FileAccess.READ)
+		if !_f:
+			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open file to copy the session [", dirpath,"].")
 			popup_errorlbl.visible = true
 			await get_tree().create_timer(4.0).timeout
 			return
 
-		var _c = _fr.get_as_text()
-		var _path := str(base_directory, categories[i][CategoryData.CATEGORY_NAME], "_logs/saved_logs/", _get_file_name(copy_name))
-		var _fw = FileAccess.open(_path, FileAccess.WRITE)
-		if !_fw:
-			var _e = FileAccess.get_open_error()
-			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", _path,"] - ", get_error(_e), ".")
+		var content: String = _f.get_as_text()
+		var fw = FileAccess.open(str(dirpath, _get_file_name(copy_name)), FileAccess.WRITE)
+		if !fw:
+			var err = FileAccess.get_open_error()
+			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", dirpath, _get_file_name(copy_name),"] - ", get_error(err), ".")
 			popup_errorlbl.visible = true
 			await get_tree().create_timer(4.0).timeout
 			return
-		_fw.store_line(str(_c, "\nSaved copy of ", categories[i][CategoryData.CURRENT_FILENAMES], "."))
-		_fw.close()
-	config.set_value("plugin", "categories", categories)
-	config.save(PATH)
+		fw.store_line(str(content, "\nCopy of ", category, " session saved."))
+		fw.close()
+
+	save_category_data()
 	popup_state = false
+
+
 
 
 func stop_session() -> void:
