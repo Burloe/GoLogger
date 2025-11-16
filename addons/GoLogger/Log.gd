@@ -229,7 +229,7 @@ func load_category_data() -> void:
 	cat_data.clear()
 
 	var names: Array = config.get_value("categories", "category_names", [])
-	var instance_ids: Array = config.get_value("categories", "instance_ids", [instance_id])
+	var instance_ids: Array = config.get_value("categories", "instance_ids", [instance_id] if instance_id != "" else [])
 
 	cat_data["categories"] = {
 		"category_names": names.duplicate(),

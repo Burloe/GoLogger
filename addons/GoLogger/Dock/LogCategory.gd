@@ -84,7 +84,7 @@ func _ready() -> void:
 		size = Vector2.ZERO
 		if line_edit.text == "":
 			invalid_name = true
-			apply_btn.disabled = true
+			apply_btn.hide()
 		else:
 			invalid_name = false
 
@@ -115,7 +115,7 @@ func apply_name(new_name : String) -> void:
 	else:
 		print_rich("[color=878787][GoLogger] Category name changed to " + category_name + ".")
 	line_edit.release_focus()
-	apply_btn.disabled = true
+	apply_btn.hide()
 
 
 func _on_move_left_btn_up() -> void:
@@ -129,10 +129,10 @@ func _on_move_right_btn_up() -> void:
 
 func _on_text_changed(new_text : String) -> void:
 	if new_text == "" or check_existing_conflicts(new_text):
-		apply_btn.disabled = true
+		apply_btn.hide()
 		invalid_name = true
 	else:
-		apply_btn.disabled = false
+		apply_btn.show()
 		invalid_name = false
 
 	if line_edit.get_caret_column() == line_edit.text.length() - 1:

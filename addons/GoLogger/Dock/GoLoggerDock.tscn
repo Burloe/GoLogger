@@ -65,7 +65,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 1
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -73,7 +73,6 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -109,6 +108,19 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 theme_override_constants/separation = 12
+
+[node name="AddCategoryButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Add a new log category"
+theme_override_colors/font_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
+theme_override_colors/font_hover_color = Color(0.2542, 0.76342, 0.82, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
+theme_override_colors/icon_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
+theme_override_colors/icon_hover_color = Color(0.254902, 0.764706, 0.819608, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
+text = "Add new Category"
+icon = ExtResource("2_fkrom")
 
 [node name="OpenDirCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
@@ -225,21 +237,9 @@ size_flags_vertical = 3
 
 [node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/ScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/separation = 9
-
-[node name="AddCategoryButton" type="Button" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 111)
-layout_mode = 2
-tooltip_text = "Add a new log category"
-theme_override_colors/font_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
-theme_override_colors/font_hover_color = Color(0.2542, 0.76342, 0.82, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
-theme_override_colors/icon_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
-theme_override_colors/icon_hover_color = Color(0.254902, 0.764706, 0.819608, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
-icon = ExtResource("2_fkrom")
-icon_alignment = 1
 
 [node name="CategoryGridContainer" type="GridContainer" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer"]
 unique_name_in_owner = true
@@ -249,6 +249,7 @@ theme_override_constants/v_separation = 5
 columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="."]
+visible = false
 layout_mode = 2
 follow_focus = true
 scroll_horizontal_custom_step = 10.0
