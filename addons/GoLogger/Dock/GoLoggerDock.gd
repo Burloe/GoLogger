@@ -9,7 +9,7 @@ extends TabContainer
 		# [TBD] Remove 'category index' entirely in favor of using strings as unique identifiers for categories with regards to the new .ini format
 		# Handle adding/removing categories with new .ini format
 		# is_locked property handling
-		# Delete 'disable_warn2' entirely. Completely superfluous and will only produce unnecessary complexity + error warnings
+		# Add feature to remove setting keys from [settings] section in .ini file when saving/loading the file
 
 signal update_index
 
@@ -80,9 +80,6 @@ var session_duration_spinbox_line: LineEdit
 @onready var error_rep_lbl: Label = %ErrorRepLabel
 @onready var error_rep_container: HBoxContainer = %ErrorRepHBox
 
-@onready var disable_warn1_btn: CheckButton = %DisableWarn1CheckButton
-@onready var disable_warn2_btn: CheckButton = %DisableWarn2CheckButton
-
 @onready var plugin_version_cat_lbl: Label = %PluginVersionCatLabel
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
@@ -93,7 +90,6 @@ var valid_line_edit_stylebox := preload("uid://b8w5i8chks7st")
 var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
 var config = ConfigFile.new()
-var log_header_string: String
 var plugin_version: String =  "1.3.2":
 	set(value):
 		plugin_version = value
@@ -101,6 +97,51 @@ var plugin_version: String =  "1.3.2":
 			plugin_version_cat_lbl.text = str("GoLogger v.", value)
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
+var cat_data : Dictionary = {
+	"game": {
+		"category_name": "game",
+		"category_index": 0,
+		"file_count": 0,
+		"is_locked": false,
+		"instances": {
+			"D44r3": {
+				"id": "D44r3",
+				"file_name": "game_D44r3.log",
+				"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3.log",
+				"entry_count": 0
+			},
+			"X45jR": {
+				"id": "X45jR",
+				"file_name": "game_X45jR.log",
+				"file_path": "user://GoLogger/game_logs/game(251113_161313)_X43jR.log",
+				"entry_count": 0
+			}
+		}
+	},
+	"player": {
+		"category_name": "game",
+		"category_index": 0,
+		"file_count": 0,
+		"is_locked": false,
+		"instances": {
+			"U4j9K": {
+				"id": "U4j9K",
+				"file_name": "player_U4j9K.log",
+				"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K.log",
+				"file_count": 0,
+				"instances": {
+					"U4j9K": {
+						"id": "U4j9K",
+						"file_name": "player_U4j9K.log",
+						"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K",
+						"entry_count": 0
+					}
+				}
+			}
+		}
+	}
+}
+
 var btn_array: Array[Control] = []
 var container_array: Array[Control] = []
 var c_font_normal := Color("9d9ea0")
@@ -122,8 +163,6 @@ var default_settings := {
 		"entry_cap": 300,
 		"session_duration": 300.0,
 		"error_reporting": 0,
-		"disable_warn1": false,
-		"disable_warn2": false,
 		"columns": 6
 }
 
@@ -182,8 +221,6 @@ func _ready() -> void:
 			entry_count_spinbox,
 			session_duration_spinbox,
 			error_rep_btn,
-			disable_warn1_btn,
-			disable_warn2_btn
 		]
 
 		for i in range(btn_array.size()):
@@ -322,7 +359,6 @@ func add_category() -> void:
 
 
 func save_categories(deferred: bool = false) -> void:
-	# [0 category name, 1 category index, 2 current filename, 3 current filepath, 4 file count, 5 entry count, 6 is locked]
 	if deferred:
 		await get_tree().physics_frame
 	var main : Array
@@ -412,27 +448,35 @@ static func get_error(error: int, object_type: String = "") -> String:
 	return "N/A"
 
 
-# Note mirror function also present in Log.gd. e
-func create_settings_file() -> void:
-	var _a : Array[Array] = [["game", 0, [], "null", 0, 0, false]]
-	config.set_value("plugin", "base_directory", "user://GoLogger/")
-	config.set_value("plugin", "categories", _a)
+func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
+	var _a : Array[Array] = [["game", 0, [], "null", 0, 0, false], ["player", 1, [], "null", 0, 0, false]]
+	config.set_value("plugin", "base_directory", default_settings["base_directory"])
 
-	config.set_value("settings", "columns", 6)
-	config.set_value("settings", "log_header_format", "{project_name} {version} {category} [{yy}-{mm}-{dd} | {hh:mi:ss}]:")
-	config.set_value("settings", "entry_format", "\t[{hh}:{mi}:{ss}]")
-	config.set_value("settings", "canvaslayer_layer", 5)
-	config.set_value("settings", "autostart_session", true)
-	config.set_value("settings", "use_utc", false)
-	config.set_value("settings", "limit_method", 0)
-	config.set_value("settings", "entry_count_action", 0)
-	config.set_value("settings", "session_timer_action", 0)
-	config.set_value("settings", "file_cap", 10)
-	config.set_value("settings", "entry_cap", 300)
-	config.set_value("settings", "session_duration", 300.0)
-	config.set_value("settings", "error_reporting", 0)
-	config.set_value("settings", "disable_warn1", false)
-	config.set_value("settings", "disable_warn2", false)
+	config.set_value("settings", "columns", default_settings["columns"])
+	config.set_value("settings", "log_header_format", default_settings["log_header_format"])
+	config.set_value("settings", "entry_format", default_settings["entry_format"])
+	config.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
+	config.set_value("settings", "autostart_session", default_settings["autostart_session"])
+	config.set_value("settings", "use_utc", default_settings["use_utc"])
+	config.set_value("settings", "limit_method", default_settings["limit_method"])
+	config.set_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	config.set_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	config.set_value("settings", "file_cap", default_settings["file_cap"])
+	config.set_value("settings", "entry_cap", default_settings["entry_cap"])
+	config.set_value("settings", "session_duration", default_settings["session_duration"])
+	config.set_value("settings", "error_reporting", default_settings["error_reporting"])
+
+	config.set_value("categories", "category_names", default_settings["category_names"])
+	config.set_value("categories", "instance_ids", [instance_id])
+
+	for i in default_settings["category_names"].size():
+		var c_name: String = default_settings["category_names"][i]
+		var base_section := "categories." + str(c_name)
+		config.set_value(base_section, "category_name", c_name)
+		config.set_value(base_section, "category_index", i)
+		config.set_value(base_section, "file_count", 0)
+		config.set_value(base_section, "is_locked", false)
+
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
@@ -441,28 +485,25 @@ func create_settings_file() -> void:
 
 func load_settings_state() -> void:
 	config.load(PATH)
-	base_dir_line.text = 										config.get_value("plugin", 	 "base_directory", "user://GoLogger/")
-	base_dir_apply_btn.disabled = true
-	log_header_line.text = 									config.get_value("settings", "log_header_format", "{project_name} {version} {category} session [{yy-mm-dd} | {hh}:mi}:{ss}]:")
-	entry_format_line.text = 								config.get_value("settings", "entry_format", "[{hh}:{mi}:{ss}]: {entry}")
-	canvas_layer_spinbox.value = 						config.get_value("settings", "canvaslayer_layer", 5)
-	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session", true)
-	utc_btn.button_pressed = 								config.get_value("settings", "use_utc", false)
-	limit_method_btn.selected = 						config.get_value("settings", "limit_method", 0)
-	entry_count_action_btn.selected = 			config.get_value("settings", "entry_count_action", 0)
-	entry_count_action_btn.selected = 			config.get_value("settings", "session_timer_action", 0)
-	file_count_spinbox.value = 							config.get_value("settings", "file_cap", 10)
-	entry_count_spinbox.value = 						config.get_value("settings", "entry_cap", 300)
-	session_duration_spinbox.value = 				config.get_value("settings", "session_duration", 300.0)
-	error_rep_btn.selected = 								config.get_value("settings", "error_reporting", 0)
-	disable_warn1_btn.button_pressed = 			config.get_value("settings", "disable_warn1", false)
-	disable_warn2_btn.button_pressed = 			config.get_value("settings", "disable_warn2", false)
-	columns_slider.value = 									config.get_value("settings", "columns", 6)
+	base_dir_line.text = 							config.get_value("plugin", 	 "base_directory", default_settings["base_directory"])
+	base_dir_apply_btn.disabled = 		true
+	log_header_line.text = 						config.get_value("settings", "log_header_format", default_settings["log_header_format"])
+	entry_format_line.text = 					config.get_value("settings", "entry_format", default_settings["entry_format"])
+	canvas_layer_spinbox.value = 			config.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
+	autostart_btn.button_pressed = 		config.get_value("settings", "autostart_session", default_settings["autostart_session"])
+	utc_btn.button_pressed = 					config.get_value("settings", "use_utc", default_settings["use_utc"])
+	limit_method_btn.selected = 			config.get_value("settings", "limit_method", default_settings["limit_method"])
+	entry_count_action_btn.selected = config.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	entry_count_action_btn.selected = config.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	file_count_spinbox.value = 				config.get_value("settings", "file_cap", default_settings["file_cap"])
+	entry_count_spinbox.value = 			config.get_value("settings", "entry_cap", default_settings["entry_cap"])
+	session_duration_spinbox.value = 	config.get_value("settings", "session_duration", default_settings["session_duration"])
+	error_rep_btn.selected = 					config.get_value("settings", "error_reporting", default_settings["error_reporting"])
+	columns_slider.value = 						config.get_value("settings", "columns", default_settings["columns"])
 	config.save(PATH)
 
 
-# Note mirror function also present in Log.gd. ensure both are kept in sync.
-func validate_settings() -> void:
+func validate_settings() -> void: # Note mirror function also present in Log.gd. Ensure both are kept in sync.
 	var present_settings_faults : int = 0
 	var value_type_faults : int = 0
 	var expected_settings ={
@@ -480,9 +521,7 @@ func validate_settings() -> void:
 		"file_cap": "settings/file_cap",
 		"entry_cap": "settings/entry_cap",
 		"session_duration": "settings/session_duration",
-		"error_reporting": "settings/error_reporting",
-		"disable_warn1": "settings/disable_warn1",
-		"disable_warn2": "settings/disable_warn2"
+		"error_reporting": "settings/error_reporting"
 	}
 
 	var expected_types = {
@@ -500,9 +539,7 @@ func validate_settings() -> void:
 		"settings/file_cap": TYPE_INT,
 		"settings/entry_cap": TYPE_INT,
 		"settings/session_duration": TYPE_FLOAT,
-		"settings/error_reporting": TYPE_INT,
-		"settings/disable_warn1": TYPE_BOOL,
-		"settings/disable_warn2": TYPE_BOOL
+		"settings/error_reporting": TYPE_INT
 	}
 
 	var types : Array[String] = [
@@ -831,13 +868,7 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 			config.set_value("settings", "use_utc", toggled_on)
 			print_rich(c_print_history, "Use UTC option " + "enabled." if toggled_on else "disabled.")
 
-		disable_warn1_btn:
-			config.set_value("settings", "disable_warn1", toggled_on)
-			print_rich(c_print_history, "Failed to start session warning " + "disabled." if toggled_on else "enabled.")
 
-		disable_warn2_btn:
-			config.set_value("settings", "disable_warn2", toggled_on)
-			print_rich(c_print_history, "Failed to log entry warning " + "disabled." if toggled_on else "enabled.")
 
 	var _err = config.save(PATH)
 	if _err != OK:

@@ -99,8 +99,8 @@ var cat_data : Dictionary = {
 	}
 }
 
-var categories: Array = [] # See CategoryData enum for structure.
-enum CategoryData {
+var categories: Array = [] # DEPRECATED - Use cat_data["categories"]["category_names"] instead
+enum CategoryData { # DEPRECATED - Use cat_data dictionary instead
 			CATEGORY_NAME = 0, # String - The name of the category
 			CATEGORY_INDEX = 1, # Int - The index of the category in the categories array
 			CURRENT_FILENAMES = 2, # Array[String] - Array of file names for each instance ID of the current files
@@ -142,8 +142,6 @@ var default_settings := {
 		"entry_cap": 300,
 		"session_duration": 300.0,
 		"error_reporting": 0,
-		"disable_warn1": false,
-		"disable_warn2": false,
 		"columns": 6
 }
 
@@ -161,6 +159,7 @@ enum ErrorCodes { #NYI - For future use in error/warning messages
 		ERR_INVALID_ENTRY,
 		ERR_INVALID_FILE_PATH,
 		ERR_SESSION_INACTIVE,
+		ERR_SETTINGS_FILE_CREATION_FAIL,
 		ERR_FILE_ACCESS,
 		ERR_DIR_ACCESS
 }
@@ -302,16 +301,9 @@ func save_category_data() -> void:
 
 func start_session() -> void:
 	if session_status: # ErrCheck -> Session already started
-		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn1"):
+		if _get_settings_value("error_reporting") != 2:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
-
-	# config.load(PATH)
-	# categories = config.get_value("plugin", "categories")
-
-	# if categories.is_empty(): # ErrCheck
-	# 	push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
-	# 	return
 
 	load_category_data()
 
@@ -322,13 +314,12 @@ func start_session() -> void:
 	for i in cat_data["categories"]["category_names"].size():
 		var c_name: String = cat_data["categories"]["category_names"][i]
 		var f_name: String  = _get_file_name(c_name) # e.g. "game_D44r3.log"
-		var _d: Dictionary = cat_data[c_name]["instances"][instance_id].duplicate()
-		# var _d: Dictionary = {
-		# 	"id": instance_id,
-		# 	"file_name": f_name,
-		# 	"file_path": str(base_directory, c_name, "_logs/", f_name),
-		# 	"entry_count": 0
-		# }
+		var _d: Dictionary = cat_data[c_name]["instances"].get(instance_id, {})
+
+		if _d.is_empty() and _get_settings_value("error_reporting") != 2:
+			push_warning("GoLogger: Failed to start session for category '", c_name, "'. No instance data found for instance_id [", instance_id, "].")
+			continue
+
 
 		# Open/create directory
 		var path: String = str(base_directory, c_name, "_logs/")
@@ -343,13 +334,13 @@ func start_session() -> void:
 		if !dir and _get_settings_value("error_reporting") != 2: # ErrCheck
 			var _err = DirAccess.get_open_error()
 			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _d["file_path"], ").")
-			return
+			continue
 
 		# Create/open file
 		var _f = FileAccess.open(_d["file_path"], FileAccess.WRITE)
 		if !_f and _get_settings_value("error_reporting") != 2:
 			push_warning("GoLogger: Failed to create log file for session(", _d["file_path"], ").")
-			return
+			continue
 
 		var _files = dir.get_files()
 		cat_data[c_name]["file_count"] = _files.size()
@@ -360,7 +351,7 @@ func start_session() -> void:
 				dir.remove(_files[0])
 				_files.remove_at(0)
 
-				var _err = DirAccess.get_open_error()
+				var _err = DirAccess.get_open_error() # Checks for errors during dir.remove()
 				if _err != OK and _get_settings_value("error_reporting") != 2:
 					push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 
@@ -383,7 +374,7 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 	# Load base category data from file
 	load_category_data()
 	var _d: Dictionary = cat_data.get(category_name, {})
-	var entry: String = _get_entry_format(log_entry)
+	var entry: String = _get_entry_format(log_entry, category_name)
 	var target_filepath: String = _d["instances"][instance_id].get("file_path", "")
 
 	# Early returns
@@ -486,7 +477,7 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 		_fw.store_line(str(line))
 
 	# Write new entry
-	var new_entry: String = _get_entry_format(log_entry)
+	var new_entry: String = _get_entry_format(log_entry, category_name)
 	_fw.store_line(new_entry)
 	_fw.close()
 	if print_entry_to_output:
@@ -511,7 +502,7 @@ func save_copy(_name: String = "") -> void:
 
 func complete_copy() -> void:
 	if !session_status:
-		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"): push_warning("GoLogger: Failed to save copies due to inactive session.")
+		if _get_settings_value("error_reporting") != 2: push_warning("GoLogger: Failed to save copies due to inactive session.")
 		return
 
 	load_category_data()
@@ -624,24 +615,33 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 
 func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
 	var _a : Array[Array] = [["game", 0, [], "null", 0, 0, false], ["player", 1, [], "null", 0, 0, false]]
-	config.set_value("plugin", "base_directory", "user://GoLogger/")
-	config.set_value("plugin", "categories", _a)
+	config.set_value("plugin", "base_directory", default_settings["base_directory"])
 
-	config.set_value("settings", "columns", 6)
-	config.set_value("settings", "log_header_format", "{project_name} {version} {category} [{yy}-{mm}-{dd} | {hh:mi:ss}]:")
-	config.set_value("settings", "entry_format", "\t[{hh}:{mi}:{ss}]")
-	config.set_value("settings", "canvaslayer_layer", 5)
-	config.set_value("settings", "autostart_session", true)
-	config.set_value("settings", "use_utc", false)
-	config.set_value("settings", "limit_method", 0)
-	config.set_value("settings", "entry_count_action", 0)
-	config.set_value("settings", "session_timer_action", 0)
-	config.set_value("settings", "file_cap", 10)
-	config.set_value("settings", "entry_cap", 300)
-	config.set_value("settings", "session_duration", 300.0)
-	config.set_value("settings", "error_reporting", 0)
-	config.set_value("settings", "disable_warn1", false)
-	config.set_value("settings", "disable_warn2", false)
+	config.set_value("settings", "columns", default_settings["columns"])
+	config.set_value("settings", "log_header_format", default_settings["log_header_format"])
+	config.set_value("settings", "entry_format", default_settings["entry_format"])
+	config.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
+	config.set_value("settings", "autostart_session", default_settings["autostart_session"])
+	config.set_value("settings", "use_utc", default_settings["use_utc"])
+	config.set_value("settings", "limit_method", default_settings["limit_method"])
+	config.set_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	config.set_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	config.set_value("settings", "file_cap", default_settings["file_cap"])
+	config.set_value("settings", "entry_cap", default_settings["entry_cap"])
+	config.set_value("settings", "session_duration", default_settings["session_duration"])
+	config.set_value("settings", "error_reporting", default_settings["error_reporting"])
+
+	config.set_value("categories", "category_names", default_settings["category_names"])
+	config.set_value("categories", "instance_ids", [instance_id])
+
+	for i in default_settings["category_names"].size():
+		var c_name: String = default_settings["category_names"][i]
+		var base_section := "categories." + str(c_name)
+		config.set_value(base_section, "category_name", c_name)
+		config.set_value(base_section, "category_index", i)
+		config.set_value(base_section, "file_count", 0)
+		config.set_value(base_section, "is_locked", false)
+
 	var _s = config.save(PATH)
 	if _s != OK:
 		var _e = config.get_open_error()
@@ -666,9 +666,7 @@ func validate_settings() -> void: # Note mirror function present in GoLoggerDock
 		"file_cap": "settings/file_cap",
 		"entry_cap": "settings/entry_cap",
 		"session_duration": "settings/session_duration",
-		"error_reporting": "settings/error_reporting",
-		"disable_warn1": "settings/disable_warn1",
-		"disable_warn2": "settings/disable_warn2"
+		"error_reporting": "settings/error_reporting"
 	}
 
 	var expected_types = {
@@ -687,8 +685,6 @@ func validate_settings() -> void: # Note mirror function present in GoLoggerDock
 		"settings/entry_cap": TYPE_INT,
 		"settings/session_duration": TYPE_FLOAT,
 		"settings/error_reporting": TYPE_INT,
-		"settings/disable_warn1": TYPE_BOOL,
-		"settings/disable_warn2": TYPE_BOOL
 	}
 
 	var types : Array[String] = [
@@ -847,6 +843,7 @@ func _get_header(category_name: String = "") -> String:
 	var _tags: Array[String] = [
 		"{project_name}",
 		"{version}",
+		"{instance_id}",
 		"{category}",
 		"{yy}",
 		"{mm}",
@@ -868,6 +865,7 @@ func _get_header(category_name: String = "") -> String:
 		var replacements: Dictionary = {
 			"{project_name}": str(ProjectSettings.get_setting("application/config/name")),
 			"{version}": str(ProjectSettings.get_setting("application/config/version")),
+			"{instance_id}": instance_id,
 			"{category}": category_name,
 			"{yy}": yy,
 			"{mm}": mm,
@@ -886,10 +884,12 @@ func _get_header(category_name: String = "") -> String:
 	return ""
 
 
-func _get_entry_format(entry: String) -> String:
+func _get_entry_format(entry: String, category_name: String) -> String:
 	var _tags: Array[String] = [
 		"{project_name}",
 		"{version}",
+		"{instance_id}",
+		"{category}",
 		"{yy}",
 		"{mm}",
 		"{dd}",
@@ -911,13 +911,14 @@ func _get_entry_format(entry: String) -> String:
 	var replacements: Dictionary = {
 		"{project_name}": str(ProjectSettings.get_setting("application/config/name")),
 		"{version}": str(ProjectSettings.get_setting("application/config/version")),
+		"{instance_id}": instance_id,
+		"{category}": category_name,
 		"{yy}": yy,
 		"{mm}": mm,
 		"{dd}": dd,
 		"{hh}": hh,
 		"{mi}": mi,
-		"{ss}": ss,
-		"{entry}": entry
+		"{ss}": ss
 	}
 
 	var format: String = _get_settings_value("entry_format")

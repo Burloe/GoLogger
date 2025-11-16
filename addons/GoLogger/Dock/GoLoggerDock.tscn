@@ -255,7 +255,7 @@ scroll_horizontal_custom_step = 10.0
 metadata/_tab_index = 1
 
 [node name="MainPanel" type="Panel" parent="Settings"]
-custom_minimum_size = Vector2(0, 419)
+custom_minimum_size = Vector2(0, 380)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -268,9 +268,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 9
-theme_override_constants/margin_top = 9
+theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 9
-theme_override_constants/margin_bottom = 9
+theme_override_constants/margin_bottom = 12
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer"]
 layout_mode = 2
@@ -300,7 +300,7 @@ Default path is \"user://GoLogger/\". "
 mouse_filter = 0
 theme = ExtResource("1_y5prw")
 theme_override_font_sizes/font_size = 14
-text = "Base Directory:"
+text = " Base Directory:"
 vertical_alignment = 2
 
 [node name="BaseDirOpenDirButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/BaseDirHBox"]
@@ -375,7 +375,7 @@ theme_override_constants/separation = 8
 [node name="LogHeaderLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Log header format:"
+text = " Log header format:"
 
 [node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
 unique_name_in_owner = true
@@ -444,7 +444,7 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
-text = "Entry format: "
+text = " Entry format: "
 
 [node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox"]
 unique_name_in_owner = true
@@ -534,6 +534,15 @@ theme_override_constants/margin_bottom = 6
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA"]
 layout_mode = 2
 theme_override_constants/separation = 2
+
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
 unique_name_in_owner = true
@@ -708,7 +717,51 @@ popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
 
-[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Sets the level of error reporting."
+alignment = 2
+
+[node name="ErrorRepLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/ErrorRepHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Error report level"
+
+[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/ErrorRepHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Sets the level of error reporting."
+selected = 0
+item_count = 4
+popup/item_0/text = "Warnings & Errors"
+popup/item_0/id = 0
+popup/item_1/text = "Errors only"
+popup/item_1/id = 1
+popup/item_2/id = 2
+popup/item_2/disabled = true
+popup/item_2/separator = true
+popup/item_3/text = "None"
+popup/item_3/id = 3
+
+[node name="VSeparator" type="VSeparator" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_qo8nw")
+
+[node name="SettingsC" type="MarginContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
+
+[node name="Column" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
@@ -717,14 +770,14 @@ Overwrite Entries removes the oldest entry as new ones are logged.
 theme_override_constants/separation = 44
 alignment = 2
 
-[node name="EntryActionLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/EntryCountActionHBox"]
+[node name="EntryActionLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/EntryCountActionHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Entry Count action"
 vertical_alignment = 1
 
-[node name="EntryActionOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/EntryCountActionHBox"]
+[node name="EntryActionOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/EntryCountActionHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -743,21 +796,21 @@ popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
 
-[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 theme_override_constants/separation = 28
 alignment = 2
 
-[node name="SessionTimerActionLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/SessionTimerActionHBox"]
+[node name="SessionTimerActionLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/SessionTimerActionHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Session Timer action"
 vertical_alignment = 1
 
-[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/SessionTimerActionHBox"]
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/SessionTimerActionHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -772,14 +825,14 @@ popup/item_0/id = 0
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Number of entries until the entry count action is triggered."
 theme_override_constants/separation = 119
 alignment = 2
 
-[node name="EntryCountLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/EntryCountHBox"]
+[node name="EntryCountLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/EntryCountHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -787,7 +840,7 @@ size_flags_horizontal = 2
 text = "Entry count limit"
 vertical_alignment = 1
 
-[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/EntryCountHBox"]
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/EntryCountHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -800,14 +853,14 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 10.0
 
-[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The duration of a logging session if Limit method is set to Session Timer."
 theme_override_constants/separation = 117
 alignment = 2
 
-[node name="SessionDurationLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/SessionDurationHBox"]
+[node name="SessionDurationLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/SessionDurationHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -815,7 +868,7 @@ size_flags_horizontal = 2
 text = "Session duration"
 vertical_alignment = 1
 
-[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/SessionDurationHBox"]
+[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/SessionDurationHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -829,81 +882,11 @@ suffix = "sec"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="VSeparator" type="VSeparator" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_qo8nw")
-
-[node name="SettingsC" type="MarginContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 6
-
-[node name="Column" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC"]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Sets the level of error reporting."
-alignment = 2
-
-[node name="ErrorRepLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/ErrorRepHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 2
-text = " Error reporting"
-
-[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/ErrorRepHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Sets the level of error reporting."
-selected = 0
-item_count = 4
-popup/item_0/text = "Warnings & Errors"
-popup/item_0/id = 0
-popup/item_1/text = "Errors only"
-popup/item_1/id = 1
-popup/item_2/id = 2
-popup/item_2/disabled = true
-popup/item_2/separator = true
-popup/item_3/text = "None"
-popup/item_3/id = 3
-
-[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Enables the 'Failed to start log session without stopping the previous session' warning. "
-theme = ExtResource("1_y5prw")
-button_pressed = true
-text = "  Failed to start session"
-
-[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Enables the 'Failed to log entry due to no session being active' warning."
-theme = ExtResource("1_y5prw")
-button_pressed = true
-text = "  Failed to log entry"
-
 [node name="ResetSettingsButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Resets all settings to default"
 text = "Reset to default"
-
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-horizontal_alignment = 2
-vertical_alignment = 2
 
 [node name="Help" type="MarginContainer" parent="."]
 unique_name_in_owner = true
