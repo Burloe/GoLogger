@@ -99,16 +99,16 @@ var cat_data : Dictionary = {
 	}
 }
 
-var categories: Array = [] # DEPRECATED - Use cat_data["categories"]["category_names"] instead
-enum CategoryData { # DEPRECATED - Use cat_data dictionary instead
-			CATEGORY_NAME = 0, # String - The name of the category
-			CATEGORY_INDEX = 1, # Int - The index of the category in the categories array
-			CURRENT_FILENAMES = 2, # Array[String] - Array of file names for each instance ID of the current files
-			CURRENT_FILEPATHS = 3, # Array[String] - Array of file paths for each instance ID of the current files
-			ENTRY_COUNT = 4, # Int - Current entry count in the active log file
-			FILE_COUNT = 5, # Int - Current file count in the category directory
-			IS_LOCKED = 6 # Bool - Whether the category is locked from editing/deletion
-}
+# var categories: Array = [] # DEPRECATED - Use cat_data["categories"]["category_names"] instead
+# enum CategoryData { # DEPRECATED - Use cat_data dictionary instead
+# 			CATEGORY_NAME = 0, # String - The name of the category
+# 			CATEGORY_INDEX = 1, # Int - The index of the category in the categories array
+# 			CURRENT_FILENAMES = 2, # Array[String] - Array of file names for each instance ID of the current files
+# 			CURRENT_FILEPATHS = 3, # Array[String] - Array of file paths for each instance ID of the current files
+# 			ENTRY_COUNT = 4, # Int - Current entry count in the active log file
+# 			FILE_COUNT = 5, # Int - Current file count in the category directory
+# 			IS_LOCKED = 6 # Bool - Whether the category is locked from editing/deletion
+# }
 ## Instance ID is a unique ID for each runtime instance of GoLogger. Used to differentiate between multiple instances when debugging multiplayer projects.
 var instance_id: String = ""
 
@@ -170,7 +170,7 @@ func _ready() -> void:
 	config.load(PATH)
 	base_directory = config.get_value("plugin", "base_directory")
 	header_string = _get_header()
-	elements_canvaslayer.layer = _get_settings_value("canvaslayer_layer")
+	elements_canvaslayer.layer = _get_settings_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 	inaction_timer.timeout.connect(_on_timer_timeout.bind(inaction_timer))
 	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
@@ -181,13 +181,13 @@ func _ready() -> void:
 	popup_errorlbl.visible = false
 	popup_yesbtn.disabled = true
 
-	assert(_check_filename_conflicts() == "", str("GoLogger: Conflicting category_name [", _check_filename_conflicts(), "] found in two(or more) categories."))
+	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
 	instance_id = _get_instance_id()
 
 	validate_settings()
 	load_category_data()
 
-	if _get_settings_value("autostart_session"):
+	if _get_settings_value("settings", "autostart_session"):
 		start_session()
 
 
@@ -195,6 +195,10 @@ func _physics_process(_delta: float) -> void:
 	if !Engine.is_editor_hint():
 		if popup_state and inaction_timer != null and !inaction_timer.is_stopped():
 			prompt_label.text = str("[center]Save copies of the current logs?[font_size=12]\nAutomatically cancelled in ", snapped(inaction_timer.time_left, 1.0),"s!\n[color=lightblue]Limit methods are paused during this prompt.")
+			session_timer.paused = true
+		else:
+			if session_timer != null and session_timer.is_paused():
+				session_timer.paused = false
 
 
 func _input(event: InputEvent) -> void:
@@ -219,6 +223,7 @@ func _input(event: InputEvent) -> void:
 
 ## Loads category data from the config file into the cat_data dictionary.[br]
 ## Use instead of 'config.load(PATH)' whenever category data is needed.
+## Note that this function reloads the settings as well.
 func load_category_data() -> void:
 	config.load(PATH)
 	cat_data.clear()
@@ -261,7 +266,7 @@ func save_category_data() -> void:
 	# Load existing config so we don't clobber unrelated sections
 	var err = config.load(PATH)
 	if err != OK:
-		if _get_settings_value("error_reporting") != 2:
+		if _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to load existing config file while saving category data.")
 		return
 
@@ -296,19 +301,16 @@ func save_category_data() -> void:
 
 
 
-
-
-
 func start_session() -> void:
 	if session_status: # ErrCheck -> Session already started
-		if _get_settings_value("error_reporting") != 2:
+		if _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 
 	load_category_data()
 
-	if _get_settings_value("limit_method") == 1 or _get_settings_value("limit_method") == 2:
-		session_timer.start(_get_settings_value("session_duration"))
+	if _get_settings_value("settings", "limit_method") == 1 or _get_settings_value("settings", "limit_method") == 2:
+		session_timer.start(_get_settings_value("settings", "session_duration"))
 
 
 	for i in cat_data["categories"]["category_names"].size():
@@ -316,7 +318,7 @@ func start_session() -> void:
 		var f_name: String  = _get_file_name(c_name) # e.g. "game_D44r3.log"
 		var _d: Dictionary = cat_data[c_name]["instances"].get(instance_id, {})
 
-		if _d.is_empty() and _get_settings_value("error_reporting") != 2:
+		if _d.is_empty() and _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to start session for category '", c_name, "'. No instance data found for instance_id [", instance_id, "].")
 			continue
 
@@ -331,28 +333,28 @@ func start_session() -> void:
 			DirAccess.make_dir_recursive_absolute(str(path, "saved_logs/"))
 		dir = DirAccess.open(path)
 
-		if !dir and _get_settings_value("error_reporting") != 2: # ErrCheck
+		if !dir and _get_settings_value("settings", "error_reporting") != 2: # ErrCheck
 			var _err = DirAccess.get_open_error()
 			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _d["file_path"], ").")
 			continue
 
 		# Create/open file
 		var _f = FileAccess.open(_d["file_path"], FileAccess.WRITE)
-		if !_f and _get_settings_value("error_reporting") != 2:
+		if !_f and _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to create log file for session(", _d["file_path"], ").")
 			continue
 
 		var _files = dir.get_files()
 		cat_data[c_name]["file_count"] = _files.size()
 
-		if _get_settings_value("file_cap") > 0:
-			while _files.size() > _get_settings_value("file_cap") -1:
+		if _get_settings_value("settings", "file_cap") > 0:
+			while _files.size() > _get_settings_value("settings", "file_cap") -1:
 				_files.sort()
 				dir.remove(_files[0])
 				_files.remove_at(0)
 
 				var _err = DirAccess.get_open_error() # Checks for errors during dir.remove()
-				if _err != OK and _get_settings_value("error_reporting") != 2:
+				if _err != OK and _get_settings_value("settings", "error_reporting") != 2:
 					push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 
 		_f.store_line(_get_header(c_name))
@@ -363,11 +365,10 @@ func start_session() -> void:
 	# Update ConfigFile / Start SessionTimer / Close up
 	save_category_data()
 	session_status = true
-	if session_timer.is_stopped() and _get_settings_value("session_timer_action") == 1\
-	or session_timer.is_stopped() and _get_settings_value("session_timer_action") == 2:
+	if session_timer.is_stopped() and _get_settings_value("settings", "session_timer_action") == 1\
+	or session_timer.is_stopped() and _get_settings_value("settings", "session_timer_action") == 2:
 		if session_timer != null: session_timer.start()
 	session_started.emit()
-
 
 
 func entry(log_entry : String, category_name: String, print_entry_to_output: bool = false) -> void:
@@ -379,17 +380,17 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 
 	# Early returns
 	if log_entry == "": # ErrCheck
-		if _get_settings_value("error_reporting") != 2:
+		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
 
 	if _d.is_empty(): # ErrCheck
-		if _get_settings_value("error_reporting") != 2:
+		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
 	if _d[category_name].is_empty(): # ErrCheck
-		if _get_settings_value("error_reporting") != 2:
+		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Category '" + category_name + "' not found. Check correct spelling.")
 		return
 
@@ -397,7 +398,7 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 		return
 
 	if target_filepath == "": # ErrCheck
-		if _get_settings_value("error_reporting") != 2:
+		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: No valid file path found for category '" + category_name + "' instance[" + instance_id + "].")
 		return
 
@@ -406,7 +407,7 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 	var _f = FileAccess.open(target_filepath, FileAccess.READ)
 	if !_f: # Error check
 		var _err = FileAccess.get_open_error()
-		if _err != OK and _get_settings_value("error_reporting") != 2:
+		if _err != OK and _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
@@ -418,29 +419,29 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 	_f.close()
 
 	# Handle Limit Methods
-	if !popup_state: # Only enforce limits while inactive popup
-		match _get_settings_value("limit_method"):
+	if !popup_state: # Enforce limits while inactive popup
+		match _get_settings_value("settings", "limit_method"):
 
 			0: # Entry count
-				match _get_settings_value("entry_count_action"):
+				match _get_settings_value("settings", "entry_count_action"):
 					0: # Remove old entries
-						while lines.size() >= _get_settings_value("entry_cap"):
+						while lines.size() >= _get_settings_value("settings", "entry_cap"):
 							lines.remove_at(1) # Keeping header line 0
 
 					1: # Stop & start
-						if lines.size() >= _get_settings_value("entry_cap"):
+						if lines.size() >= _get_settings_value("settings", "entry_cap"):
 							stop_session()
 							start_session()
 							entry(log_entry, category_name)
 							return
 
 					2: # Stop only
-						if lines.size() >= _get_settings_value("entry_cap"):
+						if lines.size() >= _get_settings_value("settings", "entry_cap"):
 							stop_session()
 							return
 
 			1: # Session timer
-				match _get_settings_value("session_timer_action"):
+				match _get_settings_value("settings", "session_timer_action"):
 					0: # Stop & start session
 						stop_session()
 						start_session()
@@ -452,16 +453,16 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 						return
 
 			2: # Both Entry count limit and Session Timer
-				match _get_settings_value("entry_count_action"):
+				match _get_settings_value("settings", "entry_count_action"):
 					0: # Stop & start session
-						if lines.size() >= _get_settings_value("entry_cap"):
+						if lines.size() >= _get_settings_value("settings", "entry_cap"):
 							stop_session()
 							start_session()
 							entry(log_entry, category_name)
 							return
 
 					1: # Stop session
-						if lines.size() >= _get_settings_value("entry_cap"):
+						if lines.size() >= _get_settings_value("settings", "entry_cap"):
 							stop_session()
 							return
 
@@ -470,7 +471,7 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 	var _fw = FileAccess.open(target_filepath, FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
-		if err != OK and _get_settings_value("error_reporting") != 2:
+		if err != OK and _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 
 	for line in lines:
@@ -482,7 +483,6 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 	_fw.close()
 	if print_entry_to_output:
 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", category_name, "> ", new_entry.dedent())
-
 
 
 func save_copy(_name: String = "") -> void:
@@ -499,10 +499,9 @@ func save_copy(_name: String = "") -> void:
 		complete_copy()
 
 
-
 func complete_copy() -> void:
 	if !session_status:
-		if _get_settings_value("error_reporting") != 2: push_warning("GoLogger: Failed to save copies due to inactive session.")
+		if _get_settings_value("settings", "error_reporting") != 2: push_warning("GoLogger: Failed to save copies due to inactive session.")
 		return
 
 	load_category_data()
@@ -526,7 +525,7 @@ func complete_copy() -> void:
 	# if copy_name.ends_with(".log") or copy_name.ends_with(".txt"): # Old
 	# 	copy_name = copy_name.substr(0, copy_name.length() - 4) # Old
 
-	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] ")
+	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("settings", "use_utc")), "] ")
 
 
 	for category in range(config.get_value("categories", "category_names").size()):
@@ -553,21 +552,19 @@ func complete_copy() -> void:
 	popup_state = false
 
 
-
-
 func stop_session() -> void:
 	if !session_status:
 		return
 
 	load_category_data()
-	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] Stopped log session.")
+	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("settings", "use_utc")), "] Stopped log session.")
 
 	for category in cat_data["categories"]["category_names"]:
 		# Read existing file content
 		var _f = FileAccess.open(cat_data[category]["instances"][instance_id]["file_path"], FileAccess.READ)
 		if !_f:
 			var _err = FileAccess.get_open_error()
-			if _get_settings_value("error_reporting") != 2:
+			if _get_settings_value("settings", "error_reporting") != 2:
 				if _err != OK: push_warning("GoLogger: Failed to open file ", cat_data[category]["instances"][instance_id]["file_path"], " with READ ", get_error(_err))
 			push_warning("GoLogger: Stopped session but failed to do so properly. Couldn't open the file.")
 			session_status = false
@@ -577,7 +574,7 @@ func stop_session() -> void:
 
 		# Write to file that session is stopping
 		var _fw = FileAccess.open(cat_data[category]["instances"][instance_id]["file_path"], FileAccess.WRITE)
-		if !_fw and _get_settings_value("error_reporting") != 2:
+		if !_fw and _get_settings_value("settings", "error_reporting") != 2:
 			var _err = FileAccess.get_open_error()
 			if _err != OK:
 				push_warning("GoLogger: Attempting to stop session by writing to file (", cat_data[category]["instances"][instance_id]["file_path"], ") -> Error[", _err, "]")
@@ -591,7 +588,6 @@ func stop_session() -> void:
 
 	config.save(PATH)
 	session_status = false
-
 
 
 func toggle_copy_popup(toggle_on : bool) -> void:
@@ -725,6 +721,15 @@ func validate_settings() -> void: # Note mirror function present in GoLoggerDock
 		"PackedColorArray"
 	]
 
+	# Remove old/stray settings
+	var _setts := config.get_section_keys("settings")
+	for setting in _setts:
+		if setting in expected_settings.keys():
+			continue
+		else:
+			config.erase_section_key("settings", setting)
+			push_warning("GoLogger: Removed stray setting '", setting, "' from settings.ini file.")
+
 	# Validate presence of settings -> Apply default if missing
 	for setting in expected_settings.keys():
 		var splits = expected_settings[setting].split("/")
@@ -801,11 +806,9 @@ static func get_error(error : int, object_type : String = "") -> String:
 
 
 
-func _get_settings_value(value : String) -> Variant:
+func _get_settings_value(section: String, value : String) -> Variant:
 	validate_settings()
-	var _config = ConfigFile.new()
-	var _result = _config.load(PATH)
-	var section : String = "settings"
+	var _result = config.load(PATH)
 
 	if !FileAccess.file_exists(PATH):
 		push_warning(str("GoLogger: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
@@ -815,30 +818,30 @@ func _get_settings_value(value : String) -> Variant:
 		push_error(str("GoLogger: ConfigFile failed to load settings.ini file."))
 		return null
 
-	if value == "base_directory" or value == "categories":
-		section = "plugin"
-
-	var _val = _config.get_value(section, value, default_settings[value])
+	var _val = config.get_value(section, value, default_settings[value])
 	if _val == null:
 		push_error(str("GoLogger: ConfigFile failed to load settings value from file."))
 	return _val
 
 
-func _check_filename_conflicts() -> String:
-	categories = config.get_value("plugin", "categories")
-	var seen_resources : Array[String] = []
-	for r in categories:
-		if !seen_resources.is_empty():
-			if r[0] in seen_resources:
-				return r[0]
-			else: seen_resources.append(r[0])
-		else: seen_resources.append(r[0])
-	return ""
+func _check_category_name_conflicts() -> Array[String]:
+	var categories = config.get_value("categories", "category_name" , [])
+	if categories.is_empty():
+		return []
+
+	var found_conflicts: Array[String] = []
+	var seen_names : Array[String] = []
+
+	for name in categories:
+		if name in seen_names:
+			found_conflicts.append(name)
+		else: seen_names.append(name)
+	return found_conflicts
 
 
 func _get_header(category_name: String = "") -> String:
 	config.load(PATH)
-	var format: String = _get_settings_value("log_header_format")
+	var format: String = _get_settings_value("settings", "log_header_format")
 	var _header: String = ""
 	var _tags: Array[String] = [
 		"{project_name}",
@@ -854,7 +857,7 @@ func _get_header(category_name: String = "") -> String:
 	]
 
 	if format != null and format != "":
-		var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))
+		var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("settings", "use_utc"))
 		var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 		var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
 		var dd  : String = str(dict["day"]    if dict["day"]    > 9 else str("0", dict["day"]))
@@ -899,7 +902,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 		"{entry}"
 	]
 
-	var dt: Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))
+	var dt: Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("settings", "use_utc"))
 
 	var yy: String = str(dt["year"]).substr(2, 2)
 	var mm: String = str(dt["month"]  if dt["month"]  > 9 else str("0", dt["month"]))
@@ -921,7 +924,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 		"{ss}": ss
 	}
 
-	var format: String = _get_settings_value("entry_format")
+	var format: String = _get_settings_value("settings", "entry_format")
 	var final_entry: String = format
 	for tag in _tags:
 		if tag in replacements:
@@ -931,7 +934,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 
 
 func _get_file_name(category_name : String) -> String:
-	var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("use_utc"))
+	var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_settings_value("settings", "use_utc"))
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 	var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
 	var dd  : String = str(dict["day"]    if dict["day"]    > 9 else str("0", dict["day"]))
@@ -940,7 +943,6 @@ func _get_file_name(category_name : String) -> String:
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
 	var fin : String
 	fin = str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")", instance_id, ".log")
-
 	return fin
 
 
@@ -1039,10 +1041,10 @@ func _extract_id_from_basename(basename: String) -> String:
 func _on_timer_timeout(_timer: Timer) -> void:
 	match _timer:
 		session_timer:
-			var _wt: float = _get_settings_value("session_duration")
-			match _get_settings_value("limit_method"):
+			var _wt: float = _get_settings_value("settings", "session_duration")
+			match _get_settings_value("settings", "limit_method"):
 				1: # Session Timer
-					if _get_settings_value("session_timer_action") == 0: # Stop & Start
+					if _get_settings_value("settings", "session_timer_action") == 0: # Stop & Start
 						stop_session()
 						await get_tree().physics_frame
 						session_timer.wait_time = _wt
@@ -1051,7 +1053,7 @@ func _on_timer_timeout(_timer: Timer) -> void:
 						stop_session()
 						session_timer.stop()
 				2: # Both Count limit + Session timer
-					if _get_settings_value("session_timer_action") == 0: # Stop & Start
+					if _get_settings_value("settings", "session_timer_action") == 0: # Stop & Start
 						stop_session()
 						await get_tree().physics_frame
 						session_timer.wait_time = _wt

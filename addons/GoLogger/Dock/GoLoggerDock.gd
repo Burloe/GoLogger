@@ -148,7 +148,7 @@ var c_font_normal := Color("9d9ea0")
 var c_font_hover := Color("f2f2f2")
 var c_print_history := "[color=878787][GoLogger] "
 
-# Note that this dictionary is also present in Log.gd. If you update it here, update it there too.
+# Mirror Dictionary in Log.gd -> Keep both in sync.
 var default_settings := {
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
@@ -467,7 +467,7 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	config.set_value("settings", "error_reporting", default_settings["error_reporting"])
 
 	config.set_value("categories", "category_names", default_settings["category_names"])
-	config.set_value("categories", "instance_ids", [instance_id])
+	config.set_value("categories", "instance_ids", [])
 
 	for i in default_settings["category_names"].size():
 		var c_name: String = default_settings["category_names"][i]
