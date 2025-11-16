@@ -568,39 +568,36 @@ func stop_session() -> void:
 	if !session_status:
 		return
 
-	else:
-		config.load(PATH)
-		categories = config.get_value("plugin", "categories")
-		var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] Stopped log session.")
+	load_category_data()
+	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("use_utc")), "] Stopped log session.")
 
-		for i in range(categories.size()):
+	for category in cat_data["categories"]["category_names"]:
+		# Read existing file content
+		var _f = FileAccess.open(cat_data[category]["instances"][instance_id]["file_path"], FileAccess.READ)
+		if !_f:
+			var _err = FileAccess.get_open_error()
+			if _get_settings_value("error_reporting") != 2:
+				if _err != OK: push_warning("GoLogger: Failed to open file ", cat_data[category]["instances"][instance_id]["file_path"], " with READ ", get_error(_err))
+			push_warning("GoLogger: Stopped session but failed to do so properly. Couldn't open the file.")
+			session_status = false
+			return
+		var _content := _f.get_as_text()
+		_f.close()
 
-			# Open file
-			var _f = FileAccess.open(categories[i][CategoryData.CURRENT_FILEPATHS], FileAccess.READ)
-			if !_f:
-				var _err = FileAccess.get_open_error()
-				if _get_settings_value("error_reporting") != 2:
-					if _err != OK: push_warning("GoLogger: Failed to open file ", categories[i][CategoryData.CURRENT_FILEPATHS], " with READ ", get_error(_err))
-				push_warning("GoLogger: Stopped session but failed to do so properly. Couldn't open the file.")
-				session_status = false
+		# Write to file that session is stopping
+		var _fw = FileAccess.open(cat_data[category]["instances"][instance_id]["file_path"], FileAccess.WRITE)
+		if !_fw and _get_settings_value("error_reporting") != 2:
+			var _err = FileAccess.get_open_error()
+			if _err != OK:
+				push_warning("GoLogger: Attempting to stop session by writing to file (", cat_data[category]["instances"][instance_id]["file_path"], ") -> Error[", _err, "]")
 				return
-			var _content := _f.get_as_text()
-			_f.close()
-			var _fw = FileAccess.open(categories[i][CategoryData.CURRENT_FILEPATHS], FileAccess.WRITE)
-			if !_fw and _get_settings_value("error_reporting") != 2:
-				var _err = FileAccess.get_open_error()
-				if _err != OK:
-					push_warning("GoLogger: Attempting to stop session by writing to file (", categories[i][CategoryData.CURRENT_FILEPATHS], ") -> Error[", _err, "]")
-					return
-			var _s := str(_content, str(_timestamp + "Stopped Log Session.") if _get_settings_value("timestamp_entries") else "Stopped Log Session.")
-			_fw.store_line(_s)
-			_fw.close()
-			categories[i][CategoryData.CURRENT_FILENAMES] = ""
-			categories[i][CategoryData.CURRENT_FILEPATHS] = ""
-			categories[i][CategoryData.ENTRY_COUNT] = 0
+		var _s := str(_content, str(_timestamp + "Stopped Log Session."))
+		_fw.store_line(_s)
+		_fw.close()
 
+		# Clear each category's data of this instance(i.e. "categories.game.X45jR" section) and save to file
+		config.erase_section(str("categories.", category, ".", instance_id))
 
-	config.set_value("plugin", "categories", categories)
 	config.save(PATH)
 	session_status = false
 
