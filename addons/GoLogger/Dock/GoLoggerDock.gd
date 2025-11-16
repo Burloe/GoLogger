@@ -9,6 +9,7 @@ extends TabContainer
 		# [TBD] Remove 'category index' entirely in favor of using strings as unique identifiers for categories with regards to the new .ini format
 		# Handle adding/removing categories with new .ini format
 		# is_locked property handling
+		# Delete 'disable_warn2' entirely. Completely superfluous and will only produce unnecessary complexity + error warnings
 
 signal update_index
 

@@ -13,14 +13,14 @@ extends Node
 	# [Done] Implement the custom entry format in entry()
 	# [Done] Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
 	# [Done] Add new setting for the custom entry format called "entry_format" to the config file creation, saving and loading logic
-	# add proper error codes to all error/warning messages
+	# [Not Started]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	#
 	#	[In progress] Add 'instance_id' to solve issue with concurrency in multiplayer projects
 	# Instance ID's are implemented but entry() and stop_session() do not currently use them in any way. Need to ensure that they write to the correct file based on instance ID.
 	# [In progress] Refactor .ini settings handling <needed to do to finish instance_id task
+	#	[In progress] Remove 'category_index' parameter from entry() method, in favor of using category_name only
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
 	#
-	#	[TBD] Remove 'category_index' parameter from entry() method, in favor of using category_name only
 	# [TBD] Consider adding {instance_id} tag to header and entry formats.
 	#
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
@@ -385,6 +385,11 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 	var target_filepath: String = _d["instances"][instance_id].get("file_path", "")
 
 	# Early returns
+	if log_entry == "": # ErrCheck
+		if _get_settings_value("error_reporting") != 2:
+			printerr("GoLogger: Attempted to log empty entry.")
+		return
+
 	if _d.is_empty(): # ErrCheck
 		if _get_settings_value("error_reporting") != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
@@ -395,9 +400,7 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 			printerr("GoLogger: Category '" + category_name + "' not found. Check correct spelling.")
 		return
 
-	if !session_status: # ErrCheck
-		if _get_settings_value("error_reporting") != 2 and !_get_settings_value("disable_warn2"):
-			push_warning("GoLogger: Failed to log entry due to inactive session.")
+	if !session_status: # ErrCheck - Doesn't make sense print error for this
 		return
 
 	if target_filepath == "": # ErrCheck
@@ -486,7 +489,6 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 	_fw.close()
 	if print_entry_to_output:
 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", category_name, "> ", new_entry.dedent())
-
 
 
 
