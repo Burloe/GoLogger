@@ -43,7 +43,7 @@ Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 
 <p>See the <a href="https://github.com/Burloe/GoLogger/releases/tag/1.3.1">release page</a> for more info</p>
 <ul>
 1.3.2:
-  <li><code>Log</code>
+  <li>Proper support for concurrent instances(running multiple instances).
   <li>BEAKING: New changes to <code>Log.entry(log_entry: String, category_name: String, print_entry: bool = false)</code></li>
     <ul>
     <li>Breaking change! Instead of using an int index to determine which category to use. We not use a string to specify the name. You will have to update your existing <code>Log.entry()</code>.</li>
