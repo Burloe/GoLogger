@@ -12,6 +12,7 @@ extends TabContainer
 		# Add feature to remove setting keys from [settings] section in .ini file when saving/loading the file
 
 signal update_index
+signal change_category_name_finished
 
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
@@ -142,6 +143,7 @@ var cat_data : Dictionary = {
 	}
 }
 
+var focused_category: Array = []
 var btn_array: Array[Control] = []
 var container_array: Array[Control] = []
 var c_font_normal := Color("9d9ea0")
@@ -365,7 +367,10 @@ func load_category_data() -> void:
 
 ## Saves category data from the cat_data dictionary into the config file.[br]
 ## Use instead of 'config.save(PATH)' whenever category data is modified.
-func save_category_data() -> void:
+func save_category_data(deferred: bool = false) -> void:
+	if deferred:
+		await get_tree().physics_frame
+
 	# Ensure there is categories meta to save
 	if !cat_data.has("categories"):
 		return
@@ -407,55 +412,91 @@ func save_category_data() -> void:
 	config.save(PATH)
 
 
-func load_categories(deferred: bool = false) -> void:
+func load_log_categories(deferred: bool = false) -> void: # Refactored / untested
 	if deferred:
 		await get_tree().physics_frame
+
 	config.load(PATH)
-	var _c = config.get_value("plugin", "categories")
-	for i in range(_c.size()):
-		var _n = category_scene.instantiate()
-		_n.dock = self
-		_n.is_locked = _c[i][6]
-		category_container.add_child(_n)
-		_n.name_warning.connect(_on_name_warning)
-		_n.index_changed.connect(_on_index_changed)
-		_n.category_name = _c[i][0]
-		_n.index = i
+	var _c = config.get_value("categories", "category_names", [])
+
+	for category in category_container.get_children():
+		category.queue_free()
+
+	if _c.size() == 0:
+		return
+
+	for category in _c:
+		add_category(category)
 	update_move_buttons()
 
+	# Apply settings to dock
+	base_dir_line.text = config.get_value("plugin", 	 "base_directory", default_settings["base_directory"])
+	log_header_line.text = config.get_value("settings", "log_header_format", default_settings["log_header_format"])
+	entry_format_line.text = 	config.get_value("settings", "entry_format", default_settings["entry_format"])
+	canvas_spinbox_line.text = str(config.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"]))
+	autostart_btn.button_pressed = config.get_value("settings", "autostart_session", default_settings["autostart_session"])
+	utc_btn.button_pressed = config.get_value("settings", "use_utc", default_settings["use_utc"])
+	limit_method_btn.selected = config.get_value("settings", "limit_method", default_settings["limit_method"])
+	entry_count_action_btn.selected = config.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	entry_count_spinbox_line.text = str(config.get_value("settings", "entry_cap", default_settings["entry_cap"]))
+	session_timer_action_btn.selected = config.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	session_duration_spinbox_line.text = str(config.get_value("settings", "session_duration", default_settings["session_duration"]))
+	file_count_spinbox_line.text = str(config.get_value("settings", "file_cap", default_settings["file_cap"]))
+	error_rep_btn.selected = config.get_value("settings", "error_reporting", default_settings["error_reporting"])
 
-func add_category() -> void:
+
+func _on_log_category_changed(cat_obj: LogCategory, category_name: String, new_name: String, index: int, is_locked: bool, to_delete: bool) -> void:
+	# Find the category in cat_data and update its data
+	for category in cat_data.keys():
+		if category["category_name"] == category_name:
+			if to_delete:
+				cat_data.erase(category_name)
+				return
+			
+			category["category_name"] = new_name if new_name != "" else category_name
+			category["category_index"] = index
+			category["is_locked"] = is_locked
+	
+	save_category_data()
+			
+
+func _on_change_category_name(cat_obj: LogCategory, new_name: String, old_name: String, index: int) -> void:
+	update_category_name(cat_obj, new_name, old_name)
+	change_category_name_finished.emit()
+
+
+func _on_lock_category(cat_obj: LogCategory, is_locked: bool) -> void:
+	load_category_data()
+	if cat_data.has(cat_obj.category_name):
+		cat_data[cat_obj.category_name]["is_locked"] = is_locked
+		save_category_data()
+
+
+## Use save_after when Log Categories are added manually via the dock.
+## Not when loading categories from config.
+func add_category(_name: String = "", save_after: bool = false) -> void:
 	var _n = category_scene.instantiate()
 	_n.dock = self
 	_n.is_locked = false
 	category_container.add_child(_n)
+	_n.log_category_changed.connect(_on_log_category_changed)
+	_n.change_category_name.connect(_on_change_category_name)
 	_n.name_warning.connect(_on_name_warning)
 	_n.index_changed.connect(_on_index_changed)
+	_n.lock_category.connect(_on_lock_category)
 	_n.category_deleted.connect(_on_category_deleted)
+	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
+	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind(false))
 	_n.index = category_container.get_children().size() - 1
-	save_categories()
+	_n.category_name = _name
 	_n.line_edit.grab_focus()
 	update_move_buttons()
+	if save_after:
+		save_category_data()
 
 
-func save_categories(deferred: bool = false) -> void:
-	if deferred:
-		await get_tree().physics_frame
-	var main : Array
-	var children = category_container.get_children()
-	for i in range(children.size()):
-		var _n : Array = [children[i].category_name, children[i].index, children[i].file_name, children[i].file_path, children[i].file_count, children[i].entry_count, children[i].is_locked]
-		main.append(_n)
-	config.set_value("plugin", "categories", main)
-	config.save(PATH)
-
-
-func open_directory() -> void:
-	var abs_path = ProjectSettings.globalize_path(config.get_value("plugin", "base_directory"))
-	OS.shell_open(abs_path)
-
-
-func update_category_name(cat_obj: LogCategory, new_name: String) -> void:
+func update_category_name(cat_obj: LogCategory, new_name: String, old_name: String) -> void:
+	# Adds integer suffix to new_name if conflict detected
 	var final_name = new_name
 	var add_name : int = 1
 	while check_conflict_name(cat_obj, final_name):
@@ -463,14 +504,14 @@ func update_category_name(cat_obj: LogCategory, new_name: String) -> void:
 		add_name += 1
 	if cat_obj.category_name != final_name:
 		cat_obj.category_name = final_name
-	save_categories()
+	save_category_data()
 
 
 func check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
-	for i in category_container.get_children():
-		if i == cat_obj: # Disregard category being checked
+	for log_category in category_container.get_children():
+		if log_category == cat_obj: # Disregard category being checked
 			continue
-		elif i.category_name == new_name:
+		elif log_category.category_name == new_name:
 			if name == "": return false
 			return true
 	return false
@@ -744,6 +785,10 @@ func update_move_buttons() -> void:
 		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
 
 
+func open_directory() -> void:
+	var abs_path = ProjectSettings.globalize_path(config.get_value("plugin", "base_directory"))
+	OS.shell_open(abs_path)
+
 
 func _check_valid_entry_format(format: String) -> bool:
 	return true if format.contains("{entry}") else false
@@ -872,7 +917,6 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 				entry_format_apply_btn.disabled = false
 			else:
 				entry_format_apply_btn.disabled = true
-
 
 
 func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
@@ -1016,6 +1060,13 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 	if _err != OK:
 		var _e = config.get_open_error()
 		print_debug(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
+
+
+func _on_category_line_focus(data: Array, focused: bool) -> void:
+	if focused:
+		focused_category.append(data)
+	else:
+		focused_category.clear()
 
 
 func _on_columns_slider_value_changed(value: int) -> void:

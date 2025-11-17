@@ -65,7 +65,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 0
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -73,6 +73,7 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -249,7 +250,6 @@ theme_override_constants/v_separation = 5
 columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="."]
-visible = false
 layout_mode = 2
 follow_focus = true
 scroll_horizontal_custom_step = 10.0
@@ -545,46 +545,6 @@ text = "GoLogger v.1.3.1"
 label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 2
 
-[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-tooltip_text = "Used to set what to include in the log header.
-Retreived from Project Settings > Config > Name / Version."
-alignment = 2
-
-[node name="LogHeaderLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer/LogHeaderHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 2
-size_flags_vertical = 1
-text = " Log Header"
-vertical_alignment = 1
-
-[node name="LogHeaderOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer/LogHeaderHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-tooltip_text = "Used to set what to include in the log header.
-Retreived from Project Settings > Config > Name / Version."
-theme = ExtResource("1_y5prw")
-alignment = 2
-selected = 0
-allow_reselect = true
-item_count = 5
-popup/item_0/text = "Project name & version"
-popup/item_0/id = 0
-popup/item_1/text = "Project name"
-popup/item_1/id = 1
-popup/item_2/text = "Version"
-popup/item_2/id = 2
-popup/item_3/id = 4
-popup/item_3/disabled = true
-popup/item_3/separator = true
-popup/item_4/text = "None"
-popup/item_4/id = 3
-
 [node name="Spacer" type="Control" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
 layout_mode = 2
 
@@ -607,52 +567,7 @@ theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "  UTC time"
 
-[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
-alignment = 2
-
-[node name="CanvasLayerLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer/CanvasLayerHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 2
-size_flags_vertical = 1
-text = " Save Copy canvas layer"
-vertical_alignment = 1
-
-[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer/CanvasLayerHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
-value = 5.0
-rounded = true
-update_on_text_changed = true
-prefix = "Layer"
-
-[node name="HSeparator" type="HSeparator" parent="Settings/MainPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_tayiv")
-
-[node name="Bottom" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="SettingsB" type="MarginContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 6
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB"]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
@@ -660,14 +575,14 @@ tooltip_text = "Limits the number of files in any log category folder.
 0 value will disable this feature *USE WITH CAUTION*"
 alignment = 2
 
-[node name="FileCountLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/FileCountHBox"]
+[node name="FileCountLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer/FileCountHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "File count limit"
 vertical_alignment = 1
 
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/FileCountHBox"]
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer/FileCountHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -680,7 +595,7 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
 
-[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Method used to limit file size. 
@@ -688,14 +603,14 @@ Use the selected Actions below to determine what happens once the method conditi
 theme_override_constants/separation = 75
 alignment = 2
 
-[node name="LimitMethodLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/LimitMethodHBox"]
+[node name="LimitMethodLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer/LimitMethodHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Limit method"
 vertical_alignment = 1
 
-[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/LimitMethodHBox"]
+[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer/LimitMethodHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -717,6 +632,51 @@ popup/item_3/disabled = true
 popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
+
+[node name="HSeparator" type="HSeparator" parent="Settings/MainPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_tayiv")
+
+[node name="Bottom" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SettingsB" type="MarginContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
+alignment = 2
+
+[node name="CanvasLayerLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/CanvasLayerHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+text = " Save Copy canvas layer"
+vertical_alignment = 1
+
+[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/CanvasLayerHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
+value = 5.0
+rounded = true
+update_on_text_changed = true
+prefix = "Layer"
 
 [node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
 unique_name_in_owner = true
@@ -745,6 +705,16 @@ popup/item_2/disabled = true
 popup/item_2/separator = true
 popup/item_3/text = "None"
 popup/item_3/id = 3
+
+[node name="Control" type="Control" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="ResetSettingsButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Resets all settings to default"
+text = "Reset to default"
 
 [node name="VSeparator" type="VSeparator" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom"]
 layout_mode = 2
@@ -797,6 +767,34 @@ popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
 
+[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Number of entries until the entry count action is triggered."
+theme_override_constants/separation = 119
+alignment = 2
+
+[node name="EntryCountLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/EntryCountHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Entry count limit"
+vertical_alignment = 1
+
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/EntryCountHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Number of entries until the entry count action is triggered."
+min_value = 1.0
+max_value = 5000.0
+value = 200.0
+alignment = 2
+update_on_text_changed = true
+custom_arrow_step = 10.0
+
 [node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -826,34 +824,6 @@ popup/item_0/id = 0
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Number of entries until the entry count action is triggered."
-theme_override_constants/separation = 119
-alignment = 2
-
-[node name="EntryCountLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/EntryCountHBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Entry count limit"
-vertical_alignment = 1
-
-[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column/EntryCountHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Number of entries until the entry count action is triggered."
-min_value = 1.0
-max_value = 5000.0
-value = 200.0
-alignment = 2
-update_on_text_changed = true
-custom_arrow_step = 10.0
-
 [node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -875,19 +845,13 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "The duration of a logging session if Limit method is set to Session Timer."
-max_value = 1200.0
+max_value = 1800.0
 value = 300.0
 alignment = 2
 update_on_text_changed = true
-suffix = "sec"
+suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
-
-[node name="ResetSettingsButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Resets all settings to default"
-text = "Reset to default"
 
 [node name="Help" type="MarginContainer" parent="."]
 unique_name_in_owner = true

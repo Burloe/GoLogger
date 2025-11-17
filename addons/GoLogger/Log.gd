@@ -99,16 +99,6 @@ var cat_data : Dictionary = {
 	}
 }
 
-# var categories: Array = [] # DEPRECATED - Use cat_data["categories"]["category_names"] instead
-# enum CategoryData { # DEPRECATED - Use cat_data dictionary instead
-# 			CATEGORY_NAME = 0, # String - The name of the category
-# 			CATEGORY_INDEX = 1, # Int - The index of the category in the categories array
-# 			CURRENT_FILENAMES = 2, # Array[String] - Array of file names for each instance ID of the current files
-# 			CURRENT_FILEPATHS = 3, # Array[String] - Array of file paths for each instance ID of the current files
-# 			ENTRY_COUNT = 4, # Int - Current entry count in the active log file
-# 			FILE_COUNT = 5, # Int - Current file count in the category directory
-# 			IS_LOCKED = 6 # Bool - Whether the category is locked from editing/deletion
-# }
 ## Instance ID is a unique ID for each runtime instance of GoLogger. Used to differentiate between multiple instances when debugging multiplayer projects.
 var instance_id: String = ""
 
