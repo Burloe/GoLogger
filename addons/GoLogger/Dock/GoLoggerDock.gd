@@ -99,50 +99,50 @@ var plugin_version: String =  "1.3.2":
 			plugin_version_cat_lbl.text = str("GoLogger v.", value)
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
-var cat_data : Dictionary = {
-	"game": {
-		"category_name": "game",
-		"category_index": 0,
-		"file_count": 0,
-		"is_locked": false,
-		"instances": {
-			"D44r3": {
-				"id": "D44r3",
-				"file_name": "game_D44r3.log",
-				"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3.log",
-				"entry_count": 0
-			},
-			"X45jR": {
-				"id": "X45jR",
-				"file_name": "game_X45jR.log",
-				"file_path": "user://GoLogger/game_logs/game(251113_161313)_X43jR.log",
-				"entry_count": 0
-			}
-		}
-	},
-	"player": {
-		"category_name": "game",
-		"category_index": 0,
-		"file_count": 0,
-		"is_locked": false,
-		"instances": {
-			"U4j9K": {
-				"id": "U4j9K",
-				"file_name": "player_U4j9K.log",
-				"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K.log",
-				"file_count": 0,
-				"instances": {
-					"U4j9K": {
-						"id": "U4j9K",
-						"file_name": "player_U4j9K.log",
-						"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K",
-						"entry_count": 0
-					}
-				}
-			}
-		}
-	}
-}
+# var cat_data : Dictionary = {
+# 	"game": {
+# 		"category_name": "game",
+# 		"category_index": 0,
+# 		"file_count": 0,
+# 		"is_locked": false,
+# 		"instances": {
+# 			"D44r3": {
+# 				"id": "D44r3",
+# 				"file_name": "game_D44r3.log",
+# 				"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3.log",
+# 				"entry_count": 0
+# 			},
+# 			"X45jR": {
+# 				"id": "X45jR",
+# 				"file_name": "game_X45jR.log",
+# 				"file_path": "user://GoLogger/game_logs/game(251113_161313)_X43jR.log",
+# 				"entry_count": 0
+# 			}
+# 		}
+# 	},
+# 	"player": {
+# 		"category_name": "game",
+# 		"category_index": 0,
+# 		"file_count": 0,
+# 		"is_locked": false,
+# 		"instances": {
+# 			"U4j9K": {
+# 				"id": "U4j9K",
+# 				"file_name": "player_U4j9K.log",
+# 				"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K.log",
+# 				"file_count": 0,
+# 				"instances": {
+# 					"U4j9K": {
+# 						"id": "U4j9K",
+# 						"file_name": "player_U4j9K.log",
+# 						"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K",
+# 						"entry_count": 0
+# 					}
+# 				}
+# 			}
+# 		}
+# 	}
+# }
 
 var focused_category: Array = []
 var btn_array: Array[Control] = []
@@ -167,6 +167,23 @@ var default_settings := {
 		"session_duration": 300.0,
 		"error_reporting": 0,
 		"columns": 6
+}
+
+var settings_control := {
+	"base_directory": base_dir_line,
+	"log_header_format": log_header_line,
+	"entry_format": entry_format_line,
+	"canvaslayer_layer": canvas_layer_spinbox,
+	"autostart_session": autostart_btn,
+	"use_utc": utc_btn,
+	"limit_method": limit_method_btn,
+	"entry_count_action": entry_count_action_btn,
+	"session_timer_action": session_timer_action_btn,
+	"file_cap": file_count_spinbox,
+	"entry_cap": entry_count_spinbox,
+	"session_duration": session_duration_spinbox,
+	"error_reporting": error_rep_btn,
+	"columns": columns_slider
 }
 
 # When adding new settings, add the Labels and any Control nodes to the
@@ -366,6 +383,74 @@ func load_category_data() -> void:
 		}
 
 
+func load_data() -> void:
+	var _c = ConfigFile.new()
+	_c.load(PATH)
+	
+	# Categories
+	for name in _c.get_value("categories", "category_names", []):
+		add_category(
+			name, 
+			_c.get_value("category." + name, "category_index", 0), 
+			_c.get_value("category." + name, "is_locked", false)
+		)
+		
+	# Settings
+	for key in default_settings.keys():
+		if settings_control[key] == null:
+			continue
+		elif settings_control[key] is LineEdit:
+			settings_control[key].text = _c.get_value("settings", key, default_settings[key])
+		elif settings_control[key] is SpinBox:
+			settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
+		elif settings_control[key] is CheckButton:
+			settings_control[key].button_pressed = _c.get_value("settings", key, default_settings[key])
+		elif settings_control[key] is OptionButton:
+			settings_control[key].selected = _c.get_value("settings", key, default_settings[key])
+		elif settings_control[key] is HSlider:
+			settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
+
+
+
+## Saves all the dock data ( categories and settings state ) to file.
+func save_data(deferred: bool) -> void:
+	if deferred:
+		await get_tree().physics_frame
+
+	var _c := ConfigFile.new() # Use a new ConfigFile to avoid clobbering existing data
+	
+	# Categories
+	var _cat_names: Array[String] = []
+	for log_category in category_container.get_children():
+		if log_category is LogCategory:
+			_cat_names.append(log_category.category_name)
+			var section_name := str("category." + log_category.category_name)
+			_c.set_value(section_name, "category_name", log_category.category_name)
+			_c.set_value(section_name, "category_index", log_category.index)
+			_c.set_value(section_name, "file_count", log_category.file_count)
+			_c.set_value(section_name, "is_locked", log_category.is_locked)
+			_c.set_value(section_name, "instances", [])
+	_c.set_value("categories", "category_names", _cat_names)
+
+	# Settings
+	for key in default_settings.keys():
+		if settings_control[key] == null:
+			continue
+		elif settings_control[key] is LineEdit:
+			_c.set_value("settings", key, settings_control[key].text)
+		elif settings_control[key] is SpinBox:
+			_c.set_value("settings", key, int(settings_control[key].value))
+		elif settings_control[key] is CheckButton:
+			_c.set_value("settings", key, settings_control[key].button_pressed)
+		elif settings_control[key] is OptionButton:
+			_c.set_value("settings", key, settings_control[key].selected)
+		elif settings_control[key] is HSlider:
+			_c.set_value("settings", key, int(settings_control[key].value))
+			
+	_c.save(PATH)
+	
+
+
 ## Saves category data from the cat_data dictionary into the config file.[br]
 ## Use instead of 'config.save(PATH)' whenever category data is modified.
 func save_category_data(deferred: bool = false) -> void:
@@ -543,19 +628,20 @@ func update_move_buttons() -> void:
 
 ## Use save_after when Log Categories are added manually via the dock.
 ## Not when loading categories from config.
-func add_category(_name: String = "", save_after: bool = false) -> void:
+func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
 	var _n = category_scene.instantiate()
 	_n.dock = self
-	_n.is_locked = false
+	_n.category_name = _name
+	_n.is_locked = _is_locked
+	_n.index = category_container.get_children().size() - 1
 	category_container.add_child(_n)
+	
 	_n.log_category_changed.connect(_on_log_category_changed)
 	_n.name_warning.connect(_on_name_warning)
 	_n.move_category_requested.connect(change_category_order)
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
 	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
-	_n.index = category_container.get_children().size() - 1
-	_n.category_name = _name
-	_n.line_edit.grab_focus()
+	# _n.line_edit.grab_focus() # This causes the last added category to always grab focus on load, which is undesirable.
 	update_move_buttons()
 	if save_after:
 		save_category_data()
