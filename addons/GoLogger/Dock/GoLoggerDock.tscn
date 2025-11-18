@@ -358,6 +358,7 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_tayiv")
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
@@ -374,6 +375,7 @@ Supported format tags:
 theme_override_constants/separation = 8
 
 [node name="LogHeaderLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = " Log header format:"
@@ -827,7 +829,7 @@ popup/item_1/id = 1
 [node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "The duration of a logging session if Limit method is set to Session Timer."
+tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
 theme_override_constants/separation = 117
 alignment = 2
 
@@ -844,7 +846,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "The duration of a logging session if Limit method is set to Session Timer."
+tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
 max_value = 1800.0
 value = 300.0
 alignment = 2

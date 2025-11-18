@@ -11,6 +11,7 @@ signal log_category_changed(
 	to_delete: bool
 )
 signal name_warning(toggle_on : bool, type : int)
+signal move_category_requested(log_category: LogCategory, direction : int)
 
 ## Emitted when a category is deleted so GoLoggerDock.gd can update the indices of the remaining categories.
 signal category_deleted()
@@ -53,14 +54,14 @@ var is_locked : bool = false:
 		if lock_btn != null: lock_btn.button_pressed = is_locked
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
-		if dock != null: dock.save_categories(true)
+		# if dock != null: dock.save_categories(true)
 
 var category_name: String = "":
 	set(value):
 		if category_name != value:
 			category_name = value
 			if line_edit != null: line_edit.text = category_name
-			if dock != null: dock.update_category_name(self, value)
+			# if dock != null: dock.update_category_name(self, value)
 
 var index : int = 0: ## This now simply determines the order of LogCategories in dock
 	set(value):
@@ -119,8 +120,9 @@ func check_existing_conflicts(new_name : String) -> bool:
 
 
 func apply_name(new_name : String) -> void:
+	var fin_name: String = new_name
 	if check_existing_conflicts(new_name):
-		return
+		fin_name = get_acceptable_name(new_name)
 
 	log_category_changed.emit(self, category_name, new_name, index, is_locked, false)
 	category_name = new_name
@@ -128,18 +130,30 @@ func apply_name(new_name : String) -> void:
 	apply_btn.hide()
 
 
+func get_acceptable_name(name: String) -> String:
+	var fin: String
+	var added_num: int = 1
+	while check_existing_conflicts(fin):
+		added_num += 1
+	fin = name + str(added_num)
+
+	return fin
+
+
 func move_log_category(direction: int = 0) -> void:
 	if direction == 0:
 		return
-
-	elif direction < 0:
-		if index <= 0:
-			return
-		index -= 1 # log_category_changed is emitted in the setter
-	else:
-		if index >= dock.category_container.get_child_count() - 1:
-			return
-		index += 1 # log_category_changed is emitted in the setter
+	
+	move_category_requested.emit(self, direction)
+	
+	# if direction < 0:
+	# 	if index <= 0:
+	# 		return
+	# 	index -= 1 # log_category_changed is emitted in the setter
+	# else:
+	# 	if index >= dock.category_container.get_child_count() - 1:
+	# 		return
+	# 	index += 1 # log_category_changed is emitted in the setter
 
 
 func _on_text_changed(new_text : String) -> void:
@@ -163,10 +177,6 @@ func _on_text_changed(new_text : String) -> void:
 
 
 func _on_del_button_up() -> void:
-	if dock != null:
-		return
-
 	print_rich("[color=878787][GoLogger] Category " + category_name + " deleted.")
 	queue_free()
-	dock.save_categories(true)
-	category_deleted.emit()
+	log_category_changed.emit(self, category_name, "", index, is_locked, true)
