@@ -2,21 +2,15 @@
 class_name LogCategory extends PanelContainer
 
 ## Emitted when any property of the LogCategory changes to GologgerDock.gd so it can update its data accordingly.
-signal log_category_changed(
-	log_category: LogCategory,
-	category_name: String,
-	new_name: String,
-	index: int,
-	is_locked: bool,
-	to_delete: bool
-)
+signal log_category_changed
+signal log_category_deleted
 signal name_warning(toggle_on : bool, type : int)
 signal move_category_requested(log_category: LogCategory, direction : int)
 
 ## Emitted when a category is deleted so GoLoggerDock.gd can update the indices of the remaining categories.
 signal category_deleted()
 
-@onready var index_lbl: 	Label = 		%CategoryIndex
+# @onready var index_lbl: 	Label = 		%CategoryIndex #Deprecated
 @onready var move_left_btn: Button = 	%MoveLeftButton
 @onready var move_right_btn: Button = %MoveRightButton
 @onready var lock_btn:	Button = 			%LockButton
@@ -50,7 +44,7 @@ var invalid_name : bool = false:
 var is_locked : bool = false:
 	set(value):
 		is_locked = value
-		log_category_changed.emit(self, category_name, "", index, is_locked, false)
+		log_category_changed.emit()
 		if lock_btn != null: lock_btn.button_pressed = is_locked
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
@@ -66,12 +60,14 @@ var category_name: String = "":
 var index : int = 0: ## This now simply determines the order of LogCategories in dock
 	set(value):
 		if value != index:
-			log_category_changed.emit(self, category_name, "", value, is_locked, false)
+			log_category_changed.emit()
 		index = value
-		move_left_btn.disabled = true if index == 0 else false
-		move_right_btn.disabled = true if index == dock.category_container.get_child_count() - 1 else false
-		if index_lbl != null:
-			index_lbl.text = str(index)
+		if move_left_btn  != null:
+			move_left_btn.disabled = true if index == 0 else false
+		if move_right_btn != null:
+			move_right_btn.disabled = true if index == dock.category_container.get_child_count() - 1 else false
+		# if index_lbl != null:
+		# 	index_lbl.text = str(index)
 
 
 func _ready() -> void:
@@ -89,8 +85,8 @@ func _ready() -> void:
 		)
 
 		apply_btn.button_up.connect(
-			func(new_text: String) -> void:
-				apply_name(new_text)
+			func() -> void:
+				apply_name(line_edit.text)
 		)
 
 		lock_btn.toggled.connect(
@@ -124,8 +120,8 @@ func apply_name(new_name : String) -> void:
 	if check_existing_conflicts(new_name):
 		fin_name = get_acceptable_name(new_name)
 
-	log_category_changed.emit(self, category_name, new_name, index, is_locked, false)
 	category_name = new_name
+	log_category_changed.emit()
 	line_edit.release_focus()
 	apply_btn.hide()
 
@@ -177,6 +173,6 @@ func _on_text_changed(new_text : String) -> void:
 
 
 func _on_del_button_up() -> void:
-	print_rich("[color=878787][GoLogger] Category " + category_name + " deleted.")
+	print_rich("[color=878787][GoLogger] Category <" + category_name + "> deleted.")
 	queue_free()
-	log_category_changed.emit(self, category_name, "", index, is_locked, true)
+	log_category_deleted.emit()

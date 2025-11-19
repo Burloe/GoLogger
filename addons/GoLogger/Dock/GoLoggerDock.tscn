@@ -1,10 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=16 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
-[ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/GoLogger/Resources/icons/Close.svg" id="3_11ofg"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
 [ext_resource type="StyleBox" uid="uid://4f0tjmydxdih" path="res://addons/GoLogger/Resources/framed_flat_stylebox.tres" id="4_7ntic"]
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
@@ -65,7 +64,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 1
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -73,7 +72,6 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -135,19 +133,6 @@ theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
 text = "Open"
 icon = ExtResource("2_6725a")
-
-[node name="DefaultsCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Delete all existing categories"
-theme_override_colors/font_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
-theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
-theme_override_colors/icon_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
-text = "Clear"
-icon = ExtResource("3_11ofg")
 
 [node name="CategoryWarningLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
 unique_name_in_owner = true
@@ -250,6 +235,7 @@ theme_override_constants/v_separation = 5
 columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="."]
+visible = false
 layout_mode = 2
 follow_focus = true
 scroll_horizontal_custom_step = 10.0

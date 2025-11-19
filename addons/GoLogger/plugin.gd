@@ -11,7 +11,7 @@ func _enter_tree() -> void:
 	dock.plugin_version = get_plugin_version()
 
 func _exit_tree() -> void:
-	dock.save_category_data()
+	dock.save_data()
 	remove_control_from_bottom_panel(dock)
 
 

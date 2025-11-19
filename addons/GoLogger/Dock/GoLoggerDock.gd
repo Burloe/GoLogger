@@ -17,7 +17,6 @@ signal change_category_name_finished
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
-@onready var defaults_btn: Button = %DefaultsCatButton
 @onready var category_warning_lbl: Label = %CategoryWarningLabel
 
 @onready var columns_slider: HSlider = %ColumnsHSlider
@@ -153,6 +152,7 @@ var c_print_history := "[color=878787][GoLogger] "
 
 # Mirror Dictionary in Log.gd -> Keep both in sync.
 var default_settings := {
+		"category_names": ["game"],
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": "[{hh}:{mi}:{ss}]: {entry}",
@@ -194,7 +194,7 @@ var settings_control := {
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
-		entry_format_warning.visible = !_check_valid_entry_format(entry_format_line.text)
+		entry_format_warning.visible = !is_entry_format_valid(entry_format_line.text)
 
 		# Ensure or create settings.ini
 		var _d = DirAccess.open("user://GoLogger/")
@@ -215,7 +215,6 @@ func _ready() -> void:
 
 		add_category_btn.button_up.connect(add_category)
 		open_dir_btn.button_up.connect(open_directory)
-		defaults_btn.button_up.connect(reset_to_default.bind(0))
 		columns_slider.value_changed.connect(_on_columns_slider_value_changed)
 		reset_settings_btn.button_up.connect(reset_to_default.bind(1))
 
@@ -346,11 +345,23 @@ func _ready() -> void:
 
 		load_data()
 
-
-
-
-
-
+		await get_tree().process_frame
+		settings_control = {
+			"base_directory": base_dir_line,
+			"log_header_format": log_header_line,
+			"entry_format": entry_format_line,
+			"canvaslayer_layer": canvas_layer_spinbox,
+			"autostart_session": autostart_btn,
+			"use_utc": utc_btn,
+			"limit_method": limit_method_btn,
+			"entry_count_action": entry_count_action_btn,
+			"session_timer_action": session_timer_action_btn,
+			"file_cap": file_count_spinbox,
+			"entry_cap": entry_count_spinbox,
+			"session_duration": session_duration_spinbox,
+			"error_reporting": error_rep_btn,
+			"columns": columns_slider
+		}
 
 
 
@@ -374,7 +385,7 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	cf.set_value("settings", "session_duration", default_settings["session_duration"])
 	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
 
-	cf.set_value("categories", "category_names", default_settings["category_names"])
+	cf.set_value("categories", "category_names", [])
 	cf.set_value("categories", "instance_ids", [])
 
 	for i in default_settings["category_names"].size():
@@ -422,39 +433,39 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 	var present_settings_faults : int = 0
 	var value_type_faults : int = 0
 	var expected_settings ={
-		"base_directory": "plugin/base_directory",
-		"categories": "plugin/categories",
-		"columns": "settings/columns",
-		"log_header_format": "settings/log_header_format",
-		"entry_format": "settings/entry_format",
-		"canvaslayer_layer": "settings/canvaslayer_layer",
-		"autostart_session": "settings/autostart_session",
-		"use_utc": "settings/use_utc",
-		"limit_method": "settings/limit_method",
-		"entry_count_action": "settings/entry_count_action",
+		"category_names": 			"categories/category_names",
+		"base_directory": 			"settings/base_directory",
+		"columns": 							"settings/columns",
+		"log_header_format": 		"settings/log_header_format",
+		"entry_format": 				"settings/entry_format",
+		"canvaslayer_layer": 		"settings/canvaslayer_layer",
+		"autostart_session": 		"settings/autostart_session",
+		"use_utc": 							"settings/use_utc",
+		"limit_method": 				"settings/limit_method",
+		"entry_count_action": 	"settings/entry_count_action",
 		"session_timer_action": "settings/session_timer_action",
-		"file_cap": "settings/file_cap",
-		"entry_cap": "settings/entry_cap",
-		"session_duration": "settings/session_duration",
-		"error_reporting": "settings/error_reporting"
+		"file_cap": 						"settings/file_cap",
+		"entry_cap": 						"settings/entry_cap",
+		"session_duration": 		"settings/session_duration",
+		"error_reporting": 			"settings/error_reporting"
 	}
 
 	var expected_types = {
-		"plugin/base_directory": TYPE_STRING,
-		"plugin/categories": TYPE_ARRAY,
-		"settings/columns": TYPE_INT,
-		"settings/log_header_format": TYPE_STRING,
-		"settings/entry_format" : TYPE_STRING,
-		"settings/canvaslayer_layer": TYPE_INT,
-		"settings/autostart_session": TYPE_BOOL,
-		"settings/use_utc": TYPE_BOOL,
-		"settings/limit_method": TYPE_INT,
-		"settings/entry_count_action": TYPE_INT,
-		"settings/session_timer_action": TYPE_INT,
-		"settings/file_cap": TYPE_INT,
-		"settings/entry_cap": TYPE_INT,
-		"settings/session_duration": TYPE_FLOAT,
-		"settings/error_reporting": TYPE_INT
+		"categories/category_names": 			TYPE_ARRAY,
+		"settings/base_directory": 				TYPE_STRING,
+		"settings/columns": 							TYPE_INT,
+		"settings/log_header_format": 		TYPE_STRING,
+		"settings/entry_format" : 				TYPE_STRING,
+		"settings/canvaslayer_layer": 		TYPE_INT,
+		"settings/autostart_session": 		TYPE_BOOL,
+		"settings/use_utc": 							TYPE_BOOL,
+		"settings/limit_method": 					TYPE_INT,
+		"settings/entry_count_action": 		TYPE_INT,
+		"settings/session_timer_action": 	TYPE_INT,
+		"settings/file_cap": 							TYPE_INT,
+		"settings/entry_cap": 						TYPE_INT,
+		"settings/session_duration": 			TYPE_FLOAT,
+		"settings/error_reporting": 			TYPE_INT
 	}
 
 	var types : Array[String] = [
@@ -499,7 +510,7 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 	for setting in expected_settings.keys():
 		var splits = expected_settings[setting].split("/")
 		if !config.has_section(splits[0]) or !config.has_section_key(splits[0], splits[1]):
-			printerr(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
+			# printerr(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
 			present_settings_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 	if present_settings_faults > 0: push_warning("GoLogger: One or more settings were missing from the settings.ini file. Default values have been restored for the missing settings.")
@@ -511,42 +522,24 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 		var value = config.get_value(splits[0], splits[1])
 
 		if typeof(value) != expected_type:
-			printerr(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
+			# printerr(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
 			value_type_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 
 	config.save(PATH)
 
 
-func reset_to_default(tab : int) -> void:
-	if tab == 0: # Categories tab
-		var children = category_container.get_children()
-		for i in range(children.size()):
-			children[i].queue_free()
-
-		defaults_btn.disabled = true
-		add_category_btn.disabled = true
-		await get_tree().create_timer(0.5).timeout
-		var cf := ConfigFile.new()
-		cf.set_value("categories", "category_names", ["game"])
-		cf.set_value("categories.game", "category_name", "game")
-		cf.set_value("categories.game", "category_index", 0)
-		cf.set_value("categories.game", "file_count", 0)
-		cf.set_value("categories.game", "is_locked", false)
-		load_data()
-		defaults_btn.disabled = false
-		add_category_btn.disabled = false
-		if !cf:
-			var _e = cf.get_open_error()
-			printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
-
-	else: # Settings tab
+func reset_to_default() -> void:
 		create_settings_file()
 
 
 func load_data() -> void:
 	var _c = ConfigFile.new()
-	_c.load(PATH)
+	if _c.load(PATH) != OK:
+		printerr("GoLogger error: Failed to load settings.ini file!")
+		return
+
+	validate_settings()
 
 	# Categories
 	for name in _c.get_value("categories", "category_names", []):
@@ -558,6 +551,8 @@ func load_data() -> void:
 
 	# Settings
 	for key in default_settings.keys():
+		if key == "category_names":
+			continue
 		if settings_control[key] == null:
 			continue
 		elif settings_control[key] is LineEdit:
@@ -578,27 +573,38 @@ func load_data() -> void:
 func save_data(deferred: bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
+		await get_tree().physics_frame
 
 	var _c := ConfigFile.new() # Using a new ConfigFile to avoid clobbering existing data
 
 	# Categories
-	var _cat_names: Array[String] = []
+	var _cat_names = []
 	for log_category in category_container.get_children():
 		if log_category is LogCategory:
 			if log_category.category_name == "":
 				continue
+
 			_cat_names.append(log_category.category_name)
+
 			var section_name := str("category." + log_category.category_name)
 			_c.set_value(section_name, "category_name", log_category.category_name)
 			_c.set_value(section_name, "category_index", log_category.index)
-			_c.set_value(section_name, "file_count", log_category.file_count)
+			_c.set_value(section_name, "file_count", _c.get_value(section_name, "file_count", 0))
 			_c.set_value(section_name, "is_locked", log_category.is_locked)
 			_c.set_value(section_name, "instances", [])
+
 	_c.set_value("categories", "category_names", _cat_names)
+	# print("Saved categories: ", _cat_names)
 
 	# Settings
+	var error: int = 0
 	for key in default_settings.keys():
+		if !settings_control.has(key):
+			continue
+
 		if settings_control[key] == null:
+			error += 1
+			# printerr("Null count: ", error, " for key: ", key)
 			continue
 		elif settings_control[key] is LineEdit:
 			_c.set_value("settings", key, settings_control[key].text)
@@ -610,38 +616,51 @@ func save_data(deferred: bool = false) -> void:
 			_c.set_value("settings", key, settings_control[key].selected)
 		elif settings_control[key] is HSlider:
 			_c.set_value("settings", key, int(settings_control[key].value))
+		# print("Saved ", key, " as ", settings_control[key].text)
 
-	var err := _c.save(PATH)
-	if err != OK:
-		var open_err = _c.get_open_error()
-		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(open_err, "ConfigFile")))
+	var _e = _c.save(PATH)
+	if _e != OK:
+		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
 	config.load(PATH) # Reload config to ensure it's up to date
 
 
 
-func _on_log_category_changed(cat_obj: LogCategory, category_name: String, new_name: String, index: int, is_locked: bool, to_delete: bool) -> void:
-	# All of this commented code is replaced by save_data() which handles all changes in one go by saving each category's current state instead of the ConfigFile's state.
-	
-	# var cf := ConfigFile.new() # use new ConfigFile to avoid clobbering existing data
-	# cf.load(PATH)
+## Use save_after when Log Categories are added manually via the dock.
+## Not when loading categories from config.
+func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
+	var _n = category_scene.instantiate()
+	_n.dock = self
+	_n.category_name = _name
+	_n.is_locked = _is_locked
+	_n.index = category_container.get_children().size()
+	category_container.add_child(_n)
 
-	# for log_category in category_container.get_children():
-	# 	if log_category is LogCategory:
-	# 		if log_category == cat_obj:
-	# 			if category_name != new_name and new_name != "":
-	# 				cf.erase_section("category." + category_name)
-	# 				cf.set_value("category." + new_name, "category_name", new_name)
-	# 				cf.set_value("category." + new_name, "category_index", index)
-	# 				cf.set_value("category." + new_name, "file_count", cat_obj.file_count)
-	# 				cf.set_value("category." + new_name, "is_locked", is_locked)
-	# 				cf.set_value("category." + new_name, "instances", [])
-	# 			else:
-	# 				# Update existing
-	# 				cf.set_value("category." + category_name, "category_index", index)
-	# 				cf.set_value("category." + category_name, "is_locked", is_locked)
-	save_data()
+	_n.log_category_changed.connect(save_data.bind(true))
+	_n.log_category_deleted.connect(save_data.bind(true))
+	# _n.log_category_deleted.connect(delete_category)
+	_n.name_warning.connect(_on_name_warning)
+	_n.move_category_requested.connect(change_category_order)
+	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
+	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
+	if _name == "":	_n.line_edit.grab_focus() # Focus new category line edit for immediate renaming
+	# _n.line_edit.grab_focus() # This causes the last added category to always grab focus on load, which is undesirable.
+	handle_category_mov_button_state()
+	if save_after:
+		save_data()
 
+
+# func delete_category(category: LogCategory) -> void:
+# 	pass
+# 	load_data()
+# 	if config.has_section("category." + category.category_name):
+# 		config.erase_section("category." + category.category_name)
+# 	var names = config.get_value("categories", "category_names", [])
+# 	for n in names:
+# 		if n == category.category_name:
+# 			names.erase(n)
+# 	config.set_value("categories", "category_names", names)
+# 	save_data()
 
 
 func change_category_order(category: LogCategory, direction: int) -> void:
@@ -654,13 +673,14 @@ func change_category_order(category: LogCategory, direction: int) -> void:
 
 
 func assign_category_indices() -> void:
-	var idx: int = 0
-	for log_category in category_container.get_children():
-		if log_category is LogCategory:
-			log_category.index = idx
-			idx += 1
+	for i in range(category_container.get_child_count()):
+		var category = category_container.get_child(i)
+		if category is LogCategory:
+			category.index = i
+
 	save_data()
 	handle_category_mov_button_state()
+
 
 
 func handle_category_mov_button_state() -> void:
@@ -668,28 +688,6 @@ func handle_category_mov_button_state() -> void:
 		var category = category_container.get_child(i)
 		category.move_left_btn.disabled = (category.index == 0)
 		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
-
-
-## Use save_after when Log Categories are added manually via the dock.
-## Not when loading categories from config.
-func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
-	var _n = category_scene.instantiate()
-	_n.dock = self
-	_n.category_name = _name
-	_n.is_locked = _is_locked
-	_n.index = category_container.get_children().size() - 1
-	category_container.add_child(_n)
-
-	_n.log_category_changed.connect(_on_log_category_changed)
-	_n.name_warning.connect(_on_name_warning)
-	_n.move_category_requested.connect(change_category_order)
-	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
-	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
-	if _name == "":	_n.line_edit.grab_focus() # Focus new category line edit for immediate renaming
-	# _n.line_edit.grab_focus() # This causes the last added category to always grab focus on load, which is undesirable.
-	handle_category_mov_button_state()
-	if save_after:
-		save_data()
 
 
 func check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
@@ -759,7 +757,7 @@ func open_directory() -> void:
 	OS.shell_open(abs_path)
 
 
-func _check_valid_entry_format(format: String) -> bool:
+func is_entry_format_valid(format: String) -> bool:
 	return true if format.contains("{entry}") else false
 
 
@@ -835,6 +833,7 @@ func _on_button_button_up(node: Button) -> void:
 			config.set_value("settings", "entry_format", default_settings["entry_format"])
 			print_rich("[color=878787][GoLogger] Entry format reset to default.")
 			entry_format_apply_btn.disabled = true
+
 	save_data()
 
 
@@ -856,14 +855,14 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 				log_header_apply_btn.disabled = true
 
 		entry_format_line:
-			if _check_valid_entry_format(new_text):
+			if is_entry_format_valid(new_text):
 				entry_format_line.add_theme_stylebox_override("normal", valid_line_edit_stylebox)
 				entry_format_warning.visible = false
 			else:
 				entry_format_line.add_theme_stylebox_override("normal", invalid_line_edit_stylebox)
 				entry_format_warning.visible = true
 
-			if new_text != config.get_value("settings", "entry_format", "") and _check_valid_entry_format(new_text):
+			if new_text != config.get_value("settings", "entry_format", "") and is_entry_format_valid(new_text):
 				entry_format_apply_btn.disabled = false
 			else:
 				entry_format_apply_btn.disabled = true
@@ -931,11 +930,11 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 
 		autostart_btn:
 			config.set_value("settings", "autostart_session", toggled_on)
-			print_rich(c_print_history + "Autostart session option " + "enabled." if toggled_on else "disabled.")
+			print_rich(c_print_history + "Autostart session option " + "enabled." if toggled_on else c_print_history + "Autostart session option " + "disabled.")
 
 		utc_btn:
 			config.set_value("settings", "use_utc", toggled_on)
-			print_rich(c_print_history, "Use UTC option " + "enabled." if toggled_on else "disabled.")
+			print_rich(c_print_history + "Use UTC option " + "enabled." if toggled_on else c_print_history + "Use UTC option " + "disabled.")
 
 	save_data()
 

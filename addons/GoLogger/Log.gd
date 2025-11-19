@@ -46,7 +46,6 @@ signal session_stopped ## Emitted when a log session has been stopped.
 const PATH = "user://GoLogger/settings.ini"
 var config := ConfigFile.new()
 var base_directory: String = "user://GoLogger/"
-var header_string: String #Deprecated - Use _get_header() instead
 var copy_name : String = ""
 var session_status: bool = false:
 	set(value):
@@ -160,7 +159,6 @@ enum ErrorCodes { #NYI - For future use in error/warning messages
 func _ready() -> void:
 	config.load(PATH)
 	base_directory = config.get_value("settings", "base_directory")
-	header_string = _get_header()
 	elements_canvaslayer.layer = _get_settings_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 	inaction_timer.timeout.connect(_on_timer_timeout.bind(inaction_timer))
@@ -348,7 +346,9 @@ func start_session() -> void:
 				if _err != OK and _get_settings_value("settings", "error_reporting") != 2:
 					push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 
-		_f.store_line(_get_header(c_name))
+		var header: String = _get_header(c_name)
+		if header != "":
+			_f.store_line(header)
 		_f.close()
 
 		cat_data[c_name]["instances"][instance_id] = _d
