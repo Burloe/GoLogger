@@ -33,7 +33,7 @@ signal open_hotkey_resource(resrc: int)
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
 
-@onready var columns_slider: HSlider = %ColumnsHSlider
+@onready var column_slider: HSlider = %ColumnsHSlider
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
@@ -156,7 +156,7 @@ var settings_control := {
 	"entry_cap": entry_count_spinbox,
 	"session_duration": session_duration_spinbox,
 	"error_reporting": error_rep_btn,
-	"columns": columns_slider
+	"columns": column_slider
 }
 
 # When adding new settings, add the Labels and any Control nodes to the
@@ -184,11 +184,11 @@ func _ready() -> void:
 		for i in category_container.get_children():
 			if i is LogCategory:
 				i.queue_free()
-			else: print_rich("GoLogger error: Uknown node in category container. Expected LogCategory, got ", i.get_name(), "\nThis is a bug, please report it to the developer @[url]https://github.com/Burloe/GoLogger/issues[/url]")
+			else: print_rich("GoLogger error: Uknown node in category container. Expected LogCategory, got ", i.get_name(), "\nThis is a bug, please create an issue at: @[url]https://github.com/Burloe/GoLogger/issues[/url]")
 
 		add_category_btn.button_up.connect(add_category)
 		open_dir_btn.button_up.connect(open_directory)
-		columns_slider.value_changed.connect(_on_columns_slider_value_changed)
+		column_slider.value_changed.connect(_on_column_slider_value_changed)
 		reset_settings_btn.button_up.connect(create_settings_file)
 
 		btn_array = [
@@ -316,7 +316,12 @@ func _ready() -> void:
 			btns_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
 			btns_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
 
-
+		base_dir_apply_btn.button_up.connect(_on_button_button_up.bind(base_dir_apply_btn))
+		base_dir_reset_btn.button_up.connect(_on_button_button_up.bind(base_dir_reset_btn))
+		log_header_apply_btn.button_up.connect(_on_button_button_up.bind(log_header_apply_btn))
+		log_header_reset_btn.button_up.connect(_on_button_button_up.bind(log_header_reset_btn))
+		entry_format_apply_btn.button_up.connect(_on_button_button_up.bind(entry_format_apply_btn))
+		entry_format_reset_btn.button_up.connect(_on_button_button_up.bind(entry_format_reset_btn))
 		start_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(0))
 		copy_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(1))
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
@@ -339,7 +344,7 @@ func _ready() -> void:
 			"entry_cap": entry_count_spinbox,
 			"session_duration": session_duration_spinbox,
 			"error_reporting": error_rep_btn,
-			"columns": columns_slider
+			"columns": column_slider
 		}
 
 
@@ -401,7 +406,7 @@ func load_settings_state() -> void:
 	entry_count_spinbox.value = 			config.get_value("settings", "entry_cap", default_settings["entry_cap"])
 	session_duration_spinbox.value = 	config.get_value("settings", "session_duration", default_settings["session_duration"])
 	error_rep_btn.selected = 					config.get_value("settings", "error_reporting", default_settings["error_reporting"])
-	columns_slider.value = _get_column_value(config.get_value("settings", "columns", _get_column_value(default_settings["columns"])))
+	column_slider.value = _get_column_value(config.get_value("settings", "columns", _get_column_value(default_settings["columns"])))
 	config.save(PATH)
 
 
@@ -511,7 +516,7 @@ func load_data() -> void:
 		printerr("GoLogger error: Failed to load settings.ini file!")
 		return
 
-	validate_settings()
+	# validate_settings()
 
 	# Categories
 	for name in _c.get_value("categories", "category_names", []):
@@ -521,22 +526,41 @@ func load_data() -> void:
 			_c.get_value("category." + name, "is_locked", false)
 		)
 
+	for setting in _c.get_section_keys("settings"):
+		print("Loaded setting: ", setting, " as ", _c.get_value("settings", setting))
+
+
 	# Settings
-	for key in default_settings.keys():
-		if key == "category_names":
-			continue
-		if settings_control[key] == null:
-			continue
-		elif settings_control[key] is LineEdit:
-			settings_control[key].text = _c.get_value("settings", key, default_settings[key])
-		elif settings_control[key] is SpinBox:
-			settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
-		elif settings_control[key] is CheckButton:
-			settings_control[key].button_pressed = _c.get_value("settings", key, default_settings[key])
-		elif settings_control[key] is OptionButton:
-			settings_control[key].selected = _c.get_value("settings", key, default_settings[key])
-		elif settings_control[key] is HSlider:
-			settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
+	base_dir_line.text = _c.get_value("settings", "base_directory", default_settings["base_directory"])
+	log_header_line.text = _c.get_value("settings", "log_header_format", default_settings["log_header_format"])
+	entry_format_line.text = _c.get_value("settings", "entry_format", default_settings["entry_format"])
+	canvas_layer_spinbox.value = _c.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
+	autostart_btn.button_pressed = _c.get_value("settings", "autostart_session", default_settings["autostart_session"])
+	utc_btn.button_pressed = _c.get_value("settings", "use_utc", default_settings["use_utc"])
+	limit_method_btn.selected = _c.get_value("settings", "limit_method", default_settings["limit_method"])
+	entry_count_action_btn.selected = _c.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	session_timer_action_btn.selected = _c.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	file_count_spinbox.value = _c.get_value("settings", "file_cap", default_settings["file_cap"])
+	entry_count_spinbox.value = _c.get_value("settings", "entry_cap", default_settings["entry_cap"])
+	session_duration_spinbox.value = _c.get_value("settings", "session_duration", default_settings["session_duration"])
+	error_rep_btn.selected = _c.get_value("settings", "error_reporting", default_settings["error_reporting"])
+	column_slider.value = _get_column_value(_c.get_value("settings", "columns", default_settings["columns"]))
+
+	# for key in default_settings.keys():
+	# 	if key == "category_names":
+	# 		continue
+	# 	if settings_control[key] == null:
+	# 		continue
+	# 	elif settings_control[key] is LineEdit:
+	# 		settings_control[key].text = _c.get_value("settings", key, default_settings[key])
+	# 	elif settings_control[key] is SpinBox:
+	# 		settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
+	# 	elif settings_control[key] is CheckButton:
+	# 		settings_control[key].button_pressed = _c.get_value("settings", key, default_settings[key])
+	# 	elif settings_control[key] is OptionButton:
+	# 		settings_control[key].selected = _c.get_value("settings", key, default_settings[key])
+	# 	elif settings_control[key] is HSlider:
+	# 		column_slider.value = int(_c.get_value("settings", key, default_settings[key]))
 
 	config.load(PATH) # Reload config to ensure it's up to date
 
@@ -585,7 +609,7 @@ func save_data(deferred: bool = false) -> void:
 		elif settings_control[key] is OptionButton:
 			_c.set_value("settings", key, settings_control[key].selected)
 		elif settings_control[key] is HSlider:
-			_c.set_value("settings", key, int(settings_control[key].value))
+			_c.set_value("settings", key, column_slider.value)
 		# print("Saved ", key, " as ", settings_control[key].text)
 
 	var _e = _c.save(PATH)
@@ -774,6 +798,7 @@ func _on_button_button_up(node: Button) -> void:
 			log_header_line.release_focus()
 
 		log_header_reset_btn:
+			print("gambo")
 			log_header_line.text = default_settings["log_header_format"]
 			config.set_value("settings", "log_header_format", default_settings["log_header_format"])
 			print_rich(c_print_history, "Log header option reset to default.")
@@ -970,13 +995,14 @@ func _on_category_line_focus(data: Array, focused: bool) -> void:
 		focused_category.clear()
 
 
-func _on_columns_slider_value_changed(value: int) -> void:
-	var inverted_value = 10 - value
+func _on_column_slider_value_changed(value: int) -> void:
 	category_container.columns = _get_column_value(value)
-	columns_slider.tooltip_text = str(_get_column_value(value))
+	column_slider.tooltip_text = str("Category columns: ", _get_column_value(value))
 	config.set_value("settings", "columns", _get_column_value(value))
 	save_data()
 
 
+## Returns the invected value for the column slider
 func _get_column_value(slider_value: int) -> int:
-	return 10 - slider_value
+	var b: int = clampi(slider_value, column_slider.min_value, column_slider.max_value)
+	return b

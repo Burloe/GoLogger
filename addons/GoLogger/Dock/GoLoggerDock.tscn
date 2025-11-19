@@ -68,7 +68,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 1
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -77,7 +77,6 @@ metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -190,10 +189,11 @@ theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv"
 min_value = 1.0
 max_value = 10.0
 value = 10.0
+rounded = true
 
 [node name="Label" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
-text = "Columns:"
+text = "Columns"
 
 [node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 visible = false
@@ -228,6 +228,7 @@ theme_override_constants/v_separation = 5
 columns = 10
 
 [node name="Settings" type="ScrollContainer" parent="."]
+visible = false
 layout_mode = 2
 follow_focus = true
 scroll_horizontal_custom_step = 10.0
@@ -696,7 +697,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
 layout_mode = 2
-text = "Open Hotkey Resources"
+text = "Open Hotkey Resources in Inspector"
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
