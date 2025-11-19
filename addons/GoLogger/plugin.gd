@@ -3,15 +3,16 @@ extends EditorPlugin
 
 var dock
 
-var start_session_hotkey := preload("uid://n4t5k7np2380")
-var stop_session_hotkey := preload("uid://gqn873em6x5v")
-var copy_session_hotkey := preload("uid://dqqknnyvnc7t6")
+# var start_session_hotkey := preload("uid://n4t5k7np2380")
+# var stop_session_hotkey := preload("uid://gqn873em6x5v")
+# var copy_session_hotkey := preload("uid://dqqknnyvnc7t6")
 
 
 func _enter_tree() -> void:
 	dock = preload("res://addons/GoLogger/Dock/GoLoggerDock.tscn").instantiate()
 	add_control_to_bottom_panel(dock, "GoLogger")
 	dock.plugin_version = get_plugin_version()
+	dock.open_hotkey_resource.connect(_on_open_hotkey_resource)
 
 func _exit_tree() -> void:
 	dock.save_data()
@@ -29,8 +30,13 @@ func _disable_plugin() -> void:
 		remove_autoload_singleton("Log")
 
 
-func _on_open_hotkey_resource(resrc: String) -> void:
-	var res = ResourceLoader.load(resrc)
+func _on_open_hotkey_resource(resrc: int) -> void:
+	var _r: String = ""
+	match resrc:
+		0: _r = "uid://n4t5k7np2380"
+		1: _r = "uid://gqn873em6x5v"
+		2: _r = "uid://dqqknnyvnc7t6"
+	var res = ResourceLoader.load(_r)
 	if res:
 		get_editor_interface().edit_resource(res)
 	else:

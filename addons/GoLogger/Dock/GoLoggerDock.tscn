@@ -68,7 +68,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 0
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -77,6 +77,7 @@ metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -227,14 +228,13 @@ theme_override_constants/v_separation = 5
 columns = 10
 
 [node name="Settings" type="ScrollContainer" parent="."]
-visible = false
 layout_mode = 2
 follow_focus = true
 scroll_horizontal_custom_step = 10.0
 metadata/_tab_index = 1
 
 [node name="MainPanel" type="Panel" parent="Settings"]
-custom_minimum_size = Vector2(0, 380)
+custom_minimum_size = Vector2(0, 439)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -267,6 +267,8 @@ theme_override_constants/separation = 10
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+tooltip_text = "The directory where logs are stored in. 
+Default path is \"user://GoLogger/\". "
 theme_override_constants/separation = 8
 
 [node name="BaseDirLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/BaseDirHBox"]
@@ -274,8 +276,6 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "The directory where logs are stored in. 
-Default path is \"user://GoLogger/\". "
 theme = ExtResource("1_y5prw")
 theme_override_font_sizes/font_size = 14
 text = " Base Directory:"
@@ -540,7 +540,7 @@ tooltip_text = "Autostarts session at runtime."
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
-text = "  Autostart session"
+text = "Autostart session"
 
 [node name="UTCCheckButton" type="CheckButton" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
 unique_name_in_owner = true
@@ -549,7 +549,7 @@ layout_mode = 2
 tooltip_text = "Uses UTC as opposed to the local system time when timestamping files and entries."
 theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
-text = "  UTC time"
+text = "UTC time"
 
 [node name="FileCountHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
 unique_name_in_owner = true
@@ -648,7 +648,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 1
-text = " Save Copy canvas layer"
+text = "Save Copy canvas layer"
 vertical_alignment = 1
 
 [node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/CanvasLayerHBox"]
@@ -692,6 +692,37 @@ popup/item_3/id = 3
 
 [node name="Control" type="Control" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
 custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+layout_mode = 2
+text = "Open Hotkey Resources"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="StartSessionBtn" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start Session"
+
+[node name="CopySessionBtn" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Copy Session"
+
+[node name="StopSessionBtn" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stop Session"
+
+[node name="Spacer" type="Control" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
+custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 
 [node name="ResetSettingsButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
@@ -849,7 +880,7 @@ metadata/_tab_index = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 1
+current_tab = 2
 
 [node name="Getting Started" type="MarginContainer" parent="Help/TabContainer"]
 visible = false
@@ -886,7 +917,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Setup:[font_size=14][color=white]
-GoLogger works immediately with the default configuration. Two log categories are available by default: game(index 0) and errors(index 1).
+GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: [i] Log.entry(\"This is my first log entry.\", \"game\")[/i)
 Use the Category tab to add, remove, or rename categories.
 
 [i]GoLogger uses an autoload [b]Log[/b] singleton, making its methods accessible from all scenes and scripts.[/i]
@@ -898,17 +929,14 @@ By default, a session starts automatically when the project runs (this can be di
 [font_size=16][color=fc4674]Categories:[font_size=14][color=white]
 Each category in the Category tab corresponds to a folder in the base directory. When a session starts, a .log file is created inside that folder, named with the date, timestamp, and category.
 
-Each category has a [color=violet]category_index[color=white] used to determine where entries are logged. Indices can be changed or reordered in the Category tab, but doing so may require updating index references in your code.
-
 [font_size=16][color=fc4674]Entries:[font_size=14][color=white]
-Entries are plain text strings. They can include any data that can be converted to a string, allowing flexible and descriptive logging.
+Entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging.
 
 [font_size=16][color=fc4674]Save Copy:[font_size=14][color=white]
-The Save Copy feature creates a copy of the active session without stopping it. This saves the current logs for all categories into their respective saved_logs folders.
-
-This feature is useful for capturing logs at specific moments, such as when a known bug occurs or when logged data is needed to be preserved at the moment of occurance for debugging."
+The Save Copy feature creates a copy of the active session without stopping it. This saves the current logs for all categories into their respective saved_logs folders. This feature is useful for capturing logs at specific moments, such as when a known bug occurs or when logged data is needed to be preserved at the moment of occurance for debugging."
 
 [node name="Methods & Hotkeys" type="MarginContainer" parent="Help/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -940,8 +968,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=16][color=fc4674]Methods:[color=white]
-[font_size=14]All methods are accessible through the [color=violet]Log[color=white] autoload.
+text = "[font_size=16][color=fc4674][b]Methods:[/b][color=white]
+[font_size=14]All methods are accessible using the [color=violet]Log[color=white] autoload.
 Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GoLogger/[/i][color=white], where the shortcut resources are located.
 
 	[color=violet]Log.[color=cornflowerblue]start_session()[color=white]  
@@ -961,6 +989,8 @@ Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GoLog
 	Stops the active logging session.  
 		[color=darkgray][i]Hotkey: Ctrl + Shift + P[/i]  
 
+[font_size=16][color=fc4674][b]Changing hotkeys:[/b][color=white]
+Hotkeys are changed using InputEventShortcut resources. As such, they are not included in the InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector.
 
 [font_size=16][color=fc4674][b]Signals:[/b][color=white]
 There are two signals available to help you synchronize sessions with game logic.[color=palegolderod]
@@ -968,7 +998,6 @@ There are two signals available to help you synchronize sessions with game logic
 	session_stopped"
 
 [node name="File Limitations" type="MarginContainer" parent="Help/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 metadata/_tab_index = 2
@@ -1000,7 +1029,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Setting Limitations:[color=white]
-[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is not recommended. GoLogger includes several features to control logging behavior. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
+[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GoLogger includes several features to control logging behavior. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
 
 The default settings are intentionally conservative to minimize potential issues after installation. You can safely increase them within reasonable bounds.
 
@@ -1012,25 +1041,24 @@ This option defines the maximum number of .log files allowed in each category fo
 [font_size=16][color=fc4674]Limit Method:[color=white][font_size=14]
 [color=white]Two methods are available for controlling session limits.
 
-[color=white][font_size=16][b]Entry count[/b][font_size=14] – [color=darkgray]Used with Entry Count Action and Entry Count Limit.[color=white]
-As new entries are logged, they are counted, and once the limit is reached, one of the following actions is triggered:
+	[color=aquamarine][font_size=14][b]Entry count[/b][font_size=14] – [color=darkgray]Used with Entry Count Action and Entry Count Limit.[color=white]
+	As new entries are logged, they are counted, and once the limit is reached, one of the following actions is triggered:
 
-Overwrite Entries – Replaces the oldest entries as new ones are added.
+		Overwrite Entries – Replaces the oldest entries as new ones are added.
+		Restart Session – Ends the current session and starts a new one, creating a new .log file.
+		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
 
-Restart Session – Ends the current session and starts a new one, creating a new .log file.
-
-Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
-
-[color=white][font_size=16][b]Session timer[/b][font_size=14] – [color=darkgray]Used with Session Timer Action and Session Duration.[color=white]
-Starts a timer at the beginning of a session and runs for the duration specified in the Session Duration setting. This method is useful for time-based testing. The Session Timer emits the signals [color=turquoise]session_started[color=white] and [color=turquoise]session_stopped[color=white], which can be used to synchronize with other systems or features.
-
-Restart Session – Ends the current session and starts a new one, creating a new .log file.
-
-Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
+	[color=aquamarine][font_size=14][b]Session timer[/b][font_size=14] – [color=darkgray]Used with Session Timer Action and Session Duration.[color=white]
+	Starts a timer at the beginning of a session and runs for the duration specified in the Session Duration setting. This method is useful for time-based testing. 
+	The Session Timer emits the signals [color=turquoise]session_started[color=white] and [color=turquoise]session_stopped[color=white], which can be used to synchronize with other systems or features.
+	
+		Restart Session – Ends the current session and starts a new one, creating a new .log file.
+		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
 
 [color=darkgray][i]Recommended:[/i]
 [i]Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed.[/i]
 [i]Start session: Ctrl + Shift + O[/i]
+[i]Copy session: Ctrl + Shift + U[/i]
 [i]Stop session: Ctrl + Shift + P[/i]"
 
 [node name="More Info" type="MarginContainer" parent="Help/TabContainer"]

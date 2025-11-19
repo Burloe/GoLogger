@@ -93,36 +93,54 @@ func _ready() -> void:
 			invalid_name = false
 
 
-func check_existing_conflicts(new_name : String) -> bool:
-	config.load(PATH)
-	var categories = config.get_value("categories", "category_names")
-	for c_name in categories:
-		if c_name == new_name and new_name != category_name:
-			return true
-		else:
-			return false
-	return false
+func apply_name(new_name: String) -> void:
+	var old_name := category_name
+	var fin_name := get_unique_category_name(new_name, old_name)
 
-
-func apply_name(new_name : String) -> void:
-	var fin_name: String = new_name
-	if check_existing_conflicts(new_name):
-		fin_name = get_acceptable_name(new_name)
-
-	category_name = new_name
+	category_name = fin_name
 	log_category_changed.emit()
 	line_edit.release_focus()
 	apply_btn.hide()
 
+	if old_name == "":
+		print_rich("[color=878787][GoLogger] Category <" + fin_name + "> created.")
+	else:
+		print_rich("[color=878787][GoLogger] Category <" + old_name + "> renamed to <" + fin_name + ">.")
 
-func get_acceptable_name(name: String) -> String:
-	var fin: String
-	var added_num: int = 1
-	while check_existing_conflicts(fin):
-		added_num += 1
-	fin = name + str(added_num)
 
-	return fin
+
+func get_unique_category_name(name: String, ignore_name: String = "") -> String:
+	config.load(PATH)
+	var categories: Array = config.get_value("categories", "category_names", [])
+
+	var base := name
+	var suffix := 1
+
+	var i := name.length() - 1
+	while i >= 0 and name[i] >= "0" and name[i] <= "9":
+		i -= 1
+
+	if i < name.length() - 1:
+		base = name.substr(0, i + 1)
+		suffix = int(name.substr(i + 1, name.length() - (i + 1))) + 1
+
+	var candidate := base
+	if not has_conflict(candidate, ignore_name):
+		return candidate
+
+	while has_conflict(base + str(suffix), ignore_name):
+		suffix += 1
+
+	return base + str(suffix)
+
+
+func has_conflict(candidate: String, ignore_name: String) -> bool:
+	config.load(PATH)
+	var categories: Array = config.get_value("categories", "category_names", [])
+	for c in categories:
+		if c != ignore_name and c == candidate:
+			return true
+	return false
 
 
 func move_log_category(direction: int = 0) -> void:
@@ -142,7 +160,7 @@ func move_log_category(direction: int = 0) -> void:
 
 
 func _on_text_changed(new_text : String) -> void:
-	if new_text == "" or check_existing_conflicts(new_text):
+	if new_text == "" or has_conflict(new_text, ""):
 		if new_text != category_name:
 			apply_btn.show()
 			apply_btn.disabled = false

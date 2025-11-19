@@ -26,6 +26,7 @@ extends TabContainer
 
 signal update_index
 signal change_category_name_finished
+signal open_hotkey_resource(resrc: int)
 
 @onready var categories_tab: MarginContainer = %Categories
 @onready var add_category_btn: Button = %AddCategoryButton
@@ -97,6 +98,9 @@ var session_duration_spinbox_line: LineEdit
 @onready var plugin_version_cat_lbl: Label = %PluginVersionCatLabel
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
+@onready var start_session_btn: Button = %StartSessionBtn
+@onready var copy_session_btn: Button = %CopySessionBtn
+@onready var stop_session_btn: Button = %StopSessionBtn
 
 const PATH = "user://GoLogger/settings.ini"
 
@@ -311,6 +315,12 @@ func _ready() -> void:
 			# Update font color on mouse over Buttons signals
 			btns_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
 			btns_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
+
+
+		start_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(0))
+		copy_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(1))
+		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
+
 
 		load_data()
 
