@@ -132,7 +132,7 @@ var default_settings := {
 		"entry_cap": 300,
 		"session_duration": 300.0,
 		"error_reporting": 0,
-		"columns": 6
+		"columns": 5
 }
 
 var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")

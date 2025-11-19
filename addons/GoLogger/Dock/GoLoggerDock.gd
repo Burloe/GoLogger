@@ -6,18 +6,31 @@ extends TabContainer
 	# [Done]Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
 	#
 	# DOCK CATEGORY TAB:
-		# [TBD] Remove 'category index' entirely in favor of using strings as unique identifiers for categories with regards to the new .ini format
-		# Handle adding/removing categories with new .ini format
-		# is_locked property handling
-		# Add feature to remove setting keys from [settings] section in .ini file when saving/loading the file
+		# [DONE] Remove 'category index' entirely in favor of using strings as unique identifiers for categories with regards to the new .ini format
+		# [DONE] Handle adding/removing categories with new .ini format
+		# [DONE] is_locked property handling
+		# [DONE] Account for ConfigFile clobbering
+		# Check that renaming a category adds an int to the name
+
+# RELEASE CHECKLIST:
+	# Ensure CATEGORIES tab is visible (default)
+	# Check font highlighting on mouse over for settings tab
+	# Check that renaming a category adds an int to the name
+	# Check print history works as expected
+	# Ensure ConfigFile updates properly with:
+		# Applying name
+		# Adding category
+		# Removing category
+		# Reordering categories
+		# Changing settings values
 
 signal update_index
 signal change_category_name_finished
 
+@onready var categories_tab: MarginContainer = %Categories
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
-@onready var category_warning_lbl: Label = %CategoryWarningLabel
 
 @onready var columns_slider: HSlider = %ColumnsHSlider
 @onready var reset_settings_btn: Button = %ResetSettingsButton
@@ -98,50 +111,6 @@ var plugin_version: String =  "1.3.2":
 			plugin_version_cat_lbl.text = str("GoLogger v.", value)
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
-# var cat_data : Dictionary = {
-# 	"game": {
-# 		"category_name": "game",
-# 		"category_index": 0,
-# 		"file_count": 0,
-# 		"is_locked": false,
-# 		"instances": {
-# 			"D44r3": {
-# 				"id": "D44r3",
-# 				"file_name": "game_D44r3.log",
-# 				"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3.log",
-# 				"entry_count": 0
-# 			},
-# 			"X45jR": {
-# 				"id": "X45jR",
-# 				"file_name": "game_X45jR.log",
-# 				"file_path": "user://GoLogger/game_logs/game(251113_161313)_X43jR.log",
-# 				"entry_count": 0
-# 			}
-# 		}
-# 	},
-# 	"player": {
-# 		"category_name": "game",
-# 		"category_index": 0,
-# 		"file_count": 0,
-# 		"is_locked": false,
-# 		"instances": {
-# 			"U4j9K": {
-# 				"id": "U4j9K",
-# 				"file_name": "player_U4j9K.log",
-# 				"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K.log",
-# 				"file_count": 0,
-# 				"instances": {
-# 					"U4j9K": {
-# 						"id": "U4j9K",
-# 						"file_name": "player_U4j9K.log",
-# 						"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K",
-# 						"entry_count": 0
-# 					}
-# 				}
-# 			}
-# 		}
-# 	}
-# }
 
 var focused_category: Array = []
 var btn_array: Array[Control] = []
@@ -166,7 +135,7 @@ var default_settings := {
 		"entry_cap": 300,
 		"session_duration": 300.0,
 		"error_reporting": 0,
-		"columns": 6
+		"columns": 5
 }
 
 var settings_control := {
@@ -216,7 +185,7 @@ func _ready() -> void:
 		add_category_btn.button_up.connect(add_category)
 		open_dir_btn.button_up.connect(open_directory)
 		columns_slider.value_changed.connect(_on_columns_slider_value_changed)
-		reset_settings_btn.button_up.connect(reset_to_default.bind(1))
+		reset_settings_btn.button_up.connect(create_settings_file)
 
 		btn_array = [
 			base_dir_line,
@@ -371,7 +340,7 @@ func _ready() -> void:
 func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
 	var cf := ConfigFile.new() # Use new ConfigFile to avoid clobbering existing data
 	cf.set_value("settings", "base_directory", default_settings["base_directory"])
-	cf.set_value("settings", "columns", default_settings["columns"])
+	cf.set_value("settings", "columns", _get_column_value(default_settings["columns"]))
 	cf.set_value("settings", "log_header_format", default_settings["log_header_format"])
 	cf.set_value("settings", "entry_format", default_settings["entry_format"])
 	cf.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
@@ -409,23 +378,20 @@ func load_settings_state() -> void:
 	config.load(PATH)
 	base_dir_apply_btn.disabled = 		true
 
-	for setting in default_settings.keys():
-		settings_control[setting] = config.get_value("settings", setting, default_settings[setting])
-
-	# base_dir_line.text = 							config.get_value("settings", 	 "base_directory", default_settings["base_directory"])
-	# log_header_line.text = 						config.get_value("settings", "log_header_format", default_settings["log_header_format"])
-	# entry_format_line.text = 					config.get_value("settings", "entry_format", default_settings["entry_format"])
-	# canvas_layer_spinbox.value = 			config.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
-	# autostart_btn.button_pressed = 		config.get_value("settings", "autostart_session", default_settings["autostart_session"])
-	# utc_btn.button_pressed = 					config.get_value("settings", "use_utc", default_settings["use_utc"])
-	# limit_method_btn.selected = 			config.get_value("settings", "limit_method", default_settings["limit_method"])
-	# entry_count_action_btn.selected = config.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
-	# entry_count_action_btn.selected = config.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
-	# file_count_spinbox.value = 				config.get_value("settings", "file_cap", default_settings["file_cap"])
-	# entry_count_spinbox.value = 			config.get_value("settings", "entry_cap", default_settings["entry_cap"])
-	# session_duration_spinbox.value = 	config.get_value("settings", "session_duration", default_settings["session_duration"])
-	# error_rep_btn.selected = 					config.get_value("settings", "error_reporting", default_settings["error_reporting"])
-	# columns_slider.value = 						config.get_value("settings", "columns", default_settings["columns"])
+	base_dir_line.text = 							config.get_value("settings", "base_directory", default_settings["base_directory"])
+	log_header_line.text = 						config.get_value("settings", "log_header_format", default_settings["log_header_format"])
+	entry_format_line.text = 					config.get_value("settings", "entry_format", default_settings["entry_format"])
+	canvas_layer_spinbox.value = 			config.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
+	autostart_btn.button_pressed = 		config.get_value("settings", "autostart_session", default_settings["autostart_session"])
+	utc_btn.button_pressed = 					config.get_value("settings", "use_utc", default_settings["use_utc"])
+	limit_method_btn.selected = 			config.get_value("settings", "limit_method", default_settings["limit_method"])
+	entry_count_action_btn.selected = config.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	entry_count_action_btn.selected = config.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	file_count_spinbox.value = 				config.get_value("settings", "file_cap", default_settings["file_cap"])
+	entry_count_spinbox.value = 			config.get_value("settings", "entry_cap", default_settings["entry_cap"])
+	session_duration_spinbox.value = 	config.get_value("settings", "session_duration", default_settings["session_duration"])
+	error_rep_btn.selected = 					config.get_value("settings", "error_reporting", default_settings["error_reporting"])
+	columns_slider.value = _get_column_value(config.get_value("settings", "columns", _get_column_value(default_settings["columns"])))
 	config.save(PATH)
 
 
@@ -529,10 +495,6 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 	config.save(PATH)
 
 
-func reset_to_default() -> void:
-		create_settings_file()
-
-
 func load_data() -> void:
 	var _c = ConfigFile.new()
 	if _c.load(PATH) != OK:
@@ -573,7 +535,6 @@ func load_data() -> void:
 func save_data(deferred: bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
-		await get_tree().physics_frame
 
 	var _c := ConfigFile.new() # Using a new ConfigFile to avoid clobbering existing data
 
@@ -594,7 +555,6 @@ func save_data(deferred: bool = false) -> void:
 			_c.set_value(section_name, "instances", [])
 
 	_c.set_value("categories", "category_names", _cat_names)
-	# print("Saved categories: ", _cat_names)
 
 	# Settings
 	var error: int = 0
@@ -625,9 +585,7 @@ func save_data(deferred: bool = false) -> void:
 	config.load(PATH) # Reload config to ensure it's up to date
 
 
-
-## Use save_after when Log Categories are added manually via the dock.
-## Not when loading categories from config.
+## `save_after` should be used when the user adds categories manually via the dock. Not when loading categories from config.
 func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
 	var _n = category_scene.instantiate()
 	_n.dock = self
@@ -637,30 +595,21 @@ func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false,
 	category_container.add_child(_n)
 
 	_n.log_category_changed.connect(save_data.bind(true))
-	_n.log_category_deleted.connect(save_data.bind(true))
-	# _n.log_category_deleted.connect(delete_category)
-	_n.name_warning.connect(_on_name_warning)
+	_n.request_log_deletion.connect(delete_category)
 	_n.move_category_requested.connect(change_category_order)
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
 	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
 	if _name == "":	_n.line_edit.grab_focus() # Focus new category line edit for immediate renaming
-	# _n.line_edit.grab_focus() # This causes the last added category to always grab focus on load, which is undesirable.
 	handle_category_mov_button_state()
 	if save_after:
 		save_data()
 
 
-# func delete_category(category: LogCategory) -> void:
-# 	pass
-# 	load_data()
-# 	if config.has_section("category." + category.category_name):
-# 		config.erase_section("category." + category.category_name)
-# 	var names = config.get_value("categories", "category_names", [])
-# 	for n in names:
-# 		if n == category.category_name:
-# 			names.erase(n)
-# 	config.set_value("categories", "category_names", names)
-# 	save_data()
+func delete_category(log_category: LogCategory) -> void:
+	if log_category.get_parent() == category_container:
+		category_container.remove_child(log_category)
+		log_category.queue_free()
+		save_data()
 
 
 func change_category_order(category: LogCategory, direction: int) -> void:
@@ -796,7 +745,7 @@ func _on_button_button_up(node: Button) -> void:
 				base_dir_apply_btn.disabled = true
 				return
 			config.set_value("settings", "base_directory", new_dir)
-			print_rich("[color=878787][GoLogger] Base directory changed to: ", new_dir)
+			print_rich(c_print_history, "Base directory changed.")
 
 		base_dir_opendir_btn:
 			if config.get_value("settings", "base_directory") == "":
@@ -806,32 +755,32 @@ func _on_button_button_up(node: Button) -> void:
 		base_dir_reset_btn:
 			config.set_value("settings", "base_directory", "user://GoLogger/")
 			base_dir_line.text = config.get_value("settings", "base_directory")
-			print_rich("[color=878787][GoLogger] Base directory reset to default.")
+			print_rich(c_print_history, "Base directory reset to default.")
 
 		log_header_apply_btn:
 			config.set_value("settings", "log_header_format", log_header_line.text)
-			print_rich("[color=878787][GoLogger] New Log Header applied.")
+			print_rich(c_print_history, "Log header changed.")
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 
 		log_header_reset_btn:
 			log_header_line.text = default_settings["log_header_format"]
 			config.set_value("settings", "log_header_format", default_settings["log_header_format"])
-			print_rich("[color=878787][GoLogger] Log header option reset to default.")
+			print_rich(c_print_history, "Log header option reset to default.")
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
 			var err := config.save(PATH)
-			print_rich("[color=878787][GoLogger] New Entry Format Applied.")
+			print_rich(c_print_history, "Entry format changed.")
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus()
 
 		entry_format_reset_btn:
 			entry_format_line.text = config.get_value("settings", "entry_format", default_settings["entry_format"])
 			config.set_value("settings", "entry_format", default_settings["entry_format"])
-			print_rich("[color=878787][GoLogger] Entry format reset to default.")
+			print_rich(c_print_history, "Entry format reset to default.")
 			entry_format_apply_btn.disabled = true
 
 	save_data()
@@ -885,6 +834,7 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			else:
 				base_dir_line.text = old_dir
 			base_dir_line.release_focus()
+			print_rich(c_print_history, "Base Directory changed.")
 
 		log_header_line:
 			if new_text == "": return
@@ -894,6 +844,7 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			if new_text != old_header:
 				config.set_value("settings", "log_header_format", new_text)
 			log_header_line.release_focus()
+			print_rich(c_print_history, "Log Header format changed.")
 
 		entry_format_line:
 			var old_format = config.get_value("settings", "entry_format", "")
@@ -902,6 +853,8 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			if new_text == "":
 				entry_format_line.text = "{entry}"
 			entry_format_line.release_focus()
+			print_rich(c_print_history, "Entry Format changed.")
+
 	save_data()
 
 
@@ -949,19 +902,19 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 	match node:
 		entry_count_spinbox:
 			config.set_value("settings", "entry_cap", int(value))
-			print_rich(c_print_history, "Entry cap changed to ", str(int(value)), ".")
+			print_rich(c_print_history, "Entry count limit changed.")
 
 		session_duration_spinbox:
 			config.set_value("settings", "session_duration", int(value))
-			print_rich(c_print_history, "Session duration changed to ", str(int(value)), " seconds.")
+			print_rich(c_print_history, "Session duration changed.")
 
 		file_count_spinbox:
 			config.set_value("settings", "file_cap", int(value))
-			print_rich(c_print_history, "File cap changed to ", str(int(value)), ".")
+			print_rich(c_print_history, "File count limit changed.")
 
 		canvas_layer_spinbox:
 			config.set_value("settings", "canvaslayer_layer", int(value))
-			print_rich(c_print_history, "Save Copy canvas layer changed to ", str(int(value)), ".")
+			print_rich(c_print_history, "Save Copy canvas layer changed.")
 
 	save_data()
 
@@ -973,24 +926,28 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			config.set_value("settings", "canvaslayer_layer", value)
 			canvas_layer_spinbox.release_focus()
 			canvas_spinbox_line.release_focus()
+			print_rich(c_print_history, "Save Copy canvas layer changed.")
 
 		file_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "file_cap", value)
 			file_count_spinbox_line.release_focus()
 			file_count_spinbox.release_focus()
+			print_rich(c_print_history, "File count limit changed.")
 
 		entry_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "entry_cap", value)
 			entry_count_spinbox.release_focus()
 			entry_count_spinbox_line.release_focus()
+			print_rich(c_print_history, "Entry count limit changed.")
 
 		session_duration_spinbox_line:
 			var value = float(new_text)
 			config.set_value("settings", "session_duration", value)
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus()
+			print_rich(c_print_history, "Session duration changed.")
 
 	save_data()
 
@@ -1004,17 +961,12 @@ func _on_category_line_focus(data: Array, focused: bool) -> void:
 
 
 func _on_columns_slider_value_changed(value: int) -> void:
-	category_container.columns = value
-	columns_slider.tooltip_text = str(value)
-	config.set_value("settings", "columns", value)
+	var inverted_value = 10 - value
+	category_container.columns = _get_column_value(value)
+	columns_slider.tooltip_text = str(_get_column_value(value))
+	config.set_value("settings", "columns", _get_column_value(value))
 	save_data()
 
 
-func _on_name_warning(toggled_on: bool, type : int) -> void:
-	if toggled_on:
-		category_warning_lbl.visible = true
-		match type:
-			0: category_warning_lbl.text = "Empty category names are not used. Please enter a unique name."
-			1: category_warning_lbl.text = "Names are not changed if they're not applied."
-	else:
-		category_warning_lbl.visible = false
+func _get_column_value(slider_value: int) -> int:
+	return 10 - slider_value

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene load_steps=18 format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
@@ -14,6 +14,10 @@
 [sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
 font_size = 12
 font_color = Color(1, 1, 1, 0.352941)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ntic"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tayiv"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_tayiv"]
 content_margin_left = 4.0
@@ -72,6 +76,7 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -134,17 +139,6 @@ theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.023
 text = "Open"
 icon = ExtResource("2_6725a")
 
-[node name="CategoryWarningLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
-unique_name_in_owner = true
-visible = false
-modulate = Color(1, 0.26, 0.26, 1)
-custom_minimum_size = Vector2(290, 0)
-layout_mode = 2
-size_flags_horizontal = 8
-text = "Empty category names are not used. Please enter a unique name."
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -165,7 +159,7 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
-custom_minimum_size = Vector2(190, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("4_7ntic")
 
@@ -176,27 +170,29 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_right = 4
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Label" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "Columns:"
-
 [node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "5"
+tooltip_text = "10"
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 5.0
+value = 10.0
+
+[node name="Label" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Columns:"
 
 [node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
 visible = false
@@ -207,11 +203,7 @@ texture = ExtResource("4_ui2qu")
 unique_name_in_owner = true
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
-tooltip_text = "Category Index determines the index integer identifier for each log 
-category. It is passed into the entry() function after the entry string:
-Log.entry(\"My log entry\", 1)
-
-Category Name is the name of the category files and their directories."
+tooltip_text = "When categories are deleted, the folders and files are not deleted. Delete them manually if desired."
 focus_mode = 0
 icon = ExtResource("4_tw6vk")
 icon_alignment = 1
@@ -232,7 +224,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 5
+columns = 10
 
 [node name="Settings" type="ScrollContainer" parent="."]
 visible = false
@@ -284,7 +276,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". "
-mouse_filter = 0
 theme = ExtResource("1_y5prw")
 theme_override_font_sizes/font_size = 14
 text = " Base Directory:"
@@ -347,17 +338,17 @@ theme_override_styles/separator = SubResource("StyleBoxLine_tayiv")
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
+tooltip_text = "Any text and symbol formatting can be used. 
+
 Example: 
-\"{project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:\" 
-Results:
-\"GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
+    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:
+Results: 
+    GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
-	{project_name}
-	{version}
-	{yy} {mm} {dd}
-	{hh} {mi} {ss}"
+    {project_name}	{version}  {instance}
+    {yy}   {mm}   {dd}
+    {hh}   {mi}   {ss}"
 theme_override_constants/separation = 8
 
 [node name="LogHeaderLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
@@ -372,14 +363,15 @@ custom_minimum_size = Vector2(358, 0)
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
 
-Example: \"{project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:\" 
-Results: \"GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
+Example: 
+    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:
+Results: 
+    GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
-	{project_name}
-	{version}
-	{yy} {mm} {dd}
-	{hh} {mi} {ss}"
+    {project_name}	{version}  {instance}
+    {yy}   {mm}   {dd}
+    {hh}   {mi}   {ss}"
 theme_override_styles/normal = ExtResource("9_qo8nw")
 text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
@@ -421,12 +413,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
 Example: 
-	\"[{hh}:{mi}:{ss}]
+    [{hh}:{mi}:{ss}]
 Results: 
-	\"[09:32:16] - entry\"
+    [09:32:16] - entry
 
 Supported tags:
-	{hh mi ss} - And any combination of hour, minute, second."
+    {project_name}	{version}  {instance}
+    {yy}   {mm}   {dd}
+    {hh}   {mi}   {ss}"
 theme_override_constants/separation = 8
 
 [node name="EntryFormatLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox"]
@@ -440,14 +434,16 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(358, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Any text and symbol formatting can be used. Avoid using curly braces for anything other than tags. Cannot be empty, requires \"{entry}\" at minimum.
+tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
 Example: 
-	\"[{hh}:{mi}:{ss}] 
+    [{hh}:{mi}:{ss}]
 Results: 
-	\"[09:32:16] This is an example entry.\"
+    [09:32:16] - entry
 
 Supported tags:
-	{hh}, {mi}, {ss} - And any combination of hour, minute and second."
+    {project_name}	{version}  {instance}
+    {yy}   {mm}   {dd}
+    {hh}   {mi}   {ss}"
 theme_override_styles/normal = ExtResource("9_qo8nw")
 text = "[{hh}:{mi}:{ss}]: {entry}"
 placeholder_text = "[{hh}:{mi}:{ss}]: {entry}"
@@ -611,7 +607,7 @@ allow_reselect = true
 item_count = 5
 popup/item_0/text = "Entry Count"
 popup/item_0/id = 0
-popup/item_1/text = "SessionTimer"
+popup/item_1/text = "SessionTimer    "
 popup/item_1/id = 1
 popup/item_2/text = "Both"
 popup/item_2/id = 2
@@ -684,7 +680,7 @@ layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
 selected = 0
 item_count = 4
-popup/item_0/text = "Warnings & Errors"
+popup/item_0/text = "Warnings & Errors    "
 popup/item_0/id = 0
 popup/item_1/text = "Errors only"
 popup/item_1/id = 1
@@ -701,7 +697,7 @@ layout_mode = 2
 [node name="ResetSettingsButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Resets all settings to default"
+tooltip_text = "Resets plugin to default (settings and categories)"
 text = "Reset to default"
 
 [node name="VSeparator" type="VSeparator" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom"]
@@ -748,7 +744,7 @@ Overwrite Entries removes the oldest entry as new ones are logged.
 selected = 0
 allow_reselect = true
 item_count = 3
-popup/item_0/text = "Overwrite entries"
+popup/item_0/text = "Overwrite entries    "
 popup/item_0/id = 2
 popup/item_1/text = "Restart session"
 popup/item_1/id = 1
@@ -807,7 +803,7 @@ tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 selected = 0
 allow_reselect = true
 item_count = 2
-popup/item_0/text = "Restart session"
+popup/item_0/text = "Restart session    "
 popup/item_0/id = 0
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1

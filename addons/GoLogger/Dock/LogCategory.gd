@@ -4,7 +4,7 @@ class_name LogCategory extends PanelContainer
 ## Emitted when any property of the LogCategory changes to GologgerDock.gd so it can update its data accordingly.
 signal log_category_changed
 signal log_category_deleted
-signal name_warning(toggle_on : bool, type : int)
+signal request_log_deletion(log_category: LogCategory)
 signal move_category_requested(log_category: LogCategory, direction : int)
 
 ## Emitted when a category is deleted so GoLoggerDock.gd can update the indices of the remaining categories.
@@ -28,18 +28,7 @@ var dock : TabContainer:
 			if move_right_btn != null:
 				move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
 
-var invalid_name : bool = false:
-	set(value):
-		invalid_name = value
-		if value:
-			# Empty name
-			if line_edit != null and line_edit.text == "":
-				name_warning.emit(true, 0)
-			# invalid name__
-			elif line_edit != null and line_edit.text == category_name:
-				name_warning.emit(true, 1)
-		else:
-			name_warning.emit(false, 0)
+var invalid_name : bool = false
 
 var is_locked : bool = false:
 	set(value):
@@ -174,5 +163,4 @@ func _on_text_changed(new_text : String) -> void:
 
 func _on_del_button_up() -> void:
 	print_rich("[color=878787][GoLogger] Category <" + category_name + "> deleted.")
-	queue_free()
-	log_category_deleted.emit()
+	request_log_deletion.emit(self)

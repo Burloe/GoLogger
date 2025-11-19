@@ -3,6 +3,9 @@ extends EditorPlugin
 
 var dock
 
+var start_session_hotkey := preload("uid://n4t5k7np2380")
+var stop_session_hotkey := preload("uid://gqn873em6x5v")
+var copy_session_hotkey := preload("uid://dqqknnyvnc7t6")
 
 
 func _enter_tree() -> void:
@@ -24,3 +27,11 @@ func _enable_plugin() -> void:
 func _disable_plugin() -> void:
 	if Engine.has_singleton("Log"):
 		remove_autoload_singleton("Log")
+
+
+func _on_open_hotkey_resource(resrc: String) -> void:
+	var res = ResourceLoader.load(resrc)
+	if res:
+		get_editor_interface().edit_resource(res)
+	else:
+		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] Could not load resource: %s" % resrc)

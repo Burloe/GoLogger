@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c3n416c5fajm5"]
+[gd_scene load_steps=10 format=3 uid="uid://c3n416c5fajm5"]
 
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
 [ext_resource type="Texture2D" uid="uid://dt4rwugiiq5qf" path="res://addons/GoLogger/Resources/icons/ArrowLeft.svg" id="2_82h6l"]
@@ -6,19 +6,69 @@
 [ext_resource type="Texture2D" uid="uid://behxo6vcb5ubp" path="res://addons/GoLogger/Resources/icons/ArrowRight.svg" id="3_hkawy"]
 [ext_resource type="Texture2D" uid="uid://goc0tdkq3dym" path="res://addons/GoLogger/Resources/icons/Remove.svg" id="5_hkawy"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ilabp"]
-bg_color = Color(0, 0, 0, 0.294118)
-border_color = Color(0.08, 0.08, 0.08, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_owplt"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6666667)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkawy"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.18654281, 2.1168277, 0.11848677, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hqlwo"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.06532666, 0.46994412, 0.033941094, 0.6)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.118174985, 0.29, 0.06089999, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ikmgl"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.18654281, 2.1168277, 0.11848677, 0.6)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.832, 1, 0.79, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [node name="LogCategory" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
 offset_right = 316.0
 offset_bottom = 89.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ilabp")
+theme_override_styles/panel = SubResource("StyleBoxFlat_owplt")
 script = ExtResource("1_8da2w")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -100,13 +150,12 @@ visible = false
 custom_minimum_size = Vector2(107, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Apply and save the category name"
-theme_override_colors/font_pressed_color = Color(0.0666667, 0.388235, 0.0862745, 1)
-theme_override_colors/font_hover_color = Color(0.443417, 0.85, 0.255, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.0663, 0.39, 0.08788, 1)
-theme_override_colors/icon_pressed_color = Color(0.0666667, 0.388235, 0.0862745, 1)
-theme_override_colors/icon_hover_color = Color(0.443137, 0.85098, 0.254902, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.0666667, 0.388235, 0.0862745, 1)
+tooltip_text = "Apply category name"
+theme_override_styles/normal = SubResource("StyleBoxFlat_hkawy")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hqlwo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ikmgl")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_hqlwo")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ikmgl")
 disabled = true
 text = "Apply"
 
@@ -115,7 +164,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(59, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Delete log category"
+tooltip_text = "Existing folders and logs are not deleted along with the category. Please delete them manually if desired."
 focus_mode = 0
 theme_override_colors/font_pressed_color = Color(0.4, 0.027451, 0.0980392, 1)
 theme_override_colors/font_hover_color = Color(0.85098, 0.180392, 0.180392, 1)
