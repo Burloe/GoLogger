@@ -20,6 +20,7 @@ extends Node
 	# [In progress] Refactor .ini settings handling <needed to do to finish instance_id task
 	#	[In progress] Remove 'category_index' parameter from entry() method, in favor of using category_name only
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
+	# Move 'base_directory' to 'settings' section in .ini file
 	#
 	# [TBD] Consider adding {instance_id} tag to header and entry formats.
 	#
@@ -158,7 +159,7 @@ enum ErrorCodes { #NYI - For future use in error/warning messages
 
 func _ready() -> void:
 	config.load(PATH)
-	base_directory = config.get_value("plugin", "base_directory")
+	base_directory = config.get_value("settings", "base_directory")
 	header_string = _get_header()
 	elements_canvaslayer.layer = _get_settings_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
@@ -497,7 +498,7 @@ func complete_copy() -> void:
 	load_category_data()
 
 	if config.get_value("categories", "category_names").is_empty():
-		if config.get_value("plugin", "error_reporting"):
+		if config.get_value("settings", "error_reporting"):
 			push_warning("GoLogger: Unable to complete copy action. No categories are present.")
 
 	var reject_ch: Array[String] = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
@@ -519,7 +520,7 @@ func complete_copy() -> void:
 
 
 	for category in range(config.get_value("categories", "category_names").size()):
-		var dirpath: String = str(config.get_value("plugin", "base_directory"), "/", category, "_logs/saved_logs/")
+		var dirpath: String = str(config.get_value("settings", "base_directory"), "/", category, "_logs/saved_logs/")
 		var _f := FileAccess.open(dirpath, FileAccess.READ)
 		if !_f:
 			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open file to copy the session [", dirpath,"].")
@@ -600,37 +601,36 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 
 
 func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
-	var _a : Array[Array] = [["game", 0, [], "null", 0, 0, false], ["player", 1, [], "null", 0, 0, false]]
-	config.set_value("plugin", "base_directory", default_settings["base_directory"])
+	var cf := ConfigFile.new() # Use new ConfigFile to avoid clobbering existing data
+	cf.set_value("settings", "base_directory", default_settings["base_directory"])
+	cf.set_value("settings", "columns", default_settings["columns"])
+	cf.set_value("settings", "log_header_format", default_settings["log_header_format"])
+	cf.set_value("settings", "entry_format", default_settings["entry_format"])
+	cf.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
+	cf.set_value("settings", "autostart_session", default_settings["autostart_session"])
+	cf.set_value("settings", "use_utc", default_settings["use_utc"])
+	cf.set_value("settings", "limit_method", default_settings["limit_method"])
+	cf.set_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	cf.set_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	cf.set_value("settings", "file_cap", default_settings["file_cap"])
+	cf.set_value("settings", "entry_cap", default_settings["entry_cap"])
+	cf.set_value("settings", "session_duration", default_settings["session_duration"])
+	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
 
-	config.set_value("settings", "columns", default_settings["columns"])
-	config.set_value("settings", "log_header_format", default_settings["log_header_format"])
-	config.set_value("settings", "entry_format", default_settings["entry_format"])
-	config.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
-	config.set_value("settings", "autostart_session", default_settings["autostart_session"])
-	config.set_value("settings", "use_utc", default_settings["use_utc"])
-	config.set_value("settings", "limit_method", default_settings["limit_method"])
-	config.set_value("settings", "entry_count_action", default_settings["entry_count_action"])
-	config.set_value("settings", "session_timer_action", default_settings["session_timer_action"])
-	config.set_value("settings", "file_cap", default_settings["file_cap"])
-	config.set_value("settings", "entry_cap", default_settings["entry_cap"])
-	config.set_value("settings", "session_duration", default_settings["session_duration"])
-	config.set_value("settings", "error_reporting", default_settings["error_reporting"])
-
-	config.set_value("categories", "category_names", default_settings["category_names"])
-	config.set_value("categories", "instance_ids", [instance_id])
+	cf.set_value("categories", "category_names", default_settings["category_names"])
+	cf.set_value("categories", "instance_ids", [])
 
 	for i in default_settings["category_names"].size():
 		var c_name: String = default_settings["category_names"][i]
 		var base_section := "categories." + str(c_name)
-		config.set_value(base_section, "category_name", c_name)
-		config.set_value(base_section, "category_index", i)
-		config.set_value(base_section, "file_count", 0)
-		config.set_value(base_section, "is_locked", false)
+		cf.set_value(base_section, "category_name", c_name)
+		cf.set_value(base_section, "category_index", i)
+		cf.set_value(base_section, "file_count", 0)
+		cf.set_value(base_section, "is_locked", false)
 
-	var _s = config.save(PATH)
+	var _s = cf.save(PATH)
 	if _s != OK:
-		var _e = config.get_open_error()
+		var _e = cf.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 
 
@@ -936,7 +936,7 @@ func _get_file_name(category_name : String) -> String:
 	return fin
 
 
-func _get_instance_id() -> String:
+func _get_instance_id() -> String: #TODO: Needs refactor. This is completely outdated
 	# Create RNG and initial ID (keeps the old leading underscore format)
 	var rng := RandomNumberGenerator.new()
 	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789"
@@ -950,7 +950,7 @@ func _get_instance_id() -> String:
 	# Collect used IDs by scanning category log folders and their saved_logs subfolders
 	var used_ids: Array = []
 	config.load(PATH)
-	var categories_list: Array = config.get_value("plugin", "categories", [])
+	var categories_list: Array = config.get_value("categories", "category_names", [])
 	for cat in categories_list:
 		if typeof(cat) != TYPE_ARRAY or cat.size() == 0:
 			continue
