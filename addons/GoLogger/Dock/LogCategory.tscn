@@ -16,7 +16,7 @@ corner_radius_bottom_left = 8
 
 [node name="LogCategory" type="PanelContainer"]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 252.0
+offset_right = 316.0
 offset_bottom = 89.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilabp")
 script = ExtResource("1_8da2w")

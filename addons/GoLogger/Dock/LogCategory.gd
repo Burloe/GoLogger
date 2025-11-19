@@ -143,9 +143,9 @@ func get_acceptable_name(name: String) -> String:
 func move_log_category(direction: int = 0) -> void:
 	if direction == 0:
 		return
-	
+
 	move_category_requested.emit(self, direction)
-	
+
 	# if direction < 0:
 	# 	if index <= 0:
 	# 		return

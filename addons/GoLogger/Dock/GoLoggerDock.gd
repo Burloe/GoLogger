@@ -348,206 +348,13 @@ func _ready() -> void:
 
 
 
-func load_data() -> void:
-	var _c = ConfigFile.new()
-	_c.load(PATH)
-
-	# Categories
-	for name in _c.get_value("categories", "category_names", []):
-		add_category(
-			name,
-			_c.get_value("category." + name, "category_index", 0),
-			_c.get_value("category." + name, "is_locked", false)
-		)
-
-	# Settings
-	for key in default_settings.keys():
-		if settings_control[key] == null:
-			continue
-		elif settings_control[key] is LineEdit:
-			settings_control[key].text = _c.get_value("settings", key, default_settings[key])
-		elif settings_control[key] is SpinBox:
-			settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
-		elif settings_control[key] is CheckButton:
-			settings_control[key].button_pressed = _c.get_value("settings", key, default_settings[key])
-		elif settings_control[key] is OptionButton:
-			settings_control[key].selected = _c.get_value("settings", key, default_settings[key])
-		elif settings_control[key] is HSlider:
-			settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
-
-	config.load(PATH) # Reload config to ensure it's up to date
-
-
-
-## Saves all the dock data ( categories and settings state ) to file according to the state/data of the dock(not the file).
-func save_data(deferred: bool = false) -> void:
-	if deferred:
-		await get_tree().physics_frame
-
-	var _c := ConfigFile.new() # Using a new ConfigFile to avoid clobbering existing data
-
-	# Categories
-	var _cat_names: Array[String] = []
-	for log_category in category_container.get_children():
-		if log_category is LogCategory:
-			_cat_names.append(log_category.category_name)
-			var section_name := str("category." + log_category.category_name)
-			_c.set_value(section_name, "category_name", log_category.category_name)
-			_c.set_value(section_name, "category_index", log_category.index)
-			_c.set_value(section_name, "file_count", log_category.file_count)
-			_c.set_value(section_name, "is_locked", log_category.is_locked)
-			_c.set_value(section_name, "instances", [])
-	_c.set_value("categories", "category_names", _cat_names)
-
-	# Settings
-	for key in default_settings.keys():
-		if settings_control[key] == null:
-			continue
-		elif settings_control[key] is LineEdit:
-			_c.set_value("settings", key, settings_control[key].text)
-		elif settings_control[key] is SpinBox:
-			_c.set_value("settings", key, int(settings_control[key].value))
-		elif settings_control[key] is CheckButton:
-			_c.set_value("settings", key, settings_control[key].button_pressed)
-		elif settings_control[key] is OptionButton:
-			_c.set_value("settings", key, settings_control[key].selected)
-		elif settings_control[key] is HSlider:
-			_c.set_value("settings", key, int(settings_control[key].value))
-
-	var err := _c.save(PATH)
-	if err != OK:
-		var open_err = _c.get_open_error()
-		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(open_err, "ConfigFile")))
-		return
-	config.load(PATH) # Reload config to ensure it's up to date
 
 
 
 
 
-func _on_log_category_changed(cat_obj: LogCategory, category_name: String, new_name: String, index: int, is_locked: bool, to_delete: bool) -> void:
-	var cf := ConfigFile.new() # use new ConfigFile to avoid clobbering existing data
-	cf.load(PATH)
-
-	for log_category in category_container.get_children():
-		if log_category is LogCategory:
-			if log_category == cat_obj:
-				continue
-			elif log_category.category_name == new_name:
-				# Conflict found
-				cat_obj.invalid_name = true
-				return
-	save_data()
 
 
-
-func change_category_order(category: LogCategory, direction: int) -> void:
-	var new_index = category.index + direction
-	if new_index < 0 or new_index >= category_container.get_child_count():
-		return
-
-	category_container.move_child(category, category.index + direction)
-	update_category_indices() # save_data() called within
-
-
-func update_category_indices() -> void:
-	var idx: int = 0
-	for log_category in category_container.get_children():
-		if log_category is LogCategory:
-			log_category.index = idx
-			idx += 1
-	save_data()
-	update_move_buttons()
-
-
-func update_move_buttons() -> void:
-	for i in range(category_container.get_child_count()):
-		var category = category_container.get_child(i)
-		category.move_left_btn.disabled = (category.index == 0)
-		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
-
-
-## Use save_after when Log Categories are added manually via the dock.
-## Not when loading categories from config.
-func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
-	var _n = category_scene.instantiate()
-	_n.dock = self
-	_n.category_name = _name
-	_n.is_locked = _is_locked
-	_n.index = category_container.get_children().size() - 1
-	category_container.add_child(_n)
-
-	_n.log_category_changed.connect(_on_log_category_changed)
-	_n.name_warning.connect(_on_name_warning)
-	_n.move_category_requested.connect(change_category_order)
-	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
-	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
-	# _n.line_edit.grab_focus() # This causes the last added category to always grab focus on load, which is undesirable.
-	update_move_buttons()
-	if save_after:
-		save_data()
-
-
-func check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
-	for log_category in category_container.get_children():
-		if log_category == cat_obj: # Disregard category being checked
-			continue
-		elif log_category.category_name == new_name:
-			if name == "": return false
-			return true
-	return false
-
-
-static func get_error(error: int, object_type: String = "") -> String:
-	match error:
-		1:  return str("Error[1] ",  object_type, " Failed")
-		2:  return str("Error[2] ",  object_type, " Unavailable")
-		3:  return str("Error[3] ",  object_type, " Unconfigured")
-		4:  return str("Error[4] ",  object_type, " Unauthorized")
-		5:  return str("Error[5] ",  object_type, " Parameter range")
-		6:  return str("Error[6] ",  object_type, " Out of memory")
-		7:  return str("Error[7] ",  object_type, " File: Not found")
-		8:  return str("Error[8] ",  object_type, " File: Bad drive")
-		9:  return str("Error[9] ",  object_type, " File: Bad File path")
-		10: return str("Error[10] ", object_type, " No File permission")
-		11: return str("Error[11] ", object_type, " File already in use")
-		12: return str("Error[12] ", object_type, " Can't open File")
-		13: return str("Error[13] ", object_type, " Can't write to File")
-		14: return str("Error[14] ", object_type, " Can't read to File")
-		15: return str("Error[15] ", object_type, " File unrecognized")
-		16: return str("Error[16] ", object_type, " File corrupt")
-		17: return str("Error[17] ", object_type, " File missing dependencies")
-		18: return str("Error[18] ", object_type, " End of File")
-		19: return str("Error[19] ", object_type, " Can't open")
-		20: return str("Error[20] ", object_type, " Can't create")
-		21: return str("Error[21] ", object_type, " Query failed")
-		22: return str("Error[22] ", object_type, " Already in use")
-		23: return str("Error[23] ", object_type, " Locked")
-		24: return str("Error[24] ", object_type, " Timeout")
-		25: return str("Error[25] ", object_type, " Can't connect")
-		26: return str("Error[26] ", object_type, " Can't resolve")
-		27: return str("Error[27] ", object_type, " Connection error")
-		28: return str("Error[28] ", object_type, " Can't acquire resource")
-		29: return str("Error[29] ", object_type, " Can't fork process")
-		30: return str("Error[30] ", object_type, " Invalid data")
-		31: return str("Error[31] ", object_type, " Invalid parameter")
-		32: return str("Error[32] ", object_type, " Already exists")
-		33: return str("Error[33] ", object_type, " Doesn't exist")
-		34: return str("Error[34] ", object_type, " Database: Can't read")
-		35: return str("Error[35] ", object_type, " Database: Can't write")
-		36: return str("Error[36] ", object_type, " Compilation failed")
-		37: return str("Error[37] ", object_type, " Method not found")
-		38: return str("Error[38] ", object_type, " Link failed")
-		39: return str("Error[39] ", object_type, " Script failed")
-		40: return str("Error[40] ", object_type, " Cyclic link")
-		41: return str("Error[41] ", object_type, " Invalid declaration")
-		42: return str("Error[42] ", object_type, " Duplicate symbol")
-		43: return str("Error[43] ", object_type, " Parse error")
-		44: return str("Error[44] ", object_type, " Busy error")
-		46: return str("Error[45] ", object_type, " Skip error")
-		47: return str("Error[46] ", object_type, " Help error")
-		48: return str("Error[47] ", object_type, " Bug error")
-	return "N/A"
 
 
 func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
@@ -735,6 +542,216 @@ func reset_to_default(tab : int) -> void:
 
 	else: # Settings tab
 		create_settings_file()
+
+
+func load_data() -> void:
+	var _c = ConfigFile.new()
+	_c.load(PATH)
+
+	# Categories
+	for name in _c.get_value("categories", "category_names", []):
+		add_category(
+			name,
+			_c.get_value("category." + name, "category_index", 0),
+			_c.get_value("category." + name, "is_locked", false)
+		)
+
+	# Settings
+	for key in default_settings.keys():
+		if settings_control[key] == null:
+			continue
+		elif settings_control[key] is LineEdit:
+			settings_control[key].text = _c.get_value("settings", key, default_settings[key])
+		elif settings_control[key] is SpinBox:
+			settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
+		elif settings_control[key] is CheckButton:
+			settings_control[key].button_pressed = _c.get_value("settings", key, default_settings[key])
+		elif settings_control[key] is OptionButton:
+			settings_control[key].selected = _c.get_value("settings", key, default_settings[key])
+		elif settings_control[key] is HSlider:
+			settings_control[key].value = int(_c.get_value("settings", key, default_settings[key]))
+
+	config.load(PATH) # Reload config to ensure it's up to date
+
+
+## Saves all the dock data ( categories and settings state ) to file according to the state/data of the dock(not the file).
+func save_data(deferred: bool = false) -> void:
+	if deferred:
+		await get_tree().physics_frame
+
+	var _c := ConfigFile.new() # Using a new ConfigFile to avoid clobbering existing data
+
+	# Categories
+	var _cat_names: Array[String] = []
+	for log_category in category_container.get_children():
+		if log_category is LogCategory:
+			if log_category.category_name == "":
+				continue
+			_cat_names.append(log_category.category_name)
+			var section_name := str("category." + log_category.category_name)
+			_c.set_value(section_name, "category_name", log_category.category_name)
+			_c.set_value(section_name, "category_index", log_category.index)
+			_c.set_value(section_name, "file_count", log_category.file_count)
+			_c.set_value(section_name, "is_locked", log_category.is_locked)
+			_c.set_value(section_name, "instances", [])
+	_c.set_value("categories", "category_names", _cat_names)
+
+	# Settings
+	for key in default_settings.keys():
+		if settings_control[key] == null:
+			continue
+		elif settings_control[key] is LineEdit:
+			_c.set_value("settings", key, settings_control[key].text)
+		elif settings_control[key] is SpinBox:
+			_c.set_value("settings", key, int(settings_control[key].value))
+		elif settings_control[key] is CheckButton:
+			_c.set_value("settings", key, settings_control[key].button_pressed)
+		elif settings_control[key] is OptionButton:
+			_c.set_value("settings", key, settings_control[key].selected)
+		elif settings_control[key] is HSlider:
+			_c.set_value("settings", key, int(settings_control[key].value))
+
+	var err := _c.save(PATH)
+	if err != OK:
+		var open_err = _c.get_open_error()
+		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(open_err, "ConfigFile")))
+		return
+	config.load(PATH) # Reload config to ensure it's up to date
+
+
+
+func _on_log_category_changed(cat_obj: LogCategory, category_name: String, new_name: String, index: int, is_locked: bool, to_delete: bool) -> void:
+	# All of this commented code is replaced by save_data() which handles all changes in one go by saving each category's current state instead of the ConfigFile's state.
+	
+	# var cf := ConfigFile.new() # use new ConfigFile to avoid clobbering existing data
+	# cf.load(PATH)
+
+	# for log_category in category_container.get_children():
+	# 	if log_category is LogCategory:
+	# 		if log_category == cat_obj:
+	# 			if category_name != new_name and new_name != "":
+	# 				cf.erase_section("category." + category_name)
+	# 				cf.set_value("category." + new_name, "category_name", new_name)
+	# 				cf.set_value("category." + new_name, "category_index", index)
+	# 				cf.set_value("category." + new_name, "file_count", cat_obj.file_count)
+	# 				cf.set_value("category." + new_name, "is_locked", is_locked)
+	# 				cf.set_value("category." + new_name, "instances", [])
+	# 			else:
+	# 				# Update existing
+	# 				cf.set_value("category." + category_name, "category_index", index)
+	# 				cf.set_value("category." + category_name, "is_locked", is_locked)
+	save_data()
+
+
+
+func change_category_order(category: LogCategory, direction: int) -> void:
+	var new_index = category.index + direction
+	if new_index < 0 or new_index >= category_container.get_child_count():
+		return
+
+	category_container.move_child(category, category.index + direction)
+	assign_category_indices() # save_data() called within
+
+
+func assign_category_indices() -> void:
+	var idx: int = 0
+	for log_category in category_container.get_children():
+		if log_category is LogCategory:
+			log_category.index = idx
+			idx += 1
+	save_data()
+	handle_category_mov_button_state()
+
+
+func handle_category_mov_button_state() -> void:
+	for i in range(category_container.get_child_count()):
+		var category = category_container.get_child(i)
+		category.move_left_btn.disabled = (category.index == 0)
+		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
+
+
+## Use save_after when Log Categories are added manually via the dock.
+## Not when loading categories from config.
+func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
+	var _n = category_scene.instantiate()
+	_n.dock = self
+	_n.category_name = _name
+	_n.is_locked = _is_locked
+	_n.index = category_container.get_children().size() - 1
+	category_container.add_child(_n)
+
+	_n.log_category_changed.connect(_on_log_category_changed)
+	_n.name_warning.connect(_on_name_warning)
+	_n.move_category_requested.connect(change_category_order)
+	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
+	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
+	if _name == "":	_n.line_edit.grab_focus() # Focus new category line edit for immediate renaming
+	# _n.line_edit.grab_focus() # This causes the last added category to always grab focus on load, which is undesirable.
+	handle_category_mov_button_state()
+	if save_after:
+		save_data()
+
+
+func check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
+	for log_category in category_container.get_children():
+		if log_category == cat_obj: # Disregard category being checked
+			continue
+		elif log_category.category_name == new_name:
+			if name == "": return false
+			return true
+	return false
+
+
+static func get_error(error: int, object_type: String = "") -> String:
+	match error:
+		1:  return str("Error[1] ",  object_type, " Failed")
+		2:  return str("Error[2] ",  object_type, " Unavailable")
+		3:  return str("Error[3] ",  object_type, " Unconfigured")
+		4:  return str("Error[4] ",  object_type, " Unauthorized")
+		5:  return str("Error[5] ",  object_type, " Parameter range")
+		6:  return str("Error[6] ",  object_type, " Out of memory")
+		7:  return str("Error[7] ",  object_type, " File: Not found")
+		8:  return str("Error[8] ",  object_type, " File: Bad drive")
+		9:  return str("Error[9] ",  object_type, " File: Bad File path")
+		10: return str("Error[10] ", object_type, " No File permission")
+		11: return str("Error[11] ", object_type, " File already in use")
+		12: return str("Error[12] ", object_type, " Can't open File")
+		13: return str("Error[13] ", object_type, " Can't write to File")
+		14: return str("Error[14] ", object_type, " Can't read to File")
+		15: return str("Error[15] ", object_type, " File unrecognized")
+		16: return str("Error[16] ", object_type, " File corrupt")
+		17: return str("Error[17] ", object_type, " File missing dependencies")
+		18: return str("Error[18] ", object_type, " End of File")
+		19: return str("Error[19] ", object_type, " Can't open")
+		20: return str("Error[20] ", object_type, " Can't create")
+		21: return str("Error[21] ", object_type, " Query failed")
+		22: return str("Error[22] ", object_type, " Already in use")
+		23: return str("Error[23] ", object_type, " Locked")
+		24: return str("Error[24] ", object_type, " Timeout")
+		25: return str("Error[25] ", object_type, " Can't connect")
+		26: return str("Error[26] ", object_type, " Can't resolve")
+		27: return str("Error[27] ", object_type, " Connection error")
+		28: return str("Error[28] ", object_type, " Can't acquire resource")
+		29: return str("Error[29] ", object_type, " Can't fork process")
+		30: return str("Error[30] ", object_type, " Invalid data")
+		31: return str("Error[31] ", object_type, " Invalid parameter")
+		32: return str("Error[32] ", object_type, " Already exists")
+		33: return str("Error[33] ", object_type, " Doesn't exist")
+		34: return str("Error[34] ", object_type, " Database: Can't read")
+		35: return str("Error[35] ", object_type, " Database: Can't write")
+		36: return str("Error[36] ", object_type, " Compilation failed")
+		37: return str("Error[37] ", object_type, " Method not found")
+		38: return str("Error[38] ", object_type, " Link failed")
+		39: return str("Error[39] ", object_type, " Script failed")
+		40: return str("Error[40] ", object_type, " Cyclic link")
+		41: return str("Error[41] ", object_type, " Invalid declaration")
+		42: return str("Error[42] ", object_type, " Duplicate symbol")
+		43: return str("Error[43] ", object_type, " Parse error")
+		44: return str("Error[44] ", object_type, " Busy error")
+		46: return str("Error[45] ", object_type, " Skip error")
+		47: return str("Error[46] ", object_type, " Help error")
+		48: return str("Error[47] ", object_type, " Bug error")
+	return "N/A"
 
 
 func open_directory() -> void:
@@ -980,6 +997,7 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 
 
 func _on_category_line_focus(data: Array, focused: bool) -> void:
+	# Stores the data of the currently focused category line edit to compare against
 	if focused and data.size() > 0:
 		focused_category.append(data)
 	else:
@@ -1001,12 +1019,3 @@ func _on_name_warning(toggled_on: bool, type : int) -> void:
 			1: category_warning_lbl.text = "Names are not changed if they're not applied."
 	else:
 		category_warning_lbl.visible = false
-
-
-# func _on_category_deleted() -> void: # DEPRECATED # Refactored into _on_log_category_changed
-# 	await get_tree().create_timer(0.1).timeout
-# 	print("Category deleted -> reordering category indices:\n")
-# 	for i in range(category_container.get_child_count()):
-# 		var category: LogCategory = category_container.get_child(i)
-# 		category.index = i
-# 	update_move_buttons()
