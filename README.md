@@ -14,12 +14,7 @@
 
 <p>Defining log entries is as easy as writing a `print()` statement, only requiring a simple string, which can include any data (that can be converted into a string) and an integer to determine which category/file to log the entry in. Formatting strings to include data can be done in multiple ways and is no different than normal. Here are 3 examples that result in the same log entry:</p>
 
-<pre><code>Log.entry("Player's current health: " + str(current_health) + " / " + str(max_health), 1)
-
-Log.entry(str("Player's current health: ", current_health, " / ", max_health), 1)
-
-Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 1)
-
+<pre><code>Log.entry("Player's current health: " + str(current_health) + " / " + str(max_health), "player")
 # Resulting entry: [19:17:27] Player's current health: 74 / 100
 </code></pre>
 
@@ -32,43 +27,27 @@ Log.entry(str("Player's current health: %s / %s" % current_health, max_health), 
 
 
 <h2>Documentation / Wiki</h2>
-<p>See the <a href="https://github.com/Burloe/GoLogger/wiki/">Wiki</a> for more information on 
-  <a href="https://github.com/Burloe/GoLogger/wiki/Installation-&-Setup">Installation &amp; Setup</a>, 
-  <a href="https://github.com/Burloe/GoLogger/wiki/Getting-Started">How to use GoLogger</a> and 
-  <a href="https://github.com/Burloe/GoLogger/wiki#how-gologger-works">How it works</a>.
-</p>
+<p>See the <a href="https://github.com/Burloe/GoLogger/wiki/">Wiki</a> for more information: </p>
+<p></p><a href="https://github.com/Burloe/GoLogger/wiki/Installation-&-Setup">Installation &amp; Setup</a></p>
+<p><a href="https://github.com/Burloe/GoLogger/wiki/Getting-Started">How to use GoLogger</a> </p>
+<p><a href="https://github.com/Burloe/GoLogger/wiki#how-gologger-works">How it works</a></p>
+
 <p>If you haven't touched the settings in a while or just need a refresher. The dock panel contains a TL;DR version of the wiki in the Help section with vital information so you never have to leave the editor to lookup a website.</p>
 
-<h2>Latest Patch Notes - 1.3 / 1.3.1:</h2>
+<h2>Latest Patch Notes - 1.4:</h2>
 <p>See the <a href="https://github.com/Burloe/GoLogger/releases/tag/1.3.1">release page</a> for more info</p>
 <ul>
-1.3.2:
+1.4:
   <li>Proper support for concurrent instances(running multiple instances).
   <li>BEAKING: New changes to <code>Log.entry(log_entry: String, category_name: String, print_entry: bool = false)</code></li>
     <ul>
     <li>Breaking change! Instead of using an int index to determine which category to use. We not use a string to specify the name. You will have to update your existing <code>Log.entry()</code>.</li>
     <li>New <code>print_entry</code> now allows you to print individual entries to output whenever they're logged.</li>
     </ul>
-  <li>New settings that allow you to customize log headers and entries.</li>
+  <li>Hotkeys are now accessible through the Settings tab</li>
+  <li>Fully customizable log headers and entry formats.</li>
   <li>Removed superfluous signals <code>session_timer_started</code> and <code>session_timer_stopped</code>, settings and more.</li>
   <li>Help section is more concise and neutral.</li>
+  <li>Dock has been redesigned and simplified.
   <li>Dock margins improved and custom minimum size for each tab removed. No more dock size inconsistencies when changing tabs.</li>
 </ul> 
-<ul>
-1.3.1:
-<ul>
-  <li>Settings tab remade. </li>
-  <li>Fixed settings tab theme and alignment issues on smaller resolutions.</li>
-  <li>Added new `Help` tab containing the essential documentation on how to use GoLogger.</li>
-</ul>
-1.3:
-<ul>
-  <li>Cleaner visuals and theme.</li>
-  <li>'Unsaved changes' problem fixed.</li>
-  <li>You can now call <code>Log.save_copy("my_copy")</code> in your code. Bypassing the popup and giving you control to setup save copy automatically.</li>
-  <li>The category index can be manually changed in the 'Categories' tab! The index is also numerically ordered automatically.</li>
-  <li>Column slider allows you to set the number of columns visible in the GridContainer holding the categories.</li>
-  <li>Proper tooltips have been added that show on mouse over which de-clutters the dock massively.</li>
-  <li>Removed excessive settings.</li>
-  <li>More!</li>
-</ul>
