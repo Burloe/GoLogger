@@ -85,7 +85,7 @@ theme_override_constants/separation = 8
 [node name="MoveLeftButton" type="Button" parent="MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Move index down"
+tooltip_text = "Move category"
 icon = ExtResource("2_82h6l")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
@@ -181,5 +181,5 @@ expand_icon = true
 [node name="MoveRightButton" type="Button" parent="MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Move index up"
+tooltip_text = "Move category"
 icon = ExtResource("3_hkawy")

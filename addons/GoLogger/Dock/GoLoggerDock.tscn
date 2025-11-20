@@ -377,8 +377,7 @@ theme_override_styles/normal = ExtResource("9_qo8nw")
 text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 alignment = 1
-max_length = 80
-expand_to_text_length = true
+emoji_menu_enabled = false
 
 [node name="LogHeaderApplyButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/LogHeaderHBox"]
 unique_name_in_owner = true
@@ -450,6 +449,7 @@ text = "[{hh}:{mi}:{ss}]: {entry}"
 placeholder_text = "[{hh}:{mi}:{ss}]: {entry}"
 alignment = 1
 expand_to_text_length = true
+emoji_menu_enabled = false
 
 [node name="EntryFormatWarning" type="Panel" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/LineEditVBox/EntryFormatHBox/EntryFormatLineEdit"]
 unique_name_in_owner = true
