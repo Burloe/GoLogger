@@ -362,7 +362,7 @@ func start_session() -> void:
 	session_started.emit()
 
 
-func entry(log_entry : String, category_name: String, print_entry_to_output: bool = false) -> void:
+func entry(log_entry : String, category_name: String, print_entry: bool = false) -> void:
 	# Load base category data from file
 	load_category_data()
 	var _d: Dictionary = cat_data.get(category_name, {})
@@ -472,7 +472,7 @@ func entry(log_entry : String, category_name: String, print_entry_to_output: boo
 	var new_entry: String = _get_entry_format(log_entry, category_name)
 	_fw.store_line(new_entry)
 	_fw.close()
-	if print_entry_to_output:
+	if print_entry:
 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", category_name, "> ", new_entry.dedent())
 
 
@@ -513,11 +513,8 @@ func complete_copy() -> void:
 	for strg in reject_str:
 		if copy_name.ends_with(strg):
 			copy_name.erase(copy_name.length() - strg.length(), strg.length())
-	# if copy_name.ends_with(".log") or copy_name.ends_with(".txt"): # Old
-	# 	copy_name = copy_name.substr(0, copy_name.length() - 4) # Old
 
 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_settings_value("settings", "use_utc")), "] ")
-
 
 	for category in range(config.get_value("categories", "category_names").size()):
 		var dirpath: String = str(config.get_value("settings", "base_directory"), "/", category, "_logs/saved_logs/")

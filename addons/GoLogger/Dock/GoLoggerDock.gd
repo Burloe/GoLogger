@@ -316,12 +316,26 @@ func _ready() -> void:
 			btns_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
 			btns_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
 
+
+		if base_dir_apply_btn.button_up.is_connected(_on_button_button_up):
+			base_dir_apply_btn.button_up.disconnect(_on_button_button_up)
 		base_dir_apply_btn.button_up.connect(_on_button_button_up.bind(base_dir_apply_btn))
+		if base_dir_reset_btn.button_up.is_connected(_on_button_button_up):
+			base_dir_reset_btn.button_up.disconnect(_on_button_button_up)
 		base_dir_reset_btn.button_up.connect(_on_button_button_up.bind(base_dir_reset_btn))
+		if log_header_apply_btn.button_up.is_connected(_on_button_button_up):
+			log_header_apply_btn.button_up.disconnect(_on_button_button_up)
 		log_header_apply_btn.button_up.connect(_on_button_button_up.bind(log_header_apply_btn))
+		if log_header_reset_btn.button_up.is_connected(_on_button_button_up):
+			log_header_reset_btn.button_up.disconnect(_on_button_button_up)
 		log_header_reset_btn.button_up.connect(_on_button_button_up.bind(log_header_reset_btn))
+		if entry_format_apply_btn.button_up.is_connected(_on_button_button_up):
+			entry_format_apply_btn.button_up.disconnect(_on_button_button_up)
 		entry_format_apply_btn.button_up.connect(_on_button_button_up.bind(entry_format_apply_btn))
+		if entry_format_reset_btn.button_up.is_connected(_on_button_button_up):
+			entry_format_reset_btn.button_up.disconnect(_on_button_button_up)
 		entry_format_reset_btn.button_up.connect(_on_button_button_up.bind(entry_format_reset_btn))
+
 		start_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(0))
 		copy_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(1))
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
@@ -561,8 +575,8 @@ func load_data() -> void:
 			_c.get_value("category." + name, "is_locked", false)
 		)
 
-	for setting in _c.get_section_keys("settings"):
-		print("Loaded setting: ", setting, " as ", _c.get_value("settings", setting))
+	# for setting in _c.get_section_keys("settings"):
+	# 	print("Loaded setting: ", setting, " as ", _c.get_value("settings", setting))
 
 
 	# Settings

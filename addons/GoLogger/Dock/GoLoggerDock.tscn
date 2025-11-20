@@ -68,7 +68,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 0
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -77,6 +77,7 @@ metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -228,14 +229,14 @@ theme_override_constants/v_separation = 5
 columns = 10
 
 [node name="Settings" type="ScrollContainer" parent="."]
-visible = false
 layout_mode = 2
 follow_focus = true
+scroll_vertical = 167
 scroll_horizontal_custom_step = 10.0
 metadata/_tab_index = 1
 
 [node name="MainPanel" type="Panel" parent="Settings"]
-custom_minimum_size = Vector2(0, 439)
+custom_minimum_size = Vector2(0, 464)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -347,7 +348,7 @@ Results:
     GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
-    {project_name}	{version}  {instance}
+    {project_name}  {version}  {instance}
     {yy}   {mm}   {dd}
     {hh}   {mi}   {ss}"
 theme_override_constants/separation = 8
@@ -370,7 +371,7 @@ Results:
     GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
-    {project_name}	{version}  {instance}
+    {project_name}  {version}  {instance}
     {yy}   {mm}   {dd}
     {hh}   {mi}   {ss}"
 theme_override_styles/normal = ExtResource("9_qo8nw")
@@ -418,7 +419,7 @@ Results:
     [09:32:16] - entry
 
 Supported tags:
-    {project_name}	{version}  {instance}
+    {project_name}  {version}  {instance}
     {yy}   {mm}   {dd}
     {hh}   {mi}   {ss}"
 theme_override_constants/separation = 8
@@ -441,7 +442,7 @@ Results:
     [09:32:16] - entry
 
 Supported tags:
-    {project_name}	{version}  {instance}
+    {project_name}  {version}  {instance}
     {yy}   {mm}   {dd}
     {hh}   {mi}   {ss}"
 theme_override_styles/normal = ExtResource("9_qo8nw")
@@ -519,7 +520,7 @@ theme_override_constants/margin_bottom = 6
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA"]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 6
 
 [node name="PluginVersionSettLabel" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Top/SettingsA/VBoxContainer"]
 unique_name_in_owner = true
@@ -636,7 +637,7 @@ theme_override_constants/margin_bottom = 6
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB"]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 6
 
 [node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
 unique_name_in_owner = true
@@ -695,11 +696,6 @@ popup/item_3/id = 3
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
-layout_mode = 2
-text = "Open Hotkey Resources in Inspector"
-horizontal_alignment = 1
-
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
@@ -708,22 +704,25 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Opens the InputEventShortcut resource in the Inspector"
 text = "Start Session"
 
 [node name="CopySessionBtn" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Opens the InputEventShortcut resource in the Inspector"
 text = "Copy Session"
 
 [node name="StopSessionBtn" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Opens the InputEventShortcut resource in the Inspector"
 text = "Stop Session"
 
 [node name="Spacer" type="Control" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
-custom_minimum_size = Vector2(0, 15)
+custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
 
 [node name="ResetSettingsButton" type="Button" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsB/VBoxContainer"]
@@ -746,7 +745,7 @@ theme_override_constants/margin_bottom = 6
 
 [node name="Column" type="VBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC"]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 6
 
 [node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MainPanel/MarginContainer/VBoxContainer/Bottom/SettingsC/Column"]
 unique_name_in_owner = true
