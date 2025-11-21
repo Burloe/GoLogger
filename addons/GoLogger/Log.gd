@@ -118,7 +118,9 @@ var popup_state : bool = false:
 			toggle_copy_popup(value)
 
 # Note that this dictionary is also present in GoLoggerDock.gd. If you update it here, update it there too.
+# Mirror Dictionary in Log.gd -> Keep both in sync.
 var default_settings := {
+		"category_names": ["game"],
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": "[{hh}:{mi}:{ss}]: {entry}",
@@ -155,9 +157,12 @@ enum ErrorCodes { #NYI - For future use in error/warning messages
 }
 
 
+func get_settings_path() -> String:
+	return str(config.get_value("settings", "base_directory", "user://GoLogger/") + "settings.ini")
+
 
 func _ready() -> void:
-	config.load(PATH)
+	config.load(get_settings_path())
 	base_directory = config.get_value("settings", "base_directory")
 	elements_canvaslayer.layer = _get_settings_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
@@ -211,10 +216,10 @@ func _input(event: InputEvent) -> void:
 
 
 ## Loads category data from the config file into the cat_data dictionary.[br]
-## Use instead of 'config.load(PATH)' whenever category data is needed.
+## Use instead of 'config.load(get_settings_path())' whenever category data is needed.
 ## Note that this function reloads the settings as well.
 func load_category_data() -> void:
-	config.load(PATH)
+	config.load(get_settings_path())
 	cat_data.clear()
 
 	var names: Array = config.get_value("categories", "category_names", [])
@@ -246,14 +251,14 @@ func load_category_data() -> void:
 
 
 ## Saves category data from the cat_data dictionary into the config file.[br]
-## Use instead of 'config.save(PATH)' whenever category data is modified.
+## Use instead of 'config.save(get_settings_path())' whenever category data is modified.
 func save_category_data() -> void:
 	# Ensure there is categories meta to save
 	if !cat_data.has("categories"):
 		return
 
 	# Load existing config so we don't clobber unrelated sections
-	var err = config.load(PATH)
+	var err = config.load(get_settings_path())
 	if err != OK:
 		if _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to load existing config file while saving category data.")
@@ -614,60 +619,60 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	cf.set_value("settings", "session_duration", default_settings["session_duration"])
 	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
 
-	cf.set_value("categories", "category_names", default_settings["category_names"])
+	cf.set_value("categories", "category_names", ["game"])
 	cf.set_value("categories", "instance_ids", [])
 
-	for i in default_settings["category_names"].size():
-		var c_name: String = default_settings["category_names"][i]
-		var base_section := "categories." + str(c_name)
-		cf.set_value(base_section, "category_name", c_name)
-		cf.set_value(base_section, "category_index", i)
-		cf.set_value(base_section, "file_count", 0)
-		cf.set_value(base_section, "is_locked", false)
+	cf.set_value("category.game", "category_name", "game")
+	cf.set_value("category.game", "category_index", 0)
+	cf.set_value("category.game", "file_count", 0)
+	cf.set_value("category.game", "is_locked", false)
 
-	var _s = cf.save(PATH)
+	var _s = cf.save(get_settings_path())
 	if _s != OK:
 		var _e = cf.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
+		return
+
+	config.load(get_settings_path()) # Reload config to ensure it's up to date
 
 
-func validate_settings() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
+func validate_settings() -> void: # Note mirror function also present in Log.gd. Ensure both are kept in sync.
 	var present_settings_faults : int = 0
 	var value_type_faults : int = 0
 	var expected_settings ={
-		"base_directory": "plugin/base_directory",
-		"categories": "plugin/categories",
-		"columns": "settings/columns",
-		"log_header_format": "settings/log_header_format",
-		"entry_format": "settings/entry_format",
-		"canvaslayer_layer": "settings/canvaslayer_layer",
-		"autostart_session": "settings/autostart_session",
-		"use_utc": "settings/use_utc",
-		"limit_method": "settings/limit_method",
-		"entry_count_action": "settings/entry_count_action",
+		"category_names": 			"categories/category_names",
+		"base_directory": 			"settings/base_directory",
+		"columns": 							"settings/columns",
+		"log_header_format": 		"settings/log_header_format",
+		"entry_format": 				"settings/entry_format",
+		"canvaslayer_layer": 		"settings/canvaslayer_layer",
+		"autostart_session": 		"settings/autostart_session",
+		"use_utc": 							"settings/use_utc",
+		"limit_method": 				"settings/limit_method",
+		"entry_count_action": 	"settings/entry_count_action",
 		"session_timer_action": "settings/session_timer_action",
-		"file_cap": "settings/file_cap",
-		"entry_cap": "settings/entry_cap",
-		"session_duration": "settings/session_duration",
-		"error_reporting": "settings/error_reporting"
+		"file_cap": 						"settings/file_cap",
+		"entry_cap": 						"settings/entry_cap",
+		"session_duration": 		"settings/session_duration",
+		"error_reporting": 			"settings/error_reporting"
 	}
 
 	var expected_types = {
-		"plugin/base_directory": TYPE_STRING,
-		"plugin/categories": TYPE_ARRAY,
-		"settings/columns": TYPE_INT,
-		"settings/log_header_format": TYPE_STRING,
-		"settings/entry_format" : TYPE_STRING,
-		"settings/canvaslayer_layer": TYPE_INT,
-		"settings/autostart_session": TYPE_BOOL,
-		"settings/use_utc": TYPE_BOOL,
-		"settings/limit_method": TYPE_INT,
-		"settings/entry_count_action": TYPE_INT,
-		"settings/session_timer_action": TYPE_INT,
-		"settings/file_cap": TYPE_INT,
-		"settings/entry_cap": TYPE_INT,
-		"settings/session_duration": TYPE_FLOAT,
-		"settings/error_reporting": TYPE_INT,
+		"categories/category_names": 			TYPE_ARRAY,
+		"settings/base_directory": 				TYPE_STRING,
+		"settings/columns": 							TYPE_INT,
+		"settings/log_header_format": 		TYPE_STRING,
+		"settings/entry_format" : 				TYPE_STRING,
+		"settings/canvaslayer_layer": 		TYPE_INT,
+		"settings/autostart_session": 		TYPE_BOOL,
+		"settings/use_utc": 							TYPE_BOOL,
+		"settings/limit_method": 					TYPE_INT,
+		"settings/entry_count_action": 		TYPE_INT,
+		"settings/session_timer_action": 	TYPE_INT,
+		"settings/file_cap": 							TYPE_INT,
+		"settings/entry_cap": 						TYPE_INT,
+		"settings/session_duration": 			TYPE_FLOAT,
+		"settings/error_reporting": 			TYPE_INT
 	}
 
 	var types : Array[String] = [
@@ -708,20 +713,11 @@ func validate_settings() -> void: # Note mirror function present in GoLoggerDock
 		"PackedColorArray"
 	]
 
-	# Remove old/stray settings
-	var _setts := config.get_section_keys("settings")
-	for setting in _setts:
-		if setting in expected_settings.keys():
-			continue
-		else:
-			config.erase_section_key("settings", setting)
-			push_warning("GoLogger: Removed stray setting '", setting, "' from settings.ini file.")
-
 	# Validate presence of settings -> Apply default if missing
 	for setting in expected_settings.keys():
 		var splits = expected_settings[setting].split("/")
 		if !config.has_section(splits[0]) or !config.has_section_key(splits[0], splits[1]):
-			printerr(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
+			# printerr(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
 			present_settings_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 	if present_settings_faults > 0: push_warning("GoLogger: One or more settings were missing from the settings.ini file. Default values have been restored for the missing settings.")
@@ -733,11 +729,11 @@ func validate_settings() -> void: # Note mirror function present in GoLoggerDock
 		var value = config.get_value(splits[0], splits[1])
 
 		if typeof(value) != expected_type:
-			printerr(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
+			# printerr(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
 			value_type_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 
-	config.save(PATH)
+	config.save(get_settings_path())
 
 
 static func get_error(error : int, object_type : String = "") -> String:
@@ -795,10 +791,10 @@ static func get_error(error : int, object_type : String = "") -> String:
 
 func _get_settings_value(section: String, value : String) -> Variant:
 	validate_settings()
-	var _result = config.load(PATH)
+	var _result = config.load(get_settings_path())
 
-	if !FileAccess.file_exists(PATH):
-		push_warning(str("GoLogger: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
+	if !FileAccess.file_exists(get_settings_path()):
+		push_warning(str("GoLogger: No settings.ini file present in ", get_settings_path(), ". Generating a new file with default settings."))
 		create_settings_file()
 
 	if _result != OK:
@@ -827,7 +823,7 @@ func _check_category_name_conflicts() -> Array[String]:
 
 
 func _get_header(category_name: String = "") -> String:
-	config.load(PATH)
+	config.load(get_settings_path())
 	var format: String = _get_settings_value("settings", "log_header_format")
 	var _header: String = ""
 	var _tags: Array[String] = [

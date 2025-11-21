@@ -10,7 +10,8 @@ extends TabContainer
 		# [DONE] Handle adding/removing categories with new .ini format
 		# [DONE] is_locked property handling
 		# [DONE] Account for ConfigFile clobbering
-		# Check that renaming a category adds an int to the name
+		# [DONE]Check that renaming a category adds an int to the name
+		# Apply log header format button not disabling when using enter key to submit text
 
 # RELEASE CHECKLIST:
 	# Ensure CATEGORIES tab is visible (default)
@@ -102,7 +103,7 @@ var session_duration_spinbox_line: LineEdit
 @onready var copy_session_btn: Button = %CopySessionBtn
 @onready var stop_session_btn: Button = %StopSessionBtn
 
-const PATH = "user://GoLogger/settings.ini"
+var PATH = "user://GoLogger/settings.ini"
 
 var valid_line_edit_stylebox := preload("uid://b8w5i8chks7st")
 var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
@@ -164,6 +165,9 @@ var settings_control := {
 # _ready() to enable the label highlighting feature.
 
 
+func get_settings_path() -> String:
+	return str(config.get_value("settings", "base_directory", "user://GoLogger/") + "settings.ini")
+
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
@@ -175,10 +179,10 @@ func _ready() -> void:
 			_d = DirAccess.open(".")
 			DirAccess.make_dir_absolute("user://GoLogger/")
 
-		if !FileAccess.file_exists(PATH):
+		if !FileAccess.file_exists(get_settings_path()):
 			create_settings_file()
 		else:
-			config.load(PATH)
+			config.load(get_settings_path())
 
 		# Remove any existing categories
 		for i in category_container.get_children():
@@ -234,9 +238,9 @@ func _ready() -> void:
 					btn_array[i].text_changed.disconnect(_on_line_edit_text_changed)
 				btn_array[i].text_changed.connect(_on_line_edit_text_changed.bind(btn_array[i]))
 
-				if btn_array[i].text_submitted.is_connected(_on_line_edit_text_submitted):
-					btn_array[i].text_submitted.disconnect(_on_line_edit_text_submitted)
-				btn_array[i].text_submitted.connect(_on_line_edit_text_submitted.bind(btn_array[i]))
+				# if btn_array[i].text_submitted.is_connected(_on_line_edit_text_submitted):
+				# 	btn_array[i].text_submitted.disconnect(_on_line_edit_text_submitted)
+				# btn_array[i].text_submitted.connect(_on_line_edit_text_submitted.bind(btn_array[i]))
 
 			elif btn_array[i] is SpinBox:
 				if btn_array[i].value_changed.is_connected(_on_spinbox_value_changed):
@@ -389,17 +393,17 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	cf.set_value("category.game", "file_count", 0)
 	cf.set_value("category.game", "is_locked", false)
 
-	var _s = cf.save(PATH)
+	var _s = cf.save(get_settings_path())
 	if _s != OK:
 		var _e = cf.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
 	load_settings_state()
-	config.load(PATH) # Reload config to ensure it's up to date
+	config.load(get_settings_path()) # Reload config to ensure it's up to date
 
 
 func load_settings_state() -> void:
-	config.load(PATH)
+	config.load(get_settings_path())
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
 	entry_format_apply_btn.disabled = true
@@ -422,14 +426,14 @@ func load_settings_state() -> void:
 
 func reset_to_default() -> void:
 	var cf := ConfigFile.new()
-	cf.load(PATH)
+	cf.load(get_settings_path())
 	for key in default_settings.keys():
 		cf.set_value("settings", key, default_settings[key])
 	cf.set_value("categories.game", "category_name", "game")
 	cf.set_value("categories.game", "category_index", 0)
 	cf.set_value("categories.game", "file_count", 0)
 	cf.set_value("categories.game", "is_locked", false)
-	cf.save(PATH)
+	cf.save(get_settings_path())
 
 	for lc in category_container.get_children():
 		if lc is LogCategory:
@@ -556,12 +560,12 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 			value_type_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 
-	config.save(PATH)
+	config.save(get_settings_path())
 
 
 func load_data() -> void:
 	var _c = ConfigFile.new()
-	if _c.load(PATH) != OK:
+	if _c.load(get_settings_path()) != OK:
 		printerr("GoLogger error: Failed to load settings.ini file!")
 		return
 
@@ -595,7 +599,7 @@ func load_data() -> void:
 	error_rep_btn.selected = _c.get_value("settings", "error_reporting", default_settings["error_reporting"])
 	column_slider.value = _get_column_value(_c.get_value("settings", "columns", default_settings["columns"]))
 
-	config.load(PATH) # Reload config to ensure it's up to date
+	config.load(get_settings_path()) # Reload config to ensure it's up to date
 
 
 
@@ -647,11 +651,11 @@ func save_data(deferred: bool = false) -> void:
 			_c.set_value("settings", key, column_slider.value)
 		# print("Saved ", key, " as ", settings_control[key].text)
 
-	var _e = _c.save(PATH)
+	var _e = _c.save(get_settings_path())
 	if _e != OK:
 		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
-	config.load(PATH) # Reload config to ensure it's up to date
+	config.load(get_settings_path()) # Reload config to ensure it's up to date
 
 
 ## `save_after` should be used when the user adds categories manually via the dock. Not when loading categories from config.
@@ -776,6 +780,60 @@ func open_directory() -> void:
 	OS.shell_open(abs_path)
 
 
+func apply_new_base_directory() -> void:
+	var old_dir = config.get_value("settings", "base_directory")
+	var new_dir = base_dir_line.text.strip_edges()
+	# Don't accept empty path
+	if new_dir == "":
+		if config.get_value("settings", "error_reporting") != 2:
+			push_warning("GoLogger: Base directory cannot be empty. Reverting to previous path[", old_dir, "].")
+		base_dir_line.text = old_dir
+		base_dir_apply_btn.disabled = true
+		return
+
+
+	if not new_dir.ends_with("/"):
+		new_dir += "/"
+
+
+	var d = DirAccess.open(new_dir)
+	if d == null:
+		var res : int = OK
+
+		var create_path = new_dir
+		if new_dir.begins_with("user://") or new_dir.begins_with("res://"):
+			create_path = ProjectSettings.globalize_path(new_dir)
+
+		res = DirAccess.make_dir_absolute(create_path)
+		if res != OK:
+			if config.get_value("settings", "error_reporting") != 2:
+				push_warning("GoLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+			base_dir_line.text = old_dir
+			base_dir_apply_btn.disabled = true
+			return
+
+		d = DirAccess.open(new_dir)
+
+	if d == null or DirAccess.get_open_error() != OK:
+		if config.get_value("settings", "error_reporting") != 2:
+			push_warning("GoLogger: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+		base_dir_line.text = old_dir
+		base_dir_apply_btn.disabled = true
+		return
+
+	config.set_value("settings", "base_directory", new_dir)
+	var save_err = config.save(get_settings_path())
+	if save_err != OK:
+		if config.get_value("settings", "error_reporting") != 2:
+			push_warning("GoLogger: Failed to save settings.ini after changing base_directory. Reverting back to previous directory path[", old_dir, "].")
+		base_dir_line.text = old_dir
+		base_dir_apply_btn.disabled = true
+		return
+
+	print_rich(c_print_history, "Base directory changed.")
+	base_dir_apply_btn.disabled = true
+
+
 func is_entry_format_valid(format: String) -> bool:
 	return true if format.contains("{entry}") else false
 
@@ -788,34 +846,35 @@ func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
 
 
 func _on_button_button_up(node: Button) -> void:
-	config.load(PATH)
+	config.load(get_settings_path())
 	match node:
 		base_dir_apply_btn:
-			var old_dir = config.get_value("settings", "base_directory")
-			var new_dir = base_dir_line.text
-			var _d = DirAccess.open(new_dir)
-			if _d == null:
-				var _res : int
-				_d = DirAccess.open(".")
-				if new_dir.begins_with("res://") or new_dir.begins_with("user://"):
-					_res = _d.make_dir(new_dir)
-				else:
-					_res = DirAccess.make_dir_absolute(new_dir)
-				if _res != OK:
-					if config.get_value("settings", "error_reporting") != 2:
-						push_warning("GoLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
-					base_dir_line.text = old_dir
-					base_dir_apply_btn.disabled = true
-					return
-				_d = DirAccess.open(new_dir)
-			if _d == null or DirAccess.get_open_error() != OK:
-				if config.get_value("settings", "error_reporting") != 2:
-					push_warning("GoLogger: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
-				base_dir_line.text = old_dir
-				base_dir_apply_btn.disabled = true
-				return
-			config.set_value("settings", "base_directory", new_dir)
-			print_rich(c_print_history, "Base directory changed.")
+			apply_new_base_directory()
+			# var old_dir = config.get_value("settings", "base_directory")
+			# var new_dir = base_dir_line.text
+			# var _d = DirAccess.open(new_dir)
+			# if _d == null:
+			# 	var _res : int
+			# 	_d = DirAccess.open(".")
+			# 	if new_dir.begins_with("res://") or new_dir.begins_with("user://"):
+			# 		_res = _d.make_dir(new_dir)
+			# 	else:
+			# 		_res = DirAccess.make_dir_absolute(new_dir)
+			# 	if _res != OK:
+			# 		if config.get_value("settings", "error_reporting") != 2:
+			# 			push_warning("GoLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+			# 		base_dir_line.text = old_dir
+			# 		base_dir_apply_btn.disabled = true
+			# 		return
+			# 	_d = DirAccess.open(new_dir)
+			# if _d == null or DirAccess.get_open_error() != OK:
+			# 	if config.get_value("settings", "error_reporting") != 2:
+			# 		push_warning("GoLogger: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+			# 	base_dir_line.text = old_dir
+			# 	base_dir_apply_btn.disabled = true
+			# 	return
+			# config.set_value("settings", "base_directory", new_dir)
+			# print_rich(c_print_history, "Base directory changed.")
 
 		base_dir_opendir_btn:
 			if config.get_value("settings", "base_directory") == "":
@@ -842,7 +901,7 @@ func _on_button_button_up(node: Button) -> void:
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
-			var err := config.save(PATH)
+			var err := config.save(get_settings_path())
 			print_rich(c_print_history, "Entry format changed.")
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus()
@@ -887,45 +946,49 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 				entry_format_apply_btn.disabled = true
 
 
-func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
-	config.load(PATH)
-	match node:
-		base_dir_line:
-			if new_text == "":
-				base_dir_apply_btn.disabled = true
-				return
+# func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
+# 	pass
+# 	config.load(get_settings_path())
+# 	match node:
+# 		base_dir_line:
+			# apply_new_base_directory()
+			# var old_dir = config.get_value("settings", "base_directory")
+			# if new_text == "":
+			# 	base_dir_line.text = default_settings["base_directory"]
 
-			var old_dir = config.get_value("settings", "base_directory")
-			var _d = DirAccess.open(new_text)
-			_d.make_dir(new_text)
-			var _e = DirAccess.get_open_error()
-			if _e == OK:
-				config.set_value("settings", "base_directory", new_text)
-			else:
-				base_dir_line.text = old_dir
-			base_dir_line.release_focus()
-			print_rich(c_print_history, "Base Directory changed.")
+			# var _d = DirAccess.open(new_text)
+			# _d.make_dir(new_text)
+			# var _e = DirAccess.get_open_error()
+			# if _e == OK:
+			# 	config.set_value("settings", "base_directory", new_text)
+			# else:
+			# 	base_dir_line.text = old_dir
+			# base_dir_apply_btn.disabled = true
+			# base_dir_line.release_focus()
+			# print_rich(c_print_history, "Base Directory changed.")
 
-		log_header_line:
-			if new_text == "": return
+# 		log_header_line:
+# 			if new_text == "": return
 
-			var old_header = config.get_value("settings", "log_header_format", "")
+# 			var old_header = config.get_value("settings", "log_header_format", "")
 
-			if new_text != old_header:
-				config.set_value("settings", "log_header_format", new_text)
-			log_header_line.release_focus()
-			print_rich(c_print_history, "Log Header format changed.")
+# 			if new_text != old_header:
+# 				config.set_value("settings", "log_header_format", new_text)
+# 			log_header_apply_btn.disabled = true
+# 			log_header_line.release_focus()
+# 			print_rich(c_print_history, "Log Header format changed.")
 
-		entry_format_line:
-			var old_format = config.get_value("settings", "entry_format", "")
-			if new_text != old_format:
-				entry_format_apply_btn.disabled = false
-			if new_text == "":
-				entry_format_line.text = "{entry}"
-			entry_format_line.release_focus()
-			print_rich(c_print_history, "Entry Format changed.")
+# 		entry_format_line:
+# 			var old_format = config.get_value("settings", "entry_format", "")
+# 			if new_text != old_format:
+# 				entry_format_apply_btn.disabled = false
+# 			if new_text == "":
+# 				entry_format_line.text = "{entry}"
+# 			entry_format_apply_btn.disabled = true
+# 			entry_format_line.release_focus()
+# 			print_rich(c_print_history, "Entry Format changed.")
 
-	save_data()
+# 	save_data()
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
@@ -1037,7 +1100,7 @@ func _on_column_slider_value_changed(value: int) -> void:
 	save_data()
 
 
-## Returns the invected value for the column slider
+## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
 	var b: int = clampi(slider_value, column_slider.min_value, column_slider.max_value)
 	return b
