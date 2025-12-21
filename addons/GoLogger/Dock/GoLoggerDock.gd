@@ -12,6 +12,7 @@ extends TabContainer
 		# [DONE] Account for ConfigFile clobbering
 		# [DONE]Check that renaming a category adds an int to the name
 		# Apply log header format button not disabling when using enter key to submit text
+		# Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
 
 # RELEASE CHECKLIST:
 	# Ensure CATEGORIES tab is visible (default)

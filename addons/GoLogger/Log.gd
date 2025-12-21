@@ -255,7 +255,7 @@ func load_category_data(new_session: bool = false) -> void:
 		cat_data[name] = {
 			"category_name": name,
 			"category_index": config.get_value("categories." + str(name), "category_index", 0),
-			"file_name": config.get_value("categories" + name + ".log"),
+			"file_name": "", #config.get_value("categories", name + ".log", ""),
 			"file_path": "",
 			"file_count": config.get_value("categories." + str(name), "file_count", 0),
 			"entry_count": 0,
@@ -315,29 +315,19 @@ func start_session() -> void:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 
+	# Unsure if needed. cat_data might not be loaded at this point.
+	# if cat_data == null or cat_data.is_empty(): # ErrCheck -> No categories present
+	# 	return
+
 	load_category_data(true)
 
 	if _get_settings_value("settings", "limit_method") == 1 or _get_settings_value("settings", "limit_method") == 2:
 		session_timer.start(_get_settings_value("settings", "session_duration"))
 
 
-	for i in cat_data["categories"]["category_names"].size():
+	for i in range(cat_data["categories"]["category_names"].size()):
 		var c_name: String = cat_data["categories"]["category_names"][i]
-		var f_name: String  = _get_file_name(c_name) # e.g. "game_D44r3.log"
-
-		# cat_data[c_name]["instances"][instance_id] = {
-		# 	"id": instance_id,
-		# 	"file_name": f_name,
-		# 	"file_path": str(config.get_value("settings", "base_directory", "user://GoLogger/"), c_name, "_logs/", f_name),
-		# 	"entry_count": 0
-		# }
-
-		# var instance_dict: Dictionary = cat_data[c_name]["instances"].get(instance_id, {})
-		# print(instance_dict)
-
-		# if instance_dict.is_empty() and _get_settings_value("settings", "error_reporting") != 2:
-		# 	push_warning("GoLogger: Failed to start session for category '", c_name, "'. No instance data found for instance_id [", instance_id, "].")
-		# 	continue
+		var f_name: String  = _get_file_name(c_name) # e.g. "game.log"
 
 
 		# Open/create directory
@@ -352,13 +342,13 @@ func start_session() -> void:
 
 		if !dir and _get_settings_value("settings", "error_reporting") != 2: # ErrCheck
 			var _err = DirAccess.get_open_error()
-			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", cat_data["categories"][], ").")
+			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", config.get_value(str("categories.", c_name), "file_path", "EMPTY FILEPATH!"), ").")
 			continue
 
 		# Create/open file
-		var _f = FileAccess.open(instance_dict["file_path"], FileAccess.WRITE)
+		var _f = FileAccess.open(config.get_value(str("categories.", c_name), "file_path", "EMPTY FILEPATH!"), FileAccess.WRITE)
 		if !_f and _get_settings_value("settings", "error_reporting") != 2:
-			push_warning("GoLogger: Failed to create log file for session(", instance_dict["file_path"], ").")
+			push_warning("GoLogger: Failed to create log file for session(", config.get_value(str("categories.", c_name), "file_path", "EMPTY FILEPATH!"), ").")
 			continue
 
 		var _files = dir.get_files()
@@ -378,8 +368,6 @@ func start_session() -> void:
 		if header != "":
 			_f.store_line(header)
 		_f.close()
-
-		cat_data[c_name]["instances"][instance_id] = instance_dict
 
 	# Update ConfigFile / Start SessionTimer / Close up
 	save_category_data()
@@ -963,87 +951,54 @@ func _get_instance_id() -> String: #TODO: Needs refactor. This is completely out
 		var idx: int = rng.randi_range(0, letters.length() - 1)
 		id_str += letters[idx]
 
-	# Collect used IDs by scanning category log folders and their saved_logs subfolders
-	var used_ids: Array = []
-	config.load(PATH)
-	var categories_list: Array = config.get_value("categories", "category_names", [])
-	for cat in categories_list:
-		if typeof(cat) != TYPE_ARRAY or cat.size() == 0:
-			continue
-		var cat_name: String = str(cat[0])
-		if cat_name == "":
-			continue
+	# # Collect used IDs by scanning category log folders and their saved_logs subfolders
+	# var used_ids: Array = []
+	# config.load(PATH)
+	# var categories_list: Array = config.get_value("categories", "category_names", [])
+	# for cat in categories_list:
+	# 	if typeof(cat) != TYPE_ARRAY or cat.size() == 0:
+	# 		continue
+	# 	var cat_name: String = str(cat[0])
+	# 	if cat_name == "":
+	# 		continue
 
-		# Check  main category folder
-		var gologs_path := str(config.get_value("settings", "base_directory", "user://GoLogger/"), cat_name, "_logs/")
-		var d := DirAccess.open(gologs_path)
-		if d:
-			var files := d.get_files()
-			for f in files:
-				if f.ends_with(".log"):
-					var base := f.substr(0, f.length() - 4) # remove ".log"
-					var id := _extract_id_from_basename(base)
-					if id != "" and id not in used_ids:
-						used_ids.append(id)
+	# 	# Check  main category folder
+	# 	var gologs_path := str(config.get_value("settings", "base_directory", "user://GoLogger/"), cat_name, "_logs/")
+	# 	var d := DirAccess.open(gologs_path)
+	# 	if d:
+	# 		var files := d.get_files()
+	# 		for f in files:
+	# 			if f.ends_with(".log"):
+	# 				var base := f.substr(0, f.length() - 4) # remove ".log"
+	# 				var id := _extract_id_from_basename(base)
+	# 				if id != "" and id not in used_ids:
+	# 					used_ids.append(id)
 
-			# Check saved_logs subfolder
-			var saved_path := str(gologs_path, "saved_logs/")
-			var ds := DirAccess.open(saved_path)
-			if ds:
-				var sfiles := ds.get_files()
-				for sf in sfiles:
-					if sf.ends_with(".log"):
-						var sbase := sf.substr(0, sf.length() - 4)
-						var sid := _extract_id_from_basename(sbase)
-						if sid != "" and sid not in used_ids:
-							used_ids.append(sid)
+	# 		# Check saved_logs subfolder
+	# 		var saved_path := str(gologs_path, "saved_logs/")
+	# 		var ds := DirAccess.open(saved_path)
+	# 		if ds:
+	# 			var sfiles := ds.get_files()
+	# 			for sf in sfiles:
+	# 				if sf.ends_with(".log"):
+	# 					var sbase := sf.substr(0, sf.length() - 4)
+	# 					var sid := _extract_id_from_basename(sbase)
+	# 					if sid != "" and sid not in used_ids:
+	# 						used_ids.append(sid)
 
 	# Re-generate ID if conflict found
-	while id_str.substr(1) in used_ids:
-		id_str = ""
-		for i in range(id_len):
-			var idx := rng.randi_range(0, letters.length() - 1)
-			id_str += letters[idx]
-	print("GoLogger: Generated Instance ID -> ", id_str)
+	# while id_str.substr(1) in used_ids:
+	# 	id_str = ""
+	# 	for i in range(id_len):
+	# 		var idx := rng.randi_range(0, letters.length() - 1)
+	# 		id_str += letters[idx]
+	# print("GoLogger: Generated Instance ID -> ", id_str)
 	return id_str
 
 
 
 
-func _extract_id_from_basename(basename: String) -> String:
-	# Used by _get_instance_id exclusively to extract the ID portion from a filename
-	#
-	# Extracts the ID from a basename like:
-	#   "game(241112_215340)D39fk" -> "D39fk"
-	# Returns "" if none or invalid.
 
-	var pos := basename.rfind(")")
-	if pos == -1 or pos >= basename.length() - 1:
-		return ""
-	var candidate := basename.substr(pos + 1, basename.length() - (pos + 1)).strip_edges()
-	if candidate == "":
-		return ""
-
-	var id_regex := RegEx.new()
-
-	if id_regex.compile(r"^[A-Za-z][A-Za-z0-9_-]*$") == OK:
-		var m := id_regex.search(candidate)
-		return candidate if m else ""
-
-	else: # Ensure first char is a letter (is_valid_ascii_identifier requires the first char to be a letter)
-		if candidate.length() == 0:
-			return ""
-		var first_ch := candidate.substr(0, 1)
-		if not (first_ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"):
-			return ""
-
-		# Validate remaining characters
-		for i in range(1, candidate.length()):
-			var ch := candidate.substr(i, 1)
-			# ch.is_valid_ascii_identifier() covers letters, digits and underscore.
-			if not (ch.is_valid_ascii_identifier() or ch == "-"):
-				return ""
-		return candidate
 
 
 func _on_timer_timeout(_timer: Timer) -> void:
