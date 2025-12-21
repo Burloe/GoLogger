@@ -13,16 +13,16 @@ extends Node
 	# [Done] Implement the custom entry format in entry()
 	# [Done] Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
 	# [Done] Add new setting for the custom entry format called "entry_format" to the config file creation, saving and loading logic
-	# [Not Started]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
+	# [Done] Consider adding {instance_id} tag to header and entry formats.
+	#	[Done] Add 'instance_id' to solve issue with concurrency in multiplayer projects
+	# [Done] Refactor .ini settings handling <needed to do to finish instance_id task
+	#	[Done] Remove 'category_index' parameter from entry() method, in favor of using category_name only
+	# [Done]Move 'base_directory' to 'settings' section in .ini file
 	#
-	#	[In progress] Add 'instance_id' to solve issue with concurrency in multiplayer projects
-	# Instance ID's are implemented but entry() and stop_session() do not currently use them in any way. Need to ensure that they write to the correct file based on instance ID.
-	# [In progress] Refactor .ini settings handling <needed to do to finish instance_id task
-	#	[In progress] Remove 'category_index' parameter from entry() method, in favor of using category_name only
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
-	# Move 'base_directory' to 'settings' section in .ini file
+	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	#
-	# [TBD] Consider adding {instance_id} tag to header and entry formats.
+	# Add option to have instance-based files(current implementation) OR share log files between instances and append instance_id to each log entry
 	#
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
 	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
@@ -43,9 +43,8 @@ extends Node
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
 
-const PATH = "user://GoLogger/settings.ini"
+const PATH = "user://gologger_data.ini"
 var config := ConfigFile.new()
-var base_directory: String = "user://GoLogger/"
 var copy_name : String = ""
 var session_status: bool = false:
 	set(value):
@@ -72,28 +71,6 @@ var cat_data : Dictionary = {
 				"file_name": "game_X45jR.log",
 				"file_path": "user://GoLogger/game_logs/game(251113_161313)_X43jR.log",
 				"entry_count": 0
-			}
-		}
-	},
-	"player": {
-		"category_name": "game",
-		"category_index": 0,
-		"file_count": 0,
-		"is_locked": false,
-		"instances": {
-			"U4j9K": {
-				"id": "U4j9K",
-				"file_name": "player_U4j9K.log",
-				"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K.log",
-				"file_count": 0,
-				"instances": {
-					"U4j9K": {
-						"id": "U4j9K",
-						"file_name": "player_U4j9K.log",
-						"file_path": "user://GoLogger/player_logs/player(251113_161313)_U4j9K",
-						"entry_count": 0
-					}
-				}
 			}
 		}
 	}
@@ -157,13 +134,14 @@ enum ErrorCodes { #NYI - For future use in error/warning messages
 }
 
 
-func get_settings_path() -> String:
-	return str(config.get_value("settings", "base_directory", "user://GoLogger/") + "settings.ini")
 
 
 func _ready() -> void:
-	config.load(get_settings_path())
-	base_directory = config.get_value("settings", "base_directory")
+	if !FileAccess.file_exists(PATH):
+		create_settings_file()
+
+	config.load(PATH)
+
 	elements_canvaslayer.layer = _get_settings_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 	inaction_timer.timeout.connect(_on_timer_timeout.bind(inaction_timer))
@@ -185,6 +163,7 @@ func _ready() -> void:
 		start_session()
 
 
+
 func _physics_process(_delta: float) -> void:
 	if !Engine.is_editor_hint():
 		if popup_state and inaction_timer != null and !inaction_timer.is_stopped():
@@ -193,6 +172,7 @@ func _physics_process(_delta: float) -> void:
 		else:
 			if session_timer != null and session_timer.is_paused():
 				session_timer.paused = false
+
 
 
 func _input(event: InputEvent) -> void:
@@ -215,22 +195,25 @@ func _input(event: InputEvent) -> void:
 			entry("Test entry " + str(v1) + " - " + str(v2), "game", true)
 
 
-## Loads category data from the config file into the cat_data dictionary.[br]
-## Use instead of 'config.load(get_settings_path())' whenever category data is needed.
-## Note that this function reloads the settings as well.
-func load_category_data() -> void:
-	config.load(get_settings_path())
+
+func init_category_data() -> void:
+	config.load(PATH)
 	cat_data.clear()
 
-	var names: Array = config.get_value("categories", "category_names", [])
-	var instance_ids: Array = config.get_value("categories", "instance_ids", [instance_id] if instance_id != "" else [])
+	var cat_names: Array = config.get_value("categories", "category_names", [])
+	var instance_ids: Array = config.get_value("categories", "instance_ids", [])
+
+	instance_ids.clear()
+
+	if not instance_id in instance_ids: # Append current instance_id if not present
+		instance_ids.append(instance_id)
 
 	cat_data["categories"] = {
-		"category_names": names.duplicate(),
+		"category_names": cat_names.duplicate(),
 		"instance_ids": instance_ids.duplicate()
 	}
 
-	for name in names:
+	for name in cat_names:
 		var instances: Dictionary = {}
 		for id in instance_ids:
 			var inst_section := "categories." + str(name) + "." + str(id)
@@ -248,17 +231,59 @@ func load_category_data() -> void:
 			"is_locked": config.get_value("categories." + str(name), "is_locked", false),
 			"instances": instances
 		}
+		config.save(PATH) # Save any new instance_ids added
+
+
+## Loads category data from the config file into the cat_data dictionary.[br]
+## Use instead of 'config.load(PATH)' whenever category data is needed.
+func load_category_data(new_session: bool = false) -> void:
+	config.load(PATH)
+	cat_data.clear()
+
+	var cat_names: Array = config.get_value("categories", "category_names", [])
+	var instance_ids: Array = config.get_value("categories", "instance_ids", [])
+
+	if new_session:
+		instance_ids.clear()
+
+	if not instance_id in instance_ids: # Append current instance_id if not present
+		instance_ids.append(instance_id)
+
+	cat_data["categories"] = {
+		"category_names": cat_names.duplicate(),
+		"instance_ids": instance_ids.duplicate()
+	}
+
+	for name in cat_names:
+		var instances: Dictionary = {}
+		for id in instance_ids:
+			var inst_section := "categories." + str(name) + "." + str(id)
+			instances[id] = {
+				"id": str(id),
+				"file_name": config.get_value(inst_section, "file_name", ""),
+				"file_path": config.get_value(inst_section, "file_path", ""),
+				"entry_count": config.get_value(inst_section, "entry_count", 0)
+			}
+
+		cat_data[name] = {
+			"category_name": name,
+			"category_index": config.get_value("categories." + str(name), "category_index", 0),
+			"file_count": config.get_value("categories." + str(name), "file_count", 0),
+			"is_locked": config.get_value("categories." + str(name), "is_locked", false),
+			"instances": instances
+		}
+		config.save(PATH) # Save any new instance_ids added
 
 
 ## Saves category data from the cat_data dictionary into the config file.[br]
-## Use instead of 'config.save(get_settings_path())' whenever category data is modified.
+## Use instead of 'config.save(PATH)' whenever category data is modified.
 func save_category_data() -> void:
 	# Ensure there is categories meta to save
 	if !cat_data.has("categories"):
 		return
 
 	# Load existing config so we don't clobber unrelated sections
-	var err = config.load(get_settings_path())
+	var err = config.load(PATH)
 	if err != OK:
 		if _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to load existing config file while saving category data.")
@@ -301,7 +326,7 @@ func start_session() -> void:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 
-	load_category_data()
+	load_category_data(true)
 
 	if _get_settings_value("settings", "limit_method") == 1 or _get_settings_value("settings", "limit_method") == 2:
 		session_timer.start(_get_settings_value("settings", "session_duration"))
@@ -310,15 +335,24 @@ func start_session() -> void:
 	for i in cat_data["categories"]["category_names"].size():
 		var c_name: String = cat_data["categories"]["category_names"][i]
 		var f_name: String  = _get_file_name(c_name) # e.g. "game_D44r3.log"
-		var _d: Dictionary = cat_data[c_name]["instances"].get(instance_id, {})
 
-		if _d.is_empty() and _get_settings_value("settings", "error_reporting") != 2:
+		cat_data[c_name]["instances"][instance_id] = {
+			"id": instance_id,
+			"file_name": f_name,
+			"file_path": str(config.get_value("settings", "base_directory", "user://GoLogger/"), c_name, "_logs/", f_name),
+			"entry_count": 0
+		}
+
+		var instance_dict: Dictionary = cat_data[c_name]["instances"].get(instance_id, {})
+		print(instance_dict)
+
+		if instance_dict.is_empty() and _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to start session for category '", c_name, "'. No instance data found for instance_id [", instance_id, "].")
 			continue
 
 
 		# Open/create directory
-		var path: String = str(base_directory, c_name, "_logs/")
+		var path: String = str(config.get_value("settings", "base_directory", "user://GoLogger/"), c_name, "_logs/")
 		var dir : DirAccess
 		if !DirAccess.dir_exists_absolute(path):
 			DirAccess.make_dir_recursive_absolute(path)
@@ -329,13 +363,13 @@ func start_session() -> void:
 
 		if !dir and _get_settings_value("settings", "error_reporting") != 2: # ErrCheck
 			var _err = DirAccess.get_open_error()
-			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", _d["file_path"], ").")
+			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", instance_dict["file_path"], ").")
 			continue
 
 		# Create/open file
-		var _f = FileAccess.open(_d["file_path"], FileAccess.WRITE)
+		var _f = FileAccess.open(instance_dict["file_path"], FileAccess.WRITE)
 		if !_f and _get_settings_value("settings", "error_reporting") != 2:
-			push_warning("GoLogger: Failed to create log file for session(", _d["file_path"], ").")
+			push_warning("GoLogger: Failed to create log file for session(", instance_dict["file_path"], ").")
 			continue
 
 		var _files = dir.get_files()
@@ -356,7 +390,7 @@ func start_session() -> void:
 			_f.store_line(header)
 		_f.close()
 
-		cat_data[c_name]["instances"][instance_id] = _d
+		cat_data[c_name]["instances"][instance_id] = instance_dict
 
 	# Update ConfigFile / Start SessionTimer / Close up
 	save_category_data()
@@ -627,13 +661,13 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	cf.set_value("category.game", "file_count", 0)
 	cf.set_value("category.game", "is_locked", false)
 
-	var _s = cf.save(get_settings_path())
+	var _s = cf.save(PATH)
 	if _s != OK:
 		var _e = cf.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
 
-	config.load(get_settings_path()) # Reload config to ensure it's up to date
+	config.load(PATH) # Reload config to ensure it's up to date
 
 
 func validate_settings() -> void: # Note mirror function also present in Log.gd. Ensure both are kept in sync.
@@ -733,7 +767,7 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 			value_type_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 
-	config.save(get_settings_path())
+	config.save(PATH)
 
 
 static func get_error(error : int, object_type : String = "") -> String:
@@ -791,10 +825,10 @@ static func get_error(error : int, object_type : String = "") -> String:
 
 func _get_settings_value(section: String, value : String) -> Variant:
 	validate_settings()
-	var _result = config.load(get_settings_path())
+	var _result = config.load(PATH)
 
-	if !FileAccess.file_exists(get_settings_path()):
-		push_warning(str("GoLogger: No settings.ini file present in ", get_settings_path(), ". Generating a new file with default settings."))
+	if !FileAccess.file_exists(PATH):
+		push_warning(str("GoLogger: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
 		create_settings_file()
 
 	if _result != OK:
@@ -823,7 +857,7 @@ func _check_category_name_conflicts() -> Array[String]:
 
 
 func _get_header(category_name: String = "") -> String:
-	config.load(get_settings_path())
+	config.load(PATH)
 	var format: String = _get_settings_value("settings", "log_header_format")
 	var _header: String = ""
 	var _tags: Array[String] = [
@@ -925,7 +959,7 @@ func _get_file_name(category_name : String) -> String:
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
 	var fin : String
-	fin = str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")", instance_id, ".log")
+	fin = str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")_", instance_id, ".log")
 	return fin
 
 
@@ -934,7 +968,7 @@ func _get_instance_id() -> String: #TODO: Needs refactor. This is completely out
 	var rng := RandomNumberGenerator.new()
 	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789"
 	var id_len: int = 5
-	var id_str: String = "_"
+	var id_str: String = ""
 	rng.randomize()
 	for i in range(id_len):
 		var idx: int = rng.randi_range(0, letters.length() - 1)
@@ -952,7 +986,7 @@ func _get_instance_id() -> String: #TODO: Needs refactor. This is completely out
 			continue
 
 		# Check  main category folder
-		var gologs_path := str(base_directory, cat_name, "_logs/")
+		var gologs_path := str(config.get_value("settings", "base_directory", "user://GoLogger/"), cat_name, "_logs/")
 		var d := DirAccess.open(gologs_path)
 		if d:
 			var files := d.get_files()
@@ -981,8 +1015,10 @@ func _get_instance_id() -> String: #TODO: Needs refactor. This is completely out
 		for i in range(id_len):
 			var idx := rng.randi_range(0, letters.length() - 1)
 			id_str += letters[idx]
-
+	print("GoLogger: Generated Instance ID -> ", id_str)
 	return id_str
+
+
 
 
 func _extract_id_from_basename(basename: String) -> String:

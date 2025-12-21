@@ -165,24 +165,15 @@ var settings_control := {
 # _ready() to enable the label highlighting feature.
 
 
-func get_settings_path() -> String:
-	return str(config.get_value("settings", "base_directory", "user://GoLogger/") + "settings.ini")
-
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		entry_format_warning.visible = !is_entry_format_valid(entry_format_line.text)
 
-		# Ensure or create settings.ini
-		var _d = DirAccess.open("user://GoLogger/")
-		if !_d:
-			_d = DirAccess.open(".")
-			DirAccess.make_dir_absolute("user://GoLogger/")
-
-		if !FileAccess.file_exists(get_settings_path()):
+		if !FileAccess.file_exists(PATH):
 			create_settings_file()
-		else:
-			config.load(get_settings_path())
+
+		config.load(PATH)
 
 		# Remove any existing categories
 		for i in category_container.get_children():
@@ -371,7 +362,7 @@ func _ready() -> void:
 func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
 	var cf := ConfigFile.new() # Use new ConfigFile to avoid clobbering existing data
 	cf.set_value("settings", "base_directory", default_settings["base_directory"])
-	cf.set_value("settings", "columns", _get_column_value(default_settings["columns"]))
+	cf.set_value("settings", "columns", default_settings["columns"])
 	cf.set_value("settings", "log_header_format", default_settings["log_header_format"])
 	cf.set_value("settings", "entry_format", default_settings["entry_format"])
 	cf.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
@@ -393,17 +384,17 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	cf.set_value("category.game", "file_count", 0)
 	cf.set_value("category.game", "is_locked", false)
 
-	var _s = cf.save(get_settings_path())
+	var _s = cf.save(PATH)
 	if _s != OK:
 		var _e = cf.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
-	load_settings_state()
-	config.load(get_settings_path()) # Reload config to ensure it's up to date
+
+	config.load(PATH) # Reload config to ensure it's up to date
 
 
 func load_settings_state() -> void:
-	config.load(get_settings_path())
+	config.load(PATH)
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
 	entry_format_apply_btn.disabled = true
@@ -426,14 +417,14 @@ func load_settings_state() -> void:
 
 func reset_to_default() -> void:
 	var cf := ConfigFile.new()
-	cf.load(get_settings_path())
+	cf.load(PATH)
 	for key in default_settings.keys():
 		cf.set_value("settings", key, default_settings[key])
 	cf.set_value("categories.game", "category_name", "game")
 	cf.set_value("categories.game", "category_index", 0)
 	cf.set_value("categories.game", "file_count", 0)
 	cf.set_value("categories.game", "is_locked", false)
-	cf.save(get_settings_path())
+	cf.save(PATH)
 
 	for lc in category_container.get_children():
 		if lc is LogCategory:
@@ -560,12 +551,12 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 			value_type_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 
-	config.save(get_settings_path())
+	config.save(PATH)
 
 
 func load_data() -> void:
 	var _c = ConfigFile.new()
-	if _c.load(get_settings_path()) != OK:
+	if _c.load(PATH) != OK:
 		printerr("GoLogger error: Failed to load settings.ini file!")
 		return
 
@@ -599,7 +590,7 @@ func load_data() -> void:
 	error_rep_btn.selected = _c.get_value("settings", "error_reporting", default_settings["error_reporting"])
 	column_slider.value = _get_column_value(_c.get_value("settings", "columns", default_settings["columns"]))
 
-	config.load(get_settings_path()) # Reload config to ensure it's up to date
+	config.load(PATH) # Reload config to ensure it's up to date
 
 
 
@@ -651,11 +642,11 @@ func save_data(deferred: bool = false) -> void:
 			_c.set_value("settings", key, column_slider.value)
 		# print("Saved ", key, " as ", settings_control[key].text)
 
-	var _e = _c.save(get_settings_path())
+	var _e = _c.save(PATH)
 	if _e != OK:
 		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
-	config.load(get_settings_path()) # Reload config to ensure it's up to date
+	config.load(PATH) # Reload config to ensure it's up to date
 
 
 ## `save_after` should be used when the user adds categories manually via the dock. Not when loading categories from config.
@@ -822,7 +813,7 @@ func apply_new_base_directory() -> void:
 		return
 
 	config.set_value("settings", "base_directory", new_dir)
-	var save_err = config.save(get_settings_path())
+	var save_err = config.save(PATH)
 	if save_err != OK:
 		if config.get_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to save settings.ini after changing base_directory. Reverting back to previous directory path[", old_dir, "].")
@@ -846,7 +837,7 @@ func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
 
 
 func _on_button_button_up(node: Button) -> void:
-	config.load(get_settings_path())
+	config.load(PATH)
 	match node:
 		base_dir_apply_btn:
 			apply_new_base_directory()
@@ -901,7 +892,7 @@ func _on_button_button_up(node: Button) -> void:
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
-			var err := config.save(get_settings_path())
+			var err := config.save(PATH)
 			print_rich(c_print_history, "Entry format changed.")
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus()
@@ -948,7 +939,7 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 
 # func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 # 	pass
-# 	config.load(get_settings_path())
+# 	config.load(PATH)
 # 	match node:
 # 		base_dir_line:
 			# apply_new_base_directory()
