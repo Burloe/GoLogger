@@ -19,6 +19,7 @@ extends Node
 	#	[Done] Remove 'category_index' parameter from entry() method, in favor of using category_name only
 	# [Done]Move 'base_directory' to 'settings' section in .ini file
 	#
+	# [Not started] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
 	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	#
@@ -57,22 +58,25 @@ var cat_data : Dictionary = {
 	"game": {
 		"category_name": "game",
 		"category_index": 0,
+		"file_name": "game.log",
+		"file_path": "user://GoLogger/game_logs/game(251113_161313).log",
 		"file_count": 0,
+		"entry_count": 0,
 		"is_locked": false,
-		"instances": {
-			"D44r3": {
-				"id": "D44r3",
-				"file_name": "game_D44r3.log",
-				"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3.log",
-				"entry_count": 0
-			},
-			"X45jR": {
-				"id": "X45jR",
-				"file_name": "game_X45jR.log",
-				"file_path": "user://GoLogger/game_logs/game(251113_161313)_X43jR.log",
-				"entry_count": 0
-			}
-		}
+		# "instances": {
+		# 	"D44r3": {
+		# 		"id": "D44r3",
+		# 		"file_name": "game_D44r3.log",
+		# 		"file_path": "user://GoLogger/game_logs/game(251113_161313)_D44r3.log",
+		# 		"entry_count": 0
+		# 	},
+		# 	"X45jR": {
+		# 		"id": "X45jR",
+		# 		"file_name": "game_X45jR.log",
+		# 		"file_path": "user://GoLogger/game_logs/game(251113_161313)_X43jR.log",
+		# 		"entry_count": 0
+		# 	}
+		# }
 	}
 }
 
@@ -336,19 +340,19 @@ func start_session() -> void:
 		var c_name: String = cat_data["categories"]["category_names"][i]
 		var f_name: String  = _get_file_name(c_name) # e.g. "game_D44r3.log"
 
-		cat_data[c_name]["instances"][instance_id] = {
-			"id": instance_id,
-			"file_name": f_name,
-			"file_path": str(config.get_value("settings", "base_directory", "user://GoLogger/"), c_name, "_logs/", f_name),
-			"entry_count": 0
-		}
+		# cat_data[c_name]["instances"][instance_id] = {
+		# 	"id": instance_id,
+		# 	"file_name": f_name,
+		# 	"file_path": str(config.get_value("settings", "base_directory", "user://GoLogger/"), c_name, "_logs/", f_name),
+		# 	"entry_count": 0
+		# }
 
-		var instance_dict: Dictionary = cat_data[c_name]["instances"].get(instance_id, {})
-		print(instance_dict)
+		# var instance_dict: Dictionary = cat_data[c_name]["instances"].get(instance_id, {})
+		# print(instance_dict)
 
-		if instance_dict.is_empty() and _get_settings_value("settings", "error_reporting") != 2:
-			push_warning("GoLogger: Failed to start session for category '", c_name, "'. No instance data found for instance_id [", instance_id, "].")
-			continue
+		# if instance_dict.is_empty() and _get_settings_value("settings", "error_reporting") != 2:
+		# 	push_warning("GoLogger: Failed to start session for category '", c_name, "'. No instance data found for instance_id [", instance_id, "].")
+		# 	continue
 
 
 		# Open/create directory

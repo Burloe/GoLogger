@@ -102,6 +102,7 @@ var session_duration_spinbox_line: LineEdit
 @onready var start_session_btn: Button = %StartSessionBtn
 @onready var copy_session_btn: Button = %CopySessionBtn
 @onready var stop_session_btn: Button = %StopSessionBtn
+@onready var print_instance_id_btn: Button = %PrintInstanceIDBtn
 
 var PATH = "user://GoLogger/settings.ini"
 
@@ -334,6 +335,7 @@ func _ready() -> void:
 		start_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(0))
 		copy_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(1))
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
+		print_instance_id_btn.button_up.connect(funct() -> void: open_hotkey_resource.emit(3))
 
 
 		load_data()

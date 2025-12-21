@@ -1,4 +1,4 @@
-[gd_resource type="InputEventShortcut" load_steps=3 format=3 uid="uid://dqqknnyvnc7t6"]
+[gd_resource type="InputEventShortcut" format=3 uid="uid://dqqknnyvnc7t6"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_h8vci"]
 device = -1
