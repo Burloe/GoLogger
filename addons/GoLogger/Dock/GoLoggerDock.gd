@@ -13,6 +13,7 @@ extends TabContainer
 		# [DONE]Check that renaming a category adds an int to the name
 		# Apply log header format button not disabling when using enter key to submit text
 		# Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
+		# Remove instance_id tags from Header settings since files aren't per-instance anymore
 
 # RELEASE CHECKLIST:
 	# Ensure CATEGORIES tab is visible (default)
@@ -336,7 +337,7 @@ func _ready() -> void:
 		start_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(0))
 		copy_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(1))
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
-		print_instance_id_btn.button_up.connect(funct() -> void: open_hotkey_resource.emit(3))
+		print_instance_id_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(3))
 
 
 		load_data()

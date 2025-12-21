@@ -23,7 +23,7 @@ extends Node
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
 	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	#
-	# Add option to have instance-based files(current implementation) OR share log files between instances and append instance_id to each log entry
+	# Remove instance_id tags from header since files aren't per-instance anymore
 	#
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
 	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
@@ -383,28 +383,29 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 	load_category_data()
 	var _d: Dictionary = cat_data.get(category_name, {})
 	var entry: String = _get_entry_format(log_entry, category_name)
-	var target_filepath: String = _d["instances"][instance_id].get("file_path", "")
+	var target_filepath: String = config.get_value(str("categories.", category_name), "file_path", "")
+	# var target_filepath: String = _d["instances"][instance_id].get("file_path", "")
 
-	# Early returns
-	if log_entry == "": # ErrCheck
+	# ER
+	if log_entry == "": # ER
 		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
 
-	if _d.is_empty(): # ErrCheck
+	if _d.is_empty(): # ER
 		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
-	if _d[category_name].is_empty(): # ErrCheck
+	if _d[category_name].is_empty(): # ER
 		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Category '" + category_name + "' not found. Check correct spelling.")
 		return
 
-	if !session_status: # ErrCheck - Doesn't make sense print error for this
+	if !session_status: # ER - Doesn't make sense print error for this
 		return
 
-	if target_filepath == "": # ErrCheck
+	if target_filepath == "": # ER
 		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: No valid file path found for category '" + category_name + "' instance[" + instance_id + "].")
 		return
@@ -412,7 +413,7 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 
 	# Open file to read existing lines
 	var _f = FileAccess.open(target_filepath, FileAccess.READ)
-	if !_f: # Error check
+	if !_f: # ER
 		var _err = FileAccess.get_open_error()
 		if _err != OK and _get_settings_value("settings", "error_reporting") != 2:
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
@@ -474,7 +475,8 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 							return
 
 	# Rewrite file with existing lines / Update entry count
-	cat_data[category_name]["instances"][instance_id]["entry_count"] = lines.size()
+	cat_data[category_name]["entry_count"] = lines.size()
+	# cat_data[category_name]["instances"][instance_id]["entry_count"] = lines.size()
 	var _fw = FileAccess.open(target_filepath, FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
@@ -840,7 +842,6 @@ func _get_header(category_name: String = "") -> String:
 	var _tags: Array[String] = [
 		"{project_name}",
 		"{version}",
-		"{instance_id}",
 		"{category}",
 		"{yy}",
 		"{mm}",
@@ -862,7 +863,6 @@ func _get_header(category_name: String = "") -> String:
 		var replacements: Dictionary = {
 			"{project_name}": str(ProjectSettings.get_setting("application/config/name")),
 			"{version}": str(ProjectSettings.get_setting("application/config/version")),
-			"{instance_id}": instance_id,
 			"{category}": category_name,
 			"{yy}": yy,
 			"{mm}": mm,
