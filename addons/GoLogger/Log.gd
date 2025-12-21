@@ -200,42 +200,42 @@ func _input(event: InputEvent) -> void:
 
 
 
-func init_category_data() -> void:
-	config.load(PATH)
-	cat_data.clear()
+# func init_category_data() -> void: # DELETE?
+# 	config.load(PATH)
+# 	cat_data.clear()
 
-	var cat_names: Array = config.get_value("categories", "category_names", [])
-	var instance_ids: Array = config.get_value("categories", "instance_ids", [])
+# 	var cat_names: Array = config.get_value("categories", "category_names", [])
+# 	var instance_ids: Array = config.get_value("categories", "instance_ids", [])
 
-	instance_ids.clear()
+# 	instance_ids.clear()
 
-	if not instance_id in instance_ids: # Append current instance_id if not present
-		instance_ids.append(instance_id)
+# 	if not instance_id in instance_ids: # Append current instance_id if not present
+# 		instance_ids.append(instance_id)
 
-	cat_data["categories"] = {
-		"category_names": cat_names.duplicate(),
-		"instance_ids": instance_ids.duplicate()
-	}
+# 	cat_data["categories"] = {
+# 		"category_names": cat_names.duplicate(),
+# 		"instance_ids": instance_ids.duplicate()
+# 	}
 
-	for name in cat_names:
-		var instances: Dictionary = {}
-		for id in instance_ids:
-			var inst_section := "categories." + str(name) + "." + str(id)
-			instances[id] = {
-				"id": str(id),
-				"file_name": config.get_value(inst_section, "file_name", ""),
-				"file_path": config.get_value(inst_section, "file_path", ""),
-				"entry_count": config.get_value(inst_section, "entry_count", 0)
-			}
+# 	for name in cat_names:
+# 		var instances: Dictionary = {}
+# 		for id in instance_ids:
+# 			var inst_section := "categories." + str(name) + "." + str(id)
+# 			instances[id] = {
+# 				"id": str(id),
+# 				"file_name": config.get_value(inst_section, "file_name", ""),
+# 				"file_path": config.get_value(inst_section, "file_path", ""),
+# 				"entry_count": config.get_value(inst_section, "entry_count", 0)
+# 			}
 
-		cat_data[name] = {
-			"category_name": name,
-			"category_index": config.get_value("categories." + str(name), "category_index", 0),
-			"file_count": config.get_value("categories." + str(name), "file_count", 0),
-			"is_locked": config.get_value("categories." + str(name), "is_locked", false),
-			"instances": instances
-		}
-		config.save(PATH) # Save any new instance_ids added
+# 		cat_data[name] = {
+# 			"category_name": name,
+# 			"category_index": config.get_value("categories." + str(name), "category_index", 0),
+# 			"file_count": config.get_value("categories." + str(name), "file_count", 0),
+# 			"is_locked": config.get_value("categories." + str(name), "is_locked", false),
+# 			"instances": instances
+# 		}
+# 		config.save(PATH) # Save any new instance_ids added
 
 
 ## Loads category data from the config file into the cat_data dictionary.[br]
@@ -245,36 +245,21 @@ func load_category_data(new_session: bool = false) -> void:
 	cat_data.clear()
 
 	var cat_names: Array = config.get_value("categories", "category_names", [])
-	var instance_ids: Array = config.get_value("categories", "instance_ids", [])
-
-	if new_session:
-		instance_ids.clear()
-
-	if not instance_id in instance_ids: # Append current instance_id if not present
-		instance_ids.append(instance_id)
 
 	cat_data["categories"] = {
 		"category_names": cat_names.duplicate(),
-		"instance_ids": instance_ids.duplicate()
 	}
 
 	for name in cat_names:
-		var instances: Dictionary = {}
-		for id in instance_ids:
-			var inst_section := "categories." + str(name) + "." + str(id)
-			instances[id] = {
-				"id": str(id),
-				"file_name": config.get_value(inst_section, "file_name", ""),
-				"file_path": config.get_value(inst_section, "file_path", ""),
-				"entry_count": config.get_value(inst_section, "entry_count", 0)
-			}
 
 		cat_data[name] = {
 			"category_name": name,
 			"category_index": config.get_value("categories." + str(name), "category_index", 0),
+			"file_name": config.get_value("categories" + name + ".log"),
+			"file_path": "",
 			"file_count": config.get_value("categories." + str(name), "file_count", 0),
-			"is_locked": config.get_value("categories." + str(name), "is_locked", false),
-			"instances": instances
+			"entry_count": 0,
+			"is_locked": config.get_value("categories." + str(name), "is_locked", false)
 		}
 		config.save(PATH) # Save any new instance_ids added
 
@@ -367,7 +352,7 @@ func start_session() -> void:
 
 		if !dir and _get_settings_value("settings", "error_reporting") != 2: # ErrCheck
 			var _err = DirAccess.get_open_error()
-			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", instance_dict["file_path"], ").")
+			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", cat_data["categories"][], ").")
 			continue
 
 		# Create/open file
