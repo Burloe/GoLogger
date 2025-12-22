@@ -132,7 +132,7 @@ var default_settings := {
 		"category_names": ["game"],
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
-		"entry_format": "[{hh}:{mi}:{ss}]: {entry}",
+		"entry_format": "[{hh}:{mi}:{ss}] {instance_id}: {entry}",
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
 		"use_utc": false,
@@ -902,7 +902,7 @@ func _on_button_button_up(node: Button) -> void:
 			entry_format_line.release_focus()
 
 		entry_format_reset_btn:
-			entry_format_line.text = config.get_value("settings", "entry_format", default_settings["entry_format"])
+			entry_format_line.text = default_settings["entry_format"]
 			config.set_value("settings", "entry_format", default_settings["entry_format"])
 			print_rich(c_print_history, "Entry format reset to default.")
 			entry_format_apply_btn.disabled = true

@@ -22,7 +22,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 
 [autoload]
 
-Log="*res://addons/GoLogger/Log.tscn"
+Log="*uid://dm7mwwoselesw"
 
 [display]
 

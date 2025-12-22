@@ -104,7 +104,7 @@ var default_settings := {
 		"category_names": ["game"],
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
-		"entry_format": "[{hh}:{mi}:{ss}]: {entry}",
+		"entry_format": "[{hh}:{mi}:{ss}] {instance_id}: {entry}",
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
 		"use_utc": false,
@@ -121,6 +121,7 @@ var default_settings := {
 var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
 var hotkey_stop_session: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")
 var hotkey_copy_session: InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres")
+var hotkey_print_instance_id: InputEventShortcut = preload("res://addons/GoLogger/PrintInstanceIDShortcut.tres")
 
 enum ErrorCodes { #NYI - For future use in error/warning messages
 		ERR_NONE,
@@ -191,6 +192,8 @@ func _input(event: InputEvent) -> void:
 				stop_session()
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
+			if hotkey_print_instance_id.shortcut.matches_event(event) and event.is_released():
+				print_rich("[color=fc4674][font_size=12][GoLogger][color=white] Current Instance ID: [color=lightblue]", instance_id)
 
 		# Test entry logging with Comma Key.
 		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
@@ -280,7 +283,6 @@ func save_category_data() -> void:
 
 	# Save meta arrays
 	config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
-	config.set_value("categories", "instance_ids", cat_data["categories"]["instance_ids"])
 
 	# [categories.category_name]
 	for name in cat_data["categories"]["category_names"]:
@@ -295,15 +297,15 @@ func save_category_data() -> void:
 		config.set_value(base_section, "is_locked", c.get("is_locked", false))
 
 		# [categories.category_name.instance_id]
-		for id in cat_data["categories"]["instance_ids"]:
-			if !c.has("instances") or !c["instances"].has(id):
-				continue
-			var inst = c["instances"][id]
-			var inst_section := base_section + "." + str(id)
-			config.set_value(inst_section, "id", inst.get("id", id))
-			config.set_value(inst_section, "file_name", inst.get("file_name", ""))
-			config.set_value(inst_section, "file_path", inst.get("file_path", ""))
-			config.set_value(inst_section, "entry_count", inst.get("entry_count", 0))
+		# for id in cat_data["categories"]["instance_ids"]:
+		# 	if !c.has("instances") or !c["instances"].has(id):
+		# 		continue
+		# 	var inst = c["instances"][id]
+		# 	var inst_section := base_section + "." + str(id)
+		# 	config.set_value(inst_section, "id", inst.get("id", id))
+		# 	config.set_value(inst_section, "file_name", inst.get("file_name", ""))
+		# 	config.set_value(inst_section, "file_path", inst.get("file_path", ""))
+		# 	config.set_value(inst_section, "entry_count", inst.get("entry_count", 0))
 
 	config.save(PATH)
 
@@ -509,7 +511,7 @@ func save_copy(_name: String = "") -> void:
 
 
 func complete_copy() -> void:
-	if !session_status:
+	if !session_status: # ER
 		if _get_settings_value("settings", "error_reporting") != 2: push_warning("GoLogger: Failed to save copies due to inactive session.")
 		return
 
@@ -519,7 +521,9 @@ func complete_copy() -> void:
 		if config.get_value("settings", "error_reporting"):
 			push_warning("GoLogger: Unable to complete copy action. No categories are present.")
 
+	var reject_str: Array[String] = [".log", ".txt", ".cfg", ".ini", ".json", ".xml", ".yml", ".yaml", ".csv"]
 	var reject_ch: Array[String] = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+
 	for ch in reject_ch:
 		if copy_name.find(ch) != -1:
 			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Invalid character [", ch, "] found in file name.")
@@ -527,7 +531,6 @@ func complete_copy() -> void:
 			await get_tree().create_timer(4.0).timeout
 			return
 
-	var reject_str: Array[String] = [".log", ".txt", ".cfg", ".ini", ".json", ".xml", ".yml", ".yaml", ".csv"]
 	for strg in reject_str:
 		if copy_name.ends_with(strg):
 			copy_name.erase(copy_name.length() - strg.length(), strg.length())
@@ -634,7 +637,6 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
 
 	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "instance_ids", [])
 
 	cf.set_value("category.game", "category_name", "game")
 	cf.set_value("category.game", "category_index", 0)
@@ -822,7 +824,7 @@ func _get_settings_value(section: String, value : String) -> Variant:
 
 
 func _check_category_name_conflicts() -> Array[String]:
-	var categories = config.get_value("categories", "category_name" , [])
+	var categories = config.get_value("categories", "category_names" , [])
 	if categories.is_empty():
 		return []
 
@@ -1046,12 +1048,26 @@ func _on_line_edit_text_changed(new_text : String) -> void:
 
 
 func _on_line_edit_text_submitted(new_text : String) -> void:
-	if new_text != "":
-		if new_text.ends_with(".log") or new_text.ends_with(".txt"):
-			copy_name = new_text.substr(0, new_text.length() - 4)
-		else:
-			copy_name = popup_line_edit.text
-		complete_copy()
+	if new_text != "": return
+
+	var final_text: String = new_text
+	var reject_str: Array[String] = [".log", ".txt", ".cfg", ".ini", ".json", ".xml", ".yml", ".yaml", ".csv"]
+	var reject_ch: Array[String] = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+
+	for string in reject_str:
+		if new_text.ends_with(string):
+			new_text = new_text.substr(0, new_text.length() - string.length())
+
+	for ch in reject_ch:
+		if new_text.find(ch) != -1:
+			new_text = new_text.replace(ch, "")
+
+
+	if new_text.ends_with(".log") or new_text.ends_with(".txt"):
+		copy_name = new_text.substr(0, new_text.length() - 4)
+	else:
+		copy_name = popup_line_edit.text
+	complete_copy()
 
 
 func _on_button_up(btn: Button) -> void:

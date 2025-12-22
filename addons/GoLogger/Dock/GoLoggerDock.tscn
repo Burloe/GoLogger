@@ -231,7 +231,7 @@ columns = 5
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
 layout_mode = 2
 follow_focus = true
-scroll_vertical = 192
+scroll_vertical = 100
 scroll_horizontal_custom_step = 10.0
 metadata/_tab_index = 1
 
@@ -436,18 +436,15 @@ custom_minimum_size = Vector2(358, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
-Example: 
-    [{hh}:{mi}:{ss}]
-Results: 
-    [09:32:16] - entry
+ [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
 
 Supported tags:
-    {project_name}  {version}  {instance}
+    {project_name}  {version}  {instance_id}
     {yy}   {mm}   {dd}
     {hh}   {mi}   {ss}"
 theme_override_styles/normal = ExtResource("9_qo8nw")
-text = "[{hh}:{mi}:{ss}]: {entry}"
-placeholder_text = "[{hh}:{mi}:{ss}]: {entry}"
+text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
+placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 alignment = 1
 expand_to_text_length = true
 emoji_menu_enabled = false
