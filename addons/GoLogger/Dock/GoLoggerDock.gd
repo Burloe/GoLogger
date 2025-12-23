@@ -20,6 +20,9 @@ extends TabContainer
 	# Check font highlighting on mouse over for settings tab
 	# Check that renaming a category adds an int to the name
 	# Check print history works as expected
+	# Check that settings tooltips remain uniform between the buttons and their containers:
+		# There are two nodes per setting ( the container + the control( button/line edit/spin box ) )
+		# Both nodes should have the same tooltip text
 	# Ensure ConfigFile updates properly with:
 		# Applying name
 		# Adding category
@@ -476,6 +479,7 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 		"file_cap": 						"settings/file_cap",
 		"entry_cap": 						"settings/entry_cap",
 		"session_duration": 		"settings/session_duration",
+
 		"error_reporting": 			"settings/error_reporting"
 	}
 

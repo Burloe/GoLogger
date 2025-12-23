@@ -22,6 +22,7 @@ extends Node
 	# [Not started] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
 	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
+	# [Not started] Shorten tags in header and entry formats? e.g. {p_name} instead of {project_name}, {ver} instead of {version}
 	#
 	# Remove instance_id tags from header since files aren't per-instance anymore
 	#
@@ -81,10 +82,14 @@ var cat_data : Dictionary = {
 }
 
 ## Instance ID is a unique ID for each runtime instance of GoLogger. Used to differentiate between multiple instances when debugging multiplayer projects.
-var instance_id: String = ""
+var instance_id: String = "":
+	set(value):
+		instance_id = value
+		instance_id_label.text = str(value)
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
+@onready var instance_id_label: Label = %InstanceIDLabel
 @onready var popup: CenterContainer = %Popup
 @onready var popup_line_edit: LineEdit = %CopyNameLineEdit
 @onready var popup_yesbtn: Button = %PopupYesButton
@@ -160,6 +165,7 @@ func _ready() -> void:
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
 	instance_id = _get_instance_id()
+	instance_id_label.hide()
 
 	validate_settings()
 	load_category_data()
@@ -194,6 +200,11 @@ func _input(event: InputEvent) -> void:
 				save_copy()
 			if hotkey_print_instance_id.shortcut.matches_event(event) and event.is_released():
 				print_rich("[color=fc4674][font_size=12][GoLogger][color=white] Current Instance ID: [color=lightblue]", instance_id)
+			if hotkey_print_instance_id.shortcut.matches_event(event) and event.is_pressed():
+				instance_id_label.show()
+			if hotkey_print_instance_id.shortcut.matches_event(event) and event.is_released():
+				instance_id_label.hide()
+
 
 		# Test entry logging with Comma Key.
 		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
