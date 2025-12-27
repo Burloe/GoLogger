@@ -11,9 +11,9 @@ extends TabContainer
 		# [DONE] is_locked property handling
 		# [DONE] Account for ConfigFile clobbering
 		# [DONE]Check that renaming a category adds an int to the name
+		# [DONE]Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
+		# [DONE]Remove instance_id tags from Header settings since files aren't per-instance anymore
 		# Apply log header format button not disabling when using enter key to submit text
-		# Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
-		# Remove instance_id tags from Header settings since files aren't per-instance anymore
 
 # RELEASE CHECKLIST:
 	# Ensure CATEGORIES tab is visible (default)
@@ -105,10 +105,13 @@ var session_duration_spinbox_line: LineEdit
 @onready var plugin_version_cat_lbl: Label = %PluginVersionCatLabel
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
+@onready var hotkey_lbl: Label = %HotkeyLabel
 @onready var start_session_btn: Button = %StartSessionBtn
 @onready var copy_session_btn: Button = %CopySessionBtn
 @onready var stop_session_btn: Button = %StopSessionBtn
-@onready var print_instance_id_btn: Button = %PrintInstanceIDBtn
+@onready var display_instance_id_btn: Button = %DisplayInstanceIDBtn
+@onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckBtn
+
 
 @onready var help_tab_container: TabContainer = %HelpTabContainer
 
@@ -208,6 +211,7 @@ func _ready() -> void:
 			canvas_layer_spinbox,
 			autostart_btn,
 			utc_btn,
+			print_instance_id_btn,
 			limit_method_btn,
 			entry_count_action_btn,
 			session_timer_action_btn,
@@ -239,15 +243,14 @@ func _ready() -> void:
 					btn_array[i].text_changed.disconnect(_on_line_edit_text_changed)
 				btn_array[i].text_changed.connect(_on_line_edit_text_changed.bind(btn_array[i]))
 
-				# if btn_array[i].text_submitted.is_connected(_on_line_edit_text_submitted):
-				# 	btn_array[i].text_submitted.disconnect(_on_line_edit_text_submitted)
-				# btn_array[i].text_submitted.connect(_on_line_edit_text_submitted.bind(btn_array[i]))
+				if btn_array[i].text_submitted.is_connected(_on_line_edit_text_submitted):
+					btn_array[i].text_submitted.disconnect(_on_line_edit_text_submitted)
+				btn_array[i].text_submitted.connect(_on_line_edit_text_submitted.bind(btn_array[i]))
 
 			elif btn_array[i] is SpinBox:
 				if btn_array[i].value_changed.is_connected(_on_spinbox_value_changed):
 					btn_array[i].value_changed.disconnect(_on_spinbox_value_changed)
 				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i]))
-
 
 		# Connect the "text submitted" signal of SpinBoxes underlying LineEdit node
 		if canvas_spinbox_line == null: canvas_spinbox_line = canvas_layer_spinbox.get_line_edit()
@@ -269,6 +272,7 @@ func _ready() -> void:
 		if session_duration_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
 			session_duration_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
 		session_duration_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(session_duration_spinbox_line))
+
 
 		container_array = [
 			base_dir_container,
@@ -341,10 +345,19 @@ func _ready() -> void:
 			entry_format_reset_btn.button_up.disconnect(_on_button_button_up)
 		entry_format_reset_btn.button_up.connect(_on_button_button_up.bind(entry_format_reset_btn))
 
+		start_session_btn.mouse_entered.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, true))
+		start_session_btn.mouse_exited.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, false))
+		copy_session_btn.mouse_entered.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, true))
+		copy_session_btn.mouse_exited.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, false))
+		stop_session_btn.mouse_entered.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, true))
+		stop_session_btn.mouse_exited.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, false))
+		display_instance_id_btn.mouse_entered.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, true))
+		display_instance_id_btn.mouse_exited.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, false))
+
 		start_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(0))
 		copy_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(1))
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
-		print_instance_id_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(3))
+		display_instance_id_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(3))
 
 
 		load_data()
@@ -853,31 +866,6 @@ func _on_button_button_up(node: Button) -> void:
 	match node:
 		base_dir_apply_btn:
 			apply_new_base_directory()
-			# var old_dir = config.get_value("settings", "base_directory")
-			# var new_dir = base_dir_line.text
-			# var _d = DirAccess.open(new_dir)
-			# if _d == null:
-			# 	var _res : int
-			# 	_d = DirAccess.open(".")
-			# 	if new_dir.begins_with("res://") or new_dir.begins_with("user://"):
-			# 		_res = _d.make_dir(new_dir)
-			# 	else:
-			# 		_res = DirAccess.make_dir_absolute(new_dir)
-			# 	if _res != OK:
-			# 		if config.get_value("settings", "error_reporting") != 2:
-			# 			push_warning("GoLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
-			# 		base_dir_line.text = old_dir
-			# 		base_dir_apply_btn.disabled = true
-			# 		return
-			# 	_d = DirAccess.open(new_dir)
-			# if _d == null or DirAccess.get_open_error() != OK:
-			# 	if config.get_value("settings", "error_reporting") != 2:
-			# 		push_warning("GoLogger: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
-			# 	base_dir_line.text = old_dir
-			# 	base_dir_apply_btn.disabled = true
-			# 	return
-			# config.set_value("settings", "base_directory", new_dir)
-			# print_rich(c_print_history, "Base directory changed.")
 
 		base_dir_opendir_btn:
 			if config.get_value("settings", "base_directory") == "":
@@ -955,49 +943,20 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 				entry_format_apply_btn.disabled = true
 
 
-# func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
-# 	pass
-# 	config.load(PATH)
-# 	match node:
-# 		base_dir_line:
-			# apply_new_base_directory()
-			# var old_dir = config.get_value("settings", "base_directory")
-			# if new_text == "":
-			# 	base_dir_line.text = default_settings["base_directory"]
-
-			# var _d = DirAccess.open(new_text)
-			# _d.make_dir(new_text)
-			# var _e = DirAccess.get_open_error()
-			# if _e == OK:
-			# 	config.set_value("settings", "base_directory", new_text)
-			# else:
-			# 	base_dir_line.text = old_dir
+func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
+	match node:
+		base_dir_line:
 			# base_dir_apply_btn.disabled = true
-			# base_dir_line.release_focus()
-			# print_rich(c_print_history, "Base Directory changed.")
+			base_dir_line.release_focus()
 
-# 		log_header_line:
-# 			if new_text == "": return
+		log_header_line:
+			# log_header_apply_btn.disabled = true
+			log_header_line.release_focus()
 
-# 			var old_header = config.get_value("settings", "log_header_format", "")
+		entry_format_line:
+			# entry_format_apply_btn.disabled = true
+			entry_format_line.release_focus()
 
-# 			if new_text != old_header:
-# 				config.set_value("settings", "log_header_format", new_text)
-# 			log_header_apply_btn.disabled = true
-# 			log_header_line.release_focus()
-# 			print_rich(c_print_history, "Log Header format changed.")
-
-# 		entry_format_line:
-# 			var old_format = config.get_value("settings", "entry_format", "")
-# 			if new_text != old_format:
-# 				entry_format_apply_btn.disabled = false
-# 			if new_text == "":
-# 				entry_format_line.text = "{entry}"
-# 			entry_format_apply_btn.disabled = true
-# 			entry_format_line.release_focus()
-# 			print_rich(c_print_history, "Entry Format changed.")
-
-# 	save_data()
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
@@ -1031,6 +990,10 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 			config.set_value("settings", "use_utc", toggled_on)
 			print_rich(c_print_history + "Use UTC option " + "enabled." if toggled_on else c_print_history + "Use UTC option " + "disabled.")
 
+		print_instance_id_btn:
+			config.set_value("settings", "print_instance_id", toggled_on)
+			print_rich(c_print_history + "Print Instance ID option " + "enabled." if toggled_on else c_print_history + "Print Instance ID option " + "disabled.")
+	# config.save(PATH)
 	save_data()
 
 

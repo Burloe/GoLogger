@@ -209,19 +209,26 @@ columns = 5
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
 layout_mode = 2
 follow_focus = true
+scroll_vertical = 135
 scroll_horizontal_custom_step = 10.0
+vertical_scroll_mode = 2
+scroll_hint_mode = 1
+tile_scroll_hint = true
 metadata/_tab_index = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings" unique_id=2095868147]
+custom_minimum_size = Vector2(0, 482)
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer" unique_id=1178249992]
 layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="L_Panel" type="Panel" parent="Settings/MarginContainer/HBoxContainer" unique_id=1299947772]
-custom_minimum_size = Vector2(760, 464)
+custom_minimum_size = Vector2(760, 490)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -432,9 +439,9 @@ layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = -187.0
+offset_left = -235.0
 offset_top = -19.5
-offset_right = -12.0
+offset_right = -60.0
 offset_bottom = 21.5
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
@@ -483,6 +490,16 @@ icon = ExtResource("3_y66hb")
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
+[node name="HotkeyLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1651499941]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 23)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_y5prw")
+theme_override_font_sizes/font_size = 14
+text = " Runtime Hotkey Bindings:"
+vertical_alignment = 2
+
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=455253237]
 layout_mode = 2
 theme_override_constants/separation = 20
@@ -508,34 +525,52 @@ size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Stop Session"
 
-[node name="PrintInstanceIDBtn" type="Button" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1760330988]
+[node name="DisplayInstanceIDBtn" type="Button" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1760330988]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Display Instance ID"
 
+[node name="HBoxContainer3" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=850685026]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=409968790]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=1680159305]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
+text = "Print ID on display"
+alignment = 2
+
 [node name="Spacer" type="Control" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1382019692]
 custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1084513318]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=94297257]
+layout_mode = 2
+
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1523429579]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+vertical_alignment = 2
+
+[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1084513318]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Resets plugin to default (settings and categories)"
 text = "Reset to default"
 
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1523429579]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-horizontal_alignment = 2
-
 [node name="R_Panel" type="Panel" parent="Settings/MarginContainer/HBoxContainer" unique_id=1757351944]
-custom_minimum_size = Vector2(390, 464)
+custom_minimum_size = Vector2(394, 490)
 layout_mode = 2
 size_flags_vertical = 3
 
