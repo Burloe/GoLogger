@@ -37,6 +37,7 @@ corner_radius_bottom_left = 3
 corner_detail = 5
 
 [node name="GoLoggerDock" type="TabContainer" unique_id=1764928138]
+clip_children = 2
 anchors_preset = -1
 anchor_right = 0.686
 anchor_bottom = 0.281
@@ -214,15 +215,13 @@ metadata/_tab_index = 1
 [node name="MarginContainer" type="MarginContainer" parent="Settings" unique_id=2095868147]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_bottom = 12
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer" unique_id=1178249992]
 layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="L_Panel" type="Panel" parent="Settings/MarginContainer/HBoxContainer" unique_id=1299947772]
-custom_minimum_size = Vector2(0, 464)
+custom_minimum_size = Vector2(760, 464)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -277,7 +276,7 @@ icon_alignment = 1
 
 [node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(358, 0)
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". "
@@ -338,7 +337,7 @@ text = " Log Header Format:"
 
 [node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(358, 0)
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
 
@@ -410,7 +409,7 @@ icon_alignment = 1
 
 [node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(358, 0)
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
  [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
@@ -480,59 +479,6 @@ theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 14
 icon = ExtResource("3_y66hb")
 
-[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=710849123]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
-alignment = 2
-
-[node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/CanvasLayerHBox" unique_id=790619810]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 2
-size_flags_vertical = 1
-text = "Save Copy canvas layer"
-vertical_alignment = 1
-
-[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/CanvasLayerHBox" unique_id=2097000839]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
-value = 5.0
-rounded = true
-update_on_text_changed = true
-prefix = "Layer"
-
-[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=319403748]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Sets the level of error reporting."
-alignment = 2
-
-[node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/ErrorRepHBox" unique_id=1697480406]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Error report level"
-
-[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/ErrorRepHBox" unique_id=619537097]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Sets the level of error reporting."
-selected = 0
-item_count = 4
-popup/item_0/text = "Warnings & Errors    "
-popup/item_0/id = 0
-popup/item_1/text = "Errors only"
-popup/item_1/id = 1
-popup/item_2/id = 2
-popup/item_2/disabled = true
-popup/item_2/separator = true
-popup/item_3/text = "None"
-popup/item_3/id = 3
-
 [node name="Control" type="Control" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1303847432]
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
@@ -545,38 +491,52 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Opens the InputEventShortcut resource in the Inspector"
+tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Start Session"
 
 [node name="CopySessionBtn" type="Button" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=625254447]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Opens the InputEventShortcut resource in the Inspector"
+tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Copy Session"
 
 [node name="StopSessionBtn" type="Button" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=2126222086]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Opens the InputEventShortcut resource in the Inspector"
+tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Stop Session"
 
 [node name="PrintInstanceIDBtn" type="Button" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1760330988]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Opens the InputEventShortcut resource in the Inspector"
-text = "Print Instance ID"
+tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
+text = "Display Instance ID"
 
 [node name="Spacer" type="Control" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1382019692]
 custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
 
-[node name="R_Panel" type="Panel" parent="Settings/MarginContainer/HBoxContainer" unique_id=1757351944]
-custom_minimum_size = Vector2(0, 464)
+[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1084513318]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Resets plugin to default (settings and categories)"
+text = "Reset to default"
+
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1523429579]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
+
+[node name="R_Panel" type="Panel" parent="Settings/MarginContainer/HBoxContainer" unique_id=1757351944]
+custom_minimum_size = Vector2(390, 464)
+layout_mode = 2
 size_flags_vertical = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/HBoxContainer/R_Panel" unique_id=2078052846]
@@ -804,20 +764,58 @@ suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/HBoxContainer/R_Panel/MarginContainer/VBoxContainer" unique_id=1084513318]
+[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/R_Panel/MarginContainer/VBoxContainer" unique_id=710849123]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Resets plugin to default (settings and categories)"
-text = "Reset to default"
+tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
+alignment = 2
 
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/R_Panel/MarginContainer/VBoxContainer" unique_id=1523429579]
+[node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/R_Panel/MarginContainer/VBoxContainer/CanvasLayerHBox" unique_id=790619810]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 2
 size_flags_vertical = 1
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-horizontal_alignment = 2
+text = "Save Copy canvas layer"
+vertical_alignment = 1
+
+[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/HBoxContainer/R_Panel/MarginContainer/VBoxContainer/CanvasLayerHBox" unique_id=2097000839]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
+value = 5.0
+rounded = true
+update_on_text_changed = true
+prefix = "Layer"
+
+[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/R_Panel/MarginContainer/VBoxContainer" unique_id=319403748]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Sets the level of error reporting."
+alignment = 2
+
+[node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/R_Panel/MarginContainer/VBoxContainer/ErrorRepHBox" unique_id=1697480406]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Error report level"
+
+[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/HBoxContainer/R_Panel/MarginContainer/VBoxContainer/ErrorRepHBox" unique_id=619537097]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Sets the level of error reporting."
+selected = 0
+item_count = 4
+popup/item_0/text = "Warnings & Errors    "
+popup/item_0/id = 0
+popup/item_1/text = "Errors only"
+popup/item_1/id = 1
+popup/item_2/id = 2
+popup/item_2/disabled = true
+popup/item_2/separator = true
+popup/item_3/text = "None"
+popup/item_3/id = 3
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true
@@ -1054,23 +1052,23 @@ bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Concurrency / Running Multiple Instances:[color=white]
 [font_size=14]There are times that running multiple instances at the same time while debugging/testing your project. Such is the case for multiplayer games. However, when doing so. You have two instances logging into one log file and you need some way to know which instance logged which entry. This is possible by adding the {instance_id} tag to the Entry Format setting. An instance ID is a simple ID string that is generated at runtime(much like UIDs). 
 
-You can use the [color=aquamarine]Print Instance ID[color=white] hotkey to see which instance has what ID.
+You can use the [color=aquamarine]Display Instance ID[color=white] hotkey to see which instance has what ID.
 
 
 
 [font_size=16][color=fc4674]Formatting Log Header & Entries:[color=white][font_size=14]
-[color=aquamarine]Log Header[color=white] and [color=gold]Entries[color=white] can be formatted in any way you may want in the Settings tab. You can add any string you want but you can also add tags to include useful data to said settings. Such as the project name, version, date and time. You can format the date and time for your preference/region.
+Log Header and Entries can be formatted in any way you may want in the Settings tab. You can add any string you want but you can also add tags to include useful data to said settings. Such as the project name, version, date and time. You can format the date and time for your preference/region.
 
 Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
- [color=aquamarine]{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session {2025-12-20 | 18:42:21]:[color=white]
- [color=gold][{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String[color=white]
+ [color=aquamarine]{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session {2025-12-20 | 18:42:21]:
+ [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
 
 Supported tags:
     {project_name}  {version}  {instance_id}
     {yy} Year -  {mm} Month - {dd} Day 
     {hh} Hour - {mi} Minute - {ss} Second
-	[color=aquamarine]{category} Only available for Log Header[color=white]
-	[color=gold]{entry} Only available for Entry Format[color=white]"
+	{category} Only available for Log Header
+	{entry} Only available for Entry Format"
 
 [node name="More Info" type="MarginContainer" parent="Help/HelpTabContainer" unique_id=287159984]
 visible = false

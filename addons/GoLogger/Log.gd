@@ -340,8 +340,12 @@ func start_session() -> void:
 
 	for i in range(cat_data["categories"]["category_names"].size()):
 		var c_name: String = cat_data["categories"]["category_names"][i]
-		var f_name: String  = _get_file_name(c_name) # e.g. "game.log"
+		var f_name: String = _get_file_name(c_name) # e.g. "game.log"
+		var f_path: String = str(config.get_value("settings", "base_directory", default_settings["base_directory"]), c_name, "_logs/", f_name)
 
+		config.set_value("categories." + str(c_name), "file_name", f_name)
+		config.set_value("categories." + str(c_name), "file_path", f_path)
+		config.save(PATH)
 
 		# Open/create directory
 		var path: String = str(config.get_value("settings", "base_directory", "user://GoLogger/"), c_name, "_logs/")
@@ -359,9 +363,9 @@ func start_session() -> void:
 			continue
 
 		# Create/open file
-		var _f = FileAccess.open(config.get_value(str("categories.", c_name), "file_path", "EMPTY FILEPATH!"), FileAccess.WRITE)
+		var _f = FileAccess.open(f_path, FileAccess.WRITE)
 		if !_f and _get_settings_value("settings", "error_reporting") != 2:
-			push_warning("GoLogger: Failed to create log file for session(", config.get_value(str("categories.", c_name), "file_path", "EMPTY FILEPATH!"), ").")
+			push_warning("GoLogger: Failed to create log file for session(", f_path, ").")
 			continue
 
 		var _files = dir.get_files()
@@ -950,7 +954,7 @@ func _get_file_name(category_name : String) -> String:
 	var mi  : String = str(dict["minute"] if dict["minute"] > 9 else str("0", dict["minute"]))
 	var ss  : String = str(dict["second"] if dict["second"] > 9 else str("0", dict["second"]))
 	var fin : String
-	fin = str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ")_", instance_id, ".log")
+	fin = str(category_name, "(", yy, mm, dd, "_", hh,mi, ss, ").log")
 	return fin
 
 
