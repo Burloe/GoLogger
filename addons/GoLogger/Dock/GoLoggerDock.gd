@@ -115,7 +115,7 @@ var session_duration_spinbox_line: LineEdit
 
 @onready var help_tab_container: TabContainer = %HelpTabContainer
 
-var PATH = "user://GoLogger/settings.ini"
+const PATH = "user://gologger_data.ini"
 
 var valid_line_edit_stylebox := preload("uid://b8w5i8chks7st")
 var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
@@ -145,6 +145,7 @@ var default_settings := {
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
 		"use_utc": false,
+		"print_instance_id": false,
 		"limit_method": 0,
 		"entry_count_action": 0,
 		"session_timer_action": 0,
@@ -162,6 +163,7 @@ var settings_control := {
 	"canvaslayer_layer": canvas_layer_spinbox,
 	"autostart_session": autostart_btn,
 	"use_utc": utc_btn,
+	"print_instance_id": print_instance_id_btn,
 	"limit_method": limit_method_btn,
 	"entry_count_action": entry_count_action_btn,
 	"session_timer_action": session_timer_action_btn,
@@ -370,6 +372,7 @@ func _ready() -> void:
 			"canvaslayer_layer": canvas_layer_spinbox,
 			"autostart_session": autostart_btn,
 			"use_utc": utc_btn,
+			"print_instance_id": print_instance_id_btn,
 			"limit_method": limit_method_btn,
 			"entry_count_action": entry_count_action_btn,
 			"session_timer_action": session_timer_action_btn,
@@ -392,6 +395,7 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	cf.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
 	cf.set_value("settings", "autostart_session", default_settings["autostart_session"])
 	cf.set_value("settings", "use_utc", default_settings["use_utc"])
+	cf.set_value("settings", "print_instance_id", default_settings["print_instance_id"])
 	cf.set_value("settings", "limit_method", default_settings["limit_method"])
 	cf.set_value("settings", "entry_count_action", default_settings["entry_count_action"])
 	cf.set_value("settings", "session_timer_action", default_settings["session_timer_action"])
@@ -423,19 +427,20 @@ func load_settings_state() -> void:
 	log_header_apply_btn.disabled = true
 	entry_format_apply_btn.disabled = true
 
-	base_dir_line.text = 								config.get_value("settings", "base_directory", default_settings["base_directory"])
-	log_header_line.text = 							config.get_value("settings", "log_header_format", default_settings["log_header_format"])
-	entry_format_line.text = 						config.get_value("settings", "entry_format", default_settings["entry_format"])
-	canvas_layer_spinbox.value = 				config.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
-	autostart_btn.button_pressed = 			config.get_value("settings", "autostart_session", default_settings["autostart_session"])
-	utc_btn.button_pressed = 						config.get_value("settings", "use_utc", default_settings["use_utc"])
-	limit_method_btn.selected = 				config.get_value("settings", "limit_method", default_settings["limit_method"])
-	entry_count_action_btn.selected = 	config.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
-	session_timer_action_btn.selected = config.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
-	file_count_spinbox.value = 					config.get_value("settings", "file_cap", default_settings["file_cap"])
-	entry_count_spinbox.value = 				config.get_value("settings", "entry_cap", default_settings["entry_cap"])
-	session_duration_spinbox.value = 		config.get_value("settings", "session_duration", default_settings["session_duration"])
-	error_rep_btn.selected = 						config.get_value("settings", "error_reporting", default_settings["error_reporting"])
+	base_dir_line.text = 										config.get_value("settings", "base_directory", default_settings["base_directory"])
+	log_header_line.text = 									config.get_value("settings", "log_header_format", default_settings["log_header_format"])
+	entry_format_line.text = 								config.get_value("settings", "entry_format", default_settings["entry_format"])
+	canvas_layer_spinbox.value = 						config.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
+	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session", default_settings["autostart_session"])
+	utc_btn.button_pressed = 								config.get_value("settings", "use_utc", default_settings["use_utc"])
+	print_instance_id_btn.button_pressed = 	config.get_value("settings", "print_instance_id", default_settings["print_instance_id"])
+	limit_method_btn.selected = 						config.get_value("settings", "limit_method", default_settings["limit_method"])
+	entry_count_action_btn.selected = 			config.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	session_timer_action_btn.selected = 		config.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	file_count_spinbox.value = 							config.get_value("settings", "file_cap", default_settings["file_cap"])
+	entry_count_spinbox.value = 						config.get_value("settings", "entry_cap", default_settings["entry_cap"])
+	session_duration_spinbox.value = 				config.get_value("settings", "session_duration", default_settings["session_duration"])
+	error_rep_btn.selected = 								config.get_value("settings", "error_reporting", default_settings["error_reporting"])
 	column_slider.value = _get_column_value(config.get_value("settings", "columns", _get_column_value(default_settings["columns"])))
 
 
@@ -456,20 +461,21 @@ func reset_to_default() -> void:
 			lc.queue_free()
 	add_category("game", 0, false)
 
-	base_dir_line.text = 								default_settings["base_directory"]
-	log_header_line.text = 							default_settings["log_header_format"]
-	entry_format_line.text = 						default_settings["entry_format"]
-	canvas_layer_spinbox.value = 				default_settings["canvaslayer_layer"]
-	autostart_btn.button_pressed = 			default_settings["autostart_session"]
-	utc_btn.button_pressed = 						default_settings["use_utc"]
-	limit_method_btn.selected = 				default_settings["limit_method"]
-	entry_count_action_btn.selected = 	default_settings["entry_count_action"]
-	session_timer_action_btn.selected = default_settings["session_timer_action"]
-	file_count_spinbox.value = 					default_settings["file_cap"]
-	entry_count_spinbox.value = 				default_settings["entry_cap"]
-	session_duration_spinbox.value = 		default_settings["session_duration"]
-	error_rep_btn.selected = 						default_settings["error_reporting"]
-	column_slider.value = 							_get_column_value(default_settings["columns"])
+	base_dir_line.text = 										default_settings["base_directory"]
+	log_header_line.text = 									default_settings["log_header_format"]
+	entry_format_line.text = 								default_settings["entry_format"]
+	canvas_layer_spinbox.value = 						default_settings["canvaslayer_layer"]
+	autostart_btn.button_pressed = 					default_settings["autostart_session"]
+	utc_btn.button_pressed = 								default_settings["use_utc"]
+	print_instance_id_btn.button_pressed = 	default_settings["print_instance_id"]
+	limit_method_btn.selected = 						default_settings["limit_method"]
+	entry_count_action_btn.selected = 			default_settings["entry_count_action"]
+	session_timer_action_btn.selected = 		default_settings["session_timer_action"]
+	file_count_spinbox.value = 							default_settings["file_cap"]
+	entry_count_spinbox.value = 						default_settings["entry_cap"]
+	session_duration_spinbox.value = 				default_settings["session_duration"]
+	error_rep_btn.selected = 								default_settings["error_reporting"]
+	column_slider.value = 									_get_column_value(default_settings["columns"])
 
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
@@ -490,6 +496,7 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 		"canvaslayer_layer": 		"settings/canvaslayer_layer",
 		"autostart_session": 		"settings/autostart_session",
 		"use_utc": 							"settings/use_utc",
+		"print_instance_id": 		"settings/print_instance_id",
 		"limit_method": 				"settings/limit_method",
 		"entry_count_action": 	"settings/entry_count_action",
 		"session_timer_action": "settings/session_timer_action",
@@ -509,6 +516,7 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 		"settings/canvaslayer_layer": 		TYPE_INT,
 		"settings/autostart_session": 		TYPE_BOOL,
 		"settings/use_utc": 							TYPE_BOOL,
+		"settings/print_instance_id": 		TYPE_BOOL,
 		"settings/limit_method": 					TYPE_INT,
 		"settings/entry_count_action": 		TYPE_INT,
 		"settings/session_timer_action": 	TYPE_INT,
@@ -606,6 +614,7 @@ func load_data() -> void:
 	canvas_layer_spinbox.value = _c.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
 	autostart_btn.button_pressed = _c.get_value("settings", "autostart_session", default_settings["autostart_session"])
 	utc_btn.button_pressed = _c.get_value("settings", "use_utc", default_settings["use_utc"])
+	print_instance_id_btn.button_pressed = _c.get_value("settings", "print_instance_id", default_settings["print_instance_id"])
 	limit_method_btn.selected = _c.get_value("settings", "limit_method", default_settings["limit_method"])
 	entry_count_action_btn.selected = _c.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
 	session_timer_action_btn.selected = _c.get_value("settings", "session_timer_action", default_settings["session_timer_action"])

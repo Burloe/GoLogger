@@ -220,7 +220,7 @@ metadata/_tab_index = 1
 custom_minimum_size = Vector2(0, 482)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer" unique_id=1178249992]
@@ -324,16 +324,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
-
-Example: 
-    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:
-Results: 
-    GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
+    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:  >  GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
-    {project_name}  {version}  {instance}  {category}
-    {yy}   {mm}   {dd}
-    {hh}   {mi}   {ss}"
+    {project_name}  {version}  {category}
+    {yy}   {mm}   {dd} - year, month, day 
+    {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
 theme_override_constants/separation = 8
 
 [node name="LogHeaderLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
@@ -347,16 +343,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
-
-Example: 
-    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:
-Results: 
-    GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
+    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:  >  GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
 
 Supported format tags:
-    {project_name}  {version}  {instance}  {category}
-    {yy}   {mm}   {dd}
-    {hh}   {mi}   {ss}"
+    {project_name}  {version}  {category}
+    {yy}   {mm}   {dd} - year, month, day 
+    {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
 theme_override_styles/normal = ExtResource("9_qo8nw")
 text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
@@ -391,13 +383,14 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
+tooltip_text = "Any text and symbol formatting can be used.
  [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
 
 Supported tags:
-    {project_name}  {version}  {instance_id}
-    {yy}   {mm}   {dd}
-    {hh}   {mi}   {ss}"
+    {entry} - Required
+    {project_name}  {version}  {instance_id} 
+    {yy}   {mm}   {dd} - year, month, day 
+    {hh}   {mi}   {ss} - hour, minute, second "
 theme_override_constants/separation = 8
 
 [node name="EntryFormatLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
@@ -418,13 +411,14 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
-tooltip_text = "Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
+tooltip_text = "Any text and symbol formatting can be used.
  [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
 
 Supported tags:
-    {project_name}  {version}  {instance_id}
-    {yy}   {mm}   {dd}
-    {hh}   {mi}   {ss}"
+    {entry} - Required
+    {project_name}  {version}  {instance_id} 
+    {yy}   {mm}   {dd} - year, month, day 
+    {hh}   {mi}   {ss} - hour, minute, second "
 theme_override_styles/normal = ExtResource("9_qo8nw")
 text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
@@ -1095,15 +1089,15 @@ You can use the [color=aquamarine]Display Instance ID[color=white] hotkey to see
 Log Header and Entries can be formatted in any way you may want in the Settings tab. You can add any string you want but you can also add tags to include useful data to said settings. Such as the project name, version, date and time. You can format the date and time for your preference/region.
 
 Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
- [color=aquamarine]{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session {2025-12-20 | 18:42:21]:
+ {project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session {2025-12-20 | 18:42:21]:
  [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
 
 Supported tags:
     {project_name}  {version}  {instance_id}
-    {yy} Year -  {mm} Month - {dd} Day 
-    {hh} Hour - {mi} Minute - {ss} Second
-	{category} Only available for Log Header
-	{entry} Only available for Entry Format"
+    {yy}  {mm}  {dd} [color=darkgray]Year, Month, Day[color=white]
+    {hh}  {mi}  {ss} [color=darkgray]Hour, Minute, Second[color=white]
+	{category} [color=darkgray]- Only available for Log Header[color=white]
+	{entry} [color=darkgray]- Only available for Entry Format and is required[color=white]"
 
 [node name="More Info" type="MarginContainer" parent="Help/HelpTabContainer" unique_id=287159984]
 visible = false
