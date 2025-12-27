@@ -403,26 +403,26 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 	var target_filepath: String = config.get_value(str("categories.", category_name), "file_path", "")
 	# var target_filepath: String = _d["instances"][instance_id].get("file_path", "")
 
-	# ER
-	if log_entry == "": # ER
+	# Early Returns
+	if log_entry == "":
 		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
 
-	if _d.is_empty(): # ER
+	if _d.is_empty():
 		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
-	if _d[category_name].is_empty(): # ER
+	if _d["category_name"].is_empty():
 		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Category '" + category_name + "' not found. Check correct spelling.")
 		return
 
-	if !session_status: # ER - Doesn't make sense print error for this
+	if !session_status:
 		return
 
-	if target_filepath == "": # ER
+	if target_filepath == "":
 		if _get_settings_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: No valid file path found for category '" + category_name + "' instance[" + instance_id + "].")
 		return
@@ -933,7 +933,8 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 		"{dd}": dd,
 		"{hh}": hh,
 		"{mi}": mi,
-		"{ss}": ss
+		"{ss}": ss,
+		"{entry}": entry
 	}
 
 	var format: String = _get_settings_value("settings", "entry_format")
