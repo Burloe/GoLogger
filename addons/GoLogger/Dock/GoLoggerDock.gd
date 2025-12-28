@@ -182,7 +182,7 @@ var settings_control := {
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
-		entry_format_warning.visible = !is_entry_format_valid(entry_format_line.text)
+		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
 
 		if !FileAccess.file_exists(PATH):
 			create_settings_file()
@@ -196,7 +196,7 @@ func _ready() -> void:
 			else: print_rich("GoLogger error: Uknown node in category container. Expected LogCategory, got ", i.get_name(), "\nThis is a bug, please create an issue at: @[url]https://github.com/Burloe/GoLogger/issues[/url]")
 
 		add_category_btn.button_up.connect(add_category)
-		open_dir_btn.button_up.connect(open_directory)
+		open_dir_btn.button_up.connect(_open_directory)
 		column_slider.value_changed.connect(_on_column_slider_value_changed)
 		reset_settings_btn.button_up.connect(reset_to_default)
 
@@ -571,7 +571,7 @@ func validate_settings() -> void: # Note mirror function also present in Log.gd.
 			# printerr(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
 			present_settings_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
-	if present_settings_faults > 0: push_warning("GoLogger: One or more settings were missing from the settings.ini file. Default values have been restored for the missing settings.")
+	# if present_settings_faults > 0: push_warning("GoLogger: One or more settings were missing from the settings.ini file. Default values have been restored for the missing settings.")
 
 	# Valodate types of settings -> Apply default if type mismatch
 	for setting_key in expected_types.keys():
@@ -800,12 +800,12 @@ static func get_error(error: int, object_type: String = "") -> String:
 	return "N/A"
 
 
-func open_directory() -> void:
+func _open_directory() -> void:
 	var abs_path = ProjectSettings.globalize_path(config.get_value("settings", "base_directory"))
 	OS.shell_open(abs_path)
 
 
-func apply_new_base_directory() -> void:
+func _apply_new_base_directory() -> void:
 	var old_dir = config.get_value("settings", "base_directory")
 	var new_dir = base_dir_line.text.strip_edges()
 	# Don't accept empty path
@@ -859,7 +859,7 @@ func apply_new_base_directory() -> void:
 	base_dir_apply_btn.disabled = true
 
 
-func is_entry_format_valid(format: String) -> bool:
+func _is_entry_format_valid(format: String) -> bool:
 	return true if format.contains("{entry}") else false
 
 
@@ -874,12 +874,12 @@ func _on_button_button_up(node: Button) -> void:
 	config.load(PATH)
 	match node:
 		base_dir_apply_btn:
-			apply_new_base_directory()
+			_apply_new_base_directory()
 
 		base_dir_opendir_btn:
 			if config.get_value("settings", "base_directory") == "":
 				push_warning("GoLogger: Base directory path isn't set. Please set a valid directory path before opening the directory.")
-			open_directory()
+			_open_directory()
 
 		base_dir_reset_btn:
 			config.set_value("settings", "base_directory", "user://GoLogger/")
@@ -939,14 +939,14 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 				log_header_apply_btn.disabled = true
 
 		entry_format_line:
-			if is_entry_format_valid(new_text):
+			if _is_entry_format_valid(new_text):
 				entry_format_line.add_theme_stylebox_override("normal", valid_line_edit_stylebox)
 				entry_format_warning.visible = false
 			else:
 				entry_format_line.add_theme_stylebox_override("normal", invalid_line_edit_stylebox)
 				entry_format_warning.visible = true
 
-			if new_text != config.get_value("settings", "entry_format", "") and is_entry_format_valid(new_text):
+			if new_text != config.get_value("settings", "entry_format", "") and _is_entry_format_valid(new_text):
 				entry_format_apply_btn.disabled = false
 			else:
 				entry_format_apply_btn.disabled = true

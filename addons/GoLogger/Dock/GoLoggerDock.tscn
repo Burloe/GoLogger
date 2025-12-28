@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://rsgyd2ce2sad" path="res://addons/GoLogger/Resources/icons/VSeparator.svg" id="4_ui2qu"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 [ext_resource type="StyleBox" uid="uid://b8w5i8chks7st" path="res://addons/GoLogger/Resources/line_edit_stylebox_valid.tres" id="9_qo8nw"]
+[ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
 font_size = 12
@@ -46,7 +47,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 1
+current_tab = 2
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -207,9 +208,10 @@ theme_override_constants/v_separation = 5
 columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
+visible = false
 layout_mode = 2
 follow_focus = true
-scroll_vertical = 135
+scroll_vertical = 228
 scroll_horizontal_custom_step = 10.0
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
@@ -383,8 +385,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Any text and symbol formatting can be used.
- [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
+tooltip_text = "Any text and symbol formatting can be used. Include the {instance_id} tag if running multiple instances.
+    [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
 
 Supported tags:
     {entry} - Required
@@ -411,8 +413,8 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
-tooltip_text = "Any text and symbol formatting can be used.
- [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
+tooltip_text = "Any text and symbol formatting can be used. Include the {instance_id} tag if running multiple instances.
+    [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
 
 Supported tags:
     {entry} - Required
@@ -484,7 +486,10 @@ icon = ExtResource("3_y66hb")
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
-[node name="HotkeyLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1651499941]
+[node name="HBoxContainer3" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=850685026]
+layout_mode = 2
+
+[node name="HotkeyLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=1651499941]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
@@ -493,6 +498,13 @@ theme = ExtResource("1_y5prw")
 theme_override_font_sizes/font_size = 14
 text = " Runtime Hotkey Bindings:"
 vertical_alignment = 2
+
+[node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=1680159305]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
+text = "Print ID on display"
+alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=455253237]
 layout_mode = 2
@@ -525,20 +537,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Display Instance ID"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=850685026]
-layout_mode = 2
-
-[node name="Control" type="Control" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=409968790]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=1680159305]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
-text = "Print ID on display"
-alignment = 2
 
 [node name="Spacer" type="Control" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer" unique_id=1382019692]
 custom_minimum_size = Vector2(0, 6)
@@ -848,7 +846,6 @@ popup/item_3/id = 3
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
@@ -859,43 +856,31 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 4
 
-[node name="Getting Started" type="MarginContainer" parent="Help/HelpTabContainer" unique_id=1168152559]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_top = 6
-metadata/_tab_index = 0
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/HelpTabContainer/Getting Started" unique_id=1377872369]
+[node name="Getting Started" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1377872369]
+visible = false
 layout_mode = 2
 scroll_vertical_custom_step = 20.0
+metadata/_tab_index = 0
 
-[node name="Panel" type="Panel" parent="Help/HelpTabContainer/Getting Started/ScrollContainer" unique_id=2008228156]
+[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Getting Started" unique_id=469117461]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Getting Started/ScrollContainer/Panel" unique_id=469117461]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Getting Started/ScrollContainer/Panel/MarginContainer" unique_id=1514331880]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Getting Started/MarginContainer" unique_id=1514331880]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Setup:[font_size=14][color=white]
-GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: [i] Log.entry(\"This is my first log entry.\", \"game\")[/i)
+GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: [i] Log.entry(\"This is my first log entry.\", \"game\")[/i]
 Use the Category tab to add, remove, or rename categories.
 
 GoLogger uses an [b]Log[/b] singleton, making its functions accessible from all scenes and scripts.
@@ -916,35 +901,21 @@ The Save Copy feature creates a copy of the active session without stopping it. 
 [font_size=16][color=fc4674]Running Multiple Instances:[font_size=14][color=white]
 When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the \"instance_id\" tag from the [color=fc4674]Entry Format[color=white] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[color=white] hotkey(Ctrl + Shift + I) to print that instance's ID to output."
 
-[node name="Methods & Hotkeys" type="MarginContainer" parent="Help/HelpTabContainer" unique_id=1498527529]
+[node name="Methods & Hotkeys" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=830461916]
 visible = false
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_top = 6
 metadata/_tab_index = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/HelpTabContainer/Methods & Hotkeys" unique_id=830461916]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="Help/HelpTabContainer/Methods & Hotkeys/ScrollContainer" unique_id=743233248]
+[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Methods & Hotkeys" unique_id=327346930]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Methods & Hotkeys/ScrollContainer/Panel" unique_id=327346930]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Methods & Hotkeys/ScrollContainer/Panel/MarginContainer" unique_id=208538217]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Methods & Hotkeys/MarginContainer" unique_id=208538217]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -972,8 +943,11 @@ Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GoLog
 
 [font_size=16][color=fc4674][b]Hotkeys:[/b][color=white]
 There are four hotkeys available to interact with GoLogger during runtime. 
-	[b]Start Session: 
-Hotkeys can be changed using InputEventShortcut resources. As such, they are not included in the InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector.
+	[b]Start Session:[/b] Ctrl + Shift + O
+    [b]Save Copy:[/b] Ctrl + Shift + U
+    [b]Stop Session:[/b] Ctrl + Shift + P
+    [b]Display Instance ID:[/b] Ctrl + Shift + I
+Hotkeys can be changed using InputEventShortcut resources. As such, they're excluded and doesn't crowd your InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector.
 
 
 [font_size=16][color=fc4674][b]Signals:[/b][color=white]
@@ -981,34 +955,22 @@ There are two signals available to help you synchronize sessions with game logic
 	session_started
 	session_stopped"
 
-[node name="File Limitations" type="MarginContainer" parent="Help/HelpTabContainer" unique_id=507835065]
+[node name="File Limitations" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1120881483]
 visible = false
 layout_mode = 2
-theme_override_constants/margin_top = 6
 metadata/_tab_index = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/HelpTabContainer/File Limitations" unique_id=1120881483]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="Help/HelpTabContainer/File Limitations/ScrollContainer" unique_id=1479518800]
+[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/File Limitations" unique_id=2057183117]
+custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/File Limitations/ScrollContainer/Panel" unique_id=2057183117]
-custom_minimum_size = Vector2(560, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/File Limitations/ScrollContainer/Panel/MarginContainer" unique_id=991399834]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/File Limitations/MarginContainer" unique_id=991399834]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1046,34 +1008,22 @@ This option defines the maximum number of .log files allowed in each category fo
 [i]Copy session: Ctrl + Shift + U[/i]
 [i]Stop session: Ctrl + Shift + P[/i]"
 
-[node name="Log Formatting & Instances" type="MarginContainer" parent="Help/HelpTabContainer" unique_id=1690630106]
+[node name="Instances and Formatting" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=367321639]
 visible = false
 layout_mode = 2
-theme_override_constants/margin_top = 6
 metadata/_tab_index = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/HelpTabContainer/Log Formatting & Instances" unique_id=367321639]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="Help/HelpTabContainer/Log Formatting & Instances/ScrollContainer" unique_id=1560749312]
+[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Instances and Formatting" unique_id=588303162]
+custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Log Formatting & Instances/ScrollContainer/Panel" unique_id=588303162]
-custom_minimum_size = Vector2(560, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Log Formatting & Instances/ScrollContainer/Panel/MarginContainer" unique_id=1902385466]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Instances and Formatting/MarginContainer" unique_id=1902385466]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1092,32 +1042,28 @@ Any text and symbol formatting can be used. However, avoid using curly braces fo
  {project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session {2025-12-20 | 18:42:21]:
  [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
 
-Supported tags:
+[color=violet][bSupported tags:[/b][/color]
     {project_name}  {version}  {instance_id}
     {yy}  {mm}  {dd} [color=darkgray]Year, Month, Day[color=white]
     {hh}  {mi}  {ss} [color=darkgray]Hour, Minute, Second[color=white]
 	{category} [color=darkgray]- Only available for Log Header[color=white]
 	{entry} [color=darkgray]- Only available for Entry Format and is required[color=white]"
 
-[node name="More Info" type="MarginContainer" parent="Help/HelpTabContainer" unique_id=287159984]
-visible = false
+[node name="More Info" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=656868993]
 layout_mode = 2
-theme_override_constants/margin_top = 6
 metadata/_tab_index = 4
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/HelpTabContainer/More Info" unique_id=656868993]
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/HelpTabContainer/More Info" unique_id=785392642]
 layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Help/HelpTabContainer/More Info/ScrollContainer" unique_id=785392642]
-layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/ScrollContainer/VBoxContainer" unique_id=1948907939]
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=1948907939]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -1
 
-[node name="RepoLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer" unique_id=1563673285]
+[node name="RepoLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=1563673285]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1125,30 +1071,37 @@ tooltip_text = "https://github.com/Burloe/GoLogger"
 text = "Github repository"
 uri = "https://github.com/Burloe/GoLogger"
 
-[node name="Label" type="Label" parent="Help/HelpTabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer" unique_id=620057700]
+[node name="Label" type="Label" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=620057700]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 text = "  -  "
 
-[node name="WikiLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer" unique_id=300775320]
+[node name="WikiLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=300775320]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
-text = "Wiki contains more in-depth information and resources"
+text = "Wiki"
 uri = "https://github.com/Burloe/GoLogger/wiki"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/ScrollContainer/VBoxContainer" unique_id=163609329]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=163609329]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -1
 
-[node name="IssuesLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2" unique_id=402423982]
+[node name="IssuesLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer2" unique_id=402423982]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "https://github.com/Burloe/GoLogger/issues"
-text = "Please report issues!"
+text = "Bug report"
 uri = "https://github.com/Burloe/GoLogger/issues"
+
+[node name="TextureRect" type="TextureRect" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=1785138075]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 3
+texture = ExtResource("11_tayiv")
+stretch_mode = 3
