@@ -35,7 +35,7 @@ signal change_category_name_finished
 signal open_hotkey_resource(resrc: int)
 
 @onready var categories_tab: MarginContainer = %Categories
-@onready var add_category_btn: Button = %AddCategoryButton
+@onready var _add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
 
@@ -195,7 +195,7 @@ func _ready() -> void:
 				i.queue_free()
 			else: print_rich("GoLogger error: Uknown node in category container. Expected LogCategory, got ", i.get_name(), "\nThis is a bug, please create an issue at: @[url]https://github.com/Burloe/GoLogger/issues[/url]")
 
-		add_category_btn.button_up.connect(add_category)
+		_add_category_btn.button_up.connect(_add_category)
 		open_dir_btn.button_up.connect(_open_directory)
 		column_slider.value_changed.connect(_on_column_slider_value_changed)
 		reset_settings_btn.button_up.connect(reset_to_default)
@@ -386,7 +386,7 @@ func _ready() -> void:
 
 
 
-func create_settings_file() -> void: # Note mirror function present in GoLoggerDock.gd. Keep both in sunc.
+func create_settings_file() -> void: # Mirror in Log.gd
 	var cf := ConfigFile.new() # Use new ConfigFile to avoid clobbering existing data
 	cf.set_value("settings", "base_directory", default_settings["base_directory"])
 	cf.set_value("settings", "columns", default_settings["columns"])
@@ -405,12 +405,6 @@ func create_settings_file() -> void: # Note mirror function present in GoLoggerD
 	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
 
 	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "instance_ids", [])
-
-	cf.set_value("category.game", "category_name", "game")
-	cf.set_value("category.game", "category_index", 0)
-	cf.set_value("category.game", "file_count", 0)
-	cf.set_value("category.game", "is_locked", false)
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -459,7 +453,7 @@ func reset_to_default() -> void:
 		if lc is LogCategory:
 			category_container.remove_child(lc)
 			lc.queue_free()
-	add_category("game", 0, false)
+	_add_category("game", 0, false)
 
 	base_dir_line.text = 										default_settings["base_directory"]
 	log_header_line.text = 									default_settings["log_header_format"]
@@ -597,10 +591,10 @@ func load_data() -> void:
 
 	# Categories
 	for name in _c.get_value("categories", "category_names", []):
-		add_category(
+		_add_category(
 			name,
-			_c.get_value("category." + name, "category_index", 0),
-			_c.get_value("category." + name, "is_locked", false)
+			_c.get_value("categories." + name, "category_index", 0),
+			_c.get_value("categories." + name, "is_locked", false)
 		)
 
 	# for setting in _c.get_section_keys("settings"):
@@ -645,12 +639,12 @@ func save_data(deferred: bool = false) -> void:
 
 			_cat_names.append(log_category.category_name)
 
-			var section_name := str("category." + log_category.category_name)
-			_c.set_value(section_name, "category_name", log_category.category_name)
-			_c.set_value(section_name, "category_index", log_category.index)
-			_c.set_value(section_name, "file_count", _c.get_value(section_name, "file_count", 0))
-			_c.set_value(section_name, "is_locked", log_category.is_locked)
-			_c.set_value(section_name, "instances", [])
+			# var section_name := str("category." + log_category.category_name)
+			# _c.set_value(section_name, "category_name", log_category.category_name)
+			# _c.set_value(section_name, "category_index", log_category.index)
+			# _c.set_value(section_name, "file_count", _c.get_value(section_name, "file_count", 0))
+			# _c.set_value(section_name, "is_locked", log_category.is_locked)
+			# _c.set_value(section_name, "instances", [])
 
 	_c.set_value("categories", "category_names", _cat_names)
 
@@ -684,7 +678,7 @@ func save_data(deferred: bool = false) -> void:
 
 
 ## `save_after` should be used when the user adds categories manually via the dock. Not when loading categories from config.
-func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
+func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
 	var _n = category_scene.instantiate()
 	_n.dock = self
 	_n.category_name = _name
@@ -693,50 +687,50 @@ func add_category(_name: String = "", _index: int = 0, _is_locked: bool = false,
 	category_container.add_child(_n)
 
 	_n.log_category_changed.connect(save_data.bind(true))
-	_n.request_log_deletion.connect(delete_category)
-	_n.move_category_requested.connect(change_category_order)
+	_n.request_log_deletion.connect(_delete_category)
+	_n.move_category_requested.connect(_change_category_order)
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
 	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
 	if _name == "":	_n.line_edit.grab_focus() # Focus new category line edit for immediate renaming
-	handle_category_mov_button_state()
+	_handle_category_mov_button_state()
 	if save_after:
 		save_data()
 
 
-func delete_category(log_category: LogCategory) -> void:
+func _delete_category(log_category: LogCategory) -> void:
 	if log_category.get_parent() == category_container:
 		category_container.remove_child(log_category)
 		log_category.queue_free()
 		save_data()
 
 
-func change_category_order(category: LogCategory, direction: int) -> void:
+func _change_category_order(category: LogCategory, direction: int) -> void:
 	var new_index = category.index + direction
 	if new_index < 0 or new_index >= category_container.get_child_count():
 		return
 
 	category_container.move_child(category, category.index + direction)
-	assign_category_indices() # save_data() called within
+	_assign_category_indices() # save_data() called within
 
 
-func assign_category_indices() -> void:
+func _assign_category_indices() -> void:
 	for i in range(category_container.get_child_count()):
 		var category = category_container.get_child(i)
 		if category is LogCategory:
 			category.index = i
 
 	save_data()
-	handle_category_mov_button_state()
+	_handle_category_mov_button_state()
 
 
-func handle_category_mov_button_state() -> void:
+func _handle_category_mov_button_state() -> void:
 	for i in range(category_container.get_child_count()):
 		var category = category_container.get_child(i)
 		category.move_left_btn.disabled = (category.index == 0)
 		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
 
 
-func check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
+func _check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
 	for log_category in category_container.get_children():
 		if log_category == cat_obj: # Disregard category being checked
 			continue
@@ -863,6 +857,8 @@ func _is_entry_format_valid(format: String) -> bool:
 	return true if format.contains("{entry}") else false
 
 
+
+
 func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
 	if is_hovered:
 		node.add_theme_color_override("font_color", c_font_hover)
@@ -965,7 +961,6 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 		entry_format_line:
 			# entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus()
-
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:

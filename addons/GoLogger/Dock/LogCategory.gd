@@ -2,7 +2,7 @@
 class_name LogCategory extends PanelContainer
 
 ## Emitted when any property of the LogCategory changes to GologgerDock.gd so it can update its data accordingly.
-signal log_category_changed
+signal log_category_changed(_category_name: String, _lock: bool, _index: int)
 signal log_category_deleted
 signal request_log_deletion(log_category: LogCategory)
 signal move_category_requested(log_category: LogCategory, direction : int)
@@ -33,30 +33,26 @@ var invalid_name : bool = false
 var is_locked : bool = false:
 	set(value):
 		is_locked = value
-		log_category_changed.emit()
+		log_category_changed.emit(category_name, is_locked, index)
 		if lock_btn != null: lock_btn.button_pressed = is_locked
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
-		# if dock != null: dock.save_categories(true)
 
 var category_name: String = "":
 	set(value):
 		if category_name != value:
 			category_name = value
 			if line_edit != null: line_edit.text = category_name
-			# if dock != null: dock.update_category_name(self, value)
 
 var index : int = 0: ## This now simply determines the order of LogCategories in dock
 	set(value):
 		if value != index:
-			log_category_changed.emit()
+			log_category_changed.emit(category_name, is_locked, index)
 		index = value
 		if move_left_btn  != null:
 			move_left_btn.disabled = true if index == 0 else false
 		if move_right_btn != null:
 			move_right_btn.disabled = true if index == dock.category_container.get_child_count() - 1 else false
-		# if index_lbl != null:
-		# 	index_lbl.text = str(index)
 
 
 func _ready() -> void:
@@ -98,7 +94,7 @@ func apply_name(new_name: String) -> void:
 	var fin_name := get_unique_category_name(new_name, old_name)
 
 	category_name = fin_name
-	log_category_changed.emit()
+	log_category_changed.emit(category_name, is_locked, index)
 	line_edit.release_focus()
 	apply_btn.hide()
 

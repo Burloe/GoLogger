@@ -188,9 +188,8 @@ func _input(event: InputEvent) -> void:
 				instance_id_label.show()
 			if hotkey_print_instance_id.shortcut.matches_event(event) and event.is_released():
 				instance_id_label.hide()
-				print(_get_config_value("settings", "print_instance_id"))
 				if _get_config_value("settings", "print_instance_id"):
-					print_rich("[color=fc4674][font_size=12][GoLogger][/color] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
+					print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
 
 
 		# Test entry logging with Comma Key.
@@ -591,12 +590,6 @@ func create_settings_file() -> void: # Mirror in GoLoggerDock.gd
 	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
 
 	cf.set_value("categories", "category_names", ["game"])
-
-	# Dafug is this?
-	# cf.set_value("category.game", "category_name", "game")
-	# cf.set_value("category.game", "category_index", 0)
-	# cf.set_value("category.game", "file_count", 0)
-	# cf.set_value("category.game", "is_locked", false)
 
 	var _s = cf.save(PATH)
 	if _s != OK:
