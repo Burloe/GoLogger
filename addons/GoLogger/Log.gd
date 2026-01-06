@@ -18,13 +18,13 @@ extends Node
 	# [Done] Refactor .ini settings handling <needed to do to finish instance_id task
 	#	[Done] Remove 'category_index' parameter from entry() method, in favor of using category_name only
 	# [Done]Move 'base_directory' to 'settings' section in .ini file
+	# [Done] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
 	#
-	# [Not started] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
+	# [In Progress] BUG - Enabling/disabling plugin erases all settings in .ini file.
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
 	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	# [Not started] Shorten tags in header and entry formats? e.g. {p_name} instead of {project_name}, {ver} instead of {version}
 	#
-	# Remove instance_id tags from header since files aren't per-instance anymore
 	#
 	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
 	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically

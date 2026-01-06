@@ -638,13 +638,10 @@ func save_data(deferred: bool = false) -> void:
 				continue
 
 			_cat_names.append(log_category.category_name)
-
-			# var section_name := str("category." + log_category.category_name)
-			# _c.set_value(section_name, "category_name", log_category.category_name)
-			# _c.set_value(section_name, "category_index", log_category.index)
-			# _c.set_value(section_name, "file_count", _c.get_value(section_name, "file_count", 0))
-			# _c.set_value(section_name, "is_locked", log_category.is_locked)
-			# _c.set_value(section_name, "instances", [])
+			_c.set_value("categories." + log_category.category_name, "category_name", log_category.category_name)
+			_c.set_value("categories." + log_category.category_name, "category_index", log_category.index)
+			_c.set_value("categories." + log_category.category_name, "file_count", 0)
+			_c.set_value("categories." + log_category.category_name, "is_locked", log_category.is_locked)
 
 	_c.set_value("categories", "category_names", _cat_names)
 
@@ -653,7 +650,8 @@ func save_data(deferred: bool = false) -> void:
 	for key in default_settings.keys():
 		if !settings_control.has(key):
 			continue
-
+		
+		
 		if settings_control[key] == null:
 			error += 1
 			# printerr("Null count: ", error, " for key: ", key)
@@ -686,7 +684,7 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 	_n.index = category_container.get_children().size()
 	category_container.add_child(_n)
 
-	_n.log_category_changed.connect(save_data.bind(true))
+	_n.log_category_changed.connect(_category_changed)
 	_n.request_log_deletion.connect(_delete_category)
 	_n.move_category_requested.connect(_change_category_order)
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
@@ -695,6 +693,15 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 	_handle_category_mov_button_state()
 	if save_after:
 		save_data()
+
+
+## Called when a category has changed (name, lock state, etc) by the dock UI.
+func _category_changed(log_category: LogCategory) -> void:
+	config.load(PATH)
+	config.set_value("categories." + log_category.category_name, "category_name", log_category.category_name)
+	config.set_value("categories." + log_category.category_name, "category_index", log_category.index)
+	config.set_value("categories." + log_category.category_name, "is_locked", log_category.is_locked)
+	save_data(true)
 
 
 func _delete_category(log_category: LogCategory) -> void:

@@ -211,7 +211,7 @@ columns = 5
 visible = false
 layout_mode = 2
 follow_focus = true
-scroll_vertical = 228
+scroll_vertical = 100
 scroll_horizontal_custom_step = 10.0
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
@@ -943,10 +943,10 @@ Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GoLog
 
 [font_size=16][color=fc4674][b]Hotkeys:[/b][color=white]
 There are four hotkeys available to interact with GoLogger during runtime. 
-	[b]Start Session:[/b] Ctrl + Shift + O
-    [b]Save Copy:[/b] Ctrl + Shift + U
-    [b]Stop Session:[/b] Ctrl + Shift + P
-    [b]Display Instance ID:[/b] Ctrl + Shift + I
+	[b]Start Session:[/b] 				Ctrl + Shift + O
+    [b]Save Copy:[/b] 					Ctrl + Shift + U
+    [b]Stop Session:[/b] 				Ctrl + Shift + P
+    [b]Display Instance ID:[/b]	 	Ctrl + Shift + I
 Hotkeys can be changed using InputEventShortcut resources. As such, they're excluded and doesn't crowd your InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector.
 
 
@@ -1039,15 +1039,17 @@ You can use the [color=aquamarine]Display Instance ID[color=white] hotkey to see
 Log Header and Entries can be formatted in any way you may want in the Settings tab. You can add any string you want but you can also add tags to include useful data to said settings. Such as the project name, version, date and time. You can format the date and time for your preference/region.
 
 Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
- {project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session {2025-12-20 | 18:42:21]:
- [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
+ [b]Log Header:[/b]	{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session {2025-12-20 | 18:42:21]:
+ [b]Entry Format:[/b]	[{hh}:{mi}:{ss} {instance_id}:  {entry}    >    [09:32:16] b4jw0: Entry String
 
-[color=violet][bSupported tags:[/b][/color]
-    {project_name}  {version}  {instance_id}
-    {yy}  {mm}  {dd} [color=darkgray]Year, Month, Day[color=white]
-    {hh}  {mi}  {ss} [color=darkgray]Hour, Minute, Second[color=white]
-	{category} [color=darkgray]- Only available for Log Header[color=white]
-	{entry} [color=darkgray]- Only available for Entry Format and is required[color=white]"
+[color=violet][b]Supported tags:[/b][/color]
+	{category} 									[color=darkgray][i]Only available for Log Header[/i][color=white]
+	{instance_id}								[color=darkgray][i]Only available for Entry Format[/i][color=white]
+	{entry} 										[color=darkgray][i]Only available for Entry Format and is required[/i][color=white]
+    {project_name}  {version} 		[color=darkgray][i]Project name & version fetched from ProjectSettings[/i][color=white]
+    {yy}  {mm}  {dd} 						[color=darkgray][i]Year, Month, Day[/i][color=white]
+    {hh}  {mi}  {ss} 							[color=darkgray][i]Hour, Minute, Second[/i][color=white]
+"
 
 [node name="More Info" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=656868993]
 layout_mode = 2
