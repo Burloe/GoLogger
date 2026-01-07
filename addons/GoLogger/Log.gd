@@ -20,13 +20,9 @@ extends Node
 	# [Done] Move 'base_directory' to 'settings' section in .ini file
 	# [Done] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
 	# [Done] BUG - Enabling/disabling plugin erases all settings in .ini file.
+	# [Done] BUG - When enabling the plugin, the .ini file's settings are reset to default values. Technically isn't an issue because the dock loads the settings correctly before they're overwritten and should overwrite the default values whenever anything is changed, but still not ideal.
 	#
-	# [In Progress] BUG - When enabling the plugin, the .ini file's settings are reset to default values. Technically isn't an issue because the dock loads the settings correctly before they're overwritten and should overwrite the default values whenever anything is changed, but still not ideal.
-	#
-	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
-	# [Not started] Shorten tags in header and entry formats? e.g. {p_name} instead of {project_name}, {ver} instead of {version}
 	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
-	#
 	#
 	# [Proposal] Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a runtime memory structure only, not in the .ini file
 	# [Proposal] Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
@@ -57,7 +53,6 @@ var session_status: bool = false:
 		session_status = value
 		if value: session_started.emit()
 		else: session_stopped.emit()
-# var temp_categories: Array = []
 
 var cat_data : Dictionary = {
 	"game": {

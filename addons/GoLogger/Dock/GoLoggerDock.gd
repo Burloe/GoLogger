@@ -10,13 +10,14 @@ extends TabContainer
 		# [DONE] Handle adding/removing categories with new .ini format
 		# [DONE] is_locked property handling
 		# [DONE] Account for ConfigFile clobbering
-		# [DONE]Check that renaming a category adds an int to the name
-		# [DONE]Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
-		# [DONE]Remove instance_id tags from Header settings since files aren't per-instance anymore
-		# Apply log header format button not disabling when using enter key to submit text
+		# [DONE] Check that renaming a category adds an int to the name
+		# [DONE] Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
+		# [DONE] Remove instance_id tags from Header settings since files aren't per-instance anymore
+		# [DONE] Apply log header format button not disabling when using enter key to submit text
 
 # RELEASE CHECKLIST:
-	# Ensure CATEGORIES tab is visible (default)
+	# Ensure CATEGORIES tab is visible
+	# Ensure HELP > Getting Started	is visible
 	# Check font highlighting on mouse over for settings tab
 	# Check that renaming a category adds an int to the name
 	# Check print history works as expected
@@ -192,10 +193,6 @@ var settings_control := {
 	"error_reporting": error_rep_btn,
 	"columns": column_slider
 }
-
-# When adding new settings, add the Labels and any Control nodes to the
-# container_array, btns_array, corresponding_lbls arrays respectively in
-# _ready() to enable the label highlighting feature.
 
 
 
@@ -468,12 +465,6 @@ func reset_to_default() -> void:
 	cf.set_value("categories.game", "is_locked", false)
 	cf.save(PATH)
 
-	for lc in category_container.get_children():
-		if lc is LogCategory:
-			category_container.remove_child(lc)
-			lc.queue_free()
-	_add_category("game", 0, false)
-
 	base_dir_line.text = 										default_settings["base_directory"]
 	log_header_line.text = 									default_settings["log_header_format"]
 	entry_format_line.text = 								default_settings["entry_format"]
@@ -612,7 +603,6 @@ func save_data(deferred: bool = false) -> void:
 		elif ctrl is LineEdit:
 			_c.set_value("settings", key, ctrl.text)
 		elif ctrl is SpinBox:
-			print("Saving SpinBox setting: ", key, " as ", int(ctrl.value))
 			_c.set_value("settings", key, int(ctrl.value))
 		elif ctrl is CheckButton:
 			_c.set_value("settings", key, ctrl.button_pressed)
@@ -1038,5 +1028,5 @@ func _on_column_slider_value_changed(value: int) -> void:
 
 ## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
-	var b: int = clampi(slider_value, column_slider.min_value, column_slider.max_value)
-	return b
+	var _v: int = clampi(slider_value, column_slider.min_value, column_slider.max_value)
+	return _v
