@@ -47,7 +47,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 2
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -208,7 +208,6 @@ theme_override_constants/v_separation = 5
 columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
-visible = false
 layout_mode = 2
 follow_focus = true
 scroll_vertical = 100
@@ -785,6 +784,8 @@ size_flags_vertical = 4
 tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
 max_value = 1800.0
 value = 300.0
+rounded = true
+allow_greater = true
 alignment = 2
 update_on_text_changed = true
 suffix = "s"
@@ -846,6 +847,7 @@ popup/item_3/id = 3
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6

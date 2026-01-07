@@ -151,11 +151,11 @@ var default_settings := {
 		"session_timer_action": 0,
 		"file_cap": 10,
 		"entry_cap": 300,
-		"session_duration": 300.0,
+		"session_duration": 300,
 		"error_reporting": 0,
 		"columns": 5
 }
-
+## Control nodes corresponding to each setting for easy access
 var settings_control := {
 	"base_directory": base_dir_line,
 	"log_header_format": log_header_line,
@@ -618,7 +618,7 @@ func load_data() -> void:
 	error_rep_btn.selected = _c.get_value("settings", "error_reporting", default_settings["error_reporting"])
 	column_slider.value = _get_column_value(_c.get_value("settings", "columns", default_settings["columns"]))
 
-	config.load(PATH) # Reload config to ensure it's up to date
+	config.load(PATH)
 
 
 
@@ -628,7 +628,8 @@ func save_data(deferred: bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
 
-	var _c := ConfigFile.new() # Using a new ConfigFile to avoid clobbering existing data
+	var _c := ConfigFile.new()
+	_c.load(PATH)
 
 	# Categories
 	var _cat_names = []
@@ -650,29 +651,30 @@ func save_data(deferred: bool = false) -> void:
 	for key in default_settings.keys():
 		if !settings_control.has(key):
 			continue
-		
-		
-		if settings_control[key] == null:
+
+		var ctrl = settings_control[key]
+
+		if ctrl == null:
 			error += 1
 			# printerr("Null count: ", error, " for key: ", key)
 			continue
-		elif settings_control[key] is LineEdit:
-			_c.set_value("settings", key, settings_control[key].text)
-		elif settings_control[key] is SpinBox:
-			_c.set_value("settings", key, int(settings_control[key].value))
-		elif settings_control[key] is CheckButton:
-			_c.set_value("settings", key, settings_control[key].button_pressed)
-		elif settings_control[key] is OptionButton:
-			_c.set_value("settings", key, settings_control[key].selected)
-		elif settings_control[key] is HSlider:
-			_c.set_value("settings", key, column_slider.value)
-		# print("Saved ", key, " as ", settings_control[key].text)
+
+		elif ctrl is LineEdit:
+			_c.set_value("settings", key, ctrl.text)
+		elif ctrl is SpinBox:
+			_c.set_value("settings", key, int(ctrl.value))
+		elif ctrl is CheckButton:
+			_c.set_value("settings", key, ctrl.button_pressed)
+		elif ctrl is OptionButton:
+			_c.set_value("settings", key, ctrl.selected)
+		elif ctrl is HSlider:
+			_c.set_value("settings", key, int(column_slider.value))
 
 	var _e = _c.save(PATH)
 	if _e != OK:
 		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
-	config.load(PATH) # Reload config to ensure it's up to date
+	config.load(PATH)
 
 
 ## `save_after` should be used when the user adds categories manually via the dock. Not when loading categories from config.

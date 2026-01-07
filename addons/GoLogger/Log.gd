@@ -19,15 +19,19 @@ extends Node
 	#	[Done] Remove 'category_index' parameter from entry() method, in favor of using category_name only
 	# [Done]Move 'base_directory' to 'settings' section in .ini file
 	# [Done] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
+	# [Done] BUG - Enabling/disabling plugin erases all settings in .ini file.
 	#
-	# [In Progress] BUG - Enabling/disabling plugin erases all settings in .ini file.
+	# [In Progress] BUG - When enabling the plugin, the .ini file's settings are reset to default values. Investigate and fix.
+	# 
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
-	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	# [Not started] Shorten tags in header and entry formats? e.g. {p_name} instead of {project_name}, {ver} instead of {version}
+	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	#
 	#
-	# Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a separate non-persistant array
-	# ?Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
+	# [Proposal] Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a runtime memory structure only, not in the .ini file
+	# [Proposal] Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
+	# [Proposal] Add list_categories() method to return an array of current category names
+	# [Proposal] Add a node to plugin that users can attach to objects in their scene tree that creates a unique temp category for that object only while the scene is running
 
 #TODO - Debugging:
 	# Check that file count actually deletes old files when file cap is reached
@@ -104,7 +108,7 @@ var default_settings := {
 		"session_timer_action": 0,
 		"file_cap": 10,
 		"entry_cap": 300,
-		"session_duration": 300.0,
+		"session_duration": 300,
 		"error_reporting": 0,
 		"columns": 5
 }
