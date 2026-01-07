@@ -17,12 +17,12 @@ extends Node
 	#	[Done] Add 'instance_id' to solve issue with concurrency in multiplayer projects
 	# [Done] Refactor .ini settings handling <needed to do to finish instance_id task
 	#	[Done] Remove 'category_index' parameter from entry() method, in favor of using category_name only
-	# [Done]Move 'base_directory' to 'settings' section in .ini file
+	# [Done] Move 'base_directory' to 'settings' section in .ini file
 	# [Done] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
 	# [Done] BUG - Enabling/disabling plugin erases all settings in .ini file.
 	#
-	# [In Progress] BUG - When enabling the plugin, the .ini file's settings are reset to default values. Investigate and fix.
-	# 
+	# [In Progress] BUG - When enabling the plugin, the .ini file's settings are reset to default values. Technically isn't an issue because the dock loads the settings correctly before they're overwritten and should overwrite the default values whenever anything is changed, but still not ideal.
+	#
 	# [Not started] Need to manage stray category sections in .ini file. Ensuring categories in dock and .ini match.
 	# [Not started] Shorten tags in header and entry formats? e.g. {p_name} instead of {project_name}, {ver} instead of {version}
 	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
@@ -31,7 +31,7 @@ extends Node
 	# [Proposal] Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a runtime memory structure only, not in the .ini file
 	# [Proposal] Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
 	# [Proposal] Add list_categories() method to return an array of current category names
-	# [Proposal] Add a node to plugin that users can attach to objects in their scene tree that creates a unique temp category for that object only while the scene is running
+	# [Proposal] Add a custom node that users can attach to objects in their scene tree that creates a unique temp category for that object only while the scene is running
 
 #TODO - Debugging:
 	# Check that file count actually deletes old files when file cap is reached
@@ -112,6 +112,25 @@ var default_settings := {
 		"error_reporting": 0,
 		"columns": 5
 }
+## Mirror in GoLoggerDock.gd
+var expected_types = {
+		"categories/category_names": 			TYPE_ARRAY,
+		"settings/base_directory": 				TYPE_STRING,
+		"settings/columns": 							TYPE_INT,
+		"settings/log_header_format": 		TYPE_STRING,
+		"settings/entry_format" : 				TYPE_STRING,
+		"settings/canvaslayer_layer": 		TYPE_INT,
+		"settings/autostart_session": 		TYPE_BOOL,
+		"settings/use_utc": 							TYPE_BOOL,
+		"settings/print_instance_id": 		TYPE_BOOL,
+		"settings/limit_method": 					TYPE_INT,
+		"settings/entry_count_action": 		TYPE_INT,
+		"settings/session_timer_action": 	TYPE_INT,
+		"settings/file_cap": 							TYPE_INT,
+		"settings/entry_cap": 						TYPE_INT,
+		"settings/session_duration": 			TYPE_INT,
+		"settings/error_reporting": 			TYPE_INT
+	}
 
 var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
 var hotkey_stop_session: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")
@@ -605,8 +624,6 @@ func create_settings_file() -> void: # Mirror in GoLoggerDock.gd
 
 
 func validate_settings() -> void: # Mirror in GoLoggerDock.gd
-	var present_settings_faults : int = 0
-	var value_type_faults : int = 0
 	var expected_settings ={
 		"category_names": 			"categories/category_names",
 		"base_directory": 			"settings/base_directory",
@@ -622,83 +639,23 @@ func validate_settings() -> void: # Mirror in GoLoggerDock.gd
 		"file_cap": 						"settings/file_cap",
 		"entry_cap": 						"settings/entry_cap",
 		"session_duration": 		"settings/session_duration",
-		"error_reporting": 			"settings/error_reporting"
+		"error_reporting": 			"settings/error_reporting",
+		"print_instance_id": 		"settings/print_instance_id"
 	}
 
-	var expected_types = {
-		"categories/category_names": 			TYPE_ARRAY,
-		"settings/base_directory": 				TYPE_STRING,
-		"settings/columns": 							TYPE_INT,
-		"settings/log_header_format": 		TYPE_STRING,
-		"settings/entry_format" : 				TYPE_STRING,
-		"settings/canvaslayer_layer": 		TYPE_INT,
-		"settings/autostart_session": 		TYPE_BOOL,
-		"settings/use_utc": 							TYPE_BOOL,
-		"settings/limit_method": 					TYPE_INT,
-		"settings/entry_count_action": 		TYPE_INT,
-		"settings/session_timer_action": 	TYPE_INT,
-		"settings/file_cap": 							TYPE_INT,
-		"settings/entry_cap": 						TYPE_INT,
-		"settings/session_duration": 			TYPE_FLOAT,
-		"settings/error_reporting": 			TYPE_INT
-	}
-
-	var types : Array[String] = [
-		"Nil",
-		"Bool",
-		"Integer",
-		"Float",
-		"String",
-		"Vector2",
-		"Vector2i",
-		"Rect2",
-		"Rect2i",
-		"Vector3",
-		"Vector3i",
-		"Transform2D",
-		"Plane",
-		"Quaternion",
-		"AABB",
-		"Basis",
-		"Transform3D",
-		"Color",
-		"StringName",
-		"NodePath",
-		"RID",
-		"Object",
-		"Callable",
-		"Signal",
-		"Dictionary",
-		"Array",
-		"PackedByteArray",
-		"PackedInt32Array",
-		"PackedInt64Array",
-		"PackedFloat32Array",
-		"PackedFloat64Array",
-		"PackedStringArray",
-		"PackedVector2Array",
-		"PackedVector3Array",
-		"PackedColorArray"
-	]
-
-	# Validate presence of settings -> Apply default if missing
+	# Validate presence -> Write default
 	for setting in expected_settings.keys():
 		var splits = expected_settings[setting].split("/")
 		if !config.has_section(splits[0]) or !config.has_section_key(splits[0], splits[1]):
-			# printerr(str("Gologger Error: Validate settings failed. Missing setting '", splits[1], "' in section '", splits[0], "'."))
-			present_settings_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
-	if present_settings_faults > 0: push_warning("GoLogger: One or more settings were missing from the settings.ini file. Default values have been restored for the missing settings.")
 
-	# Valodate types of settings -> Apply default if type mismatch
+	# Validate types -> Apply default
 	for setting_key in expected_types.keys():
 		var splits = setting_key.split("/")
 		var expected_type = expected_types[setting_key]
 		var value = config.get_value(splits[0], splits[1])
 
 		if typeof(value) != expected_type:
-			# printerr(str("Gologger Error: Validate settings failed. Invalid type for setting '", splits[1], "'. Expected ", types[expected_type], " but got ", types[value], "."))
-			value_type_faults += 1
 			config.set_value(splits[0], splits[1], default_settings[splits[1]])
 
 	config.save(PATH)

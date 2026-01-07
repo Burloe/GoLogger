@@ -207,6 +207,9 @@ theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
 columns = 5
 
+[node name="testeLabel" type="Label" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer/CategoryGridContainer" unique_id=744131068]
+layout_mode = 2
+
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
 layout_mode = 2
 follow_focus = true
