@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c3n416c5fajm5"]
+[gd_scene format=3 uid="uid://c3n416c5fajm5"]
 
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
 [ext_resource type="Texture2D" uid="uid://dt4rwugiiq5qf" path="res://addons/GoLogger/Resources/icons/ArrowLeft.svg" id="2_82h6l"]
@@ -17,6 +17,12 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkawy"]
+content_margin_left = 7.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkawy"]
 content_margin_left = 4.0
@@ -64,42 +70,42 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="LogCategory" type="PanelContainer"]
+[node name="LogCategory" type="PanelContainer" unique_id=1946457170]
 custom_minimum_size = Vector2(200, 0)
 offset_right = 316.0
 offset_bottom = 89.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_owplt")
 script = ExtResource("1_8da2w")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1797060952]
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1251287659]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="MoveLeftButton" type="Button" parent="MarginContainer/HBoxContainer"]
+[node name="MoveLeftButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=1734383337]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move category"
 icon = ExtResource("2_82h6l")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=697879439]
 custom_minimum_size = Vector2(225, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=602468691]
 layout_mode = 2
 theme_override_constants/separation = 13
 alignment = 1
 
-[node name="CategoryIndex" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="CategoryIndex" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1463693306]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(20, 0)
@@ -108,7 +114,7 @@ size_flags_horizontal = 3
 text = "0"
 horizontal_alignment = 1
 
-[node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=240651878]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
@@ -123,11 +129,11 @@ alignment = 1
 max_length = 20
 clear_button_enabled = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=151857270]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="LockButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="LockButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=2094994272]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
@@ -144,7 +150,16 @@ toggle_mode = true
 icon = ExtResource("2_b4ns3")
 icon_alignment = 1
 
-[node name="ApplyButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="DefaultCheckBox" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=132860519]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(31, 15)
+layout_mode = 2
+tooltip_text = "Mark as default. Used when a category name isn't specified when calling Log.entry().
+
+See Help > Getting Started >  Categories"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hkawy")
+
+[node name="ApplyButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1330065459]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(107, 0)
@@ -159,7 +174,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_ikmgl")
 disabled = true
 text = "Apply"
 
-[node name="DeleteButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="DeleteButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=753401324]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(59, 0)
 layout_mode = 2
@@ -178,7 +193,7 @@ icon = ExtResource("5_hkawy")
 icon_alignment = 1
 expand_icon = true
 
-[node name="MoveRightButton" type="Button" parent="MarginContainer/HBoxContainer"]
+[node name="MoveRightButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=659310254]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move category"

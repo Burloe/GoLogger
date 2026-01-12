@@ -19,8 +19,12 @@ extends TabContainer
 	# Ensure CATEGORIES tab is visible
 	# Ensure HELP > Getting Started	is visible
 	# Check font highlighting on mouse over for settings tab
-	# Check that renaming a category adds an int to the name
 	# Check print history works as expected
+	# Check LogCategory:
+		# Renaming a category adds an int to the name
+		# Reordering categories works
+		# Locking & Deletion
+		# Marking as default
 	# Check that settings tooltips remain uniform between the buttons and their containers:
 		# There are two nodes per setting ( the container + the control( button/line edit/spin box ) )
 		# Both nodes should have the same tooltip text
@@ -30,6 +34,7 @@ extends TabContainer
 		# Removing category
 		# Reordering categories
 		# Changing settings values
+		# No type mismatching with the values of the settings and the 'expected_types' dict
 
 signal update_index
 signal change_category_name_finished
@@ -143,6 +148,7 @@ var default_settings := {
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": "[{hh}:{mi}:{ss}] {instance_id}: {entry}",
+		"default_category": "",
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
 		"use_utc": false,
@@ -163,6 +169,7 @@ var expected_types = {
 		"settings/columns": 							TYPE_INT,
 		"settings/log_header_format": 		TYPE_STRING,
 		"settings/entry_format" : 				TYPE_STRING,
+		"settings/default_category": 			TYPE_STRING,
 		"settings/canvaslayer_layer": 		TYPE_INT,
 		"settings/autostart_session": 		TYPE_BOOL,
 		"settings/use_utc": 							TYPE_BOOL,
@@ -377,7 +384,6 @@ func _ready() -> void:
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
 		display_instance_id_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(3))
 
-
 		load_data()
 
 		await get_tree().process_frame
@@ -408,6 +414,7 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "columns", default_settings["columns"])
 	cf.set_value("settings", "log_header_format", default_settings["log_header_format"])
 	cf.set_value("settings", "entry_format", default_settings["entry_format"])
+	cf.set_value("settings", "default_category", default_settings["default_category"])
 	cf.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
 	cf.set_value("settings", "autostart_session", default_settings["autostart_session"])
 	cf.set_value("settings", "use_utc", default_settings["use_utc"])
@@ -458,6 +465,8 @@ func reset_to_default() -> void:
 	var cf := ConfigFile.new()
 	cf.load(PATH)
 	for key in default_settings.keys():
+		if key == "category_names":
+			continue
 		cf.set_value("settings", key, default_settings[key])
 	cf.set_value("categories.game", "category_name", "game")
 	cf.set_value("categories.game", "category_index", 0)
@@ -541,23 +550,31 @@ func load_data() -> void:
 			_c.get_value("categories." + name, "category_index", 0),
 			_c.get_value("categories." + name, "is_locked", false)
 		)
+	var def_cat = _c.get_value("settings", "default_category", "")
+	if def_cat != "":
+		for cat in category_container.get_children():
+			if cat is LogCategory:
+				if cat.category_name == def_cat:
+					if cat.default_checkbtn != null:
+						cat.default_checkbtn.pressed = true
+					break
 
 	# Settings
-	base_dir_line.text = _c.get_value("settings", "base_directory", default_settings["base_directory"])
-	log_header_line.text = _c.get_value("settings", "log_header_format", default_settings["log_header_format"])
-	entry_format_line.text = _c.get_value("settings", "entry_format", default_settings["entry_format"])
-	canvas_layer_spinbox.value = _c.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
-	autostart_btn.button_pressed = _c.get_value("settings", "autostart_session", default_settings["autostart_session"])
-	utc_btn.button_pressed = _c.get_value("settings", "use_utc", default_settings["use_utc"])
-	print_instance_id_btn.button_pressed = _c.get_value("settings", "print_instance_id", default_settings["print_instance_id"])
-	limit_method_btn.selected = _c.get_value("settings", "limit_method", default_settings["limit_method"])
-	entry_count_action_btn.selected = _c.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
-	session_timer_action_btn.selected = _c.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
-	file_count_spinbox.value = _c.get_value("settings", "file_cap", default_settings["file_cap"])
-	entry_count_spinbox.value = _c.get_value("settings", "entry_cap", default_settings["entry_cap"])
-	session_duration_spinbox.value = _c.get_value("settings", "session_duration", default_settings["session_duration"])
-	error_rep_btn.selected = _c.get_value("settings", "error_reporting", default_settings["error_reporting"])
-	column_slider.value = _get_column_value(_c.get_value("settings", "columns", default_settings["columns"]))
+	base_dir_line.text = 										_c.get_value("settings", "base_directory", default_settings["base_directory"])
+	log_header_line.text = 									_c.get_value("settings", "log_header_format", default_settings["log_header_format"])
+	entry_format_line.text = 								_c.get_value("settings", "entry_format", default_settings["entry_format"])
+	canvas_layer_spinbox.value = 						_c.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
+	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", default_settings["autostart_session"])
+	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", default_settings["use_utc"])
+	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "print_instance_id", default_settings["print_instance_id"])
+	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", default_settings["limit_method"])
+	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
+	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
+	file_count_spinbox.value = 							_c.get_value("settings", "file_cap", default_settings["file_cap"])
+	entry_count_spinbox.value = 						_c.get_value("settings", "entry_cap", default_settings["entry_cap"])
+	session_duration_spinbox.value = 				_c.get_value("settings", "session_duration", default_settings["session_duration"])
+	error_rep_btn.selected = 								_c.get_value("settings", "error_reporting", default_settings["error_reporting"])
+	column_slider.value = 									_get_column_value(_c.get_value("settings", "columns", default_settings["columns"]))
 
 	config.load(PATH)
 
@@ -645,6 +662,17 @@ func _category_changed(log_category: LogCategory) -> void:
 	config.set_value("categories." + log_category.category_name, "category_index", log_category.index)
 	config.set_value("categories." + log_category.category_name, "is_locked", log_category.is_locked)
 	save_data(true)
+
+
+func set_default_category(cat: LogCategory) -> void:
+	config.load(PATH)
+	config.set_value("settings", "default_category", cat.category_name)
+
+	for categ in category_container.get_children():
+		if categ is LogCategory and categ.default_checkbox != null:
+			if categ != cat:
+				categ.default_checkbox.button_pressed = false
+	config.save(PATH)
 
 
 func _delete_category(log_category: LogCategory) -> void:

@@ -11,12 +11,13 @@ signal move_category_requested(log_category: LogCategory, direction : int)
 signal category_deleted()
 
 # @onready var index_lbl: 	Label = 		%CategoryIndex #Deprecated
-@onready var move_left_btn: Button = 	%MoveLeftButton
-@onready var move_right_btn: Button = %MoveRightButton
-@onready var lock_btn:	Button = 			%LockButton
-@onready var line_edit: LineEdit = 		%CategoryNameLineEdit
-@onready var del_btn:	Button = 				%DeleteButton
-@onready var apply_btn: Button = 			%ApplyButton
+@onready var move_left_btn: Button = 				%MoveLeftButton
+@onready var move_right_btn: Button = 			%MoveRightButton
+@onready var lock_btn:	Button = 						%LockButton
+@onready var default_checkbox: CheckBox = 	%DefaultCheckBox
+@onready var line_edit: LineEdit = 					%CategoryNameLineEdit
+@onready var del_btn:	Button = 							%DeleteButton
+@onready var apply_btn: Button = 						%ApplyButton
 
 
 const PATH = "user://GoLogger/settings.ini"
@@ -77,6 +78,12 @@ func _ready() -> void:
 		lock_btn.toggled.connect(
 			func(pressed: bool) -> void:
 				is_locked = pressed
+		)
+
+		default_checkbox.toggled.connect(
+			func(pressed: bool) -> void:
+				if pressed:
+					dock.set_default_category(self)
 		)
 
 		line_edit.text = category_name
@@ -145,14 +152,6 @@ func move_log_category(direction: int = 0) -> void:
 
 	move_category_requested.emit(self, direction)
 
-	# if direction < 0:
-	# 	if index <= 0:
-	# 		return
-	# 	index -= 1 # log_category_changed is emitted in the setter
-	# else:
-	# 	if index >= dock.category_container.get_child_count() - 1:
-	# 		return
-	# 	index += 1 # log_category_changed is emitted in the setter
 
 
 func _on_text_changed(new_text : String) -> void:

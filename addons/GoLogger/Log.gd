@@ -13,7 +13,7 @@ extends Node
 	# [Done] Implement the custom entry format in entry()
 	# [Done] Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
 	# [Done] Add new setting for the custom entry format called "entry_format" to the config file creation, saving and loading logic
-	# [Done] Consider adding {instance_id} tag to header and entry formats.
+	# [Done] Consider adding {instance_id} tag to entry format
 	#	[Done] Add 'instance_id' to solve issue with concurrency in multiplayer projects
 	# [Done] Refactor .ini settings handling <needed to do to finish instance_id task
 	#	[Done] Remove 'category_index' parameter from entry() method, in favor of using category_name only
@@ -22,6 +22,7 @@ extends Node
 	# [Done] BUG - Enabling/disabling plugin erases all settings in .ini file.
 	# [Done] BUG - When enabling the plugin, the .ini file's settings are reset to default values. Technically isn't an issue because the dock loads the settings correctly before they're overwritten and should overwrite the default values whenever anything is changed, but still not ideal.
 	#
+	# [Not started] Add checkbox to LogCategory that marks one category as Default. When marked, that category is used whenever an unspecified category name is passed to entry()
 	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	#
 	# [Proposal] Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a runtime memory structure only, not in the .ini file
@@ -34,13 +35,29 @@ extends Node
 	# Check that file count deletes the correct files (oldest first)
 
 ### Release Checklist: ###
-	# Test manual test entry with KEY_COMMA in _input()
+	# REMOVE Test manual test entry with KEY_COMMA in _input()
 	# Check all settings load and save correctly
-	# Check that settings prints when new value is set
-	# Check that file counting and deletion works correctly when file cap is reached
-	# Check that entry counting and limit methods work correctly when entry cap is reached
-	# Check that session timer limit method works correctly when time is up
+	# File counting and deletion works correctly when file cap is reached
+	# Entry counting and limit methods work correctly when entry cap is reached
+	# Session timer limit method works correctly when time is up
+	# start_session():
+		# File count is updated and managed properly
+		# current file is saved to ConfigFile
+	# entry():
+		# uses entry_format,
+		# entry_count is managed properly
+		# default_category is handled appropriately
+	# stop_session():
+		# Session is stopped
+		# current_file in ConfigFile is cleared
 ##########################
+
+
+##  Started adding default cateogry but not finished yet.
+## Need to handle clearing default category when a category is deleted, etc.
+## In entry(), added logic for it that sets the parameter category_name to the default category if no category name is specified but can you really do that?
+
+
 
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
@@ -94,6 +111,7 @@ var default_settings := {
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": "[{hh}:{mi}:{ss}] {instance_id}: {entry}",
+		"default_category": "",
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
 		"use_utc": false,
@@ -114,6 +132,7 @@ var expected_types = {
 		"settings/columns": 							TYPE_INT,
 		"settings/log_header_format": 		TYPE_STRING,
 		"settings/entry_format" : 				TYPE_STRING,
+		"settings/default_category": 			TYPE_STRING,
 		"settings/canvaslayer_layer": 		TYPE_INT,
 		"settings/autostart_session": 		TYPE_BOOL,
 		"settings/use_utc": 							TYPE_BOOL,
@@ -215,6 +234,11 @@ func _input(event: InputEvent) -> void:
 			var v1: int = 1234
 			var v2: float = 56.78
 			entry("Test entry " + str(v1) + " - " + str(v2), "game", true)
+		if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
+			entry("Test entry without category name.")
+		if event is InputEventKey and event.keycode == KEY_M and event.is_released():
+			entry("Test entry in non-existent category.", "non_existent_category")
+
 
 
 
@@ -350,19 +374,29 @@ func start_session() -> void:
 	session_started.emit()
 
 
-func entry(log_entry : String, category_name: String, print_entry: bool = false) -> void:
+func entry(log_entry : String, category_name: String = "", print_entry: bool = false) -> void:
 	# Load base category data from file
 	load_category_data()
 	var _d: Dictionary = cat_data.get(category_name, {})
+	var cats: Array = config.get_value("categories", "category_names", [])
+	var default_cat: String = _get_config_value("settings", "default_category", "")
+	var target_cat: String = category_name
 	var entry: String = _get_entry_format(log_entry, category_name)
 	var target_filepath: String = config.get_value(str("categories.", category_name), "file_path", "")
-	# var target_filepath: String = _d["instances"][instance_id].get("file_path", "")
 
 	# Early Returns
 	if log_entry == "":
 		if _get_config_value("settings", "error_reporting") != 2:
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
+
+	if category_name == "":
+		if default_cat != "" and cats.has(default_cat):
+			target_cat = default_cat
+		else:
+			if _get_config_value("settings", "error_reporting") != 2:
+				printerr("GoLogger: Attempted to log entry into a default category[", default_cat,"] that doesn't exist.")
+			return
 
 	if _d.is_empty():
 		if _get_config_value("settings", "error_reporting") != 2:
@@ -371,7 +405,7 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 
 	if _d["category_name"].is_empty():
 		if _get_config_value("settings", "error_reporting") != 2:
-			printerr("GoLogger: Category '" + category_name + "' not found. Check correct spelling.")
+			printerr("GoLogger: Category '" + target_cat + "' not found. Check correct spelling.")
 		return
 
 	if !session_status:
@@ -379,7 +413,7 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 
 	if target_filepath == "":
 		if _get_config_value("settings", "error_reporting") != 2:
-			printerr("GoLogger: No valid file path found for category '" + category_name + "' instance[" + instance_id + "].")
+			printerr("GoLogger: No valid file path found for category '" + target_cat + "' instance[" + instance_id + "].")
 		return
 
 
@@ -412,7 +446,7 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 						if lines.size() >= _get_config_value("settings", "entry_cap"):
 							stop_session()
 							start_session()
-							entry(log_entry, category_name)
+							entry(log_entry, target_cat)
 							return
 
 					2: # Stop only
@@ -425,7 +459,7 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 					0: # Stop & start session
 						stop_session()
 						start_session()
-						entry(log_entry, category_name)
+						entry(log_entry, target_cat)
 						return
 
 					1: # Stop session
@@ -438,7 +472,7 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 						if lines.size() >= _get_config_value("settings", "entry_cap"):
 							stop_session()
 							start_session()
-							entry(log_entry, category_name)
+							entry(log_entry, target_cat)
 							return
 
 					1: # Stop session
@@ -447,8 +481,8 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 							return
 
 	# Rewrite file with existing lines / Update entry count
-	cat_data[category_name]["entry_count"] = lines.size()
-	# cat_data[category_name]["instances"][instance_id]["entry_count"] = lines.size()
+	cat_data[target_cat]["entry_count"] = lines.size()
+	# cat_data[target_cat]["instances"][instance_id]["entry_count"] = lines.size()
 	var _fw = FileAccess.open(target_filepath, FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
@@ -459,11 +493,11 @@ func entry(log_entry : String, category_name: String, print_entry: bool = false)
 		_fw.store_line(str(line))
 
 	# Write new entry
-	var new_entry: String = _get_entry_format(log_entry, category_name)
+	var new_entry: String = _get_entry_format(log_entry, target_cat)
 	_fw.store_line(new_entry)
 	_fw.close()
 	if print_entry:
-		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", category_name, "> ", new_entry.dedent())
+		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", target_cat, "> ", new_entry.dedent())
 
 
 func save_copy(_name: String = "") -> void:
@@ -709,7 +743,7 @@ static func get_error(error : int, object_type : String = "") -> String:
 
 
 ## Retrieves a value from the config file, validating settings beforehand. Simple wrapper for ConfigFile.get_value().
-func _get_config_value(section: String, value : String) -> Variant:
+func _get_config_value(section: String, value : String, default_value: Variant = null) -> Variant:
 	validate_settings()
 	var _result = config.load(PATH)
 

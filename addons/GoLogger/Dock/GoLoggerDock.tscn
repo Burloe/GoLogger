@@ -47,7 +47,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 2
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -208,7 +208,6 @@ theme_override_constants/v_separation = 5
 columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
-visible = false
 layout_mode = 2
 follow_focus = true
 scroll_vertical = 100
@@ -848,6 +847,7 @@ popup/item_3/id = 3
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
@@ -883,26 +883,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=16][color=fc4674]Setup:[font_size=14][color=white]
+text = "[font_size=16][color=fc4674][b]Setup:[font_size=14][color=white][/b]
 GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: [i] Log.entry(\"This is my first log entry.\", \"game\")[/i]
 Use the Category tab to add, remove, or rename categories.
 
 GoLogger uses an [b]Log[/b] singleton, making its functions accessible from all scenes and scripts.
 
-[font_size=16][color=fc4674]Sessions:[font_size=14][color=white]
+[font_size=16][color=fc4674][b]Sessions:[font_size=14][color=white][/b]
 A session defines when logging is active. Sessions can be started or stopped at any time using hotkeys or through code.
 By default, a session starts automatically when the project runs (this can be disabled in the Settings tab).
 
-[font_size=16][color=fc4674]Categories:[font_size=14][color=white]
+[font_size=16][color=fc4674][b]Categories:[font_size=14][color=white][/b]
 Each category in the Category tab corresponds to a folder in the base directory. When a session starts, a .log file is created inside that folder, named with the date, timestamp, and category.
 
-[font_size=16][color=fc4674]Entries:[font_size=14][color=white]
-Entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging.
+[font_size=16][color=fc4674][b]Entries:[font_size=14][color=white][/b]
+Entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging. You specify the 
 
-[font_size=16][color=fc4674]Save Copy:[font_size=14][color=white]
+[font_size=16][color=fc4674][b]Save Copy:[font_size=14][color=white][/b]
 The Save Copy feature creates a copy of the active session without stopping it. This saves the current logs for all categories into their respective saved_logs folders. This feature is useful for capturing logs at specific moments, such as when a known bug occurs or when logged data is needed to be preserved at the moment of occurance for debugging.
 
-[font_size=16][color=fc4674]Running Multiple Instances:[font_size=14][color=white]
+[font_size=16][color=fc4674][b]Running Multiple Instances:[font_size=14][color=white][/b]
 When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the \"instance_id\" tag from the [color=fc4674]Entry Format[color=white] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[color=white] hotkey(Ctrl + Shift + I) to print that instance's ID to output."
 
 [node name="Methods & Hotkeys" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=830461916]
@@ -1037,7 +1037,7 @@ bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Concurrency / Running Multiple Instances:[color=white]
 [font_size=14]There are times that running multiple instances at the same time while debugging/testing your project. Such is the case for multiplayer games. However, when doing so. You have two instances logging into one log file and you need some way to know which instance logged which entry. This is possible by adding the {instance_id} tag to the Entry Format setting. An instance ID is a simple ID string that is generated at runtime(much like UIDs). 
 
-You can use the [color=aquamarine]Display Instance ID[color=white] hotkey to see which instance has what ID.
+You can use the [color=aquamarine]Display Instance ID[color=white] hotkey to see display the ID of an instance in the top left corner of your viewport.
 
 
 
@@ -1046,7 +1046,7 @@ Log Header and Entries can be formatted in any way you may want in the Settings 
 
 Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
  [b]Log Header:[/b][color=darkgray]		{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session [2025-12-20 | 18:42:21]:[/color]
- [b]Entry Format:[/b][color=darkgray]	[{hh}:{mi}:{ss} {instance_id}:  {entry}    >    [09:32:16] b4jw0: Entry String[/color]
+ [b]Entry Format:[/b][color=darkgray]	[{hh}:{mi}:{ss}] {instance_id}:  {entry}    >    [09:32:16] b4jw0: Entry String[/color]
 
 [color=violet][b]Supported tags:[/b][/color]
 	{category} 									[color=darkgray][i]Only available for Log Header[/i][color=white]
