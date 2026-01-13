@@ -82,8 +82,7 @@ func _ready() -> void:
 
 		default_checkbox.toggled.connect(
 			func(pressed: bool) -> void:
-				if pressed:
-					dock.set_default_category(self)
+				dock.set_default_category(self, pressed)
 		)
 
 		line_edit.text = category_name

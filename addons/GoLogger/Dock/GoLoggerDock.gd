@@ -667,9 +667,10 @@ func _category_changed(log_category: LogCategory) -> void:
 	save_data(true)
 
 
-func set_default_category(cat: LogCategory) -> void:
+func set_default_category(cat: LogCategory, set_status: bool) -> void:
 	config.load(PATH)
-	config.set_value("settings", "default_category", cat.category_name)
+	print(set_status)
+	config.set_value("settings", "default_category", cat.category_name if set_status else "")
 
 	for categ in category_container.get_children():
 		if categ is LogCategory and categ.default_checkbox != null:
