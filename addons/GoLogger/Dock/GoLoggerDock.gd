@@ -555,8 +555,8 @@ func load_data() -> void:
 		for cat in category_container.get_children():
 			if cat is LogCategory:
 				if cat.category_name == def_cat:
-					if cat.default_checkbtn != null:
-						cat.default_checkbtn.pressed = true
+					if cat.default_checkbox != null:
+						cat.default_checkbox.pressed = true
 					break
 
 	# Settings
@@ -677,6 +677,11 @@ func set_default_category(cat: LogCategory) -> void:
 
 func _delete_category(log_category: LogCategory) -> void:
 	if log_category.get_parent() == category_container:
+		config.load(PATH)
+		var def_c: String = config.get_value("settings", "default_category", "")
+		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
+			config.set_value("settings", "default_category", "")
+			config.save(PATH)
 		category_container.remove_child(log_category)
 		log_category.queue_free()
 		save_data()

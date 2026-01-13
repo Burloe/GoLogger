@@ -395,7 +395,9 @@ func entry(log_entry : String, category_name: String = "", print_entry: bool = f
 			target_cat = default_cat
 		else:
 			if _get_config_value("settings", "error_reporting") != 2:
-				printerr("GoLogger: Attempted to log entry into a default category[", default_cat,"] that doesn't exist.")
+				printerr("GoLogger: Attempted to log entry into a default category[", default_cat,"] that doesn't exist."\
+				if default_cat!= "" else "GoLogger: Unable to log entry into a default category without a category assigned as default."
+				)
 			return
 
 	if _d.is_empty():
