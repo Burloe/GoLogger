@@ -628,6 +628,9 @@ func save_data(deferred: bool = false) -> void:
 		elif ctrl is HSlider:
 			_c.set_value("settings", key, int(column_slider.value))
 
+	config.load(PATH)
+	_c.set_value("settings", "default_category", config.get_value("settings", "default_value", ""))
+
 	var _e = _c.save(PATH)
 	if _e != OK:
 		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(_e, "ConfigFile")))
@@ -681,7 +684,8 @@ func _delete_category(log_category: LogCategory) -> void:
 		var def_c: String = config.get_value("settings", "default_category", "")
 		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
 			config.set_value("settings", "default_category", "")
-			config.save(PATH)
+			# config.save(PATH)
+
 		category_container.remove_child(log_category)
 		log_category.queue_free()
 		save_data()

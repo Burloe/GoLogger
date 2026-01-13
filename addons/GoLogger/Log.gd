@@ -271,21 +271,17 @@ func load_category_data(new_session: bool = false) -> void:
 ## Saves category data from the cat_data dictionary into the config file.[br]
 ## Use instead of 'config.save(PATH)' whenever category data is modified.
 func save_category_data() -> void:
-	# Ensure there is categories meta to save
 	if !cat_data.has("categories"):
 		return
 
-	# Load existing config so we don't clobber unrelated sections
 	var err = config.load(PATH)
 	if err != OK:
 		if _get_config_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to load existing config file while saving category data.")
 		return
 
-	# Save meta arrays
 	config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
 
-	# [categories.category_name]
 	for name in cat_data["categories"]["category_names"]:
 		if !cat_data.has(name):
 			continue
