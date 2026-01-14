@@ -135,6 +135,7 @@ var plugin_version: String =  "1.3.2":
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
 
+var _default_setting_in_progress: bool = false
 var focused_category: Array = []
 var btn_array: Array[Control] = []
 var container_array: Array[Control] = []
@@ -672,6 +673,10 @@ func _category_changed(log_category: LogCategory) -> void:
 
 
 func set_default_category(cat: LogCategory, set_status: bool) -> void:
+	if _default_setting_in_progress:
+		return
+
+	_default_setting_in_progress = true
 	config.load(PATH)
 	print(set_status)
 	config.set_value("settings", "default_category", cat.category_name if set_status else "")
@@ -680,7 +685,12 @@ func set_default_category(cat: LogCategory, set_status: bool) -> void:
 		if categ is LogCategory and categ.default_checkbox != null:
 			if categ != cat:
 				categ.default_checkbox.button_pressed = false
+
+	if set_status and cat.default_checkbox != null:
+		cat.default_checkbox.button_pressed = true
+
 	config.save(PATH)
+	_default_setting_in_progress = false
 
 
 func _delete_category(log_category: LogCategory) -> void:

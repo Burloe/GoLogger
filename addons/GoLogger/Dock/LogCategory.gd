@@ -43,11 +43,11 @@ var category_name: String = "":
 	set(value):
 		config.load(PATH)
 
-		if category_name != "":
-			if config.get_value("settings", "default_category", "") == category_name:
-				if default_checkbox: default_checkbox.button_pressed = true
-			else:
-				if default_checkbox: default_checkbox.button_pressed = false
+		# if category_name != "":
+		# 	if config.get_value("settings", "default_category", "") == category_name:
+		# 		if default_checkbox: default_checkbox.button_pressed = true
+		# 	else:
+		# 		if default_checkbox: default_checkbox.button_pressed = false
 
 		if category_name != value:
 			category_name = value
@@ -102,11 +102,6 @@ func _ready() -> void:
 			apply_btn.hide()
 		else:
 			invalid_name = false
-
-		# await get_tree().create_timer(0.01).timeout
-		# if config.get_value("settings", "default_category", "") == category_name:
-		# 	default_checkbox.button_pressed = true
-		# else: default_checkbox.button_pressed = false
 
 
 
