@@ -41,6 +41,14 @@ var is_locked : bool = false:
 
 var category_name: String = "":
 	set(value):
+		config.load(PATH)
+
+		if category_name != "":
+			if config.get_value("settings", "default_category", "") == category_name:
+				if default_checkbox: default_checkbox.button_pressed = true
+			else:
+				if default_checkbox: default_checkbox.button_pressed = false
+
 		if category_name != value:
 			category_name = value
 			if line_edit != null: line_edit.text = category_name
@@ -59,6 +67,7 @@ var index : int = 0: ## This now simply determines the order of LogCategories in
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
+
 
 		del_btn.button_up.connect(_on_del_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
@@ -93,6 +102,13 @@ func _ready() -> void:
 			apply_btn.hide()
 		else:
 			invalid_name = false
+
+		# await get_tree().create_timer(0.01).timeout
+		# if config.get_value("settings", "default_category", "") == category_name:
+		# 	default_checkbox.button_pressed = true
+		# else: default_checkbox.button_pressed = false
+
+
 
 
 func apply_name(new_name: String) -> void:

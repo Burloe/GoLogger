@@ -47,7 +47,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 1
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -56,7 +56,6 @@ metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="." unique_id=593789802]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -208,6 +207,7 @@ theme_override_constants/v_separation = 5
 columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
+visible = false
 layout_mode = 2
 follow_focus = true
 scroll_vertical = 100

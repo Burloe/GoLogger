@@ -629,7 +629,8 @@ func save_data(deferred: bool = false) -> void:
 			_c.set_value("settings", key, int(column_slider.value))
 
 	config.load(PATH)
-	_c.set_value("settings", "default_category", config.get_value("settings", "default_value", ""))
+	_c.set_value("settings", "default_category", config.get_value("settings", "default_category", ""))
+	# print("Setting default ")
 
 	var _e = _c.save(PATH)
 	if _e != OK:
@@ -640,7 +641,9 @@ func save_data(deferred: bool = false) -> void:
 
 ## `save_after` should be used when the user adds categories manually via the dock. Not when loading categories from config.
 func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
+	config.load(PATH)
 	var _n = category_scene.instantiate()
+	# var _n: LogCategory = LogCategory.new()
 	_n.dock = self
 	_n.category_name = _name
 	_n.is_locked = _is_locked
@@ -652,6 +655,7 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 	_n.move_category_requested.connect(_change_category_order)
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
 	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
+	_n.default_checkbox.button_pressed = true if config.get_value("settings", "default_category", "") == _name else false
 	if _name == "":	_n.line_edit.grab_focus() # Focus new category line edit for immediate renaming
 	_handle_category_mov_button_state()
 	if save_after:
