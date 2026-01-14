@@ -1044,8 +1044,10 @@ You can use the [color=aquamarine]Display Instance ID[color=white] hotkey to see
 [font_size=16][color=fc4674]Formatting Log Header & Entries:[color=white][font_size=14]
 Log Header and Entries can be formatted in any way you may want in the Settings tab. You can add any string you want but you can also add tags to include useful data to said settings. Such as the project name, version, date and time. You can format the date and time for your preference/region.
 
-Any text and symbol formatting can be used. However, avoid using curly braces for anything other than tags. 
+Any tag and custom string formatting can be used.  
+
  [b]Log Header:[/b][color=darkgray]		{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:    >    GoLogger v.1.4 game session [2025-12-20 | 18:42:21]:[/color]
+
  [b]Entry Format:[/b][color=darkgray]	[{hh}:{mi}:{ss}] {instance_id}:  {entry}    >    [09:32:16] b4jw0: Entry String[/color]
 
 [color=violet][b]Supported tags:[/b][/color]

@@ -4,8 +4,15 @@
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="5_e13q5"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_vptd1"]
-outline_size = 7
+font_size = 15
+font_color = Color(0.9882353, 0.27450982, 0.45490196, 1)
+outline_size = 1
 outline_color = Color(0, 0, 0, 1)
+stacked_outline_count = 4
+stacked_outline_0/size = 1
+stacked_outline_1/size = 1
+stacked_outline_2/size = 1
+stacked_outline_3/size = 1
 
 [node name="Log" type="Node" unique_id=925760869]
 script = ExtResource("1_qpie0")
@@ -25,7 +32,6 @@ offset_bottom = 23.0
 mouse_filter = 1
 text = "e82J9"
 label_settings = SubResource("LabelSettings_vptd1")
-horizontal_alignment = 2
 vertical_alignment = 2
 
 [node name="Popup" type="CenterContainer" parent="GoLoggerElements" unique_id=1694736774]

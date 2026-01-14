@@ -43,12 +43,6 @@ var category_name: String = "":
 	set(value):
 		config.load(PATH)
 
-		# if category_name != "":
-		# 	if config.get_value("settings", "default_category", "") == category_name:
-		# 		if default_checkbox: default_checkbox.button_pressed = true
-		# 	else:
-		# 		if default_checkbox: default_checkbox.button_pressed = false
-
 		if category_name != value:
 			category_name = value
 			if line_edit != null: line_edit.text = category_name

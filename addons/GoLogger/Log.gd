@@ -30,6 +30,9 @@ extends Node
 	# [Proposal] Add list_categories() method to return an array of current category names
 	# [Proposal] Add a custom node that users can attach to objects in their scene tree that creates a unique temp category for that object only while the scene is running
 
+#BUG:
+	# Entry count isn't working
+
 #TODO - Debugging:
 	# Check that file count actually deletes old files when file cap is reached
 	# Check that file count deletes the correct files (oldest first)
@@ -87,7 +90,7 @@ var cat_data : Dictionary = {
 var instance_id: String = "":
 	set(value):
 		instance_id = value
-		instance_id_label.text = str(value)
+		instance_id_label.text = str("Gologger\nInstance ID: ", value)
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
@@ -237,7 +240,7 @@ func _input(event: InputEvent) -> void:
 		if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
 			entry("Test entry without category name.")
 		if event is InputEventKey and event.keycode == KEY_M and event.is_released():
-			entry("Test entry in non-existent category.", "non_existent_category")
+			entry("Test entry in non-existent category.", "non_existant_category")
 
 
 
@@ -265,7 +268,7 @@ func load_category_data(new_session: bool = false) -> void:
 			"entry_count": 0,
 			"is_locked": config.get_value("categories." + str(name), "is_locked", false)
 		}
-		config.save(PATH) # Save any new instance_ids added
+		config.save(PATH)
 
 
 ## Saves category data from the cat_data dictionary into the config file.[br]
@@ -291,6 +294,7 @@ func save_category_data() -> void:
 		config.set_value(base_section, "category_name", c.get("category_name", name))
 		config.set_value(base_section, "category_index", c.get("category_index", 0))
 		config.set_value(base_section, "file_count", c.get("file_count", 0))
+		config.set_value(base_section, "entry_count", c.get("entry_count", 0))
 		config.set_value(base_section, "is_locked", c.get("is_locked", false))
 
 	config.save(PATH)
@@ -302,10 +306,6 @@ func start_session() -> void:
 		if _get_config_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
-
-	# Unsure if needed. cat_data might not be loaded at this point.
-	# if cat_data == null or cat_data.is_empty(): # ErrCheck -> No categories present
-	# 	return
 
 	load_category_data(true)
 
@@ -429,6 +429,9 @@ func entry(log_entry : String, category_name: String = "", print_entry: bool = f
 		if _l != "":
 			lines.append(_l)
 	_f.close()
+	config.load(PATH)
+	config.set_value("categories." + str(target_cat), "entry_count", lines.size())
+	config.save(PATH)
 
 	# Handle Limit Methods
 	if !popup_state: # Enforce limits while inactive popup
@@ -880,7 +883,7 @@ func _get_file_name(category_name : String) -> String:
 	return fin
 
 
-func _get_instance_id() -> String: #TODO: Needs refactor. This is completely outdated
+func _get_instance_id() -> String:
 	# Create RNG and initial ID (keeps the old leading underscore format)
 	var rng := RandomNumberGenerator.new()
 	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789"
@@ -890,49 +893,6 @@ func _get_instance_id() -> String: #TODO: Needs refactor. This is completely out
 	for i in range(id_len):
 		var idx: int = rng.randi_range(0, letters.length() - 1)
 		id_str += letters[idx]
-
-	# # Collect used IDs by scanning category log folders and their saved_logs subfolders
-	# var used_ids: Array = []
-	# config.load(PATH)
-	# var categories_list: Array = config.get_value("categories", "category_names", [])
-	# for cat in categories_list:
-	# 	if typeof(cat) != TYPE_ARRAY or cat.size() == 0:
-	# 		continue
-	# 	var cat_name: String = str(cat[0])
-	# 	if cat_name == "":
-	# 		continue
-
-	# 	# Check  main category folder
-	# 	var gologs_path := str(config.get_value("settings", "base_directory", "user://GoLogger/"), cat_name, "_logs/")
-	# 	var d := DirAccess.open(gologs_path)
-	# 	if d:
-	# 		var files := d.get_files()
-	# 		for f in files:
-	# 			if f.ends_with(".log"):
-	# 				var base := f.substr(0, f.length() - 4) # remove ".log"
-	# 				var id := _extract_id_from_basename(base)
-	# 				if id != "" and id not in used_ids:
-	# 					used_ids.append(id)
-
-	# 		# Check saved_logs subfolder
-	# 		var saved_path := str(gologs_path, "saved_logs/")
-	# 		var ds := DirAccess.open(saved_path)
-	# 		if ds:
-	# 			var sfiles := ds.get_files()
-	# 			for sf in sfiles:
-	# 				if sf.ends_with(".log"):
-	# 					var sbase := sf.substr(0, sf.length() - 4)
-	# 					var sid := _extract_id_from_basename(sbase)
-	# 					if sid != "" and sid not in used_ids:
-	# 						used_ids.append(sid)
-
-	# Re-generate ID if conflict found
-	# while id_str.substr(1) in used_ids:
-	# 	id_str = ""
-	# 	for i in range(id_len):
-	# 		var idx := rng.randi_range(0, letters.length() - 1)
-	# 		id_str += letters[idx]
-	# print("GoLogger: Generated Instance ID -> ", id_str)
 	return id_str
 
 
