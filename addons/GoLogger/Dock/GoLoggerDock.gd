@@ -557,7 +557,7 @@ func load_data() -> void:
 			if cat is LogCategory:
 				if cat.category_name == def_cat:
 					if cat.default_checkbox != null:
-						cat.default_checkbox.pressed = true
+						cat.default_checkbox.button_pressed = true
 					break
 
 	# Settings

@@ -373,36 +373,38 @@ func start_session() -> void:
 func entry(log_entry : String, category_name: String = "", print_entry: bool = false) -> void:
 	# Load base category data from file
 	load_category_data()
-	var _d: Dictionary = cat_data.get(category_name, {})
+	# var _d: Dictionary = cat_data.get(category_name, {})
 	var cats: Array = config.get_value("categories", "category_names", [])
 	var default_cat: String = _get_config_value("settings", "default_category", "")
 	var target_cat: String = category_name
 	var entry: String = _get_entry_format(log_entry, category_name)
-	var target_filepath: String = config.get_value(str("categories.", category_name), "file_path", "")
+	var target_filepath: String = config.get_value(str("categories." + category_name), "file_path", "")
+	var err_lv = _get_config_value("settings", "error_reporting")
 
 	# Early Returns
 	if log_entry == "":
-		if _get_config_value("settings", "error_reporting") != 2:
+		if err_lv != 2:
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
 
-	if category_name == "":
+	if category_name == "": # Unspecified category -> Use Default category
 		if default_cat != "" and cats.has(default_cat):
 			target_cat = default_cat
+			target_filepath = config.get_value(str("categories." + default_cat), "file_path", "")
 		else:
-			if _get_config_value("settings", "error_reporting") != 2:
+			if err_lv != 2:
 				printerr("GoLogger: Attempted to log entry into a default category[", default_cat,"] that doesn't exist."\
 				if default_cat!= "" else "GoLogger: Unable to log entry into a default category without a category assigned as default."
 				)
 			return
 
-	if _d.is_empty():
-		if _get_config_value("settings", "error_reporting") != 2:
+	if cats.is_empty():
+		if err_lv != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
-	if _d["category_name"].is_empty():
-		if _get_config_value("settings", "error_reporting") != 2:
+	if target_cat not in cats:
+		if err_lv != 2:
 			printerr("GoLogger: Category '" + target_cat + "' not found. Check correct spelling.")
 		return
 
@@ -410,16 +412,16 @@ func entry(log_entry : String, category_name: String = "", print_entry: bool = f
 		return
 
 	if target_filepath == "":
-		if _get_config_value("settings", "error_reporting") != 2:
-			printerr("GoLogger: No valid file path found for category '" + target_cat + "' instance[" + instance_id + "].")
+		if err_lv != 2:
+			printerr("GoLogger: No valid file path found for category '" + target_cat + "[" + instance_id + "]'.")
 		return
 
 
-	# Open file to read existing lines
+	# Read existing Entries (note that first entry is Log Header)
 	var _f = FileAccess.open(target_filepath, FileAccess.READ)
 	if !_f: # ER
 		var _err = FileAccess.get_open_error()
-		if _err != OK and _get_config_value("settings", "error_reporting") != 2:
+		if _err != OK and err_lv != 2:
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
@@ -487,7 +489,7 @@ func entry(log_entry : String, category_name: String = "", print_entry: bool = f
 	var _fw = FileAccess.open(target_filepath, FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
-		if err != OK and _get_config_value("settings", "error_reporting") != 2:
+		if err != OK and err_lv != 2:
 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 
 	for line in lines:
