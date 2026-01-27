@@ -44,6 +44,7 @@ signal open_hotkey_resource(resrc: int)
 @onready var _add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
+@onready var cat_del_warn_rlbl: RichTextLabel = %CatDelWarningRLabel
 
 @onready var column_slider: HSlider = %ColumnsHSlider
 @onready var reset_settings_btn: Button = %ResetSettingsButton
@@ -212,6 +213,7 @@ func _ready() -> void:
 			create_settings_file()
 
 		config.load(PATH)
+		cat_del_warn_rlbl.modulate = Color.TRANSPARENT
 
 		# Remove any existing categories
 		for i in category_container.get_children():
@@ -704,6 +706,12 @@ func _delete_category(log_category: LogCategory) -> void:
 		category_container.remove_child(log_category)
 		log_category.queue_free()
 		save_data()
+
+		var tw = get_tree().create_tween()
+		tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
+		await get_tree().create_timer(10.0).timeout
+		var twe = get_tree().create_tween()
+		twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 2.0)
 
 
 func _change_category_order(category: LogCategory, direction: int) -> void:

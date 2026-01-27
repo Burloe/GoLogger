@@ -118,16 +118,23 @@ theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.023
 text = "Open"
 icon = ExtResource("2_6725a")
 
-[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
+[node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=12][color=red][wave amp=10.0 freq=4.0 connected=1]Deleting categories does [b]NOT[/b] delete the file/folder in your file system"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
+layout_mode = 2
 theme_override_constants/separation = 11
 alignment = 2
 
 [node name="PluginVersionCatLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "GoLogger v.1.3.1"
 label_settings = SubResource("LabelSettings_11ofg")
@@ -178,16 +185,6 @@ text = "Columns"
 visible = false
 layout_mode = 2
 texture = ExtResource("4_ui2qu")
-
-[node name="MoreInfoButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1444726842]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(35, 0)
-layout_mode = 2
-tooltip_text = "When categories are deleted, the folders and files are not deleted. Delete them manually if desired."
-focus_mode = 0
-icon = ExtResource("4_tw6vk")
-icon_alignment = 1
-expand_icon = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer" unique_id=642802176]
 layout_mode = 2

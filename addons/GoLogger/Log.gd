@@ -240,7 +240,7 @@ func _input(event: InputEvent) -> void:
 		if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
 			entry("Test entry without category name.")
 		if event is InputEventKey and event.keycode == KEY_M and event.is_released():
-			entry("Test entry in non-existent category.", "non_existant_category")
+			entry("Test entry in non-existent category.", "non_existant_category[THIS SHOULD REPORT ERROR!]")
 
 
 
