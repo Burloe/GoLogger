@@ -720,7 +720,7 @@ func _change_category_order(category: LogCategory, direction: int) -> void:
 		return
 
 	category_container.move_child(category, category.index + direction)
-	_assign_category_indices() # save_data() called within
+	_assign_category_indices()
 
 
 func _assign_category_indices() -> void:
@@ -1081,7 +1081,7 @@ func _on_category_line_focus(data: Array, focused: bool) -> void:
 
 func _on_column_slider_value_changed(value: int) -> void:
 	category_container.columns = _get_column_value(value)
-	column_slider.tooltip_text = str("Category columns: ", _get_column_value(value))
+	column_slider.tooltip_text = str("Columns: ", _get_column_value(value))
 	config.set_value("settings", "columns", _get_column_value(value))
 	save_data()
 

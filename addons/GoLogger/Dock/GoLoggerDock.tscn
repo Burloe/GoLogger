@@ -5,20 +5,18 @@
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
-[ext_resource type="StyleBox" uid="uid://4f0tjmydxdih" path="res://addons/GoLogger/Resources/framed_flat_stylebox.tres" id="4_7ntic"]
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
-[ext_resource type="Texture2D" uid="uid://rsgyd2ce2sad" path="res://addons/GoLogger/Resources/icons/VSeparator.svg" id="4_ui2qu"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 [ext_resource type="StyleBox" uid="uid://b8w5i8chks7st" path="res://addons/GoLogger/Resources/line_edit_stylebox_valid.tres" id="9_qo8nw"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
-font_size = 12
-font_color = Color(1, 1, 1, 0.352941)
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ntic"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tayiv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
+font_size = 12
+font_color = Color(1, 1, 1, 0.352941)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tayiv"]
 content_margin_left = 0.0
@@ -120,6 +118,7 @@ icon = ExtResource("2_6725a")
 
 [node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
@@ -132,24 +131,11 @@ layout_mode = 2
 theme_override_constants/separation = 11
 alignment = 2
 
-[node name="PluginVersionCatLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=990503779]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1853444314]
+[node name="ColumnSliderPanel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1853444314]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("4_7ntic")
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel" unique_id=942552739]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/ColumnSliderPanel" unique_id=942552739]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -159,17 +145,12 @@ grow_vertical = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer" unique_id=2142260431]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=1743312277]
+[node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/ColumnSliderPanel/MarginContainer" unique_id=1743312277]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Category columns: 5"
+tooltip_text = "Columns: 5"
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
@@ -177,14 +158,17 @@ max_value = 10.0
 value = 5.0
 rounded = true
 
-[node name="Label" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=204733730]
+[node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=990503779]
 layout_mode = 2
-text = "Columns"
 
-[node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1866733556]
-visible = false
+[node name="PluginVersionCatLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
+unique_name_in_owner = true
 layout_mode = 2
-texture = ExtResource("4_ui2qu")
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer" unique_id=642802176]
 layout_mode = 2
@@ -1034,7 +1018,7 @@ bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Concurrency / Running Multiple Instances:[color=white]
 [font_size=14]There are times that running multiple instances at the same time while debugging/testing your project. Such is the case for multiplayer games. However, when doing so. You have two instances logging into one log file and you need some way to know which instance logged which entry. This is possible by adding the {instance_id} tag to the Entry Format setting. An instance ID is a simple ID string that is generated at runtime(much like UIDs). 
 
-You can use the [color=aquamarine]Display Instance ID[color=white] hotkey to see display the ID of an instance in the top left corner of your viewport.
+Use the [color=aquamarine]Display Instance ID[color=white] hotkey to see display the ID of an instance in the top left corner of your viewport.
 
 
 
