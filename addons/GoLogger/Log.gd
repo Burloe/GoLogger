@@ -257,16 +257,16 @@ func load_category_data(new_session: bool = false) -> void:
 		"category_names": cat_names.duplicate(),
 	}
 
-	for name in cat_names:
+	for c_name in cat_names:
 
-		cat_data[name] = {
-			"category_name": name,
-			"category_index": config.get_value("categories." + str(name), "category_index", 0),
-			"file_name": "", #config.get_value("categories", name + ".log", ""),
+		cat_data[c_name] = {
+			"category_name": c_name,
+			"category_index": config.get_value("categories." + str(c_name), "category_index", 0),
+			"file_name": "", #config.get_value("categories", c_name + ".log", ""),
 			"file_path": "",
-			"file_count": config.get_value("categories." + str(name), "file_count", 0),
+			"file_count": config.get_value("categories." + str(c_name), "file_count", 0),
 			"entry_count": 0,
-			"is_locked": config.get_value("categories." + str(name), "is_locked", false)
+			"is_locked": config.get_value("categories." + str(c_name), "is_locked", false)
 		}
 		config.save(PATH)
 
@@ -285,13 +285,13 @@ func save_category_data() -> void:
 
 	config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
 
-	for name in cat_data["categories"]["category_names"]:
-		if !cat_data.has(name):
+	for c_name in cat_data["categories"]["category_names"]:
+		if !cat_data.has(c_name):
 			continue
-		var c = cat_data[name]
+		var c = cat_data[c_name]
 		var base_section := "categories." + str(c["category_name"])
 
-		config.set_value(base_section, "category_name", c.get("category_name", name))
+		config.set_value(base_section, "category_name", c.get("category_name", c_name))
 		config.set_value(base_section, "category_index", c.get("category_index", 0))
 		config.set_value(base_section, "file_count", c.get("file_count", 0))
 		config.set_value(base_section, "entry_count", c.get("entry_count", 0))
@@ -377,7 +377,7 @@ func entry(log_entry : String, category_name: String = "", print_entry: bool = f
 	var cats: Array = config.get_value("categories", "category_names", [])
 	var default_cat: String = _get_config_value("settings", "default_category", "")
 	var target_cat: String = category_name
-	var entry: String = _get_entry_format(log_entry, category_name)
+	# var entry: String = _get_entry_format(log_entry, category_name)
 	var target_filepath: String = config.get_value(str("categories." + category_name), "file_path", "")
 	var err_lv = _get_config_value("settings", "error_reporting")
 
@@ -485,7 +485,6 @@ func entry(log_entry : String, category_name: String = "", print_entry: bool = f
 
 	# Rewrite file with existing lines / Update entry count
 	cat_data[target_cat]["entry_count"] = lines.size()
-	# cat_data[target_cat]["instances"][instance_id]["entry_count"] = lines.size()
 	var _fw = FileAccess.open(target_filepath, FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()

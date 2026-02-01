@@ -45,7 +45,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 0
+current_tab = 2
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -54,6 +54,7 @@ metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="." unique_id=593789802]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -150,12 +151,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Columns: 5"
+tooltip_text = "Columns: 4"
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 5.0
+value = 4.0
 rounded = true
 
 [node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=990503779]
@@ -185,7 +186,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 5
+columns = 4
 
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
 visible = false
@@ -828,7 +829,6 @@ popup/item_3/id = 3
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
@@ -839,7 +839,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 3
+current_tab = 4
 
 [node name="Getting Started" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1377872369]
 visible = false
@@ -981,7 +981,7 @@ This option defines the maximum number of .log files allowed in each category fo
 		Restart Session – Ends the current session and starts a new one, creating a new .log file.
 		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
 
-	[color=aquamarine][font_size=14][b]Session timer[/b][font_size=14] – [color=darkgray]Used with Session Timer Action and Session Duration.[color=white]
+	[color=aquamarine][font_size=14][b]Session timer[/b][font_size=14][color=darkgray] – Used with Session Timer Action and Session Duration.[color=white]
 	Starts a timer at the beginning of a session and runs for the duration specified in the Session Duration setting. This method is useful for time-based testing. 
 	The Session Timer emits the signals [color=turquoise]session_started[color=white] and [color=turquoise]session_stopped[color=white], which can be used to synchronize with other systems or features.
 	
@@ -995,6 +995,7 @@ This option defines the maximum number of .log files allowed in each category fo
 [i]Stop session: Ctrl + Shift + P[/i]"
 
 [node name="Instances and Formatting" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=367321639]
+visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
@@ -1041,7 +1042,6 @@ Any tag and custom string formatting can be used.
 "
 
 [node name="More Info" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=656868993]
-visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
@@ -1050,12 +1050,20 @@ metadata/_tab_index = 4
 [node name="VBoxContainer" type="VBoxContainer" parent="Help/HelpTabContainer/More Info" unique_id=785392642]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 12
+theme_override_constants/separation = 36
+
+[node name="Label" type="Label" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=27916166]
+layout_mode = 2
+text = "If issues with the plugin arise, start by deleting the \"gologger_data.ini\" and run your project once to generate a fresh one(resets settings and categories).
+Navigate to \"user://gologger_data.ini\" to do so. If issues persists afterwards, please open an issue on Github with the link below."
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=1948907939]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = -1
+theme_override_constants/separation = 30
+
+[node name="Control" type="Control" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=713874839]
+layout_mode = 2
 
 [node name="RepoLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=1563673285]
 layout_mode = 2
@@ -1065,11 +1073,13 @@ tooltip_text = "https://github.com/Burloe/GoLogger"
 text = "Github repository"
 uri = "https://github.com/Burloe/GoLogger"
 
-[node name="Label" type="Label" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=620057700]
+[node name="IssuesLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=402423982]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-text = "  -  "
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "https://github.com/Burloe/GoLogger/issues"
+text = "Bug report"
+uri = "https://github.com/Burloe/GoLogger/issues"
 
 [node name="WikiLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=300775320]
 layout_mode = 2
@@ -1078,20 +1088,6 @@ size_flags_vertical = 4
 tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
 text = "Wiki"
 uri = "https://github.com/Burloe/GoLogger/wiki"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=163609329]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = -1
-
-[node name="IssuesLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer2" unique_id=402423982]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-tooltip_text = "https://github.com/Burloe/GoLogger/issues"
-text = "Bug report"
-uri = "https://github.com/Burloe/GoLogger/issues"
 
 [node name="TextureRect" type="TextureRect" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=1785138075]
 layout_mode = 2
