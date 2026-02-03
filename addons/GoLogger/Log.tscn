@@ -3,17 +3,6 @@
 [ext_resource type="Script" uid="uid://dwsq1eyit7cex" path="res://addons/GoLogger/Log.gd" id="1_qpie0"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="5_e13q5"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_vptd1"]
-font_size = 15
-font_color = Color(0.9882353, 0.27450982, 0.45490196, 1)
-outline_size = 1
-outline_color = Color(0, 0, 0, 1)
-stacked_outline_count = 4
-stacked_outline_0/size = 1
-stacked_outline_1/size = 1
-stacked_outline_2/size = 1
-stacked_outline_3/size = 1
-
 [node name="Log" type="Node" unique_id=925760869]
 script = ExtResource("1_qpie0")
 
@@ -24,14 +13,28 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 layer = 50
 
-[node name="InstanceIDLabel" type="Label" parent="GoLoggerElements" unique_id=1228096483]
+[node name="MarginContainer" type="MarginContainer" parent="GoLoggerElements" unique_id=639877328]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="InstanceIDLabel" type="RichTextLabel" parent="GoLoggerElements/MarginContainer" unique_id=423741853]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 40)
-offset_right = 42.0
-offset_bottom = 23.0
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 mouse_filter = 1
-text = "e82J9"
-label_settings = SubResource("LabelSettings_vptd1")
+bbcode_enabled = true
+text = "[color=fc4674][outline_size= 4][font_size=14]GoLogger Instance ID: [color=white][outline_size= 8
+]e82J9"
+fit_content = true
 vertical_alignment = 2
 
 [node name="Popup" type="CenterContainer" parent="GoLoggerElements" unique_id=1694736774]

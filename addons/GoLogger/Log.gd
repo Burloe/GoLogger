@@ -90,11 +90,12 @@ var cat_data : Dictionary = {
 var instance_id: String = "":
 	set(value):
 		instance_id = value
-		instance_id_label.text = str("Gologger\nInstance ID: ", value)
+		instance_id_label.text = str("[color=fc4674][outline_size= 4][font_size=14]GoLogger Instance ID: [color=white][outline_size= 8
+]", value)
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
-@onready var instance_id_label: Label = %InstanceIDLabel
+@onready var instance_id_label: RichTextLabel = %InstanceIDLabel
 @onready var popup: CenterContainer = %Popup
 @onready var popup_line_edit: LineEdit = %CopyNameLineEdit
 @onready var popup_yesbtn: Button = %PopupYesButton
@@ -887,7 +888,7 @@ func _get_file_name(category_name : String) -> String:
 func _get_instance_id() -> String:
 	# Create RNG and initial ID (keeps the old leading underscore format)
 	var rng := RandomNumberGenerator.new()
-	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789"
+	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	var id_len: int = 5
 	var id_str: String = ""
 	rng.randomize()

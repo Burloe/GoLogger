@@ -387,6 +387,28 @@ func _ready() -> void:
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
 		display_instance_id_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(3))
 
+		match config.get_value("settings", "limit_method", default_settings["limit_method"]):
+			0: # Entry Count
+				entry_count_action_container.show()
+				entry_count_container.show()
+				session_timer_action_container.hide()
+				session_duration_container.hide()
+			1: # Session Timer
+				entry_count_action_container.hide()
+				entry_count_container.hide()
+				session_timer_action_container.show()
+				session_duration_container.show()
+			2: # Both
+				entry_count_action_container.show()
+				entry_count_container.show()
+				session_timer_action_container.show()
+				session_duration_container.show()
+			4: # None
+				entry_count_action_container.hide()
+				entry_count_container.hide()
+				session_timer_action_container.hide()
+				session_duration_container.hide()
+
 		load_data()
 
 		await get_tree().process_frame
@@ -441,7 +463,7 @@ func create_settings_file() -> void: # Mirror
 	config.load(PATH) # Reload config to ensure it's up to date
 
 
-func load_settings_state() -> void:
+func load_settings_state() -> void: # Delete?
 	config.load(PATH)
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
@@ -462,6 +484,28 @@ func load_settings_state() -> void:
 	session_duration_spinbox.value = 				config.get_value("settings", "session_duration", default_settings["session_duration"])
 	error_rep_btn.selected = 								config.get_value("settings", "error_reporting", default_settings["error_reporting"])
 	column_slider.value = _get_column_value(config.get_value("settings", "columns", _get_column_value(default_settings["columns"])))
+
+	match config.get_value("settings", "limit_method", default_settings["limit_method"]):
+		0: # Entry Count
+			entry_count_action_container.show()
+			entry_count_container.show()
+			session_timer_action_container.hide()
+			session_duration_container.hide()
+		1: # Session Timer
+			entry_count_action_container.hide()
+			entry_count_container.hide()
+			session_timer_action_container.show()
+			session_duration_container.show()
+		2: # Both
+			entry_count_action_container.show()
+			entry_count_container.show()
+			session_timer_action_container.show()
+			session_duration_container.show()
+		4: # None
+			entry_count_action_container.hide()
+			entry_count_container.hide()
+			session_timer_action_container.hide()
+			session_duration_container.hide()
 
 
 func reset_to_default() -> void:
@@ -977,6 +1021,27 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 	match node:
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
+			match index:
+				0: # Entry Count
+					entry_count_action_container.show()
+					entry_count_container.show()
+					session_timer_action_container.hide()
+					session_duration_container.hide()
+				1: # Session Timer
+					entry_count_action_container.hide()
+					entry_count_container.hide()
+					session_timer_action_container.show()
+					session_duration_container.show()
+				2: # Both
+					entry_count_action_container.show()
+					entry_count_container.show()
+					session_timer_action_container.show()
+					session_duration_container.show()
+				4: # None - 3 is a seperator
+					entry_count_action_container.hide()
+					entry_count_container.hide()
+					session_timer_action_container.hide()
+					session_duration_container.hide()
 			print_rich(c_print_history, "Limit method changed.")
 
 		entry_count_action_btn:

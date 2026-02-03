@@ -45,7 +45,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 2
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -89,7 +89,7 @@ layout_mode = 2
 [node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 15
 
 [node name="AddCategoryButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
@@ -101,8 +101,8 @@ theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521
 theme_override_colors/icon_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
 theme_override_colors/icon_hover_color = Color(0.254902, 0.764706, 0.819608, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
-text = "Add new Category"
 icon = ExtResource("2_fkrom")
+icon_alignment = 1
 
 [node name="OpenDirCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
 unique_name_in_owner = true
@@ -114,8 +114,8 @@ theme_override_colors/font_hover_pressed_color = Color(0.729412, 0.352941, 0.023
 theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-text = "Open"
 icon = ExtResource("2_6725a")
+icon_alignment = 1
 
 [node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
 unique_name_in_owner = true
@@ -151,12 +151,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Columns: 4"
+tooltip_text = "Columns: 5"
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 4.0
+value = 5.0
 rounded = true
 
 [node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=990503779]
@@ -186,10 +186,9 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 4
+columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
-visible = false
 layout_mode = 2
 follow_focus = true
 scroll_vertical = 100
@@ -238,7 +237,9 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
-Default path is \"user://GoLogger/\". "
+Default path is \"user://GoLogger/\". 
+
+It's not recommended to use \"user://logs/\" since Godot stores it's own logs "
 theme_override_constants/separation = 8
 
 [node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/HBoxContainer/L_Panel/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
@@ -829,6 +830,7 @@ popup/item_3/id = 3
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
