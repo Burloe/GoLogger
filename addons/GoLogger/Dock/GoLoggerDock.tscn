@@ -45,7 +45,7 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
-current_tab = 1
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -54,7 +54,6 @@ metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="MarginContainer" parent="." unique_id=593789802]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 4
@@ -68,7 +67,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="TopButtonPanel" type="Panel" parent="Categories/VBoxContainer" unique_id=1547891829]
-custom_minimum_size = Vector2(0, 41)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel" unique_id=1878771389]
@@ -78,10 +77,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
 [node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer" unique_id=1236446976]
 layout_mode = 2
@@ -89,7 +88,7 @@ layout_mode = 2
 [node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 8
 
 [node name="AddCategoryButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
@@ -189,6 +188,7 @@ theme_override_constants/v_separation = 5
 columns = 5
 
 [node name="Settings" type="ScrollContainer" parent="." unique_id=1630140868]
+visible = false
 layout_mode = 2
 follow_focus = true
 scroll_vertical = 100
