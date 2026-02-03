@@ -353,6 +353,10 @@ func _ready() -> void:
 			btns_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
 			btns_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
 
+		for lbl in corresponding_lbls:
+			lbl.add_theme_color_override("font_color", c_font_normal)
+
+
 
 		if base_dir_apply_btn.button_up.is_connected(_on_button_button_up):
 			base_dir_apply_btn.button_up.disconnect(_on_button_button_up)
@@ -749,13 +753,21 @@ func _delete_category(log_category: LogCategory) -> void:
 
 		category_container.remove_child(log_category)
 		log_category.queue_free()
+		config.erase_section_key("categories." + log_category.category_name, "file_name")
+		config.erase_section_key("categories." + log_category.category_name, "file_path")
+		config.erase_section_key("categories." + log_category.category_name, "category_name")
+		config.erase_section_key("categories." + log_category.category_name, "category_index")
+		config.erase_section_key("categories." + log_category.category_name, "file_count")
+		config.erase_section_key("categories." + log_category.category_name, "is_locked")
+		config.erase_section_key("categories." + log_category.category_name, "entry_count")
+		config.erase_section("categories." + log_category.category_name)
 		save_data()
 
 		var tw = get_tree().create_tween()
 		tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
-		await get_tree().create_timer(10.0).timeout
+		await get_tree().create_timer(8.0).timeout
 		var twe = get_tree().create_tween()
-		twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 2.0)
+		twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 0.5)
 
 
 func _change_category_order(category: LogCategory, direction: int) -> void:

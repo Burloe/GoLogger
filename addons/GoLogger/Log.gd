@@ -32,6 +32,7 @@ extends Node
 
 #BUG:
 	# Entry count isn't working
+	# When deleting a category. The [category.category_name] section remains in the .ini file.
 
 #TODO - Debugging:
 	# Check that file count actually deletes old files when file cap is reached
