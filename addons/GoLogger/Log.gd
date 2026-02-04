@@ -575,7 +575,6 @@ func stop_session() -> void:
 	load_category_data()
 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_config_value("settings", "use_utc")), "] Stopped log session.")
 
-	# for category in cat_data["categories"]["category_names"]
 	for category in config.get_value("categories", "category_names", []):
 		# Read existing file content
 		var _f = FileAccess.open(cat_data[category]["file_path"], FileAccess.READ)

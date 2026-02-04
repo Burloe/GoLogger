@@ -14,6 +14,8 @@ extends TabContainer
 		# [DONE] Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
 		# [DONE] Remove instance_id tags from Header settings since files aren't per-instance anymore
 		# [DONE] Apply log header format button not disabling when using enter key to submit text
+		# Changing a category name needs to erase the old category data in the .ini file to prevent bloat
+		# When adding a new category, "file_name", "file_path" and "entry_count" keys are missing from the section(not critical but should be added for consistency)
 
 # RELEASE CHECKLIST:
 	# Ensure CATEGORIES tab is visible
@@ -648,10 +650,13 @@ func save_data(deferred: bool = false) -> void:
 				continue
 
 			_cat_names.append(log_category.category_name)
+			_c.set_value("categories." + log_category.category_name, "file_name", "")
+			_c.set_value("categories." + log_category.category_name, "file_path", "")
 			_c.set_value("categories." + log_category.category_name, "category_name", log_category.category_name)
 			_c.set_value("categories." + log_category.category_name, "category_index", log_category.index)
 			_c.set_value("categories." + log_category.category_name, "file_count", 0)
 			_c.set_value("categories." + log_category.category_name, "is_locked", log_category.is_locked)
+			_c.set_value("categories." + log_category.category_name, "entry_count", 0)
 
 	_c.set_value("categories", "category_names", _cat_names)
 
@@ -714,11 +719,17 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 
 
 ## Called when a category has changed (name, lock state, etc) by the dock UI.
-func _category_changed(log_category: LogCategory) -> void:
+func _category_changed(log_category: LogCategory, is_name_change: bool, old_name) -> void:
 	config.load(PATH)
+	config.set_value("categories." + log_category.category_name, "file_name", "")
+	config.set_value("categories." + log_category.category_name, "file_path", "")
 	config.set_value("categories." + log_category.category_name, "category_name", log_category.category_name)
 	config.set_value("categories." + log_category.category_name, "category_index", log_category.index)
+	config.set_value("categories." + log_category.category_name, "file_count", config.get_value("categories." + log_category.category_name, "file_count", 0))
 	config.set_value("categories." + log_category.category_name, "is_locked", log_category.is_locked)
+	config.set_value("categories." + log_category.category_name, "entry_count", config.get_value("categories." + log_category.category_name, "entry_count", 0))
+	if config.has_section("categories." + old_name) and is_name_change:
+		config.erase_section("categories." + old_name)
 	save_data(true)
 
 
@@ -745,7 +756,9 @@ func set_default_category(cat: LogCategory, set_status: bool) -> void:
 
 func _delete_category(log_category: LogCategory) -> void:
 	if log_category.get_parent() == category_container:
+
 		config.load(PATH)
+
 		var def_c: String = config.get_value("settings", "default_category", "")
 		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
 			config.set_value("settings", "default_category", "")
@@ -753,15 +766,11 @@ func _delete_category(log_category: LogCategory) -> void:
 
 		category_container.remove_child(log_category)
 		log_category.queue_free()
-		config.erase_section_key("categories." + log_category.category_name, "file_name")
-		config.erase_section_key("categories." + log_category.category_name, "file_path")
-		config.erase_section_key("categories." + log_category.category_name, "category_name")
-		config.erase_section_key("categories." + log_category.category_name, "category_index")
-		config.erase_section_key("categories." + log_category.category_name, "file_count")
-		config.erase_section_key("categories." + log_category.category_name, "is_locked")
-		config.erase_section_key("categories." + log_category.category_name, "entry_count")
-		config.erase_section("categories." + log_category.category_name)
-		save_data()
+		if config.has_section("categories." + log_category.category_name):
+			config.erase_section("categories." + log_category.category_name)
+		config.save(PATH)
+		_assign_category_indices()
+		# save_data()
 
 		var tw = get_tree().create_tween()
 		tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
