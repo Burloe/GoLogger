@@ -14,14 +14,17 @@ extends TabContainer
 		# [DONE] Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
 		# [DONE] Remove instance_id tags from Header settings since files aren't per-instance anymore
 		# [DONE] Apply log header format button not disabling when using enter key to submit text
+		# [DONE] When adding a new category, "file_name", "file_path" and "entry_count" keys are missing from the section(not critical but should be added for consistency)
 		# Changing a category name needs to erase the old category data in the .ini file to prevent bloat
-		# When adding a new category, "file_name", "file_path" and "entry_count" keys are missing from the section(not critical but should be added for consistency)
 
 # RELEASE CHECKLIST:
-	# Ensure CATEGORIES tab is visible
-	# Ensure HELP > Getting Started	is visible
+	# Ensure proper tab states - CATEGORIES tab - Getting Started	in Help tab
 	# Check font highlighting on mouse over for settings tab
 	# Check print history works as expected
+	# Check Category:
+		# Category section is added to .ini file after naming a new category
+		# Old category section is removed from .ini file after renaming a category
+		# Category section is removed from .ini file after deleting a category
 	# Check LogCategory:
 		# Renaming a category adds an int to the name
 		# Reordering categories works
@@ -123,6 +126,7 @@ var session_duration_spinbox_line: LineEdit
 
 
 @onready var help_tab_container: TabContainer = %HelpTabContainer
+@onready var user_dir_btn: Button = %UserDirBtn
 
 const PATH = "user://gologger_data.ini"
 
@@ -227,6 +231,7 @@ func _ready() -> void:
 		open_dir_btn.button_up.connect(_open_directory)
 		column_slider.value_changed.connect(_on_column_slider_value_changed)
 		reset_settings_btn.button_up.connect(reset_to_default)
+		user_dir_btn.button_up.connect(_open_user_dir)
 
 		btn_array = [
 			base_dir_line,
@@ -686,7 +691,6 @@ func save_data(deferred: bool = false) -> void:
 
 	config.load(PATH)
 	_c.set_value("settings", "default_category", config.get_value("settings", "default_category", ""))
-	# print("Setting default ")
 
 	var _e = _c.save(PATH)
 	if _e != OK:
@@ -712,7 +716,7 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
 	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
 	_n.default_checkbox.button_pressed = true if config.get_value("settings", "default_category", "") == _name else false
-	if _name == "":	_n.line_edit.grab_focus() # Focus new category line edit for immediate renaming
+	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
 	_handle_category_mov_button_state()
 	if save_after:
 		save_data()
@@ -728,9 +732,21 @@ func _category_changed(log_category: LogCategory, is_name_change: bool, old_name
 	config.set_value("categories." + log_category.category_name, "file_count", config.get_value("categories." + log_category.category_name, "file_count", 0))
 	config.set_value("categories." + log_category.category_name, "is_locked", log_category.is_locked)
 	config.set_value("categories." + log_category.category_name, "entry_count", config.get_value("categories." + log_category.category_name, "entry_count", 0))
-	if config.has_section("categories." + old_name) and is_name_change:
-		config.erase_section("categories." + old_name)
-	save_data(true)
+	if is_name_change:
+		# Remove old category section
+		if config.has_section("categories." + old_name):
+			config.erase_section("categories." + old_name)
+
+		# Update category names list if name is changed
+		var categs = config.get_value("categories", "category_names", [])
+		for i in range(categs.size()):
+			if categs[i] == old_name:
+				categs[i] = log_category.category_name
+				config.set_value("categories", "category_names", categs)
+				printerr("Updated category_names: ", categs)
+				break
+
+	config.save(PATH)
 
 
 func set_default_category(cat: LogCategory, set_status: bool) -> void:
@@ -867,6 +883,11 @@ static func get_error(error: int, object_type: String = "") -> String:
 		47: return str("Error[46] ", object_type, " Help error")
 		48: return str("Error[47] ", object_type, " Bug error")
 	return "N/A"
+
+
+func _open_user_dir() -> void:
+	var abs_path = ProjectSettings.globalize_path("user://")
+	OS.shell_open(abs_path)
 
 
 func _open_directory() -> void:

@@ -866,9 +866,10 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 4
 
 [node name="Getting Started" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1377872369]
+visible = false
 layout_mode = 2
 scroll_vertical_custom_step = 20.0
 scroll_hint_mode = 1
@@ -1068,31 +1069,51 @@ Any tag and custom string formatting can be used.
 "
 
 [node name="More Info" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=656868993]
-visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
 metadata/_tab_index = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Help/HelpTabContainer/More Info" unique_id=785392642]
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/HelpTabContainer/More Info" unique_id=1738489501]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/HelpTabContainer/More Info/HBoxContainer" unique_id=785392642]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 36
 
-[node name="Label" type="Label" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=27916166]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer" unique_id=1333109452]
 layout_mode = 2
-text = "If issues with the plugin arise, start by deleting the \"gologger_data.ini\" and run your project once to generate a fresh one(resets settings and categories).
-Navigate to \"user://gologger_data.ini\" to do so. If issues persists afterwards, please open an issue on Github with the link below."
+theme_override_constants/separation = 16
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=1948907939]
+[node name="UserDirBtn" type="Button" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Open 
+\"user://\" 
+directory"
+
+[node name="Label" type="Label" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=27916166]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "If issues with the plugin arise, start by deleting the \"gologger_data.ini\" and run your 
+project once to generate a fresh one(will reset settings and categories).
+If issues persists afterwards, please open an issue on Github with the link below."
+
+[node name="HSeparator" type="HSeparator" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer" unique_id=506011858]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer" unique_id=1948907939]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 30
 
-[node name="Control" type="Control" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=713874839]
+[node name="Control" type="Control" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=713874839]
 layout_mode = 2
 
-[node name="RepoLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=1563673285]
+[node name="RepoLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1563673285]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1100,7 +1121,7 @@ tooltip_text = "https://github.com/Burloe/GoLogger"
 text = "Github repository"
 uri = "https://github.com/Burloe/GoLogger"
 
-[node name="IssuesLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=402423982]
+[node name="IssuesLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=402423982]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1108,7 +1129,7 @@ tooltip_text = "https://github.com/Burloe/GoLogger/issues"
 text = "Bug report"
 uri = "https://github.com/Burloe/GoLogger/issues"
 
-[node name="WikiLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/VBoxContainer/HBoxContainer" unique_id=300775320]
+[node name="WikiLinkButton" type="LinkButton" parent="Help/HelpTabContainer/More Info/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=300775320]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1116,9 +1137,10 @@ tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
 text = "Wiki"
 uri = "https://github.com/Burloe/GoLogger/wiki"
 
-[node name="TextureRect" type="TextureRect" parent="Help/HelpTabContainer/More Info/VBoxContainer" unique_id=1785138075]
+[node name="TextureRect" type="TextureRect" parent="Help/HelpTabContainer/More Info/HBoxContainer" unique_id=1785138075]
 layout_mode = 2
 size_flags_horizontal = 8
-size_flags_vertical = 3
+size_flags_vertical = 0
 texture = ExtResource("11_tayiv")
 stretch_mode = 3
+flip_h = true
