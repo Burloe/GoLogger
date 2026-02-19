@@ -113,10 +113,10 @@ var popup_state : bool = false:
 # Mirror in GoLoggerDock.gd
 var default_settings := {
 		"category_names": ["game"],
+		"default_category": "",
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": "[{hh}:{mi}:{ss}] {instance_id}: {entry}",
-		"default_category": "",
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
 		"use_utc": false,
@@ -133,11 +133,11 @@ var default_settings := {
 ## Mirror in GoLoggerDock.gd
 var expected_types = {
 		"categories/category_names": 			TYPE_ARRAY,
+		"categories/default_category": 		TYPE_STRING,
 		"settings/base_directory": 				TYPE_STRING,
 		"settings/columns": 							TYPE_INT,
 		"settings/log_header_format": 		TYPE_STRING,
 		"settings/entry_format" : 				TYPE_STRING,
-		"settings/default_category": 			TYPE_STRING,
 		"settings/canvaslayer_layer": 		TYPE_INT,
 		"settings/autostart_session": 		TYPE_BOOL,
 		"settings/use_utc": 							TYPE_BOOL,
@@ -234,11 +234,9 @@ func _input(event: InputEvent) -> void:
 					print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
 
 
-		# Test entry logging with Comma Key.
+		# Test entry logging
 		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
-			var v1: int = 1234
-			var v2: float = 56.78
-			entry("Test entry " + str(v1) + " - " + str(v2), "game", true)
+			entry("Test entry ", "game", true)
 		if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
 			entry("Test entry without category name.")
 		if event is InputEventKey and event.keycode == KEY_M and event.is_released():
@@ -377,7 +375,7 @@ func entry(log_entry : String, category_name: String = "", print_entry: bool = f
 	load_category_data()
 	# var _d: Dictionary = cat_data.get(category_name, {})
 	var cats: Array = config.get_value("categories", "category_names", [])
-	var default_cat: String = _get_config_value("settings", "default_category", "")
+	var default_cat: String = _get_config_value("categories", "default_category", "")
 	var target_cat: String = category_name
 	# var entry: String = _get_entry_format(log_entry, category_name)
 	var target_filepath: String = config.get_value(str("categories." + category_name), "file_path", "")
@@ -576,24 +574,30 @@ func stop_session() -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_config_value("settings", "use_utc")), "] Stopped log session.")
 
 	for category in config.get_value("categories", "category_names", []):
+		var _fp = config.get_value("categories." + str(category), "file_path", "")
+		if _fp == "":
+			if _get_config_value("settings", "error_reporting") != 2:
+				push_warning("GoLogger: Failed to stop session properly. No valid file path found for category '", category, "'.")
+			continue
+
 		# Read existing file content
-		var _f = FileAccess.open(cat_data[category]["file_path"], FileAccess.READ)
+		var _f = FileAccess.open(_fp, FileAccess.READ)
 		if !_f:
 			var _err = FileAccess.get_open_error()
 			if _get_config_value("settings", "error_reporting") != 2:
-				if _err != OK: push_warning("GoLogger: Failed to open file ", cat_data[category]["file_path"], " with READ ", get_error(_err))
-			push_warning("GoLogger: Stopped session but failed to do so properly. Couldn't open the file.")
+				if _err != OK: push_warning("GoLogger: Failed to open file ", _fp, " with READ ", get_error(_err))
+			push_warning("GoLogger: Failed to stop session properly. Error opening file!", _fp)
 			session_status = false
 			return
 		var _content := _f.get_as_text()
 		_f.close()
 
 		# Write to file that session is stopping
-		var _fw = FileAccess.open(cat_data[category]["file_path"], FileAccess.WRITE)
+		var _fw = FileAccess.open(_fp, FileAccess.WRITE)
 		if !_fw and _get_config_value("settings", "error_reporting") != 2:
 			var _err = FileAccess.get_open_error()
 			if _err != OK:
-				push_warning("GoLogger: Attempting to stop session by writing to file (", cat_data[category]["file_path"], ") -> Error[", _err, "]")
+				push_warning("GoLogger: Attempting to stop session by writing to file (", _fp, ") -> Error[", _err, "]")
 				return
 		var _s := str(_content, str(_timestamp + "Stopped Log Session."))
 		_fw.store_line(_s)
@@ -645,6 +649,7 @@ func create_settings_file() -> void: # Mirror in GoLoggerDock.gd
 	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
 
 	cf.set_value("categories", "category_names", ["game"])
+	cf.set_value("categories", "default_category", default_settings["default_category"])
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -658,6 +663,7 @@ func create_settings_file() -> void: # Mirror in GoLoggerDock.gd
 func validate_settings() -> void: # Mirror in GoLoggerDock.gd
 	var expected_settings ={
 		"category_names": 			"categories/category_names",
+		"default_category": 		"categories/default_category",
 		"base_directory": 			"settings/base_directory",
 		"columns": 							"settings/columns",
 		"log_header_format": 		"settings/log_header_format",

@@ -117,7 +117,6 @@ var session_duration_spinbox_line: LineEdit
 @onready var plugin_version_cat_lbl: Label = %PluginVersionCatLabel
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
-@onready var hotkey_lbl: Label = %HotkeyLabel
 @onready var start_session_btn: Button = %StartSessionBtn
 @onready var copy_session_btn: Button = %CopySessionBtn
 @onready var stop_session_btn: Button = %StopSessionBtn
@@ -150,13 +149,91 @@ var c_font_normal := Color("9d9ea0")
 var c_font_hover := Color("f2f2f2")
 var c_print_history := "[color=878787][GoLogger] "
 
+var settings_dict := {
+	"defaults": {
+		"category_names": 								["game"],
+		"default_category": 							"",
+		"base_directory": 								"user://GoLogger/",
+		"log_header_format": 							"{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
+		"entry_format": 									"[{hh}:{mi}:{ss}] {instance_id}: {entry}",
+		"canvaslayer_layer": 							5,
+		"autostart_session": 							true,
+		"use_utc": 												false,
+		"print_instance_id": 							false,
+		"limit_method": 									0,
+		"entry_count_action": 						0,
+		"session_timer_action": 					0,
+		"file_cap": 											10,
+		"entry_cap": 											300,
+		"session_duration": 							300,
+		"error_reporting": 								0,
+		"columns": 												5
+	},
+	"expected_settings": {
+		"category_names": 								"categories/category_names",
+		"default_category": 							"categories/default_category",
+		"base_directory": 								"settings/base_directory",
+		"columns": 												"settings/columns",
+		"log_header_format": 							"settings/log_header_format",
+		"entry_format": 									"settings/entry_format",
+		"canvaslayer_layer": 							"settings/canvaslayer_layer",
+		"autostart_session": 							"settings/autostart_session",
+		"use_utc": 												"settings/use_utc",
+		"limit_method": 									"settings/limit_method",
+		"entry_count_action": 						"settings/entry_count_action",
+		"session_timer_action": 					"settings/session_timer_action",
+		"file_cap": 											"settings/file_cap",
+		"entry_cap": 											"settings/entry_cap",
+		"session_duration": 							"settings/session_duration",
+		"error_reporting": 								"settings/error_reporting",
+		"print_instance_id": 							"settings/print_instance_id"
+	},
+	"expected_types": {
+		"categories/category_names": 			TYPE_ARRAY,
+		"categories/default_category": 		TYPE_STRING,
+		"settings/base_directory": 				TYPE_STRING,
+		"settings/columns": 							TYPE_INT,
+		"settings/log_header_format": 		TYPE_STRING,
+		"settings/entry_format" : 				TYPE_STRING,
+		"settings/canvaslayer_layer": 		TYPE_INT,
+		"settings/autostart_session": 		TYPE_BOOL,
+		"settings/use_utc": 							TYPE_BOOL,
+		"settings/print_instance_id": 		TYPE_BOOL,
+		"settings/limit_method": 					TYPE_INT,
+		"settings/entry_count_action": 		TYPE_INT,
+		"settings/session_timer_action": 	TYPE_INT,
+		"settings/file_cap": 							TYPE_INT,
+		"settings/entry_cap": 						TYPE_INT,
+		"settings/session_duration": 			TYPE_INT,
+		"settings/error_reporting": 			TYPE_INT
+	},
+	"controls": {
+		"base_directory": 								base_dir_line,
+		"log_header_format": 							log_header_line,
+		"entry_format": 									entry_format_line,
+		"canvaslayer_layer": 							canvas_layer_spinbox,
+		"autostart_session": 							autostart_btn,
+		"use_utc": 												utc_btn,
+		"print_instance_id": 							print_instance_id_btn,
+		"limit_method": 									limit_method_btn,
+		"entry_count_action": 						entry_count_action_btn,
+		"session_timer_action": 					session_timer_action_btn,
+		"file_cap": 											file_count_spinbox,
+		"entry_cap": 											entry_count_spinbox,
+		"session_duration": 							session_duration_spinbox,
+		"error_reporting": 								error_rep_btn,
+		"columns": 												column_slider
+	}
+}
+
+
 # Mirror
 var default_settings := {
 		"category_names": ["game"],
+		"default_category": "",
 		"base_directory": "user://GoLogger/",
 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": "[{hh}:{mi}:{ss}] {instance_id}: {entry}",
-		"default_category": "",
 		"canvaslayer_layer": 5,
 		"autostart_session": true,
 		"use_utc": false,
@@ -173,11 +250,11 @@ var default_settings := {
 ## Mirror
 var expected_types = {
 		"categories/category_names": 			TYPE_ARRAY,
+		"categories/default_category": 		TYPE_STRING,
 		"settings/base_directory": 				TYPE_STRING,
 		"settings/columns": 							TYPE_INT,
 		"settings/log_header_format": 		TYPE_STRING,
 		"settings/entry_format" : 				TYPE_STRING,
-		"settings/default_category": 			TYPE_STRING,
 		"settings/canvaslayer_layer": 		TYPE_INT,
 		"settings/autostart_session": 		TYPE_BOOL,
 		"settings/use_utc": 							TYPE_BOOL,
@@ -208,6 +285,25 @@ var settings_control := {
 	"error_reporting": error_rep_btn,
 	"columns": column_slider
 }
+var expected_settings ={
+		"category_names": 			"categories/category_names",
+		"default_category": 		"categories/default_category",
+		"base_directory": 			"settings/base_directory",
+		"columns": 							"settings/columns",
+		"log_header_format": 		"settings/log_header_format",
+		"entry_format": 				"settings/entry_format",
+		"canvaslayer_layer": 		"settings/canvaslayer_layer",
+		"autostart_session": 		"settings/autostart_session",
+		"use_utc": 							"settings/use_utc",
+		"limit_method": 				"settings/limit_method",
+		"entry_count_action": 	"settings/entry_count_action",
+		"session_timer_action": "settings/session_timer_action",
+		"file_cap": 						"settings/file_cap",
+		"entry_cap": 						"settings/entry_cap",
+		"session_duration": 		"settings/session_duration",
+		"error_reporting": 			"settings/error_reporting",
+		"print_instance_id": 		"settings/print_instance_id"
+	}
 
 
 
@@ -384,15 +480,6 @@ func _ready() -> void:
 			entry_format_reset_btn.button_up.disconnect(_on_button_button_up)
 		entry_format_reset_btn.button_up.connect(_on_button_button_up.bind(entry_format_reset_btn))
 
-		start_session_btn.mouse_entered.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, true))
-		start_session_btn.mouse_exited.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, false))
-		copy_session_btn.mouse_entered.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, true))
-		copy_session_btn.mouse_exited.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, false))
-		stop_session_btn.mouse_entered.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, true))
-		stop_session_btn.mouse_exited.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, false))
-		display_instance_id_btn.mouse_entered.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, true))
-		display_instance_id_btn.mouse_exited.connect(_on_dock_mouse_hover_changed.bind(hotkey_lbl, false))
-
 		start_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(0))
 		copy_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(1))
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
@@ -446,11 +533,13 @@ func _ready() -> void:
 
 func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new() # Use new ConfigFile to avoid clobbering existing data
+	cf.set_value("categories", "category_names", ["game"])
+	cf.set_value("categories", "default_category", default_settings["default_category"])
+
 	cf.set_value("settings", "base_directory", default_settings["base_directory"])
 	cf.set_value("settings", "columns", default_settings["columns"])
 	cf.set_value("settings", "log_header_format", default_settings["log_header_format"])
 	cf.set_value("settings", "entry_format", default_settings["entry_format"])
-	cf.set_value("settings", "default_category", default_settings["default_category"])
 	cf.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
 	cf.set_value("settings", "autostart_session", default_settings["autostart_session"])
 	cf.set_value("settings", "use_utc", default_settings["use_utc"])
@@ -462,8 +551,6 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "entry_cap", default_settings["entry_cap"])
 	cf.set_value("settings", "session_duration", default_settings["session_duration"])
 	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
-
-	cf.set_value("categories", "category_names", ["game"])
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -558,6 +645,7 @@ func reset_to_default() -> void:
 func validate_settings() -> void: # Mirror
 	var expected_settings ={
 		"category_names": 			"categories/category_names",
+		"default_category": 		"categories/default_category",
 		"base_directory": 			"settings/base_directory",
 		"columns": 							"settings/columns",
 		"log_header_format": 		"settings/log_header_format",
@@ -608,14 +696,12 @@ func load_data() -> void:
 			_c.get_value("categories." + name, "category_index", 0),
 			_c.get_value("categories." + name, "is_locked", false)
 		)
-	var def_cat = _c.get_value("settings", "default_category", "")
+	var def_cat = _c.get_value("categories", "default_category", "")
 	if def_cat != "":
 		for cat in category_container.get_children():
-			if cat is LogCategory:
-				if cat.category_name == def_cat:
-					if cat.default_checkbox != null:
-						cat.default_checkbox.button_pressed = true
-					break
+			if cat is LogCategory and cat.category_name == def_cat and cat.default_checkbox != null:
+				cat.default_checkbox.button_pressed = true
+				break
 
 	# Settings
 	base_dir_line.text = 										_c.get_value("settings", "base_directory", default_settings["base_directory"])
@@ -690,7 +776,7 @@ func save_data(deferred: bool = false) -> void:
 			_c.set_value("settings", key, int(column_slider.value))
 
 	config.load(PATH)
-	_c.set_value("settings", "default_category", config.get_value("settings", "default_category", ""))
+	_c.set_value("categories", "default_category", config.get_value("categories", "default_category", ""))
 
 	var _e = _c.save(PATH)
 	if _e != OK:
@@ -715,7 +801,7 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 	_n.move_category_requested.connect(_change_category_order)
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
 	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
-	_n.default_checkbox.button_pressed = true if config.get_value("settings", "default_category", "") == _name else false
+	_n.default_checkbox.button_pressed = true if config.get_value("categories", "default_category", "") == _name else false
 	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
 	_handle_category_mov_button_state()
 	if save_after:
@@ -743,7 +829,7 @@ func _category_changed(log_category: LogCategory, is_name_change: bool, old_name
 			if categs[i] == old_name:
 				categs[i] = log_category.category_name
 				config.set_value("categories", "category_names", categs)
-				printerr("Updated category_names: ", categs)
+				# printerr("Updated category_names: ", categs)
 				break
 
 	config.save(PATH)
@@ -755,8 +841,8 @@ func set_default_category(cat: LogCategory, set_status: bool) -> void:
 
 	_default_setting_in_progress = true
 	config.load(PATH)
-	print(set_status)
-	config.set_value("settings", "default_category", cat.category_name if set_status else "")
+	# print(set_status)
+	config.set_value("categories", "default_category", cat.category_name if set_status else "")
 
 	for categ in category_container.get_children():
 		if categ is LogCategory and categ.default_checkbox != null:
@@ -775,9 +861,9 @@ func _delete_category(log_category: LogCategory) -> void:
 
 		config.load(PATH)
 
-		var def_c: String = config.get_value("settings", "default_category", "")
+		var def_c: String = config.get_value("categories", "default_category", "")
 		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
-			config.set_value("settings", "default_category", "")
+			config.set_value("categories", "default_category", "")
 			# config.save(PATH)
 
 		category_container.remove_child(log_category)
