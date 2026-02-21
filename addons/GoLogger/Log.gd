@@ -262,8 +262,8 @@ func load_category_data(new_session: bool = false) -> void:
 		cat_data[c_name] = {
 			"category_name": c_name,
 			"category_index": config.get_value("categories." + str(c_name), "category_index", 0),
-			"file_name": "", #config.get_value("categories", c_name + ".log", ""),
-			"file_path": "",
+			"file_name": config.get_value("categories." + c_name, "file_name", ""),
+			"file_path": config.get_value("categories." + c_name, "file_path", ""),
 			"file_count": config.get_value("categories." + str(c_name), "file_count", 0),
 			"entry_count": 0,
 			"is_locked": config.get_value("categories." + str(c_name), "is_locked", false)
@@ -571,10 +571,12 @@ func stop_session() -> void:
 	if !session_status:	return
 
 	load_category_data()
+
 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_config_value("settings", "use_utc")), "] Stopped log session.")
 
 	for category in config.get_value("categories", "category_names", []):
-		var _fp = config.get_value("categories." + str(category), "file_path", "")
+		# var _fp = config.get_value("categories." + str(category), "file_path", "")
+		var _fp = cat_data[category]["file_path"]
 		if _fp == "":
 			if _get_config_value("settings", "error_reporting") != 2:
 				push_warning("GoLogger: Failed to stop session properly. No valid file path found for category '", category, "'.")

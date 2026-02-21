@@ -1205,6 +1205,8 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 
 
 func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
+	config.load(PATH)
+
 	var u_line = node.get_line_edit()
 	u_line.set_caret_column(u_line.text.length())
 	if u_line.get_caret_column() == u_line.text.length() - 1:
@@ -1232,6 +1234,7 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 
 
 func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
+	config.load(PATH)
 	match node:
 		canvas_spinbox_line:
 			var value = int(new_text)
