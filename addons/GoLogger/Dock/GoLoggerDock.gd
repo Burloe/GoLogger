@@ -132,7 +132,7 @@ const PATH = "user://gologger_data.ini"
 var valid_line_edit_stylebox := preload("uid://b8w5i8chks7st")
 var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
-var config = ConfigFile.new() 
+var config = ConfigFile.new()
 var suppress_history_prints: bool = false
 var plugin_version: String =  "1.3.2":
 	set(value):
@@ -354,7 +354,7 @@ func _ready() -> void:
 			error_rep_btn,
 		]
 
-		for i in range(btn_array.size()): 
+		for i in range(btn_array.size()):
 			if btn_array[i] is Button:
 				if btn_array[i].button_up.is_connected(_on_button_button_up):
 					btn_array[i].button_up.disconnect(_on_button_button_up)
@@ -512,9 +512,9 @@ func _ready() -> void:
 		suppress_history_prints = true
 		load_data()
 
-		await get_tree().process_frame 
+		await get_tree().process_frame
 		suppress_history_prints = false
-	
+
 		settings_control = {
 			"base_directory": base_dir_line,
 			"log_header_format": log_header_line,
@@ -830,14 +830,18 @@ func _category_changed(log_category: LogCategory, is_name_change: bool, old_name
 		if config.has_section("categories." + old_name):
 			config.erase_section("categories." + old_name)
 
-		# Update category names list if name is changed
-		var categs = config.get_value("categories", "category_names", [])
-		for i in range(categs.size()):
-			if categs[i] == old_name:
-				categs[i] = log_category.category_name
-				config.set_value("categories", "category_names", categs)
-				# printerr("Updated category_names: ", categs)
-				break
+		var _categg = []
+		for i in category_container.get_children():
+			if i is LogCategory:
+				_categg.append(i.category_name)
+		config.set_value("categories", "category_names", _categg)
+
+		# var categs = config.get_value("categories", "category_names", [])
+		# for i in range(categs.size()):
+		# 	if categs[i] == old_name:
+		# 		categs[i] = log_category.category_name
+		# 		config.set_value("categories", "category_names", categs)
+		# 		break
 
 	config.save(PATH)
 

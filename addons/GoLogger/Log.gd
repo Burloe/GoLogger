@@ -31,8 +31,9 @@ extends Node
 	# [Proposal] Add a custom node that users can attach to objects in their scene tree that creates a unique temp category for that object only while the scene is running
 
 #BUG:
-	# Entry count isn't working
-	# When deleting a category. The [category.category_name] section remains in the .ini file.
+	# Creating and applying a name doesn't save the new category in `cateogry_names` array in the .ini file, so the category doesn't persist after the session ends.
+	# [FixedEntry count isn't working
+	# [Fixed] When deleting a category. The [category.category_name] section remains in the .ini file.
 
 #TODO - Debugging:
 	# Check that file count actually deletes old files when file cap is reached
@@ -91,8 +92,7 @@ var cat_data : Dictionary = {
 var instance_id: String = "":
 	set(value):
 		instance_id = value
-		instance_id_label.text = str("[color=fc4674][outline_size= 4][font_size=14]GoLogger Instance ID: [color=white][outline_size= 8
-]", value)
+		instance_id_label.text = str("[color=fc4674][outline_size= 4][font_size=14]GoLogger Instance ID: [color=white][outline_size= 8]", value)
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
