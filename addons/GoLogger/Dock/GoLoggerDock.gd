@@ -132,7 +132,8 @@ const PATH = "user://gologger_data.ini"
 var valid_line_edit_stylebox := preload("uid://b8w5i8chks7st")
 var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
-var config = ConfigFile.new()
+var config = ConfigFile.new() 
+var suppress_history_prints: bool = false
 var plugin_version: String =  "1.3.2":
 	set(value):
 		plugin_version = value
@@ -317,12 +318,13 @@ func _ready() -> void:
 		config.load(PATH)
 		cat_del_warn_rlbl.modulate = Color.TRANSPARENT
 
-		# Remove any existing categories
 		for i in category_container.get_children():
 			if i is LogCategory:
 				i.queue_free()
 			else: print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", i.get_name(), "{", i.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
 
+
+		# Signal connections
 		_add_category_btn.button_up.connect(_add_category)
 		open_dir_btn.button_up.connect(_open_directory)
 		column_slider.value_changed.connect(_on_column_slider_value_changed)
@@ -352,8 +354,7 @@ func _ready() -> void:
 			error_rep_btn,
 		]
 
-		for i in range(btn_array.size()):
-			# Connect signal of each type that performs the action of the button
+		for i in range(btn_array.size()): 
 			if btn_array[i] is Button:
 				if btn_array[i].button_up.is_connected(_on_button_button_up):
 					btn_array[i].button_up.disconnect(_on_button_button_up)
@@ -383,7 +384,6 @@ func _ready() -> void:
 					btn_array[i].value_changed.disconnect(_on_spinbox_value_changed)
 				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i]))
 
-		# Connect the "text submitted" signal of SpinBoxes underlying LineEdit node
 		if canvas_spinbox_line == null: canvas_spinbox_line = canvas_layer_spinbox.get_line_edit()
 		if canvas_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
 			canvas_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
@@ -485,6 +485,7 @@ func _ready() -> void:
 		stop_session_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(2))
 		display_instance_id_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(3))
 
+
 		match config.get_value("settings", "limit_method", default_settings["limit_method"]):
 			0: # Entry Count
 				entry_count_action_container.show()
@@ -507,9 +508,13 @@ func _ready() -> void:
 				session_timer_action_container.hide()
 				session_duration_container.hide()
 
+
+		suppress_history_prints = true
 		load_data()
 
-		await get_tree().process_frame
+		await get_tree().process_frame 
+		suppress_history_prints = false
+	
 		settings_control = {
 			"base_directory": base_dir_line,
 			"log_header_format": log_header_line,
@@ -610,13 +615,14 @@ func reset_to_default() -> void:
 	var cf := ConfigFile.new()
 	cf.load(PATH)
 	for key in default_settings.keys():
-		if key == "category_names":
+		if key == "category_names" or key == "default_category":
 			continue
 		cf.set_value("settings", key, default_settings[key])
 	cf.set_value("categories.game", "category_name", "game")
 	cf.set_value("categories.game", "category_index", 0)
 	cf.set_value("categories.game", "file_count", 0)
 	cf.set_value("categories.game", "is_locked", false)
+	cf.set_value("categories", "default_category", default_settings["default_category"])
 	cf.save(PATH)
 
 	base_dir_line.text = 										default_settings["base_directory"]
@@ -638,7 +644,8 @@ func reset_to_default() -> void:
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
 	entry_format_apply_btn.disabled = true
-	print_rich(str(c_print_history, "Reset Categories and settings to defaults."))
+	if !suppress_history_prints:
+		print_rich(str(c_print_history, "Reset Categories and settings to defaults."))
 
 
 
@@ -1031,7 +1038,8 @@ func _apply_new_base_directory() -> void:
 		base_dir_apply_btn.disabled = true
 		return
 
-	print_rich(c_print_history, "Base directory changed.")
+	if !suppress_history_prints:
+		print_rich(c_print_history, "Base directory changed.")
 	base_dir_apply_btn.disabled = true
 
 
@@ -1062,32 +1070,37 @@ func _on_button_button_up(node: Button) -> void:
 		base_dir_reset_btn:
 			config.set_value("settings", "base_directory", "user://GoLogger/")
 			base_dir_line.text = config.get_value("settings", "base_directory")
-			print_rich(c_print_history, "Base directory reset to default.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Base directory reset to default.")
 
 		log_header_apply_btn:
 			config.set_value("settings", "log_header_format", log_header_line.text)
-			print_rich(c_print_history, "Log header changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Log header changed.")
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 
 		log_header_reset_btn:
 			log_header_line.text = default_settings["log_header_format"]
 			config.set_value("settings", "log_header_format", default_settings["log_header_format"])
-			print_rich(c_print_history, "Log header option reset to default.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Log header option reset to default.")
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
 			var err := config.save(PATH)
-			print_rich(c_print_history, "Entry format changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Entry format changed.")
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus()
 
 		entry_format_reset_btn:
 			entry_format_line.text = default_settings["entry_format"]
 			config.set_value("settings", "entry_format", default_settings["entry_format"])
-			print_rich(c_print_history, "Entry format reset to default.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Entry format reset to default.")
 			entry_format_apply_btn.disabled = true
 
 		concurrency_info_btn:
@@ -1170,19 +1183,23 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 					entry_count_container.hide()
 					session_timer_action_container.hide()
 					session_duration_container.hide()
-			print_rich(c_print_history, "Limit method changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Limit method changed.")
 
 		entry_count_action_btn:
 			config.set_value("settings", "entry_count_action", index)
-			print_rich(c_print_history, "Entry Count Action changed")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Entry Count Action changed")
 
 		session_timer_action_btn:
 			config.set_value("settings", "session_timer_action", index)
-			print_rich(c_print_history, "Session Timer Action changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Session Timer Action changed.")
 
 		error_rep_btn:
 			config.set_value("settings", "error_reporting", index)
-			print_rich(c_print_history, "Error Reporting level changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Error Reporting level changed.")
 	save_data()
 
 
@@ -1191,15 +1208,18 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 
 		autostart_btn:
 			config.set_value("settings", "autostart_session", toggled_on)
-			print_rich(c_print_history + "Autostart session option " + "enabled." if toggled_on else c_print_history + "Autostart session option " + "disabled.")
+			if !suppress_history_prints:
+				print_rich(c_print_history + "Autostart session option " + "enabled." if toggled_on else c_print_history + "Autostart session option " + "disabled.")
 
 		utc_btn:
 			config.set_value("settings", "use_utc", toggled_on)
-			print_rich(c_print_history + "Use UTC option " + "enabled." if toggled_on else c_print_history + "Use UTC option " + "disabled.")
+			if !suppress_history_prints:
+				print_rich(c_print_history + "Use UTC option " + "enabled." if toggled_on else c_print_history + "Use UTC option " + "disabled.")
 
 		print_instance_id_btn:
 			config.set_value("settings", "print_instance_id", toggled_on)
-			print_rich(c_print_history + "Print Instance ID option " + "enabled." if toggled_on else c_print_history + "Print Instance ID option " + "disabled.")
+			if !suppress_history_prints:
+				print_rich(c_print_history + "Print Instance ID option " + "enabled." if toggled_on else c_print_history + "Print Instance ID option " + "disabled.")
 	# config.save(PATH)
 	save_data()
 
@@ -1216,19 +1236,23 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 	match node:
 		entry_count_spinbox:
 			config.set_value("settings", "entry_cap", int(value))
-			print_rich(c_print_history, "Entry count limit changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Entry count limit changed.")
 
 		session_duration_spinbox:
 			config.set_value("settings", "session_duration", int(value))
-			print_rich(c_print_history, "Session duration changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Session duration changed.")
 
 		file_count_spinbox:
 			config.set_value("settings", "file_cap", int(value))
-			print_rich(c_print_history, "File count limit changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "File count limit changed.")
 
 		canvas_layer_spinbox:
 			config.set_value("settings", "canvaslayer_layer", int(value))
-			print_rich(c_print_history, "Save Copy canvas layer changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Save Copy canvas layer changed.")
 
 	save_data()
 
@@ -1241,28 +1265,32 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			config.set_value("settings", "canvaslayer_layer", value)
 			canvas_layer_spinbox.release_focus()
 			canvas_spinbox_line.release_focus()
-			print_rich(c_print_history, "Save Copy canvas layer changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Save Copy canvas layer changed.")
 
 		file_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "file_cap", value)
 			file_count_spinbox_line.release_focus()
 			file_count_spinbox.release_focus()
-			print_rich(c_print_history, "File count limit changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "File count limit changed.")
 
 		entry_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "entry_cap", value)
 			entry_count_spinbox.release_focus()
 			entry_count_spinbox_line.release_focus()
-			print_rich(c_print_history, "Entry count limit changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Entry count limit changed.")
 
 		session_duration_spinbox_line:
 			var value = float(new_text)
 			config.set_value("settings", "session_duration", value)
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus()
-			print_rich(c_print_history, "Session duration changed.")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Session duration changed.")
 
 	save_data()
 

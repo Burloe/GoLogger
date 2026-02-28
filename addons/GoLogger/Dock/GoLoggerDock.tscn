@@ -666,7 +666,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Method used to limit file size. 
 Use the selected Actions below to determine what happens once the method condition is fullfilled."
-selected = 0
+selected = 2
 allow_reselect = true
 item_count = 5
 popup/item_0/text = "Entry Count"
@@ -748,7 +748,6 @@ custom_arrow_step = 10.0
 
 [node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=53869427]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 theme_override_constants/separation = 28
@@ -779,7 +778,6 @@ popup/item_1/id = 1
 
 [node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=578085250]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
 theme_override_constants/separation = 117
@@ -858,7 +856,6 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
 text = "Print ID on display"
-alignment = 1
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true

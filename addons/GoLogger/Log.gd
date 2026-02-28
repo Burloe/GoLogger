@@ -21,8 +21,8 @@ extends Node
 	# [Done] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
 	# [Done] BUG - Enabling/disabling plugin erases all settings in .ini file.
 	# [Done] BUG - When enabling the plugin, the .ini file's settings are reset to default values. Technically isn't an issue because the dock loads the settings correctly before they're overwritten and should overwrite the default values whenever anything is changed, but still not ideal.
+	# [Done] Add checkbox to LogCategory that marks one category as Default. When marked, that category is used whenever an unspecified category name is passed to entry()
 	#
-	# [Not started] Add checkbox to LogCategory that marks one category as Default. When marked, that category is used whenever an unspecified category name is passed to entry()
 	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
 	#
 	# [Proposal] Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a runtime memory structure only, not in the .ini file
