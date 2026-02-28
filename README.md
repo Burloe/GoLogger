@@ -39,15 +39,16 @@
 <ul>
 1.4:
   <li>Proper support for concurrent instances(running multiple instances).
-  <li>BEAKING: New changes to <code>Log.entry(log_entry: String, category_name: String, print_entry: bool = false)</code></li>
+  <li>BREAKING: Changes to <code>Log.entry(log_entry: String, category_name: String, print_entry: bool = false)</code></li>
     <ul>
     <li>Breaking change! Instead of using an int index to determine which category to use. We not use a string to specify the name. You will have to update your existing <code>Log.entry()</code>.</li>
     <li>New <code>print_entry</code> now allows you to print individual entries to output whenever they're logged.</li>
     </ul>
+  <li>You can mark one of your categories as `default`, which allows you to call `Log.entry("My entry.")` and log that entry to the assigned default category without having to specify a category name string.
   <li>Hotkeys are now accessible through the Settings tab</li>
   <li>Fully customizable log headers and entry formats.</li>
   <li>Removed superfluous signals <code>session_timer_started</code> and <code>session_timer_stopped</code>, settings and more.</li>
   <li>Help section is more concise and neutral.</li>
   <li>Dock has been redesigned and simplified.
-  <li>Dock margins improved and custom minimum size for each tab removed. No more dock size inconsistencies when changing tabs.</li>
+  <li>Dock margins improved and custom minimum size for each tab removed. No more forced tab min size or inconsistencies between tabs.</li>
 </ul> 
