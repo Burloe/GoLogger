@@ -199,303 +199,12 @@ metadata/_tab_index = 1
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="L_Panel" type="Panel" parent="Settings/HBoxContainer" unique_id=1299947772]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Settings/HBoxContainer/L_Panel" unique_id=101034697]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-follow_focus = true
-vertical_scroll_mode = 2
-scroll_hint_mode = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer" unique_id=518064650]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer" unique_id=1453026303]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 15
-
-[node name="BaseDirHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=669120101]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
-layout_mode = 2
-tooltip_text = "The directory where logs are stored in. 
-Default path is \"user://GoLogger/\". 
-
-It's not recommended to use \"user://logs/\" since Godot stores it's own logs "
-theme_override_constants/separation = 8
-
-[node name="BaseDirLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(185, 23)
-layout_mode = 2
-theme = ExtResource("1_y5prw")
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_font_sizes/font_size = 14
-text = " Base Directory:"
-vertical_alignment = 2
-
-[node name="BaseDirOpenDirButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=918067150]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-tooltip_text = "Open the base directory folder"
-theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.73, 0.352347, 0.0219, 1)
-theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
-theme_override_font_sizes/font_size = 14
-icon = ExtResource("2_6725a")
-icon_alignment = 1
-
-[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(450, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "The directory where logs are stored in. 
-Default path is \"user://GoLogger/\". "
-theme = ExtResource("1_y5prw")
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("9_qo8nw")
-text = "user://GoLogger/"
-placeholder_text = "user://GoLogger/"
-alignment = 1
-expand_to_text_length = true
-emoji_menu_enabled = false
-
-[node name="BaseDirApplyButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1831127922]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Applies a new base directory"
-theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
-theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
-theme_override_font_sizes/font_size = 14
-disabled = true
-icon = ExtResource("8_11ofg")
-
-[node name="BaseDirResetButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1885174684]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Reset to: 
-user://GoLogger/"
-theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 14
-icon = ExtResource("3_y66hb")
-
-[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=2063796377]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
-layout_mode = 2
-tooltip_text = "Any text and symbol formatting can be used. 
-    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:  >  GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
-
-Supported format tags:
-    {project_name}  {version}  {category}
-    {yy}   {mm}   {dd} - year, month, day 
-    {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
-theme_override_constants/separation = 8
-
-[node name="LogHeaderLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(239, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = " Log Header Format:"
-
-[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(450, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Any text and symbol formatting can be used. 
-    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:  >  GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
-
-Supported format tags:
-    {project_name}  {version}  {category}
-    {yy}   {mm}   {dd} - year, month, day 
-    {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
-theme_override_styles/normal = ExtResource("9_qo8nw")
-text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
-placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
-alignment = 1
-emoji_menu_enabled = false
-
-[node name="LogHeaderApplyButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1394228566]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Apply the new log header format"
-theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
-theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
-theme_override_font_sizes/font_size = 14
-disabled = true
-icon = ExtResource("8_11ofg")
-
-[node name="LogHeaderResetButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=223789385]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Reset to:
-{project_name} {version} {category} session {yy-mm-dd} {hh:mi:ss}:"
-theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 14
-icon = ExtResource("3_y66hb")
-
-[node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=154378586]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Any text and symbol formatting can be used. Include the {instance_id} tag if running multiple instances.
-    [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
-
-Supported tags:
-    {entry} - Required
-    {project_name}  {version}  {instance_id} 
-    {yy}   {mm}   {dd} - year, month, day 
-    {hh}   {mi}   {ss} - hour, minute, second "
-theme_override_constants/separation = 8
-
-[node name="EntryFormatLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(185, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Entry Format:"
-
-[node name="ConcurrencyInfoButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=1965608723]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-tooltip_text = "More info regarding concurrency and instance IDs"
-icon = ExtResource("4_tw6vk")
-icon_alignment = 1
-
-[node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(450, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Any text and symbol formatting can be used. Include the {instance_id} tag if running multiple instances.
-    [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
-
-Supported tags:
-    {entry} - Required
-    {project_name}  {version}  {instance_id} 
-    {yy}   {mm}   {dd} - year, month, day 
-    {hh}   {mi}   {ss} - hour, minute, second "
-theme_override_styles/normal = ExtResource("9_qo8nw")
-text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
-placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
-alignment = 1
-expand_to_text_length = true
-emoji_menu_enabled = false
-
-[node name="EntryFormatWarning" type="Panel" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = -235.0
-offset_top = -19.5
-offset_right = -60.0
-offset_bottom = 21.5
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
-
-[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1926394639]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-
-[node name="Label" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning/MarginContainer" unique_id=1412207838]
-layout_mode = 2
-text = "{entry} tag required"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="EntryFormatApplyButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=1933647225]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Apply new entry format"
-theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
-theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
-theme_override_font_sizes/font_size = 14
-disabled = true
-icon = ExtResource("8_11ofg")
-
-[node name="EntryFormatResetButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=947659434]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Reset to:
-[{hh}:{mi}:{ss}]: {entry}"
-theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 14
-icon = ExtResource("3_y66hb")
-
-[node name="Spacer" type="Control" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1382019692]
-visible = false
-custom_minimum_size = Vector2(0, 6)
-layout_mode = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=94297257]
-layout_mode = 2
-
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1523429579]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-vertical_alignment = 2
-
-[node name="ResetSettingsButton" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1084513318]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Resets plugin to default (settings and categories)"
-text = "Reset to default"
-
-[node name="R_Panel" type="Panel" parent="Settings/HBoxContainer" unique_id=1757351944]
+[node name="L_Panel" type="Panel" parent="Settings/HBoxContainer" unique_id=1757351944]
 custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Settings/HBoxContainer/R_Panel" unique_id=2008032766]
+[node name="ScrollContainer" type="ScrollContainer" parent="Settings/HBoxContainer/L_Panel" unique_id=2008032766]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -506,7 +215,7 @@ follow_focus = true
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer" unique_id=2078052846]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer" unique_id=2078052846]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -515,21 +224,21 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer" unique_id=2008791594]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer" unique_id=2008791594]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1807564640]
+[node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1807564640]
 layout_mode = 2
 folded = true
 title = "General"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="AutostartCheckButton" type="CheckButton" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1421289288]
+[node name="AutostartCheckButton" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1421289288]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -539,7 +248,7 @@ theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "Autostart session"
 
-[node name="UTCCheckButton" type="CheckButton" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=188862418]
+[node name="UTCCheckButton" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=188862418]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -548,13 +257,13 @@ theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "UTC time"
 
-[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=710849123]
+[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=710849123]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
 alignment = 2
 
-[node name="CanvasLayerLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/CanvasLayerHBox" unique_id=790619810]
+[node name="CanvasLayerLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/CanvasLayerHBox" unique_id=790619810]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -563,7 +272,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Save Copy canvas layer"
 vertical_alignment = 1
 
-[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/CanvasLayerHBox" unique_id=2097000839]
+[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/CanvasLayerHBox" unique_id=2097000839]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -574,20 +283,20 @@ rounded = true
 update_on_text_changed = true
 prefix = "Layer"
 
-[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=319403748]
+[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=319403748]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
 alignment = 2
 
-[node name="ErrorRepLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/ErrorRepHBox" unique_id=1697480406]
+[node name="ErrorRepLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/ErrorRepHBox" unique_id=1697480406]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Error report level"
 
-[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/ErrorRepHBox" unique_id=619537097]
+[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/ErrorRepHBox" unique_id=619537097]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
@@ -603,17 +312,17 @@ popup/item_2/separator = true
 popup/item_3/text = "None"
 popup/item_3/id = 3
 
-[node name="LimitationsFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1108637460]
+[node name="LimitationsFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1108637460]
 layout_mode = 2
 folded = true
 title = "Limitations"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer" unique_id=348562578]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer" unique_id=348562578]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="FileCountHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=781434512]
+[node name="FileCountHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=781434512]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
@@ -621,7 +330,7 @@ tooltip_text = "Limits the number of files in any log category folder.
 0 value will disable this feature *USE WITH CAUTION*"
 alignment = 2
 
-[node name="FileCountLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/FileCountHBox" unique_id=977368642]
+[node name="FileCountLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/FileCountHBox" unique_id=977368642]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -629,7 +338,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "File count limit"
 vertical_alignment = 1
 
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/FileCountHBox" unique_id=753276573]
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/FileCountHBox" unique_id=753276573]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -642,7 +351,7 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
 
-[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=1087907753]
+[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=1087907753]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Method used to limit file size. 
@@ -650,7 +359,7 @@ Use the selected Actions below to determine what happens once the method conditi
 theme_override_constants/separation = 75
 alignment = 2
 
-[node name="LimitMethodLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=816554777]
+[node name="LimitMethodLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=816554777]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -658,7 +367,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Limit method"
 vertical_alignment = 1
 
-[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
+[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -681,7 +390,7 @@ popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
 
-[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=320960729]
+[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=320960729]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
@@ -690,7 +399,7 @@ Overwrite Entries removes the oldest entry as new ones are logged.
 theme_override_constants/separation = 44
 alignment = 2
 
-[node name="EntryActionLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
+[node name="EntryActionLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -698,7 +407,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Entry Count action"
 vertical_alignment = 1
 
-[node name="EntryActionOptButton" type="OptionButton" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
+[node name="EntryActionOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -717,14 +426,14 @@ popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
 
-[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=898921581]
+[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=898921581]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Number of entries until the entry count action is triggered."
 theme_override_constants/separation = 119
 alignment = 2
 
-[node name="EntryCountLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/EntryCountHBox" unique_id=2026197059]
+[node name="EntryCountLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/EntryCountHBox" unique_id=2026197059]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -733,7 +442,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Entry count limit"
 vertical_alignment = 1
 
-[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/EntryCountHBox" unique_id=1695558902]
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/EntryCountHBox" unique_id=1695558902]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -746,14 +455,14 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 10.0
 
-[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=53869427]
+[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=53869427]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 theme_override_constants/separation = 28
 alignment = 2
 
-[node name="SessionTimerActionLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
+[node name="SessionTimerActionLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -761,7 +470,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Session Timer action"
 vertical_alignment = 1
 
-[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -776,14 +485,14 @@ popup/item_0/id = 0
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=578085250]
+[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer" unique_id=578085250]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
 theme_override_constants/separation = 117
 alignment = 2
 
-[node name="SessionDurationLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/SessionDurationHBox" unique_id=1344647890]
+[node name="SessionDurationLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/SessionDurationHBox" unique_id=1344647890]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -792,7 +501,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Session duration"
 vertical_alignment = 1
 
-[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/SessionDurationHBox" unique_id=956442988]
+[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer/VBoxContainer/SessionDurationHBox" unique_id=956442988]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -808,54 +517,350 @@ suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="HotkeysFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1336991210]
+[node name="HotkeysFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1336991210]
 layout_mode = 2
-folded = true
 title = "Hotkeys"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer" unique_id=570791839]
-visible = false
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer" unique_id=570791839]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="HotkeyHBox" type="GridContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=210221800]
+[node name="StartSessionBtn2" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1217103956]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Opens the resource in the Inspector to add, change or remove bindings"
+text = "Open Hotkey Resource"
+
+[node name="HotkeyHBox" type="GridContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=210221800]
 layout_mode = 2
 theme_override_constants/v_separation = 8
 columns = 2
 
-[node name="StartSessionBtn" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=1835760203]
+[node name="StartSessionBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=1835760203]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Start Session"
 
-[node name="CopySessionBtn" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=625254447]
+[node name="CopySessionBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=625254447]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Copy Session"
 
-[node name="StopSessionBtn" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=2126222086]
+[node name="StopSessionBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=2126222086]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Stop Session"
 
-[node name="DisplayInstanceIDBtn" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=1760330988]
+[node name="DisplayInstanceIDBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=1760330988]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Display Instance ID"
 
-[node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1680159305]
+[node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1680159305]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
 text = "Print ID on display"
+
+[node name="R_Panel" type="Panel" parent="Settings/HBoxContainer" unique_id=1299947772]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Settings/HBoxContainer/R_Panel" unique_id=101034697]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+follow_focus = true
+vertical_scroll_mode = 2
+scroll_hint_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer" unique_id=518064650]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer" unique_id=1453026303]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="BaseDirHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=669120101]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+tooltip_text = "The directory where logs are stored in. 
+Default path is \"user://GoLogger/\". 
+
+It's not recommended to use \"user://logs/\" since Godot stores it's own logs "
+theme_override_constants/separation = 8
+
+[node name="BaseDirLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(185, 23)
+layout_mode = 2
+theme = ExtResource("1_y5prw")
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_font_sizes/font_size = 14
+text = " Base Directory:"
+vertical_alignment = 2
+
+[node name="BaseDirOpenDirButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=918067150]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+tooltip_text = "Open the base directory folder"
+theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.73, 0.352347, 0.0219, 1)
+theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_font_sizes/font_size = 14
+icon = ExtResource("2_6725a")
+icon_alignment = 1
+
+[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The directory where logs are stored in. 
+Default path is \"user://GoLogger/\". "
+theme = ExtResource("1_y5prw")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = ExtResource("9_qo8nw")
+text = "user://GoLogger/"
+placeholder_text = "user://GoLogger/"
+alignment = 1
+expand_to_text_length = true
+emoji_menu_enabled = false
+
+[node name="BaseDirApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1831127922]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Applies a new base directory"
+theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
+theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
+theme_override_font_sizes/font_size = 14
+disabled = true
+icon = ExtResource("8_11ofg")
+
+[node name="BaseDirResetButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1885174684]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reset to: 
+user://GoLogger/"
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+icon = ExtResource("3_y66hb")
+
+[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=2063796377]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+tooltip_text = "Any text and symbol formatting can be used. 
+    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:  >  GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
+
+Supported format tags:
+    {project_name}  {version}  {category}
+    {yy}   {mm}   {dd} - year, month, day 
+    {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
+theme_override_constants/separation = 8
+
+[node name="LogHeaderLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(239, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+text = " Log Header Format:"
+
+[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Any text and symbol formatting can be used. 
+    {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:  >  GoLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
+
+Supported format tags:
+    {project_name}  {version}  {category}
+    {yy}   {mm}   {dd} - year, month, day 
+    {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
+theme_override_styles/normal = ExtResource("9_qo8nw")
+text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
+placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
+alignment = 1
+emoji_menu_enabled = false
+
+[node name="LogHeaderApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1394228566]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Apply the new log header format"
+theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
+theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
+theme_override_font_sizes/font_size = 14
+disabled = true
+icon = ExtResource("8_11ofg")
+
+[node name="LogHeaderResetButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=223789385]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reset to:
+{project_name} {version} {category} session {yy-mm-dd} {hh:mi:ss}:"
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+icon = ExtResource("3_y66hb")
+
+[node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=154378586]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Any text and symbol formatting can be used. Include the {instance_id} tag if running multiple instances.
+    [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
+
+Supported tags:
+    {entry} - Required
+    {project_name}  {version}  {instance_id} 
+    {yy}   {mm}   {dd} - year, month, day 
+    {hh}   {mi}   {ss} - hour, minute, second "
+theme_override_constants/separation = 8
+
+[node name="EntryFormatLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+text = "Entry Format:"
+
+[node name="ConcurrencyInfoButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=1965608723]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+tooltip_text = "More info regarding concurrency and instance IDs"
+icon = ExtResource("4_tw6vk")
+icon_alignment = 1
+
+[node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Any text and symbol formatting can be used. Include the {instance_id} tag if running multiple instances.
+    [{hh}:{mi}:{ss}]:  {entry}    >    [09:32:16]: Entry String
+
+Supported tags:
+    {entry} - Required
+    {project_name}  {version}  {instance_id} 
+    {yy}   {mm}   {dd} - year, month, day 
+    {hh}   {mi}   {ss} - hour, minute, second "
+theme_override_styles/normal = ExtResource("9_qo8nw")
+text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
+placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
+alignment = 1
+expand_to_text_length = true
+emoji_menu_enabled = false
+
+[node name="EntryFormatWarning" type="Panel" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -235.0
+offset_top = -19.5
+offset_right = -60.0
+offset_bottom = 21.5
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
+
+[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1926394639]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+
+[node name="Label" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning/MarginContainer" unique_id=1412207838]
+layout_mode = 2
+text = "{entry} tag required"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EntryFormatApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=1933647225]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Apply new entry format"
+theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
+theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
+theme_override_font_sizes/font_size = 14
+disabled = true
+icon = ExtResource("8_11ofg")
+
+[node name="EntryFormatResetButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=947659434]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reset to:
+[{hh}:{mi}:{ss}]: {entry}"
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+icon = ExtResource("3_y66hb")
+
+[node name="Spacer" type="Control" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1382019692]
+visible = false
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=94297257]
+layout_mode = 2
+
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1523429579]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+vertical_alignment = 2
+
+[node name="ResetSettingsButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1084513318]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Resets plugin to default (settings and categories)"
+text = "Reset to default"
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true

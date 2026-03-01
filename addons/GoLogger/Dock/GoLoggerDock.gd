@@ -122,12 +122,16 @@ var session_duration_spinbox_line: LineEdit
 @onready var stop_session_btn: Button = %StopSessionBtn
 @onready var display_instance_id_btn: Button = %DisplayInstanceIDBtn
 @onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckBtn
+@onready var id_overlay_toggle_btn: CheckButton = %TogglePrintIDCheckBtn
+@onready var id_overlay_startup_btn: CheckButton = %ShowOnStartupInstanceIDCheckBtn
+@onready var id_overlay_modulate_btn: ColorPickerButton = %ModulatePrintIDColorPickerButton
 
 
 @onready var help_tab_container: TabContainer = %HelpTabContainer
 @onready var user_dir_btn: Button = %UserDirBtn
 
 const PATH = "user://gologger_data.ini"
+var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
 
 var valid_line_edit_stylebox := preload("uid://b8w5i8chks7st")
 var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
@@ -161,6 +165,9 @@ var settings_dict := {
 		"autostart_session": 							true,
 		"use_utc": 												false,
 		"print_instance_id": 							false,
+		"id_overlay_toggle": 							false,
+		"id_overlay_color": 							Color(1, 1, 1, 1),
+		"id_overlay_startup_state": 			false,
 		"limit_method": 									0,
 		"entry_count_action": 						0,
 		"session_timer_action": 					0,
@@ -171,42 +178,48 @@ var settings_dict := {
 		"columns": 												5
 	},
 	"expected_settings": {
-		"category_names": 								"categories/category_names",
-		"default_category": 							"categories/default_category",
-		"base_directory": 								"settings/base_directory",
-		"columns": 												"settings/columns",
-		"log_header_format": 							"settings/log_header_format",
-		"entry_format": 									"settings/entry_format",
-		"canvaslayer_layer": 							"settings/canvaslayer_layer",
-		"autostart_session": 							"settings/autostart_session",
-		"use_utc": 												"settings/use_utc",
-		"limit_method": 									"settings/limit_method",
-		"entry_count_action": 						"settings/entry_count_action",
-		"session_timer_action": 					"settings/session_timer_action",
-		"file_cap": 											"settings/file_cap",
-		"entry_cap": 											"settings/entry_cap",
-		"session_duration": 							"settings/session_duration",
-		"error_reporting": 								"settings/error_reporting",
-		"print_instance_id": 							"settings/print_instance_id"
+		"category_names": 					"categories/category_names",
+		"default_category": 				"categories/default_category",
+		"base_directory": 					"settings/base_directory",
+		"columns": 									"settings/columns",
+		"log_header_format": 				"settings/log_header_format",
+		"entry_format": 						"settings/entry_format",
+		"canvaslayer_layer": 				"settings/canvaslayer_layer",
+		"autostart_session": 				"settings/autostart_session",
+		"use_utc": 									"settings/use_utc",
+		"print_instance_id": 				"settings/print_instance_id",
+		"id_overlay_toggle": 				"settings/toggle_id_overlay",
+		"id_overlay_color": 				"settings/id_overlay_color",
+		"id_overlay_startup_state": "settings/id_overlay_startup_state",
+		"limit_method": 						"settings/limit_method",
+		"entry_count_action": 			"settings/entry_count_action",
+		"session_timer_action": 		"settings/session_timer_action",
+		"file_cap": 								"settings/file_cap",
+		"entry_cap": 								"settings/entry_cap",
+		"session_duration": 				"settings/session_duration",
+		"error_reporting": 					"settings/error_reporting"
 	},
 	"expected_types": {
-		"categories/category_names": 			TYPE_ARRAY,
-		"categories/default_category": 		TYPE_STRING,
-		"settings/base_directory": 				TYPE_STRING,
-		"settings/columns": 							TYPE_INT,
-		"settings/log_header_format": 		TYPE_STRING,
-		"settings/entry_format" : 				TYPE_STRING,
-		"settings/canvaslayer_layer": 		TYPE_INT,
-		"settings/autostart_session": 		TYPE_BOOL,
-		"settings/use_utc": 							TYPE_BOOL,
-		"settings/print_instance_id": 		TYPE_BOOL,
-		"settings/limit_method": 					TYPE_INT,
-		"settings/entry_count_action": 		TYPE_INT,
-		"settings/session_timer_action": 	TYPE_INT,
-		"settings/file_cap": 							TYPE_INT,
-		"settings/entry_cap": 						TYPE_INT,
-		"settings/session_duration": 			TYPE_INT,
-		"settings/error_reporting": 			TYPE_INT
+		"categories/category_names": 					TYPE_ARRAY,
+		"categories/default_category":		 		TYPE_STRING,
+		"settings/base_directory": 						TYPE_STRING,
+		"settings/columns": 									TYPE_INT,
+		"settings/log_header_format":			 		TYPE_STRING,
+		"settings/entry_format" : 						TYPE_STRING,
+		"settings/canvaslayer_layer": 				TYPE_INT,
+		"settings/autostart_session": 				TYPE_BOOL,
+		"settings/use_utc": 									TYPE_BOOL,
+		"settings/print_instance_id": 				TYPE_BOOL,
+		"settings/id_overlay_toggle": 				TYPE_BOOL,
+		"settings/id_overlay_color": 					TYPE_COLOR,
+		"settings/id_overlay_startup_state": 	TYPE_BOOL,
+		"settings/limit_method": 							TYPE_INT,
+		"settings/entry_count_action": 				TYPE_INT,
+		"settings/session_timer_action":		 	TYPE_INT,
+		"settings/file_cap": 									TYPE_INT,
+		"settings/entry_cap": 								TYPE_INT,
+		"settings/session_duration": 					TYPE_INT,
+		"settings/error_reporting": 					TYPE_INT
 	},
 	"controls": {
 		"base_directory": 								base_dir_line,
@@ -216,6 +229,9 @@ var settings_dict := {
 		"autostart_session": 							autostart_btn,
 		"use_utc": 												utc_btn,
 		"print_instance_id": 							print_instance_id_btn,
+		"id_overlay_toggle": 							id_overlay_toggle_btn,
+		"id_overlay_color": 							id_overlay_modulate_btn,
+		"id_overlay_startup_state": 			id_overlay_startup_btn,
 		"limit_method": 									limit_method_btn,
 		"entry_count_action": 						entry_count_action_btn,
 		"session_timer_action": 					session_timer_action_btn,
@@ -239,6 +255,9 @@ var default_settings := {
 		"autostart_session": true,
 		"use_utc": false,
 		"print_instance_id": false,
+		"id_overlay_toggle": false,
+		"id_overlay_color": Color(1, 1, 1, 1),
+		"id_overlay_startup_state": false,
 		"limit_method": 0,
 		"entry_count_action": 0,
 		"session_timer_action": 0,
@@ -250,23 +269,26 @@ var default_settings := {
 }
 ## Mirror
 var expected_types = {
-		"categories/category_names": 			TYPE_ARRAY,
-		"categories/default_category": 		TYPE_STRING,
-		"settings/base_directory": 				TYPE_STRING,
-		"settings/columns": 							TYPE_INT,
-		"settings/log_header_format": 		TYPE_STRING,
-		"settings/entry_format" : 				TYPE_STRING,
-		"settings/canvaslayer_layer": 		TYPE_INT,
-		"settings/autostart_session": 		TYPE_BOOL,
-		"settings/use_utc": 							TYPE_BOOL,
-		"settings/print_instance_id": 		TYPE_BOOL,
-		"settings/limit_method": 					TYPE_INT,
-		"settings/entry_count_action": 		TYPE_INT,
-		"settings/session_timer_action": 	TYPE_INT,
-		"settings/file_cap": 							TYPE_INT,
-		"settings/entry_cap": 						TYPE_INT,
-		"settings/session_duration": 			TYPE_INT,
-		"settings/error_reporting": 			TYPE_INT
+		"categories/category_names": 					TYPE_ARRAY,
+		"categories/default_category":		 		TYPE_STRING,
+		"settings/base_directory": 						TYPE_STRING,
+		"settings/columns": 									TYPE_INT,
+		"settings/log_header_format":			 		TYPE_STRING,
+		"settings/entry_format" : 						TYPE_STRING,
+		"settings/canvaslayer_layer": 				TYPE_INT,
+		"settings/autostart_session": 				TYPE_BOOL,
+		"settings/use_utc": 									TYPE_BOOL,
+		"settings/print_instance_id": 				TYPE_BOOL,
+		"settings/toggle_id_overlay": 				TYPE_BOOL,
+		"settings/id_overlay_color": 					TYPE_COLOR,
+		"settings/id_overlay_startup_state": 	TYPE_BOOL,
+		"settings/limit_method": 							TYPE_INT,
+		"settings/entry_count_action": 				TYPE_INT,
+		"settings/session_timer_action":		 	TYPE_INT,
+		"settings/file_cap": 									TYPE_INT,
+		"settings/entry_cap": 								TYPE_INT,
+		"settings/session_duration": 					TYPE_INT,
+		"settings/error_reporting": 					TYPE_INT
 	}
 ## Control nodes corresponding to each setting for easy access
 var settings_control := {
@@ -277,6 +299,9 @@ var settings_control := {
 	"autostart_session": autostart_btn,
 	"use_utc": utc_btn,
 	"print_instance_id": print_instance_id_btn,
+	"id_overlay_toggle": id_overlay_toggle_btn,
+	"id_overlay_color": id_overlay_modulate_btn,
+	"id_overlay_startup_state": id_overlay_startup_btn,
 	"limit_method": limit_method_btn,
 	"entry_count_action": entry_count_action_btn,
 	"session_timer_action": session_timer_action_btn,
@@ -486,7 +511,7 @@ func _ready() -> void:
 		display_instance_id_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(3))
 
 
-		match config.get_value("settings", "limit_method", default_settings["limit_method"]):
+		match config.get_value("settings", "limit_method", settings_dict["defaults"]["limit_method"]):
 			0: # Entry Count
 				entry_count_action_container.show()
 				entry_count_container.show()

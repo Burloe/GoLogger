@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://dm7mwwoselesw"]
 
 [ext_resource type="Script" uid="uid://dwsq1eyit7cex" path="res://addons/GoLogger/Log.gd" id="1_qpie0"]
+[ext_resource type="Resource" uid="uid://dyi2aml73k4g8" path="res://addons/GoLogger/GoLoggerHotkeys.tres" id="2_s7l0n"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="5_e13q5"]
 
 [node name="Log" type="Node" unique_id=925760869]
 script = ExtResource("1_qpie0")
+gl_hotkeys = ExtResource("2_s7l0n")
 
 [node name="SessionTimer" type="Timer" parent="." unique_id=374606073]
 unique_name_in_owner = true

@@ -150,7 +150,7 @@ var expected_types = {
 		"settings/session_duration": 			TYPE_INT,
 		"settings/error_reporting": 			TYPE_INT
 	}
-
+@export var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
 var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
 var hotkey_stop_session: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")
 var hotkey_copy_session: InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres")

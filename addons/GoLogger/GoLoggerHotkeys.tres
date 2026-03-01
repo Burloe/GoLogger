@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="GLShortcut" format=3 uid="uid://dyi2aml73k4g8"]
+
+[ext_resource type="Script" uid="uid://cvahhjknn2nxq" path="res://addons/GoLogger/GLogShortcut.gd" id="1_tvptr"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_h8vci"]
+device = -1
+shift_pressed = true
+ctrl_pressed = true
+keycode = 85
+
+[sub_resource type="Shortcut" id="Shortcut_s0isp"]
+events = [SubResource("InputEventKey_h8vci")]
+
+[sub_resource type="InputEventShortcut" id="InputEventShortcut_tvptr"]
+shortcut = SubResource("Shortcut_s0isp")
+
+[sub_resource type="InputEventKey" id="InputEventKey_e18rc"]
+device = -1
+shift_pressed = true
+ctrl_pressed = true
+keycode = 73
+
+[sub_resource type="Shortcut" id="Shortcut_unigj"]
+events = [SubResource("InputEventKey_e18rc")]
+
+[sub_resource type="InputEventShortcut" id="InputEventShortcut_3ks3f"]
+shortcut = SubResource("Shortcut_unigj")
+
+[sub_resource type="InputEventKey" id="InputEventKey_xopda"]
+device = -1
+shift_pressed = true
+ctrl_pressed = true
+keycode = 79
+
+[sub_resource type="Shortcut" id="Shortcut_g3g2u"]
+events = [SubResource("InputEventKey_xopda")]
+
+[sub_resource type="InputEventShortcut" id="InputEventShortcut_om78g"]
+shortcut = SubResource("Shortcut_g3g2u")
+
+[sub_resource type="InputEventKey" id="InputEventKey_r67vl"]
+device = -1
+shift_pressed = true
+ctrl_pressed = true
+keycode = 80
+
+[sub_resource type="Shortcut" id="Shortcut_43ld7"]
+events = [SubResource("InputEventKey_r67vl")]
+
+[sub_resource type="InputEventShortcut" id="InputEventShortcut_ch6qm"]
+shortcut = SubResource("Shortcut_43ld7")
+
+[resource]
+script = ExtResource("1_tvptr")
+start_session_hotkey = SubResource("InputEventShortcut_om78g")
+stop_session_hotkey = SubResource("InputEventShortcut_ch6qm")
+copy_session_hotkey = SubResource("InputEventShortcut_tvptr")
+display_instance_id_hotkey = SubResource("InputEventShortcut_3ks3f")
+metadata/_custom_type_script = "uid://cvahhjknn2nxq"
