@@ -511,7 +511,7 @@ func _ready() -> void:
 		display_instance_id_btn.button_up.connect(func() -> void: open_hotkey_resource.emit(3))
 
 
-		match config.get_value("settings", "limit_method", settings_dict["defaults"]["limit_method"]):
+		match config.get_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0)):
 			0: # Entry Count
 				entry_count_action_container.show()
 				entry_count_container.show()
@@ -564,23 +564,26 @@ func _ready() -> void:
 func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new() # Use new ConfigFile to avoid clobbering existing data
 	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "default_category", default_settings["default_category"])
+	cf.set_value("categories", "default_category", settings_dict.get("defaults", {}).get("default_category", ""))
 
-	cf.set_value("settings", "base_directory", default_settings["base_directory"])
-	cf.set_value("settings", "columns", default_settings["columns"])
-	cf.set_value("settings", "log_header_format", default_settings["log_header_format"])
-	cf.set_value("settings", "entry_format", default_settings["entry_format"])
-	cf.set_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
-	cf.set_value("settings", "autostart_session", default_settings["autostart_session"])
-	cf.set_value("settings", "use_utc", default_settings["use_utc"])
-	cf.set_value("settings", "print_instance_id", default_settings["print_instance_id"])
-	cf.set_value("settings", "limit_method", default_settings["limit_method"])
-	cf.set_value("settings", "entry_count_action", default_settings["entry_count_action"])
-	cf.set_value("settings", "session_timer_action", default_settings["session_timer_action"])
-	cf.set_value("settings", "file_cap", default_settings["file_cap"])
-	cf.set_value("settings", "entry_cap", default_settings["entry_cap"])
-	cf.set_value("settings", "session_duration", default_settings["session_duration"])
-	cf.set_value("settings", "error_reporting", default_settings["error_reporting"])
+	cf.set_value("settings", "base_directory", settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
+	cf.set_value("settings", "columns", settings_dict.get("defaults", {}).get("columns", 5))
+	cf.set_value("settings", "log_header_format", settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
+	cf.set_value("settings", "entry_format", settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
+	cf.set_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
+	cf.set_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
+	cf.set_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
+	cf.set_value("settings", "print_instance_id", settings_dict.get("defaults", {}).get("print_instance_id", false))
+	cf.set_value("settings", "toggle_id_overlay", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
+	cf.set_value("settings", "id_overlay_color", settings_dict.get("defaults", {}).get("id_overlay_color", Color(1, 1, 1, 1)))
+	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
+	cf.set_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
+	cf.set_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
+	cf.set_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
+	cf.set_value("settings", "file_cap", settings_dict.get("defaults", {}).get("file_cap", 10))
+	cf.set_value("settings", "entry_cap", settings_dict.get("defaults", {}).get("entry_cap", 300))
+	cf.set_value("settings", "session_duration", settings_dict.get("defaults", {}).get("session_duration", 300))
+	cf.set_value("settings", "error_reporting", settings_dict.get("defaults", {}).get("error_reporting", 0))
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -597,23 +600,23 @@ func load_settings_state() -> void: # Delete?
 	log_header_apply_btn.disabled = true
 	entry_format_apply_btn.disabled = true
 
-	base_dir_line.text = 										config.get_value("settings", "base_directory", default_settings["base_directory"])
-	log_header_line.text = 									config.get_value("settings", "log_header_format", default_settings["log_header_format"])
-	entry_format_line.text = 								config.get_value("settings", "entry_format", default_settings["entry_format"])
-	canvas_layer_spinbox.value = 						config.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
-	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session", default_settings["autostart_session"])
-	utc_btn.button_pressed = 								config.get_value("settings", "use_utc", default_settings["use_utc"])
-	print_instance_id_btn.button_pressed = 	config.get_value("settings", "print_instance_id", default_settings["print_instance_id"])
-	limit_method_btn.selected = 						config.get_value("settings", "limit_method", default_settings["limit_method"])
-	entry_count_action_btn.selected = 			config.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
-	session_timer_action_btn.selected = 		config.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
-	file_count_spinbox.value = 							config.get_value("settings", "file_cap", default_settings["file_cap"])
-	entry_count_spinbox.value = 						config.get_value("settings", "entry_cap", default_settings["entry_cap"])
-	session_duration_spinbox.value = 				config.get_value("settings", "session_duration", default_settings["session_duration"])
-	error_rep_btn.selected = 								config.get_value("settings", "error_reporting", default_settings["error_reporting"])
-	column_slider.value = _get_column_value(config.get_value("settings", "columns", _get_column_value(default_settings["columns"])))
+	base_dir_line.text = 										config.get_value("settings", "base_directory", settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
+	log_header_line.text = 									config.get_value("settings", "log_header_format", settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
+	entry_format_line.text = 								config.get_value("settings", "entry_format", settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
+	canvas_layer_spinbox.value = 						config.get_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
+	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
+	utc_btn.button_pressed = 								config.get_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
+	print_instance_id_btn.button_pressed = 	config.get_value("settings", "print_instance_id", settings_dict.get("defaults", {}).get("print_instance_id", false))
+	limit_method_btn.selected = 						config.get_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
+	entry_count_action_btn.selected = 			config.get_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
+	session_timer_action_btn.selected = 		config.get_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
+	file_count_spinbox.value = 							config.get_value("settings", "file_cap", settings_dict.get("defaults", {}).get("file_cap", 10))
+	entry_count_spinbox.value = 						config.get_value("settings", "entry_cap", settings_dict.get("defaults", {}).get("entry_cap", 300))
+	session_duration_spinbox.value = 				config.get_value("settings", "session_duration", settings_dict.get("defaults", {}).get("session_duration", 300))
+	error_rep_btn.selected = 								config.get_value("settings", "error_reporting", settings_dict.get("defaults", {}).get("error_reporting", 0))
+	column_slider.value = _get_column_value(config.get_value("settings", "columns", _get_column_value(settings_dict.get("defaults", {}).get("columns", 5))))
 
-	match config.get_value("settings", "limit_method", default_settings["limit_method"]):
+	match config.get_value("settings", "limit_method", settings_dict.get("limit_method", 0)):
 		0: # Entry Count
 			entry_count_action_container.show()
 			entry_count_container.show()
@@ -639,32 +642,34 @@ func load_settings_state() -> void: # Delete?
 func reset_to_default() -> void:
 	var cf := ConfigFile.new()
 	cf.load(PATH)
-	for key in default_settings.keys():
+
+	for key in settings_dict.get("defaults", {}).keys():
 		if key == "category_names" or key == "default_category":
 			continue
-		cf.set_value("settings", key, default_settings[key])
+		cf.set_value("settings", key, settings_dict.get("defaults", {}).get(key))
+
 	cf.set_value("categories.game", "category_name", "game")
 	cf.set_value("categories.game", "category_index", 0)
 	cf.set_value("categories.game", "file_count", 0)
 	cf.set_value("categories.game", "is_locked", false)
-	cf.set_value("categories", "default_category", default_settings["default_category"])
+	cf.set_value("categories", "default_category", settings_dict.get("default_category", ""))
 	cf.save(PATH)
 
-	base_dir_line.text = 										default_settings["base_directory"]
-	log_header_line.text = 									default_settings["log_header_format"]
-	entry_format_line.text = 								default_settings["entry_format"]
-	canvas_layer_spinbox.value = 						default_settings["canvaslayer_layer"]
-	autostart_btn.button_pressed = 					default_settings["autostart_session"]
-	utc_btn.button_pressed = 								default_settings["use_utc"]
-	print_instance_id_btn.button_pressed = 	default_settings["print_instance_id"]
-	limit_method_btn.selected = 						default_settings["limit_method"]
-	entry_count_action_btn.selected = 			default_settings["entry_count_action"]
-	session_timer_action_btn.selected = 		default_settings["session_timer_action"]
-	file_count_spinbox.value = 							default_settings["file_cap"]
-	entry_count_spinbox.value = 						default_settings["entry_cap"]
-	session_duration_spinbox.value = 				default_settings["session_duration"]
-	error_rep_btn.selected = 								default_settings["error_reporting"]
-	column_slider.value = 									_get_column_value(default_settings["columns"])
+	base_dir_line.text = 										settings_dict.get("defaults").get("base_directory")
+	log_header_line.text = 									settings_dict.get("defaults").get("log_header_format")
+	entry_format_line.text = 								settings_dict.get("defaults").get("entry_format")
+	canvas_layer_spinbox.value = 						settings_dict.get("defaults").get("canvaslayer_layer")
+	autostart_btn.button_pressed = 					settings_dict.get("defaults").get("autostart_session")
+	utc_btn.button_pressed = 								settings_dict.get("defaults").get("use_utc")
+	print_instance_id_btn.button_pressed = 	settings_dict.get("defaults").get("print_instance_id")
+	limit_method_btn.selected = 						settings_dict.get("defaults").get("limit_method")
+	entry_count_action_btn.selected = 			settings_dict.get("defaults").get("entry_count_action")
+	session_timer_action_btn.selected = 		settings_dict.get("defaults").get("session_timer_action")
+	file_count_spinbox.value = 							settings_dict.get("defaults").get("file_cap")
+	entry_count_spinbox.value = 						settings_dict.get("defaults").get("entry_cap")
+	session_duration_spinbox.value = 				settings_dict.get("defaults").get("session_duration")
+	error_rep_btn.selected = 								settings_dict.get("defaults").get("error_reporting")
+	column_slider.value = 									_get_column_value(settings_dict.get("defaults", {}).get("columns", 5))
 
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
@@ -675,40 +680,21 @@ func reset_to_default() -> void:
 
 
 func validate_settings() -> void: # Mirror
-	var expected_settings ={
-		"category_names": 			"categories/category_names",
-		"default_category": 		"categories/default_category",
-		"base_directory": 			"settings/base_directory",
-		"columns": 							"settings/columns",
-		"log_header_format": 		"settings/log_header_format",
-		"entry_format": 				"settings/entry_format",
-		"canvaslayer_layer": 		"settings/canvaslayer_layer",
-		"autostart_session": 		"settings/autostart_session",
-		"use_utc": 							"settings/use_utc",
-		"limit_method": 				"settings/limit_method",
-		"entry_count_action": 	"settings/entry_count_action",
-		"session_timer_action": "settings/session_timer_action",
-		"file_cap": 						"settings/file_cap",
-		"entry_cap": 						"settings/entry_cap",
-		"session_duration": 		"settings/session_duration",
-		"error_reporting": 			"settings/error_reporting",
-		"print_instance_id": 		"settings/print_instance_id"
-	}
 
 	# Validate presence -> Write default
-	for setting in expected_settings.keys():
-		var splits = expected_settings[setting].split("/")
+	for setting in settings_dict.get("expected_settings", {}).keys():
+		var splits = settings_dict["expected_settings"][setting].split("/")
 		if !config.has_section(splits[0]) or !config.has_section_key(splits[0], splits[1]):
-			config.set_value(splits[0], splits[1], default_settings[splits[1]])
+			config.set_value(splits[0], splits[1], settings_dict.get("defaults", {}).get(setting))
 
 	# Validate types -> Apply default
-	for setting_key in expected_types.keys():
-		var splits = setting_key.split("/")
-		var expected_type = expected_types[setting_key]
+	for type_key in settings_dict.get("expected_types", {}).keys():
+		var splits = type_key.split("/")
+		var expected_type = settings_dict["expected_types"][type_key]
 		var value = config.get_value(splits[0], splits[1])
 
 		if typeof(value) != expected_type:
-			config.set_value(splits[0], splits[1], default_settings[splits[1]])
+			config.set_value(splits[0], splits[1], settings_dict.get("defaults", {}).get(splits[1]))
 
 	config.save(PATH)
 
@@ -736,21 +722,21 @@ func load_data() -> void:
 				break
 
 	# Settings
-	base_dir_line.text = 										_c.get_value("settings", "base_directory", default_settings["base_directory"])
-	log_header_line.text = 									_c.get_value("settings", "log_header_format", default_settings["log_header_format"])
-	entry_format_line.text = 								_c.get_value("settings", "entry_format", default_settings["entry_format"])
-	canvas_layer_spinbox.value = 						_c.get_value("settings", "canvaslayer_layer", default_settings["canvaslayer_layer"])
-	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", default_settings["autostart_session"])
-	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", default_settings["use_utc"])
-	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "print_instance_id", default_settings["print_instance_id"])
-	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", default_settings["limit_method"])
-	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", default_settings["entry_count_action"])
-	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", default_settings["session_timer_action"])
-	file_count_spinbox.value = 							_c.get_value("settings", "file_cap", default_settings["file_cap"])
-	entry_count_spinbox.value = 						_c.get_value("settings", "entry_cap", default_settings["entry_cap"])
-	session_duration_spinbox.value = 				_c.get_value("settings", "session_duration", default_settings["session_duration"])
-	error_rep_btn.selected = 								_c.get_value("settings", "error_reporting", default_settings["error_reporting"])
-	column_slider.value = 									_get_column_value(_c.get_value("settings", "columns", default_settings["columns"]))
+	base_dir_line.text = 										_c.get_value("settings", "base_directory", settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
+	log_header_line.text = 									_c.get_value("settings", "log_header_format", settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
+	entry_format_line.text = 								_c.get_value("settings", "entry_format", settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
+	canvas_layer_spinbox.value = 						_c.get_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
+	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
+	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
+	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "print_instance_id", settings_dict.get("defaults", {}).get("print_instance_id", false))
+	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
+	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
+	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
+	file_count_spinbox.value = 							_c.get_value("settings", "file_cap", settings_dict.get("defaults", {}).get("file_cap", 10))
+	entry_count_spinbox.value = 						_c.get_value("settings", "entry_cap", settings_dict.get("defaults", {}).get("entry_cap", 300))
+	session_duration_spinbox.value = 				_c.get_value("settings", "session_duration", settings_dict.get("defaults", {}).get("session_duration", 300))
+	error_rep_btn.selected = 								_c.get_value("settings", "error_reporting", settings_dict.get("defaults", {}).get("error_reporting", 0))
+	column_slider.value = 									_get_column_value(_c.get_value("settings", "columns", settings_dict.get("defaults", {}).get("columns", 5)))
 
 	config.load(PATH)
 
@@ -785,7 +771,7 @@ func save_data(deferred: bool = false) -> void:
 
 	# Settings
 	var error: int = 0
-	for key in default_settings.keys():
+	for key in settings_dict.get("defaults", {}).keys():
 		if !settings_control.has(key):
 			continue
 
@@ -1110,8 +1096,8 @@ func _on_button_button_up(node: Button) -> void:
 			log_header_line.release_focus()
 
 		log_header_reset_btn:
-			log_header_line.text = default_settings["log_header_format"]
-			config.set_value("settings", "log_header_format", default_settings["log_header_format"])
+			log_header_line.text = settings_dict.get("defaults", {}).get("log_header_format", "")
+			config.set_value("settings", "log_header_format", settings_dict.get("defaults", {}).get("log_header_format", ""))
 			if !suppress_history_prints:
 				print_rich(c_print_history, "Log header option reset to default.")
 			log_header_apply_btn.disabled = true
@@ -1126,8 +1112,8 @@ func _on_button_button_up(node: Button) -> void:
 			entry_format_line.release_focus()
 
 		entry_format_reset_btn:
-			entry_format_line.text = default_settings["entry_format"]
-			config.set_value("settings", "entry_format", default_settings["entry_format"])
+			entry_format_line.text = settings_dict.get("defaults", {}).get("entry_format", "")
+			config.set_value("settings", "entry_format", settings_dict.get("defaults", {}).get("entry_format", ""))
 			if !suppress_history_prints:
 				print_rich(c_print_history, "Entry format reset to default.")
 			entry_format_apply_btn.disabled = true

@@ -525,7 +525,7 @@ title = "Hotkeys"
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="StartSessionBtn2" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1217103956]
+[node name="OpenHotkeyBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1217103956]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -533,6 +533,7 @@ tooltip_text = "Opens the resource in the Inspector to add, change or remove bin
 text = "Open Hotkey Resource"
 
 [node name="HotkeyHBox" type="GridContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=210221800]
+visible = false
 layout_mode = 2
 theme_override_constants/v_separation = 8
 columns = 2
@@ -565,11 +566,30 @@ size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Display Instance ID"
 
+[node name="ModulatePrintIDColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1951015668]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Modulate for ID Overlay"
+text = "ID Overlay Modulate"
+autowrap_mode = 3
+
+[node name="TogglePrintIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=30228355]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Toggles the ID Overlay on hotkey released"
+text = "Toggle ID Overlay"
+
+[node name="ShowOnStartupInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=2022147191]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Shows ID on startup IF 'Toggle ID Overlay' is enabled"
+text = "Show ID Overlay on startup"
+
 [node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1680159305]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
-text = "Print ID on display"
+text = "Print ID to output on hotkey press"
 
 [node name="R_Panel" type="Panel" parent="Settings/HBoxContainer" unique_id=1299947772]
 layout_mode = 2
