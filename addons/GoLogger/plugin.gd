@@ -25,15 +25,9 @@ func _disable_plugin() -> void:
 		remove_autoload_singleton("Log")
 
 
-func _on_open_hotkey_resource(resrc: int) -> void:
-	var _r: String = ""
-	match resrc:
-		0: _r = "uid://n4t5k7np2380"  # Start Session Hotkey
-		1: _r = "uid://gqn873em6x5v"  # Stop Session Hotkey
-		2: _r = "uid://dqqknnyvnc7t6" # Copy Session Hotkey
-		3: _r = "uid://dqr6my53ln3q1" # Print Instance ID
-	var res = ResourceLoader.load(_r)
+func _on_open_hotkey_resource() -> void:
+	var res = ResourceLoader.load("uid://dyi2aml73k4g8")
 	if res:
 		get_editor_interface().edit_resource(res)
 	else:
-		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] Could not load resource: %s" % resrc)
+		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] Could not load hotkey resource.")
