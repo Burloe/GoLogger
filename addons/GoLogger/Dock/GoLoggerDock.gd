@@ -1,6 +1,11 @@
 @tool
 extends TabContainer
 
+# Adding a new setting:
+	# Add the settings to all appropriate dictionaries in "settings_dict"
+	# In _ready(), add the settings control node to btn_array so it's included in the uniform signal connections loop
+	# If setting requires a Container node to show tooltips(as is the case for most) add the container node to container_array and add the appropriate index in the corresponding_lbls array for the font color changes on mouse hover
+
 # TODO:
 	# Implement a print_rich() calls whenever a setting is changed to notify the user of the change in the output console.
 	# [Done]Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
@@ -241,94 +246,6 @@ var settings_dict := {
 }
 
 
-# # Mirror
-# var default_settings := {
-# 		"category_names": ["game"],
-# 		"default_category": "",
-# 		"base_directory": "user://GoLogger/",
-# 		"log_header_format": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
-# 		"entry_format": "[{hh}:{mi}:{ss}] {instance_id}: {entry}",
-# 		"canvaslayer_layer": 5,
-# 		"autostart_session": true,
-# 		"use_utc": false,
-# 		"print_instance_id": false,
-# 		"id_overlay_toggle": false,
-# 		"id_overlay_color": Color(1, 1, 1, 1),
-# 		"id_overlay_startup_state": false,
-# 		"limit_method": 0,
-# 		"entry_count_action": 0,
-# 		"session_timer_action": 0,
-# 		"file_cap": 10,
-# 		"entry_cap": 300,
-# 		"session_duration": 300,
-# 		"error_reporting": 0,
-# 		"columns": 5
-# }
-# ## Mirror
-# var expected_types = {
-# 		"categories/category_names": 					TYPE_ARRAY,
-# 		"categories/default_category":		 		TYPE_STRING,
-# 		"settings/base_directory": 						TYPE_STRING,
-# 		"settings/columns": 									TYPE_INT,
-# 		"settings/log_header_format":			 		TYPE_STRING,
-# 		"settings/entry_format" : 						TYPE_STRING,
-# 		"settings/canvaslayer_layer": 				TYPE_INT,
-# 		"settings/autostart_session": 				TYPE_BOOL,
-# 		"settings/use_utc": 									TYPE_BOOL,
-# 		"settings/print_instance_id": 				TYPE_BOOL,
-# 		"settings/toggle_id_overlay": 				TYPE_BOOL,
-# 		"settings/id_overlay_color": 					TYPE_COLOR,
-# 		"settings/id_overlay_startup_state": 	TYPE_BOOL,
-# 		"settings/limit_method": 							TYPE_INT,
-# 		"settings/entry_count_action": 				TYPE_INT,
-# 		"settings/session_timer_action":		 	TYPE_INT,
-# 		"settings/file_cap": 									TYPE_INT,
-# 		"settings/entry_cap": 								TYPE_INT,
-# 		"settings/session_duration": 					TYPE_INT,
-# 		"settings/error_reporting": 					TYPE_INT
-# 	}
-# ## Control nodes corresponding to each setting for easy access
-# var settings_control := {
-# 	"base_directory": base_dir_line,
-# 	"log_header_format": log_header_line,
-# 	"entry_format": entry_format_line,
-# 	"canvaslayer_layer": canvas_layer_spinbox,
-# 	"autostart_session": autostart_btn,
-# 	"use_utc": utc_btn,
-# 	"print_instance_id": print_instance_id_btn,
-# 	"id_overlay_toggle": id_overlay_toggle_btn,
-# 	"id_overlay_color": id_overlay_modulate_btn,
-# 	"id_overlay_startup_state": id_overlay_startup_btn,
-# 	"limit_method": limit_method_btn,
-# 	"entry_count_action": entry_count_action_btn,
-# 	"session_timer_action": session_timer_action_btn,
-# 	"file_cap": file_count_spinbox,
-# 	"entry_cap": entry_count_spinbox,
-# 	"session_duration": session_duration_spinbox,
-# 	"error_reporting": error_rep_btn,
-# 	"columns": column_slider
-# }
-# var expected_settings ={
-# 		"category_names": 			"categories/category_names",
-# 		"default_category": 		"categories/default_category",
-# 		"base_directory": 			"settings/base_directory",
-# 		"columns": 							"settings/columns",
-# 		"log_header_format": 		"settings/log_header_format",
-# 		"entry_format": 				"settings/entry_format",
-# 		"canvaslayer_layer": 		"settings/canvaslayer_layer",
-# 		"autostart_session": 		"settings/autostart_session",
-# 		"use_utc": 							"settings/use_utc",
-# 		"limit_method": 				"settings/limit_method",
-# 		"entry_count_action": 	"settings/entry_count_action",
-# 		"session_timer_action": "settings/session_timer_action",
-# 		"file_cap": 						"settings/file_cap",
-# 		"entry_cap": 						"settings/entry_cap",
-# 		"session_duration": 		"settings/session_duration",
-# 		"error_reporting": 			"settings/error_reporting",
-# 		"print_instance_id": 		"settings/print_instance_id"
-# 	}
-
-
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
@@ -367,6 +284,9 @@ func _ready() -> void:
 			autostart_btn,
 			utc_btn,
 			print_instance_id_btn,
+			id_overlay_toggle_btn,
+			id_overlay_modulate_btn,
+			id_overlay_startup_btn,
 			limit_method_btn,
 			entry_count_action_btn,
 			session_timer_action_btn,
@@ -405,6 +325,12 @@ func _ready() -> void:
 				if btn_array[i].value_changed.is_connected(_on_spinbox_value_changed):
 					btn_array[i].value_changed.disconnect(_on_spinbox_value_changed)
 				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i]))
+
+			elif btn_array[i] is ColorPickerButton:
+				if btn_array[i].color_changed.is_connected(_on_colorpicker_color_changed):
+					btn_array[i].color_changed.disconnect(_on_colorpicker_color_changed)
+				btn_array[i].color_changed.connect(_on_colorpicker_color_changed.bind(btn_array[i]))
+
 
 		if canvas_spinbox_line == null: canvas_spinbox_line = canvas_layer_spinbox.get_line_edit()
 		if canvas_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
@@ -773,7 +699,6 @@ func save_data(deferred: bool = false) -> void:
 			continue
 
 		var ctrl = settings_dict.get("controls", {}).get(key, null)
-		print(settings_dict["controls"])
 
 		if ctrl == null:
 			error += 1
@@ -1306,6 +1231,20 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 				print_rich(c_print_history, "Session duration changed.")
 
 	save_data()
+
+
+func _on_colorpicker_color_changed(color: Color, node: ColorPickerButton) -> void:
+	config.load(PATH)
+
+	var _conv_col = color.to_html(true)
+
+	match node:
+		id_overlay_modulate_btn:
+			config.set_value("settings", "id_overlay_color", _conv_col)
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Instance ID Overlay color changed.")
+	config.save(PATH)
+	# save_data()
 
 
 func _on_category_line_focus(data: Array, focused: bool) -> void:

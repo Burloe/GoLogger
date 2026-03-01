@@ -92,7 +92,7 @@ var cat_data : Dictionary = {
 var instance_id: String = "":
 	set(value):
 		instance_id = value
-		instance_id_label.text = str("[color=fc4674][outline_size= 4][font_size=14]GoLogger Instance ID: [color=white][outline_size= 8]", value)
+		instance_id_label.text = str("[outline_size= 8]", value)
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
@@ -180,6 +180,7 @@ func _ready() -> void:
 
 	config.load(PATH)
 
+	instance_id_label.modulate = Color(config.get_value("settings", "id_overlay_color", Color("ffffff8a")))
 	elements_canvaslayer.layer = _get_config_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 	inaction_timer.timeout.connect(_on_timer_timeout.bind(inaction_timer))
