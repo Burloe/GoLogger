@@ -181,6 +181,11 @@ func _ready() -> void:
 	config.load(PATH)
 
 	instance_id_label.modulate = Color(config.get_value("settings", "id_overlay_color", Color("ffffff8a")))
+	var id_toggle = config.get_value("settings", "id_overlay_toggle", false)
+	var id_startup = config.get_value("settings", "id_overlay_startup_state", false)
+	if id_toggle:
+		instance_id_label.visible = id_startup
+
 	elements_canvaslayer.layer = _get_config_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 	inaction_timer.timeout.connect(_on_timer_timeout.bind(inaction_timer))
@@ -194,7 +199,6 @@ func _ready() -> void:
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
 	instance_id = _get_instance_id()
-	instance_id_label.hide()
 
 	validate_settings()
 	load_category_data()
@@ -227,12 +231,25 @@ func _input(event: InputEvent) -> void:
 				stop_session()
 			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
 				save_copy()
-			if hotkey_print_instance_id.shortcut.matches_event(event) and event.is_pressed():
-				instance_id_label.show()
-			if hotkey_print_instance_id.shortcut.matches_event(event) and event.is_released():
-				instance_id_label.hide()
-				if _get_config_value("settings", "print_instance_id"):
-					print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
+
+			config.load(PATH)
+			var id_toggle = config.get_value("settings", "id_overlay_toggle", false)
+			var id_startup = config.get_value("settings", "id_overlay_startup_state", false)
+
+			if hotkey_print_instance_id.shortcut.matches_event(event):
+				if id_toggle:
+					if event.is_released():
+						instance_id_label.hide() if instance_id_label.visible else instance_id_label.show()
+						if _get_config_value("settings", "print_instance_id"):
+							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
+
+				else:
+					if event.is_pressed():
+						instance_id_label.show()
+						if _get_config_value("settings", "print_instance_id"):
+							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
+					if event.is_released():
+						instance_id_label.hide()
 
 
 		# Test entry logging

@@ -5,6 +5,7 @@ extends TabContainer
 	# Add the settings to all appropriate dictionaries in "settings_dict"
 	# In _ready(), add the settings control node to btn_array so it's included in the uniform signal connections loop
 	# If setting requires a Container node to show tooltips(as is the case for most) add the container node to container_array and add the appropriate index in the corresponding_lbls array for the font color changes on mouse hover
+	# Implement the logic for applying the setting in signal function like _on_button_button_up()
 
 # TODO:
 	# Implement a print_rich() calls whenever a setting is changed to notify the user of the change in the output console.
@@ -256,6 +257,7 @@ func _ready() -> void:
 
 		config.load(PATH)
 		cat_del_warn_rlbl.modulate = Color.TRANSPARENT
+		id_overlay_startup_btn.show() if config.get_value("settings", "id_overlay_toggle", false) else id_overlay_startup_btn.hide()
 
 		for i in category_container.get_children():
 			if i is LogCategory:
@@ -497,7 +499,7 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
 	cf.set_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
 	cf.set_value("settings", "print_instance_id", settings_dict.get("defaults", {}).get("print_instance_id", false))
-	cf.set_value("settings", "toggle_id_overlay", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
+	cf.set_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
 	cf.set_value("settings", "id_overlay_color", settings_dict.get("defaults", {}).get("id_overlay_color", Color(1, 1, 1, 1)))
 	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
 	cf.set_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
@@ -1158,6 +1160,17 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 			config.set_value("settings", "print_instance_id", toggled_on)
 			if !suppress_history_prints:
 				print_rich(c_print_history + "Print Instance ID option " + "enabled." if toggled_on else c_print_history + "Print Instance ID option " + "disabled.")
+
+		id_overlay_toggle_btn:
+			config.set_value("settings", "id_overlay_toggle", toggled_on)
+			id_overlay_startup_btn.show() if toggled_on else id_overlay_startup_btn.hide()
+			if !suppress_history_prints:
+				print_rich(c_print_history + "Instance ID Overlay " + "enabled." if toggled_on else c_print_history + "Instance ID Overlay " + "disabled.")
+
+		id_overlay_startup_btn:
+			config.set_value("settings", "id_overlay_startup_state", toggled_on)
+			if !suppress_history_prints:
+				print_rich(c_print_history + "Instance ID Overlay on startup " + "enabled." if toggled_on else c_print_history + "Instance ID Overlay on startup " + "disabled.")
 	# config.save(PATH)
 	save_data()
 
@@ -1233,18 +1246,15 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 	save_data()
 
 
-func _on_colorpicker_color_changed(color: Color, node: ColorPickerButton) -> void:
+func _on_colorpicker_color_changed(col: Color, node: ColorPickerButton) -> void:
 	config.load(PATH)
-
-	var _conv_col = color.to_html(true)
 
 	match node:
 		id_overlay_modulate_btn:
-			config.set_value("settings", "id_overlay_color", _conv_col)
+			config.set_value("settings", "id_overlay_color", col.to_html(true))
 			if !suppress_history_prints:
 				print_rich(c_print_history, "Instance ID Overlay color changed.")
 	config.save(PATH)
-	# save_data()
 
 
 func _on_category_line_focus(data: Array, focused: bool) -> void:
