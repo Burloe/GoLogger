@@ -23,6 +23,13 @@ extends TabContainer
 		# [DONE] When adding a new category, "file_name", "file_path" and "entry_count" keys are missing from the section(not critical but should be added for consistency)
 		# Changing a category name needs to erase the old category data in the .ini file to prevent bloat
 
+	# DOCK SETTINGS TAB:
+		# [DONE] ID overlay:
+			# Color setting for the overlay text
+			# Toggle setting to show/hide overlay
+			# Startup state setting to determine whether the overlay is shown on editor startup or only when toggled with the hotkey
+
+
 # RELEASE CHECKLIST:
 	# Ensure proper tab states - CATEGORIES tab - Getting Started	in Help tab
 	# Check font highlighting on mouse over for settings tab
@@ -125,9 +132,11 @@ var session_duration_spinbox_line: LineEdit
 
 @onready var open_hotkey_btn: Button = %OpenHotkeyBtn
 @onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckBtn
-@onready var id_overlay_toggle_btn: CheckButton = %TogglePrintIDCheckBtn
+@onready var id_overlay_toggle_btn: CheckButton = %ToggleIDOverlayCheckBtn
 @onready var id_overlay_startup_btn: CheckButton = %ShowOnStartupInstanceIDCheckBtn
-@onready var id_overlay_modulate_btn: ColorPickerButton = %ModulatePrintIDColorPickerButton
+@onready var id_overlay_modulate_btn: ColorPickerButton = %ModulateIDColorPickerButton
+@onready var id_overlay_modulate_lbl: Label = %ModulateIDLabel
+@onready var id_overlay_modulate_container: VBoxContainer = %ModulateIDVBox
 
 
 @onready var help_tab_container: TabContainer = %HelpTabContainer
@@ -167,9 +176,9 @@ var settings_dict := {
 		"canvaslayer_layer": 							5,
 		"autostart_session": 							true,
 		"use_utc": 												false,
-		"print_instance_id": 							false,
+		"id_overlay_print": 							false,
 		"id_overlay_toggle": 							false,
-		"id_overlay_color": 							Color(1, 1, 1, 1),
+		"id_overlay_color": 							"ffffff",
 		"id_overlay_startup_state": 			false,
 		"limit_method": 									0,
 		"entry_count_action": 						0,
@@ -190,8 +199,8 @@ var settings_dict := {
 		"canvaslayer_layer": 				"settings/canvaslayer_layer",
 		"autostart_session": 				"settings/autostart_session",
 		"use_utc": 									"settings/use_utc",
-		"print_instance_id": 				"settings/print_instance_id",
-		"id_overlay_toggle": 				"settings/toggle_id_overlay",
+		"id_overlay_print": 				"settings/id_overlay_print",
+		"id_overlay_toggle": 				"settings/id_overlay_toggle",
 		"id_overlay_color": 				"settings/id_overlay_color",
 		"id_overlay_startup_state": "settings/id_overlay_startup_state",
 		"limit_method": 						"settings/limit_method",
@@ -212,9 +221,9 @@ var settings_dict := {
 		"settings/canvaslayer_layer": 				TYPE_INT,
 		"settings/autostart_session": 				TYPE_BOOL,
 		"settings/use_utc": 									TYPE_BOOL,
-		"settings/print_instance_id": 				TYPE_BOOL,
+		"settings/id_overlay_print": 				TYPE_BOOL,
 		"settings/id_overlay_toggle": 				TYPE_BOOL,
-		"settings/id_overlay_color": 					TYPE_COLOR,
+		"settings/id_overlay_color": 					TYPE_STRING,
 		"settings/id_overlay_startup_state": 	TYPE_BOOL,
 		"settings/limit_method": 							TYPE_INT,
 		"settings/entry_count_action": 				TYPE_INT,
@@ -231,7 +240,7 @@ var settings_dict := {
 		"canvaslayer_layer": 							canvas_layer_spinbox,
 		"autostart_session": 							autostart_btn,
 		"use_utc": 												utc_btn,
-		"print_instance_id": 							print_instance_id_btn,
+		"id_overlay_print": 							print_instance_id_btn,
 		"id_overlay_toggle": 							id_overlay_toggle_btn,
 		"id_overlay_color": 							id_overlay_modulate_btn,
 		"id_overlay_startup_state": 			id_overlay_startup_btn,
@@ -366,7 +375,8 @@ func _ready() -> void:
 			file_count_container,
 			entry_count_container,
 			session_duration_container,
-			error_rep_container
+			error_rep_container,
+			id_overlay_modulate_container
 		]
 
 		var btns_array = [
@@ -380,7 +390,8 @@ func _ready() -> void:
 			file_count_spinbox,
 			entry_count_spinbox,
 			session_duration_spinbox,
-			error_rep_btn
+			error_rep_btn,
+			id_overlay_modulate_btn
 		]
 
 		var corresponding_lbls = [
@@ -395,6 +406,7 @@ func _ready() -> void:
 			entry_count_lbl,
 			session_duration_lbl,
 			error_rep_lbl,
+			id_overlay_modulate_lbl
 		]
 
 		for i in range(container_array.size()):
@@ -469,7 +481,7 @@ func _ready() -> void:
 			"canvaslayer_layer": canvas_layer_spinbox,
 			"autostart_session": autostart_btn,
 			"use_utc": utc_btn,
-			"print_instance_id": print_instance_id_btn,
+			"id_overlay_print": print_instance_id_btn,
 			"id_overlay_toggle": id_overlay_toggle_btn,
 			"id_overlay_color": id_overlay_modulate_btn,
 			"id_overlay_startup_state": id_overlay_startup_btn,
@@ -498,9 +510,9 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
 	cf.set_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
 	cf.set_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
-	cf.set_value("settings", "print_instance_id", settings_dict.get("defaults", {}).get("print_instance_id", false))
+	cf.set_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
 	cf.set_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	cf.set_value("settings", "id_overlay_color", settings_dict.get("defaults", {}).get("id_overlay_color", Color(1, 1, 1, 1)))
+	cf.set_value("settings", "id_overlay_color", settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff"))
 	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
 	cf.set_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
 	cf.set_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
@@ -519,7 +531,7 @@ func create_settings_file() -> void: # Mirror
 	config.load(PATH) # Reload config to ensure it's up to date
 
 
-func load_settings_state() -> void: # Delete?
+func load_settings_state() -> void: # Delete? This is handled in load_data()
 	config.load(PATH)
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
@@ -531,7 +543,10 @@ func load_settings_state() -> void: # Delete?
 	canvas_layer_spinbox.value = 						config.get_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
 	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
 	utc_btn.button_pressed = 								config.get_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
-	print_instance_id_btn.button_pressed = 	config.get_value("settings", "print_instance_id", settings_dict.get("defaults", {}).get("print_instance_id", false))
+	print_instance_id_btn.button_pressed = 	config.get_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
+	id_overlay_toggle_btn.button_pressed = 	config.get_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
+	id_overlay_modulate_btn.color = 	Color(config.get_value("settings", "id_overlay_color", settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")))
+	id_overlay_startup_btn.button_pressed = config.get_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
 	limit_method_btn.selected = 						config.get_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
 	entry_count_action_btn.selected = 			config.get_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
 	session_timer_action_btn.selected = 		config.get_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
@@ -577,23 +592,25 @@ func reset_to_default() -> void:
 	cf.set_value("categories.game", "category_index", 0)
 	cf.set_value("categories.game", "file_count", 0)
 	cf.set_value("categories.game", "is_locked", false)
-	cf.set_value("categories", "default_category", settings_dict.get("default_category", ""))
 	cf.save(PATH)
 
-	base_dir_line.text = 										settings_dict.get("defaults").get("base_directory")
-	log_header_line.text = 									settings_dict.get("defaults").get("log_header_format")
-	entry_format_line.text = 								settings_dict.get("defaults").get("entry_format")
-	canvas_layer_spinbox.value = 						settings_dict.get("defaults").get("canvaslayer_layer")
-	autostart_btn.button_pressed = 					settings_dict.get("defaults").get("autostart_session")
-	utc_btn.button_pressed = 								settings_dict.get("defaults").get("use_utc")
-	print_instance_id_btn.button_pressed = 	settings_dict.get("defaults").get("print_instance_id")
-	limit_method_btn.selected = 						settings_dict.get("defaults").get("limit_method")
-	entry_count_action_btn.selected = 			settings_dict.get("defaults").get("entry_count_action")
-	session_timer_action_btn.selected = 		settings_dict.get("defaults").get("session_timer_action")
-	file_count_spinbox.value = 							settings_dict.get("defaults").get("file_cap")
-	entry_count_spinbox.value = 						settings_dict.get("defaults").get("entry_cap")
-	session_duration_spinbox.value = 				settings_dict.get("defaults").get("session_duration")
-	error_rep_btn.selected = 								settings_dict.get("defaults").get("error_reporting")
+	base_dir_line.text = 										settings_dict.get("defaults").get("base_directory", "user://GoLogger/")
+	log_header_line.text = 									settings_dict.get("defaults").get("log_header_format", "")
+	entry_format_line.text = 								settings_dict.get("defaults").get("entry_format", "")
+	canvas_layer_spinbox.value = 						settings_dict.get("defaults").get("canvaslayer_layer", 5)
+	autostart_btn.button_pressed = 					settings_dict.get("defaults").get("autostart_session", true)
+	utc_btn.button_pressed = 								settings_dict.get("defaults").get("use_utc", false)
+	print_instance_id_btn.button_pressed = 	settings_dict.get("defaults").get("id_overlay_print", false)
+	id_overlay_modulate_btn.color = 	Color(settings_dict.get("defaults").get("id_overlay_color", "ffffff"))
+	id_overlay_toggle_btn.button_pressed = 	settings_dict.get("defaults").get("id_overlay_toggle", false)
+	id_overlay_startup_btn.button_pressed = settings_dict.get("defaults").get("id_overlay_startup_state", false)
+	limit_method_btn.selected = 						settings_dict.get("defaults").get("limit_method", 0)
+	entry_count_action_btn.selected = 			settings_dict.get("defaults").get("entry_count_action", 0)
+	session_timer_action_btn.selected = 		settings_dict.get("defaults").get("session_timer_action", 0)
+	file_count_spinbox.value = 							settings_dict.get("defaults").get("file_cap", 10)
+	entry_count_spinbox.value = 						settings_dict.get("defaults").get("entry_cap", 300)
+	session_duration_spinbox.value = 				settings_dict.get("defaults").get("session_duration", 300)
+	error_rep_btn.selected = 								settings_dict.get("defaults").get("error_reporting", 0)
 	column_slider.value = 									_get_column_value(settings_dict.get("defaults", {}).get("columns", 5))
 
 	base_dir_apply_btn.disabled = true
@@ -653,7 +670,10 @@ func load_data() -> void:
 	canvas_layer_spinbox.value = 						_c.get_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
 	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
 	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
-	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "print_instance_id", settings_dict.get("defaults", {}).get("print_instance_id", false))
+	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
+	id_overlay_toggle_btn.button_pressed = 	_c.get_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
+	id_overlay_modulate_btn.color = 	Color(_c.get_value("settings", "id_overlay_color", settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")))
+	id_overlay_startup_btn.button_pressed = _c.get_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
 	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
 	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
 	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
@@ -1157,7 +1177,7 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 				print_rich(c_print_history + "Use UTC option " + "enabled." if toggled_on else c_print_history + "Use UTC option " + "disabled.")
 
 		print_instance_id_btn:
-			config.set_value("settings", "print_instance_id", toggled_on)
+			config.set_value("settings", "id_overlay_print", toggled_on)
 			if !suppress_history_prints:
 				print_rich(c_print_history + "Print Instance ID option " + "enabled." if toggled_on else c_print_history + "Print Instance ID option " + "disabled.")
 

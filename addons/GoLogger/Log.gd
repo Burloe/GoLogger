@@ -67,6 +67,18 @@ extends Node
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
 
+@export var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
+@onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
+@onready var session_timer: Timer = %SessionTimer
+@onready var instance_id_label: RichTextLabel = %InstanceIDLabel
+@onready var popup: CenterContainer = %Popup
+@onready var popup_line_edit: LineEdit = %CopyNameLineEdit
+@onready var popup_yesbtn: Button = %PopupYesButton
+@onready var popup_nobtn: Button = %PopupNoButton
+@onready var prompt_label: RichTextLabel = %PromptLabel
+@onready var popup_errorlbl: RichTextLabel = %PopupErrorLabel
+@onready var inaction_timer: Timer = %InactionTimer
+
 const PATH = "user://gologger_data.ini" # Mirror in GoLoggerDock.gd
 var config := ConfigFile.new()
 var copy_name : String = ""
@@ -94,21 +106,80 @@ var instance_id: String = "":
 		instance_id = value
 		instance_id_label.text = str("[outline_size= 8]", value)
 
-@onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
-@onready var session_timer: Timer = %SessionTimer
-@onready var instance_id_label: RichTextLabel = %InstanceIDLabel
-@onready var popup: CenterContainer = %Popup
-@onready var popup_line_edit: LineEdit = %CopyNameLineEdit
-@onready var popup_yesbtn: Button = %PopupYesButton
-@onready var popup_nobtn: Button = %PopupNoButton
-@onready var prompt_label: RichTextLabel = %PromptLabel
-@onready var popup_errorlbl: RichTextLabel = %PopupErrorLabel
-@onready var inaction_timer: Timer = %InactionTimer
 var popup_state : bool = false:
 	set(value):
 		popup_state = value
 		if session_status:
 			toggle_copy_popup(value)
+
+var settings_dict := {
+	"defaults": {
+		"category_names": 								["game"],
+		"default_category": 							"",
+		"base_directory": 								"user://GoLogger/",
+		"log_header_format": 							"{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
+		"entry_format": 									"[{hh}:{mi}:{ss}] {instance_id}: {entry}",
+		"canvaslayer_layer": 							5,
+		"autostart_session": 							true,
+		"use_utc": 												false,
+		"print_instance_id": 							false,
+		"id_overlay_toggle": 							false,
+		"id_overlay_color": 							"ffffff",
+		"id_overlay_startup_state": 			false,
+		"limit_method": 									0,
+		"entry_count_action": 						0,
+		"session_timer_action": 					0,
+		"file_cap": 											10,
+		"entry_cap": 											300,
+		"session_duration": 							300,
+		"error_reporting": 								0,
+		"columns": 												5
+	},
+	"expected_settings": {
+		"category_names": 					"categories/category_names",
+		"default_category": 				"categories/default_category",
+		"base_directory": 					"settings/base_directory",
+		"columns": 									"settings/columns",
+		"log_header_format": 				"settings/log_header_format",
+		"entry_format": 						"settings/entry_format",
+		"canvaslayer_layer": 				"settings/canvaslayer_layer",
+		"autostart_session": 				"settings/autostart_session",
+		"use_utc": 									"settings/use_utc",
+		"print_instance_id": 				"settings/print_instance_id",
+		"id_overlay_toggle": 				"settings/toggle_id_overlay",
+		"id_overlay_color": 				"settings/id_overlay_color",
+		"id_overlay_startup_state": "settings/id_overlay_startup_state",
+		"limit_method": 						"settings/limit_method",
+		"entry_count_action": 			"settings/entry_count_action",
+		"session_timer_action": 		"settings/session_timer_action",
+		"file_cap": 								"settings/file_cap",
+		"entry_cap": 								"settings/entry_cap",
+		"session_duration": 				"settings/session_duration",
+		"error_reporting": 					"settings/error_reporting"
+	},
+	"expected_types": {
+		"categories/category_names": 					TYPE_ARRAY,
+		"categories/default_category":		 		TYPE_STRING,
+		"settings/base_directory": 						TYPE_STRING,
+		"settings/columns": 									TYPE_INT,
+		"settings/log_header_format":			 		TYPE_STRING,
+		"settings/entry_format" : 						TYPE_STRING,
+		"settings/canvaslayer_layer": 				TYPE_INT,
+		"settings/autostart_session": 				TYPE_BOOL,
+		"settings/use_utc": 									TYPE_BOOL,
+		"settings/print_instance_id": 				TYPE_BOOL,
+		"settings/id_overlay_toggle": 				TYPE_BOOL,
+		"settings/id_overlay_color": 					TYPE_STRING,
+		"settings/id_overlay_startup_state": 	TYPE_BOOL,
+		"settings/limit_method": 							TYPE_INT,
+		"settings/entry_count_action": 				TYPE_INT,
+		"settings/session_timer_action":		 	TYPE_INT,
+		"settings/file_cap": 									TYPE_INT,
+		"settings/entry_cap": 								TYPE_INT,
+		"settings/session_duration": 					TYPE_INT,
+		"settings/error_reporting": 					TYPE_INT
+	}
+}
 
 # Mirror in GoLoggerDock.gd
 var default_settings := {
@@ -150,11 +221,7 @@ var expected_types = {
 		"settings/session_duration": 			TYPE_INT,
 		"settings/error_reporting": 			TYPE_INT
 	}
-@export var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
-var hotkey_start_session: InputEventShortcut = preload("res://addons/GoLogger/StartSessionShortcut.tres")
-var hotkey_stop_session: InputEventShortcut = preload("res://addons/GoLogger/StopSessionShortcut.tres")
-var hotkey_copy_session: InputEventShortcut = preload("res://addons/GoLogger/CopySessionShortcut.tres")
-var hotkey_print_instance_id: InputEventShortcut = preload("res://addons/GoLogger/PrintInstanceIDShortcut.tres")
+
 
 enum ErrorCodes { #NYI - For future use in error/warning messages
 		ERR_NONE,
@@ -225,18 +292,20 @@ func _input(event: InputEvent) -> void:
 		or event is InputEventJoypadButton\
 		or event is InputEventJoypadMotion and event.axis == 4\
 		or event is InputEventJoypadMotion and event.axis == 5: # Only allow trigger axes
-			if hotkey_start_session.shortcut.matches_event(event) and event.is_released():
+			if gl_hotkeys.start_session_hotkey.shortcut.matches_event(event) and event.is_released():
 				start_session()
-			if hotkey_stop_session.shortcut.matches_event(event) and event.is_released():
+			if gl_hotkeys.stop_session_hotkey.shortcut.matches_event(event) and event.is_released():
 				stop_session()
-			if hotkey_copy_session.shortcut.matches_event(event) and event.is_released():
+			if gl_hotkeys.copy_session_hotkey.shortcut.matches_event(event) and event.is_released():
 				save_copy()
+
 
 			config.load(PATH)
 			var id_toggle = config.get_value("settings", "id_overlay_toggle", false)
 			var id_startup = config.get_value("settings", "id_overlay_startup_state", false)
 
-			if hotkey_print_instance_id.shortcut.matches_event(event):
+			# if hotkey_print_instance_id.shortcut.matches_event(event):
+			if gl_hotkeys.display_instance_id_hotkey.shortcut.matches_event(event):
 				if id_toggle:
 					if event.is_released():
 						instance_id_label.hide() if instance_id_label.visible else instance_id_label.show()

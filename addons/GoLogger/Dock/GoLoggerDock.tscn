@@ -566,14 +566,23 @@ size_flags_horizontal = 3
 tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
 text = "Display Instance ID"
 
-[node name="ModulatePrintIDColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1951015668]
+[node name="ModulateIDVBox" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1570219251]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ModulateIDLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1090939026]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ID Overlay modulate"
+
+[node name="ModulateIDColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1951015668]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Modulate for ID Overlay"
 text = "ID Overlay Modulate"
 autowrap_mode = 3
 
-[node name="TogglePrintIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=30228355]
+[node name="ToggleIDOverlayCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=30228355]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Toggles the ID Overlay on hotkey released"
@@ -866,21 +875,23 @@ layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=94297257]
 layout_mode = 2
-
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1523429579]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-vertical_alignment = 2
+alignment = 2
 
 [node name="ResetSettingsButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1084513318]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Resets plugin to default (settings and categories)"
 text = "Reset to default"
+
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1523429579]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true
