@@ -232,11 +232,19 @@ theme_override_constants/separation = 15
 layout_mode = 2
 folded = true
 title = "General"
+title_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 12
+
+[node name="OpenHotkeyBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1217103956]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Opens the resource in the Inspector to add, change or remove bindings"
+text = "Open Hotkey Resource"
 
 [node name="AutostartCheckButton" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1421289288]
 unique_name_in_owner = true
@@ -316,6 +324,7 @@ popup/item_3/id = 3
 layout_mode = 2
 folded = true
 title = "Limitations"
+title_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/LimitationsFoldableContainer" unique_id=348562578]
 visible = false
@@ -517,84 +526,66 @@ suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="HotkeysFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1336991210]
+[node name="IDOverlayFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1336991210]
 layout_mode = 2
-title = "Hotkeys"
+title = "ID Overlay"
+title_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer" unique_id=570791839]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer" unique_id=570791839]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="OpenHotkeyBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1217103956]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Opens the resource in the Inspector to add, change or remove bindings"
-text = "Open Hotkey Resource"
-
-[node name="HotkeyHBox" type="GridContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=210221800]
-visible = false
-layout_mode = 2
-theme_override_constants/v_separation = 8
-columns = 2
-
-[node name="StartSessionBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=1835760203]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
-text = "Start Session"
-
-[node name="CopySessionBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=625254447]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
-text = "Copy Session"
-
-[node name="StopSessionBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=2126222086]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
-text = "Stop Session"
-
-[node name="DisplayInstanceIDBtn" type="Button" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/HotkeyHBox" unique_id=1760330988]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Opens the InputEventShortcut resource for runtime hotkey in the Inspector"
-text = "Display Instance ID"
-
-[node name="ModulateIDVBox" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1570219251]
+[node name="ModulateIDVBox" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1570219251]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ModulateIDLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1090939026]
+[node name="ModulateIDLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1090939026]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "ID Overlay modulate"
 
-[node name="ModulateIDColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1951015668]
+[node name="ModulateIDColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1951015668]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Modulate for ID Overlay"
 text = "ID Overlay Modulate"
 autowrap_mode = 3
+color = Color(1, 1, 1, 1)
 
-[node name="ToggleIDOverlayCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=30228355]
+[node name="IDOverlayFontsizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1957436368]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Toggles the ID Overlay on hotkey released"
+
+[node name="IDOverlayFontSizeLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontsizeHBox" unique_id=1669599151]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+text = "Font Size"
+
+[node name="IDOverlayFontSizeSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontsizeHBox" unique_id=291883263]
+unique_name_in_owner = true
+layout_mode = 2
+value = 15.0
+alignment = 2
+custom_arrow_round = true
+
+[node name="ToggleIDOverlayCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=30228355]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Toggles the ID Overlay instead of while the button is pressed."
+button_pressed = true
 text = "Toggle ID Overlay"
 
-[node name="ShowOnStartupInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=2022147191]
+[node name="ShowOnStartupInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=2022147191]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Shows ID on startup IF 'Toggle ID Overlay' is enabled"
+button_pressed = true
 text = "Show ID Overlay on startup"
 
-[node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/HotkeysFoldableContainer/VBoxContainer" unique_id=1680159305]
+[node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1680159305]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"

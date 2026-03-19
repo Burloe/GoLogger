@@ -1,9 +1,15 @@
 [gd_scene format=3 uid="uid://bb6slgxo7qwae"]
 
-[node name="TestScene" type="Control"]
+[ext_resource type="Script" uid="uid://bodvp2c6xrbog" path="res://test_scene.gd" id="1_uhqqe"]
+
+[node name="TestScene" type="Control" unique_id=153873720]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_uhqqe")
+
+[node name="DebugTimer" type="Timer" parent="." unique_id=2116733478]
+unique_name_in_owner = true
