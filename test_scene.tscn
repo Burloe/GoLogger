@@ -13,5 +13,4 @@ script = ExtResource("1_uhqqe")
 
 [node name="DebugTimer" type="Timer" parent="." unique_id=2116733478]
 unique_name_in_owner = true
-wait_time = 2.0
 autostart = true

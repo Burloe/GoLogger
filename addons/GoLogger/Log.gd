@@ -82,7 +82,9 @@ signal session_stopped ## Emitted when a log session has been stopped.
 enum LimitMethod {
 	ENTRY_COUNT,
 	SESSION_TIMER,
-	BOTH
+	BOTH,
+	SEPERATOR,
+	NONE
 }
 
 enum EntryCountAction {
@@ -651,7 +653,6 @@ func stop_session() -> void:
 	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_config_value("settings", "use_utc")), "] Stopped log session.")
 
 	for category in config.get_value("categories", "category_names", []):
-		# var _fp = config.get_value("categories." + str(category), "file_path", "")
 		var _fp = cat_data[category]["file_path"]
 		if _fp == "":
 			if _err_lv != 2:
@@ -677,7 +678,7 @@ func stop_session() -> void:
 			if _err != OK:
 				push_warning("GoLogger: Attempting to stop session by writing to file (", _fp, ") -> Error[", _err, "]")
 				return
-		var _s := str(_content, str(_timestamp + "Stopped Log Session."))
+		var _s := str(_content, str(_timestamp))
 		_fw.store_line(_s)
 		_fw.close()
 

@@ -133,8 +133,9 @@ var session_duration_spinbox_line: LineEdit
 
 @onready var open_hotkey_btn: Button = %OpenHotkeyBtn
 @onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckBtn
-@onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontsizeHBox
+@onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontSizeHBox
 var id_overlay_font_size_line: LineEdit
+@onready var id_overlay_example_lbl: RichTextLabel = %IDOverlayExampleLabel
 @onready var id_overlay_font_size_spinbox: SpinBox = %IDOverlayFontSizeSpinBox
 @onready var id_overlay_font_size_lbl: Label = %IDOverlayFontSizeLabel
 @onready var id_overlay_toggle_btn: CheckButton = %ToggleIDOverlayCheckBtn
@@ -146,6 +147,32 @@ var id_overlay_font_size_line: LineEdit
 
 @onready var help_tab_container: TabContainer = %HelpTabContainer
 @onready var user_dir_btn: Button = %UserDirBtn
+
+## SEPERATOR has index 3, should not be used.
+enum LimitMethod {
+	ENTRY_COUNT,
+	SESSION_TIMER,
+	BOTH,
+	SEPERATOR,
+	NONE
+}
+
+enum EntryCountAction {
+	OVERWRITE_ENTRIES,
+	RESTART,
+	STOP
+}
+
+enum SessionTimerAction {
+	RESTART,
+	STOP
+}
+
+enum ErrorReportLevel {
+	WARNINGS_ERRORS,
+	ERRORS,
+	NONE
+}
 
 const PATH = "user://gologger_data.ini"
 var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
@@ -377,27 +404,6 @@ func _ready() -> void:
 				spinboxes[1][i].text_submitted.disconnect(_on_spinbox_lineedit_submitted)
 			spinboxes[1][i].text_submitted.connect(_on_spinbox_lineedit_submitted.bind(spinboxes[1][i]))
 
-		# if canvas_spinbox_line == null: canvas_spinbox_line = canvas_layer_spinbox.get_line_edit()
-		# if canvas_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-		# 	canvas_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-		# canvas_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(canvas_spinbox_line))
-
-		# if file_count_spinbox_line == null: file_count_spinbox_line = file_count_spinbox.get_line_edit()
-		# if file_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-		# 	file_count_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-		# file_count_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(file_count_spinbox_line))
-
-		# if entry_count_spinbox_line == null: entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
-		# if entry_count_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-		# 	entry_count_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-		# entry_count_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(entry_count_spinbox_line))
-
-		# if session_duration_spinbox_line == null: session_duration_spinbox_line = session_duration_spinbox.get_line_edit()
-		# if session_duration_spinbox_line.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-		# 	session_duration_spinbox_line.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-		# session_duration_spinbox_line.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(session_duration_spinbox_line))
-
-
 		container_array = [
 			base_dir_container,
 			log_header_container,
@@ -483,22 +489,22 @@ func _ready() -> void:
 
 
 		match config.get_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0)):
-			0: # Entry Count
+			LimitMethod.ENTRY_COUNT:
 				entry_count_action_container.show()
 				entry_count_container.show()
 				session_timer_action_container.hide()
 				session_duration_container.hide()
-			1: # Session Timer
+			LimitMethod.SESSION_TIMER:
 				entry_count_action_container.hide()
 				entry_count_container.hide()
 				session_timer_action_container.show()
 				session_duration_container.show()
-			2: # Both
+			LimitMethod.BOTH:
 				entry_count_action_container.show()
 				entry_count_container.show()
 				session_timer_action_container.show()
 				session_duration_container.show()
-			4: # None
+			LimitMethod.NONE:
 				entry_count_action_container.hide()
 				entry_count_container.hide()
 				session_timer_action_container.hide()
@@ -748,7 +754,6 @@ func save_data(deferred: bool = false) -> void:
 func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
 	config.load(PATH)
 	var _n = category_scene.instantiate()
-	# var _n: LogCategory = LogCategory.new()
 	_n.dock = self
 	_n.category_name = _name
 	_n.is_locked = _is_locked
@@ -788,13 +793,6 @@ func _category_changed(log_category: LogCategory, is_name_change: bool, old_name
 				_categg.append(i.category_name)
 		config.set_value("categories", "category_names", _categg)
 
-		# var categs = config.get_value("categories", "category_names", [])
-		# for i in range(categs.size()):
-		# 	if categs[i] == old_name:
-		# 		categs[i] = log_category.category_name
-		# 		config.set_value("categories", "category_names", categs)
-		# 		break
-
 	config.save(PATH)
 
 
@@ -804,7 +802,6 @@ func set_default_category(cat: LogCategory, set_status: bool) -> void:
 
 	_default_setting_in_progress = true
 	config.load(PATH)
-	# print(set_status)
 	config.set_value("categories", "default_category", cat.category_name if set_status else "")
 
 	for categ in category_container.get_children():
@@ -827,7 +824,6 @@ func _delete_category(log_category: LogCategory) -> void:
 		var def_c: String = config.get_value("categories", "default_category", "")
 		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
 			config.set_value("categories", "default_category", "")
-			# config.save(PATH)
 
 		category_container.remove_child(log_category)
 		log_category.queue_free()
@@ -835,7 +831,6 @@ func _delete_category(log_category: LogCategory) -> void:
 			config.erase_section("categories." + log_category.category_name)
 		config.save(PATH)
 		_assign_category_indices()
-		# save_data()
 
 		var tw = get_tree().create_tween()
 		tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
@@ -1119,22 +1114,22 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
 			match index:
-				0: # Entry Count
+				LimitMethod.ENTRY_COUNT:
 					entry_count_action_container.show()
 					entry_count_container.show()
 					session_timer_action_container.hide()
 					session_duration_container.hide()
-				1: # Session Timer
+				LimitMethod.SESSION_TIMER:
 					entry_count_action_container.hide()
 					entry_count_container.hide()
 					session_timer_action_container.show()
 					session_duration_container.show()
-				2: # Both
+				LimitMethod.BOTH:
 					entry_count_action_container.show()
 					entry_count_container.show()
 					session_timer_action_container.show()
 					session_duration_container.show()
-				4: # None - 3 is a seperator
+				LimitMethod.NONE:
 					entry_count_action_container.hide()
 					entry_count_container.hide()
 					session_timer_action_container.hide()
@@ -1187,7 +1182,6 @@ func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
 			config.set_value("settings", "id_overlay_startup_state", toggled_on)
 			if !suppress_history_prints:
 				print_rich(c_print_history + "Instance ID Overlay on startup " + "enabled." if toggled_on else c_print_history + "Instance ID Overlay on startup " + "disabled.")
-	# config.save(PATH)
 	save_data()
 
 
@@ -1222,7 +1216,10 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 				print_rich(c_print_history, "Save Copy canvas layer changed.")
 
 		id_overlay_font_size_spinbox:
-			config.set_value("settings", "id_overlay_font_size", int(value))
+			config.set_value("settings", "id_overlay_font_size", value)
+			var col := Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), Color.WHITE)
+			id_overlay_example_lbl.text = str("[font_size=", value, "][color=", col.to_html(), "][outline_size=8]h9Em2")
+
 			if !suppress_history_prints:
 				print_rich(c_print_history, "ID Overlay Font Size changed.")
 
@@ -1266,6 +1263,9 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 
 		id_overlay_font_size_spinbox:
 			config.set_value("settings", "id_overlay_font_size", int(new_text))
+			var col := Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), Color.WHITE)
+			id_overlay_example_lbl.text = str("[font_size=", int(new_text), "][color=", col.to_html(), "][outline_size=8]h9Em2")
+
 			if !suppress_history_prints:
 				print_rich(c_print_history, "ID Overlay Font Size changed.")
 	save_data()
@@ -1276,7 +1276,11 @@ func _on_colorpicker_color_changed(col: Color, node: ColorPickerButton) -> void:
 
 	match node:
 		id_overlay_modulate_btn:
-			config.set_value("settings", "id_overlay_color", col.to_html(true))
+			config.set_value("settings", "id_overlay_color", col.to_html())
+
+			var fnt_sz = config.get_value("settings", "id_overlay_font_size", 16)
+			id_overlay_example_lbl.text = str("[font_size=", int(fnt_sz), "][color=", col.to_html(), "][outline_size=8]h9Em2")
+
 			if !suppress_history_prints:
 				print_rich(c_print_history, "Instance ID Overlay color changed.")
 	config.save(PATH)

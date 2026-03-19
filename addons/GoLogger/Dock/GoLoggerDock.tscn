@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
+[ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/GoLogger/Resources/id_example_panel_tex.png" id="5_7ntic"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 [ext_resource type="StyleBox" uid="uid://b8w5i8chks7st" path="res://addons/GoLogger/Resources/line_edit_stylebox_valid.tres" id="9_qo8nw"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
@@ -17,6 +18,13 @@
 [sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
 font_size = 12
 font_color = Color(1, 1, 1, 0.352941)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tayiv"]
+texture = ExtResource("5_7ntic")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qo8nw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tayiv"]
 content_margin_left = 0.0
@@ -212,6 +220,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
+scroll_vertical = 129
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
@@ -535,6 +544,78 @@ title_alignment = 1
 layout_mode = 2
 theme_override_constants/separation = 8
 
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1069184227]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/VBoxContainer" unique_id=1651403943]
+layout_mode = 2
+text = "Overlay Example:"
+
+[node name="Panel" type="Panel" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/VBoxContainer" unique_id=1156760820]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tayiv")
+
+[node name="IDOverlayExampleLabel" type="RichTextLabel" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/VBoxContainer/Panel" unique_id=692227105]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qo8nw")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qo8nw")
+theme_override_styles/background = SubResource("StyleBoxEmpty_qo8nw")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_qo8nw")
+bbcode_enabled = true
+text = "[color=white][outline_size=8]h9Em2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IDOverlayFontSizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1957436368]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="IDOverlayFontSizeLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontSizeHBox" unique_id=1669599151]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+text = "Font Size"
+
+[node name="IDOverlayFontSizeSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontSizeHBox" unique_id=291883263]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 4.0
+value = 15.0
+rounded = true
+allow_greater = true
+alignment = 2
+custom_arrow_round = true
+
+[node name="IDOverlayOutlineSizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=899472860]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="IDOverlayOutlineSizeLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=962088629]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+text = "Outline Size"
+
+[node name="IDOverlayOutlineSizeSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=182452828]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 4.0
+value = 15.0
+rounded = true
+allow_greater = true
+alignment = 2
+custom_arrow_round = true
+
 [node name="ModulateIDVBox" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1570219251]
 unique_name_in_owner = true
 layout_mode = 2
@@ -543,7 +624,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "ID Overlay modulate"
+text = "Modulate"
 
 [node name="ModulateIDColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1951015668]
 unique_name_in_owner = true
@@ -553,23 +634,8 @@ text = "ID Overlay Modulate"
 autowrap_mode = 3
 color = Color(1, 1, 1, 1)
 
-[node name="IDOverlayFontsizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1957436368]
-unique_name_in_owner = true
+[node name="HSeparator" type="HSeparator" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1043223854]
 layout_mode = 2
-
-[node name="IDOverlayFontSizeLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontsizeHBox" unique_id=1669599151]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Font Size"
-
-[node name="IDOverlayFontSizeSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontsizeHBox" unique_id=291883263]
-unique_name_in_owner = true
-layout_mode = 2
-value = 15.0
-alignment = 2
-custom_arrow_round = true
 
 [node name="ToggleIDOverlayCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=30228355]
 unique_name_in_owner = true
@@ -938,11 +1004,11 @@ Each category in the Category tab corresponds to a folder in the base directory.
 [font_size=16][color=fc4674][b]Entries:[/b][font_size=14][color=white]
 Entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging. You specify the 
 
-[font_size=16][color=fc4674][b]Save Copy:[/b][font_size=14][color=white
+[font_size=16][color=fc4674][b]Save Copy:[/b][font_size=14][color=white]
 The Save Copy feature creates a copy of the active session without stopping it. This saves the current logs for all categories into their respective saved_logs folders. This feature is useful for capturing logs at specific moments, such as when a known bug occurs or when logged data is needed to be preserved at the moment of occurance for debugging.
 
 [font_size=16][color=fc4674][b]Running Multiple Instances:[/b][font_size=14][color=white]
-When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the \"instance_id\" tag from the [color=fc4674]Entry Format[color=white] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[color=white] hotkey(Ctrl + Shift + I) to print that instance's ID to output."
+When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[color=white] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[color=white] hotkey(Ctrl + Shift + I) to print that instance's ID to output."
 
 [node name="Methods & Hotkeys" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=830461916]
 visible = false
@@ -972,7 +1038,7 @@ Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GoLog
 	Starts a logging session, creating new .log files and enabling entry logging.  
 	[color=darkgray][i]Hotkey: Ctrl + Shift + O[/i]  
 
-	[color=violet]Log.[color=cornflowerblue]entry([color=darkgray][i]entry: String, category_index: int = 0, print_entry_to_output: bool = false[/i][color=cornflowerblue])[color=white]  
+	[color=violet]Log.[color=cornflowerblue]msg([color=darkgray][i]log_msg: String, category_index: int = 0, print_entry_to_output: bool = false[/i][color=cornflowerblue])[color=white]  
 	Logs an entry into the specified [i]category_index[/i]. You can optionally print any entry to the output as well using [i]print_entry_to_output[/i].
 	Example:  
 		[color=turquoise]Log[color=white].[color=cornflowerblue]entry([color=lawngreen]\"Player's current health: \"[color=cornflowerblue] + str([color=violet]current_health[color=cornflowerblue]) + [color=lawngreen]\" / \"[color=cornflowerblue] + str([color=violet]max_health[color=cornflowerblue]), 1)  
