@@ -308,7 +308,7 @@ func _input(event: InputEvent) -> void:
 						instance_id_label.hide()
 
 
-		# Test entry logging 
+		# Test entry logging
 		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
 			msg("Test entry ", "game", true)
 		if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
@@ -450,7 +450,7 @@ func msg(log_msg : String, category_name: String = "", print_entry: bool = false
 	var _target_filepath: String = config.get_value(str("categories." + category_name), "file_path", "")
 	var _limit_method: int = _get_config_value("settings", "limit_method")
 	var _entry_action: int = _get_config_value("settings", "entry_count_action")
-	var _entry_count: int = _get_config_value("settings", "entry_count")
+	var _entry_cap: int = _get_config_value("settings", "entry_cap")
 	var _session_timer_action: int = _get_config_value("settings", "session_timer_action")
 	var _session_duration: int = _get_config_value("settings", "session_duration")
 	var _err_lv = _get_config_value("settings", "error_reporting")
