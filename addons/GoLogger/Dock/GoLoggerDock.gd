@@ -1129,15 +1129,12 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 	match node:
 		base_dir_line:
-			# base_dir_apply_btn.disabled = true
 			base_dir_line.release_focus()
 
 		log_header_line:
-			# log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 
 		entry_format_line:
-			# entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus()
 
 
@@ -1374,5 +1371,4 @@ func _on_column_slider_value_changed(value: int) -> void:
 
 ## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
-	var _v: int = clampi(slider_value, column_slider.min_value, column_slider.max_value)
-	return _v
+	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
