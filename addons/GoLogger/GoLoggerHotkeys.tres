@@ -2,18 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cvahhjknn2nxq" path="res://addons/GoLogger/GLogShortcut.gd" id="1_tvptr"]
 
-[sub_resource type="InputEventKey" id="InputEventKey_h8vci"]
-device = -1
-shift_pressed = true
-ctrl_pressed = true
-keycode = 85
-
-[sub_resource type="Shortcut" id="Shortcut_s0isp"]
-events = [SubResource("InputEventKey_h8vci")]
-
-[sub_resource type="InputEventShortcut" id="InputEventShortcut_tvptr"]
-shortcut = SubResource("Shortcut_s0isp")
-
 [sub_resource type="InputEventKey" id="InputEventKey_e18rc"]
 device = -1
 shift_pressed = true
@@ -54,6 +42,5 @@ shortcut = SubResource("Shortcut_43ld7")
 script = ExtResource("1_tvptr")
 start_session_hotkey = SubResource("InputEventShortcut_om78g")
 stop_session_hotkey = SubResource("InputEventShortcut_ch6qm")
-copy_session_hotkey = SubResource("InputEventShortcut_tvptr")
 display_instance_id_hotkey = SubResource("InputEventShortcut_3ks3f")
 metadata/_custom_type_script = "uid://cvahhjknn2nxq"

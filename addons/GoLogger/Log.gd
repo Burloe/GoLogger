@@ -71,13 +71,6 @@ signal session_stopped ## Emitted when a log session has been stopped.
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
 @onready var instance_id_label: RichTextLabel = %InstanceIDLabel
-@onready var popup: CenterContainer = %Popup
-@onready var popup_line_edit: LineEdit = %CopyNameLineEdit
-@onready var popup_yesbtn: Button = %PopupYesButton
-@onready var popup_nobtn: Button = %PopupNoButton
-@onready var prompt_label: RichTextLabel = %PromptLabel
-@onready var popup_errorlbl: RichTextLabel = %PopupErrorLabel
-@onready var inaction_timer: Timer = %InactionTimer
 
 enum LimitMethod {
 	ENTRY_COUNT,
@@ -147,11 +140,6 @@ var instance_id: String = "":
 		config.load(PATH)
 		instance_id_label.text = str("[font_size=", config.get_value("settings", "id_overlay_font_size", 12), "][outline_size= 8]", value)
 
-var popup_state : bool = false:
-	set(value):
-		popup_state = value
-		if session_status:
-			toggle_copy_popup(value)
 
 var settings_dict := {
 	"category_names": 						["game"],
@@ -257,9 +245,6 @@ var settings_dict := {
 
 
 
-
-
-
 func _ready() -> void:
 	if !FileAccess.file_exists(PATH):
 		create_settings_file()
@@ -274,14 +259,6 @@ func _ready() -> void:
 
 	elements_canvaslayer.layer = _get_config_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
-	inaction_timer.timeout.connect(_on_timer_timeout.bind(inaction_timer))
-	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
-	popup_line_edit.text_submitted.connect(_on_line_edit_text_submitted)
-	popup_yesbtn.button_up.connect(_on_button_up.bind(popup_yesbtn))
-	popup_nobtn.button_up.connect(_on_button_up.bind(popup_nobtn))
-	popup.visible = popup_state
-	popup_errorlbl.visible = false
-	popup_yesbtn.disabled = true
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
 	instance_id = _get_instance_id()
@@ -291,18 +268,6 @@ func _ready() -> void:
 
 	if _get_config_value("settings", "autostart_session"):
 		start_session()
-
-
-
-func _physics_process(_delta: float) -> void:
-	if !Engine.is_editor_hint():
-		if popup_state and inaction_timer != null and !inaction_timer.is_stopped():
-			prompt_label.text = str("[center]Save copies of the current logs?[font_size=12]\nAutomatically cancelled in ", snapped(inaction_timer.time_left, 1.0),"s!\n[color=lightblue]Limit methods are paused during this prompt.")
-			session_timer.paused = true
-		else:
-			if session_timer != null and session_timer.is_paused():
-				session_timer.paused = false
-
 
 
 func _input(event: InputEvent) -> void:
@@ -315,15 +280,12 @@ func _input(event: InputEvent) -> void:
 				start_session()
 			if gl_hotkeys.stop_session_hotkey.shortcut.matches_event(event) and event.is_released():
 				stop_session()
-			if gl_hotkeys.copy_session_hotkey.shortcut.matches_event(event) and event.is_released():
-				save_copy()
 
 
 			config.load(PATH)
 			var id_toggle = config.get_value("settings", "id_overlay_toggle", false)
 			var id_startup = config.get_value("settings", "id_overlay_startup_state", false)
 
-			# if hotkey_print_instance_id.shortcut.matches_event(event):
 			if gl_hotkeys.display_instance_id_hotkey.shortcut.matches_event(event):
 				if id_toggle:
 					if event.is_released():
@@ -476,16 +438,16 @@ func start_session() -> void:
 
 func msg(log_msg : String, category_name: String = "", print_entry: bool = false) -> void:
 	load_category_data()
-	var _cats: Array = config.get_value("categories", "category_names", [])
-	var _default_cat: String = _get_config_value("categories", "default_category", "")
-	var _target_cat: String = category_name
-	var _target_filepath: String = config.get_value(str("categories." + category_name), "file_path", "")
-	var _limit_method: int = _get_config_value("settings", "limit_method")
-	var _entry_action: int = _get_config_value("settings", "entry_count_action")
-	var _entry_cap: int = _get_config_value("settings", "entry_cap")
-	var _session_timer_action: int = _get_config_value("settings", "session_timer_action")
-	var _session_duration: int = _get_config_value("settings", "session_duration")
-	var _err_lv = _get_config_value("settings", "error_reporting")
+	var _target_cat: String = 				category_name
+	var _cats: Array = 								_get_config_value("categories", "category_names", [])
+	var _default_cat: String = 				_get_config_value("categories", "default_category", "")
+	var _target_filepath: String = 		_get_config_value(str("categories." + category_name), "file_path", "")
+	var _limit_method: int = 					_get_config_value("settings", "limit_method")
+	var _entry_action: int = 					_get_config_value("settings", "entry_count_action")
+	var _entry_cap: int = 						_get_config_value("settings", "entry_cap")
+	var _session_timer_action: int = 	_get_config_value("settings", "session_timer_action")
+	var _session_duration: int = 			_get_config_value("settings", "session_duration")
+	var _err_lv = 										_get_config_value("settings", "error_reporting")
 
 
 
@@ -543,52 +505,51 @@ func msg(log_msg : String, category_name: String = "", print_entry: bool = false
 	config.save(PATH)
 
 	# Handle Limit Methods
-	if !popup_state: # Enforce limits while inactive popup
-		match _get_config_value("settings", "limit_method"):
+	match _limit_method:
 
-			LimitMethod.ENTRY_COUNT:
-				match _get_config_value("settings", "entry_count_action"):
-					EntryCountAction.OVERWRITE_ENTRIES:
-						while lines.size() >= _get_config_value("settings", "entry_cap"):
-							lines.remove_at(1) # Keeping header line 0
+		LimitMethod.ENTRY_COUNT:
+			match _entry_action:
+				EntryCountAction.OVERWRITE_ENTRIES:
+					while lines.size() >= _entry_cap:
+						lines.remove_at(1) # Retain header
 
-					EntryCountAction.RESTART:
-						if lines.size() >= _get_config_value("settings", "entry_cap"):
-							stop_session()
-							start_session()
-							msg(log_msg, _target_cat)
-							return
-
-					EntryCountAction.STOP:
-						if lines.size() >= _get_config_value("settings", "entry_cap"):
-							stop_session()
-							return
-
-			LimitMethod.SESSION_TIMER:
-				match _get_config_value("settings", "session_timer_action"):
-					SessionTimerAction.RESTART:
+				EntryCountAction.RESTART:
+					if lines.size() >= _entry_cap:
 						stop_session()
 						start_session()
 						msg(log_msg, _target_cat)
 						return
 
-					SessionTimerAction.STOP:
+				EntryCountAction.STOP:
+					if lines.size() >= _entry_cap:
 						stop_session()
 						return
 
-			LimitMethod.BOTH:
-				match _get_config_value("settings", "entry_count_action"):
-					SessionTimerAction.RESTART:
-						if lines.size() >= _get_config_value("settings", "entry_cap"):
-							stop_session()
-							start_session()
-							msg(log_msg, _target_cat)
-							return
+		LimitMethod.SESSION_TIMER:
+			match _session_timer_action:
+				SessionTimerAction.RESTART:
+					stop_session()
+					start_session()
+					msg(log_msg, _target_cat)
+					return
 
-					SessionTimerAction.STOP:
-						if lines.size() >= _get_config_value("settings", "entry_cap"):
-							stop_session()
-							return
+				SessionTimerAction.STOP:
+					stop_session()
+					return
+
+		LimitMethod.BOTH:
+			match _entry_action:
+				SessionTimerAction.RESTART:
+					if lines.size() >= _entry_cap:
+						stop_session()
+						start_session()
+						msg(log_msg, _target_cat)
+						return
+
+				SessionTimerAction.STOP:
+					if lines.size() >= _entry_cap:
+						stop_session()
+						return
 
 	# Rewrite file with existing lines / Update entry count
 	cat_data[_target_cat]["entry_count"] = lines.size()
@@ -607,71 +568,6 @@ func msg(log_msg : String, category_name: String = "", print_entry: bool = false
 	_fw.close()
 	if print_entry:
 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", _target_cat, "> ", new_entry.dedent())
-
-
-func save_copy(_name: String = "") -> void:
-	if !session_status:
-		return
-
-	# No specified name -> prompt popup for name
-	if _name == "" and !popup_state:
-		popup_state = true
-
-	# Name specified, i.e. called programmatically -> save copy using predetermined name
-	else:
-		copy_name = _name
-		complete_copy()
-
-
-func complete_copy() -> void:
-	if !session_status: # ER
-		if _get_config_value("settings", "error_reporting") != 2: push_warning("GoLogger: Failed to save copies due to inactive session.")
-		return
-
-	load_category_data()
-
-	if config.get_value("categories", "category_names").is_empty():
-		if config.get_value("settings", "error_reporting"):
-			push_warning("GoLogger: Unable to complete copy action. No categories are present.")
-
-	var reject_str: Array[String] = [".log", ".txt", ".cfg", ".ini", ".json", ".xml", ".yml", ".yaml", ".csv"]
-	var reject_ch: Array[String] = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
-
-	for ch in reject_ch:
-		if copy_name.find(ch) != -1:
-			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Invalid character [", ch, "] found in file name.")
-			popup_errorlbl.visible = true
-			await get_tree().create_timer(4.0).timeout
-			return
-
-	for strg in reject_str:
-		if copy_name.ends_with(strg):
-			copy_name.erase(copy_name.length() - strg.length(), strg.length())
-
-	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_config_value("settings", "use_utc")), "] ")
-
-	for category in range(config.get_value("categories", "category_names").size()):
-		var dirpath: String = str(config.get_value("settings", "base_directory"), "/", category, "_logs/saved_logs/")
-		var _f := FileAccess.open(dirpath, FileAccess.READ)
-		if !_f:
-			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to open file to copy the session [", dirpath,"].")
-			popup_errorlbl.visible = true
-			await get_tree().create_timer(4.0).timeout
-			return
-
-		var content: String = _f.get_as_text()
-		var fw = FileAccess.open(str(dirpath, _get_file_name(copy_name)), FileAccess.WRITE)
-		if !fw:
-			var err = FileAccess.get_open_error()
-			popup_errorlbl.text = str("[outline_size=8][center][color=#e84346]Failed to create copy of file [", dirpath, _get_file_name(copy_name),"] - ", get_error(err), ".")
-			popup_errorlbl.visible = true
-			await get_tree().create_timer(4.0).timeout
-			return
-		fw.store_line(str(content, "\nCopy of ", category, " session saved."))
-		fw.close()
-
-	save_category_data()
-	popup_state = false
 
 
 func stop_session() -> void:
@@ -718,25 +614,6 @@ func stop_session() -> void:
 
 	config.save(PATH)
 	session_status = false
-
-
-func toggle_copy_popup(toggle_on : bool) -> void:
-	popup.visible              =  toggle_on
-	popup_line_edit.editable   =  toggle_on
-	popup_nobtn.disabled       = !toggle_on
-	popup_yesbtn.disabled      = !toggle_on
-	popup_line_edit.focus_mode =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
-	popup_yesbtn.focus_mode    =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
-	popup_nobtn.focus_mode     =  Control.FOCUS_ALL if toggle_on else Control.FOCUS_NONE
-	if session_timer != null and !session_timer.is_stopped():
-		session_timer.paused   =  toggle_on
-	if toggle_on:
-		popup_line_edit.grab_focus()
-		inaction_timer.start(30)
-	else:
-		copy_name = ""
-		popup_line_edit.text = ""
-		popup_line_edit.release_focus()
 
 
 func create_settings_file() -> void: # Mirror
@@ -1032,52 +909,3 @@ func _on_timer_timeout(_timer: Timer) -> void:
 					else: # Stop only
 						stop_session()
 						session_timer.stop()
-
-		inaction_timer:
-			popup_state = false
-
-
-func _on_line_edit_text_changed(new_text : String) -> void:
-	if inaction_timer != null and !inaction_timer.is_stopped():
-		inaction_timer.stop()
-	inaction_timer.start(30)
-
-	if new_text != "":
-		popup_yesbtn.disabled = false
-		popup_line_edit.set_caret_column(popup_line_edit.text.length())
-		if new_text.ends_with(".log") or new_text.ends_with(".txt"):
-			copy_name = new_text.substr(0, new_text.length() - 4)
-		copy_name = popup_line_edit.text
-	else:
-		popup_yesbtn.disabled = true
-
-
-func _on_line_edit_text_submitted(new_text : String) -> void:
-	if new_text != "": return
-
-	var final_text: String = new_text
-	var reject_str: Array[String] = [".log", ".txt", ".cfg", ".ini", ".json", ".xml", ".yml", ".yaml", ".csv"]
-	var reject_ch: Array[String] = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
-
-	for string in reject_str:
-		if new_text.ends_with(string):
-			new_text = new_text.substr(0, new_text.length() - string.length())
-
-	for ch in reject_ch:
-		if new_text.find(ch) != -1:
-			new_text = new_text.replace(ch, "")
-
-
-	if new_text.ends_with(".log") or new_text.ends_with(".txt"):
-		copy_name = new_text.substr(0, new_text.length() - 4)
-	else:
-		copy_name = popup_line_edit.text
-	complete_copy()
-
-
-func _on_button_up(btn: Button) -> void:
-	match btn:
-		popup_yesbtn:
-			complete_copy()
-		popup_nobtn:
-			popup_state = false
