@@ -153,6 +153,7 @@ var settings_dict := {
 	"id_overlay_print": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
 	"id_overlay_toggle": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
 	"id_overlay_startup_state": 	{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_overlay_align":						{"value": 0, 				"type": TYPE_INT,			"default": 0},
 	"id_overlay_font_size":				{"value": 12, 			"type": TYPE_INT, 		"default": 12},
 	"id_overlay_font_color":			{"value": "ffffff", "type": TYPE_STRING, 	"default": "ffffff"},
 	"id_overlay_outline_size":		{"value": 8,				"type": TYPE_INT,			"default": 8},
@@ -178,6 +179,7 @@ var settings_dict := {
 		"id_overlay_print": 							false,
 		"id_overlay_toggle": 							false,
 		"id_overlay_startup_state": 			false,
+		"id_overlay_align":								0,
 		"id_overlay_font_size":						12,
 		"id_overlay_color": 							"ffffff",
 		"id_overlay_outline_size":				8,
@@ -204,6 +206,7 @@ var settings_dict := {
 		"id_overlay_print": 				"settings/id_overlay_print",
 		"id_overlay_toggle": 				"settings/id_overlay_toggle",
 		"id_overlay_startup_state": "settings/id_overlay_startup_state",
+		"id_overlay_align":					"settings/id_overlay_align",
 		"id_overlay_font_size":			"settings/id_overlay_font_size",
 		"id_overlay_color": 				"settings/id_overlay_color",
 		"id_overlay_outline_size":	"settings/id_overlay_outline_size",
@@ -229,6 +232,7 @@ var settings_dict := {
 		"settings/id_overlay_print": 					TYPE_BOOL,
 		"settings/id_overlay_toggle":					TYPE_BOOL,
 		"settings/id_overlay_startup_state": 	TYPE_BOOL,
+		"settings/id_overlay_align":					TYPE_INT,
 		"settings/id_overlay_font_size":			TYPE_INT,
 		"settings/id_overlay_color":					TYPE_STRING,
 		"settings/id_overlay_outline_size":		TYPE_INT,
@@ -261,6 +265,36 @@ func _ready() -> void:
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
+	match _get_config_value("settings", "id_overlay_align"):
+		0: # Top L
+			instance_id_label.horizontal_alignment = 	0
+			instance_id_label.vertical_alignment = 		0
+		1: # Top C
+			instance_id_label.horizontal_alignment = 	1
+			instance_id_label.vertical_alignment = 		0
+		2: # Top R
+			instance_id_label.horizontal_alignment = 	2
+			instance_id_label.vertical_alignment = 		0
+		4: # Center L
+			instance_id_label.horizontal_alignment = 	0
+			instance_id_label.vertical_alignment = 		1
+		5: # Center C
+			instance_id_label.horizontal_alignment = 	1
+			instance_id_label.vertical_alignment = 		1
+		6: # Center R
+			instance_id_label.horizontal_alignment = 	2
+			instance_id_label.vertical_alignment = 		1
+		8: # Bottom L
+			instance_id_label.horizontal_alignment = 	0
+			instance_id_label.vertical_alignment = 		2
+		9: # Bottom C
+			instance_id_label.horizontal_alignment = 	1
+			instance_id_label.vertical_alignment = 		2
+		10: # Bottom R
+			instance_id_label.horizontal_alignment = 	2
+			instance_id_label.vertical_alignment = 		2
+
+
 	instance_id = _get_instance_id()
 
 	validate_settings()
@@ -629,10 +663,13 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
 	cf.set_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
 	cf.set_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
-	cf.set_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
 	cf.set_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	cf.set_value("settings", "id_overlay_font_color", Color(settings_dict.get("defaults", {}).get("id_overlay_font_color", "ffffff")).to_html(true))
 	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
+	cf.set_value("settings", "id_overlay_align", settings_dict.get("defaults").get("id_overlay_align", 0))
+	cf.set_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
+	cf.set_value("settings", "id_overlay_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "id_overlay_outline_size", settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
+	cf.set_value("settings", "id_overlay_outline_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
 	cf.set_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
 	cf.set_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
 	cf.set_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
@@ -642,7 +679,7 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "error_reporting", settings_dict.get("defaults", {}).get("error_reporting", 0))
 
 	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "default_category", "game")
+	cf.set_value("categories", "default_category", "")
 
 	var _s = cf.save(PATH)
 	if _s != OK:

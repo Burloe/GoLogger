@@ -132,9 +132,15 @@ var session_duration_spinbox_line: LineEdit
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
 @onready var open_hotkey_btn: Button = %OpenHotkeyBtn
+
 @onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckBtn
 @onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontSizeHBox
 @onready var id_overlay_example_lbl: RichTextLabel = %IDOverlayExampleLabel
+
+@onready var id_overlay_align_container: HBoxContainer = %IDOverlayAlignHBox
+@onready var id_overlay_align_opt_btn: OptionButton = %IDOverlayAlignOptBtn
+@onready var id_overlay_align_lbl: Label = %IDOverlayAlignLabel
+
 var id_overlay_font_size_line: LineEdit
 @onready var id_overlay_font_size_spinbox: SpinBox = %IDOverlayFontSizeSpinBox
 @onready var id_overlay_font_size_lbl: Label = %IDOverlayFontSizeLabel
@@ -143,6 +149,7 @@ var id_overlay_font_size_line: LineEdit
 @onready var id_overlay_font_col_btn: ColorPickerButton = %IDOverlayFontColorColorPickerButton
 @onready var id_overlay_font_col_lbl: Label = %IDOverlayFontColorLabel
 @onready var id_overlay_font_col_container: HBoxContainer = %IDOverlayFontColorHBox
+
 var id_overlay_outline_size_line: LineEdit
 @onready var id_overlay_outline_size_hbox: HBoxContainer = %IDOverlayOutlineSizeHBox
 @onready var id_overlay_outline_size_spinbox: SpinBox = %IDOverlayOutlineSizeSpinBox
@@ -217,6 +224,7 @@ var settings_dict := {
 	"id_overlay_print": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
 	"id_overlay_toggle": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
 	"id_overlay_startup_state": 	{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_overlay_align":						{"value": 0, 				"type": TYPE_INT,			"default": 0},
 	"id_overlay_font_size":				{"value": 12, 			"type": TYPE_INT, 		"default": 12},
 	"id_overlay_font_color":			{"value": "ffffff", "type": TYPE_STRING, 	"default": "ffffff"},
 	"id_overlay_outline_size":		{"value": 8,				"type": TYPE_INT,			"default": 8},
@@ -242,6 +250,7 @@ var settings_dict := {
 		"id_overlay_print": 							false,
 		"id_overlay_toggle": 							false,
 		"id_overlay_startup_state": 			false,
+		"id_overlay_align":								0,
 		"id_overlay_font_size":						12,
 		"id_overlay_color": 							"ffffff",
 		"id_overlay_outline_size":				8,
@@ -268,6 +277,7 @@ var settings_dict := {
 		"id_overlay_print": 				"settings/id_overlay_print",
 		"id_overlay_toggle": 				"settings/id_overlay_toggle",
 		"id_overlay_startup_state": "settings/id_overlay_startup_state",
+		"id_overlay_align":					"settings/id_overlay_align",
 		"id_overlay_font_size":			"settings/id_overlay_font_size",
 		"id_overlay_color": 				"settings/id_overlay_color",
 		"id_overlay_outline_size":	"settings/id_overlay_outline_size",
@@ -293,6 +303,7 @@ var settings_dict := {
 		"settings/id_overlay_print": 					TYPE_BOOL,
 		"settings/id_overlay_toggle":					TYPE_BOOL,
 		"settings/id_overlay_startup_state": 	TYPE_BOOL,
+		"settings/id_overlay_align":					TYPE_INT,
 		"settings/id_overlay_font_size":			TYPE_INT,
 		"settings/id_overlay_color":					TYPE_STRING,
 		"settings/id_overlay_outline_size":		TYPE_INT,
@@ -347,8 +358,9 @@ func _ready() -> void:
 			autostart_btn,
 			utc_btn,
 			print_instance_id_btn,
-			id_overlay_font_size_spinbox,
 			id_overlay_toggle_btn,
+			id_overlay_align_opt_btn,
+			id_overlay_font_size_spinbox,
 			id_overlay_font_col_btn,
 			id_overlay_outline_size_spinbox,
 			id_overlay_outline_col_btn,
@@ -435,6 +447,7 @@ func _ready() -> void:
 			entry_count_container,
 			session_duration_container,
 			error_rep_container,
+			id_overlay_align_container,
 			id_overlay_font_size_hbox,
 			id_overlay_font_col_container,
 			id_overlay_outline_size_hbox,
@@ -453,6 +466,7 @@ func _ready() -> void:
 			entry_count_spinbox,
 			session_duration_spinbox,
 			error_rep_btn,
+			id_overlay_align_opt_btn,
 			id_overlay_font_size_spinbox,
 			id_overlay_font_col_btn,
 			id_overlay_outline_size_spinbox,
@@ -471,6 +485,7 @@ func _ready() -> void:
 			entry_count_lbl,
 			session_duration_lbl,
 			error_rep_lbl,
+			id_overlay_align_lbl,
 			id_overlay_font_size_lbl,
 			id_overlay_font_col_lbl,
 			id_overlay_outline_size_lbl,
@@ -552,6 +567,7 @@ func _ready() -> void:
 			"id_overlay_print": print_instance_id_btn,
 			"id_overlay_toggle": id_overlay_toggle_btn,
 			"id_overlay_startup_state": id_overlay_startup_btn,
+			"id_overlay_align": id_overlay_align_opt_btn,
 			"id_overlay_font_size": id_overlay_font_size_spinbox,
 			"id_overlay_color": id_overlay_font_col_btn,
 			"id_overlay_outline_size": id_overlay_outline_size_spinbox,
@@ -581,10 +597,11 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
 	cf.set_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
 	cf.set_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
-	cf.set_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
 	cf.set_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
 	cf.set_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
 	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
+	cf.set_value("settings", "id_overlay_align", settings_dict.get("defaults").get("id_overlay_align", 0))
+	cf.set_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
 	cf.set_value("settings", "id_overlay_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
 	cf.set_value("settings", "id_overlay_outline_size", settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
 	cf.set_value("settings", "id_overlay_outline_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
@@ -597,7 +614,7 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "error_reporting", settings_dict.get("defaults", {}).get("error_reporting", 0))
 
 	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "default_category", "game")
+	cf.set_value("categories", "default_category", "")
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -632,6 +649,7 @@ func reset_to_default() -> void:
 	print_instance_id_btn.button_pressed = 		settings_dict.get("defaults").get("id_overlay_print", false)
 	id_overlay_toggle_btn.button_pressed = 		settings_dict.get("defaults").get("id_overlay_toggle", false)
 	id_overlay_startup_btn.button_pressed = 	settings_dict.get("defaults").get("id_overlay_startup_state", false)
+	id_overlay_align_opt_btn.selected = 			settings_dict.get("defaults").get("id_overlay_align", 0)
 	id_overlay_font_size_spinbox.value = 			settings_dict.get("defaults").get("id_overlay_font_size", 12)
 	id_overlay_font_col_btn.color = 		Color(settings_dict.get("defaults").get("id_overlay_color", "ffffff"))
 	id_overlay_font_size_spinbox.value = 			settings_dict.get("defaults").get("id_overlay_outline_size", 8)
@@ -1180,6 +1198,13 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 			config.set_value("settings", "error_reporting", index)
 			if !suppress_history_prints:
 				print_rich(c_print_history, "Error Reporting level changed.")
+
+		id_overlay_align_opt_btn:
+			config.set_value("settings", "id_overlay_align", index)
+
+			if !suppress_history_prints:
+				print_rich(c_print_history,"ID Overlay anchor alignment changed.")
+
 	save_data()
 
 

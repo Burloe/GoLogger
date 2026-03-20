@@ -159,12 +159,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Columns: 5"
+tooltip_text = "Columns: 1"
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 5.0
+value = 1.0
 rounded = true
 
 [node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=990503779]
@@ -194,7 +194,6 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 5
 
 [node name="Settings" type="MarginContainer" parent="." unique_id=2095868147]
 layout_mode = 2
@@ -220,7 +219,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
-scroll_vertical = 129
+scroll_vertical = 100
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
@@ -534,7 +533,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
 max_value = 1800.0
-value = 5.0
+value = 20.0
 rounded = true
 allow_greater = true
 alignment = 2
@@ -578,9 +577,48 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_qo8nw")
 theme_override_styles/background = SubResource("StyleBoxEmpty_qo8nw")
 theme_override_styles/fill = SubResource("StyleBoxEmpty_qo8nw")
 bbcode_enabled = true
-text = "[color=white][outline_size=8]h9Em2"
+text = "[font_size=39][color=000000ff][outline_size=4.0][outline_color=a44343ff]h9Em2"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="IDOverlayAlignHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=33450767]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="IDOverlayAlignLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=799453164]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Alignment"
+
+[node name="IDOverlayAlignOptBtn" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=1922500613]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 2
+selected = 0
+item_count = 11
+popup/item_0/text = "Top - Left"
+popup/item_0/id = 0
+popup/item_1/text = "Top - Center"
+popup/item_1/id = 1
+popup/item_2/text = "Top - Right"
+popup/item_2/id = 2
+popup/item_3/id = 3
+popup/item_3/separator = true
+popup/item_4/text = "Center - Left"
+popup/item_4/id = 4
+popup/item_5/text = "Center - Center"
+popup/item_5/id = 10
+popup/item_6/text = "Center - Right"
+popup/item_6/id = 5
+popup/item_7/id = 6
+popup/item_7/separator = true
+popup/item_8/text = "Bottom - Left"
+popup/item_8/id = 7
+popup/item_9/text = "Bottom - Center"
+popup/item_9/id = 8
+popup/item_10/text = "Bottom - Right"
+popup/item_10/id = 9
 
 [node name="IDOverlayFontSizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1957436368]
 unique_name_in_owner = true
@@ -597,7 +635,7 @@ text = "Font Size"
 unique_name_in_owner = true
 layout_mode = 2
 min_value = 4.0
-value = 15.0
+value = 39.0
 rounded = true
 allow_greater = true
 alignment = 2
@@ -621,7 +659,6 @@ layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Modulate for ID Overlay"
 autowrap_mode = 3
-color = Color(1, 1, 1, 1)
 
 [node name="IDOverlayOutlineSizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=899472860]
 unique_name_in_owner = true
@@ -637,7 +674,7 @@ text = "Outline Size"
 [node name="IDOverlayOutlineSizeSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=182452828]
 unique_name_in_owner = true
 layout_mode = 2
-value = 15.0
+value = 4.0
 rounded = true
 allow_greater = true
 alignment = 2
