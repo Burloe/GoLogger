@@ -261,7 +261,11 @@ custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 tooltip_text = "Autostarts session at runtime."
 theme = ExtResource("1_y5prw")
-theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 button_pressed = true
 text = "Autostart session"
 
@@ -271,7 +275,11 @@ custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 tooltip_text = "Uses UTC as opposed to the local system time when timestamping files and entries."
 theme = ExtResource("1_y5prw")
-theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 text = "UTC time"
 
 [node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=710849123]
@@ -595,6 +603,26 @@ allow_greater = true
 alignment = 2
 custom_arrow_round = true
 
+[node name="IDOverlayFontColorHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=2003757341]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="IDOverlayFontColorLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontColorHBox" unique_id=1090939026]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+text = "Font Color"
+
+[node name="IDOverlayFontColorColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontColorHBox" unique_id=1951015668]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(86, 31)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Modulate for ID Overlay"
+autowrap_mode = 3
+color = Color(1, 1, 1, 1)
+
 [node name="IDOverlayOutlineSizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=899472860]
 unique_name_in_owner = true
 layout_mode = 2
@@ -609,30 +637,29 @@ text = "Outline Size"
 [node name="IDOverlayOutlineSizeSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=182452828]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 4.0
 value = 15.0
 rounded = true
 allow_greater = true
 alignment = 2
 custom_arrow_round = true
 
-[node name="ModulateIDVBox" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1570219251]
+[node name="IDOverlayOutlineColorHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1968747032]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ModulateIDLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1090939026]
+[node name="IDOverlayOutlineColorLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineColorHBox" unique_id=2032884393]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Modulate"
+text = "Outline Color"
 
-[node name="ModulateIDColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/ModulateIDVBox" unique_id=1951015668]
+[node name="IDOverlayOutlineColorColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineColorHBox" unique_id=1745076468]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(86, 31)
 layout_mode = 2
 tooltip_text = "Modulate for ID Overlay"
-text = "ID Overlay Modulate"
 autowrap_mode = 3
-color = Color(1, 1, 1, 1)
 
 [node name="HSeparator" type="HSeparator" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1043223854]
 layout_mode = 2
@@ -641,6 +668,11 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Toggles the ID Overlay instead of while the button is pressed."
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 button_pressed = true
 text = "Toggle ID Overlay"
 
@@ -648,6 +680,11 @@ text = "Toggle ID Overlay"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Shows ID on startup IF 'Toggle ID Overlay' is enabled"
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 button_pressed = true
 text = "Show ID Overlay on startup"
 
@@ -655,6 +692,11 @@ text = "Show ID Overlay on startup"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 text = "Print ID to output on hotkey press"
 
 [node name="R_Panel" type="Panel" parent="Settings/HBoxContainer" unique_id=1299947772]

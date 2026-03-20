@@ -154,6 +154,30 @@ var popup_state : bool = false:
 			toggle_copy_popup(value)
 
 var settings_dict := {
+	"category_names": 						["game"],
+	"default_category": 					"",
+	"base_directory": 						{"value": "user://GoLogger/", "type": TYPE_STRING, "default": "user://GoLogger/"},
+	"log_header_format": 					{"value": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", "type": TYPE_STRING, "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
+	"entry_format": 							{"value":						 "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
+	"canvaslayer_layer": 					{"value": 5, 				"type": TYPE_INT, 		"default": 5},
+	"autostart_session": 					{"value": true, 		"type": TYPE_BOOL, 		"default": true},
+	"use_utc": 										{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_overlay_print": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_overlay_toggle": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_overlay_startup_state": 	{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_overlay_font_size":				{"value": 12, 			"type": TYPE_INT, 		"default": 12},
+	"id_overlay_font_color":			{"value": "ffffff", "type": TYPE_STRING, 	"default": "ffffff"},
+	"id_overlay_outline_size":		{"value": 8,				"type": TYPE_INT,			"default": 8},
+	"id_overlay_outline_color":		{"value": "000000", "type": TYPE_STRING,	"default": "000000"},
+	"limit_method": 							{"value": 0, 				"type": TYPE_INT, 		"default": 0},
+	"entry_count_action": 				{"value": 0, 				"type": TYPE_INT, 		"default": 0},
+	"session_timer_action": 			{"value": 0, 				"type": TYPE_INT, 		"default": 0},
+	"file_cap": 									{"value": 10, 			"type": TYPE_INT, 		"default": 10},
+	"entry_cap": 									{"value": 300, 			"type": TYPE_INT, 		"default": 300},
+	"session_duration": 					{"value": 300, 			"type": TYPE_INT, 		"default": 300},
+	"error_reporting": 						{"value": 0, 				"type": TYPE_INT, 		"default": 0},
+	"columns": 										{"value": 5, 				"type": TYPE_INT, 		"default": 5},
+
 	"defaults": {
 		"category_names": 								["game"],
 		"default_category": 							"",
@@ -164,10 +188,12 @@ var settings_dict := {
 		"autostart_session": 							true,
 		"use_utc": 												false,
 		"id_overlay_print": 							false,
-		"id_overlay_font_size":						12,
 		"id_overlay_toggle": 							false,
-		"id_overlay_color": 							"ffffff",
 		"id_overlay_startup_state": 			false,
+		"id_overlay_font_size":						12,
+		"id_overlay_color": 							"ffffff",
+		"id_overlay_outline_size":				8,
+		"id_overlay_outline_color":				"000000",
 		"limit_method": 									0,
 		"entry_count_action": 						0,
 		"session_timer_action": 					0,
@@ -188,10 +214,12 @@ var settings_dict := {
 		"autostart_session": 				"settings/autostart_session",
 		"use_utc": 									"settings/use_utc",
 		"id_overlay_print": 				"settings/id_overlay_print",
-		"id_overlay_font_size":			"settings/id_overlay_font_size",
 		"id_overlay_toggle": 				"settings/id_overlay_toggle",
-		"id_overlay_color": 				"settings/id_overlay_color",
 		"id_overlay_startup_state": "settings/id_overlay_startup_state",
+		"id_overlay_font_size":			"settings/id_overlay_font_size",
+		"id_overlay_color": 				"settings/id_overlay_color",
+		"id_overlay_outline_size":	"settings/id_overlay_outline_size",
+		"id_overlay_outline_color": "settings/id_overlay_outline_color",
 		"limit_method": 						"settings/limit_method",
 		"entry_count_action": 			"settings/entry_count_action",
 		"session_timer_action": 		"settings/session_timer_action",
@@ -211,10 +239,12 @@ var settings_dict := {
 		"settings/autostart_session": 				TYPE_BOOL,
 		"settings/use_utc": 									TYPE_BOOL,
 		"settings/id_overlay_print": 					TYPE_BOOL,
-		"settings/id_overlay_font_size":			TYPE_INT,
 		"settings/id_overlay_toggle":					TYPE_BOOL,
-		"settings/id_overlay_color":					TYPE_STRING,
 		"settings/id_overlay_startup_state": 	TYPE_BOOL,
+		"settings/id_overlay_font_size":			TYPE_INT,
+		"settings/id_overlay_color":					TYPE_STRING,
+		"settings/id_overlay_outline_size":		TYPE_INT,
+		"settings/id_overlay_outline_color":	TYPE_STRING,
 		"settings/limit_method": 							TYPE_INT,
 		"settings/entry_count_action": 				TYPE_INT,
 		"settings/session_timer_action": 			TYPE_INT,
@@ -236,7 +266,7 @@ func _ready() -> void:
 
 	config.load(PATH)
 
-	instance_id_label.modulate = Color(config.get_value("settings", "id_overlay_color", Color("ffffff8a")))
+	instance_id_label.modulate = Color(config.get_value("settings", "id_overlay_font_color", Color("ffffff8a")))
 	var id_toggle = config.get_value("settings", "id_overlay_toggle", false)
 	var id_startup = config.get_value("settings", "id_overlay_startup_state", false)
 	if id_toggle:
@@ -724,7 +754,7 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
 	cf.set_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
 	cf.set_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	cf.set_value("settings", "id_overlay_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "id_overlay_font_color", Color(settings_dict.get("defaults", {}).get("id_overlay_font_color", "ffffff")).to_html(true))
 	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
 	cf.set_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
 	cf.set_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
@@ -958,6 +988,11 @@ func _get_file_name(category_name : String) -> String:
 
 
 func _get_instance_id() -> String:
+	var fnt_sz := 	int(config.get_value("settings", "id_overlay_font_size", settings_dict.get("defaults").get("id_overlay_font_size")))
+	var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
+	var ol_sz := 		int(config.get_value("settings", "id_overlay_outline_size", settings_dict.get("defaults").get("id_overlay_outline_size")))
+	var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
+
 	# Create RNG and initial ID (keeps the old leading underscore format)
 	var rng := RandomNumberGenerator.new()
 	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -967,7 +1002,9 @@ func _get_instance_id() -> String:
 	for i in range(id_len):
 		var idx: int = rng.randi_range(0, letters.length() - 1)
 		id_str += letters[idx]
-	return id_str
+
+	var fin: String = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]", id_str)
+	return fin
 
 
 

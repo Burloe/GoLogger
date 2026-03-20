@@ -134,15 +134,22 @@ var session_duration_spinbox_line: LineEdit
 @onready var open_hotkey_btn: Button = %OpenHotkeyBtn
 @onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckBtn
 @onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontSizeHBox
-var id_overlay_font_size_line: LineEdit
 @onready var id_overlay_example_lbl: RichTextLabel = %IDOverlayExampleLabel
+var id_overlay_font_size_line: LineEdit
 @onready var id_overlay_font_size_spinbox: SpinBox = %IDOverlayFontSizeSpinBox
 @onready var id_overlay_font_size_lbl: Label = %IDOverlayFontSizeLabel
 @onready var id_overlay_toggle_btn: CheckButton = %ToggleIDOverlayCheckBtn
 @onready var id_overlay_startup_btn: CheckButton = %ShowOnStartupInstanceIDCheckBtn
-@onready var id_overlay_modulate_btn: ColorPickerButton = %ModulateIDColorPickerButton
-@onready var id_overlay_modulate_lbl: Label = %ModulateIDLabel
-@onready var id_overlay_modulate_container: VBoxContainer = %ModulateIDVBox
+@onready var id_overlay_font_col_btn: ColorPickerButton = %IDOverlayFontColorColorPickerButton
+@onready var id_overlay_font_col_lbl: Label = %IDOverlayFontColorLabel
+@onready var id_overlay_font_col_container: HBoxContainer = %IDOverlayFontColorHBox
+var id_overlay_outline_size_line: LineEdit
+@onready var id_overlay_outline_size_hbox: HBoxContainer = %IDOverlayOutlineSizeHBox
+@onready var id_overlay_outline_size_spinbox: SpinBox = %IDOverlayOutlineSizeSpinBox
+@onready var id_overlay_outline_size_lbl: Label = %IDOverlayOutlineSizeLabel
+@onready var id_overlay_outline_col_btn: ColorPickerButton = %IDOverlayOutlineColorColorPickerButton
+@onready var id_overlay_outline_col_lbl: Label = %IDOverlayOutlineColorLabel
+@onready var id_overlay_outline_col_container: HBoxContainer = %IDOverlayOutlineColorHBox
 
 
 @onready var help_tab_container: TabContainer = %HelpTabContainer
@@ -182,7 +189,7 @@ var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
 var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
 var config = ConfigFile.new()
 var suppress_history_prints: bool = false
-var plugin_version: String =  "1.3.2":
+var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
 		if plugin_version_cat_lbl != null:
@@ -195,7 +202,7 @@ var focused_category: Array = []
 var btn_array: Array[Control] = []
 var container_array: Array[Control] = []
 var c_font_normal := Color("9d9ea0")
-var c_font_hover := Color("f2f2f2")
+var c_font_hover := Color("ffffff")
 var c_print_history := "[color=878787][GoLogger] "
 
 var settings_dict := {
@@ -208,10 +215,12 @@ var settings_dict := {
 	"autostart_session": 					{"value": true, 		"type": TYPE_BOOL, 		"default": true},
 	"use_utc": 										{"value": false, 		"type": TYPE_BOOL, 		"default": false},
 	"id_overlay_print": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_overlay_font_size":				{"value": 12, 			"type": TYPE_INT, 		"default": 12},
 	"id_overlay_toggle": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_overlay_color": 					{"value": "ffffff", "type": TYPE_STRING, 	"default": "ffffff"},
 	"id_overlay_startup_state": 	{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_overlay_font_size":				{"value": 12, 			"type": TYPE_INT, 		"default": 12},
+	"id_overlay_font_color":			{"value": "ffffff", "type": TYPE_STRING, 	"default": "ffffff"},
+	"id_overlay_outline_size":		{"value": 8,				"type": TYPE_INT,			"default": 8},
+	"id_overlay_outline_color":		{"value": "000000", "type": TYPE_STRING,	"default": "000000"},
 	"limit_method": 							{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"entry_count_action": 				{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"session_timer_action": 			{"value": 0, 				"type": TYPE_INT, 		"default": 0},
@@ -231,10 +240,12 @@ var settings_dict := {
 		"autostart_session": 							true,
 		"use_utc": 												false,
 		"id_overlay_print": 							false,
-		"id_overlay_font_size":						12,
 		"id_overlay_toggle": 							false,
-		"id_overlay_color": 							"ffffff",
 		"id_overlay_startup_state": 			false,
+		"id_overlay_font_size":						12,
+		"id_overlay_color": 							"ffffff",
+		"id_overlay_outline_size":				8,
+		"id_overlay_outline_color":				"000000",
 		"limit_method": 									0,
 		"entry_count_action": 						0,
 		"session_timer_action": 					0,
@@ -255,10 +266,12 @@ var settings_dict := {
 		"autostart_session": 				"settings/autostart_session",
 		"use_utc": 									"settings/use_utc",
 		"id_overlay_print": 				"settings/id_overlay_print",
-		"id_overlay_font_size":			"settings/id_overlay_font_size",
 		"id_overlay_toggle": 				"settings/id_overlay_toggle",
-		"id_overlay_color": 				"settings/id_overlay_color",
 		"id_overlay_startup_state": "settings/id_overlay_startup_state",
+		"id_overlay_font_size":			"settings/id_overlay_font_size",
+		"id_overlay_color": 				"settings/id_overlay_color",
+		"id_overlay_outline_size":	"settings/id_overlay_outline_size",
+		"id_overlay_outline_color": "settings/id_overlay_outline_color",
 		"limit_method": 						"settings/limit_method",
 		"entry_count_action": 			"settings/entry_count_action",
 		"session_timer_action": 		"settings/session_timer_action",
@@ -278,10 +291,12 @@ var settings_dict := {
 		"settings/autostart_session": 				TYPE_BOOL,
 		"settings/use_utc": 									TYPE_BOOL,
 		"settings/id_overlay_print": 					TYPE_BOOL,
-		"settings/id_overlay_font_size":			TYPE_INT,
 		"settings/id_overlay_toggle":					TYPE_BOOL,
-		"settings/id_overlay_color":					TYPE_STRING,
 		"settings/id_overlay_startup_state": 	TYPE_BOOL,
+		"settings/id_overlay_font_size":			TYPE_INT,
+		"settings/id_overlay_color":					TYPE_STRING,
+		"settings/id_overlay_outline_size":		TYPE_INT,
+		"settings/id_overlay_outline_color":	TYPE_STRING,
 		"settings/limit_method": 							TYPE_INT,
 		"settings/entry_count_action": 				TYPE_INT,
 		"settings/session_timer_action": 			TYPE_INT,
@@ -334,7 +349,9 @@ func _ready() -> void:
 			print_instance_id_btn,
 			id_overlay_font_size_spinbox,
 			id_overlay_toggle_btn,
-			id_overlay_modulate_btn,
+			id_overlay_font_col_btn,
+			id_overlay_outline_size_spinbox,
+			id_overlay_outline_col_btn,
 			id_overlay_startup_btn,
 			limit_method_btn,
 			entry_count_action_btn,
@@ -387,14 +404,16 @@ func _ready() -> void:
 				file_count_spinbox,
 				entry_count_spinbox,
 				session_duration_spinbox,
-				id_overlay_font_size_spinbox
+				id_overlay_font_size_spinbox,
+				id_overlay_outline_size_spinbox
 			],
 			[
 				canvas_spinbox_line,
 				file_count_spinbox_line,
 				entry_count_spinbox_line,
 				session_duration_spinbox_line,
-				id_overlay_font_size_line
+				id_overlay_font_size_line,
+				id_overlay_outline_size_line
 			]
 		]
 
@@ -409,7 +428,6 @@ func _ready() -> void:
 			log_header_container,
 			entry_format_container,
 			canvas_layer_container,
-			id_overlay_font_size_hbox,
 			limit_method_container,
 			entry_count_action_container,
 			session_timer_action_container,
@@ -417,7 +435,10 @@ func _ready() -> void:
 			entry_count_container,
 			session_duration_container,
 			error_rep_container,
-			id_overlay_modulate_container
+			id_overlay_font_size_hbox,
+			id_overlay_font_col_container,
+			id_overlay_outline_size_hbox,
+			id_overlay_outline_col_container
 		]
 
 		var btns_array = [
@@ -425,7 +446,6 @@ func _ready() -> void:
 			log_header_line,
 			entry_format_line,
 			canvas_layer_spinbox,
-			id_overlay_font_size_spinbox,
 			limit_method_btn,
 			entry_count_action_btn,
 			session_timer_action_btn,
@@ -433,7 +453,10 @@ func _ready() -> void:
 			entry_count_spinbox,
 			session_duration_spinbox,
 			error_rep_btn,
-			id_overlay_modulate_btn
+			id_overlay_font_size_spinbox,
+			id_overlay_font_col_btn,
+			id_overlay_outline_size_spinbox,
+			id_overlay_outline_col_btn
 		]
 
 		var corresponding_lbls = [
@@ -441,7 +464,6 @@ func _ready() -> void:
 			log_header_lbl,
 			entry_format_lbl,
 			canvas_layer_lbl,
-			id_overlay_font_size_lbl,
 			limit_method_lbl,
 			entry_count_action_lbl,
 			session_timer_action_lbl,
@@ -449,7 +471,10 @@ func _ready() -> void:
 			entry_count_lbl,
 			session_duration_lbl,
 			error_rep_lbl,
-			id_overlay_modulate_lbl
+			id_overlay_font_size_lbl,
+			id_overlay_font_col_lbl,
+			id_overlay_outline_size_lbl,
+			id_overlay_outline_col_lbl
 		]
 
 		for i in range(container_array.size()):
@@ -525,10 +550,12 @@ func _ready() -> void:
 			"autostart_session": autostart_btn,
 			"use_utc": utc_btn,
 			"id_overlay_print": print_instance_id_btn,
-			"id_overlay_font_size": id_overlay_font_size_spinbox,
 			"id_overlay_toggle": id_overlay_toggle_btn,
-			"id_overlay_color": id_overlay_modulate_btn,
 			"id_overlay_startup_state": id_overlay_startup_btn,
+			"id_overlay_font_size": id_overlay_font_size_spinbox,
+			"id_overlay_color": id_overlay_font_col_btn,
+			"id_overlay_outline_size": id_overlay_outline_size_spinbox,
+			"id_overlay_outline_col": id_overlay_outline_col_btn,
 			"limit_method": limit_method_btn,
 			"entry_count_action": entry_count_action_btn,
 			"session_timer_action": session_timer_action_btn,
@@ -554,11 +581,13 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
 	cf.set_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
 	cf.set_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
-	cf.set_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
 	cf.set_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
+	cf.set_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
 	cf.set_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	cf.set_value("settings", "id_overlay_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
 	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
+	cf.set_value("settings", "id_overlay_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "id_overlay_outline_size", settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
+	cf.set_value("settings", "id_overlay_outline_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
 	cf.set_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
 	cf.set_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
 	cf.set_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
@@ -594,25 +623,27 @@ func reset_to_default() -> void:
 	cf.set_value("categories.game", "is_locked", false)
 	cf.save(PATH)
 
-	base_dir_line.text = 										settings_dict.get("defaults").get("base_directory", "user://GoLogger/")
-	log_header_line.text = 									settings_dict.get("defaults").get("log_header_format", "")
-	entry_format_line.text = 								settings_dict.get("defaults").get("entry_format", "")
-	canvas_layer_spinbox.value = 						settings_dict.get("defaults").get("canvaslayer_layer", 5)
-	autostart_btn.button_pressed = 					settings_dict.get("defaults").get("autostart_session", true)
-	utc_btn.button_pressed = 								settings_dict.get("defaults").get("use_utc", false)
-	print_instance_id_btn.button_pressed = 	settings_dict.get("defaults").get("id_overlay_print", false)
-	id_overlay_font_size_spinbox.value = 		settings_dict.get("defaults").get("id_overlay_font_size", 12)
-	id_overlay_modulate_btn.color = 	Color(settings_dict.get("defaults").get("id_overlay_color", "ffffff"))
-	id_overlay_toggle_btn.button_pressed = 	settings_dict.get("defaults").get("id_overlay_toggle", false)
-	id_overlay_startup_btn.button_pressed = settings_dict.get("defaults").get("id_overlay_startup_state", false)
-	limit_method_btn.selected = 						settings_dict.get("defaults").get("limit_method", 0)
-	entry_count_action_btn.selected = 			settings_dict.get("defaults").get("entry_count_action", 0)
-	session_timer_action_btn.selected = 		settings_dict.get("defaults").get("session_timer_action", 0)
-	file_count_spinbox.value = 							settings_dict.get("defaults").get("file_cap", 10)
-	entry_count_spinbox.value = 						settings_dict.get("defaults").get("entry_cap", 300)
-	session_duration_spinbox.value = 				settings_dict.get("defaults").get("session_duration", 300)
-	error_rep_btn.selected = 								settings_dict.get("defaults").get("error_reporting", 0)
-	column_slider.value = 									_get_column_value(settings_dict.get("defaults", {}).get("columns", 5))
+	base_dir_line.text = 											settings_dict.get("defaults").get("base_directory", "user://GoLogger/")
+	log_header_line.text = 										settings_dict.get("defaults").get("log_header_format", "")
+	entry_format_line.text = 									settings_dict.get("defaults").get("entry_format", "")
+	canvas_layer_spinbox.value = 							settings_dict.get("defaults").get("canvaslayer_layer", 5)
+	autostart_btn.button_pressed = 						settings_dict.get("defaults").get("autostart_session", true)
+	utc_btn.button_pressed = 									settings_dict.get("defaults").get("use_utc", false)
+	print_instance_id_btn.button_pressed = 		settings_dict.get("defaults").get("id_overlay_print", false)
+	id_overlay_toggle_btn.button_pressed = 		settings_dict.get("defaults").get("id_overlay_toggle", false)
+	id_overlay_startup_btn.button_pressed = 	settings_dict.get("defaults").get("id_overlay_startup_state", false)
+	id_overlay_font_size_spinbox.value = 			settings_dict.get("defaults").get("id_overlay_font_size", 12)
+	id_overlay_font_col_btn.color = 		Color(settings_dict.get("defaults").get("id_overlay_color", "ffffff"))
+	id_overlay_font_size_spinbox.value = 			settings_dict.get("defaults").get("id_overlay_outline_size", 8)
+	id_overlay_outline_col_btn.color = 	Color(settings_dict.get("defaults").get("id_overlay_outline_color"))
+	limit_method_btn.selected = 							settings_dict.get("defaults").get("limit_method", 0)
+	entry_count_action_btn.selected = 				settings_dict.get("defaults").get("entry_count_action", 0)
+	session_timer_action_btn.selected = 			settings_dict.get("defaults").get("session_timer_action", 0)
+	file_count_spinbox.value = 								settings_dict.get("defaults").get("file_cap", 10)
+	entry_count_spinbox.value = 							settings_dict.get("defaults").get("entry_cap", 300)
+	session_duration_spinbox.value = 					settings_dict.get("defaults").get("session_duration", 300)
+	error_rep_btn.selected = 									settings_dict.get("defaults").get("error_reporting", 0)
+	column_slider.value = 										_get_column_value(settings_dict.get("defaults", {}).get("columns", 5))
 
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
@@ -663,24 +694,25 @@ func load_data() -> void:
 				break
 
 	# Settings
-	base_dir_line.text = 										_c.get_value("settings", "base_directory", settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
-	log_header_line.text = 									_c.get_value("settings", "log_header_format", settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
-	entry_format_line.text = 								_c.get_value("settings", "entry_format", settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	canvas_layer_spinbox.value = 						_c.get_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
-	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
-	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
-	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
-	id_overlay_font_size_spinbox.value = 		_c.get_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
-	id_overlay_toggle_btn.button_pressed = 	_c.get_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	id_overlay_modulate_btn.color = 	Color(_c.get_value("settings", "id_overlay_color", settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")))
-	id_overlay_startup_btn.button_pressed = _c.get_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
-	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
-	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
-	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
-	file_count_spinbox.value = 							_c.get_value("settings", "file_cap", settings_dict.get("defaults", {}).get("file_cap", 10))
-	entry_count_spinbox.value = 						_c.get_value("settings", "entry_cap", settings_dict.get("defaults", {}).get("entry_cap", 300))
-	session_duration_spinbox.value = 				_c.get_value("settings", "session_duration", settings_dict.get("defaults", {}).get("session_duration", 300))
-	error_rep_btn.selected = 								_c.get_value("settings", "error_reporting", settings_dict.get("defaults", {}).get("error_reporting", 0))
+	base_dir_line.text = 										_c.get_value("settings", "base_directory", 						settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
+	log_header_line.text = 									_c.get_value("settings", "log_header_format", 				settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
+	entry_format_line.text = 								_c.get_value("settings", "entry_format", 							settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
+	canvas_layer_spinbox.value = 						_c.get_value("settings", "canvaslayer_layer", 				settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
+	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", 				settings_dict.get("defaults", {}).get("autostart_session", true))
+	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", 									settings_dict.get("defaults", {}).get("use_utc", false))
+	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "id_overlay_print", 					settings_dict.get("defaults", {}).get("id_overlay_print", false))
+	id_overlay_toggle_btn.button_pressed = 	_c.get_value("settings", "id_overlay_toggle", 				settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
+	id_overlay_startup_btn.button_pressed = _c.get_value("settings", "id_overlay_startup_state", 	settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
+	id_overlay_font_size_spinbox.value = 		_c.get_value("settings", "id_overlay_font_size", 			settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
+	id_overlay_font_col_btn.color = 	Color(_c.get_value("settings", "id_overlay_color", 					settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")))
+	id_overlay_outline_size_spinbox.value = _c.get_value("settings", "id_overlay_outline_size", 	settings_dict.get("defaults").get("id_overlay_outline_size", 8))
+	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", 							settings_dict.get("defaults", {}).get("limit_method", 0))
+	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", 				settings_dict.get("defaults", {}).get("entry_count_action", 0))
+	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", 			settings_dict.get("defaults", {}).get("session_timer_action", 0))
+	file_count_spinbox.value = 							_c.get_value("settings", "file_cap", 									settings_dict.get("defaults", {}).get("file_cap", 10))
+	entry_count_spinbox.value = 						_c.get_value("settings", "entry_cap", 								settings_dict.get("defaults", {}).get("entry_cap", 300))
+	session_duration_spinbox.value = 				_c.get_value("settings", "session_duration", 					settings_dict.get("defaults", {}).get("session_duration", 300))
+	error_rep_btn.selected = 								_c.get_value("settings", "error_reporting", 					settings_dict.get("defaults", {}).get("error_reporting", 0))
 	column_slider.value = 									_get_column_value(_c.get_value("settings", "columns", settings_dict.get("defaults", {}).get("columns", 5)))
 
 	config.load(PATH)
@@ -1217,11 +1249,24 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 
 		id_overlay_font_size_spinbox:
 			config.set_value("settings", "id_overlay_font_size", value)
-			var col := Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), Color.WHITE)
-			id_overlay_example_lbl.text = str("[font_size=", value, "][color=", col.to_html(), "][outline_size=8]h9Em2")
+			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
+			var ol_sz := 		config.get_value("settings", "id_overlay_outline_size", settings_dict.get("defaults").get("id_overlay_outline_size"))
+			var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
+
+			id_overlay_example_lbl.text = str("[font_size=", value, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
 
 			if !suppress_history_prints:
 				print_rich(c_print_history, "ID Overlay Font Size changed.")
+
+		id_overlay_outline_size_spinbox:
+			config.set_value("settings", "id_overlay_outline_size", value)
+			var fnt_sz := 	int(config.get_value("settings", "id_overlay_font_size", settings_dict.get("defaults").get("id_overlay_font_size")))
+			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
+			var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
+
+			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", value, "][outline_color=", ol_col.to_html(), "]h9Em2")
+			if !suppress_history_prints:
+				print_rich(c_print_history, "ID Overlay Outline Size changed.")
 
 	save_data()
 
@@ -1263,26 +1308,52 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 
 		id_overlay_font_size_spinbox:
 			config.set_value("settings", "id_overlay_font_size", int(new_text))
-			var col := Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), Color.WHITE)
-			id_overlay_example_lbl.text = str("[font_size=", int(new_text), "][color=", col.to_html(), "][outline_size=8]h9Em2")
+			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
+			var ol_sz := 		int(config.get_value("settings", "id_overlay_outline_size", settings_dict.get("defaults").get("id_overlay_outline_size")))
+			var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
+
+			id_overlay_example_lbl.text = str("[font_size=", int(new_text), "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
 
 			if !suppress_history_prints:
 				print_rich(c_print_history, "ID Overlay Font Size changed.")
+
+		id_overlay_outline_size_spinbox:
+			config.set_value("settings", "id_overlay_font_size", int(new_text))
+			var fnt_sz := 	int(config.get_value("settings", "id_overlay_font_size", settings_dict.get("defaults").get("id_overlay_font_size")))
+			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
+			var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
+
+			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", int(new_text), "][outline_color=", ol_col.to_html(), "]h9Em2")
+
+			if !suppress_history_prints:
+				print_rich(c_print_history, "ID Overlay Outline Size changed.")
+
 	save_data()
 
 
 func _on_colorpicker_color_changed(col: Color, node: ColorPickerButton) -> void:
 	config.load(PATH)
+	var fnt_sz := 	int(config.get_value("settings", "id_overlay_font_size", settings_dict.get("defaults").get("id_overlay_font_size")))
+	var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
+	var ol_sz := 		int(config.get_value("settings", "id_overlay_outline_size", settings_dict.get("defaults").get("id_overlay_outline_size")))
+	var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
 
 	match node:
-		id_overlay_modulate_btn:
+		id_overlay_font_col_btn:
 			config.set_value("settings", "id_overlay_color", col.to_html())
 
-			var fnt_sz = config.get_value("settings", "id_overlay_font_size", 16)
-			id_overlay_example_lbl.text = str("[font_size=", int(fnt_sz), "][color=", col.to_html(), "][outline_size=8]h9Em2")
+			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
 
 			if !suppress_history_prints:
 				print_rich(c_print_history, "Instance ID Overlay color changed.")
+
+		id_overlay_outline_col_btn:
+			config.set_value("settings", "id_overlay_outline_color", col.to_html())
+			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", col.to_html(), "]h9Em2")
+
+			if !suppress_history_prints:
+				print_rich(c_print_history, "Instance ID Overlay outline color changed.")
+
 	config.save(PATH)
 
 

@@ -32,8 +32,7 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 mouse_filter = 1
 bbcode_enabled = true
-text = "[color=fc4674][outline_size= 4][font_size=14]GoLogger Instance ID: [color=white][outline_size= 8
-]e82J9"
+text = "[color=white][outline_size= 8]e82J9"
 fit_content = true
 vertical_alignment = 2
 
