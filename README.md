@@ -25,8 +25,6 @@
 
 <img width="1397" height="358" alt="image" src="https://github.com/user-attachments/assets/b7c69f21-2a79-4393-bc07-b303d64aad66" />
 
-<p><img src="https://github.com/user-attachments/assets/5ca86c2b-326b-4897-b954-1df829f986ca" alt="Category Index Showcase" align=center></p>
-
 <p><img src="https://github.com/user-attachments/assets/8f5de66b-3bb0-48d6-9c74-2171b0b7bd1c" align=center></p>
 
 
