@@ -20,7 +20,7 @@ signal category_deleted()
 @onready var apply_btn: Button = 						%ApplyButton
 
 
-const PATH = "user://GoLogger/settings.ini"
+const PATH = "user://gologger_data.ini"
 var config = ConfigFile.new()
 var dock : TabContainer:
 	set(value):
@@ -101,10 +101,19 @@ func _ready() -> void:
 
 
 func apply_name(new_name: String) -> void:
+	config.load(PATH)
+	var cat: Array = config.get_value("categories", "category_names", [])
 	var old_name := category_name
 	var fin_name := get_unique_category_name(new_name, old_name)
 
+	for i in cat.size():
+		if cat[i] == old_name:
+			cat[i] = fin_name
+	config.set_value("categories", "category_names", cat)
+	config.save(PATH)
+
 	category_name = fin_name
+	line_edit.text = fin_name
 	log_category_changed.emit(self, true, old_name)
 	line_edit.release_focus()
 	apply_btn.hide()
@@ -118,27 +127,36 @@ func apply_name(new_name: String) -> void:
 
 func get_unique_category_name(name: String, ignore_name: String = "") -> String:
 	config.load(PATH)
-	var categories: Array = config.get_value("categories", "category_names", [])
+	var categories = config.get_value("categories", "category_names", [])
+	var base: String = name
+	var suffix: int = 1
 
-	var base := name
-	var suffix := 1
+	if !categories.has(base) or categories.size() == 0:
+		return base
 
 	var i := name.length() - 1
-	while i >= 0 and name[i] >= "0" and name[i] <= "9":
-		i -= 1
+	while i >= 0 and name + str(i) in categories:
+		i += 1
 
 	if i < name.length() - 1:
 		base = name.substr(0, i + 1)
 		suffix = int(name.substr(i + 1, name.length() - (i + 1))) + 1
 
-	var candidate := base
-	if not has_conflict(candidate, ignore_name):
+	var candidate: String = base
+
+	if !categories.has(candidate):
 		return candidate
 
-	while has_conflict(base + str(suffix), ignore_name):
-		suffix += 1
+	candidate = base + str(suffix)
 
-	return base + str(suffix)
+	if !categories.has(candidate):
+		return candidate
+
+	while categories.has(candidate):
+		suffix += 1
+		candidate = base + str(suffix)
+
+	return candidate
 
 
 func has_conflict(candidate: String, ignore_name: String) -> bool:

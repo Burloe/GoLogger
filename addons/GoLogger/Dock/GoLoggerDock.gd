@@ -587,34 +587,31 @@ func _ready() -> void:
 
 func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new()
-	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "default_category", settings_dict.get("defaults", {}).get("default_category", ""))
+	cf.set_value("categories", "category_names", 								["game"])
+	cf.set_value("categories", "default_category", 							settings_dict.get("defaults", {}).get("default_category", ""))
 
-	cf.set_value("settings", "base_directory", settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
-	cf.set_value("settings", "columns", settings_dict.get("defaults", {}).get("columns", 5))
-	cf.set_value("settings", "log_header_format", settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
-	cf.set_value("settings", "entry_format", settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	cf.set_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
-	cf.set_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
-	cf.set_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
-	cf.set_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
-	cf.set_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
-	cf.set_value("settings", "id_overlay_align", settings_dict.get("defaults").get("id_overlay_align", 0))
-	cf.set_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
-	cf.set_value("settings", "id_overlay_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
-	cf.set_value("settings", "id_overlay_outline_size", settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
-	cf.set_value("settings", "id_overlay_outline_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
-	cf.set_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
-	cf.set_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
-	cf.set_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
-	cf.set_value("settings", "file_cap", settings_dict.get("defaults", {}).get("file_cap", 10))
-	cf.set_value("settings", "entry_cap", settings_dict.get("defaults", {}).get("entry_cap", 300))
-	cf.set_value("settings", "session_duration", settings_dict.get("defaults", {}).get("session_duration", 300))
-	cf.set_value("settings", "error_reporting", settings_dict.get("defaults", {}).get("error_reporting", 0))
-
-	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "default_category", "")
+	cf.set_value("settings", "base_directory", 									settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
+	cf.set_value("settings", "columns", 												settings_dict.get("defaults", {}).get("columns", 5))
+	cf.set_value("settings", "log_header_format", 							settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
+	cf.set_value("settings", "entry_format", 										settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
+	cf.set_value("settings", "canvaslayer_layer", 							settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
+	cf.set_value("settings", "autostart_session", 							settings_dict.get("defaults", {}).get("autostart_session", true))
+	cf.set_value("settings", "use_utc", 												settings_dict.get("defaults", {}).get("use_utc", false))
+	cf.set_value("settings", "id_overlay_print", 								settings_dict.get("defaults", {}).get("id_overlay_print", false))
+	cf.set_value("settings", "id_overlay_toggle", 							settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
+	cf.set_value("settings", "id_overlay_startup_state", 				settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
+	cf.set_value("settings", "id_overlay_align", 								settings_dict.get("defaults").get("id_overlay_align", 0))
+	cf.set_value("settings", "id_overlay_font_size", 						settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
+	cf.set_value("settings", "id_overlay_color", 					Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "id_overlay_outline_size", 				settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
+	cf.set_value("settings", "id_overlay_outline_color",	Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "limit_method", 										settings_dict.get("defaults", {}).get("limit_method", 0))
+	cf.set_value("settings", "entry_count_action", 							settings_dict.get("defaults", {}).get("entry_count_action", 0))
+	cf.set_value("settings", "session_timer_action", 						settings_dict.get("defaults", {}).get("session_timer_action", 0))
+	cf.set_value("settings", "file_cap", 												settings_dict.get("defaults", {}).get("file_cap", 10))
+	cf.set_value("settings", "entry_cap", 											settings_dict.get("defaults", {}).get("entry_cap", 300))
+	cf.set_value("settings", "session_duration", 								settings_dict.get("defaults", {}).get("session_duration", 300))
+	cf.set_value("settings", "error_reporting", 								settings_dict.get("defaults", {}).get("error_reporting", 0))
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -882,11 +879,14 @@ func _delete_category(log_category: LogCategory) -> void:
 		config.save(PATH)
 		_assign_category_indices()
 
-		var tw = get_tree().create_tween()
-		tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
-		await get_tree().create_timer(8.0).timeout
-		var twe = get_tree().create_tween()
-		twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 0.5)
+		if get_tree().is_inside_tree():
+			var tw = get_tree().create_tween()
+			tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
+			await get_tree().create_timer(8.0).timeout
+			var twe = get_tree().create_tween()
+			twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 0.5)
+		else:
+			cat_del_warn_rlbl.modulate = Color.TRANSPARENT
 
 
 func _change_category_order(category: LogCategory, direction: int) -> void:

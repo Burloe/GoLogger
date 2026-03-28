@@ -138,7 +138,11 @@ var instance_id: String = "":
 	set(value):
 		instance_id = value
 		config.load(PATH)
-		instance_id_label.text = str("[font_size=", config.get_value("settings", "id_overlay_font_size", 12), "][outline_size= 8]", value)
+		var fnt_sz := int(config.get_value("settings", "id_overlay_font_size", settings_dict.get("defaults").get("id_overlay_font_size")))
+		var fnt_col := Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
+		var ol_sz := int(config.get_value("settings", "id_overlay_outline_size", settings_dict.get("defaults").get("id_overlay_outline_size")))
+		var ol_col := Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
+		instance_id_label.text = str("  [font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]", value, "  ")
 
 
 var settings_dict := {
@@ -255,7 +259,6 @@ func _ready() -> void:
 
 	config.load(PATH)
 
-	instance_id_label.modulate = Color(config.get_value("settings", "id_overlay_font_color", Color("ffffff8a")))
 	var id_toggle = config.get_value("settings", "id_overlay_toggle", false)
 	var id_startup = config.get_value("settings", "id_overlay_startup_state", false)
 	if id_toggle:
@@ -331,7 +334,7 @@ func _input(event: InputEvent) -> void:
 					if event.is_pressed():
 						instance_id_label.show()
 						if _get_config_value("settings", "id_overlay_print"):
-							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
+							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: ", instance_id)
 					if event.is_released():
 						instance_id_label.hide()
 
@@ -470,7 +473,7 @@ func start_session() -> void:
 	session_started.emit()
 
 
-func msg(log_msg : String, category_name: String = "", print_entry: bool = false) -> void:
+func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
 	load_category_data()
 	var _target_cat: String = 				category_name
 	var _cats: Array = 								_get_config_value("categories", "category_names", [])
@@ -600,7 +603,7 @@ func msg(log_msg : String, category_name: String = "", print_entry: bool = false
 	var new_entry: String = _get_entry_format(log_msg, _target_cat)
 	_fw.store_line(new_entry)
 	_fw.close()
-	if print_entry:
+	if print_msg:
 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", _target_cat, "> ", new_entry.dedent())
 
 
@@ -652,34 +655,31 @@ func stop_session() -> void:
 
 func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new()
-	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "default_category", settings_dict.get("defaults", {}).get("default_category", ""))
+	cf.set_value("categories", "category_names", 								["game"])
+	cf.set_value("categories", "default_category", 							settings_dict.get("defaults", {}).get("default_category", ""))
 
-	cf.set_value("settings", "base_directory", settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
-	cf.set_value("settings", "columns", settings_dict.get("defaults", {}).get("columns", 5))
-	cf.set_value("settings", "log_header_format", settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
-	cf.set_value("settings", "entry_format", settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	cf.set_value("settings", "canvaslayer_layer", settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
-	cf.set_value("settings", "autostart_session", settings_dict.get("defaults", {}).get("autostart_session", true))
-	cf.set_value("settings", "use_utc", settings_dict.get("defaults", {}).get("use_utc", false))
-	cf.set_value("settings", "id_overlay_print", settings_dict.get("defaults", {}).get("id_overlay_print", false))
-	cf.set_value("settings", "id_overlay_toggle", settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	cf.set_value("settings", "id_overlay_startup_state", settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
-	cf.set_value("settings", "id_overlay_align", settings_dict.get("defaults").get("id_overlay_align", 0))
-	cf.set_value("settings", "id_overlay_font_size", settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
-	cf.set_value("settings", "id_overlay_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
-	cf.set_value("settings", "id_overlay_outline_size", settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
-	cf.set_value("settings", "id_overlay_outline_color", Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
-	cf.set_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0))
-	cf.set_value("settings", "entry_count_action", settings_dict.get("defaults", {}).get("entry_count_action", 0))
-	cf.set_value("settings", "session_timer_action", settings_dict.get("defaults", {}).get("session_timer_action", 0))
-	cf.set_value("settings", "file_cap", settings_dict.get("defaults", {}).get("file_cap", 10))
-	cf.set_value("settings", "entry_cap", settings_dict.get("defaults", {}).get("entry_cap", 300))
-	cf.set_value("settings", "session_duration", settings_dict.get("defaults", {}).get("session_duration", 300))
-	cf.set_value("settings", "error_reporting", settings_dict.get("defaults", {}).get("error_reporting", 0))
-
-	cf.set_value("categories", "category_names", ["game"])
-	cf.set_value("categories", "default_category", "")
+	cf.set_value("settings", "base_directory", 									settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
+	cf.set_value("settings", "columns", 												settings_dict.get("defaults", {}).get("columns", 5))
+	cf.set_value("settings", "log_header_format", 							settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
+	cf.set_value("settings", "entry_format", 										settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
+	cf.set_value("settings", "canvaslayer_layer", 							settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
+	cf.set_value("settings", "autostart_session", 							settings_dict.get("defaults", {}).get("autostart_session", true))
+	cf.set_value("settings", "use_utc", 												settings_dict.get("defaults", {}).get("use_utc", false))
+	cf.set_value("settings", "id_overlay_print", 								settings_dict.get("defaults", {}).get("id_overlay_print", false))
+	cf.set_value("settings", "id_overlay_toggle", 							settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
+	cf.set_value("settings", "id_overlay_startup_state", 				settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
+	cf.set_value("settings", "id_overlay_align", 								settings_dict.get("defaults").get("id_overlay_align", 0))
+	cf.set_value("settings", "id_overlay_font_size", 						settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
+	cf.set_value("settings", "id_overlay_color", 					Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "id_overlay_outline_size", 				settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
+	cf.set_value("settings", "id_overlay_outline_color",	Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "limit_method", 										settings_dict.get("defaults", {}).get("limit_method", 0))
+	cf.set_value("settings", "entry_count_action", 							settings_dict.get("defaults", {}).get("entry_count_action", 0))
+	cf.set_value("settings", "session_timer_action", 						settings_dict.get("defaults", {}).get("session_timer_action", 0))
+	cf.set_value("settings", "file_cap", 												settings_dict.get("defaults", {}).get("file_cap", 10))
+	cf.set_value("settings", "entry_cap", 											settings_dict.get("defaults", {}).get("entry_cap", 300))
+	cf.set_value("settings", "session_duration", 								settings_dict.get("defaults", {}).get("session_duration", 300))
+	cf.set_value("settings", "error_reporting", 								settings_dict.get("defaults", {}).get("error_reporting", 0))
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -884,7 +884,6 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 	for tag in _tags:
 		if tag in replacements:
 			final_entry = final_entry.replace(tag, replacements[tag])
-
 	return final_entry
 
 
@@ -902,12 +901,6 @@ func _get_file_name(category_name : String) -> String:
 
 
 func _get_instance_id() -> String:
-	var fnt_sz := 	int(config.get_value("settings", "id_overlay_font_size", settings_dict.get("defaults").get("id_overlay_font_size")))
-	var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
-	var ol_sz := 		int(config.get_value("settings", "id_overlay_outline_size", settings_dict.get("defaults").get("id_overlay_outline_size")))
-	var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
-
-	# Create RNG and initial ID (keeps the old leading underscore format)
 	var rng := RandomNumberGenerator.new()
 	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	var id_len: int = 5
@@ -916,9 +909,7 @@ func _get_instance_id() -> String:
 	for i in range(id_len):
 		var idx: int = rng.randi_range(0, letters.length() - 1)
 		id_str += letters[idx]
-
-	var fin: String = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]", id_str)
-	return fin
+	return id_str
 
 
 

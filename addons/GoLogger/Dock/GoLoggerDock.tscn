@@ -1,10 +1,14 @@
 [gd_scene format=3 uid="uid://0k0tpsfqof2s"]
 
+[ext_resource type="StyleBox" uid="uid://bp0510ij2p7l4" path="res://addons/GoLogger/Resources/tabbar_bg.tres" id="1_vja36"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
+[ext_resource type="StyleBox" uid="uid://dycqh7cqtjy4s" path="res://addons/GoLogger/Resources/tab_unselected.tres" id="2_f4fkd"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
+[ext_resource type="StyleBox" uid="uid://27e5r3ya7lul" path="res://addons/GoLogger/Resources/tab_hovered.tres" id="3_jx8uf"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
+[ext_resource type="StyleBox" uid="uid://bygsbmlyeaqdj" path="res://addons/GoLogger/Resources/tab_selected.tres" id="4_7jf0p"]
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/GoLogger/Resources/id_example_panel_tex.png" id="5_7ntic"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
@@ -53,6 +57,11 @@ offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
+theme_override_constants/tab_separation = 6
+theme_override_styles/tabbar_background = ExtResource("1_vja36")
+theme_override_styles/tab_unselected = ExtResource("2_f4fkd")
+theme_override_styles/tab_hovered = ExtResource("3_jx8uf")
+theme_override_styles/tab_selected = ExtResource("4_7jf0p")
 current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
@@ -711,7 +720,7 @@ theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 button_pressed = true
-text = "Toggle ID Overlay"
+text = "Toggle on key release"
 
 [node name="ShowOnStartupInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=2022147191]
 unique_name_in_owner = true
@@ -1042,9 +1051,14 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/tab_separation = 6
+theme_override_styles/tabbar_background = ExtResource("1_vja36")
+theme_override_styles/tab_unselected = ExtResource("2_f4fkd")
+theme_override_styles/tab_hovered = ExtResource("3_jx8uf")
+theme_override_styles/tab_selected = ExtResource("4_7jf0p")
 current_tab = 4
 
-[node name="Getting Started" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1377872369]
+[node name="GettingStarted" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1377872369]
 visible = false
 layout_mode = 2
 scroll_vertical_custom_step = 20.0
@@ -1052,7 +1066,7 @@ scroll_hint_mode = 1
 tile_scroll_hint = true
 metadata/_tab_index = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Getting Started" unique_id=469117461]
+[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/GettingStarted" unique_id=469117461]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1061,14 +1075,14 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Getting Started/MarginContainer" unique_id=1514331880]
+[node name="Gettings_StartedRTLabel" type="RichTextLabel" parent="Help/HelpTabContainer/GettingStarted/MarginContainer" unique_id=1514331880]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674][b]Setup:[/b][font_size=14][color=white]
-GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: [i] Log.entry(\"This is my first log entry.\", \"game\")[/i]
+GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: [i] Log.msg(\"This is my first log entry.\", \"game\")[/i]
 Use the Category tab to add, remove, or rename categories.
 
 GoLogger uses an [b]Log[/b] singleton, making its functions accessible from all scenes and scripts.
@@ -1080,22 +1094,22 @@ By default, a session starts automatically when the project runs (this can be di
 [font_size=16][color=fc4674][b]Categories:[/b][font_size=14][color=white]
 Each category in the Category tab corresponds to a folder in the base directory. When a session starts, a .log file is created inside that folder, named with the date, timestamp, and category.
 
-[font_size=16][color=fc4674][b]Entries:[/b][font_size=14][color=white]
-Entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging. You specify the 
+[font_size=16][color=fc4674][b]Default Category:[/b][font_size=14][color=white]
+You can mark one of your categories as 'Default'. Logging entries without specifying a category will log it to the marked default category. This is especially useful if you only use a single category to log and don't necessitates you to specify the category constantly.
 
-[font_size=16][color=fc4674][b]Save Copy:[/b][font_size=14][color=white]
-The Save Copy feature creates a copy of the active session without stopping it. This saves the current logs for all categories into their respective saved_logs folders. This feature is useful for capturing logs at specific moments, such as when a known bug occurs or when logged data is needed to be preserved at the moment of occurance for debugging.
+[font_size=16][color=fc4674][b]Messages / Entries:[/b][font_size=14][color=white]
+Messages(msg) or entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging.
 
 [font_size=16][color=fc4674][b]Running Multiple Instances:[/b][font_size=14][color=white]
 When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[color=white] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[color=white] hotkey(Ctrl + Shift + I) to print that instance's ID to output."
 
-[node name="Methods & Hotkeys" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=830461916]
+[node name="Methods&Hotkeys" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=830461916]
 visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 metadata/_tab_index = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Methods & Hotkeys" unique_id=327346930]
+[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Methods&Hotkeys" unique_id=327346930]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1104,7 +1118,7 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Methods & Hotkeys/MarginContainer" unique_id=208538217]
+[node name="Functions_HotkeysRTLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Methods&Hotkeys/MarginContainer" unique_id=208538217]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1144,12 +1158,12 @@ There are two signals available to help you synchronize sessions with game logic
 	session_started
 	session_stopped"
 
-[node name="File Limitations" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1120881483]
+[node name="FileLimitats" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1120881483]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/File Limitations" unique_id=2057183117]
+[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/FileLimitats" unique_id=2057183117]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1159,7 +1173,7 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/File Limitations/MarginContainer" unique_id=991399834]
+[node name="FileLimitsRTLabel" type="RichTextLabel" parent="Help/HelpTabContainer/FileLimitats/MarginContainer" unique_id=991399834]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1197,14 +1211,14 @@ This option defines the maximum number of .log files allowed in each category fo
 [i]Copy session: Ctrl + Shift + U[/i]
 [i]Stop session: Ctrl + Shift + P[/i]"
 
-[node name="Instances and Formatting" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=367321639]
+[node name="Instances_Formatting" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=367321639]
 visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
 metadata/_tab_index = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Instances and Formatting" unique_id=588303162]
+[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Instances_Formatting" unique_id=588303162]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1214,7 +1228,7 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Instances and Formatting/MarginContainer" unique_id=1902385466]
+[node name="Instances&FormattingRTLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Instances_Formatting/MarginContainer" unique_id=1902385466]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

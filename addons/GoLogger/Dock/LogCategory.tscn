@@ -156,13 +156,12 @@ custom_minimum_size = Vector2(31, 15)
 layout_mode = 2
 tooltip_text = "Mark as default. Used when a category name isn't specified when calling Log.entry().
 
-See Help > Getting Started >  Categories"
+See Help > Getting Started >  Default Category"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_hkawy")
 
 [node name="ApplyButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1330065459]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(107, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Apply category name"

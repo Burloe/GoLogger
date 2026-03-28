@@ -11,9 +11,7 @@ func _ready() -> void:
 
 func _on_timer_timeout() -> void:
 	if !FileAccess.file_exists(PATH):
-		print("--")
 		return
-	else: print("++")
 
 	var _result = config.load(PATH)
 

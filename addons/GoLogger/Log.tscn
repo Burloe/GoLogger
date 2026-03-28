@@ -29,5 +29,5 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 mouse_filter = 1
 bbcode_enabled = true
-text = "[color=white][outline_size= 8]e82J9"
+text = "  [color=white][outline_size= 8]e82J9"
 fit_content = true
