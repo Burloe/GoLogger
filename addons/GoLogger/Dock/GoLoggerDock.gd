@@ -162,6 +162,15 @@ var id_overlay_outline_size_line: LineEdit
 @onready var help_tab_container: TabContainer = %HelpTabContainer
 @onready var user_dir_btn: Button = %UserDirBtn
 
+@onready var settings = EditorInterface.get_editor_settings()
+@onready var editor_base_col: Color = settings.get("interface/theme/base_color")
+var tab_bar_bg = preload("uid://bp0510ij2p7l4")
+var tab_bar_hovered = preload("uid://27e5r3ya7lul")
+var tab_bar_selected = preload("uid://bygsbmlyeaqdj")
+var tab_bar_unselected = preload("uid://dycqh7cqtjy4s")
+
+
+
 ## SEPERATOR has index 3, should not be used.
 enum LimitMethod {
 	ENTRY_COUNT,
@@ -338,6 +347,7 @@ func _ready() -> void:
 
 
 		# Signal connections
+		ProjectSettings.settings_changed.connect(_on_project_settings_changed)
 		_add_category_btn.button_up.connect(_add_category)
 		open_dir_btn.button_up.connect(_open_directory)
 		column_slider.value_changed.connect(_on_column_slider_value_changed)
@@ -581,6 +591,9 @@ func _ready() -> void:
 			"error_reporting": error_rep_btn,
 			"columns": column_slider
 		}
+
+
+
 
 
 
@@ -1392,6 +1405,18 @@ func _on_column_slider_value_changed(value: int) -> void:
 	column_slider.tooltip_text = str("Columns: ", _get_column_value(value))
 	config.set_value("settings", "columns", _get_column_value(value))
 	save_data()
+
+
+func _on_project_settings_changed() -> void:
+	settings = EditorInterface.get_editor_settings()
+	editor_base_col = settings.get("interface/theme/base_color")
+	var c_hov: Color = 		Color(editor_base_col.r - 15, editor_base_col.g - 15, editor_base_col.b - 15)
+	var c_sel: Color = 		Color(editor_base_col.r - 10, editor_base_col.g - 10, editor_base_col.b - 10)
+	var c_unsel: Color = 	Color(editor_base_col.r - 15, editor_base_col.g - 5, editor_base_col.b - 5)
+	tab_bar_bg.bg_color = editor_base_col
+	tab_bar_hovered.bg_color = editor_base_col
+	tab_bar_selected.bg_color = c_sel
+	tab_bar_unselected.bg_color = c_unsel
 
 
 ## Returns the inverted value for the column slider
