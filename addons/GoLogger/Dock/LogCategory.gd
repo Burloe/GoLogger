@@ -10,7 +10,6 @@ signal move_category_requested(log_category: LogCategory, direction : int)
 ## Emitted when a category is deleted so GoLoggerDock.gd can update the indices of the remaining categories.
 signal category_deleted()
 
-# @onready var index_lbl: 	Label = 		%CategoryIndex #Deprecated
 @onready var move_left_btn: Button = 				%MoveLeftButton
 @onready var move_right_btn: Button = 			%MoveRightButton
 @onready var lock_btn:	Button = 						%LockButton
@@ -19,6 +18,9 @@ signal category_deleted()
 @onready var del_btn:	Button = 							%DeleteButton
 @onready var apply_btn: Button = 						%ApplyButton
 
+@onready var settings = EditorInterface.get_editor_settings()
+@onready var editor_base_col: Color = settings.get("interface/theme/base_color")
+var base_panel = preload("uid://dk62yeh7pd650")
 
 const PATH = "user://gologger_data.ini"
 var config = ConfigFile.new()
@@ -62,6 +64,8 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
 
+		settings.settings_changed.connect(_on_editor_settings_changed)
+		_on_editor_settings_changed()
 
 		del_btn.button_up.connect(_on_del_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
@@ -199,3 +203,9 @@ func _on_text_changed(new_text : String) -> void:
 func _on_del_button_up() -> void:
 	print_rich("[color=878787][GoLogger] Category <" + category_name + "> deleted.")
 	request_log_deletion.emit(self)
+
+
+func _on_editor_settings_changed() -> void:
+	settings = EditorInterface.get_editor_settings()
+	editor_base_col = settings.get_setting("interface/theme/base_color")
+	base_panel.bg_color = editor_base_col

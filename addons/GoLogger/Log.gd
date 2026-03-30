@@ -499,9 +499,13 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			_target_filepath = config.get_value(str("categories." + _default_cat), "file_path", "")
 		else:
 			if _err_lv != 2:
-				printerr("GoLogger: Attempted to log entry into a default category[", _default_cat,"] that doesn't exist."\
-				if _default_cat!= "" else "GoLogger: Unable to log entry into a default category without a category assigned as default."
-				)
+				if _default_cat.is_empty():
+					printerr("GoLogger: Attempted to log entry into default category when one hasn't assigned:\n\t", msg)
+				else:
+					if !_cats.has(_default_cat):
+						printerr("GoLogger: Entry failed to log into default category[", _default_cat, "] that does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
+					printerr("GoLogger: Attempted to log entry into a default category[", _default_cat,"] that doesn't exist.")
+
 			return
 
 	if _cats.is_empty():

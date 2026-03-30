@@ -15,6 +15,17 @@
 [ext_resource type="StyleBox" uid="uid://b8w5i8chks7st" path="res://addons/GoLogger/Resources/line_edit_stylebox_valid.tres" id="9_qo8nw"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jx8uf"]
+bg_color = Color(0.105882354, 0.14509805, 0.14901961, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f4fkd"]
+bg_color = Color(0.105882354, 0.14509805, 0.14901961, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ntic"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tayiv"]
@@ -69,36 +80,43 @@ size_flags_vertical = 3
 theme_override_constants/side_margin = 8
 theme_override_constants/tab_separation = 6
 theme_override_styles/tabbar_background = ExtResource("1_vja36")
-theme_override_styles/tab_unselected = ExtResource("2_f4fkd")
-theme_override_styles/tab_hovered = ExtResource("3_jx8uf")
-theme_override_styles/tab_selected = ExtResource("4_7jf0p")
-current_tab = 2
+theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_jx8uf")
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
-[node name="Categories" type="MarginContainer" parent="." unique_id=593789802]
-unique_name_in_owner = true
-visible = false
+[node name="Panel" type="Panel" parent="." unique_id=1438997895]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 8
 metadata/_tab_index = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Categories" unique_id=1224284395]
+[node name="Categories" type="MarginContainer" parent="Panel" unique_id=593789802]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Categories" unique_id=1224284395]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TopButtonPanel" type="Panel" parent="Categories/VBoxContainer" unique_id=1547891829]
+[node name="TopBarPanel" type="Panel" parent="Panel/Categories/VBoxContainer" unique_id=1547891829]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f4fkd")
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel" unique_id=1878771389]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel" unique_id=1878771389]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -110,15 +128,15 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer" unique_id=1236446976]
+[node name="TitleHBoxContainer" type="HBoxContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer" unique_id=1236446976]
 layout_mode = 2
 
-[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
+[node name="LeftHBoxContainer" type="HBoxContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AddCategoryButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
+[node name="AddCategoryButton" type="Button" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Add a new log category"
@@ -131,7 +149,7 @@ theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
 
-[node name="OpenDirCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
+[node name="OpenDirCatButton" type="Button" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Opens the base directory folder using your file browser"
@@ -144,36 +162,10 @@ theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.023
 icon = ExtResource("2_6725a")
 icon_alignment = 1
 
-[node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
-unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-bbcode_enabled = true
-text = "[font_size=12][color=red][wave amp=10.0 freq=4.0 connected=1]Deleting categories does [b]NOT[/b] delete the file/folder in your file system"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
-layout_mode = 2
-theme_override_constants/separation = 11
-alignment = 2
-
-[node name="ColumnSliderPanel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1853444314]
-custom_minimum_size = Vector2(200, 0)
+[node name="VSeparator" type="VSeparator" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=990503779]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/ColumnSliderPanel" unique_id=942552739]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
-
-[node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/ColumnSliderPanel/MarginContainer" unique_id=1743312277]
+[node name="ColumnsHSlider" type="HSlider" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1743312277]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -186,10 +178,22 @@ max_value = 10.0
 value = 4.0
 rounded = true
 
-[node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=990503779]
+[node name="CatDelWarningRLabel" type="RichTextLabel" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[font_size=12][color=red][wave amp=10.0 freq=4.0 connected=1]Deleting categories does [b]NOT[/b] delete the file/folder in your file system"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PluginVersionCatLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
+[node name="RightHBoxContainer" type="HBoxContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
+layout_mode = 2
+theme_override_constants/separation = 11
+alignment = 2
+
+[node name="PluginVersionCatLabel" type="Label" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -198,21 +202,21 @@ label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer" unique_id=642802176]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Categories/VBoxContainer" unique_id=642802176]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/ScrollContainer" unique_id=333286901]
+[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Panel/Categories/VBoxContainer/ScrollContainer" unique_id=333286901]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 9
 
-[node name="CategoryGridContainer" type="GridContainer" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer" unique_id=2014106739]
+[node name="CategoryGridContainer" type="GridContainer" parent="Panel/Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer" unique_id=2014106739]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 5
+theme_override_constants/v_separation = 8
 columns = 4
 
 [node name="Settings" type="MarginContainer" parent="." unique_id=2095868147]
@@ -1050,6 +1054,7 @@ vertical_alignment = 2
 
 [node name="Help" type="MarginContainer" parent="." unique_id=652220434]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
