@@ -1,30 +1,26 @@
 [gd_scene format=3 uid="uid://0k0tpsfqof2s"]
 
-[ext_resource type="StyleBox" uid="uid://bp0510ij2p7l4" path="res://addons/GoLogger/Resources/tabbar_bg.tres" id="1_vja36"]
+[ext_resource type="StyleBox" uid="uid://bp0510ij2p7l4" path="res://addons/GoLogger/Resources/theme/tabbar_bg.tres" id="1_vja36"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
-[ext_resource type="StyleBox" uid="uid://dycqh7cqtjy4s" path="res://addons/GoLogger/Resources/tab_unselected.tres" id="2_f4fkd"]
+[ext_resource type="StyleBox" uid="uid://dycqh7cqtjy4s" path="res://addons/GoLogger/Resources/theme/tab_unselected.tres" id="2_f4fkd"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
-[ext_resource type="StyleBox" uid="uid://27e5r3ya7lul" path="res://addons/GoLogger/Resources/tab_hovered.tres" id="3_jx8uf"]
+[ext_resource type="StyleBox" uid="uid://df7sl23ox7q6" path="res://addons/GoLogger/Resources/theme/dock_category_top_bar_panel_flat.tres" id="3_f4fkd"]
+[ext_resource type="StyleBox" uid="uid://27e5r3ya7lul" path="res://addons/GoLogger/Resources/theme/tab_hovered.tres" id="3_jx8uf"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
-[ext_resource type="StyleBox" uid="uid://bygsbmlyeaqdj" path="res://addons/GoLogger/Resources/tab_selected.tres" id="4_7jf0p"]
+[ext_resource type="StyleBox" uid="uid://bygsbmlyeaqdj" path="res://addons/GoLogger/Resources/theme/tab_selected.tres" id="4_7jf0p"]
 [ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/GoLogger/Resources/id_example_panel_tex.png" id="5_7ntic"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
-[ext_resource type="StyleBox" uid="uid://b8w5i8chks7st" path="res://addons/GoLogger/Resources/line_edit_stylebox_valid.tres" id="9_qo8nw"]
+[ext_resource type="StyleBox" uid="uid://b8w5i8chks7st" path="res://addons/GoLogger/Resources/theme/line_edit_stylebox_valid.tres" id="9_qo8nw"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jx8uf"]
-bg_color = Color(0.105882354, 0.14509805, 0.14901961, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f4fkd"]
-bg_color = Color(0.105882354, 0.14509805, 0.14901961, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 4
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4fkd"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ntic"]
 
@@ -46,7 +42,7 @@ content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0.1, 0.1, 0.1, 1)
+bg_color = Color(0, 0, 0, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -77,10 +73,12 @@ offset_right = -0.120117
 offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/side_margin = 8
+theme_override_constants/side_margin = 13
 theme_override_constants/tab_separation = 6
 theme_override_styles/tabbar_background = ExtResource("1_vja36")
-theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_jx8uf")
+theme_override_styles/tab_unselected = ExtResource("2_f4fkd")
+theme_override_styles/tab_hovered = ExtResource("3_jx8uf")
+theme_override_styles/tab_selected = ExtResource("4_7jf0p")
 current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
@@ -114,7 +112,7 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f4fkd")
+theme_override_styles/panel = ExtResource("3_f4fkd")
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel" unique_id=1878771389]
 layout_mode = 1
@@ -146,6 +144,11 @@ theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521
 theme_override_colors/icon_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
 theme_override_colors/icon_hover_color = Color(0.254902, 0.764706, 0.819608, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
 
@@ -159,6 +162,11 @@ theme_override_colors/font_hover_pressed_color = Color(0.729412, 0.352941, 0.023
 theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("2_6725a")
 icon_alignment = 1
 
@@ -170,12 +178,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Columns: 4"
+tooltip_text = "Columns: 6"
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 4.0
+value = 6.0
 rounded = true
 
 [node name="CatDelWarningRLabel" type="RichTextLabel" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
@@ -217,7 +225,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 4
+columns = 6
 
 [node name="Settings" type="MarginContainer" parent="." unique_id=2095868147]
 visible = false

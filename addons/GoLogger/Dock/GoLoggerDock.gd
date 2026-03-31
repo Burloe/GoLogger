@@ -165,12 +165,18 @@ var id_overlay_outline_size_line: LineEdit
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
+@onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
+@onready var editor_contrast_col: Color = Color.BLACK
 
-var tab_bar_bg = preload("uid://bp0510ij2p7l4")
-var tab_bar_hovered = preload("uid://27e5r3ya7lul")
-var tab_bar_selected = preload("uid://bygsbmlyeaqdj")
-var tab_bar_unselected = preload("uid://dycqh7cqtjy4s")
+var stylebox_tab_bar_bg = preload("uid://bp0510ij2p7l4")
+var stylebox_tab_bar_hovered = preload("uid://27e5r3ya7lul")
+var stylebox_tab_bar_selected = preload("uid://bygsbmlyeaqdj")
+var stylebox_tab_bar_unselected = preload("uid://dycqh7cqtjy4s")
+var stylebox_cat_topbar_panel = preload("uid://df7sl23ox7q6")
 
+var editor_theme_base_col_elements: Array[Control] = [
+	cat_top_bar,
+]
 
 
 ## SEPERATOR has index 3, should not be used.
@@ -565,6 +571,7 @@ func _ready() -> void:
 
 		suppress_history_prints = true
 		load_data()
+		_sync_stylebox_colors(self)
 
 		await get_tree().process_frame
 		suppress_history_prints = false
@@ -1412,15 +1419,60 @@ func _on_column_slider_value_changed(value: int) -> void:
 func _on_editor_settings_changed() -> void:
 	settings = EditorInterface.get_editor_settings()
 	editor_base_col = settings.get("interface/theme/base_color")
-	var c_hov: Color = 		Color(editor_base_col.r - 15, editor_base_col.g - 15, editor_base_col.b - 15)
-	var c_sel: Color = 		Color(editor_base_col.r - 10, editor_base_col.g - 10, editor_base_col.b - 10)
-	var c_unsel: Color = 	Color(editor_base_col.r - 15, editor_base_col.g - 5, editor_base_col.b - 5)
-	tab_bar_bg.bg_color = editor_base_col
-	tab_bar_hovered.bg_color = editor_base_col
-	tab_bar_selected.bg_color = c_sel
-	tab_bar_unselected.bg_color = c_unsel
-	printerr("asdiofa")
-	# cat_top_bar.add_theme_color_override("bg_color", editor_base_col)
+	_sync_stylebox_colors(self)
+
+
+
+func _sync_stylebox_colors(current_node: Control):
+	var editor_theme = EditorInterface.get_editor_theme()
+	editor_base_col = settings.get("interface/theme/base_color")
+	editor_accent_col = settings.get("interface/theme/accent_color")
+	var accent_contrast_l = editor_accent_col.lerp(Color.WHITE, settings.get("interface/theme/contrast"))
+	var accent_contrast_d = editor_accent_col.lerp(Color.BLACK, settings.get("interface/theme/contrast"))
+	var base_contrast_l = editor_base_col.lerp(Color.WHITE, settings.get("interface/theme/contrast"))
+	var base_contrast_d = editor_base_col.lerp(Color.BLACK, settings.get("interface/theme/contrast"))
+
+	stylebox_tab_bar_bg.bg_color = editor_base_col
+	stylebox_tab_bar_hovered.bg_color = editor_accent_col
+	stylebox_tab_bar_selected.bg_color = accent_contrast_d
+	stylebox_tab_bar_unselected.bg_color = base_contrast_d
+	stylebox_cat_topbar_panel.bg_color = editor_base_col
+
+	# for child in current_node.get_children():
+	# 	if child is not Control:
+	# 		continue
+
+		# if child is Panel:
+			# if child.has_theme_stylebox_override("panel"):
+				# var _c = editor_theme.get_color("panel", child.get_class())
+				# child.get_theme_stylebox("panel").bg_color = _c
+				# print(child.get_theme_stylebox("panel").get_class(), " - ", _c)
+				# var ed_sb = editor_theme.get_stylebox("panel", child.get_class())
+
+		# if child is TabContainer:
+		# 	var styles: Array[String] = ["tab_selected", "tab_unselected", "tab_hovered"]
+
+		# 	for s in styles:
+		# 		var ed_sb = editor_theme.get_stylebox(s, child.get_class())
+		# 		child.get_theme_stylebox(s).bg_color = ed_sb.bg_color
+				# match s:
+				# 	"tab_selected": 	child.tab_selected.bg_color 	= ed_sb.bg_color
+				# 	"tab_unselected": child.tab_unselected.bg_color = ed_sb.bg_color
+				# 	"tab_hovered": 		child.tab_hovered.bg_color 		= ed_sb.bg_color
+
+			# if child.has_theme_stylebox_override("tab_selected"):
+			# 	var ed_sb = editor_theme.get_stylebox("tab_selected", child.get_class())
+			# 	child.tab_selected.bg_color = ed_sb.bg_color
+			# if child.has_theme_stylebox_override("tab_unselected"):
+			# 	var ed_sb = editor_theme.get_stylebox("tab_unselected", child.get_class())
+			# 	child.tab_unselected.bg_color = ed_sb.bg_color
+			# if child.has_theme_stylebox_override("tab_hovered"):
+			# 	var ed_sb = editor_theme.get_stylebox("tab_hovered", child.get_class())
+			# 	child.tab_hovered.bg_color = ed_sb.bg_color
+
+
+
+		# _sync_stylebox_colors(child)
 
 
 

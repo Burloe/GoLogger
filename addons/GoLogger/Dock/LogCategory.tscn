@@ -1,13 +1,14 @@
 [gd_scene format=3 uid="uid://c3n416c5fajm5"]
 
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
-[ext_resource type="StyleBox" uid="uid://dk62yeh7pd650" path="res://addons/GoLogger/Resources/log_cat_panel_stylebox.tres" id="1_ikmgl"]
+[ext_resource type="StyleBox" uid="uid://dk62yeh7pd650" path="res://addons/GoLogger/Resources/theme/contrasted_panel.tres" id="1_ikmgl"]
 [ext_resource type="Texture2D" uid="uid://dt4rwugiiq5qf" path="res://addons/GoLogger/Resources/icons/ArrowLeft.svg" id="2_82h6l"]
 [ext_resource type="Texture2D" uid="uid://b33lx2cjw84p0" path="res://addons/GoLogger/Resources/icons/Lock.svg" id="2_b4ns3"]
-[ext_resource type="StyleBox" uid="uid://cut1bfhhse6ga" path="res://addons/GoLogger/Resources/log_cat_hoverpressed_btn_stylebox.tres" id="2_sqvkr"]
+[ext_resource type="StyleBox" uid="uid://cut1bfhhse6ga" path="res://addons/GoLogger/Resources/theme/log_cat_hoverpressed_btn_stylebox.tres" id="2_sqvkr"]
 [ext_resource type="Texture2D" uid="uid://behxo6vcb5ubp" path="res://addons/GoLogger/Resources/icons/ArrowRight.svg" id="3_hkawy"]
-[ext_resource type="StyleBox" uid="uid://oxfpwfgom2k1" path="res://addons/GoLogger/Resources/log_cat_hover_btn_stylebox.tres" id="3_ikmgl"]
+[ext_resource type="StyleBox" uid="uid://oxfpwfgom2k1" path="res://addons/GoLogger/Resources/theme/log_cat_hover_btn_stylebox.tres" id="3_ikmgl"]
 [ext_resource type="Texture2D" uid="uid://goc0tdkq3dym" path="res://addons/GoLogger/Resources/icons/Remove.svg" id="5_hkawy"]
+[ext_resource type="StyleBox" uid="uid://lr0eol05gyiy" path="res://addons/GoLogger/Resources/theme/log_cat_hover_btn.tres" id="7_hqlwo"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hqlwo"]
 
@@ -69,8 +70,8 @@ corner_detail = 5
 
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 316.0
-offset_bottom = 89.0
+offset_right = 300.0
+offset_bottom = 78.0
 theme_override_styles/panel = ExtResource("1_ikmgl")
 script = ExtResource("1_8da2w")
 
@@ -93,10 +94,10 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_hqlwo")
 theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_owplt")
 theme_override_styles/pressed = ExtResource("2_sqvkr")
 theme_override_styles/pressed_mirrored = ExtResource("2_sqvkr")
-theme_override_styles/hover = ExtResource("3_ikmgl")
-theme_override_styles/hover_mirrored = ExtResource("3_ikmgl")
-theme_override_styles/hover_pressed = ExtResource("2_sqvkr")
-theme_override_styles/hover_pressed_mirrored = ExtResource("2_sqvkr")
+theme_override_styles/hover = ExtResource("7_hqlwo")
+theme_override_styles/hover_mirrored = ExtResource("7_hqlwo")
+theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
+theme_override_styles/hover_pressed_mirrored = ExtResource("7_hqlwo")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_owplt")
 theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_owplt")
 theme_override_styles/focus = ExtResource("3_ikmgl")
@@ -142,8 +143,8 @@ theme_override_colors/icon_hover_color = Color(0.96, 0.75584, 0.4032, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.960784, 0.647059, 0.105882, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_7kr4p")
 theme_override_styles/pressed = ExtResource("2_sqvkr")
-theme_override_styles/hover = ExtResource("3_ikmgl")
-theme_override_styles/hover_pressed = ExtResource("2_sqvkr")
+theme_override_styles/hover = ExtResource("7_hqlwo")
+theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
 toggle_mode = true
 icon = ExtResource("2_b4ns3")
 icon_alignment = 1
@@ -156,6 +157,8 @@ tooltip_text = "Mark as default. Used when a category name isn't specified when 
 
 See Help > Getting Started >  Default Category"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_hkawy")
+theme_override_styles/hover = ExtResource("7_hqlwo")
+theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
 
 [node name="ApplyButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1330065459]
 unique_name_in_owner = true
@@ -186,8 +189,8 @@ theme_override_colors/icon_hover_color = Color(0.85, 0.1785, 0.1785, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.4, 0.028, 0.0962, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_7kr4p")
 theme_override_styles/pressed = ExtResource("2_sqvkr")
-theme_override_styles/hover = ExtResource("3_ikmgl")
-theme_override_styles/hover_pressed = ExtResource("2_sqvkr")
+theme_override_styles/hover = ExtResource("7_hqlwo")
+theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
 text = "
 "
 icon = ExtResource("5_hkawy")
@@ -202,10 +205,10 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_owplt")
 theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_owplt")
 theme_override_styles/pressed = ExtResource("2_sqvkr")
 theme_override_styles/pressed_mirrored = ExtResource("2_sqvkr")
-theme_override_styles/hover = ExtResource("3_ikmgl")
-theme_override_styles/hover_mirrored = ExtResource("3_ikmgl")
-theme_override_styles/hover_pressed = ExtResource("2_sqvkr")
-theme_override_styles/hover_pressed_mirrored = ExtResource("2_sqvkr")
+theme_override_styles/hover = ExtResource("7_hqlwo")
+theme_override_styles/hover_mirrored = ExtResource("7_hqlwo")
+theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
+theme_override_styles/hover_pressed_mirrored = ExtResource("7_hqlwo")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_owplt")
 theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_owplt")
 theme_override_styles/focus = ExtResource("3_ikmgl")

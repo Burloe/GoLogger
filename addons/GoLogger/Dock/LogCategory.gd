@@ -20,7 +20,9 @@ signal category_deleted()
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
+@onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
 var base_panel = preload("uid://dk62yeh7pd650")
+var stylebox_hover_btn = preload("uid://lr0eol05gyiy")
 
 const PATH = "user://gologger_data.ini"
 var config = ConfigFile.new()
@@ -101,6 +103,7 @@ func _ready() -> void:
 		else:
 			invalid_name = false
 
+		_sync_stylebox_colors()
 
 
 
@@ -208,4 +211,18 @@ func _on_del_button_up() -> void:
 func _on_editor_settings_changed() -> void:
 	settings = EditorInterface.get_editor_settings()
 	editor_base_col = settings.get_setting("interface/theme/base_color")
+	editor_accent_col = settings.get_setting("interface/theme/accent_color")
+	_sync_stylebox_colors()
+
+
+func _sync_stylebox_colors():
+	var editor_theme = EditorInterface.get_editor_theme()
+	editor_base_col = settings.get("interface/theme/base_color")
+	editor_accent_col = settings.get("interface/theme/accent_color")
+	var accent_contrast_l = editor_accent_col.lerp(Color.WHITE, settings.get("interface/theme/contrast"))
+	var accent_contrast_d = editor_accent_col.lerp(Color.BLACK, settings.get("interface/theme/contrast"))
+	var base_contrast_l = editor_base_col.lerp(Color.WHITE, settings.get("interface/theme/contrast"))
+	var base_contrast_d = editor_base_col.lerp(Color.BLACK, settings.get("interface/theme/contrast"))
+
 	base_panel.bg_color = editor_base_col
+	stylebox_hover_btn.border_color = editor_accent_col
