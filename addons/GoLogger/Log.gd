@@ -166,8 +166,8 @@ var settings_dict := {
 	"entry_count_action": 				{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"session_timer_action": 			{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"file_cap": 									{"value": 10, 			"type": TYPE_INT, 		"default": 10},
-	"entry_cap": 									{"value": 300, 			"type": TYPE_INT, 		"default": 300},
-	"session_duration": 					{"value": 300, 			"type": TYPE_INT, 		"default": 300},
+	"entry_cap": 									{"value": 1200, 		"type": TYPE_INT, 		"default": 1200},
+	"session_duration": 					{"value": 900, 			"type": TYPE_INT, 		"default": 900},
 	"error_reporting": 						{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"columns": 										{"value": 5, 				"type": TYPE_INT, 		"default": 5},
 

@@ -162,6 +162,9 @@ var id_overlay_outline_size_line: LineEdit
 @onready var help_tab_container: TabContainer = %HelpTabContainer
 @onready var user_dir_btn: Button = %UserDirBtn
 @onready var cat_top_bar: Panel = %TopBarPanel
+@onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
+@onready var limit_fold_cont: FoldableContainer = %LimitationsFoldableContainer
+@onready var id_overlay_fold_cont: FoldableContainer = %IDOverlayFoldableContainer
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
@@ -173,6 +176,15 @@ var stylebox_tab_bar_hovered = preload("uid://27e5r3ya7lul")
 var stylebox_tab_bar_selected = preload("uid://bygsbmlyeaqdj")
 var stylebox_tab_bar_unselected = preload("uid://dycqh7cqtjy4s")
 var stylebox_cat_topbar_panel = preload("uid://df7sl23ox7q6")
+
+var stylebox_fold_cont_title_panel = preload("uid://cx8jchknob0px")
+var stylebox_fold_cont_hover_panel = preload("uid://cc42b0ogwbi6p")
+var stylebox_fold_cont_collapsed_panel = preload("uid://o2iplj744aa1")
+var stylebox_fold_cont_collapsed_hover = preload("uid://cjvhvvsskpw3m")
+
+var stylebox_opt_btn_normal 	= preload("uid://btk0m0my1jv7b")
+var stylebox_opt_btn_hover 		= preload("uid://3b4n4duo7pak")
+
 
 var editor_theme_base_col_elements: Array[Control] = [
 	cat_top_bar,
@@ -250,8 +262,8 @@ var settings_dict := {
 	"entry_count_action": 				{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"session_timer_action": 			{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"file_cap": 									{"value": 10, 			"type": TYPE_INT, 		"default": 10},
-	"entry_cap": 									{"value": 300, 			"type": TYPE_INT, 		"default": 300},
-	"session_duration": 					{"value": 300, 			"type": TYPE_INT, 		"default": 300},
+	"entry_cap": 									{"value": 1200, 		"type": TYPE_INT, 		"default": 1200},
+	"session_duration": 					{"value": 900, 			"type": TYPE_INT, 		"default": 900},
 	"error_reporting": 						{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"columns": 										{"value": 5, 				"type": TYPE_INT, 		"default": 5},
 
@@ -1422,60 +1434,62 @@ func _on_editor_settings_changed() -> void:
 	_sync_stylebox_colors(self)
 
 
-
-func _sync_stylebox_colors(current_node: Control):
-	var editor_theme = EditorInterface.get_editor_theme()
-	editor_base_col = settings.get("interface/theme/base_color")
-	editor_accent_col = settings.get("interface/theme/accent_color")
-	var accent_contrast_l = editor_accent_col.lerp(Color.WHITE, settings.get("interface/theme/contrast"))
-	var accent_contrast_d = editor_accent_col.lerp(Color.BLACK, settings.get("interface/theme/contrast"))
-	var base_contrast_l = editor_base_col.lerp(Color.WHITE, settings.get("interface/theme/contrast"))
-	var base_contrast_d = editor_base_col.lerp(Color.BLACK, settings.get("interface/theme/contrast"))
-
-	stylebox_tab_bar_bg.bg_color = editor_base_col
-	stylebox_tab_bar_hovered.bg_color = editor_accent_col
-	stylebox_tab_bar_selected.bg_color = accent_contrast_d
-	stylebox_tab_bar_unselected.bg_color = base_contrast_d
-	stylebox_cat_topbar_panel.bg_color = editor_base_col
-
-	# for child in current_node.get_children():
-	# 	if child is not Control:
-	# 		continue
-
-		# if child is Panel:
-			# if child.has_theme_stylebox_override("panel"):
-				# var _c = editor_theme.get_color("panel", child.get_class())
-				# child.get_theme_stylebox("panel").bg_color = _c
-				# print(child.get_theme_stylebox("panel").get_class(), " - ", _c)
-				# var ed_sb = editor_theme.get_stylebox("panel", child.get_class())
-
-		# if child is TabContainer:
-		# 	var styles: Array[String] = ["tab_selected", "tab_unselected", "tab_hovered"]
-
-		# 	for s in styles:
-		# 		var ed_sb = editor_theme.get_stylebox(s, child.get_class())
-		# 		child.get_theme_stylebox(s).bg_color = ed_sb.bg_color
-				# match s:
-				# 	"tab_selected": 	child.tab_selected.bg_color 	= ed_sb.bg_color
-				# 	"tab_unselected": child.tab_unselected.bg_color = ed_sb.bg_color
-				# 	"tab_hovered": 		child.tab_hovered.bg_color 		= ed_sb.bg_color
-
-			# if child.has_theme_stylebox_override("tab_selected"):
-			# 	var ed_sb = editor_theme.get_stylebox("tab_selected", child.get_class())
-			# 	child.tab_selected.bg_color = ed_sb.bg_color
-			# if child.has_theme_stylebox_override("tab_unselected"):
-			# 	var ed_sb = editor_theme.get_stylebox("tab_unselected", child.get_class())
-			# 	child.tab_unselected.bg_color = ed_sb.bg_color
-			# if child.has_theme_stylebox_override("tab_hovered"):
-			# 	var ed_sb = editor_theme.get_stylebox("tab_hovered", child.get_class())
-			# 	child.tab_hovered.bg_color = ed_sb.bg_color
-
-
-
-		# _sync_stylebox_colors(child)
-
-
-
 ## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
 	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
+
+
+func _sync_stylebox_colors(current_node: Control):
+	var editor_theme 			= EditorInterface.get_editor_theme()
+	editor_base_col 			= settings.get("interface/theme/base_color")
+	editor_accent_col 		= settings.get("interface/theme/accent_color")
+	var accent_contrast_l = editor_accent_col.lerp(	Color.WHITE, settings.get("interface/theme/contrast"))
+	var accent_contrast_d = editor_accent_col.lerp(	Color.BLACK, settings.get("interface/theme/contrast"))
+	var base_contrast_l 	= editor_base_col.lerp(		Color.WHITE, settings.get("interface/theme/contrast"))
+	var base_contrast_l_h = editor_base_col.lerp(		Color.WHITE, settings.get("interface/theme/contrast") / 2)
+	var base_contrast_d 	= editor_base_col.lerp(		Color.BLACK, settings.get("interface/theme/contrast"))
+	var base_contrast_d_h = editor_base_col.lerp(		Color.BLACK, settings.get("interface/theme/contrast") / 2)
+
+	var norm_font_col:													= Color(0.878, 0.878, 0.878)
+	var hover_font_col:													= Color(0.95, 0.95, 0.95)
+	var interact_normal_c 											= editor_base_col
+	var interact_hover_c 												= base_contrast_l
+	var interact_pressed_c 											= editor_base_col
+	var interact_pressed_hover_c 								= base_contrast_l
+
+	# TabContainer
+	stylebox_tab_bar_bg.bg_color 								= editor_base_col
+	stylebox_tab_bar_hovered.bg_color 					= editor_accent_col
+	stylebox_tab_bar_selected.bg_color 					= accent_contrast_d
+	stylebox_tab_bar_unselected.bg_color 				= base_contrast_d
+	stylebox_cat_topbar_panel.bg_color 					= editor_base_col
+
+	# FoldableContainer
+	stylebox_fold_cont_title_panel.bg_color 		= interact_normal_c
+	stylebox_fold_cont_hover_panel.bg_color 		= interact_hover_c
+	stylebox_fold_cont_collapsed_panel.bg_color = interact_pressed_c
+	stylebox_fold_cont_collapsed_hover.bg_color = base_contrast_l_h
+	var fold_conts: Array[FoldableContainer] 		= [general_fold_cont, limit_fold_cont, id_overlay_fold_cont]
+	for cont in fold_conts:
+		cont.add_theme_color_override("font_color", 						norm_font_col 	if interact_normal_c.v 					< 0.7 else base_contrast_d)
+		cont.add_theme_color_override("hover_font_color", 			hover_font_col 	if interact_hover_c.v 					< 0.7 else editor_base_col)
+		cont.add_theme_color_override("collapsed_font_color", 	Color.WHITE 		if base_contrast_l_h.v 					< 0.7 else editor_base_col)
+		cont.add_theme_color_override("title_collapsed_hover", 	Color.WHITE 		if interact_pressed_hover_c.v 	< 0.7 else editor_base_col)
+
+	# OptionButton
+	stylebox_opt_btn_normal.bg_color 		= interact_normal_c
+	stylebox_opt_btn_hover.bg_color 		= interact_pressed_c
+	stylebox_opt_btn_hover.border_color = editor_accent_col
+	var opt_btns: Array[OptionButton] = [
+		error_rep_btn,
+		limit_method_btn,
+		entry_count_action_btn,
+		session_timer_action_btn,
+		id_overlay_align_opt_btn,
+	]
+
+	for btn in opt_btns:
+		btn.add_theme_color_override("font_color", 								norm_font_col 	if interact_normal_c.v 					< 0.7 else base_contrast_d)
+		btn.add_theme_color_override("font_pressed_color", 				hover_font_col 	if interact_hover_c.v 					< 0.7 else editor_base_col)
+		btn.add_theme_color_override("font_hover_color", 					Color.WHITE 		if interact_pressed_c.v 				< 0.7 else editor_base_col)
+		btn.add_theme_color_override("font_hover_pressed_color", 	Color.WHITE 		if interact_pressed_hover_c.v 	< 0.7 else editor_base_col)

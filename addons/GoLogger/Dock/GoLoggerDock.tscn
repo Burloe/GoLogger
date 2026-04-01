@@ -14,7 +14,13 @@
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/GoLogger/Resources/id_example_panel_tex.png" id="5_7ntic"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 [ext_resource type="StyleBox" uid="uid://b8w5i8chks7st" path="res://addons/GoLogger/Resources/theme/line_edit_stylebox_valid.tres" id="9_qo8nw"]
+[ext_resource type="StyleBox" uid="uid://cx8jchknob0px" path="res://addons/GoLogger/Resources/theme/foldable_container_title_panel.tres" id="10_cncvn"]
+[ext_resource type="StyleBox" uid="uid://cc42b0ogwbi6p" path="res://addons/GoLogger/Resources/theme/foldable_container_hover_panel.tres" id="11_4xb1f"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
+[ext_resource type="StyleBox" uid="uid://o2iplj744aa1" path="res://addons/GoLogger/Resources/theme/foldable_container_collapsed_panel.tres" id="12_fcs7p"]
+[ext_resource type="StyleBox" uid="uid://cjvhvvsskpw3m" path="res://addons/GoLogger/Resources/theme/foldable_container_collapsed_hover.tres" id="13_k47fi"]
+[ext_resource type="StyleBox" uid="uid://btk0m0my1jv7b" path="res://addons/GoLogger/Resources/theme/opt_btn_normal.tres" id="14_k47fi"]
+[ext_resource type="StyleBox" uid="uid://3b4n4duo7pak" path="res://addons/GoLogger/Resources/theme/opt_btn_hover.tres" id="16_tvbkj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4fkd"]
 content_margin_left = 8.0
@@ -79,7 +85,7 @@ theme_override_styles/tabbar_background = ExtResource("1_vja36")
 theme_override_styles/tab_unselected = ExtResource("2_f4fkd")
 theme_override_styles/tab_hovered = ExtResource("3_jx8uf")
 theme_override_styles/tab_selected = ExtResource("4_7jf0p")
-current_tab = 0
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -87,6 +93,7 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Panel" type="Panel" parent="." unique_id=1438997895]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -137,7 +144,7 @@ theme_override_constants/separation = 8
 [node name="AddCategoryButton" type="Button" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Add a new log category"
+tooltip_text = "Create new category"
 theme_override_colors/font_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
 theme_override_colors/font_hover_color = Color(0.2542, 0.76342, 0.82, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
@@ -155,7 +162,7 @@ icon_alignment = 1
 [node name="OpenDirCatButton" type="Button" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Opens the base directory folder using your file browser"
+tooltip_text = "Opens Base Directory using OS file browser"
 theme_override_colors/font_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
 theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
@@ -228,7 +235,6 @@ theme_override_constants/v_separation = 8
 columns = 6
 
 [node name="Settings" type="MarginContainer" parent="." unique_id=2095868147]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_right = 4
@@ -269,13 +275,16 @@ layout_mode = 2
 theme_override_constants/separation = 15
 
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1807564640]
+unique_name_in_owner = true
 layout_mode = 2
-folded = true
+theme_override_styles/title_panel = ExtResource("10_cncvn")
+theme_override_styles/title_hover_panel = ExtResource("11_4xb1f")
+theme_override_styles/title_collapsed_panel = ExtResource("12_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("13_k47fi")
 title = "General"
 title_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 12
 
@@ -356,6 +365,10 @@ text = "Error report level"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
+theme_override_styles/normal = ExtResource("14_k47fi")
+theme_override_styles/pressed = ExtResource("16_tvbkj")
+theme_override_styles/hover = ExtResource("16_tvbkj")
+theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
 selected = 0
 item_count = 4
 popup/item_0/text = "Warnings & Errors    "
@@ -369,7 +382,12 @@ popup/item_3/text = "None"
 popup/item_3/id = 3
 
 [node name="LimitationsFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1108637460]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_styles/title_panel = ExtResource("10_cncvn")
+theme_override_styles/title_hover_panel = ExtResource("11_4xb1f")
+theme_override_styles/title_collapsed_panel = ExtResource("12_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("13_k47fi")
 folded = true
 title = "Limitations"
 title_alignment = 1
@@ -432,6 +450,10 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Method used to limit file size. 
 Use the selected Actions below to determine what happens once the method condition is fullfilled."
+theme_override_styles/normal = ExtResource("14_k47fi")
+theme_override_styles/pressed = ExtResource("16_tvbkj")
+theme_override_styles/hover = ExtResource("16_tvbkj")
+theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
 selected = 2
 allow_reselect = true
 item_count = 5
@@ -473,6 +495,10 @@ size_flags_vertical = 4
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
 Overwrite Entries removes the oldest entry as new ones are logged.
 "
+theme_override_styles/normal = ExtResource("14_k47fi")
+theme_override_styles/pressed = ExtResource("16_tvbkj")
+theme_override_styles/hover = ExtResource("16_tvbkj")
+theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
 selected = 0
 allow_reselect = true
 item_count = 3
@@ -534,6 +560,10 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
+theme_override_styles/normal = ExtResource("14_k47fi")
+theme_override_styles/pressed = ExtResource("16_tvbkj")
+theme_override_styles/hover = ExtResource("16_tvbkj")
+theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
 selected = 0
 allow_reselect = true
 item_count = 2
@@ -575,7 +605,16 @@ custom_arrow_step = 1.0
 select_all_on_focus = true
 
 [node name="IDOverlayFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1336991210]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/hover_font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/collapsed_font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_styles/title_panel = ExtResource("10_cncvn")
+theme_override_styles/title_hover_panel = ExtResource("11_4xb1f")
+theme_override_styles/title_collapsed_panel = ExtResource("12_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("13_k47fi")
 title = "ID Overlay"
 title_alignment = 1
 
@@ -627,6 +666,10 @@ text = "Alignment"
 [node name="IDOverlayAlignOptBtn" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=1922500613]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_styles/normal = ExtResource("14_k47fi")
+theme_override_styles/pressed = ExtResource("16_tvbkj")
+theme_override_styles/hover = ExtResource("16_tvbkj")
+theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
 alignment = 2
 selected = 0
 item_count = 11
