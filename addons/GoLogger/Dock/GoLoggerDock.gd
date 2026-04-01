@@ -86,7 +86,6 @@ signal open_hotkey_resource()
 @onready var entry_format_apply_btn: Button = %EntryFormatApplyButton
 @onready var entry_format_reset_btn: Button = %EntryFormatResetButton
 @onready var entry_format_warning: Panel = %EntryFormatWarning
-@onready var concurrency_info_btn: Button = %ConcurrencyInfoButton
 @onready var entry_format_container: HBoxContainer = %EntryFormatHBox
 
 var canvas_spinbox_line: LineEdit
@@ -383,7 +382,6 @@ func _ready() -> void:
 			log_header_apply_btn,
 			entry_format_line,
 			entry_format_apply_btn,
-			concurrency_info_btn,
 			canvas_layer_spinbox,
 			autostart_btn,
 			utc_btn,
@@ -1138,11 +1136,6 @@ func _on_button_button_up(node: Button) -> void:
 				print_rich(c_print_history, "Entry format reset to default.")
 			entry_format_apply_btn.disabled = true
 
-		concurrency_info_btn:
-			current_tab = 2 # Switch to Help tab
-			help_tab_container.current_tab = 3 # Switch to Concurrency Help sub-tab
-			print(help_tab_container.current_tab)
-
 
 	save_data()
 
@@ -1477,8 +1470,8 @@ func _sync_stylebox_colors(current_node: Control):
 		cont.add_theme_color_override("title_collapsed_hover", 	Color.WHITE 		if interact_pressed_hover_c.v 	< 0.7 else editor_base_col)
 
 	# OptionButton
-	stylebox_opt_btn_normal.bg_color 		= interact_normal_c
-	stylebox_opt_btn_hover.bg_color 		= interact_pressed_c
+	stylebox_opt_btn_normal.bg_color 		= Color.TRANSPARENT
+	stylebox_opt_btn_hover.bg_color 		= Color.TRANSPARENT
 	stylebox_opt_btn_hover.border_color = editor_accent_col
 	var opt_btns: Array[OptionButton] = [
 		error_rep_btn,
@@ -1489,7 +1482,13 @@ func _sync_stylebox_colors(current_node: Control):
 	]
 
 	for btn in opt_btns:
-		btn.add_theme_color_override("font_color", 								norm_font_col 	if interact_normal_c.v 					< 0.7 else base_contrast_d)
+		btn.add_theme_color_override("font_color", 								norm_font_col 	if interact_normal_c.v 					< 0.7 else editor_base_col)
 		btn.add_theme_color_override("font_pressed_color", 				hover_font_col 	if interact_hover_c.v 					< 0.7 else editor_base_col)
 		btn.add_theme_color_override("font_hover_color", 					Color.WHITE 		if interact_pressed_c.v 				< 0.7 else editor_base_col)
 		btn.add_theme_color_override("font_hover_pressed_color", 	Color.WHITE 		if interact_pressed_hover_c.v 	< 0.7 else editor_base_col)
+
+
+	# SpinBox
+
+
+	# ColorPicketButton
