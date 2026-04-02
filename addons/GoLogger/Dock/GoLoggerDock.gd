@@ -88,11 +88,6 @@ signal open_hotkey_resource()
 @onready var entry_format_warning: Panel = %EntryFormatWarning
 @onready var entry_format_container: HBoxContainer = %EntryFormatHBox
 
-var canvas_spinbox_line: LineEdit
-@onready var canvas_layer_spinbox: SpinBox = %CanvasLayerSpinBox
-@onready var canvas_layer_lbl: Label = %CanvasLayerLabel
-@onready var canvas_layer_container: HBoxContainer = %CanvasLayerHBox
-
 @onready var autostart_btn: CheckButton = %AutostartCheckButton
 @onready var utc_btn: CheckButton = %UTCCheckButton
 
@@ -140,7 +135,7 @@ var session_duration_spinbox_line: LineEdit
 @onready var id_overlay_align_opt_btn: OptionButton = %IDOverlayAlignOptBtn
 @onready var id_overlay_align_lbl: Label = %IDOverlayAlignLabel
 
-var id_overlay_font_size_line: LineEdit
+var id_overlay_font_size_spinbox_line: LineEdit
 @onready var id_overlay_font_size_spinbox: SpinBox = %IDOverlayFontSizeSpinBox
 @onready var id_overlay_font_size_lbl: Label = %IDOverlayFontSizeLabel
 @onready var id_overlay_toggle_btn: CheckButton = %ToggleIDOverlayCheckBtn
@@ -149,7 +144,7 @@ var id_overlay_font_size_line: LineEdit
 @onready var id_overlay_font_col_lbl: Label = %IDOverlayFontColorLabel
 @onready var id_overlay_font_col_container: HBoxContainer = %IDOverlayFontColorHBox
 
-var id_overlay_outline_size_line: LineEdit
+var id_overlay_outline_size_spinbox_line: LineEdit
 @onready var id_overlay_outline_size_hbox: HBoxContainer = %IDOverlayOutlineSizeHBox
 @onready var id_overlay_outline_size_spinbox: SpinBox = %IDOverlayOutlineSizeSpinBox
 @onready var id_overlay_outline_size_lbl: Label = %IDOverlayOutlineSizeLabel
@@ -169,6 +164,11 @@ var id_overlay_outline_size_line: LineEdit
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
 @onready var editor_contrast_col: Color = Color.BLACK
+
+
+var sb_line_edit_normal = preload("uid://pue22dsifmfd")
+var sb_line_edit_highlight = preload("uid://dl1ay0wubtp2m")
+
 
 var stylebox_tab_bar_bg = preload("uid://bp0510ij2p7l4")
 var stylebox_tab_bar_hovered = preload("uid://27e5r3ya7lul")
@@ -246,7 +246,6 @@ var settings_dict := {
 	"base_directory": 						{"value": "user://GoLogger/", "type": TYPE_STRING, "default": "user://GoLogger/"},
 	"log_header_format": 					{"value": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", "type": TYPE_STRING, "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
 	"entry_format": 							{"value":						 "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"canvaslayer_layer": 					{"value": 5, 				"type": TYPE_INT, 		"default": 5},
 	"autostart_session": 					{"value": true, 		"type": TYPE_BOOL, 		"default": true},
 	"use_utc": 										{"value": false, 		"type": TYPE_BOOL, 		"default": false},
 	"id_overlay_print": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
@@ -272,7 +271,6 @@ var settings_dict := {
 		"base_directory": 								"user://GoLogger/",
 		"log_header_format": 							"{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": 									"[{hh}:{mi}:{ss}] {instance_id}: {entry}",
-		"canvaslayer_layer": 							5,
 		"autostart_session": 							true,
 		"use_utc": 												false,
 		"id_overlay_print": 							false,
@@ -299,7 +297,6 @@ var settings_dict := {
 		"columns": 									"settings/columns",
 		"log_header_format": 				"settings/log_header_format",
 		"entry_format": 						"settings/entry_format",
-		"canvaslayer_layer": 				"settings/canvaslayer_layer",
 		"autostart_session": 				"settings/autostart_session",
 		"use_utc": 									"settings/use_utc",
 		"id_overlay_print": 				"settings/id_overlay_print",
@@ -325,7 +322,6 @@ var settings_dict := {
 		"settings/columns": 									TYPE_INT,
 		"settings/log_header_format": 				TYPE_STRING,
 		"settings/entry_format" : 						TYPE_STRING,
-		"settings/canvaslayer_layer": 				TYPE_INT,
 		"settings/autostart_session": 				TYPE_BOOL,
 		"settings/use_utc": 									TYPE_BOOL,
 		"settings/id_overlay_print": 					TYPE_BOOL,
@@ -348,6 +344,7 @@ var settings_dict := {
 
 
 
+
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
@@ -356,6 +353,8 @@ func _ready() -> void:
 			create_settings_file()
 
 		config.load(PATH)
+		_ensure_default_category()
+			
 		cat_del_warn_rlbl.modulate = Color.TRANSPARENT
 		id_overlay_startup_btn.show() if config.get_value("settings", "id_overlay_toggle", false) else id_overlay_startup_btn.hide()
 
@@ -373,6 +372,56 @@ func _ready() -> void:
 		reset_settings_btn.button_up.connect(reset_to_default)
 		user_dir_btn.button_up.connect(_open_user_dir)
 
+		# SpinBoxes
+		var spinboxes: Array = [
+			[
+				file_count_spinbox,
+				entry_count_spinbox,
+				session_duration_spinbox,
+				id_overlay_font_size_spinbox,
+				id_overlay_outline_size_spinbox
+			],
+			[
+				file_count_spinbox_line,
+				entry_count_spinbox_line,
+				session_duration_spinbox_line,
+				id_overlay_font_size_spinbox_line,
+				id_overlay_outline_size_spinbox_line
+			]
+		]
+
+		for i in range(spinboxes[0].size()):
+			if spinboxes[1][i] == null: spinboxes[1][i] = spinboxes[0][i].get_line_edit()
+			if spinboxes[1][i].text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+				spinboxes[1][i].text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+			spinboxes[1][i].text_submitted.connect(_on_spinbox_lineedit_submitted.bind(spinboxes[1][i]))
+
+		id_overlay_font_size_spinbox_line = id_overlay_font_size_spinbox.get_line_edit()
+		id_overlay_outline_size_spinbox_line = id_overlay_outline_size_spinbox.get_line_edit()
+		file_count_spinbox_line = file_count_spinbox.get_line_edit()
+		entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
+		session_duration_spinbox_line = session_duration_spinbox.get_line_edit()
+		
+
+		var line_edits: Array[LineEdit] = [
+			base_dir_line,
+			log_header_line,
+			entry_format_line,
+			id_overlay_font_size_spinbox_line,
+			id_overlay_outline_size_spinbox_line,
+			file_count_spinbox_line,
+			entry_count_spinbox_line,
+			session_duration_spinbox_line
+		]
+		for line in line_edits:
+			if line == null: return
+
+			line.add_theme_stylebox_override("normal", sb_line_edit_normal)
+			print(line.get_name(), " - ", line.get_theme_stylebox("normal"))
+			line.editing_toggled.connect(_on_line_edit_highlight_changed.bind(line))
+			line.mouse_entered.connect(_on_line_edit_highlight_changed.bind(true, line))
+			line.mouse_exited.connect(_on_line_edit_highlight_changed.bind(false, line))
+
 		btn_array = [
 			base_dir_line,
 			base_dir_apply_btn,
@@ -382,25 +431,30 @@ func _ready() -> void:
 			log_header_apply_btn,
 			entry_format_line,
 			entry_format_apply_btn,
-			canvas_layer_spinbox,
 			autostart_btn,
 			utc_btn,
 			print_instance_id_btn,
 			id_overlay_toggle_btn,
 			id_overlay_align_opt_btn,
 			id_overlay_font_size_spinbox,
+			id_overlay_font_size_spinbox_line,
 			id_overlay_font_col_btn,
 			id_overlay_outline_size_spinbox,
+			id_overlay_outline_size_spinbox_line,
 			id_overlay_outline_col_btn,
 			id_overlay_startup_btn,
 			limit_method_btn,
 			entry_count_action_btn,
 			session_timer_action_btn,
 			file_count_spinbox,
+			file_count_spinbox_line,
 			entry_count_spinbox,
+			entry_count_spinbox_line,
 			session_duration_spinbox,
+			session_duration_spinbox_line,
 			error_rep_btn,
 		]
+
 
 		for i in range(btn_array.size()):
 			if btn_array[i] is Button:
@@ -438,36 +492,10 @@ func _ready() -> void:
 				btn_array[i].color_changed.connect(_on_colorpicker_color_changed.bind(btn_array[i]))
 
 
-		var spinboxes: Array = [
-			[
-				canvas_layer_spinbox,
-				file_count_spinbox,
-				entry_count_spinbox,
-				session_duration_spinbox,
-				id_overlay_font_size_spinbox,
-				id_overlay_outline_size_spinbox
-			],
-			[
-				canvas_spinbox_line,
-				file_count_spinbox_line,
-				entry_count_spinbox_line,
-				session_duration_spinbox_line,
-				id_overlay_font_size_line,
-				id_overlay_outline_size_line
-			]
-		]
-
-		for i in range(spinboxes[0].size()):
-			if spinboxes[1][i] == null: spinboxes[1][i] = spinboxes[0][i].get_line_edit()
-			if spinboxes[1][i].text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-				spinboxes[1][i].text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-			spinboxes[1][i].text_submitted.connect(_on_spinbox_lineedit_submitted.bind(spinboxes[1][i]))
-
 		container_array = [
 			base_dir_container,
 			log_header_container,
 			entry_format_container,
-			canvas_layer_container,
 			limit_method_container,
 			entry_count_action_container,
 			session_timer_action_container,
@@ -486,7 +514,6 @@ func _ready() -> void:
 			base_dir_line,
 			log_header_line,
 			entry_format_line,
-			canvas_layer_spinbox,
 			limit_method_btn,
 			entry_count_action_btn,
 			session_timer_action_btn,
@@ -505,7 +532,6 @@ func _ready() -> void:
 			base_dir_lbl,
 			log_header_lbl,
 			entry_format_lbl,
-			canvas_layer_lbl,
 			limit_method_lbl,
 			entry_count_action_lbl,
 			session_timer_action_lbl,
@@ -590,7 +616,6 @@ func _ready() -> void:
 			"base_directory": base_dir_line,
 			"log_header_format": log_header_line,
 			"entry_format": entry_format_line,
-			"canvaslayer_layer": canvas_layer_spinbox,
 			"autostart_session": autostart_btn,
 			"use_utc": utc_btn,
 			"id_overlay_print": print_instance_id_btn,
@@ -626,7 +651,6 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "columns", 												settings_dict.get("defaults", {}).get("columns", 5))
 	cf.set_value("settings", "log_header_format", 							settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
 	cf.set_value("settings", "entry_format", 										settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	cf.set_value("settings", "canvaslayer_layer", 							settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
 	cf.set_value("settings", "autostart_session", 							settings_dict.get("defaults", {}).get("autostart_session", true))
 	cf.set_value("settings", "use_utc", 												settings_dict.get("defaults", {}).get("use_utc", false))
 	cf.set_value("settings", "id_overlay_print", 								settings_dict.get("defaults", {}).get("id_overlay_print", false))
@@ -652,6 +676,7 @@ func create_settings_file() -> void: # Mirror
 		return
 
 	config.load(PATH)
+	_ensure_default_category()
 
 
 func reset_to_default() -> void:
@@ -672,7 +697,6 @@ func reset_to_default() -> void:
 	base_dir_line.text = 											settings_dict.get("defaults").get("base_directory", "user://GoLogger/")
 	log_header_line.text = 										settings_dict.get("defaults").get("log_header_format", "")
 	entry_format_line.text = 									settings_dict.get("defaults").get("entry_format", "")
-	canvas_layer_spinbox.value = 							settings_dict.get("defaults").get("canvaslayer_layer", 5)
 	autostart_btn.button_pressed = 						settings_dict.get("defaults").get("autostart_session", true)
 	utc_btn.button_pressed = 									settings_dict.get("defaults").get("use_utc", false)
 	print_instance_id_btn.button_pressed = 		settings_dict.get("defaults").get("id_overlay_print", false)
@@ -701,6 +725,7 @@ func reset_to_default() -> void:
 
 
 func validate_settings() -> void: # Mirror
+	_ensure_default_category()
 	# Validate presence -> Write default
 	for setting in settings_dict.get("expected_settings", {}).keys():
 		var splits = settings_dict["expected_settings"][setting].split("/")
@@ -744,7 +769,6 @@ func load_data() -> void:
 	base_dir_line.text = 										_c.get_value("settings", "base_directory", 						settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
 	log_header_line.text = 									_c.get_value("settings", "log_header_format", 				settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
 	entry_format_line.text = 								_c.get_value("settings", "entry_format", 							settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	canvas_layer_spinbox.value = 						_c.get_value("settings", "canvaslayer_layer", 				settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
 	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", 				settings_dict.get("defaults", {}).get("autostart_session", true))
 	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", 									settings_dict.get("defaults", {}).get("use_utc", false))
 	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "id_overlay_print", 					settings_dict.get("defaults", {}).get("id_overlay_print", false))
@@ -774,7 +798,8 @@ func save_data(deferred: bool = false) -> void:
 
 	var _c := ConfigFile.new()
 	_c.load(PATH)
-
+	_ensure_default_category()
+	
 	# Categories
 	var _cat_names = []
 	for log_category in category_container.get_children():
@@ -899,6 +924,7 @@ func _delete_category(log_category: LogCategory) -> void:
 	if log_category.get_parent() == category_container:
 
 		config.load(PATH)
+		_ensure_default_category()
 
 		var def_c: String = config.get_value("categories", "default_category", "")
 		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
@@ -1091,6 +1117,8 @@ func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
 
 func _on_button_button_up(node: Button) -> void:
 	config.load(PATH)
+	_ensure_default_category()
+	
 	match node:
 		base_dir_apply_btn:
 			_apply_new_base_directory()
@@ -1291,11 +1319,6 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 			if !suppress_history_prints:
 				print_rich(c_print_history, "File count limit changed.")
 
-		canvas_layer_spinbox:
-			config.set_value("settings", "canvaslayer_layer", int(value))
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Save Copy canvas layer changed.")
-
 		id_overlay_font_size_spinbox:
 			config.set_value("settings", "id_overlay_font_size", value)
 			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
@@ -1323,13 +1346,6 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 	config.load(PATH)
 	match node:
-		canvas_spinbox_line:
-			var value = int(new_text)
-			config.set_value("settings", "canvaslayer_layer", value)
-			canvas_layer_spinbox.release_focus()
-			canvas_spinbox_line.release_focus()
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Save Copy canvas layer changed.")
 
 		file_count_spinbox_line:
 			var value = int(new_text)
@@ -1421,6 +1437,13 @@ func _on_column_slider_value_changed(value: int) -> void:
 	save_data()
 
 
+func _on_line_edit_highlight_changed(highlight_on: bool, line_edit: LineEdit) -> void:
+	if highlight_on:
+		line_edit.add_theme_stylebox_override("normal", sb_line_edit_highlight)
+	else:
+		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+
+
 func _on_editor_settings_changed() -> void:
 	settings = EditorInterface.get_editor_settings()
 	editor_base_col = settings.get("interface/theme/base_color")
@@ -1430,6 +1453,14 @@ func _on_editor_settings_changed() -> void:
 ## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
 	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
+
+
+func _ensure_default_category() -> void:
+	config.load(PATH)
+	if  config.get_value("categories", "category_names").is_empty() and config.get_value("categories", "default_category")\
+	or !config.get_value("categories", "category_names").has(config.get_value("categories", "default_category")):
+		config.set_value("categories", "default_category", "")
+		config.save(PATH)
 
 
 func _sync_stylebox_colors(current_node: Control):

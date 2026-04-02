@@ -151,7 +151,6 @@ var settings_dict := {
 	"base_directory": 						{"value": "user://GoLogger/", "type": TYPE_STRING, "default": "user://GoLogger/"},
 	"log_header_format": 					{"value": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", "type": TYPE_STRING, "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
 	"entry_format": 							{"value":						 "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"canvaslayer_layer": 					{"value": 5, 				"type": TYPE_INT, 		"default": 5},
 	"autostart_session": 					{"value": true, 		"type": TYPE_BOOL, 		"default": true},
 	"use_utc": 										{"value": false, 		"type": TYPE_BOOL, 		"default": false},
 	"id_overlay_print": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
@@ -177,7 +176,6 @@ var settings_dict := {
 		"base_directory": 								"user://GoLogger/",
 		"log_header_format": 							"{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
 		"entry_format": 									"[{hh}:{mi}:{ss}] {instance_id}: {entry}",
-		"canvaslayer_layer": 							5,
 		"autostart_session": 							true,
 		"use_utc": 												false,
 		"id_overlay_print": 							false,
@@ -204,7 +202,6 @@ var settings_dict := {
 		"columns": 									"settings/columns",
 		"log_header_format": 				"settings/log_header_format",
 		"entry_format": 						"settings/entry_format",
-		"canvaslayer_layer": 				"settings/canvaslayer_layer",
 		"autostart_session": 				"settings/autostart_session",
 		"use_utc": 									"settings/use_utc",
 		"id_overlay_print": 				"settings/id_overlay_print",
@@ -230,7 +227,6 @@ var settings_dict := {
 		"settings/columns": 									TYPE_INT,
 		"settings/log_header_format": 				TYPE_STRING,
 		"settings/entry_format" : 						TYPE_STRING,
-		"settings/canvaslayer_layer": 				TYPE_INT,
 		"settings/autostart_session": 				TYPE_BOOL,
 		"settings/use_utc": 									TYPE_BOOL,
 		"settings/id_overlay_print": 					TYPE_BOOL,
@@ -264,7 +260,6 @@ func _ready() -> void:
 	if id_toggle:
 		instance_id_label.visible = id_startup
 
-	elements_canvaslayer.layer = _get_config_value("settings", "canvaslayer_layer")
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
@@ -433,8 +428,6 @@ func start_session() -> void:
 		if !DirAccess.dir_exists_absolute(path):
 			DirAccess.make_dir_recursive_absolute(path)
 
-		if !DirAccess.dir_exists_absolute(str(path, "saved_logs/")):
-			DirAccess.make_dir_recursive_absolute(str(path, "saved_logs/"))
 		dir = DirAccess.open(path)
 
 		if !dir and _get_config_value("settings", "error_reporting") != 2: # ErrCheck
@@ -666,7 +659,6 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "columns", 												settings_dict.get("defaults", {}).get("columns", 5))
 	cf.set_value("settings", "log_header_format", 							settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
 	cf.set_value("settings", "entry_format", 										settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	cf.set_value("settings", "canvaslayer_layer", 							settings_dict.get("defaults", {}).get("canvaslayer_layer", 5))
 	cf.set_value("settings", "autostart_session", 							settings_dict.get("defaults", {}).get("autostart_session", true))
 	cf.set_value("settings", "use_utc", 												settings_dict.get("defaults", {}).get("use_utc", false))
 	cf.set_value("settings", "id_overlay_print", 								settings_dict.get("defaults", {}).get("id_overlay_print", false))
