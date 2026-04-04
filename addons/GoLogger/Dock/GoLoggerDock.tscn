@@ -1,17 +1,15 @@
 [gd_scene format=3 uid="uid://0k0tpsfqof2s"]
 
+[ext_resource type="StyleBox" uid="uid://beo2bu5ofsw0u" path="res://addons/GoLogger/Resources/theme/new/tabbar_bg.tres" id="1_itauu"]
 [ext_resource type="StyleBox" uid="uid://bp0510ij2p7l4" path="res://addons/GoLogger/Resources/theme/tabbar_bg.tres" id="1_vja36"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
-[ext_resource type="StyleBox" uid="uid://dycqh7cqtjy4s" path="res://addons/GoLogger/Resources/theme/tab_unselected.tres" id="2_f4fkd"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="StyleBox" uid="uid://yxpx0pyjme8s" path="res://addons/GoLogger/Resources/theme/new/tab_hovered.tres" id="2_tvbkj"]
 [ext_resource type="StyleBox" uid="uid://df7sl23ox7q6" path="res://addons/GoLogger/Resources/theme/dock_category_top_bar_panel_flat.tres" id="3_f4fkd"]
 [ext_resource type="StyleBox" uid="uid://cy0ifp487jfcg" path="res://addons/GoLogger/Resources/theme/new/tab_selected.tres" id="3_itauu"]
-[ext_resource type="StyleBox" uid="uid://27e5r3ya7lul" path="res://addons/GoLogger/Resources/theme/tab_hovered.tres" id="3_jx8uf"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
-[ext_resource type="StyleBox" uid="uid://bygsbmlyeaqdj" path="res://addons/GoLogger/Resources/theme/tab_selected.tres" id="4_7jf0p"]
 [ext_resource type="StyleBox" uid="uid://427jdnrjcbba" path="res://addons/GoLogger/Resources/theme/new/tab_unselected.tres" id="4_cp33x"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/GoLogger/Resources/id_example_panel_tex.png" id="5_7ntic"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
@@ -67,15 +65,17 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vja36"]
-content_margin_top = 6.0
-content_margin_bottom = 6.0
-bg_color = Color(0, 0, 0, 0.39215687)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 4
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a5g7p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2vjd2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_itauu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cp33x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xov76"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vk4yt"]
 
 [node name="GoLoggerDock" type="TabContainer" unique_id=1764928138]
 clip_children = 2
@@ -88,9 +88,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 13
 theme_override_constants/tab_separation = 6
-theme_override_styles/tabbar_background = ExtResource("1_vja36")
-theme_override_styles/tab_unselected = ExtResource("2_tvbkj")
-theme_override_styles/tab_hovered = ExtResource("4_cp33x")
+theme_override_styles/tabbar_background = ExtResource("1_itauu")
+theme_override_styles/tab_unselected = ExtResource("4_cp33x")
+theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
 current_tab = 1
 all_tabs_in_front = true
@@ -99,12 +99,12 @@ script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
-[node name="Panel" type="Panel" parent="." unique_id=1438997895]
+[node name="Categories" type="Panel" parent="." unique_id=1438997895]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Categories" type="MarginContainer" parent="Panel" unique_id=593789802]
+[node name="Categories" type="MarginContainer" parent="Categories" unique_id=593789802]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -118,17 +118,17 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Categories" unique_id=1224284395]
+[node name="VBoxContainer" type="VBoxContainer" parent="Categories/Categories" unique_id=1224284395]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TopBarPanel" type="Panel" parent="Panel/Categories/VBoxContainer" unique_id=1547891829]
+[node name="TopBarPanel" type="Panel" parent="Categories/Categories/VBoxContainer" unique_id=1547891829]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("3_f4fkd")
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel" unique_id=1878771389]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel" unique_id=1878771389]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -140,15 +140,15 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="TitleHBoxContainer" type="HBoxContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer" unique_id=1236446976]
+[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer" unique_id=1236446976]
 layout_mode = 2
 
-[node name="LeftHBoxContainer" type="HBoxContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
+[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AddCategoryButton" type="Button" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
+[node name="AddCategoryButton" type="Button" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create new category"
@@ -166,7 +166,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
 
-[node name="OpenDirCatButton" type="Button" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
+[node name="OpenDirCatButton" type="Button" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Opens Base Directory using OS file browser"
@@ -184,10 +184,10 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("2_6725a")
 icon_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=990503779]
+[node name="VSeparator" type="VSeparator" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=990503779]
 layout_mode = 2
 
-[node name="ColumnsHSlider" type="HSlider" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1743312277]
+[node name="ColumnsHSlider" type="HSlider" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1743312277]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -200,7 +200,7 @@ max_value = 10.0
 value = 3.0
 rounded = true
 
-[node name="CatDelWarningRLabel" type="RichTextLabel" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
+[node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
@@ -210,12 +210,12 @@ text = "[font_size=12][color=red][wave amp=10.0 freq=4.0 connected=1]Deleting ca
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightHBoxContainer" type="HBoxContainer" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
+[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
 layout_mode = 2
 theme_override_constants/separation = 11
 alignment = 2
 
-[node name="PluginVersionCatLabel" type="Label" parent="Panel/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
+[node name="PluginVersionCatLabel" type="Label" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -224,17 +224,17 @@ label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Categories/VBoxContainer" unique_id=642802176]
+[node name="ScrollContainer" type="ScrollContainer" parent="Categories/Categories/VBoxContainer" unique_id=642802176]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Panel/Categories/VBoxContainer/ScrollContainer" unique_id=333286901]
+[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/Categories/VBoxContainer/ScrollContainer" unique_id=333286901]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 9
 
-[node name="CategoryGridContainer" type="GridContainer" parent="Panel/Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer" unique_id=2014106739]
+[node name="CategoryGridContainer" type="GridContainer" parent="Categories/Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer" unique_id=2014106739]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
@@ -1181,32 +1181,43 @@ theme_override_styles/hover = ExtResource("16_tvbkj")
 theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
 icon = ExtResource("3_y66hb")
 
-[node name="Help" type="MarginContainer" parent="." unique_id=652220434]
-unique_name_in_owner = true
+[node name="Help" type="Panel" parent="." unique_id=1397453253]
 visible = false
 layout_mode = 2
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_bottom = 6
 metadata/_tab_index = 2
 
-[node name="HelpTabContainer" type="TabContainer" parent="Help" unique_id=1603064086]
+[node name="MarginContainer" type="MarginContainer" parent="Help" unique_id=652220434]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="HelpTabContainer" type="TabContainer" parent="Help/MarginContainer" unique_id=1603064086]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/tab_separation = 6
-theme_override_styles/tabbar_background = SubResource("StyleBoxFlat_vja36")
-theme_override_styles/tab_unselected = ExtResource("2_f4fkd")
-theme_override_styles/tab_hovered = ExtResource("3_jx8uf")
-theme_override_styles/tab_selected = ExtResource("4_7jf0p")
-current_tab = 4
+theme_override_styles/panel = SubResource("StyleBoxEmpty_a5g7p")
+theme_override_styles/tabbar_background = ExtResource("1_itauu")
+theme_override_styles/tab_unselected = ExtResource("4_cp33x")
+theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
+theme_override_styles/tab_selected = ExtResource("3_itauu")
+current_tab = 3
 tab_0/title = "Getting Started"
 tab_1/title = "Methods & Hotkeys"
 tab_2/title = "File Limits"
 tab_3/title = "Instances & Formatting"
 tab_4/title = "More Info"
 
-[node name="GettingStarted" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1377872369]
+[node name="GettingStarted" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=1377872369]
 visible = false
 layout_mode = 2
 scroll_vertical_custom_step = 20.0
@@ -1215,20 +1226,23 @@ tile_scroll_hint = true
 metadata/_tab_index = 0
 metadata/_tab_name = "Getting Started"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/GettingStarted" unique_id=469117461]
+[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/GettingStarted" unique_id=469117461]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 8
+theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Gettings_StartedRTLabel" type="RichTextLabel" parent="Help/HelpTabContainer/GettingStarted/MarginContainer" unique_id=1514331880]
+[node name="Gettings_StartedRTLabel" type="RichTextLabel" parent="Help/MarginContainer/HelpTabContainer/GettingStarted/MarginContainer" unique_id=1514331880]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674][b]Setup:[/b][font_size=14][color=white]
 GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: [i] Log.msg(\"This is my first log entry.\", \"game\")[/i]
@@ -1252,26 +1266,29 @@ Messages(msg) or entries are plain text strings and can include any data that ca
 [font_size=16][color=fc4674][b]Running Multiple Instances:[/b][font_size=14][color=white]
 When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[color=white] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[color=white] hotkey(Ctrl + Shift + I) to print that instance's ID to output."
 
-[node name="Methods&Hotkeys" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=830461916]
+[node name="Methods&Hotkeys" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=830461916]
 visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 metadata/_tab_index = 1
 metadata/_tab_name = "Methods & Hotkeys"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Methods&Hotkeys" unique_id=327346930]
+[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/Methods&Hotkeys" unique_id=327346930]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 8
+theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Functions_HotkeysRTLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Methods&Hotkeys/MarginContainer" unique_id=208538217]
+[node name="Functions_HotkeysRTLabel" type="RichTextLabel" parent="Help/MarginContainer/HelpTabContainer/Methods&Hotkeys/MarginContainer" unique_id=208538217]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674][b]Methods:[/b][color=white]
 [font_size=14]All methods are accessible using the [color=violet]Log[color=white] autoload.
@@ -1308,26 +1325,29 @@ There are two signals available to help you synchronize sessions with game logic
 	session_started
 	session_stopped"
 
-[node name="FileLimits" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=1120881483]
+[node name="FileLimits" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=1120881483]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 metadata/_tab_name = "File Limits"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/FileLimits" unique_id=2057183117]
+[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/FileLimits" unique_id=2057183117]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 8
+theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="FileLimitsRTLabel" type="RichTextLabel" parent="Help/HelpTabContainer/FileLimits/MarginContainer" unique_id=991399834]
+[node name="FileLimitsRTLabel" type="RichTextLabel" parent="Help/MarginContainer/HelpTabContainer/FileLimits/MarginContainer" unique_id=991399834]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Setting Limitations:[color=white]
 [font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GoLogger includes several features to control logging behavior. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
@@ -1362,28 +1382,30 @@ This option defines the maximum number of .log files allowed in each category fo
 [i]Copy session: Ctrl + Shift + U[/i]
 [i]Stop session: Ctrl + Shift + P[/i]"
 
-[node name="Instances_Formatting" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=367321639]
-visible = false
+[node name="Instances_Formatting" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=367321639]
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
 metadata/_tab_index = 3
 metadata/_tab_name = "Instances & Formatting"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/HelpTabContainer/Instances_Formatting" unique_id=588303162]
+[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/Instances_Formatting" unique_id=588303162]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 8
+theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Instances&FormattingRTLabel" type="RichTextLabel" parent="Help/HelpTabContainer/Instances_Formatting/MarginContainer" unique_id=1902385466]
+[node name="Instances&FormattingRTLabel" type="RichTextLabel" parent="Help/MarginContainer/HelpTabContainer/Instances_Formatting/MarginContainer" unique_id=1902385466]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_itauu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cp33x")
+theme_override_styles/background = SubResource("StyleBoxEmpty_xov76")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_vk4yt")
 bbcode_enabled = true
 text = "[font_size=16][color=fc4674]Concurrency / Running Multiple Instances:[color=white]
 [font_size=14]There are times that running multiple instances at the same time while debugging/testing your project. Such is the case for multiplayer games. However, when doing so. You have two instances logging into one log file and you need some way to know which instance logged which entry. This is possible by adding the {instance_id} tag to the Entry Format setting. An instance ID is a simple ID string that is generated at runtime(much like UIDs). 
@@ -1410,35 +1432,45 @@ Any tag and custom string formatting can be used.
     {hh}  {mi}  {ss} 							[color=darkgray][i]Hour, Minute, Second[/i][color=white]
 "
 
-[node name="MoreInfo" type="ScrollContainer" parent="Help/HelpTabContainer" unique_id=656868993]
+[node name="MoreInfo" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=656868993]
+visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
 metadata/_tab_index = 4
 metadata/_tab_name = "More Info"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Help/HelpTabContainer/MoreInfo" unique_id=1738489501]
+[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo" unique_id=1079808119]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer" unique_id=1738489501]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer" unique_id=785392642]
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer" unique_id=785392642]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 36
+theme_override_constants/separation = 10
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer" unique_id=1333109452]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1333109452]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="UserDirBtn" type="Button" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
+[node name="UserDirBtn" type="Button" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Open 
 \"user://\" 
 directory"
 
-[node name="Label" type="Label" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=27916166]
+[node name="Label" type="Label" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=27916166]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "If issues with the plugin arise, start by deleting the \"gologger_data.ini\" and run your 
@@ -1450,18 +1482,18 @@ Please move Log.tscn higher in the list in that case.
 
 If issues persists afterwards, please open an issue on Github with the link below."
 
-[node name="HSeparator" type="HSeparator" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer" unique_id=506011858]
+[node name="HSeparator" type="HSeparator" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=506011858]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer" unique_id=1948907939]
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1948907939]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 30
 
-[node name="Control" type="Control" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=713874839]
+[node name="Control" type="Control" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=713874839]
 layout_mode = 2
 
-[node name="RepoLinkButton" type="LinkButton" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1563673285]
+[node name="RepoLinkButton" type="LinkButton" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1563673285]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1469,7 +1501,7 @@ tooltip_text = "https://github.com/Burloe/GoLogger"
 text = "Github repository"
 uri = "https://github.com/Burloe/GoLogger"
 
-[node name="IssuesLinkButton" type="LinkButton" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=402423982]
+[node name="IssuesLinkButton" type="LinkButton" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=402423982]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1477,7 +1509,7 @@ tooltip_text = "https://github.com/Burloe/GoLogger/issues"
 text = "Bug report"
 uri = "https://github.com/Burloe/GoLogger/issues"
 
-[node name="WikiLinkButton" type="LinkButton" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=300775320]
+[node name="WikiLinkButton" type="LinkButton" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=300775320]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1485,7 +1517,7 @@ tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
 text = "Wiki"
 uri = "https://github.com/Burloe/GoLogger/wiki"
 
-[node name="TextureRect" type="TextureRect" parent="Help/HelpTabContainer/MoreInfo/HBoxContainer" unique_id=1785138075]
+[node name="TextureRect" type="TextureRect" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer" unique_id=1785138075]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
