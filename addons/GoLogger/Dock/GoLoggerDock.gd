@@ -8,28 +8,14 @@ extends TabContainer
 	# Implement the logic for applying the setting in signal function like _on_button_button_up()
 
 # TODO:
-	# Implement a print_rich() calls whenever a setting is changed to notify the user of the change in the output console.
-	# [Done]Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic <see Log.gd _get_header() for reference>
 	#
+	#
+
 	# DOCK CATEGORY TAB:
-		# [DONE] Remove 'category index' entirely in favor of using strings as unique identifiers for categories with regards to the new .ini format
-		# [DONE] Handle adding/removing categories with new .ini format
-		# [DONE] is_locked property handling
-		# [DONE] Account for ConfigFile clobbering
-		# [DONE] Check that renaming a category adds an int to the name
-		# [DONE] Change Entry Format default settings value to: "[{hh}:{mi}:{ss}] <{instance_id}>: {entry}"
-		# [DONE] Remove instance_id tags from Header settings since files aren't per-instance anymore
-		# [DONE] Apply log header format button not disabling when using enter key to submit text
-		# [DONE] When adding a new category, "file_name", "file_path" and "entry_count" keys are missing from the section(not critical but should be added for consistency)
-		# [DONE]Changing a category name needs to erase the old category data in the .ini file to prevent bloat
-		# Changing settings during runtime will overwrite category data in the .ini file with blank values
+
 
 	# DOCK SETTINGS TAB:
-		# [DONE] ID overlay:
-			# Color setting for the overlay text
-			# Toggle setting to show/hide overlay
-			# Startup state setting to determine whether the overlay is shown on editor startup or only when toggled with the hotkey
-			# Font size doesn't load it's settings value properly?
+
 
 # RELEASE CHECKLIST:
 	# Ensure proper tab states - CATEGORIES tab - Getting Started	in Help tab
@@ -58,7 +44,7 @@ extends TabContainer
 signal update_index
 signal change_category_name_finished
 signal open_hotkey_resource()
-var resource_name: Resource = load("res://resource_path")
+
 @onready var categories_tab: MarginContainer = %Categories
 @onready var _add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
@@ -88,8 +74,8 @@ var resource_name: Resource = load("res://resource_path")
 @onready var entry_format_warning: Panel = %EntryFormatWarning
 @onready var entry_format_container: HBoxContainer = %EntryFormatHBox
 
-@onready var autostart_btn: CheckButton = %AutostartCheckButton
-@onready var utc_btn: CheckButton = %UTCCheckButton
+@onready var autostart_btn: CheckBox = %AutostartCheckBox
+@onready var utc_btn: CheckBox = %UTCCheckBox
 
 @onready var limit_method_btn: OptionButton = %LimitMethodOptButton
 @onready var limit_method_lbl: Label = %LimitMethodLabel
@@ -127,7 +113,7 @@ var session_duration_spinbox_line: LineEdit
 
 @onready var open_hotkey_btn: Button = %OpenHotkeyButton
 
-@onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckButton
+@onready var print_instance_id_btn: CheckBox = %PrintInstanceIDCheckBox
 @onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontSizeHBox
 @onready var id_overlay_example_lbl: RichTextLabel = %IDOverlayExampleLabel
 
@@ -138,8 +124,8 @@ var session_duration_spinbox_line: LineEdit
 var id_overlay_font_size_spinbox_line: LineEdit
 @onready var id_overlay_font_size_spinbox: SpinBox = %IDOverlayFontSizeSpinBox
 @onready var id_overlay_font_size_lbl: Label = %IDOverlayFontSizeLabel
-@onready var id_overlay_toggle_btn: CheckButton = %IDOverlayToggleShowCheckButton
-@onready var id_overlay_startup_btn: CheckButton = %ShowOnStartupInstanceIDCheckButton
+@onready var id_overlay_toggle_btn: CheckBox = %IDOverlayToggleShowCheckBox
+@onready var id_overlay_startup_btn: CheckBox = %ShowOnStartupInstanceIDCheckBox
 @onready var id_overlay_font_col_btn: ColorPickerButton = %IDOverlayFontColorColorPickerButton
 @onready var id_overlay_font_col_lbl: Label = %IDOverlayFontColorLabel
 @onready var id_overlay_font_col_container: HBoxContainer = %IDOverlayFontColorHBox
@@ -157,65 +143,46 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 @onready var user_dir_btn: Button = %UserDirButton
 @onready var cat_top_bar: Panel = %TopBarPanel
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
-@onready var limit_fold_cont: FoldableContainer = %LimitationsFoldableContainer
+@onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var id_overlay_fold_cont: FoldableContainer = %IDOverlayFoldableContainer
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
-@onready var editor_contrast: float = settings.get("interface/theme/accent_color")
+@onready var editor_contrast = settings.get("interface/theme/contrast")
 
+var sb_tab_bar_bg 									:= preload("uid://beo2bu5ofsw0u")
+var sb_tab_unselected 							:= preload("uid://427jdnrjcbba")
+var sb_tab_selected 								:= preload("uid://cy0ifp487jfcg")
+var sb_tab_hover 										:= preload("uid://yxpx0pyjme8s")
 
-# var sb_line_edit_normal = preload("uid://pue22dsifmfd")
-# var sb_line_edit_highlight = preload("uid://dl1ay0wubtp2m")
+var panel_round_bg 									:= preload("uid://dqfhm2ywaj4dr")
+var panel_round_base 								:= preload("uid://cywnobmluy31i")
+var panel_round_base_highlight 			:= preload("uid://b0ho2njwihy2p")
+var panel_round_accent 							:= preload("uid://3r3hhcvqp2au")
+var panel_round_accent_muted 				:= preload("uid://l18dbl63e366")
+var panel_top_round_base 						:= preload("uid://cqnilt2rk14bi")
+var panel_top_round_base_highlight 	:= preload("uid://0nxkxhcntsj3")
+var panel_top_round_accent 					:= preload("uid://dve2ih1gvvua7")
+var panel_top_round_accent_muted 		:= preload("uid://7s65f804p1jc")
 
+var sb_btn_normal 									:= preload("uid://di36bptu4b3n")
+var sb_btn_highlight 								:= preload("uid://dcjwu6ej2w2s4")
+var sb_btn_top_highlight 						:= preload("uid://lyngp43l4n0n")
 
-# var stylebox_tab_bar_bg = preload("uid://bp0510ij2p7l4")
-# var stylebox_tab_bar_hovered = preload("uid://27e5r3ya7lul")
-# var stylebox_tab_bar_selected = preload("uid://bygsbmlyeaqdj")
-# var stylebox_tab_bar_unselected = preload("uid://dycqh7cqtjy4s")
-# var stylebox_cat_topbar_panel = preload("uid://df7sl23ox7q6")
+var sb_clrpicker_normal							:= preload("uid://bth006ulwoyl3")
+var sb_clrpicker_highlight 					:= preload("uid://bv58jw0dd3sve")
 
-# var stylebox_fold_cont_title_panel = preload("uid://cx8jchknob0px")
-# var stylebox_fold_cont_hover_panel = preload("uid://cc42b0ogwbi6p")
-# var stylebox_fold_cont_collapsed_panel = preload("uid://o2iplj744aa1")
-# var stylebox_fold_cont_collapsed_hover = preload("uid://cjvhvvsskpw3m")
+var sb_line_edit_normal 						:= preload("uid://pue22dsifmfd")
+var sb_line_edit_highlight 					:= preload("uid://dl1ay0wubtp2m")
+var sb_line_edit_invalid 						:= preload("uid://sqhht0mdddoi")
 
-# var stylebox_opt_btn_normal 	= preload("uid://btk0m0my1jv7b")
-# var stylebox_opt_btn_hover 		= preload("uid://3b4n4duo7pak")
+var sb_spinbox_up_highlight 				:= preload("uid://bvek0vh8shw5l")
+var sb_spinbox_up_pressed 					:= preload("uid://q0h5bi585ik6")
+var sb_spinbox_down_highlight 			:= preload("uid://ba2pkgbcu0dlo")
+var sb_spinbox_down_pressed 				:= preload("uid://daw4nhpnjj6i1")
 
-
-var panel_round_bg = preload("uid://dqfhm2ywaj4dr")
-var panel_round_base = preload("uid://cywnobmluy31i")
-var panel_round_base_highlight = preload("uid://b0ho2njwihy2p")
-var panel_round_accent = preload("uid://3r3hhcvqp2au")
-var panel_round_accent_muted = preload("uid://l18dbl63e366")
-var panel_top_round_base = preload("uid://cqnilt2rk14bi")
-var panel_top_round_base_highlight = preload("uid://0nxkxhcntsj3")
-var panel_top_round_accent = preload("uid://dve2ih1gvvua7")
-var panel_top_round_accent_muted = preload("uid://7s65f804p1jc")
-
-var sb_btn_normal = preload("uid://di36bptu4b3n")
-var sb_btn_highlight = preload("uid://dcjwu6ej2w2s4")
-var sb_btn_top_highlight = preload("uid://lyngp43l4n0n")
-
-var sb_clrpicker_normal = preload("uid://bth006ulwoyl3")
-var sb_clrpicker_highlight = preload("uid://bv58jw0dd3sve")
-
-var sb_line_edit_normal = preload("uid://pue22dsifmfd")
-var sb_line_edit_highlight = preload("uid://dl1ay0wubtp2m")
-
-var sb_tab_bar_bg = preload("uid://beo2bu5ofsw0u")
-var sb_tab_unselected = preload("uid://427jdnrjcbba")
-var sb_tab_selected = preload("uid://cy0ifp487jfcg")
-var sb_tab_hover = preload("uid://yxpx0pyjme8s")
-
-
-
-var editor_theme_base_col_elements: Array[Control] = [
-	cat_top_bar,
-]
-
+var gl_hotkeys: GLShortcut 					=  preload("uid://dyi2aml73k4g8")
 
 ## SEPERATOR has index 3, should not be used.
 enum LimitMethod {
@@ -244,11 +211,7 @@ enum ErrorReportLevel {
 }
 
 const PATH = "user://gologger_data.ini"
-var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
-
-var valid_line_edit_stylebox := preload("uid://b8w5i8chks7st")
-var invalid_line_edit_stylebox := preload("uid://cjxw1ngoxnqnv")
-var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
+var category_scene = preload("uid://c3n416c5fajm5")
 var config = ConfigFile.new()
 var suppress_history_prints: bool = false
 var plugin_version: String =  "1.4":
@@ -488,10 +451,10 @@ func _ready() -> void:
 					btn_array[i].button_up.disconnect(_on_button_button_up)
 				btn_array[i].button_up.connect(_on_button_button_up.bind(btn_array[i]))
 
-			if btn_array[i] is CheckButton:
-				if btn_array[i].toggled.is_connected(_on_checkbutton_toggled):
-					btn_array[i].toggled.disconnect(_on_checkbutton_toggled)
-				btn_array[i].toggled.connect(_on_checkbutton_toggled.bind(btn_array[i]))
+			if btn_array[i] is CheckBox:
+				if btn_array[i].toggled.is_connected(_on_checkbox_toggled):
+					btn_array[i].toggled.disconnect(_on_checkbox_toggled)
+				btn_array[i].toggled.connect(_on_checkbox_toggled.bind(btn_array[i]))
 
 			elif btn_array[i] is OptionButton:
 				if btn_array[i].item_selected.is_connected(_on_optbtn_item_selected):
@@ -861,7 +824,7 @@ func save_data(deferred: bool = false) -> void:
 			_c.set_value("settings", key, ctrl.text)
 		elif ctrl is SpinBox:
 			_c.set_value("settings", key, int(ctrl.value))
-		elif ctrl is CheckButton:
+		elif ctrl is CheckBox:
 			_c.set_value("settings", key, ctrl.button_pressed)
 		elif ctrl is OptionButton:
 			_c.set_value("settings", key, ctrl.selected)
@@ -1213,10 +1176,10 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 
 		entry_format_line:
 			if _is_entry_format_valid(new_text):
-				entry_format_line.add_theme_stylebox_override("normal", valid_line_edit_stylebox)
+				entry_format_line.add_theme_stylebox_override("normal", sb_line_edit_normal)
 				entry_format_warning.visible = false
 			else:
-				entry_format_line.add_theme_stylebox_override("normal", invalid_line_edit_stylebox)
+				entry_format_line.add_theme_stylebox_override("normal", sb_line_edit_invalid)
 				entry_format_warning.visible = true
 
 			if new_text != config.get_value("settings", "entry_format", "") and _is_entry_format_valid(new_text):
@@ -1289,7 +1252,7 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 	save_data()
 
 
-func _on_checkbutton_toggled(toggled_on: bool, node: CheckButton) -> void:
+func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 	match node:
 
 		autostart_btn:
@@ -1494,7 +1457,7 @@ func _sync_stylebox_colors(current_node: Control):
 
 	var _base_col: Color 		= settings.get("interface/theme/base_color")
 	var _accent_col: Color 	= settings.get("interface/theme/accent_color")
-	var _contrast: float 		= settings.get("interface/theme/contrast")
+	var _contrast 					= settings.get("interface/theme/contrast")
 
 	if  _contrast   == editor_contrast\
 	and _base_col   == editor_base_col\

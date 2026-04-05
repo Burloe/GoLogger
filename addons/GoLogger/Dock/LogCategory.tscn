@@ -1,55 +1,35 @@
 [gd_scene format=3 uid="uid://c3n416c5fajm5"]
 
+[ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/GoLogger/Resources/theme/panel_rounded_base_col.tres" id="1_7kr4p"]
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/GoLogger/Dock/LogCategory.gd" id="1_8da2w"]
-[ext_resource type="StyleBox" uid="uid://dk62yeh7pd650" path="res://addons/GoLogger/Resources/theme/contrasted_panel.tres" id="1_ikmgl"]
 [ext_resource type="Texture2D" uid="uid://dt4rwugiiq5qf" path="res://addons/GoLogger/Resources/icons/ArrowLeft.svg" id="2_82h6l"]
 [ext_resource type="Texture2D" uid="uid://b33lx2cjw84p0" path="res://addons/GoLogger/Resources/icons/Lock.svg" id="2_b4ns3"]
-[ext_resource type="StyleBox" uid="uid://cut1bfhhse6ga" path="res://addons/GoLogger/Resources/theme/log_cat_hoverpressed_btn_stylebox.tres" id="2_sqvkr"]
+[ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/GoLogger/Resources/theme/btn_normal.tres" id="3_7kr4p"]
 [ext_resource type="Texture2D" uid="uid://behxo6vcb5ubp" path="res://addons/GoLogger/Resources/icons/ArrowRight.svg" id="3_hkawy"]
-[ext_resource type="StyleBox" uid="uid://oxfpwfgom2k1" path="res://addons/GoLogger/Resources/theme/log_cat_hover_btn_stylebox.tres" id="3_ikmgl"]
+[ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="4_lnuxt"]
 [ext_resource type="Texture2D" uid="uid://goc0tdkq3dym" path="res://addons/GoLogger/Resources/icons/Remove.svg" id="5_hkawy"]
-[ext_resource type="StyleBox" uid="uid://lr0eol05gyiy" path="res://addons/GoLogger/Resources/theme/log_cat_hover_btn.tres" id="7_hqlwo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hqlwo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_owplt"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7kr4p"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkawy"]
-content_margin_left = 7.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkawy"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.18654281, 2.1168277, 0.11848677, 0.6)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
+[ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="7_lnuxt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hqlwo"]
-content_margin_left = 4.0
+content_margin_left = 2.0
 content_margin_top = 4.0
-content_margin_right = 4.0
+content_margin_right = 2.0
 content_margin_bottom = 4.0
-bg_color = Color(0.06532666, 0.46994412, 0.033941094, 0.6)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.118174985, 0.29, 0.06089999, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+bg_color = Color(0.05188235, 0.071098045, 0.07301961, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.51, 0.51, 0.51, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 corner_detail = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ikmgl"]
 content_margin_left = 4.0
@@ -70,46 +50,33 @@ corner_detail = 5
 
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 300.0
-offset_bottom = 78.0
-theme_override_styles/panel = ExtResource("1_ikmgl")
+offset_right = 332.0
+offset_bottom = 85.0
+theme_override_styles/panel = ExtResource("1_7kr4p")
 script = ExtResource("1_8da2w")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1797060952]
-layout_mode = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1251287659]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1251287659]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="MoveLeftButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=1734383337]
+[node name="MoveLeftButton" type="Button" parent="HBoxContainer" unique_id=1734383337]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Move category"
-theme_override_styles/normal = SubResource("StyleBoxEmpty_hqlwo")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_owplt")
-theme_override_styles/pressed = ExtResource("2_sqvkr")
-theme_override_styles/pressed_mirrored = ExtResource("2_sqvkr")
-theme_override_styles/hover = ExtResource("7_hqlwo")
-theme_override_styles/hover_mirrored = ExtResource("7_hqlwo")
-theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
-theme_override_styles/hover_pressed_mirrored = ExtResource("7_hqlwo")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_owplt")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_owplt")
-theme_override_styles/focus = ExtResource("3_ikmgl")
+tooltip_text = "Move left"
+theme_override_styles/normal = ExtResource("3_7kr4p")
+theme_override_styles/pressed = ExtResource("4_lnuxt")
+theme_override_styles/hover = ExtResource("4_lnuxt")
+theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
+theme_override_styles/disabled = ExtResource("3_7kr4p")
 icon = ExtResource("2_82h6l")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=697879439]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=697879439]
 custom_minimum_size = Vector2(225, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="CategoryNameLineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=240651878]
+[node name="CategoryNameLineEdit" type="LineEdit" parent="HBoxContainer/VBoxContainer" unique_id=240651878]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
@@ -119,16 +86,17 @@ theme_override_colors/font_uneditable_color = Color(0.960784, 0.647059, 0.105882
 theme_override_colors/font_selected_color = Color(0.2236, 0.86, 0.594833, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("7_lnuxt")
+theme_override_styles/read_only = SubResource("StyleBoxFlat_hqlwo")
 placeholder_text = "Enter name"
 alignment = 1
 max_length = 20
-clear_button_enabled = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=151857270]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=151857270]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="LockButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2094994272]
+[node name="LockButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2094994272]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
@@ -141,45 +109,46 @@ theme_override_colors/font_hover_pressed_color = Color(0.960784, 0.647059, 0.105
 theme_override_colors/icon_pressed_color = Color(0.96, 0.64672, 0.1056, 1)
 theme_override_colors/icon_hover_color = Color(0.96, 0.75584, 0.4032, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.960784, 0.647059, 0.105882, 1)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_7kr4p")
-theme_override_styles/pressed = ExtResource("2_sqvkr")
-theme_override_styles/hover = ExtResource("7_hqlwo")
-theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
+theme_override_styles/normal = ExtResource("3_7kr4p")
+theme_override_styles/pressed = ExtResource("4_lnuxt")
+theme_override_styles/hover = ExtResource("4_lnuxt")
+theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
 toggle_mode = true
 icon = ExtResource("2_b4ns3")
 icon_alignment = 1
 
-[node name="DefaultCheckBox" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=132860519]
+[node name="DefaultCheckBox" type="CheckBox" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=132860519]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 15)
 layout_mode = 2
-tooltip_text = "Mark as default. Used when a category name isn't specified when calling Log.entry().
+tooltip_text = "Mark as default
 
 See Help > Getting Started >  Default Category"
-theme_override_styles/normal = SubResource("StyleBoxEmpty_hkawy")
-theme_override_styles/hover = ExtResource("7_hqlwo")
-theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
+theme_override_styles/normal = ExtResource("3_7kr4p")
+theme_override_styles/pressed = ExtResource("3_7kr4p")
+theme_override_styles/hover = ExtResource("4_lnuxt")
+theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
 
-[node name="ApplyButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1330065459]
+[node name="ApplyButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1330065459]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Apply category name"
-theme_override_styles/normal = SubResource("StyleBoxFlat_hkawy")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_hqlwo")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ikmgl")
-theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_hqlwo")
+theme_override_styles/normal = ExtResource("3_7kr4p")
+theme_override_styles/pressed = ExtResource("4_lnuxt")
+theme_override_styles/hover = ExtResource("4_lnuxt")
+theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
 theme_override_styles/focus = SubResource("StyleBoxFlat_ikmgl")
 disabled = true
 text = "Apply"
 
-[node name="DeleteButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=753401324]
+[node name="DeleteButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=753401324]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(59, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Existing folders and logs are not deleted along with the category. Please delete them manually if desired."
+tooltip_text = "Existing folders requires manual deletion"
 focus_mode = 0
 theme_override_colors/font_pressed_color = Color(0.4, 0.027451, 0.0980392, 1)
 theme_override_colors/font_hover_color = Color(0.85098, 0.180392, 0.180392, 1)
@@ -187,29 +156,26 @@ theme_override_colors/font_hover_pressed_color = Color(0.4, 0.027451, 0.0980392,
 theme_override_colors/icon_pressed_color = Color(0.4, 0.027451, 0.0980392, 1)
 theme_override_colors/icon_hover_color = Color(0.85, 0.1785, 0.1785, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.4, 0.028, 0.0962, 1)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_7kr4p")
-theme_override_styles/pressed = ExtResource("2_sqvkr")
-theme_override_styles/hover = ExtResource("7_hqlwo")
-theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
+theme_override_colors/icon_disabled_color = Color(0.48, 0.48, 0.48, 0.4)
+theme_override_styles/normal = ExtResource("3_7kr4p")
+theme_override_styles/pressed = ExtResource("4_lnuxt")
+theme_override_styles/hover = ExtResource("4_lnuxt")
+theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
+theme_override_styles/disabled = ExtResource("3_7kr4p")
+theme_override_styles/focus = ExtResource("3_7kr4p")
 text = "
 "
 icon = ExtResource("5_hkawy")
 icon_alignment = 1
 expand_icon = true
 
-[node name="MoveRightButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=659310254]
+[node name="MoveRightButton" type="Button" parent="HBoxContainer" unique_id=659310254]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Move category"
-theme_override_styles/normal = SubResource("StyleBoxEmpty_owplt")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_owplt")
-theme_override_styles/pressed = ExtResource("2_sqvkr")
-theme_override_styles/pressed_mirrored = ExtResource("2_sqvkr")
-theme_override_styles/hover = ExtResource("7_hqlwo")
-theme_override_styles/hover_mirrored = ExtResource("7_hqlwo")
-theme_override_styles/hover_pressed = ExtResource("7_hqlwo")
-theme_override_styles/hover_pressed_mirrored = ExtResource("7_hqlwo")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_owplt")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_owplt")
-theme_override_styles/focus = ExtResource("3_ikmgl")
+tooltip_text = "Move right"
+theme_override_styles/normal = ExtResource("3_7kr4p")
+theme_override_styles/pressed = ExtResource("4_lnuxt")
+theme_override_styles/hover = ExtResource("4_lnuxt")
+theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
+theme_override_styles/disabled = ExtResource("3_7kr4p")
 icon = ExtResource("3_hkawy")
