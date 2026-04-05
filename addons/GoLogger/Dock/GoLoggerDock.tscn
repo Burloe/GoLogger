@@ -1,23 +1,22 @@
 [gd_scene format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="StyleBox" uid="uid://beo2bu5ofsw0u" path="res://addons/GoLogger/Resources/theme/new/tabbar_bg.tres" id="1_itauu"]
-[ext_resource type="StyleBox" uid="uid://bp0510ij2p7l4" path="res://addons/GoLogger/Resources/theme/tabbar_bg.tres" id="1_vja36"]
 [ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
 [ext_resource type="StyleBox" uid="uid://yxpx0pyjme8s" path="res://addons/GoLogger/Resources/theme/new/tab_hovered.tres" id="2_tvbkj"]
-[ext_resource type="StyleBox" uid="uid://df7sl23ox7q6" path="res://addons/GoLogger/Resources/theme/dock_category_top_bar_panel_flat.tres" id="3_f4fkd"]
 [ext_resource type="StyleBox" uid="uid://cy0ifp487jfcg" path="res://addons/GoLogger/Resources/theme/new/tab_selected.tres" id="3_itauu"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
 [ext_resource type="StyleBox" uid="uid://427jdnrjcbba" path="res://addons/GoLogger/Resources/theme/new/tab_unselected.tres" id="4_cp33x"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/GoLogger/Resources/id_example_panel_tex.png" id="5_7ntic"]
+[ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/GoLogger/Resources/theme/new/panel_rounded_bg.tres" id="6_cp33x"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/GoLogger/Resources/theme/new/btn_normal.tres" id="13_fcs7p"]
+[ext_resource type="Texture2D" uid="uid://di5qkpdjuu1x5" path="res://addons/GoLogger/Resources/icons/GuiUnchecked.svg" id="13_fx5fv"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/GoLogger/Resources/theme/new/panel_top_rounded_base_col.tres" id="14_fcs7p"]
 [ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/new/btn_highlight.tres" id="14_fx5fv"]
-[ext_resource type="StyleBox" uid="uid://btk0m0my1jv7b" path="res://addons/GoLogger/Resources/theme/opt_btn_normal.tres" id="14_k47fi"]
 [ext_resource type="StyleBox" uid="uid://0nxkxhcntsj3" path="res://addons/GoLogger/Resources/theme/new/panel_top_rounded_base_col_highlighted.tres" id="15_k47fi"]
 [ext_resource type="StyleBox" uid="uid://bth006ulwoyl3" path="res://addons/GoLogger/Resources/theme/new/clr_picker_btn_normal.tres" id="16_cp33x"]
 [ext_resource type="StyleBox" uid="uid://3b4n4duo7pak" path="res://addons/GoLogger/Resources/theme/opt_btn_hover.tres" id="16_tvbkj"]
@@ -92,7 +91,7 @@ theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
-current_tab = 1
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -100,8 +99,8 @@ metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
 [node name="Categories" type="Panel" parent="." unique_id=1438997895]
-visible = false
 layout_mode = 2
+theme_override_styles/panel = ExtResource("6_cp33x")
 metadata/_tab_index = 0
 
 [node name="Categories" type="MarginContainer" parent="Categories" unique_id=593789802]
@@ -126,7 +125,7 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("3_f4fkd")
+theme_override_styles/panel = ExtResource("1_itauu")
 
 [node name="MarginContainer" type="MarginContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel" unique_id=1878771389]
 layout_mode = 1
@@ -192,12 +191,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Columns: 3"
+tooltip_text = "Columns: 5"
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 3.0
+value = 5.0
 rounded = true
 
 [node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
@@ -239,9 +238,10 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 3
+columns = 5
 
 [node name="Settings" type="MarginContainer" parent="." unique_id=2095868147]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_right = 4
@@ -256,6 +256,7 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("6_cp33x")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Settings/HBoxContainer/L_Panel" unique_id=2008032766]
 layout_mode = 1
@@ -265,7 +266,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
-vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer" unique_id=2078052846]
@@ -309,6 +309,8 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_icons/checked = ExtResource("8_11ofg")
+theme_override_icons/unchecked = ExtResource("13_fx5fv")
 button_pressed = true
 text = "Autostart session"
 
@@ -323,6 +325,8 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_icons/checked = ExtResource("8_11ofg")
+theme_override_icons/unchecked = ExtResource("13_fx5fv")
 text = "UTC time"
 
 [node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=319403748]
@@ -405,7 +409,7 @@ size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
 0 value will disable this feature *USE WITH CAUTION*"
 max_value = 50.0
-value = 8.0
+value = 10.0
 alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
@@ -525,7 +529,7 @@ size_flags_vertical = 4
 tooltip_text = "Number of entries until the entry count action is triggered."
 min_value = 1.0
 max_value = 5000.0
-value = 10.0
+value = 300.0
 alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 10.0
@@ -593,7 +597,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
 max_value = 1800.0
-value = 20.0
+value = 300.0
 rounded = true
 allow_greater = true
 alignment = 2
@@ -646,7 +650,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_qo8nw")
 theme_override_styles/background = SubResource("StyleBoxEmpty_qo8nw")
 theme_override_styles/fill = SubResource("StyleBoxEmpty_qo8nw")
 bbcode_enabled = true
-text = "[font_size=15.0][color=fd3bffff][outline_size=8][outline_color=ffffffff]h9Em2"
+text = "[font_size=8.0][color=ffffffff][outline_size=8][outline_color=000000ff]h9Em2"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -661,7 +665,7 @@ size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Alignment"
 
-[node name="IDOverlayAlignOptBtn" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=1922500613]
+[node name="IDOverlayAlignOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=1922500613]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
@@ -717,7 +721,7 @@ theme_override_styles/up_background_pressed = ExtResource("16_tvbkj")
 theme_override_styles/down_background_hovered = ExtResource("16_tvbkj")
 theme_override_styles/down_background_pressed = ExtResource("16_tvbkj")
 min_value = 4.0
-value = 15.0
+value = 8.0
 rounded = true
 allow_greater = true
 alignment = 2
@@ -745,7 +749,7 @@ theme_override_styles/pressed = ExtResource("17_xov76")
 theme_override_styles/hover = ExtResource("17_xov76")
 theme_override_styles/hover_pressed = ExtResource("17_xov76")
 autowrap_mode = 3
-color = Color(0.99215686, 0.23137255, 1, 1)
+color = Color(1, 1, 1, 1)
 
 [node name="IDOverlayOutlineSizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=899472860]
 unique_name_in_owner = true
@@ -792,7 +796,7 @@ autowrap_mode = 3
 [node name="HSeparator" type="HSeparator" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1043223854]
 layout_mode = 2
 
-[node name="ToggleIDOverlayCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=30228355]
+[node name="IDOverlayToggleShowCheckButton" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=30228355]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Toggles the ID Overlay instead of while the button is pressed."
@@ -801,11 +805,11 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-button_pressed = true
 text = "Toggle on key release"
 
-[node name="ShowOnStartupInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=2022147191]
+[node name="ShowOnStartupInstanceIDCheckButton" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=2022147191]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 tooltip_text = "Shows ID on startup IF 'Toggle ID Overlay' is enabled"
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
@@ -813,10 +817,9 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-button_pressed = true
 text = "Show ID Overlay on startup"
 
-[node name="PrintInstanceIDCheckBtn" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1680159305]
+[node name="PrintInstanceIDCheckButton" type="CheckButton" parent="Settings/HBoxContainer/L_Panel/ScrollContainer/MarginContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1680159305]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
@@ -831,6 +834,7 @@ text = "Print ID to output on hotkey press"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("6_cp33x")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Settings/HBoxContainer/R_Panel" unique_id=101034697]
 layout_mode = 1
@@ -840,7 +844,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
-vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer" unique_id=518064650]
@@ -858,9 +861,9 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 15
 
 [node name="TopbarPanel" type="Panel" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=946287046]
-custom_minimum_size = Vector2(0, 31)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("1_vja36")
+theme_override_styles/panel = ExtResource("1_itauu")
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/TopbarPanel" unique_id=1118705646]
 layout_mode = 1
@@ -876,21 +879,25 @@ theme_override_constants/margin_right = 5
 layout_mode = 2
 alignment = 2
 
-[node name="OpenHotkeyBtn" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1217103956]
+[node name="OpenHotkeyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1217103956]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 tooltip_text = "Opens the resource in the Inspector to add, change or remove bindings"
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.7058824)
+theme_override_colors/icon_pressed_color = Color(0.44000003, 0.53000003, 0.8, 1)
+theme_override_colors/icon_hover_color = Color(0.63, 0.9198333, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.4392157, 0.5294118, 0.8, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("20_fcs7p")
 icon_alignment = 1
 
 [node name="BaseDirOpenDirButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=918067150]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 tooltip_text = "Open the base directory folder"
 theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
@@ -899,21 +906,24 @@ theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 
 theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("2_6725a")
 icon_alignment = 1
 
 [node name="ResetSettingsButton" type="Button" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1084513318]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 tooltip_text = "Reset to default (settings and categories)"
+theme_override_colors/icon_pressed_color = Color(0.7490196, 0.16470589, 0.16470589, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.21960784, 0.21960784, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.16500002, 0.16500002, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("3_y66hb")
 icon_alignment = 1
 
@@ -974,10 +984,10 @@ theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("14_k47fi")
-theme_override_styles/pressed = ExtResource("16_tvbkj")
-theme_override_styles/hover = ExtResource("16_tvbkj")
-theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
+theme_override_styles/normal = ExtResource("13_fcs7p")
+theme_override_styles/pressed = ExtResource("14_fx5fv")
+theme_override_styles/hover = ExtResource("14_fx5fv")
+theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
 icon = ExtResource("8_11ofg")
@@ -994,10 +1004,10 @@ theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("14_k47fi")
-theme_override_styles/pressed = ExtResource("16_tvbkj")
-theme_override_styles/hover = ExtResource("16_tvbkj")
-theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
+theme_override_styles/normal = ExtResource("13_fcs7p")
+theme_override_styles/pressed = ExtResource("14_fx5fv")
+theme_override_styles/hover = ExtResource("14_fx5fv")
+theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
 icon = ExtResource("3_y66hb")
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=2063796377]
@@ -1047,10 +1057,10 @@ theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("14_k47fi")
-theme_override_styles/pressed = ExtResource("16_tvbkj")
-theme_override_styles/hover = ExtResource("16_tvbkj")
-theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
+theme_override_styles/normal = ExtResource("13_fcs7p")
+theme_override_styles/pressed = ExtResource("14_fx5fv")
+theme_override_styles/hover = ExtResource("14_fx5fv")
+theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
 icon = ExtResource("8_11ofg")
@@ -1067,10 +1077,10 @@ theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("14_k47fi")
-theme_override_styles/pressed = ExtResource("16_tvbkj")
-theme_override_styles/hover = ExtResource("16_tvbkj")
-theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
+theme_override_styles/normal = ExtResource("13_fcs7p")
+theme_override_styles/pressed = ExtResource("14_fx5fv")
+theme_override_styles/hover = ExtResource("14_fx5fv")
+theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
 icon = ExtResource("3_y66hb")
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=154378586]
@@ -1155,10 +1165,10 @@ theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("14_k47fi")
-theme_override_styles/pressed = ExtResource("16_tvbkj")
-theme_override_styles/hover = ExtResource("16_tvbkj")
-theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
+theme_override_styles/normal = ExtResource("13_fcs7p")
+theme_override_styles/pressed = ExtResource("14_fx5fv")
+theme_override_styles/hover = ExtResource("14_fx5fv")
+theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
 icon = ExtResource("8_11ofg")
@@ -1175,10 +1185,10 @@ theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("14_k47fi")
-theme_override_styles/pressed = ExtResource("16_tvbkj")
-theme_override_styles/hover = ExtResource("16_tvbkj")
-theme_override_styles/hover_pressed = ExtResource("16_tvbkj")
+theme_override_styles/normal = ExtResource("13_fcs7p")
+theme_override_styles/pressed = ExtResource("14_fx5fv")
+theme_override_styles/hover = ExtResource("14_fx5fv")
+theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
 icon = ExtResource("3_y66hb")
 
 [node name="Help" type="Panel" parent="." unique_id=1397453253]
@@ -1463,7 +1473,7 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="UserDirBtn" type="Button" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
+[node name="UserDirButton" type="Button" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Open 

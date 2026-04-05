@@ -58,7 +58,7 @@ extends TabContainer
 signal update_index
 signal change_category_name_finished
 signal open_hotkey_resource()
-
+var resource_name: Resource = load("res://resource_path")
 @onready var categories_tab: MarginContainer = %Categories
 @onready var _add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
@@ -125,21 +125,21 @@ var session_duration_spinbox_line: LineEdit
 @onready var plugin_version_cat_lbl: Label = %PluginVersionCatLabel
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
-@onready var open_hotkey_btn: Button = %OpenHotkeyBtn
+@onready var open_hotkey_btn: Button = %OpenHotkeyButton
 
-@onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckBtn
+@onready var print_instance_id_btn: CheckButton = %PrintInstanceIDCheckButton
 @onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontSizeHBox
 @onready var id_overlay_example_lbl: RichTextLabel = %IDOverlayExampleLabel
 
 @onready var id_overlay_align_container: HBoxContainer = %IDOverlayAlignHBox
-@onready var id_overlay_align_opt_btn: OptionButton = %IDOverlayAlignOptBtn
+@onready var id_overlay_align_opt_btn: OptionButton = %IDOverlayAlignOptButton
 @onready var id_overlay_align_lbl: Label = %IDOverlayAlignLabel
 
 var id_overlay_font_size_spinbox_line: LineEdit
 @onready var id_overlay_font_size_spinbox: SpinBox = %IDOverlayFontSizeSpinBox
 @onready var id_overlay_font_size_lbl: Label = %IDOverlayFontSizeLabel
-@onready var id_overlay_toggle_btn: CheckButton = %ToggleIDOverlayCheckBtn
-@onready var id_overlay_startup_btn: CheckButton = %ShowOnStartupInstanceIDCheckBtn
+@onready var id_overlay_toggle_btn: CheckButton = %IDOverlayToggleShowCheckButton
+@onready var id_overlay_startup_btn: CheckButton = %ShowOnStartupInstanceIDCheckButton
 @onready var id_overlay_font_col_btn: ColorPickerButton = %IDOverlayFontColorColorPickerButton
 @onready var id_overlay_font_col_lbl: Label = %IDOverlayFontColorLabel
 @onready var id_overlay_font_col_container: HBoxContainer = %IDOverlayFontColorHBox
@@ -154,7 +154,7 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 
 
 @onready var help_tab_container: TabContainer = %HelpTabContainer
-@onready var user_dir_btn: Button = %UserDirBtn
+@onready var user_dir_btn: Button = %UserDirButton
 @onready var cat_top_bar: Panel = %TopBarPanel
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
 @onready var limit_fold_cont: FoldableContainer = %LimitationsFoldableContainer
@@ -163,26 +163,53 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
-@onready var editor_contrast_col: Color = Color.BLACK
+@onready var editor_contrast: float = settings.get("interface/theme/accent_color")
 
+
+# var sb_line_edit_normal = preload("uid://pue22dsifmfd")
+# var sb_line_edit_highlight = preload("uid://dl1ay0wubtp2m")
+
+
+# var stylebox_tab_bar_bg = preload("uid://bp0510ij2p7l4")
+# var stylebox_tab_bar_hovered = preload("uid://27e5r3ya7lul")
+# var stylebox_tab_bar_selected = preload("uid://bygsbmlyeaqdj")
+# var stylebox_tab_bar_unselected = preload("uid://dycqh7cqtjy4s")
+# var stylebox_cat_topbar_panel = preload("uid://df7sl23ox7q6")
+
+# var stylebox_fold_cont_title_panel = preload("uid://cx8jchknob0px")
+# var stylebox_fold_cont_hover_panel = preload("uid://cc42b0ogwbi6p")
+# var stylebox_fold_cont_collapsed_panel = preload("uid://o2iplj744aa1")
+# var stylebox_fold_cont_collapsed_hover = preload("uid://cjvhvvsskpw3m")
+
+# var stylebox_opt_btn_normal 	= preload("uid://btk0m0my1jv7b")
+# var stylebox_opt_btn_hover 		= preload("uid://3b4n4duo7pak")
+
+
+var panel_round_bg = preload("uid://dqfhm2ywaj4dr")
+var panel_round_base = preload("uid://cywnobmluy31i")
+var panel_round_base_highlight = preload("uid://b0ho2njwihy2p")
+var panel_round_accent = preload("uid://3r3hhcvqp2au")
+var panel_round_accent_muted = preload("uid://l18dbl63e366")
+var panel_top_round_base = preload("uid://cqnilt2rk14bi")
+var panel_top_round_base_highlight = preload("uid://0nxkxhcntsj3")
+var panel_top_round_accent = preload("uid://dve2ih1gvvua7")
+var panel_top_round_accent_muted = preload("uid://7s65f804p1jc")
+
+var sb_btn_normal = preload("uid://di36bptu4b3n")
+var sb_btn_highlight = preload("uid://dcjwu6ej2w2s4")
+var sb_btn_top_highlight = preload("uid://lyngp43l4n0n")
+
+var sb_clrpicker_normal = preload("uid://bth006ulwoyl3")
+var sb_clrpicker_highlight = preload("uid://bv58jw0dd3sve")
 
 var sb_line_edit_normal = preload("uid://pue22dsifmfd")
 var sb_line_edit_highlight = preload("uid://dl1ay0wubtp2m")
 
+var sb_tab_bar_bg = preload("uid://beo2bu5ofsw0u")
+var sb_tab_unselected = preload("uid://427jdnrjcbba")
+var sb_tab_selected = preload("uid://cy0ifp487jfcg")
+var sb_tab_hover = preload("uid://yxpx0pyjme8s")
 
-var stylebox_tab_bar_bg = preload("uid://bp0510ij2p7l4")
-var stylebox_tab_bar_hovered = preload("uid://27e5r3ya7lul")
-var stylebox_tab_bar_selected = preload("uid://bygsbmlyeaqdj")
-var stylebox_tab_bar_unselected = preload("uid://dycqh7cqtjy4s")
-var stylebox_cat_topbar_panel = preload("uid://df7sl23ox7q6")
-
-var stylebox_fold_cont_title_panel = preload("uid://cx8jchknob0px")
-var stylebox_fold_cont_hover_panel = preload("uid://cc42b0ogwbi6p")
-var stylebox_fold_cont_collapsed_panel = preload("uid://o2iplj744aa1")
-var stylebox_fold_cont_collapsed_hover = preload("uid://cjvhvvsskpw3m")
-
-var stylebox_opt_btn_normal 	= preload("uid://btk0m0my1jv7b")
-var stylebox_opt_btn_hover 		= preload("uid://3b4n4duo7pak")
 
 
 var editor_theme_base_col_elements: Array[Control] = [
@@ -354,7 +381,7 @@ func _ready() -> void:
 
 		config.load(PATH)
 		_ensure_default_category()
-			
+
 		cat_del_warn_rlbl.modulate = Color.TRANSPARENT
 		id_overlay_startup_btn.show() if config.get_value("settings", "id_overlay_toggle", false) else id_overlay_startup_btn.hide()
 
@@ -401,7 +428,7 @@ func _ready() -> void:
 		file_count_spinbox_line = file_count_spinbox.get_line_edit()
 		entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
 		session_duration_spinbox_line = session_duration_spinbox.get_line_edit()
-		
+
 
 		var line_edits: Array[LineEdit] = [
 			base_dir_line,
@@ -417,7 +444,6 @@ func _ready() -> void:
 			if line == null: return
 
 			line.add_theme_stylebox_override("normal", sb_line_edit_normal)
-			print(line.get_name(), " - ", line.get_theme_stylebox("normal"))
 			line.editing_toggled.connect(_on_line_edit_highlight_changed.bind(line))
 			line.mouse_entered.connect(_on_line_edit_highlight_changed.bind(true, line))
 			line.mouse_exited.connect(_on_line_edit_highlight_changed.bind(false, line))
@@ -799,7 +825,7 @@ func save_data(deferred: bool = false) -> void:
 	var _c := ConfigFile.new()
 	_c.load(PATH)
 	_ensure_default_category()
-	
+
 	# Categories
 	var _cat_names = []
 	for log_category in category_container.get_children():
@@ -1118,7 +1144,7 @@ func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
 func _on_button_button_up(node: Button) -> void:
 	config.load(PATH)
 	_ensure_default_category()
-	
+
 	match node:
 		base_dir_apply_btn:
 			_apply_new_base_directory()
@@ -1464,15 +1490,61 @@ func _ensure_default_category() -> void:
 
 
 func _sync_stylebox_colors(current_node: Control):
-	var editor_theme 			= EditorInterface.get_editor_theme()
-	editor_base_col 			= settings.get("interface/theme/base_color")
-	editor_accent_col 		= settings.get("interface/theme/accent_color")
-	var accent_contrast_l = editor_accent_col.lerp(	Color.WHITE, settings.get("interface/theme/contrast"))
-	var accent_contrast_d = editor_accent_col.lerp(	Color.BLACK, settings.get("interface/theme/contrast"))
-	var base_contrast_l 	= editor_base_col.lerp(		Color.WHITE, settings.get("interface/theme/contrast"))
-	var base_contrast_l_h = editor_base_col.lerp(		Color.WHITE, settings.get("interface/theme/contrast") / 2)
-	var base_contrast_d 	= editor_base_col.lerp(		Color.BLACK, settings.get("interface/theme/contrast"))
-	var base_contrast_d_h = editor_base_col.lerp(		Color.BLACK, settings.get("interface/theme/contrast") / 2)
+	# var editor_theme 				= EditorInterface.get_editor_theme()
+
+	var _base_col: Color 		= settings.get("interface/theme/base_color")
+	var _accent_col: Color 	= settings.get("interface/theme/accent_color")
+	var _contrast: float 		= settings.get("interface/theme/contrast")
+
+	if  _contrast   == editor_contrast\
+	and _base_col   == editor_base_col\
+	and _accent_col == editor_accent_col:
+		return
+
+	var accent_contrast_l 	= editor_accent_col.lerp(	Color.WHITE, _contrast)
+	var accent_contrast_l_h = editor_accent_col.lerp(	Color.WHITE, _contrast / 2)
+	var accent_contrast_d 	= editor_accent_col.lerp(	Color.BLACK, _contrast)
+	var accent_contrast_d_h = editor_accent_col.lerp(	Color.BLACK, _contrast / 2)
+	var base_contrast_l 		= editor_base_col.lerp(		Color.WHITE, _contrast)
+	var base_contrast_l_h 	= editor_base_col.lerp(		Color.WHITE, _contrast / 2)
+	var base_contrast_d 		= editor_base_col.lerp(		Color.BLACK, _contrast)
+	var base_contrast_d_h 	= editor_base_col.lerp(		Color.BLACK, _contrast / 2)
+	# var shift = _contrast + 2 if _contrast > 0 else _contrast - 2
+	# shift = clamp(shift, -1.0, 1.0)
+	var base_contrast_d_d = base_contrast_d.lerp(Color.BLACK if _contrast > 0 else Color.WHITE,_contrast)
+
+	panel_round_bg.bg_color = base_contrast_d
+	panel_round_base.bg_color = editor_base_col
+	panel_round_base_highlight.bg_color = editor_base_col
+	panel_round_base_highlight.border_color = editor_accent_col
+	panel_round_accent.bg_color = editor_accent_col
+	panel_round_accent_muted.bg_color = accent_contrast_d_h
+	panel_top_round_base.bg_color = editor_base_col
+	panel_top_round_base_highlight.bg_color = editor_base_col
+	panel_top_round_base_highlight.border_color = editor_accent_col
+	panel_top_round_accent.bg_color = editor_accent_col
+	panel_top_round_accent_muted.bg_color = accent_contrast_d_h
+
+	sb_tab_bar_bg.bg_color = editor_base_col
+	sb_tab_unselected.bg_color = Color.TRANSPARENT
+	sb_tab_selected.bg_color = accent_contrast_d
+	sb_tab_hover.bg_color = Color.TRANSPARENT
+	sb_tab_hover.border_color = editor_accent_col
+
+	sb_btn_normal.bg_color = Color.TRANSPARENT
+	sb_btn_highlight.bg_color = Color.TRANSPARENT
+	sb_btn_highlight.border_color = editor_accent_col
+	sb_btn_top_highlight.bg_color = Color.TRANSPARENT
+	sb_btn_top_highlight.border_color = editor_accent_col
+
+	sb_clrpicker_normal.bg_color = Color.TRANSPARENT
+	sb_clrpicker_highlight.bg_color = Color.TRANSPARENT
+	sb_clrpicker_highlight.border_color = editor_accent_col
+
+	sb_line_edit_normal.bg_color = base_contrast_d_d
+	sb_line_edit_highlight.bg_color = base_contrast_d_d
+	sb_line_edit_highlight.border_color = editor_accent_col
+
 
 	var norm_font_col:													= Color(0.878, 0.878, 0.878)
 	var hover_font_col:													= Color(0.95, 0.95, 0.95)
@@ -1481,18 +1553,7 @@ func _sync_stylebox_colors(current_node: Control):
 	var interact_pressed_c 											= editor_base_col
 	var interact_pressed_hover_c 								= base_contrast_l
 
-	# TabContainer
-	stylebox_tab_bar_bg.bg_color 								= editor_base_col
-	stylebox_tab_bar_hovered.bg_color 					= editor_accent_col
-	stylebox_tab_bar_selected.bg_color 					= accent_contrast_d
-	stylebox_tab_bar_unselected.bg_color 				= base_contrast_d
-	stylebox_cat_topbar_panel.bg_color 					= editor_base_col
 
-	# FoldableContainer
-	stylebox_fold_cont_title_panel.bg_color 		= interact_normal_c
-	stylebox_fold_cont_hover_panel.bg_color 		= interact_hover_c
-	stylebox_fold_cont_collapsed_panel.bg_color = interact_pressed_c
-	stylebox_fold_cont_collapsed_hover.bg_color = base_contrast_l_h
 	var fold_conts: Array[FoldableContainer] 		= [general_fold_cont, limit_fold_cont, id_overlay_fold_cont]
 	for cont in fold_conts:
 		cont.add_theme_color_override("font_color", 						norm_font_col 	if interact_normal_c.v 					< 0.7 else base_contrast_d)
@@ -1500,10 +1561,6 @@ func _sync_stylebox_colors(current_node: Control):
 		cont.add_theme_color_override("collapsed_font_color", 	Color.WHITE 		if base_contrast_l_h.v 					< 0.7 else editor_base_col)
 		cont.add_theme_color_override("title_collapsed_hover", 	Color.WHITE 		if interact_pressed_hover_c.v 	< 0.7 else editor_base_col)
 
-	# OptionButton
-	stylebox_opt_btn_normal.bg_color 		= Color.TRANSPARENT
-	stylebox_opt_btn_hover.bg_color 		= Color.TRANSPARENT
-	stylebox_opt_btn_hover.border_color = editor_accent_col
 	var opt_btns: Array[OptionButton] = [
 		error_rep_btn,
 		limit_method_btn,
@@ -1517,9 +1574,3 @@ func _sync_stylebox_colors(current_node: Control):
 		btn.add_theme_color_override("font_pressed_color", 				hover_font_col 	if interact_hover_c.v 					< 0.7 else editor_base_col)
 		btn.add_theme_color_override("font_hover_color", 					Color.WHITE 		if interact_pressed_c.v 				< 0.7 else editor_base_col)
 		btn.add_theme_color_override("font_hover_pressed_color", 	Color.WHITE 		if interact_pressed_hover_c.v 	< 0.7 else editor_base_col)
-
-
-	# SpinBox
-
-
-	# ColorPicketButton
