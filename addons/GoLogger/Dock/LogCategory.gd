@@ -21,6 +21,8 @@ signal category_deleted()
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
+const sb_panel_round_base: StyleBoxFlat = preload("uid://cywnobmluy31i")
+const sb_panel_round_base_accent_border: StyleBoxFlat = preload("uid://qbiwr8hnwf5n")
 const sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
 const sb_line_edit_highlight: StyleBoxFlat = preload("uid://dl1ay0wubtp2m")
 
@@ -39,6 +41,7 @@ var is_locked : bool = false:
 	set(value):
 		is_locked = value
 		log_category_changed.emit(self, false, "")
+		add_theme_stylebox_override("panel", sb_panel_round_base_accent_border if is_locked else sb_panel_round_base)
 		if lock_btn != null: lock_btn.button_pressed = is_locked
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
@@ -66,17 +69,24 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
 
-		settings.settings_changed.connect(_on_editor_settings_changed)
+		# settings.settings_changed.connect(_on_editor_settings_changed)
 		_on_editor_settings_changed()
 
 		del_btn.button_up.connect(_on_del_button_up)
-		line_edit.text_changed.connect(_on_text_changed)
+		# line_edit.text_changed.connect(_on_text_changed)
 		move_left_btn.button_up.connect(move_log_category.bind(-1))
 		move_right_btn.button_up.connect(move_log_category.bind(1))
 
+
 		line_edit.text_submitted.connect(
 			func(new_text: String) -> void:
-				apply_name(new_text)
+				if !check_name_conflict():
+					apply_name(new_text)
+		)
+
+		line_edit.text_changed.connect(
+			func(new_text: String) -> void:
+				handle_name_state()
 		)
 
 		line_edit.mouse_entered.connect(
@@ -91,7 +101,8 @@ func _ready() -> void:
 
 		apply_btn.button_up.connect(
 			func() -> void:
-				apply_name(line_edit.text)
+				if !check_name_conflict():
+					apply_name(line_edit.text)
 		)
 
 		lock_btn.toggled.connect(
@@ -117,72 +128,68 @@ func _ready() -> void:
 
 
 
+func handle_name_state() -> void:
+	if line_edit.text == "" or line_edit.text == category_name:
+		apply_btn.hide()
+		apply_btn.disabled = true
+		default_checkbox.show()
+		invalid_name = true
+		print(1)
+
+	else:
+		apply_btn.show()
+		apply_btn.disabled = false
+		default_checkbox.hide()
+		invalid_name = true
+		print(2)
+
+	if check_name_conflict():
+		apply_btn.disabled = true
+
+
+func check_name_conflict() -> bool:
+	config.load(PATH)
+	return config.get_value("categories", "category_names", []).has(line_edit.text)
+
+
+# Add red border to line edit when name is invalid? 
+# Need to refactor. Instead of updating categories according to dock when the game is ran. It needs to update on every "log_category_changed()" signal emission. 
+
 func apply_name(new_name: String) -> void:
 	config.load(PATH)
-	var cat: Array = config.get_value("categories", "category_names", [])
-	var old_name := category_name
-	var fin_name := get_unique_category_name(new_name, old_name)
 
-	for i in cat.size():
-		if cat[i] == old_name:
-			cat[i] = fin_name
+	var cat: Array = config.get_value("categories", "category_names", []).duplicate()
+	var def: String = config.get_value("categories", "default_category", "")
+	var old_name: String = category_name
+
+	if old_name == "": # Is new LogCategory
+		cat.append(new_name)
+
+	if cat.has(old_name) and old_name != "": # Is existing LogCategory
+		for c in cat.size():
+			if cat[c] == old_name:
+				cat[c] = new_name
+				printerr(c, " +++ ", cat)
+				break
+
+	if old_name == def:
+		config.set_value("categories", "default_category", new_name)
+
 	config.set_value("categories", "category_names", cat)
+	printerr(config.get_value("categories", "category_names"))
 	config.save(PATH)
 
-	category_name = fin_name
-	line_edit.text = fin_name
-	log_category_changed.emit(self, true, old_name)
+	if category_name == "":
+		print_rich("[color=878787][GoLogger] Category <" + new_name + "> created.")
+	else:
+		print_rich("[color=878787][GoLogger] Category <" + category_name + "> renamed to <" + new_name + ">.")
+
+	category_name = new_name
+	line_edit.text = new_name
+	log_category_changed.emit(self, true, new_name)
 	line_edit.release_focus()
 	apply_btn.hide()
-
-	if old_name == "":
-		print_rich("[color=878787][GoLogger] Category <" + fin_name + "> created.")
-	else:
-		print_rich("[color=878787][GoLogger] Category <" + old_name + "> renamed to <" + fin_name + ">.")
-
-
-
-func get_unique_category_name(name: String, ignore_name: String = "") -> String:
-	config.load(PATH)
-	var categories = config.get_value("categories", "category_names", [])
-	var base: String = name
-	var suffix: int = 1
-
-	if !categories.has(base) or categories.size() == 0:
-		return base
-
-	var i := name.length() - 1
-	while i >= 0 and name + str(i) in categories:
-		i += 1
-
-	if i < name.length() - 1:
-		base = name.substr(0, i + 1)
-		suffix = int(name.substr(i + 1, name.length() - (i + 1))) + 1
-
-	var candidate: String = base
-
-	if !categories.has(candidate):
-		return candidate
-
-	candidate = base + str(suffix)
-
-	if !categories.has(candidate):
-		return candidate
-
-	while categories.has(candidate):
-		suffix += 1
-		candidate = base + str(suffix)
-
-	return candidate
-
-
-func has_conflict(candidate: String, ignore_name: String) -> bool:
-	config.load(PATH)
-	var categories: Array = config.get_value("categories", "category_names", [])
-	for c in categories:
-		if c != ignore_name and c == candidate:
-			return true
-	return false
+	default_checkbox.show()
 
 
 func move_log_category(direction: int = 0) -> void:
@@ -193,24 +200,24 @@ func move_log_category(direction: int = 0) -> void:
 
 
 
-func _on_text_changed(new_text : String) -> void:
-	if new_text == "" or has_conflict(new_text, ""):
-		if new_text != category_name:
-			apply_btn.show()
-			apply_btn.disabled = false
-			invalid_name = false
-		else:
-			apply_btn.hide()
-			apply_btn.disabled = true
-			invalid_name = true
-	else:
-		apply_btn.show()
-		apply_btn.disabled = false
-		invalid_name = false
+# func _on_text_changed(new_text : String) -> void:
+# 	if new_text == "" or has_conflict(new_text, ""):
+# 		if new_text != category_name:
+# 			apply_btn.show()
+# 			apply_btn.disabled = false
+# 			invalid_name = false
+# 		else:
+# 			apply_btn.hide()
+# 			apply_btn.disabled = true
+# 			invalid_name = true
+# 	else:
+# 		apply_btn.show()
+# 		apply_btn.disabled = false
+# 		invalid_name = false
 
-	if line_edit.get_caret_column() == line_edit.text.length() - 1:
-		line_edit.set_caret_column(line_edit.text.length())
-	else: line_edit.set_caret_column(line_edit.get_caret_column() + 1)
+# 	if line_edit.get_caret_column() == line_edit.text.length() - 1:
+# 		line_edit.set_caret_column(line_edit.text.length())
+# 	else: line_edit.set_caret_column(line_edit.get_caret_column() + 1)
 
 
 func _on_del_button_up() -> void:

@@ -151,38 +151,40 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
 @onready var editor_contrast = settings.get("interface/theme/contrast")
 
-var sb_tab_bar_bg 									:= preload("uid://beo2bu5ofsw0u")
-var sb_tab_unselected 							:= preload("uid://427jdnrjcbba")
-var sb_tab_selected 								:= preload("uid://cy0ifp487jfcg")
-var sb_tab_hover 										:= preload("uid://yxpx0pyjme8s")
+var sb_tab_bar_bg 										:= preload("uid://beo2bu5ofsw0u")
+var sb_tab_unselected 								:= preload("uid://427jdnrjcbba")
+var sb_tab_selected 									:= preload("uid://cy0ifp487jfcg")
+var sb_tab_hover 											:= preload("uid://yxpx0pyjme8s")
 
-var panel_round_bg 									:= preload("uid://dqfhm2ywaj4dr")
-var panel_round_base 								:= preload("uid://cywnobmluy31i")
-var panel_round_base_highlight 			:= preload("uid://b0ho2njwihy2p")
-var panel_round_accent 							:= preload("uid://3r3hhcvqp2au")
-var panel_round_accent_muted 				:= preload("uid://l18dbl63e366")
-var panel_top_round_base 						:= preload("uid://cqnilt2rk14bi")
-var panel_top_round_base_highlight 	:= preload("uid://0nxkxhcntsj3")
-var panel_top_round_accent 					:= preload("uid://dve2ih1gvvua7")
-var panel_top_round_accent_muted 		:= preload("uid://7s65f804p1jc")
+var panel_round_bg 										:= preload("uid://dqfhm2ywaj4dr")
+var panel_round_base 									:= preload("uid://cywnobmluy31i")
+var panel_round_base_border_highlight := preload("uid://qbiwr8hnwf5n")
+var panel_round_highlight 						:= preload("uid://b0ho2njwihy2p")
+var panel_round_accent 								:= preload("uid://3r3hhcvqp2au")
+var panel_round_accent_muted 					:= preload("uid://l18dbl63e366")
+var panel_top_round_base 							:= preload("uid://cqnilt2rk14bi")
+var panel_top_round_base_highlight 		:= preload("uid://0nxkxhcntsj3")
+var panel_top_round_accent 						:= preload("uid://dve2ih1gvvua7")
+var panel_top_round_accent_muted 			:= preload("uid://7s65f804p1jc")
 
-var sb_btn_normal 									:= preload("uid://di36bptu4b3n")
-var sb_btn_highlight 								:= preload("uid://dcjwu6ej2w2s4")
-var sb_btn_top_highlight 						:= preload("uid://lyngp43l4n0n")
+var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
+var sb_btn_highlight 									:= preload("uid://dcjwu6ej2w2s4")
+var sb_btn_top_highlight 							:= preload("uid://lyngp43l4n0n")
+var sb_btn_apply 											:= preload("uid://bwsfno28una6g")
 
-var sb_clrpicker_normal							:= preload("uid://bth006ulwoyl3")
-var sb_clrpicker_highlight 					:= preload("uid://bv58jw0dd3sve")
+var sb_clrpicker_normal								:= preload("uid://bth006ulwoyl3")
+var sb_clrpicker_highlight 						:= preload("uid://bv58jw0dd3sve")
 
-var sb_line_edit_normal 						:= preload("uid://pue22dsifmfd")
-var sb_line_edit_highlight 					:= preload("uid://dl1ay0wubtp2m")
-var sb_line_edit_invalid 						:= preload("uid://sqhht0mdddoi")
+var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
+var sb_line_edit_highlight 						:= preload("uid://dl1ay0wubtp2m")
+var sb_line_edit_invalid 							:= preload("uid://sqhht0mdddoi")
 
-var sb_spinbox_up_highlight 				:= preload("uid://bvek0vh8shw5l")
-var sb_spinbox_up_pressed 					:= preload("uid://q0h5bi585ik6")
-var sb_spinbox_down_highlight 			:= preload("uid://ba2pkgbcu0dlo")
-var sb_spinbox_down_pressed 				:= preload("uid://daw4nhpnjj6i1")
+var sb_spinbox_up_highlight 					:= preload("uid://bvek0vh8shw5l")
+var sb_spinbox_up_pressed 						:= preload("uid://q0h5bi585ik6")
+var sb_spinbox_down_highlight 				:= preload("uid://ba2pkgbcu0dlo")
+var sb_spinbox_down_pressed 					:= preload("uid://daw4nhpnjj6i1")
 
-var gl_hotkeys: GLShortcut 					=  preload("uid://dyi2aml73k4g8")
+var gl_hotkeys: GLShortcut 						=  preload("uid://dyi2aml73k4g8")
 
 ## SEPERATOR has index 3, should not be used.
 enum LimitMethod {
@@ -1478,8 +1480,10 @@ func _sync_stylebox_colors(current_node: Control):
 
 	panel_round_bg.bg_color = base_contrast_d
 	panel_round_base.bg_color = editor_base_col
-	panel_round_base_highlight.bg_color = editor_base_col
-	panel_round_base_highlight.border_color = editor_accent_col
+	panel_round_highlight.bg_color = editor_base_col
+	panel_round_highlight.border_color = editor_accent_col
+	panel_round_base_border_highlight.bg_color = editor_base_col
+	panel_round_base_border_highlight.border_color = editor_accent_col
 	panel_round_accent.bg_color = editor_accent_col
 	panel_round_accent_muted.bg_color = accent_contrast_d_h
 	panel_top_round_base.bg_color = editor_base_col
@@ -1497,6 +1501,7 @@ func _sync_stylebox_colors(current_node: Control):
 	sb_btn_normal.bg_color = Color.TRANSPARENT
 	sb_btn_highlight.bg_color = Color.TRANSPARENT
 	sb_btn_highlight.border_color = editor_accent_col
+	sb_btn_apply.bg_color = editor_accent_col
 	sb_btn_top_highlight.bg_color = Color.TRANSPARENT
 	sb_btn_top_highlight.border_color = editor_accent_col
 

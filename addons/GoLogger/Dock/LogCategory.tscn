@@ -9,6 +9,7 @@
 [ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="4_lnuxt"]
 [ext_resource type="Texture2D" uid="uid://goc0tdkq3dym" path="res://addons/GoLogger/Resources/icons/Remove.svg" id="5_hkawy"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="7_lnuxt"]
+[ext_resource type="StyleBox" uid="uid://bwsfno28una6g" path="res://addons/GoLogger/Resources/theme/btn_apply.tres" id="8_7kr4p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hqlwo"]
 content_margin_left = 2.0
@@ -31,21 +32,21 @@ expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ikmgl"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7kr4p"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
 content_margin_bottom = 4.0
-bg_color = Color(0.18654281, 2.1168277, 0.11848677, 0.6)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.832, 1, 0.79, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+bg_color = Color(0.1, 0.1, 0.1, 0.5882353)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0.3137255)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 corner_detail = 5
 
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
@@ -135,11 +136,11 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Apply category name"
-theme_override_styles/normal = ExtResource("3_7kr4p")
+theme_override_styles/normal = ExtResource("8_7kr4p")
 theme_override_styles/pressed = ExtResource("4_lnuxt")
 theme_override_styles/hover = ExtResource("4_lnuxt")
 theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
-theme_override_styles/focus = SubResource("StyleBoxFlat_ikmgl")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_7kr4p")
 disabled = true
 text = "Apply"
 
