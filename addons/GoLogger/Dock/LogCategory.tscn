@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://behxo6vcb5ubp" path="res://addons/GoLogger/Resources/icons/ArrowRight.svg" id="3_hkawy"]
 [ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="4_lnuxt"]
 [ext_resource type="Texture2D" uid="uid://goc0tdkq3dym" path="res://addons/GoLogger/Resources/icons/Remove.svg" id="5_hkawy"]
-[ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="7_lnuxt"]
+[ext_resource type="StyleBox" uid="uid://sqhht0mdddoi" path="res://addons/GoLogger/Resources/theme/line_edit_invalid.tres" id="6_7kr4p"]
 [ext_resource type="StyleBox" uid="uid://bwsfno28una6g" path="res://addons/GoLogger/Resources/theme/btn_apply.tres" id="8_7kr4p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hqlwo"]
@@ -87,7 +87,7 @@ theme_override_colors/font_uneditable_color = Color(0.960784, 0.647059, 0.105882
 theme_override_colors/font_selected_color = Color(0.2236, 0.86, 0.594833, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = ExtResource("7_lnuxt")
+theme_override_styles/normal = ExtResource("6_7kr4p")
 theme_override_styles/read_only = SubResource("StyleBoxFlat_hqlwo")
 placeholder_text = "Enter name"
 alignment = 1

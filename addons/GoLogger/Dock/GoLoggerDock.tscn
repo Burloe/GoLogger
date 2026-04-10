@@ -157,12 +157,9 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create new category"
-theme_override_colors/font_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
-theme_override_colors/font_hover_color = Color(0.2542, 0.76342, 0.82, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
-theme_override_colors/icon_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
-theme_override_colors/icon_hover_color = Color(0.254902, 0.764706, 0.819608, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
+theme_override_colors/icon_pressed_color = Color(0.19215687, 0.6, 0.12156863, 1)
+theme_override_colors/icon_hover_color = Color(0.61875, 0.9, 0.225, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.192, 0.6, 0.12, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
@@ -175,12 +172,9 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Opens Base Directory using OS file browser"
-theme_override_colors/font_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/icon_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.19999999, 0.5333332, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
@@ -917,9 +911,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 tooltip_text = "Opens the resource in the Inspector to add, change or remove bindings"
-theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.7058824)
 theme_override_colors/icon_pressed_color = Color(0.44000003, 0.53000003, 0.8, 1)
-theme_override_colors/icon_hover_color = Color(0.63, 0.9198333, 1, 1)
+theme_override_colors/icon_hover_color = Color(0.13999999, 1, 0.6273333, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.4392157, 0.5294118, 0.8, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
 theme_override_styles/pressed = ExtResource("13_fcs7p")
@@ -933,10 +926,9 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 tooltip_text = "Open the base directory folder"
-theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.73, 0.352347, 0.0219, 1)
-theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/icon_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.2, 0.53333336, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = ExtResource("13_fcs7p")
 theme_override_styles/pressed = ExtResource("13_fcs7p")
@@ -984,8 +976,8 @@ theme_override_constants/separation = 8
 
 [node name="BaseDirLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme = SubResource("Theme_fcs7p")
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_font_sizes/font_size = 14
@@ -1057,8 +1049,8 @@ theme_override_constants/separation = 8
 
 [node name="LogHeaderLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Log Header Format:"
 
@@ -1132,8 +1124,9 @@ theme_override_constants/separation = 8
 
 [node name="EntryFormatLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 0
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Entry Format:"
 

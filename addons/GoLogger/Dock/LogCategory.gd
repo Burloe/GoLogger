@@ -21,10 +21,11 @@ signal category_deleted()
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
-const sb_panel_round_base: StyleBoxFlat = preload("uid://cywnobmluy31i")
-const sb_panel_round_base_accent_border: StyleBoxFlat = preload("uid://qbiwr8hnwf5n")
-const sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
-const sb_line_edit_highlight: StyleBoxFlat = preload("uid://dl1ay0wubtp2m")
+var sb_panel_round_base: StyleBoxFlat = preload("uid://cywnobmluy31i")
+var sb_panel_round_base_accent_border: StyleBoxFlat = preload("uid://qbiwr8hnwf5n")
+var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
+var sb_line_edit_highlight: StyleBoxFlat = preload("uid://dl1ay0wubtp2m")
+var sb_line_edit_invalid: StyleBoxFlat = preload("uid://sqhht0mdddoi")
 
 const PATH = "user://gologger_data.ini"
 var config = ConfigFile.new()
@@ -35,7 +36,14 @@ var dock : TabContainer:
 			if move_right_btn != null:
 				move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
 
-var invalid_name : bool = false
+var invalid_name : bool = false:
+	set(value):
+		invalid_name = value
+		if !is_locked:
+			line_edit.add_theme_stylebox_override(
+				"normal",
+				sb_line_edit_invalid if value else sb_line_edit_normal
+			)
 
 var is_locked : bool = false:
 	set(value):
@@ -82,6 +90,9 @@ func _ready() -> void:
 			func(new_text: String) -> void:
 				if !check_name_conflict():
 					apply_name(new_text)
+				else:
+					line_edit.text = category_name
+					handle_name_state()
 		)
 
 		line_edit.text_changed.connect(
@@ -152,8 +163,8 @@ func check_name_conflict() -> bool:
 	return config.get_value("categories", "category_names", []).has(line_edit.text)
 
 
-# Add red border to line edit when name is invalid? 
-# Need to refactor. Instead of updating categories according to dock when the game is ran. It needs to update on every "log_category_changed()" signal emission. 
+# Add red border to line edit when name is invalid?
+# Need to refactor. Instead of updating categories according to dock when the game is ran. It needs to update on every "log_category_changed()" signal emission.
 
 func apply_name(new_name: String) -> void:
 	config.load(PATH)
