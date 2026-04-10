@@ -978,11 +978,11 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
-theme = SubResource("Theme_fcs7p")
+size_flags_vertical = 1
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_font_sizes/font_size = 14
 text = "Base Directory:"
-vertical_alignment = 2
+vertical_alignment = 1
 
 [node name="BaseDirLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
 unique_name_in_owner = true
@@ -1051,8 +1051,10 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
+size_flags_vertical = 1
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Log Header Format:"
+vertical_alignment = 1
 
 [node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
 unique_name_in_owner = true
@@ -1127,8 +1129,10 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
 size_flags_horizontal = 0
+size_flags_vertical = 1
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Entry Format:"
+vertical_alignment = 1
 
 [node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
 unique_name_in_owner = true

@@ -36,6 +36,7 @@ var dock : TabContainer:
 			if move_right_btn != null:
 				move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
 
+# Deprecated? - Unused in this script at least
 var invalid_name : bool = false:
 	set(value):
 		invalid_name = value
@@ -44,7 +45,7 @@ var invalid_name : bool = false:
 				"normal",
 				sb_line_edit_invalid if value else sb_line_edit_normal
 			)
-
+## Lock status (locks the category name and disables the erase button)
 var is_locked : bool = false:
 	set(value):
 		is_locked = value
@@ -54,6 +55,7 @@ var is_locked : bool = false:
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
 
+## Holds the last applied category name
 var category_name: String = "":
 	set(value):
 		config.load(PATH)
@@ -62,7 +64,8 @@ var category_name: String = "":
 			category_name = value
 			if line_edit != null: line_edit.text = category_name
 
-var index : int = 0: ## This now simply determines the order of LogCategories in dock
+## Simply used to maintain the same order between sessions
+var index : int = 0:
 	set(value):
 		if value != index:
 			log_category_changed.emit(self, false, "")

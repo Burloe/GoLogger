@@ -871,6 +871,31 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 		save_data()
 
 
+func apply_categories() -> void:
+	config.load(PATH)
+	var c := ConfigFile.new()
+	
+	for setting in settings_dict.keys():
+		if setting == "category_names" or setting == "default_category":
+			c.set_value("categories", setting, config.get_value("categories", setting))
+		
+		else:
+			c.set_value("settings", setting, config.get_value("settings", setting, settings_dict[setting]["default"]))
+			c.set_value("settings", setting, config.get_value("settings", setting, settings_dict.get(setting, {}).get("default", settings_dict.get("default", {}).get(setting, null))))
+	
+	for cat in category_container.get_children():
+		if cat is LogCategory:
+			c.set_value("categories." + cat.category_name, "file_name" , "")
+			c.set_value("categories." + cat.category_name, "file_path", "")
+			c.set_value("categories." + cat.category_name, "category_name", cat.category_name)
+			c.set_value("categories." + cat.category_name, "category_index", cat.index)
+			c.set_value("categories." + cat.category_name, "file_count", config.get_value("categories." + cat.category_name, "file_count", 0))
+			c.set_value("categories." + cat.category_name, "is_locked", cat.is_locked)
+			c.set_value("categories." + cat.category_name, "entry_count", config.get_value("categories." + cat.category_name, "entry_count", 0))
+	
+	c.save(PATH)
+	
+
 ## Called when a category has changed (name, lock state, etc) by the dock UI.
 func _category_changed(log_category: LogCategory, is_name_change: bool, old_name) -> void:
 	config.load(PATH)
@@ -1043,8 +1068,10 @@ func _open_directory() -> void:
 
 
 func _apply_new_base_directory() -> void:
+	config.load(PATH)
 	var old_dir = config.get_value("settings", "base_directory")
 	var new_dir = base_dir_line.text.strip_edges()
+
 	# Don't accept empty path
 	if new_dir == "":
 		if config.get_value("settings", "error_reporting") != 2:
@@ -1091,6 +1118,8 @@ func _apply_new_base_directory() -> void:
 		base_dir_line.text = old_dir
 		base_dir_apply_btn.disabled = true
 		return
+
+	base_dir_line.text = new_dir
 
 	if !suppress_history_prints:
 		print_rich(c_print_history, "Base directory changed.")
@@ -1209,6 +1238,7 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 		base_dir_line:
 			base_dir_line.release_focus()
 			base_dir_apply_btn.hide()
+			_apply_new_base_directory()
 
 		log_header_line:
 			log_header_line.release_focus()
