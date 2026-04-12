@@ -58,19 +58,16 @@ signal open_hotkey_resource()
 @onready var base_dir_lbl: Label = %BaseDirLabel
 @onready var base_dir_apply_btn: Button = %BaseDirApplyButton
 @onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
-@onready var base_dir_reset_btn: Button = %BaseDirResetButton
 @onready var base_dir_container: HBoxContainer = %BaseDirHBox
 
 @onready var log_header_line: LineEdit = %LogHeaderLineEdit
 @onready var log_header_lbl: Label = %LogHeaderLabel
 @onready var log_header_apply_btn: Button = %LogHeaderApplyButton
-@onready var log_header_reset_btn: Button = %LogHeaderResetButton
 @onready var log_header_container: HBoxContainer = %LogHeaderHBox
 
 @onready var entry_format_line: LineEdit = %EntryFormatLineEdit
 @onready var entry_format_lbl: Label = %EntryFormatLabel
 @onready var entry_format_apply_btn: Button = %EntryFormatApplyButton
-@onready var entry_format_reset_btn: Button = %EntryFormatResetButton
 @onready var entry_format_warning: Panel = %EntryFormatWarning
 @onready var entry_format_container: HBoxContainer = %EntryFormatHBox
 
@@ -234,29 +231,29 @@ var c_font_hover := Color("ffffff")
 var c_print_history := "[color=878787][GoLogger] "
 
 var settings_dict := {
-	"category_names": 						{"section": "categories", "value": ["game"], 	"type": TYPE_ARRAY,  	"default": ["game"]},
-	"default_category": 					{"section": "categories", "value": "", 				"type": TYPE_STRING,  "default": ""},
-	"base_directory": 						{"section": "settings", 	"value": "user://GoLogger/", "type": TYPE_STRING, "default": "user://GoLogger/"},
-	"log_header_format": 					{"section": "settings", 	"value": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", "type": TYPE_STRING,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"section": "settings", 	"value": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"autostart_session": 					{"section": "settings", 	"value": true, 			"type": TYPE_BOOL, 		"control": null, "default": true},
-	"use_utc": 										{"section": "settings", 	"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_overlay_print": 					{"section": "settings", 	"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_overlay_toggle": 					{"section": "settings", 	"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_overlay_startup_state": 	{"section": "settings", 	"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_overlay_align":						{"section": "settings", 	"value": 0, 				"type": TYPE_INT,			"control": null, "default": 0},
-	"id_overlay_font_size":				{"section": "settings", 	"value": 12, 				"type": TYPE_INT, 		"control": null, "default": 12},
-	"id_overlay_font_color":			{"section": "settings", 	"value": "ffffff", 	"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
-	"id_overlay_outline_size":		{"section": "settings", 	"value": 8,					"type": TYPE_INT,			"control": null, "default": 8},
-	"id_overlay_outline_color":		{"section": "settings", 	"value": "000000", 	"type": TYPE_STRING,	"control": null, "default": "000000"},
-	"limit_method": 							{"section": "settings", 	"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"entry_count_action": 				{"section": "settings", 	"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"session_timer_action": 			{"section": "settings", 	"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"file_cap": 									{"section": "settings", 	"value": 10, 				"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"value": 1200, 			"type": TYPE_INT, 		"control": null, "default": 1200},
-	"session_duration": 					{"section": "settings", 	"value": 900, 			"type": TYPE_INT, 		"control": null, "default": 900},
-	"error_reporting": 						{"section": "settings", 	"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"columns": 										{"section": "settings", 	"value": 5, 				"type": TYPE_INT, 		"control": null, "default": 5}
+	"category_names": 						{"section": "categories", "name": "category_names", 						"value": ["game"], 	"type": TYPE_ARRAY,  	"default": ["game"]},
+	"default_category": 					{"section": "categories", "name": "default_category", 					"value": "", 				"type": TYPE_STRING,  "default": ""},
+	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"value": "user://GoLogger/", "type": TYPE_STRING, "control": null, "default": "user://GoLogger/"},
+	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"value": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", "type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
+	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"value": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
+	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"value": true, 			"type": TYPE_BOOL, 		"control": null, "default": true},
+	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_overlay_print": 					{"section": "settings", 	"name": "id_overlay_print", 					"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_overlay_toggle": 					{"section": "settings", 	"name": "id_overlay_toggle", 					"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_overlay_startup_state": 	{"section": "settings", 	"name": "id_overlay_startup_state", 	"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_overlay_align":						{"section": "settings", 	"name": "id_overlay_align", 					"value": 0, 				"type": TYPE_INT,			"control": null, "default": 0},
+	"id_overlay_font_size":				{"section": "settings", 	"name": "id_overlay_font_size", 			"value": 12, 				"type": TYPE_INT, 		"control": null, "default": 12},
+	"id_overlay_font_color":			{"section": "settings", 	"name": "id_overlay_font_color", 			"value": "ffffff", 	"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
+	"id_overlay_outline_size":		{"section": "settings", 	"name": "id_overlay_outline_size", 		"value": 8,					"type": TYPE_INT,			"control": null, "default": 8},
+	"id_overlay_outline_color":		{"section": "settings", 	"name": "id_overlay_outline_color", 	"value": "000000", 	"type": TYPE_STRING,	"control": null, "default": "000000"},
+	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"value": 10, 				"type": TYPE_INT, 		"control": null, "default": 10},
+	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"value": 1200, 			"type": TYPE_INT, 		"control": null, "default": 1200},
+	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"value": 900, 			"type": TYPE_INT, 		"control": null, "default": 900},
+	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"columns": 										{"section": "settings", 	"name": "columns", 										"value": 5, 				"type": TYPE_INT, 		"control": null, "default": 5}
 }
 
 
@@ -345,7 +342,6 @@ func _ready() -> void:
 			base_dir_line,
 			base_dir_apply_btn,
 			base_dir_opendir_btn,
-			base_dir_reset_btn,
 			log_header_line,
 			log_header_apply_btn,
 			entry_format_line,
@@ -466,11 +462,11 @@ func _ready() -> void:
 		]
 
 		for i in range(container_array.size()):
-			# Update font color on mouse over containers signals
+			# Update font color on container mouse over containers signals
 			container_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
 			container_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
 
-			# Update font color on mouse over Buttons signals
+			# Update font color on button mouse over signals
 			btns_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
 			btns_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
 
@@ -478,25 +474,10 @@ func _ready() -> void:
 			lbl.add_theme_color_override("font_color", c_font_normal)
 
 
-
-		if base_dir_apply_btn.button_up.is_connected(_on_button_button_up):
-			base_dir_apply_btn.button_up.disconnect(_on_button_button_up)
-		base_dir_apply_btn.button_up.connect(_on_button_button_up.bind(base_dir_apply_btn))
-		if base_dir_reset_btn.button_up.is_connected(_on_button_button_up):
-			base_dir_reset_btn.button_up.disconnect(_on_button_button_up)
-		base_dir_reset_btn.button_up.connect(_on_button_button_up.bind(base_dir_reset_btn))
-		if log_header_apply_btn.button_up.is_connected(_on_button_button_up):
-			log_header_apply_btn.button_up.disconnect(_on_button_button_up)
-		log_header_apply_btn.button_up.connect(_on_button_button_up.bind(log_header_apply_btn))
-		if log_header_reset_btn.button_up.is_connected(_on_button_button_up):
-			log_header_reset_btn.button_up.disconnect(_on_button_button_up)
-		log_header_reset_btn.button_up.connect(_on_button_button_up.bind(log_header_reset_btn))
-		if entry_format_apply_btn.button_up.is_connected(_on_button_button_up):
-			entry_format_apply_btn.button_up.disconnect(_on_button_button_up)
-		entry_format_apply_btn.button_up.connect(_on_button_button_up.bind(entry_format_apply_btn))
-		if entry_format_reset_btn.button_up.is_connected(_on_button_button_up):
-			entry_format_reset_btn.button_up.disconnect(_on_button_button_up)
-		entry_format_reset_btn.button_up.connect(_on_button_button_up.bind(entry_format_reset_btn))
+		for btn in [base_dir_apply_btn, log_header_apply_btn, entry_format_apply_btn]:
+			if btn.button_up.is_connected(_on_button_button_up):
+				btn.button_up.disconnect(_on_button_button_up)
+			btn.button_up.connect(_on_button_button_up.bind(btn))
 
 		open_hotkey_btn.button_up.connect(func() -> void: open_hotkey_resource.emit())
 
@@ -526,35 +507,11 @@ func _ready() -> void:
 
 
 		suppress_history_prints = true
-		load_data()
+		initialize_dock()
 		_apply_theme_colors(self)
 
 		await get_tree().process_frame
 		suppress_history_prints = false
-
-		# settings_dict["controls"] = {
-		# 	"base_directory": base_dir_line,
-		# 	"log_header_format": log_header_line,
-		# 	"entry_format": entry_format_line,
-		# 	"autostart_session": autostart_btn,
-		# 	"use_utc": utc_btn,
-		# 	"id_overlay_print": print_instance_id_btn,
-		# 	"id_overlay_toggle": id_overlay_toggle_btn,
-		# 	"id_overlay_startup_state": id_overlay_startup_btn,
-		# 	"id_overlay_align": id_overlay_align_opt_btn,
-		# 	"id_overlay_font_size": id_overlay_font_size_spinbox,
-		# 	"id_overlay_color": id_overlay_font_col_btn,
-		# 	"id_overlay_outline_size": id_overlay_outline_size_spinbox,
-		# 	"id_overlay_outline_col": id_overlay_outline_col_btn,
-		# 	"limit_method": limit_method_btn,
-		# 	"entry_count_action": entry_count_action_btn,
-		# 	"session_timer_action": session_timer_action_btn,
-		# 	"file_cap": file_count_spinbox,
-		# 	"entry_cap": entry_count_spinbox,
-		# 	"session_duration": session_duration_spinbox,
-		# 	"error_reporting": error_rep_btn,
-		# 	"columns": column_slider
-		# }
 
 		settings_dict["base_directory"]["control"] = 						base_dir_line
 		settings_dict["log_header_format"]["control"] = 				log_header_line
@@ -566,9 +523,9 @@ func _ready() -> void:
 		settings_dict["id_overlay_startup_state"]["control"] = 	id_overlay_startup_btn
 		settings_dict["id_overlay_align"]["control"] = 					id_overlay_align_opt_btn
 		settings_dict["id_overlay_font_size"]["control"] = 			id_overlay_font_size_spinbox
-		settings_dict["id_overlay_color"]["control"] = 					id_overlay_font_col_btn
+		settings_dict["id_overlay_font_color"]["control"] =			id_overlay_font_col_btn
 		settings_dict["id_overlay_outline_size"]["control"] = 	id_overlay_outline_size_spinbox
-		settings_dict["id_overlay_outline_col"]["control"] = 		id_overlay_outline_col_btn
+		settings_dict["id_overlay_outline_color"]["control"] =	id_overlay_outline_col_btn
 		settings_dict["limit_method"]["control"] = 							limit_method_btn
 		settings_dict["entry_count_action"]["control"] = 				entry_count_action_btn
 		settings_dict["session_timer_action"]["control"] = 			session_timer_action_btn
@@ -597,32 +554,6 @@ func create_settings_file() -> void: # Mirror
 
 		var section = settings_dict[key].get("section", "settings")
 		cf.set_value(section, key, settings_dict[key]["default"])
-
-
-	# cf.set_value("categories", "category_names", 								["game"])
-	# cf.set_value("categories", "default_category", 							settings_dict.get("defaults", {}).get("default_category", ""))
-
-	# cf.set_value("settings", "base_directory", 									settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
-	# cf.set_value("settings", "columns", 												settings_dict.get("defaults", {}).get("columns", 5))
-	# cf.set_value("settings", "log_header_format", 							settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
-	# cf.set_value("settings", "entry_format", 										settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	# cf.set_value("settings", "autostart_session", 							settings_dict.get("defaults", {}).get("autostart_session", true))
-	# cf.set_value("settings", "use_utc", 												settings_dict.get("defaults", {}).get("use_utc", false))
-	# cf.set_value("settings", "id_overlay_print", 								settings_dict.get("defaults", {}).get("id_overlay_print", false))
-	# cf.set_value("settings", "id_overlay_toggle", 							settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	# cf.set_value("settings", "id_overlay_startup_state", 				settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
-	# cf.set_value("settings", "id_overlay_align", 								settings_dict.get("defaults").get("id_overlay_align", 0))
-	# cf.set_value("settings", "id_overlay_font_size", 						settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
-	# cf.set_value("settings", "id_overlay_color", 					Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
-	# cf.set_value("settings", "id_overlay_outline_size", 				settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
-	# cf.set_value("settings", "id_overlay_outline_color",	Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
-	# cf.set_value("settings", "limit_method", 										settings_dict.get("defaults", {}).get("limit_method", 0))
-	# cf.set_value("settings", "entry_count_action", 							settings_dict.get("defaults", {}).get("entry_count_action", 0))
-	# cf.set_value("settings", "session_timer_action", 						settings_dict.get("defaults", {}).get("session_timer_action", 0))
-	# cf.set_value("settings", "file_cap", 												settings_dict.get("defaults", {}).get("file_cap", 10))
-	# cf.set_value("settings", "entry_cap", 											settings_dict.get("defaults", {}).get("entry_cap", 300))
-	# cf.set_value("settings", "session_duration", 								settings_dict.get("defaults", {}).get("session_duration", 300))
-	# cf.set_value("settings", "error_reporting", 								settings_dict.get("defaults", {}).get("error_reporting", 0))
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -685,26 +616,49 @@ func reset_to_default() -> void:
 
 
 func validate_settings() -> void: # Mirror
+	config.load(PATH)
 	_ensure_default_category()
-	# Validate presence -> Write default
-	for setting in settings_dict.get("expected_settings", {}).keys():
-		var splits = settings_dict["expected_settings"][setting].split("/")
-		if !config.has_section(splits[0]) or !config.has_section_key(splits[0], splits[1]):
-			config.set_value(splits[0], splits[1], settings_dict.get("defaults", {}).get(setting))
 
-	# Validate types -> Apply default
-	for type_key in settings_dict.get("expected_types", {}).keys():
-		var splits = type_key.split("/")
-		var expected_type = settings_dict["expected_types"][type_key]
-		var value = config.get_value(splits[0], splits[1])
+	for key in settings_dict.keys():
+			var setting: Dictionary = settings_dict.get(key, {})
+			var a_fields = ["section", "name", "value", "type", "control", "default"]
+			var b_fields = ["section", "name", "value", "type", "default"]
+			var err: Array[bool] = [false, false,false, false, false, false]
 
-		if typeof(value) != expected_type:
-			config.set_value(splits[0], splits[1], settings_dict.get("defaults", {}).get(splits[1]))
+			# Check missing fields
+			for i in range(a_fields.size()):
 
-	config.save(PATH)
+				if setting.has("section"):
+					var fs = a_fields.duplicate()
+
+					if setting["section"] == "categories":
+						fs = b_fields.duplicate()
+
+					# Collect + report missing fields
+					if !setting.has_all(fs):
+						var _e: Array[String] = []
+						for j in range(fs.size()):
+							if !setting.has(fs[j]):
+								_e.append(fs[j])
+
+						if not _e.is_empty():
+							push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
+
+			# Validate
+			# Presence
+			if !config.has_section(setting["section"]) or !config.has_section_key(setting["section"], setting["name"]):
+				config.set_value(setting["section"], setting["name"], setting["default"])
+				continue
+
+			# Type
+			if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
+				config.set_value(setting["section"], setting["name"], setting["default"])
+
+			config.save(PATH)
 
 
-func load_data() -> void:
+
+func initialize_dock() -> void:
 	var _c = ConfigFile.new()
 	if _c.load(PATH) != OK:
 		printerr("GoLogger error: Failed to load settings.ini file!")
@@ -726,36 +680,38 @@ func load_data() -> void:
 				break
 
 	# Settings
-	base_dir_line.text = 										_c.get_value("settings", "base_directory", 						settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
-	log_header_line.text = 									_c.get_value("settings", "log_header_format", 				settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
-	entry_format_line.text = 								_c.get_value("settings", "entry_format", 							settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", 				settings_dict.get("defaults", {}).get("autostart_session", true))
-	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", 									settings_dict.get("defaults", {}).get("use_utc", false))
-	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "id_overlay_print", 					settings_dict.get("defaults", {}).get("id_overlay_print", false))
-	id_overlay_toggle_btn.button_pressed = 	_c.get_value("settings", "id_overlay_toggle", 				settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	id_overlay_startup_btn.button_pressed = _c.get_value("settings", "id_overlay_startup_state", 	settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
-	id_overlay_font_size_spinbox.value = 		_c.get_value("settings", "id_overlay_font_size", 			settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
-	id_overlay_font_col_btn.color = 	Color(_c.get_value("settings", "id_overlay_color", 					settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")))
-	id_overlay_outline_size_spinbox.value = _c.get_value("settings", "id_overlay_outline_size", 	settings_dict.get("defaults").get("id_overlay_outline_size", 8))
-	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", 							settings_dict.get("defaults", {}).get("limit_method", 0))
-	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", 				settings_dict.get("defaults", {}).get("entry_count_action", 0))
-	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", 			settings_dict.get("defaults", {}).get("session_timer_action", 0))
-	file_count_spinbox.value = 							_c.get_value("settings", "file_cap", 									settings_dict.get("defaults", {}).get("file_cap", 10))
-	entry_count_spinbox.value = 						_c.get_value("settings", "entry_cap", 								settings_dict.get("defaults", {}).get("entry_cap", 300))
-	session_duration_spinbox.value = 				_c.get_value("settings", "session_duration", 					settings_dict.get("defaults", {}).get("session_duration", 300))
-	error_rep_btn.selected = 								_c.get_value("settings", "error_reporting", 					settings_dict.get("defaults", {}).get("error_reporting", 0))
-	column_slider.value = 									_get_column_value(_c.get_value("settings", "columns", settings_dict.get("defaults", {}).get("columns", 5)))
-
+	base_dir_line.text = 										_c.get_value("settings", "base_directory", 						settings_dict.get("defaults", 									{}).get("base_directory", "user://GoLogger/"))
+	log_header_line.text = 									_c.get_value("settings", "log_header_format", 				settings_dict.get("defaults", 									{}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
+	entry_format_line.text = 								_c.get_value("settings", "entry_format", 							settings_dict.get("defaults", 									{}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
+	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", 				settings_dict.get("autostart_session", 					{}).get("default"))
+	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", 									settings_dict.get("use_utc", {}).get("default", false))
+	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "id_overlay_print", 					settings_dict.get("id_overlay_print", 					{}).get("default"))
+	id_overlay_toggle_btn.button_pressed = 	_c.get_value("settings", "id_overlay_toggle", 				settings_dict.get("id_overlay_toggle", 					{}).get("default"))
+	id_overlay_startup_btn.button_pressed = _c.get_value("settings", "id_overlay_startup_state", 	settings_dict.get("id_overlay_startup_state", 	{}).get("default"))
+	id_overlay_font_size_spinbox.value = 		_c.get_value("settings", "id_overlay_font_size", 			settings_dict.get("id_overlay_font_size", 			{}).get("default"))
+	id_overlay_font_col_btn.color = 	Color(_c.get_value("settings", "id_overlay_color", 					settings_dict.get("id_overlay_color", 					{}).get("default")))
+	id_overlay_outline_size_spinbox.value = _c.get_value("settings", "id_overlay_outline_size", 	settings_dict.get("id_overlay_outline_size", 		{}).get("default"))
+	id_overlay_outline_col_btn.color =Color(_c.get_value("settings", "id_overlay_outline_color",	settings_dict.get("id_overlay_outline_color",		{}).get("default")))
+	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", 							settings_dict.get("limit_method", 							{}).get("default"))
+	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", 				settings_dict.get("entry_count_action", 				{}).get("default"))
+	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", 			settings_dict.get("session_timer_action", 			{}).get("default"))
+	file_count_spinbox.value = 							_c.get_value("settings", "file_cap", 									settings_dict.get("file_cap", 									{}).get("default"))
+	entry_count_spinbox.value = 						_c.get_value("settings", "entry_cap", 								settings_dict.get("entry_cap", 									{}).get("default"))
+	session_duration_spinbox.value = 				_c.get_value("settings", "session_duration", 					settings_dict.get("session_duration", 					{}).get("default"))
+	error_rep_btn.selected = 								_c.get_value("settings", "error_reporting", 					settings_dict.get("error_reporting", 						{}).get("default"))
+	column_slider.value = 									_get_column_value(_c.get_value("settings", "columns", settings_dict.get("columns", 										{}).get("default")))
+	save_data()
 	config.load(PATH)
 
 
 
 
-## Saves all the dock data ( categories and settings state ) to file according to the state/data of the dock(not the file).
+## Saves all the dock data ( categories and settings state ) to file according to the state/data of the dock.
 func save_data(deferred: bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
 
+	config.load(PATH)
 	var _c := ConfigFile.new()
 	_c.load(PATH)
 	_ensure_default_category()
@@ -768,13 +724,13 @@ func save_data(deferred: bool = false) -> void:
 				continue
 
 			_cat_names.append(log_category.category_name)
-			_c.set_value("categories." + log_category.category_name, "file_name", _c.get_value("categories." + log_category.category_name, "file_name", ""))
-			_c.set_value("categories." + log_category.category_name, "file_path", _c.get_value("categories." + log_category.category_name, "file_path", ""))
-			_c.set_value("categories." + log_category.category_name, "category_name", log_category.category_name)
-			_c.set_value("categories." + log_category.category_name, "category_index", log_category.index)
-			_c.set_value("categories." + log_category.category_name, "file_count", _c.get_value("categories." + log_category.category_name, "file_count", 0))
-			_c.set_value("categories." + log_category.category_name, "is_locked", log_category.is_locked)
-			_c.set_value("categories." + log_category.category_name, "entry_count", _c.get_value("categories." + log_category.category_name, "entry_count", 0))
+			_c.set_value("categories." + log_category.category_name, "file_name", 			config.get_value("categories." + log_category.category_name, "file_name", ""))
+			_c.set_value("categories." + log_category.category_name, "file_path", 			config.get_value("categories." + log_category.category_name, "file_path", ""))
+			_c.set_value("categories." + log_category.category_name, "category_name", 	log_category.category_name)
+			_c.set_value("categories." + log_category.category_name, "category_index", 	log_category.index)
+			_c.set_value("categories." + log_category.category_name, "file_count", 			config.get_value("categories." + log_category.category_name, "file_count", 0))
+			_c.set_value("categories." + log_category.category_name, "is_locked", 			log_category.is_locked)
+			_c.set_value("categories." + log_category.category_name, "entry_count", 		config.get_value("categories." + log_category.category_name, "entry_count", 0))
 
 	_c.set_value("categories", "category_names", _cat_names)
 
@@ -830,8 +786,10 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
 	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
 	_n.default_checkbox.button_pressed = true if config.get_value("categories", "default_category", "") == _name else false
+
 	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
 	_handle_category_mov_button_state()
+
 	if save_after:
 		save_data()
 
@@ -1118,12 +1076,6 @@ func _on_button_button_up(node: Button) -> void:
 				push_warning("GoLogger: Base directory path isn't set. Please set a valid directory path before opening the directory.")
 			_open_directory()
 
-		base_dir_reset_btn:
-			config.set_value("settings", "base_directory", "user://GoLogger/")
-			base_dir_line.text = config.get_value("settings", "base_directory")
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Base directory reset to default.")
-
 		log_header_apply_btn:
 			config.set_value("settings", "log_header_format", log_header_line.text)
 			if !suppress_history_prints:
@@ -1131,14 +1083,6 @@ func _on_button_button_up(node: Button) -> void:
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 			base_dir_apply_btn.hide()
-
-		log_header_reset_btn:
-			log_header_line.text = settings_dict.get("defaults", {}).get("log_header_format", "")
-			config.set_value("settings", "log_header_format", settings_dict.get("defaults", {}).get("log_header_format", ""))
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Log header option reset to default.")
-			log_header_apply_btn.disabled = true
-			log_header_line.release_focus()
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
@@ -1148,13 +1092,6 @@ func _on_button_button_up(node: Button) -> void:
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus()
 			log_header_apply_btn.hide()
-
-		entry_format_reset_btn:
-			entry_format_line.text = settings_dict.get("defaults", {}).get("entry_format", "")
-			config.set_value("settings", "entry_format", settings_dict.get("defaults", {}).get("entry_format", ""))
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Entry format reset to default.")
-			entry_format_apply_btn.disabled = true
 
 
 	save_data()
@@ -1434,10 +1371,11 @@ func _on_category_line_focus(data: Array, focused: bool) -> void:
 
 
 func _on_column_slider_value_changed(value: int) -> void:
+	config.load(PATH)
 	category_container.columns = _get_column_value(value)
 	column_slider.tooltip_text = str("Columns: ", _get_column_value(value))
 	config.set_value("settings", "columns", _get_column_value(value))
-	save_data()
+	config.save(PATH)
 
 
 func _on_line_edit_highlight_changed(highlight_on: bool, line_edit: LineEdit) -> void:

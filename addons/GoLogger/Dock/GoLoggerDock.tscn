@@ -237,7 +237,7 @@ theme_override_constants/separation = 9
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
+theme_override_constants/v_separation = 40
 columns = 5
 
 [node name="Settings" type="MarginContainer" parent="." unique_id=2095868147]
@@ -1001,6 +1001,7 @@ emoji_menu_enabled = false
 
 [node name="BaseDirApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/BaseDirHBox" unique_id=1831127922]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 tooltip_text = "Applies a new base directory"
@@ -1017,23 +1018,6 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
-
-[node name="BaseDirResetButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/BaseDirHBox" unique_id=1885174684]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(31, 31)
-layout_mode = 2
-tooltip_text = "Reset to: 
-user://GoLogger/"
-theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
-icon = ExtResource("3_y66hb")
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=2063796377]
 unique_name_in_owner = true
@@ -1076,6 +1060,7 @@ emoji_menu_enabled = false
 
 [node name="LogHeaderApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/LogHeaderHBox" unique_id=1394228566]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 tooltip_text = "Apply the new log header format"
@@ -1092,23 +1077,6 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
-
-[node name="LogHeaderResetButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/LogHeaderHBox" unique_id=223789385]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(31, 31)
-layout_mode = 2
-tooltip_text = "Reset to:
-{project_name} {version} {category} session {yy-mm-dd} {hh:mi:ss}:"
-theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
-icon = ExtResource("3_y66hb")
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=154378586]
 unique_name_in_owner = true
@@ -1187,6 +1155,7 @@ vertical_alignment = 1
 
 [node name="EntryFormatApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox" unique_id=1933647225]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 tooltip_text = "Apply new entry format"
@@ -1203,23 +1172,6 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
-
-[node name="EntryFormatResetButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox" unique_id=947659434]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(31, 31)
-layout_mode = 2
-tooltip_text = "Reset to:
-[{hh}:{mi}:{ss}]: {entry}"
-theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
-icon = ExtResource("3_y66hb")
 
 [node name="Help" type="Panel" parent="." unique_id=1397453253]
 visible = false

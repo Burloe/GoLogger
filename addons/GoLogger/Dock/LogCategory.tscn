@@ -49,8 +49,38 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 corner_detail = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lnuxt"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8, 0.8, 0.8, 0.4745098)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enuce"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6431373)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 5
+
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 85)
 offset_right = 332.0
 offset_bottom = 85.0
 theme_override_styles/panel = ExtResource("1_7kr4p")
@@ -174,9 +204,41 @@ expand_icon = true
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move right"
+mouse_default_cursor_shape = 13
 theme_override_styles/normal = ExtResource("3_7kr4p")
 theme_override_styles/pressed = ExtResource("4_lnuxt")
 theme_override_styles/hover = ExtResource("4_lnuxt")
 theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
 theme_override_styles/disabled = ExtResource("3_7kr4p")
 icon = ExtResource("3_hkawy")
+
+[node name="RevertPopup" type="Control" parent="." unique_id=733512099]
+unique_name_in_owner = true
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 13
+
+[node name="RevertButton" type="Button" parent="RevertPopup" unique_id=1421057895]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -116.0
+offset_top = 46.5
+offset_right = 116.0
+offset_bottom = 77.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+tooltip_text = "Revert name"
+mouse_behavior_recursive = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_lnuxt")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_enuce")
+theme_override_styles/hover = SubResource("StyleBoxFlat_lnuxt")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_enuce")
+text = "gameG"

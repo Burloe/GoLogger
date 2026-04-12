@@ -17,6 +17,8 @@ signal category_deleted()
 @onready var line_edit: LineEdit = 					%CategoryNameLineEdit
 @onready var del_btn:	Button = 							%DeleteButton
 @onready var apply_btn: Button = 						%ApplyButton
+@onready var revert_popup = 								%RevertPopup
+@onready var revert_btn: Button = 					%RevertButton
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
@@ -26,6 +28,8 @@ var sb_panel_round_base_accent_border: StyleBoxFlat = preload("uid://qbiwr8hnwf5
 var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
 var sb_line_edit_highlight: StyleBoxFlat = preload("uid://dl1ay0wubtp2m")
 var sb_line_edit_invalid: StyleBoxFlat = preload("uid://sqhht0mdddoi")
+
+var revert_tw_target_pos: Array[Vector2] = [Vector2(44, 0), Vector2(44, 83)]
 
 const PATH = "user://gologger_data.ini"
 var config = ConfigFile.new()
@@ -37,14 +41,8 @@ var dock : TabContainer:
 				move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
 
 # Deprecated? - Unused in this script at least
-var invalid_name : bool = false:
-	set(value):
-		invalid_name = value
-		if !is_locked:
-			line_edit.add_theme_stylebox_override(
-				"normal",
-				sb_line_edit_invalid if value else sb_line_edit_normal
-			)
+var invalid_name : bool = false
+
 ## Lock status (locks the category name and disables the erase button)
 var is_locked : bool = false:
 	set(value):
@@ -82,9 +80,12 @@ func _ready() -> void:
 
 		# settings.settings_changed.connect(_on_editor_settings_changed)
 		_on_editor_settings_changed()
+		revert_popup.hide()
+		revert_btn.position = revert_tw_target_pos[0]
+		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
 
 		del_btn.button_up.connect(_on_del_button_up)
-		# line_edit.text_changed.connect(_on_text_changed)
+		line_edit.text_changed.connect(_on_text_changed)
 		move_left_btn.button_up.connect(move_log_category.bind(-1))
 		move_right_btn.button_up.connect(move_log_category.bind(1))
 
@@ -142,20 +143,21 @@ func _ready() -> void:
 
 
 
+
+
+
 func handle_name_state() -> void:
 	if line_edit.text == "" or line_edit.text == category_name:
 		apply_btn.hide()
 		apply_btn.disabled = true
 		default_checkbox.show()
 		invalid_name = true
-		print(1)
 
 	else:
 		apply_btn.show()
 		apply_btn.disabled = false
 		default_checkbox.hide()
 		invalid_name = true
-		print(2)
 
 	if check_name_conflict():
 		apply_btn.disabled = true
@@ -213,25 +215,37 @@ func move_log_category(direction: int = 0) -> void:
 	move_category_requested.emit(self, direction)
 
 
+func _tween_revert_btn(on: bool) -> void:
+	var tween = create_tween()
 
-# func _on_text_changed(new_text : String) -> void:
-# 	if new_text == "" or has_conflict(new_text, ""):
-# 		if new_text != category_name:
-# 			apply_btn.show()
-# 			apply_btn.disabled = false
-# 			invalid_name = false
-# 		else:
-# 			apply_btn.hide()
-# 			apply_btn.disabled = true
-# 			invalid_name = true
-# 	else:
-# 		apply_btn.show()
-# 		apply_btn.disabled = false
-# 		invalid_name = false
+	revert_popup.visible = on
 
-# 	if line_edit.get_caret_column() == line_edit.text.length() - 1:
-# 		line_edit.set_caret_column(line_edit.text.length())
-# 	else: line_edit.set_caret_column(line_edit.get_caret_column() + 1)
+	if on:
+		revert_popup.show()
+		tween.tween_property(revert_btn, "position", revert_tw_target_pos[1], 0.03)
+	else:
+		tween.tween_property(revert_btn, "position", revert_tw_target_pos[0], 0.03)
+		await tween.finished
+		revert_popup.hide()
+
+
+func _on_text_changed(new_text: String) -> void:
+	if new_text != category_name and category_name != "":
+		config.load(PATH)
+		var cn = config.get_value("categories", "category_names", [])
+		if cn.has(new_text):
+			line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid)
+		else:
+			line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+
+	if new_text != category_name and category_name != "":
+		_tween_revert_btn(true)
+	else:
+		if revert_btn.position == revert_tw_target_pos[1]:
+			_tween_revert_btn(false)
+		else:
+			revert_popup.hide()
+			revert_btn.position = revert_tw_target_pos[0]
 
 
 func _on_del_button_up() -> void:
