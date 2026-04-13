@@ -72,16 +72,9 @@ corner_radius_bottom_left = 3
 corner_detail = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a5g7p"]
+content_margin_top = 8.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2vjd2"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_itauu"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cp33x"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xov76"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vk4yt"]
 
 [node name="GoLoggerDock" type="TabContainer" unique_id=1764928138]
 clip_children = 2
@@ -99,7 +92,7 @@ theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
-current_tab = 1
+current_tab = 2
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
@@ -229,6 +222,7 @@ theme_override_constants/v_separation = 8
 columns = 3
 
 [node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 1
@@ -261,6 +255,9 @@ theme_override_constants/separation = 15
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
+theme_override_colors/hover_font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/collapsed_font_color = Color(1, 1, 1, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
@@ -1177,7 +1174,6 @@ icon = ExtResource("8_11ofg")
 icon_alignment = 1
 
 [node name="Help" type="TabContainer" parent="." unique_id=1603064086]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1187,24 +1183,41 @@ theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
-current_tab = 3
+current_tab = 1
 tab_0/title = "Getting Started"
 tab_1/title = "Methods & Hotkeys"
-tab_2/title = "File Limits"
-tab_3/title = "Instances & Formatting"
-tab_4/title = "More Info"
+tab_2/title = "More Info"
 metadata/_tab_index = 2
 
 [node name="GettingStarted" type="ScrollContainer" parent="Help" unique_id=1377872369]
 visible = false
 layout_mode = 2
+scroll_vertical = 47
 scroll_vertical_custom_step = 20.0
 scroll_hint_mode = 1
 tile_scroll_hint = true
 metadata/_tab_index = 0
 metadata/_tab_name = "Getting Started"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted" unique_id=469117461]
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/GettingStarted" unique_id=1903719506]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Setup" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=1364899289]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "Setup"
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted/VBoxContainer/Setup" unique_id=469117461]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1212,7 +1225,7 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Gettings_StartedRTLabel" type="RichTextLabel" parent="Help/GettingStarted/MarginContainer" unique_id=1514331880]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/GettingStarted/VBoxContainer/Setup/MarginContainer" unique_id=1514331880]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1222,36 +1235,186 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "[font_size=16][color=fc4674][b]Setup:[/b][font_size=14][color=white]
-GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: [i] Log.msg(\"This is my first log entry.\", \"game\")[/i]
-Use the Category tab to add, remove, or rename categories.
+text = "GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: 
+    [i][color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"This is my first log entry.\"[/color], [color=#ce9178]\"game\"[/color])[/i]
+Use the Category tab to add, remove, or rename categories. 
 
 GoLogger uses an [b]Log[/b] singleton, making its functions accessible from all scenes and scripts.
 
-[font_size=16][color=fc4674][b]Sessions:[/b][font_size=14][color=white]
 A session defines when logging is active. Sessions can be started or stopped at any time using hotkeys or through code.
 By default, a session starts automatically when the project runs (this can be disabled in the Settings tab).
+	"
+fit_content = true
 
-[font_size=16][color=fc4674][b]Categories:[/b][font_size=14][color=white]
-Each category in the Category tab corresponds to a folder in the base directory. When a session starts, a .log file is created inside that folder, named with the date, timestamp, and category.
+[node name="Sessions" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=478545896]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "Sessions"
 
-[font_size=16][color=fc4674][b]Default Category:[/b][font_size=14][color=white]
-You can mark one of your categories as 'Default'. Logging entries without specifying a category will log it to the marked default category. This is especially useful if you only use a single category to log and don't necessitates you to specify the category constantly.
+[node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted/VBoxContainer/Sessions" unique_id=1664582270]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 8
 
-[font_size=16][color=fc4674][b]Messages / Entries:[/b][font_size=14][color=white]
-Messages(msg) or entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging.
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/GettingStarted/VBoxContainer/Sessions/MarginContainer" unique_id=1393820525]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "A session defines when logging is active. Sessions can be started or stopped at any time using hotkeys or through code.
+By default, a session starts automatically when the project runs (this can be disabled in the Settings tab)."
+fit_content = true
 
-[font_size=16][color=fc4674][b]Running Multiple Instances:[/b][font_size=14][color=white]
-When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[color=white] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[color=white] hotkey(Ctrl + Shift + I) to print that instance's ID to output."
+[node name="Categories" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=1969559512]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "Categories"
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted/VBoxContainer/Categories" unique_id=390089741]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/GettingStarted/VBoxContainer/Categories/MarginContainer" unique_id=165372222]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "Each category in the Category tab corresponds to a folder in the base directory. When a session starts, a .log file is created inside that folder, named with the date, timestamp, and category.
+
+Additionally, you can mark one of your categories as 'Default'. Logging entries without specifying a category will log it to the marked default category. This is especially useful if you only use a single category to log and don't necessitates you to specify the category constantly."
+fit_content = true
+
+[node name="Messages" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=487613138]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+title = "Messages"
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted/VBoxContainer/Messages" unique_id=496326699]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/GettingStarted/VBoxContainer/Messages/MarginContainer" unique_id=1166564036]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "Messages(msg) or entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging. 
+
+[i]Log.msg(log_msg : String, category_name: String = \"\", print_msg: bool = false)[i]
+
+The [b]Log.msg()[/b] function requires only a string or message/entry to be passed in but has additional arguments you can pass in, such as the category you want the entry to be logged into(is required if you haven't marked one of your categories as [i]default[/i]. 
+
+You can also use [i]print_msg[/i] to print individual entries if desired. 
+
+[b]Example:[/b]
+    [color=#ff7085]func[/color] [color=#6dc2ff]_on_damage_taken[/color]([color=#c586c0]amount[/color]: [color=#4ec9b0]float[/color], [color=#c586c0]source[/color]: [color=#4ec9b0]CharacterBody2D[/color])  ->  [color=#4ec9b0]void[/color]:
+        [color=#c586c0]current_health[/color] -= [color=#c586c0]amount[/color]
+        [color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"Player took \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]amount[/color]) + [color=#ce9178]\" damage from entity [\"[/color] + [color=#c586c0]source[/color].[color=#6dc2ff]get_name[/color]() + [color=#ce9178]\"] - Current health: \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]current_health[/color]) + [color=#ce9178]\" / \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]max_health[/color]))
+        [color=#6a9955]# Player took 16.4 damage from entity [GoblinA] - Current health: 139.96 / 268[/color]
+    "
+fit_content = true
+
+[node name="Concurrencies" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=665020188]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "Multiple Instances"
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted/VBoxContainer/Concurrencies" unique_id=1561208560]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/GettingStarted/VBoxContainer/Concurrencies/MarginContainer" unique_id=1890232147]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[/color] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[/color] hotkey([i]Ctrl + Shift + I[/]) to print that instance's ID to output."
+fit_content = true
 
 [node name="Methods&Hotkeys" type="ScrollContainer" parent="Help" unique_id=830461916]
-visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 metadata/_tab_index = 1
 metadata/_tab_name = "Methods & Hotkeys"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/Methods&Hotkeys" unique_id=327346930]
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/Methods&Hotkeys" unique_id=839083938]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Functions" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=347626334]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+title = "Functions"
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/Methods&Hotkeys/VBoxContainer/Functions" unique_id=377210306]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1259,7 +1422,7 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Functions_HotkeysRTLabel" type="RichTextLabel" parent="Help/Methods&Hotkeys/MarginContainer" unique_id=208538217]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/Methods&Hotkeys/VBoxContainer/Functions/MarginContainer" unique_id=208538217]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1268,49 +1431,42 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "[font_size=16][color=fc4674][b]Methods:[/b][color=white]
-[font_size=14]All methods are accessible using the [color=violet]Log[color=white] autoload.
+text = "[font_size=14]All methods are accessible using the [color=violet]Log[color=white] autoload.
 Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GoLogger/[/i][color=white], where the shortcut resources are located.
 
-	[color=violet]Log.[color=cornflowerblue]start_session()[color=white]  
-	Starts a logging session, creating new .log files and enabling entry logging.  
-	[color=darkgray][i]Hotkey: Ctrl + Shift + O[/i]  
 
-	[color=violet]Log.[color=cornflowerblue]msg([color=darkgray][i]log_msg: String, category_index: int = 0, print_entry_to_output: bool = false[/i][color=cornflowerblue])[color=white]  
-	Logs an entry into the specified [i]category_index[/i]. You can optionally print any entry to the output as well using [i]print_entry_to_output[/i].
-	Example:  
-		[color=turquoise]Log[color=white].[color=cornflowerblue]entry([color=lawngreen]\"Player's current health: \"[color=cornflowerblue] + str([color=violet]current_health[color=cornflowerblue]) + [color=lawngreen]\" / \"[color=cornflowerblue] + str([color=violet]max_health[color=cornflowerblue]), 1)  
+[color=#dcdcaa]Log[/color].[color=#6dc2ff]start_session[/color]()
+    Starts a logging session, creating new .log files and enabling entry logging.
+    [color=#6a9955][i]Hotkey: Ctrl + Shift + O[/i][/color]
 
-	[color=violet]Log.[color=cornflowerblue]save_copy([color=darkgray][i]copy_name: String = \"\"[/i][color=cornflowerblue])[color=white]  
-	Creates a copy of the current session in its active state. If no name is provided, an in-game popup prompts for one.  
-		[color=darkgray][i]Hotkey: Ctrl + Shift + U[/i]  
+[color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#c586c0]log_msg[/color]: [color=#4ec9b0]String[/color], [color=#c586c0]category_index[/color]: [color=#4ec9b0]int[/color] = [color=#b5cea8]0[/color], [color=#c586c0]print_entry_to_output[/color]: [color=#4ec9b0]bool[/color] = [color=#569cd6]false[/color])
+    Logs an entry into the specified [i]category_index[/i]. You can optionally print any entry to the output as well using [i]print_entry_to_output[/i].
+    Example:
+        [color=#dcdcaa]Log[/color].[color=#6dc2ff]entry[/color]([color=#ce9178]\"Player's current health: \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]current_health[/color]) + [color=#ce9178]\" / \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]max_health[/color]), [color=#b5cea8]1[/color])
 
-	[color=violet]Log.[color=cornflowerblue]stop_session()[color=white]  
-	Stops the active logging session.  
-		[color=darkgray][i]Hotkey: Ctrl + Shift + P[/i]  
-
-[font_size=16][color=fc4674][b]Hotkeys:[/b][color=white][font_size=14]
-There are four hotkeys available to interact with GoLogger during runtime. 
-	[b]Start Session:[/b] 				Ctrl + Shift + O
-    [b]Save Copy:[/b] 					Ctrl + Shift + U
-    [b]Stop Session:[/b] 				Ctrl + Shift + P
-    [b]Display Instance ID:[/b]	 	Ctrl + Shift + I
-Hotkeys can be changed using InputEventShortcut resources. As such, they're excluded and doesn't crowd your InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector.
+[color=#dcdcaa]Log[/color].[color=#6dc2ff]stop_session[/color]()
+    Stops the active logging session.
+    [color=#6a9955][i]Hotkey: Ctrl + Shift + P[/i][/color]
 
 
-[font_size=16][color=fc4674][b]Signals:[/b][color=white][font_size=14]
 There are two signals available to help you synchronize sessions with game logic.[color=palegolderod]
 	session_started
 	session_stopped"
+fit_content = true
 
-[node name="FileLimits" type="ScrollContainer" parent="Help" unique_id=1120881483]
-visible = false
+[node name="Hotkeys" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=664124483]
 layout_mode = 2
-metadata/_tab_index = 2
-metadata/_tab_name = "File Limits"
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "Hotkeys"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/FileLimits" unique_id=2057183117]
-custom_minimum_size = Vector2(560, 0)
+[node name="MarginContainer" type="MarginContainer" parent="Help/Methods&Hotkeys/VBoxContainer/Hotkeys" unique_id=1889005823]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1318,7 +1474,7 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="FileLimitsRTLabel" type="RichTextLabel" parent="Help/FileLimits/MarginContainer" unique_id=991399834]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/Methods&Hotkeys/VBoxContainer/Hotkeys/MarginContainer" unique_id=1418471264]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1327,48 +1483,88 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "[font_size=16][color=fc4674]Setting Limitations:[color=white]
-[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GoLogger includes several features to control logging behavior. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
+text = "There are four hotkeys available to interact with GoLogger during runtime. 
+[b]Start Session[/b][/color][color=#d4d4d4]:[/color]           [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]O[/color]
+[b]Stop Session[/b][/color][color=#d4d4d4]:[/color]            [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]P[/color]
+[b]Display Instance ID[/b][/color][color=#d4d4d4]:[/color]  [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]I[/color]
+Hotkeys can be changed using InputEventShortcut resources. As such, they're excluded and doesn't crowd your InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector."
+fit_content = true
+
+[node name="FileLimits" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=1580460435]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "File Limits"
+
+[node name="MarginContainer" type="MarginContainer" parent="Help/Methods&Hotkeys/VBoxContainer/FileLimits" unique_id=616628171]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/Methods&Hotkeys/VBoxContainer/FileLimits/MarginContainer" unique_id=1956207480]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GoLogger includes several features to control logging behavior. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
 
 The default settings are intentionally conservative to minimize potential issues after installation. You can safely increase them within reasonable bounds.
 
-[font_size=16][color=fc4674]File Count:[color=white][font_size=14]
+
+[font_size=14]File Count:[font_size=14]
 This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one.
-[color=darkgray][i]Recommended:[/i]
+
+[color=darkgray][i]Recommended:[/i][/color]
 [i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported.[/i]
 
-[font_size=16][color=fc4674]Limit Method:[color=white][font_size=14]
-[color=white]Two methods are available for controlling session limits.
 
-	[color=aquamarine][font_size=14][b]Entry count[/b][font_size=14] – [color=darkgray]Used with Entry Count Action and Entry Count Limit.[color=white]
+[font_size=14][b]Entry count[/b][font_size=14]
 	As new entries are logged, they are counted, and once the limit is reached, one of the following actions is triggered:
 
 		Overwrite Entries – Replaces the oldest entries as new ones are added.
 		Restart Session – Ends the current session and starts a new one, creating a new .log file.
 		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
 
-	[color=aquamarine][font_size=14][b]Session timer[/b][font_size=14][color=darkgray] – Used with Session Timer Action and Session Duration.[color=white]
+
+[font_size=14][b]Session timer:[/b][font_size=14]
 	Starts a timer at the beginning of a session and runs for the duration specified in the Session Duration setting. This method is useful for time-based testing. 
-	The Session Timer emits the signals [color=turquoise]session_started[color=white] and [color=turquoise]session_stopped[color=white], which can be used to synchronize with other systems or features.
+	The Session Timer emits the signals [color=turquoise]session_started[/color] and [color=turquoise]session_stopped[/color], which can be used to synchronize with other systems or features.
 	
 		Restart Session – Ends the current session and starts a new one, creating a new .log file.
 		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
 
-[color=darkgray][i]Recommended:[/i]
-[i]Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed.[/i]
-[i]Start session: Ctrl + Shift + O[/i]
-[i]Copy session: Ctrl + Shift + U[/i]
-[i]Stop session: Ctrl + Shift + P[/i]"
 
-[node name="Instances_Formatting" type="ScrollContainer" parent="Help" unique_id=367321639]
+
+[b]Recommended:[/b]
+Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed."
+fit_content = true
+
+[node name="Instances" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=67261972]
 layout_mode = 2
-scroll_hint_mode = 1
-tile_scroll_hint = true
-metadata/_tab_index = 3
-metadata/_tab_name = "Instances & Formatting"
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "Instances"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/Instances_Formatting" unique_id=588303162]
-custom_minimum_size = Vector2(560, 0)
+[node name="MarginContainer" type="MarginContainer" parent="Help/Methods&Hotkeys/VBoxContainer/Instances" unique_id=186307347]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1376,24 +1572,50 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Instances&FormattingRTLabel" type="RichTextLabel" parent="Help/Instances_Formatting/MarginContainer" unique_id=1902385466]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/Methods&Hotkeys/VBoxContainer/Instances/MarginContainer" unique_id=717151763]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/normal = SubResource("StyleBoxEmpty_itauu")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_cp33x")
-theme_override_styles/background = SubResource("StyleBoxEmpty_xov76")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_vk4yt")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "[font_size=16][color=fc4674]Concurrency / Running Multiple Instances:[color=white]
-[font_size=14]There are times that running multiple instances at the same time while debugging/testing your project. Such is the case for multiplayer games. However, when doing so. You have two instances logging into one log file and you need some way to know which instance logged which entry. This is possible by adding the {instance_id} tag to the Entry Format setting. An instance ID is a simple ID string that is generated at runtime(much like UIDs). 
+text = "[font_size=14]There are times that running multiple instances at the same time while debugging/testing your project. Such is the case for multiplayer games. However, when doing so. You have two instances logging into one log file and you need some way to know which instance logged which entry. This is possible by adding the {instance_id} tag to the Entry Format setting. An instance ID is a simple ID string that is generated at runtime(much like UIDs). 
 
-Use the [color=aquamarine]Display Instance ID[color=white] hotkey to see display the ID of an instance in the top left corner of your viewport.
+Use the [b]Display Instance ID[/b] hotkey to see display the ID of an instance in the top left corner of your viewport."
+fit_content = true
 
+[node name="Formatting" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=1185594613]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "Formatting"
 
+[node name="MarginContainer" type="MarginContainer" parent="Help/Methods&Hotkeys/VBoxContainer/Formatting" unique_id=1525469681]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 8
 
-[font_size=16][color=fc4674]Formatting Log Header & Entries:[color=white][font_size=14]
-Log Header and Entries can be formatted in any way you may want in the Settings tab. You can add any string you want but you can also add tags to include useful data to said settings. Such as the project name, version, date and time. You can format the date and time for your preference/region.
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/Methods&Hotkeys/VBoxContainer/Formatting/MarginContainer" unique_id=838472294]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "Log Header and Entries can be formatted in any way you may want in the Settings tab. You can add any string you want but you can also add tags to include useful data to said settings. Such as the project name, version, date and time. You can format the date and time for your preference/region.
 
 Any tag and custom string formatting can be used.  
 
@@ -1401,21 +1623,22 @@ Any tag and custom string formatting can be used.
 
  [b]Entry Format:[/b][color=darkgray]	[{hh}:{mi}:{ss}] {instance_id}:  {entry}    >    [09:32:16] b4jw0: Entry String[/color]
 
-[color=violet][b]Supported tags:[/b][/color]
-	{category} 									[color=darkgray][i]Only available for Log Header[/i][color=white]
-	{instance_id}								[color=darkgray][i]Only available for Entry Format[/i][color=white]
-	{entry} 										[color=darkgray][i]Only available for Entry Format and is required[/i][color=white]
-    {project_name}  {version} 		[color=darkgray][i]Project name & version fetched from ProjectSettings[/i][color=white]
-    {yy}  {mm}  {dd} 						[color=darkgray][i]Year, Month, Day[/i][color=white]
-    {hh}  {mi}  {ss} 							[color=darkgray][i]Hour, Minute, Second[/i][color=white]
+[b]Supported tags:[/b]
+	{category} 									[color=darkgray][i]Only available for Log Header[/i][/color]
+	{instance_id}								[color=darkgray][i]Only available for Entry Format[/i][/color]
+	{entry} 										[color=darkgray][i]Only available for Entry Format and is required[/i][/color]
+    {project_name}  {version} 		[color=darkgray][i]Project name & version fetched from ProjectSettings[/i][/color]
+    {yy}  {mm}  {dd} 						[color=darkgray][i]Year, Month, Day[/i][/color]
+    {hh}  {mi}  {ss} 							[color=darkgray][i]Hour, Minute, Second[/i][/color]
 "
+fit_content = true
 
 [node name="MoreInfo" type="ScrollContainer" parent="Help" unique_id=656868993]
 visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
-metadata/_tab_index = 4
+metadata/_tab_index = 2
 metadata/_tab_name = "More Info"
 
 [node name="MarginContainer" type="MarginContainer" parent="Help/MoreInfo" unique_id=1079808119]
@@ -1476,6 +1699,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "https://github.com/Burloe/GoLogger"
+theme_override_font_sizes/font_size = 24
 text = "Github repository"
 uri = "https://github.com/Burloe/GoLogger"
 
@@ -1484,6 +1708,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "https://github.com/Burloe/GoLogger/issues"
+theme_override_font_sizes/font_size = 24
 text = "Bug report"
 uri = "https://github.com/Burloe/GoLogger/issues"
 
@@ -1492,6 +1717,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
+theme_override_font_sizes/font_size = 24
 text = "Wiki"
 uri = "https://github.com/Burloe/GoLogger/wiki"
 
