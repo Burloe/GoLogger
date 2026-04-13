@@ -61,17 +61,19 @@ script = ExtResource("1_8da2w")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1251287659]
 layout_mode = 2
-theme_override_constants/separation = 8
 
 [node name="MoveLeftButton" type="Button" parent="HBoxContainer" unique_id=1734383337]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move left"
 mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.15686275, 0.3882353, 0.33333334, 1)
+theme_override_colors/icon_hover_color = Color(0.7200001, 0.32, 0.8, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.15599999, 0.39, 0.3315, 1)
 theme_override_styles/normal = ExtResource("3_7kr4p")
-theme_override_styles/pressed = ExtResource("4_lnuxt")
-theme_override_styles/hover = ExtResource("4_lnuxt")
-theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
+theme_override_styles/pressed = ExtResource("3_7kr4p")
+theme_override_styles/hover = ExtResource("3_7kr4p")
+theme_override_styles/hover_pressed = ExtResource("3_7kr4p")
 theme_override_styles/disabled = ExtResource("3_7kr4p")
 icon = ExtResource("2_82h6l")
 
@@ -126,7 +128,7 @@ icon_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=151857270]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 
 [node name="LockButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2094994272]
 unique_name_in_owner = true
@@ -143,9 +145,9 @@ theme_override_colors/icon_pressed_color = Color(0.96, 0.64672, 0.1056, 1)
 theme_override_colors/icon_hover_color = Color(0.96, 0.75584, 0.4032, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.960784, 0.647059, 0.105882, 1)
 theme_override_styles/normal = ExtResource("3_7kr4p")
-theme_override_styles/pressed = ExtResource("4_lnuxt")
-theme_override_styles/hover = ExtResource("4_lnuxt")
-theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
+theme_override_styles/pressed = ExtResource("3_7kr4p")
+theme_override_styles/hover = ExtResource("3_7kr4p")
+theme_override_styles/hover_pressed = ExtResource("3_7kr4p")
 toggle_mode = true
 icon = ExtResource("2_b4ns3")
 icon_alignment = 1
@@ -161,8 +163,9 @@ For more information, see:
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = ExtResource("3_7kr4p")
 theme_override_styles/pressed = ExtResource("3_7kr4p")
-theme_override_styles/hover = ExtResource("4_lnuxt")
-theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
+theme_override_styles/hover = ExtResource("3_7kr4p")
+theme_override_styles/hover_pressed = ExtResource("3_7kr4p")
+theme_override_styles/disabled = ExtResource("3_7kr4p")
 
 [node name="ApplyButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1330065459]
 unique_name_in_owner = true
@@ -195,9 +198,9 @@ theme_override_colors/icon_hover_color = Color(0.85, 0.1785, 0.1785, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.4, 0.028, 0.0962, 1)
 theme_override_colors/icon_disabled_color = Color(0.48, 0.48, 0.48, 0.4)
 theme_override_styles/normal = ExtResource("3_7kr4p")
-theme_override_styles/pressed = ExtResource("4_lnuxt")
-theme_override_styles/hover = ExtResource("4_lnuxt")
-theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
+theme_override_styles/pressed = ExtResource("3_7kr4p")
+theme_override_styles/hover = ExtResource("3_7kr4p")
+theme_override_styles/hover_pressed = ExtResource("3_7kr4p")
 theme_override_styles/disabled = ExtResource("3_7kr4p")
 theme_override_styles/focus = ExtResource("3_7kr4p")
 text = "
@@ -211,9 +214,11 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move right"
 mouse_default_cursor_shape = 2
+theme_override_colors/icon_hover_color = Color(0.22352941, 0.56078434, 0.4745098, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.15599999, 0.39, 0.3315, 1)
 theme_override_styles/normal = ExtResource("3_7kr4p")
-theme_override_styles/pressed = ExtResource("4_lnuxt")
-theme_override_styles/hover = ExtResource("4_lnuxt")
-theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
+theme_override_styles/pressed = ExtResource("3_7kr4p")
+theme_override_styles/hover = ExtResource("3_7kr4p")
+theme_override_styles/hover_pressed = ExtResource("3_7kr4p")
 theme_override_styles/disabled = ExtResource("3_7kr4p")
 icon = ExtResource("3_hkawy")

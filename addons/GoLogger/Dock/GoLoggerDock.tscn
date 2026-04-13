@@ -104,7 +104,7 @@ all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
-metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
+metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0, 101.0]
 
 [node name="Categories" type="VBoxContainer" parent="." unique_id=1224284395]
 visible = false
@@ -249,6 +249,7 @@ grow_vertical = 2
 theme_override_constants/scrollbar_h_separation = 8
 theme_override_constants/scrollbar_v_separation = 8
 follow_focus = true
+vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer" unique_id=2008791594]
@@ -260,9 +261,6 @@ theme_override_constants/separation = 15
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/hover_font_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/collapsed_font_color = Color(1, 1, 1, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
@@ -361,10 +359,12 @@ theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "Limiters"
 title_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer" unique_id=742064564]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -620,10 +620,12 @@ theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "ID Overlay"
 title_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer" unique_id=251070164]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8

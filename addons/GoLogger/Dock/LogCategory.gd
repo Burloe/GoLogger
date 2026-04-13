@@ -74,11 +74,13 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
 
+		_on_editor_settings_changed()
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
 		revert_btn.hide()
 		if category_name != "":
 			revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
+		settings.settings_changed.connect(_on_editor_settings_changed)
 		del_btn.button_up.connect(_on_del_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
 		line_edit.editing_toggled.connect(_on_line_edit_editing_toggled)
@@ -138,10 +140,6 @@ func _ready() -> void:
 			apply_btn.hide()
 		else:
 			invalid_name = false
-
-
-
-
 
 
 
@@ -224,3 +222,56 @@ func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 func _on_del_button_up() -> void:
 	print_rich("[color=878787][GoLogger] Category <" + category_name + "> deleted.")
 	request_log_deletion.emit(self)
+
+
+func _get_theme_colors() -> Dictionary:
+	var contrast: float = settings.get("interface/theme/contrast")
+	var base_col: Color = settings.get("interface/theme/base_color")
+	var accent_col: Color = settings.get("interface/theme/accent_color")
+
+	var base_light 			= base_col.lerp(Color.WHITE, contrast)
+	var base_dark 			= base_col.lerp(Color.BLACK, contrast)
+	var base_light_h 		= base_col.lerp(Color.WHITE, contrast * 0.5)
+	var base_dark_h 		= base_col.lerp(Color.BLACK, contrast * 0.5)
+
+	var accent_light 		= accent_col.lerp(Color.WHITE, contrast)
+	var accent_dark 		= accent_col.lerp(Color.BLACK, contrast)
+	var accent_light_h 	= accent_col.lerp(Color.WHITE, contrast * 0.5)
+	var accent_dark_h 	= accent_col.lerp(Color.BLACK, contrast * 0.5)
+
+	var colors := {
+		"contrast": contrast,
+		"base": {
+			"col": base_col,
+			"light": base_light,
+			"dark": base_dark,
+			"light_highlight": base_light_h,
+			"dark_highlight": base_dark_h,
+		},
+		"accent": {
+			"col": accent_col,
+			"light": accent_light,
+			"dark": accent_dark,
+			"light_highlight": accent_light_h,
+			"dark_highlight": accent_dark_h,
+		},
+		"font": {
+			"normal": Color(0.878, 0.878, 0.878),
+			"hover": Color(0.95, 0.95, 0.95),
+			"interact_normal": base_col,
+			"interact_hover": base_light,
+			"interact_pressed": base_col,
+			"interact_hover_pressed": base_light
+		}
+	}
+	return colors
+
+
+func _on_editor_settings_changed() -> void:
+	var _c: Dictionary = _get_theme_colors()
+	for btn in [move_left_btn, move_right_btn]:
+		if btn != null:
+			print(_c["accent"]["col"], _c["accent"]["dark"])
+			btn.add_theme_color_override("icon_hover_color", _c["accent"]["light"])
+			btn.add_theme_color_override("icon_pressed_color", _c["accent"]["dark"])
+			btn.add_theme_color_override("icon_hover_pressed_color", _c["accent"]["dark"])
