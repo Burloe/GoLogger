@@ -45,7 +45,7 @@ signal update_index
 signal change_category_name_finished
 signal open_hotkey_resource()
 
-@onready var categories_tab: MarginContainer = %Categories
+# @onready var categories_tab: VBoxContainer = %Categories
 @onready var _add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
@@ -136,7 +136,7 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 @onready var id_overlay_outline_col_container: HBoxContainer = %IDOverlayOutlineColorHBox
 
 
-@onready var help_tab_container: TabContainer = %HelpTabContainer
+# @onready var help_tab_container: TabContainer = %HelpTabContainer
 @onready var user_dir_btn: Button = %UserDirButton
 @onready var cat_top_bar: Panel = %TopBarPanel
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
@@ -150,6 +150,7 @@ var theme_colors: Dictionary = {}
 @onready var editor_contrast = settings.get("interface/theme/contrast")
 
 var sb_tab_bar_bg 										:= preload("uid://beo2bu5ofsw0u")
+var sb_tab_panel_bg										:= preload("uid://br4lwoor8v8mi")
 var sb_tab_unselected 								:= preload("uid://427jdnrjcbba")
 var sb_tab_selected 									:= preload("uid://cy0ifp487jfcg")
 var sb_tab_hover 											:= preload("uid://yxpx0pyjme8s")
@@ -164,6 +165,7 @@ var panel_top_round_base 							:= preload("uid://cqnilt2rk14bi")
 var panel_top_round_base_highlight 		:= preload("uid://0nxkxhcntsj3")
 var panel_top_round_accent 						:= preload("uid://dve2ih1gvvua7")
 var panel_top_round_accent_muted 			:= preload("uid://7s65f804p1jc")
+var foldable_container_panel					:= preload("uid://bkl7j8mna8rwb")
 
 var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
 var sb_btn_highlight 									:= preload("uid://dcjwu6ej2w2s4")
@@ -1467,7 +1469,9 @@ func _apply_theme_colors(current_node: Control):
 		panel_round_base_border_highlight.bg_color 			= theme_colors["base"]["col"]
 		panel_top_round_base.bg_color 									= theme_colors["base"]["col"]
 		panel_top_round_base_highlight.bg_color 				= theme_colors["base"]["col"]
+		foldable_container_panel.border_color						= theme_colors["base"]["col"]
 		sb_tab_bar_bg.bg_color 													= theme_colors["base"]["col"]
+		sb_tab_panel_bg.bg_color 												= theme_colors["base"]["col"]
 		panel_round_bg.bg_color 												= theme_colors["base"]["dark"]
 		sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
 		sb_line_edit_highlight.bg_color 								= theme_colors["base"]["dark_highlight"]

@@ -8,8 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://behxo6vcb5ubp" path="res://addons/GoLogger/Resources/icons/ArrowRight.svg" id="3_hkawy"]
 [ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="4_lnuxt"]
 [ext_resource type="Texture2D" uid="uid://goc0tdkq3dym" path="res://addons/GoLogger/Resources/icons/Remove.svg" id="5_hkawy"]
-[ext_resource type="StyleBox" uid="uid://sqhht0mdddoi" path="res://addons/GoLogger/Resources/theme/line_edit_invalid.tres" id="6_7kr4p"]
+[ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="6_lnuxt"]
 [ext_resource type="StyleBox" uid="uid://bwsfno28una6g" path="res://addons/GoLogger/Resources/theme/btn_apply.tres" id="8_7kr4p"]
+[ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="11_lnuxt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hqlwo"]
 content_margin_left = 2.0
@@ -32,6 +33,8 @@ expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lnuxt"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7kr4p"]
 content_margin_left = 4.0
 content_margin_top = 4.0
@@ -43,36 +46,6 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.8, 0.8, 0.8, 0.3137255)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lnuxt"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.8, 0.8, 0.8, 0.4745098)
-border_blend = true
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enuce"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6431373)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -94,6 +67,7 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move left"
+mouse_default_cursor_shape = 2
 theme_override_styles/normal = ExtResource("3_7kr4p")
 theme_override_styles/pressed = ExtResource("4_lnuxt")
 theme_override_styles/hover = ExtResource("4_lnuxt")
@@ -117,11 +91,38 @@ theme_override_colors/font_uneditable_color = Color(0.960784, 0.647059, 0.105882
 theme_override_colors/font_selected_color = Color(0.2236, 0.86, 0.594833, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = ExtResource("6_7kr4p")
+theme_override_styles/normal = ExtResource("6_lnuxt")
 theme_override_styles/read_only = SubResource("StyleBoxFlat_hqlwo")
 placeholder_text = "Enter name"
 alignment = 1
 max_length = 20
+
+[node name="RevertButton" type="Button" parent="HBoxContainer/VBoxContainer/CategoryNameLineEdit" unique_id=1421057895]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 205.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+tooltip_text = "Revert to last applied name"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.07450981, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.5126667, 0.13999999, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.3, 0.07500002, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lnuxt")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lnuxt")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_lnuxt")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_lnuxt")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_lnuxt")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lnuxt")
+icon = ExtResource("11_lnuxt")
+icon_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=151857270]
 layout_mode = 2
@@ -134,6 +135,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Lock"
 focus_mode = 0
+mouse_default_cursor_shape = 2
 theme_override_colors/font_pressed_color = Color(0.960784, 0.647059, 0.105882, 1)
 theme_override_colors/font_hover_color = Color(0.960784, 0.756863, 0.403922, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.960784, 0.647059, 0.105882, 1)
@@ -152,9 +154,11 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 15)
 layout_mode = 2
-tooltip_text = "Mark as default
+tooltip_text = "Mark as Default Category
 
-See Help > Getting Started >  Default Category"
+For more information, see:
+	Help > Getting Started >  Default Category"
+mouse_default_cursor_shape = 2
 theme_override_styles/normal = ExtResource("3_7kr4p")
 theme_override_styles/pressed = ExtResource("3_7kr4p")
 theme_override_styles/hover = ExtResource("4_lnuxt")
@@ -166,6 +170,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Apply category name"
+mouse_default_cursor_shape = 2
 theme_override_styles/normal = ExtResource("8_7kr4p")
 theme_override_styles/pressed = ExtResource("4_lnuxt")
 theme_override_styles/hover = ExtResource("4_lnuxt")
@@ -181,6 +186,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Existing folders requires manual deletion"
 focus_mode = 0
+mouse_default_cursor_shape = 2
 theme_override_colors/font_pressed_color = Color(0.4, 0.027451, 0.0980392, 1)
 theme_override_colors/font_hover_color = Color(0.85098, 0.180392, 0.180392, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.4, 0.027451, 0.0980392, 1)
@@ -204,41 +210,10 @@ expand_icon = true
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move right"
-mouse_default_cursor_shape = 13
+mouse_default_cursor_shape = 2
 theme_override_styles/normal = ExtResource("3_7kr4p")
 theme_override_styles/pressed = ExtResource("4_lnuxt")
 theme_override_styles/hover = ExtResource("4_lnuxt")
 theme_override_styles/hover_pressed = ExtResource("4_lnuxt")
 theme_override_styles/disabled = ExtResource("3_7kr4p")
 icon = ExtResource("3_hkawy")
-
-[node name="RevertPopup" type="Control" parent="." unique_id=733512099]
-unique_name_in_owner = true
-show_behind_parent = true
-layout_mode = 2
-mouse_filter = 1
-mouse_default_cursor_shape = 13
-
-[node name="RevertButton" type="Button" parent="RevertPopup" unique_id=1421057895]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -116.0
-offset_top = 46.5
-offset_right = 116.0
-offset_bottom = 77.5
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-tooltip_text = "Revert name"
-mouse_behavior_recursive = 2
-mouse_default_cursor_shape = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_lnuxt")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_enuce")
-theme_override_styles/hover = SubResource("StyleBoxFlat_lnuxt")
-theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_enuce")
-text = "gameG"

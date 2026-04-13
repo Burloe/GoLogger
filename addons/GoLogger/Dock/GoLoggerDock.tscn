@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://0k0tpsfqof2s"]
 
+[ext_resource type="StyleBox" uid="uid://br4lwoor8v8mi" path="res://addons/GoLogger/Resources/theme/tab_panel_bg.tres" id="1_cp33x"]
 [ext_resource type="StyleBox" uid="uid://beo2bu5ofsw0u" path="res://addons/GoLogger/Resources/theme/tabbar_bg.tres" id="1_itauu"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
@@ -12,6 +13,7 @@
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/GoLogger/Resources/theme/panel_rounded_bg.tres" id="6_cp33x"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
+[ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/GoLogger/Resources/theme/foldable_container_panel.tres" id="12_cp33x"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/GoLogger/Resources/theme/btn_normal.tres" id="13_fcs7p"]
 [ext_resource type="StyleBox" uid="uid://bvek0vh8shw5l" path="res://addons/GoLogger/Resources/theme/spinbox_up_highlight.tres" id="13_tvbkj"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/GoLogger/Resources/theme/panel_top_rounded_base_col.tres" id="14_fcs7p"]
@@ -92,6 +94,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 13
 theme_override_constants/tab_separation = 6
+theme_override_styles/panel = ExtResource("1_cp33x")
 theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
@@ -103,37 +106,19 @@ script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
-[node name="Categories" type="Panel" parent="." unique_id=1438997895]
+[node name="Categories" type="VBoxContainer" parent="." unique_id=1224284395]
 visible = false
 layout_mode = 2
-theme_override_styles/panel = ExtResource("6_cp33x")
+theme_override_constants/separation = 8
 metadata/_tab_index = 0
 
-[node name="Categories" type="MarginContainer" parent="Categories" unique_id=593789802]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Categories/Categories" unique_id=1224284395]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="TopBarPanel" type="Panel" parent="Categories/Categories/VBoxContainer" unique_id=1547891829]
+[node name="TopBarPanel" type="Panel" parent="Categories" unique_id=1547891829]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("1_itauu")
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel" unique_id=1878771389]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/TopBarPanel" unique_id=1878771389]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -145,18 +130,19 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer" unique_id=1236446976]
+[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/TopBarPanel/MarginContainer" unique_id=1236446976]
 layout_mode = 2
 
-[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
+[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AddCategoryButton" type="Button" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
+[node name="AddCategoryButton" type="Button" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create new category"
+mouse_default_cursor_shape = 2
 theme_override_colors/icon_pressed_color = Color(0.19215687, 0.6, 0.12156863, 1)
 theme_override_colors/icon_hover_color = Color(0.61875, 0.9, 0.225, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.192, 0.6, 0.12, 1)
@@ -168,10 +154,11 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
 
-[node name="OpenDirCatButton" type="Button" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
+[node name="OpenDirCatButton" type="Button" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Opens Base Directory using OS file browser"
+mouse_default_cursor_shape = 2
 theme_override_colors/icon_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.19999999, 0.5333332, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
@@ -183,23 +170,24 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("2_6725a")
 icon_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=990503779]
+[node name="VSeparator" type="VSeparator" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=990503779]
 layout_mode = 2
 
-[node name="ColumnsHSlider" type="HSlider" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1743312277]
+[node name="ColumnsHSlider" type="HSlider" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1743312277]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Columns: 5"
+tooltip_text = "Columns: 3"
+mouse_default_cursor_shape = 10
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 5.0
+value = 3.0
 rounded = true
 
-[node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
+[node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
@@ -209,12 +197,12 @@ text = "[font_size=12][color=red][wave amp=10.0 freq=4.0 connected=1]Deleting ca
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
+[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
 layout_mode = 2
 theme_override_constants/separation = 11
 alignment = 2
 
-[node name="PluginVersionCatLabel" type="Label" parent="Categories/Categories/VBoxContainer/TopBarPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
+[node name="PluginVersionCatLabel" type="Label" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -223,66 +211,53 @@ label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Categories/Categories/VBoxContainer" unique_id=642802176]
+[node name="ScrollContainer" type="ScrollContainer" parent="Categories" unique_id=642802176]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/Categories/VBoxContainer/ScrollContainer" unique_id=333286901]
+[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/ScrollContainer" unique_id=333286901]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 9
 
-[node name="CategoryGridContainer" type="GridContainer" parent="Categories/Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer" unique_id=2014106739]
+[node name="CategoryGridContainer" type="GridContainer" parent="Categories/ScrollContainer/CategoriesHBoxContainer" unique_id=2014106739]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 40
-columns = 5
+theme_override_constants/v_separation = 8
+columns = 3
 
-[node name="Settings" type="MarginContainer" parent="." unique_id=2095868147]
+[node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 10
+theme_override_constants/separation = 8
 metadata/_tab_index = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings" unique_id=1178249992]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="L_Panel" type="Panel" parent="Settings/HBoxContainer" unique_id=1757351944]
+[node name="L_Panel" type="Panel" parent="Settings" unique_id=1757351944]
 custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("6_cp33x")
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/L_Panel" unique_id=2078052846]
+[node name="ScrollContainer" type="ScrollContainer" parent="Settings/L_Panel" unique_id=2008032766]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer" unique_id=2008032766]
-layout_mode = 2
+theme_override_constants/scrollbar_h_separation = 8
+theme_override_constants/scrollbar_v_separation = 8
 follow_focus = true
 scroll_hint_mode = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer" unique_id=2008791594]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer" unique_id=2008791594]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 15
 
-[node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1807564640]
+[node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
@@ -292,14 +267,22 @@ theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
 title = "General"
 title_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer" unique_id=1603064615]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/MarginContainer" unique_id=414672781]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="AutostartCheckBox" type="CheckBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1746833626]
+[node name="AutostartCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/MarginContainer/VBoxContainer" unique_id=1746833626]
 unique_name_in_owner = true
 layout_direction = 3
 layout_mode = 2
@@ -315,7 +298,7 @@ text = "Autostart session"
 alignment = 2
 icon_alignment = 2
 
-[node name="UTCCheckBox" type="CheckBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1429760816]
+[node name="UTCCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/MarginContainer/VBoxContainer" unique_id=1429760816]
 unique_name_in_owner = true
 layout_direction = 3
 layout_mode = 2
@@ -330,20 +313,20 @@ text = "UTC time"
 alignment = 2
 icon_alignment = 2
 
-[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=319403748]
+[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/MarginContainer/VBoxContainer" unique_id=319403748]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
 alignment = 2
 
-[node name="ErrorRepLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/ErrorRepHBox" unique_id=1697480406]
+[node name="ErrorRepLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/MarginContainer/VBoxContainer/ErrorRepHBox" unique_id=1697480406]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Error report level"
 
-[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer/ErrorRepHBox" unique_id=619537097]
+[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/MarginContainer/VBoxContainer/ErrorRepHBox" unique_id=619537097]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
@@ -367,7 +350,7 @@ popup/item_2/separator = true
 popup/item_3/text = "None"
 popup/item_3/id = 3
 
-[node name="LimitersFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1108637460]
+[node name="LimitersFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1108637460]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
@@ -377,16 +360,22 @@ theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
-folded = true
+theme_override_styles/panel = ExtResource("12_cp33x")
 title = "Limiters"
 title_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer" unique_id=348562578]
-visible = false
+[node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer" unique_id=742064564]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="FileCountHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer" unique_id=781434512]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer" unique_id=348562578]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="FileCountHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=781434512]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
@@ -394,7 +383,7 @@ tooltip_text = "Limits the number of files in any log category folder.
 0 value will disable this feature *USE WITH CAUTION*"
 alignment = 2
 
-[node name="FileCountLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/FileCountHBox" unique_id=977368642]
+[node name="FileCountLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/FileCountHBox" unique_id=977368642]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -402,7 +391,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "File count limit"
 vertical_alignment = 1
 
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/FileCountHBox" unique_id=753276573]
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/FileCountHBox" unique_id=753276573]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -419,7 +408,7 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
 
-[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer" unique_id=1087907753]
+[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=1087907753]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Method used to limit file size. 
@@ -427,7 +416,7 @@ Use the selected Actions below to determine what happens once the method conditi
 theme_override_constants/separation = 75
 alignment = 2
 
-[node name="LimitMethodLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=816554777]
+[node name="LimitMethodLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/LimitMethodHBox" unique_id=816554777]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -435,7 +424,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Limit method"
 vertical_alignment = 1
 
-[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
+[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -466,7 +455,7 @@ popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
 
-[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer" unique_id=320960729]
+[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=320960729]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
@@ -475,7 +464,7 @@ Overwrite Entries removes the oldest entry as new ones are logged.
 theme_override_constants/separation = 44
 alignment = 2
 
-[node name="EntryActionLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
+[node name="EntryActionLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -483,7 +472,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Entry Count action"
 vertical_alignment = 1
 
-[node name="EntryActionOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
+[node name="EntryActionOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -510,14 +499,14 @@ popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
 
-[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer" unique_id=898921581]
+[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=898921581]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Number of entries until the entry count action is triggered."
 theme_override_constants/separation = 119
 alignment = 2
 
-[node name="EntryCountLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/EntryCountHBox" unique_id=2026197059]
+[node name="EntryCountLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountHBox" unique_id=2026197059]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -526,7 +515,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Entry count limit"
 vertical_alignment = 1
 
-[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/EntryCountHBox" unique_id=1695558902]
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountHBox" unique_id=1695558902]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -543,7 +532,7 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 10.0
 
-[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer" unique_id=53869427]
+[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=53869427]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -551,7 +540,7 @@ tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 theme_override_constants/separation = 28
 alignment = 2
 
-[node name="SessionTimerActionLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
+[node name="SessionTimerActionLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -559,7 +548,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Session Timer action"
 vertical_alignment = 1
 
-[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -582,7 +571,7 @@ popup/item_0/id = 0
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer" unique_id=578085250]
+[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=578085250]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -590,7 +579,7 @@ tooltip_text = "The duration of a logging session in seconds if Session Timer is
 theme_override_constants/separation = 117
 alignment = 2
 
-[node name="SessionDurationLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/SessionDurationHBox" unique_id=1344647890]
+[node name="SessionDurationLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionDurationHBox" unique_id=1344647890]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -599,7 +588,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Session duration"
 vertical_alignment = 1
 
-[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/LimitersFoldableContainer/VBoxContainer/SessionDurationHBox" unique_id=956442988]
+[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionDurationHBox" unique_id=956442988]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -619,7 +608,7 @@ suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="IDOverlayFoldableContainer" type="FoldableContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1336991210]
+[node name="IDOverlayFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
@@ -630,26 +619,34 @@ theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/panel = ExtResource("12_cp33x")
 title = "ID Overlay"
 title_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer" unique_id=570791839]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer" unique_id=251070164]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer" unique_id=570791839]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1069184227]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1069184227]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/VBoxContainer" unique_id=1651403943]
+[node name="Label" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1651403943]
 layout_mode = 2
 text = "Overlay Example:"
 
-[node name="Panel" type="Panel" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/VBoxContainer" unique_id=1156760820]
+[node name="Panel" type="Panel" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1156760820]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_tayiv")
 
-[node name="IDOverlayExampleLabel" type="RichTextLabel" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/VBoxContainer/Panel" unique_id=692227105]
+[node name="IDOverlayExampleLabel" type="RichTextLabel" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/VBoxContainer/Panel" unique_id=692227105]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -667,18 +664,18 @@ text = "[font_size=8.0][color=ffffffff][outline_size=8][outline_color=000000ff]h
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="IDOverlayAlignHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=33450767]
+[node name="IDOverlayAlignHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=33450767]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IDOverlayAlignLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=799453164]
+[node name="IDOverlayAlignLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=799453164]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Alignment"
 
-[node name="IDOverlayAlignOptButton" type="OptionButton" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=1922500613]
+[node name="IDOverlayAlignOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=1922500613]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
@@ -715,18 +712,18 @@ popup/item_9/id = 8
 popup/item_10/text = "Bottom - Right"
 popup/item_10/id = 9
 
-[node name="IDOverlayFontSizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1957436368]
+[node name="IDOverlayFontSizeHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1957436368]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IDOverlayFontSizeLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontSizeHBox" unique_id=1669599151]
+[node name="IDOverlayFontSizeLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayFontSizeHBox" unique_id=1669599151]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Font Size"
 
-[node name="IDOverlayFontSizeSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontSizeHBox" unique_id=291883263]
+[node name="IDOverlayFontSizeSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayFontSizeHBox" unique_id=291883263]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/up_background_hovered = ExtResource("13_tvbkj")
@@ -740,18 +737,18 @@ allow_greater = true
 alignment = 2
 custom_arrow_round = true
 
-[node name="IDOverlayFontColorHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=2003757341]
+[node name="IDOverlayFontColorHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=2003757341]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IDOverlayFontColorLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontColorHBox" unique_id=1090939026]
+[node name="IDOverlayFontColorLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayFontColorHBox" unique_id=1090939026]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Font Color"
 
-[node name="IDOverlayFontColorColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayFontColorHBox" unique_id=1951015668]
+[node name="IDOverlayFontColorColorPickerButton" type="ColorPickerButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayFontColorHBox" unique_id=1951015668]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(86, 31)
 layout_mode = 2
@@ -764,18 +761,18 @@ theme_override_styles/hover_pressed = ExtResource("17_xov76")
 autowrap_mode = 3
 color = Color(1, 1, 1, 1)
 
-[node name="IDOverlayOutlineSizeHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=899472860]
+[node name="IDOverlayOutlineSizeHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=899472860]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IDOverlayOutlineSizeLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=962088629]
+[node name="IDOverlayOutlineSizeLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=962088629]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Outline Size"
 
-[node name="IDOverlayOutlineSizeSpinBox" type="SpinBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=182452828]
+[node name="IDOverlayOutlineSizeSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=182452828]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/up_background_hovered = ExtResource("13_tvbkj")
@@ -788,18 +785,18 @@ allow_greater = true
 alignment = 2
 custom_arrow_round = true
 
-[node name="IDOverlayOutlineColorHBox" type="HBoxContainer" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1968747032]
+[node name="IDOverlayOutlineColorHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1968747032]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IDOverlayOutlineColorLabel" type="Label" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineColorHBox" unique_id=2032884393]
+[node name="IDOverlayOutlineColorLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayOutlineColorHBox" unique_id=2032884393]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Outline Color"
 
-[node name="IDOverlayOutlineColorColorPickerButton" type="ColorPickerButton" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer/IDOverlayOutlineColorHBox" unique_id=1745076468]
+[node name="IDOverlayOutlineColorColorPickerButton" type="ColorPickerButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayOutlineColorHBox" unique_id=1745076468]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(86, 31)
 layout_mode = 2
@@ -810,10 +807,10 @@ theme_override_styles/hover = ExtResource("17_xov76")
 theme_override_styles/hover_pressed = ExtResource("17_xov76")
 autowrap_mode = 3
 
-[node name="HSeparator" type="HSeparator" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1043223854]
+[node name="HSeparator" type="HSeparator" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1043223854]
 layout_mode = 2
 
-[node name="IDOverlayToggleShowCheckBox" type="CheckBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=1117143264]
+[node name="IDOverlayToggleShowCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1117143264]
 unique_name_in_owner = true
 layout_direction = 3
 layout_mode = 2
@@ -827,7 +824,7 @@ text = "Toggle on key release"
 alignment = 2
 icon_alignment = 2
 
-[node name="ShowOnStartupInstanceIDCheckBox" type="CheckBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=810743569]
+[node name="ShowOnStartupInstanceIDCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=810743569]
 unique_name_in_owner = true
 visible = false
 layout_direction = 3
@@ -842,7 +839,7 @@ text = "Show ID Overlay on startup"
 alignment = 2
 icon_alignment = 2
 
-[node name="PrintInstanceIDCheckBox" type="CheckBox" parent="Settings/HBoxContainer/L_Panel/MarginContainer/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/VBoxContainer" unique_id=2142215854]
+[node name="PrintInstanceIDCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=2142215854]
 unique_name_in_owner = true
 layout_direction = 3
 layout_mode = 2
@@ -856,43 +853,34 @@ text = "Print ID to output on hotkey press"
 alignment = 2
 icon_alignment = 2
 
-[node name="R_Panel" type="Panel" parent="Settings/HBoxContainer" unique_id=1299947772]
+[node name="R_Panel" type="Panel" parent="Settings" unique_id=1299947772]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("6_cp33x")
+theme_override_styles/panel = ExtResource("12_cp33x")
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/R_Panel" unique_id=518064650]
+[node name="ScrollContainer" type="ScrollContainer" parent="Settings/R_Panel" unique_id=101034697]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer" unique_id=101034697]
-layout_mode = 2
 follow_focus = true
 scroll_hint_mode = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer" unique_id=1453026303]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/R_Panel/ScrollContainer" unique_id=1453026303]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 15
+theme_override_constants/separation = 0
 
-[node name="TopbarPanel" type="Panel" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=946287046]
+[node name="TopbarPanel" type="Panel" parent="Settings/R_Panel/ScrollContainer/VBoxContainer" unique_id=946287046]
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("1_itauu")
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/TopbarPanel" unique_id=1118705646]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/TopbarPanel" unique_id=1118705646]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -900,13 +888,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_right = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer" unique_id=94297257]
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer" unique_id=94297257]
 layout_mode = 2
 alignment = 2
 
-[node name="OpenHotkeyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1217103956]
+[node name="OpenHotkeyButton" type="Button" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1217103956]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
@@ -921,7 +909,7 @@ theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("20_fcs7p")
 icon_alignment = 1
 
-[node name="BaseDirOpenDirButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=918067150]
+[node name="BaseDirOpenDirButton" type="Button" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=918067150]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
@@ -937,7 +925,7 @@ theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("2_6725a")
 icon_alignment = 1
 
-[node name="ResetSettingsButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1084513318]
+[node name="ResetSettingsButton" type="Button" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1084513318]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
@@ -952,11 +940,11 @@ theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("3_y66hb")
 icon_alignment = 1
 
-[node name="Control" type="Control" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=40616766]
+[node name="Control" type="Control" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=40616766]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1523429579]
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1523429579]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -965,7 +953,20 @@ label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BaseDirHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=669120101]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/R_Panel/ScrollContainer/VBoxContainer" unique_id=1266912916]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer" unique_id=1504669251]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="BaseDirHBox" type="HBoxContainer" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer" unique_id=669120101]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
@@ -974,7 +975,7 @@ Default path is \"user://GoLogger/\".
 It's not recommended to use \"user://logs/\" since Godot stores it's own logs "
 theme_override_constants/separation = 8
 
-[node name="BaseDirLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
+[node name="BaseDirLabel" type="Label" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -984,7 +985,7 @@ theme_override_font_sizes/font_size = 14
 text = "Base Directory:"
 vertical_alignment = 1
 
-[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
+[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -999,7 +1000,7 @@ placeholder_text = "user://GoLogger/"
 expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="BaseDirApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/BaseDirHBox" unique_id=1831127922]
+[node name="BaseDirApplyButton" type="Button" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1831127922]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(31, 31)
@@ -1019,7 +1020,7 @@ disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
 
-[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=2063796377]
+[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer" unique_id=2063796377]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
@@ -1031,7 +1032,7 @@ Supported format tags:
     {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
 theme_override_constants/separation = 8
 
-[node name="LogHeaderLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
+[node name="LogHeaderLabel" type="Label" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -1040,7 +1041,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Log Header Format:"
 vertical_alignment = 1
 
-[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
+[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -1058,7 +1059,7 @@ text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 emoji_menu_enabled = false
 
-[node name="LogHeaderApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/LogHeaderHBox" unique_id=1394228566]
+[node name="LogHeaderApplyButton" type="Button" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1394228566]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(31, 31)
@@ -1078,7 +1079,7 @@ disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
 
-[node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=154378586]
+[node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer" unique_id=154378586]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1092,7 +1093,7 @@ Supported tags:
     {hh}   {mi}   {ss} - hour, minute, second "
 theme_override_constants/separation = 8
 
-[node name="EntryFormatLabel" type="Label" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
+[node name="EntryFormatLabel" type="Label" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -1102,7 +1103,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Entry Format:"
 vertical_alignment = 1
 
-[node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
+[node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -1122,7 +1123,7 @@ placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="EntryFormatWarning" type="Panel" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
+[node name="EntryFormatWarning" type="Panel" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -1136,7 +1137,7 @@ offset_bottom = 21.5
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1926394639]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1926394639]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1147,13 +1148,13 @@ theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 
-[node name="Label" type="Label" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning/MarginContainer" unique_id=1412207838]
+[node name="Label" type="Label" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning/MarginContainer" unique_id=1412207838]
 layout_mode = 2
 text = "{entry} tag required"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EntryFormatApplyButton" type="Button" parent="Settings/HBoxContainer/R_Panel/MarginContainer/ScrollContainer/VBoxContainer/EntryFormatHBox" unique_id=1933647225]
+[node name="EntryFormatApplyButton" type="Button" parent="Settings/R_Panel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=1933647225]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(31, 31)
@@ -1173,26 +1174,8 @@ disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
 
-[node name="Help" type="Panel" parent="." unique_id=1397453253]
+[node name="Help" type="TabContainer" parent="." unique_id=1603064086]
 visible = false
-layout_mode = 2
-metadata/_tab_index = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="Help" unique_id=652220434]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="HelpTabContainer" type="TabContainer" parent="Help/MarginContainer" unique_id=1603064086]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1208,8 +1191,9 @@ tab_1/title = "Methods & Hotkeys"
 tab_2/title = "File Limits"
 tab_3/title = "Instances & Formatting"
 tab_4/title = "More Info"
+metadata/_tab_index = 2
 
-[node name="GettingStarted" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=1377872369]
+[node name="GettingStarted" type="ScrollContainer" parent="Help" unique_id=1377872369]
 visible = false
 layout_mode = 2
 scroll_vertical_custom_step = 20.0
@@ -1218,7 +1202,7 @@ tile_scroll_hint = true
 metadata/_tab_index = 0
 metadata/_tab_name = "Getting Started"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/GettingStarted" unique_id=469117461]
+[node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted" unique_id=469117461]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1226,7 +1210,7 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Gettings_StartedRTLabel" type="RichTextLabel" parent="Help/MarginContainer/HelpTabContainer/GettingStarted/MarginContainer" unique_id=1514331880]
+[node name="Gettings_StartedRTLabel" type="RichTextLabel" parent="Help/GettingStarted/MarginContainer" unique_id=1514331880]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1258,14 +1242,14 @@ Messages(msg) or entries are plain text strings and can include any data that ca
 [font_size=16][color=fc4674][b]Running Multiple Instances:[/b][font_size=14][color=white]
 When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[color=white] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[color=white] hotkey(Ctrl + Shift + I) to print that instance's ID to output."
 
-[node name="Methods&Hotkeys" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=830461916]
+[node name="Methods&Hotkeys" type="ScrollContainer" parent="Help" unique_id=830461916]
 visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 metadata/_tab_index = 1
 metadata/_tab_name = "Methods & Hotkeys"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/Methods&Hotkeys" unique_id=327346930]
+[node name="MarginContainer" type="MarginContainer" parent="Help/Methods&Hotkeys" unique_id=327346930]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1273,7 +1257,7 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Functions_HotkeysRTLabel" type="RichTextLabel" parent="Help/MarginContainer/HelpTabContainer/Methods&Hotkeys/MarginContainer" unique_id=208538217]
+[node name="Functions_HotkeysRTLabel" type="RichTextLabel" parent="Help/Methods&Hotkeys/MarginContainer" unique_id=208538217]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1317,13 +1301,13 @@ There are two signals available to help you synchronize sessions with game logic
 	session_started
 	session_stopped"
 
-[node name="FileLimits" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=1120881483]
+[node name="FileLimits" type="ScrollContainer" parent="Help" unique_id=1120881483]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 metadata/_tab_name = "File Limits"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/FileLimits" unique_id=2057183117]
+[node name="MarginContainer" type="MarginContainer" parent="Help/FileLimits" unique_id=2057183117]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1332,7 +1316,7 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="FileLimitsRTLabel" type="RichTextLabel" parent="Help/MarginContainer/HelpTabContainer/FileLimits/MarginContainer" unique_id=991399834]
+[node name="FileLimitsRTLabel" type="RichTextLabel" parent="Help/FileLimits/MarginContainer" unique_id=991399834]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1374,14 +1358,14 @@ This option defines the maximum number of .log files allowed in each category fo
 [i]Copy session: Ctrl + Shift + U[/i]
 [i]Stop session: Ctrl + Shift + P[/i]"
 
-[node name="Instances_Formatting" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=367321639]
+[node name="Instances_Formatting" type="ScrollContainer" parent="Help" unique_id=367321639]
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
 metadata/_tab_index = 3
 metadata/_tab_name = "Instances & Formatting"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/Instances_Formatting" unique_id=588303162]
+[node name="MarginContainer" type="MarginContainer" parent="Help/Instances_Formatting" unique_id=588303162]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1390,7 +1374,7 @@ theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Instances&FormattingRTLabel" type="RichTextLabel" parent="Help/MarginContainer/HelpTabContainer/Instances_Formatting/MarginContainer" unique_id=1902385466]
+[node name="Instances&FormattingRTLabel" type="RichTextLabel" parent="Help/Instances_Formatting/MarginContainer" unique_id=1902385466]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1424,7 +1408,7 @@ Any tag and custom string formatting can be used.
     {hh}  {mi}  {ss} 							[color=darkgray][i]Hour, Minute, Second[/i][color=white]
 "
 
-[node name="MoreInfo" type="ScrollContainer" parent="Help/MarginContainer/HelpTabContainer" unique_id=656868993]
+[node name="MoreInfo" type="ScrollContainer" parent="Help" unique_id=656868993]
 visible = false
 layout_mode = 2
 scroll_hint_mode = 1
@@ -1432,7 +1416,7 @@ tile_scroll_hint = true
 metadata/_tab_index = 4
 metadata/_tab_name = "More Info"
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo" unique_id=1079808119]
+[node name="MarginContainer" type="MarginContainer" parent="Help/MoreInfo" unique_id=1079808119]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1441,28 +1425,28 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer" unique_id=1738489501]
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/MoreInfo/MarginContainer" unique_id=1738489501]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer" unique_id=785392642]
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/MoreInfo/MarginContainer/HBoxContainer" unique_id=785392642]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1333109452]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1333109452]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="UserDirButton" type="Button" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
+[node name="UserDirButton" type="Button" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Open 
 \"user://\" 
 directory"
 
-[node name="Label" type="Label" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=27916166]
+[node name="Label" type="Label" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=27916166]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "If issues with the plugin arise, start by deleting the \"gologger_data.ini\" and run your 
@@ -1474,18 +1458,18 @@ Please move Log.tscn higher in the list in that case.
 
 If issues persists afterwards, please open an issue on Github with the link below."
 
-[node name="HSeparator" type="HSeparator" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=506011858]
+[node name="HSeparator" type="HSeparator" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=506011858]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1948907939]
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1948907939]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 30
 
-[node name="Control" type="Control" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=713874839]
+[node name="Control" type="Control" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=713874839]
 layout_mode = 2
 
-[node name="RepoLinkButton" type="LinkButton" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1563673285]
+[node name="RepoLinkButton" type="LinkButton" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1563673285]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1493,7 +1477,7 @@ tooltip_text = "https://github.com/Burloe/GoLogger"
 text = "Github repository"
 uri = "https://github.com/Burloe/GoLogger"
 
-[node name="IssuesLinkButton" type="LinkButton" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=402423982]
+[node name="IssuesLinkButton" type="LinkButton" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=402423982]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1501,7 +1485,7 @@ tooltip_text = "https://github.com/Burloe/GoLogger/issues"
 text = "Bug report"
 uri = "https://github.com/Burloe/GoLogger/issues"
 
-[node name="WikiLinkButton" type="LinkButton" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=300775320]
+[node name="WikiLinkButton" type="LinkButton" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=300775320]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -1509,7 +1493,7 @@ tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
 text = "Wiki"
 uri = "https://github.com/Burloe/GoLogger/wiki"
 
-[node name="TextureRect" type="TextureRect" parent="Help/MarginContainer/HelpTabContainer/MoreInfo/MarginContainer/HBoxContainer" unique_id=1785138075]
+[node name="TextureRect" type="TextureRect" parent="Help/MoreInfo/MarginContainer/HBoxContainer" unique_id=1785138075]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0

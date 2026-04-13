@@ -17,7 +17,6 @@ signal category_deleted()
 @onready var line_edit: LineEdit = 					%CategoryNameLineEdit
 @onready var del_btn:	Button = 							%DeleteButton
 @onready var apply_btn: Button = 						%ApplyButton
-@onready var revert_popup = 								%RevertPopup
 @onready var revert_btn: Button = 					%RevertButton
 
 @onready var settings = EditorInterface.get_editor_settings()
@@ -26,10 +25,7 @@ signal category_deleted()
 var sb_panel_round_base: StyleBoxFlat = preload("uid://cywnobmluy31i")
 var sb_panel_round_base_accent_border: StyleBoxFlat = preload("uid://qbiwr8hnwf5n")
 var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
-var sb_line_edit_highlight: StyleBoxFlat = preload("uid://dl1ay0wubtp2m")
 var sb_line_edit_invalid: StyleBoxFlat = preload("uid://sqhht0mdddoi")
-
-var revert_tw_target_pos: Array[Vector2] = [Vector2(44, 0), Vector2(44, 83)]
 
 const PATH = "user://gologger_data.ini"
 var config = ConfigFile.new()
@@ -78,17 +74,26 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
 
-		# settings.settings_changed.connect(_on_editor_settings_changed)
-		_on_editor_settings_changed()
-		revert_popup.hide()
-		revert_btn.position = revert_tw_target_pos[0]
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+		revert_btn.hide()
+		if category_name != "":
+			revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
 		del_btn.button_up.connect(_on_del_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
+		line_edit.editing_toggled.connect(_on_line_edit_editing_toggled)
 		move_left_btn.button_up.connect(move_log_category.bind(-1))
 		move_right_btn.button_up.connect(move_log_category.bind(1))
 
+		revert_btn.button_up.connect(
+			func() -> void:
+				line_edit.unedit()
+				line_edit.release_focus()
+				line_edit.text = category_name
+				apply_btn.hide()
+				default_checkbox.show()
+				revert_btn.hide()
+		)
 
 		line_edit.text_submitted.connect(
 			func(new_text: String) -> void:
@@ -104,16 +109,6 @@ func _ready() -> void:
 				handle_name_state()
 		)
 
-		line_edit.mouse_entered.connect(
-			func() -> void:
-				line_edit.add_theme_stylebox_override("normal", sb_line_edit_highlight)
-		)
-
-		line_edit.mouse_exited.connect(
-			func() -> void:
-				line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
-		)
-
 		apply_btn.button_up.connect(
 			func() -> void:
 				if !check_name_conflict():
@@ -123,6 +118,11 @@ func _ready() -> void:
 		lock_btn.toggled.connect(
 			func(pressed: bool) -> void:
 				is_locked = pressed
+				line_edit.unedit()
+				line_edit.release_focus()
+				apply_btn.hide()
+				default_checkbox.show()
+				revert_btn.hide()
 		)
 
 		default_checkbox.toggled.connect(
@@ -139,7 +139,6 @@ func _ready() -> void:
 		else:
 			invalid_name = false
 
-		_sync_stylebox_colors()
 
 
 
@@ -168,9 +167,6 @@ func check_name_conflict() -> bool:
 	return config.get_value("categories", "category_names", []).has(line_edit.text)
 
 
-# Add red border to line edit when name is invalid?
-# Need to refactor. Instead of updating categories according to dock when the game is ran. It needs to update on every "log_category_changed()" signal emission.
-
 func apply_name(new_name: String) -> void:
 	config.load(PATH)
 
@@ -192,7 +188,6 @@ func apply_name(new_name: String) -> void:
 		config.set_value("categories", "default_category", new_name)
 
 	config.set_value("categories", "category_names", cat)
-	printerr(config.get_value("categories", "category_names"))
 	config.save(PATH)
 
 	if category_name == "":
@@ -215,56 +210,17 @@ func move_log_category(direction: int = 0) -> void:
 	move_category_requested.emit(self, direction)
 
 
-func _tween_revert_btn(on: bool) -> void:
-	var tween = create_tween()
-
-	revert_popup.visible = on
-
-	if on:
-		revert_popup.show()
-		tween.tween_property(revert_btn, "position", revert_tw_target_pos[1], 0.03)
-	else:
-		tween.tween_property(revert_btn, "position", revert_tw_target_pos[0], 0.03)
-		await tween.finished
-		revert_popup.hide()
-
-
 func _on_text_changed(new_text: String) -> void:
 	if new_text != category_name and category_name != "":
-		config.load(PATH)
-		var cn = config.get_value("categories", "category_names", [])
-		if cn.has(new_text):
-			line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid)
-		else:
-			line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+		line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid if check_name_conflict() else sb_line_edit_normal)
 
-	if new_text != category_name and category_name != "":
-		_tween_revert_btn(true)
-	else:
-		if revert_btn.position == revert_tw_target_pos[1]:
-			_tween_revert_btn(false)
-		else:
-			revert_popup.hide()
-			revert_btn.position = revert_tw_target_pos[0]
+
+func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
+	if !is_locked:
+		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
+		revert_btn.visible = toggled_on
 
 
 func _on_del_button_up() -> void:
 	print_rich("[color=878787][GoLogger] Category <" + category_name + "> deleted.")
 	request_log_deletion.emit(self)
-
-
-func _on_editor_settings_changed() -> void:
-	settings = EditorInterface.get_editor_settings()
-	editor_base_col = settings.get_setting("interface/theme/base_color")
-	editor_accent_col = settings.get_setting("interface/theme/accent_color")
-	_sync_stylebox_colors()
-
-
-func _sync_stylebox_colors():
-	var editor_theme = EditorInterface.get_editor_theme()
-	editor_base_col = settings.get("interface/theme/base_color")
-	editor_accent_col = settings.get("interface/theme/accent_color")
-	var accent_contrast_l = editor_accent_col.lerp(Color.WHITE, settings.get("interface/theme/contrast"))
-	var accent_contrast_d = editor_accent_col.lerp(Color.BLACK, settings.get("interface/theme/contrast"))
-	var base_contrast_l = editor_base_col.lerp(Color.WHITE, settings.get("interface/theme/contrast"))
-	var base_contrast_d = editor_base_col.lerp(Color.BLACK, settings.get("interface/theme/contrast"))
