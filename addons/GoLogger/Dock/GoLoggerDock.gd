@@ -739,26 +739,26 @@ func save_data(deferred: bool = false) -> void:
 	for key in settings_dict.keys():
 		var ctrl = settings_dict[key].get("control", null)
 		
-		if ctrl == null:
+		if ctrl == null and settings_dict[key]["section"] != "categories":
 			err += 1
 			offenders.append(str(settings_dict[key].get("name", "")))
 			continue
 		
 		if   ctrl is LineEdit:
-			_c.set_value("settings", "name", ctrl.text)
+			_c.set_value("settings", settings_dict[key]["name"], ctrl.text)
 		elif ctrl is SpinBox:
-			_c.set_value("settings", "name", int(ctrl.value))
+			_c.set_value("settings", settings_dict[key]["name"], int(ctrl.value))
 		elif ctrl is CheckBox:
-			_c.set_value("settings", "name", ctrl.button_pressed)
+			_c.set_value("settings", settings_dict[key]["name"], ctrl.button_pressed)
 		elif ctrl is OptionButton:
-			_c.set_value("settings", "name", ctrl.selected)
+			_c.set_value("settings", settings_dict[key]["name"], ctrl.selected)
 		elif ctrl is HSlider:
-			_c.set_value("settings", "name", int(column_slider.value))
+			_c.set_value("settings", settings_dict[key]["name"], int(column_slider.value))
 		elif ctrl is ColorPickerButton:
-			_c.set_value("settings", "name", ctrl.color.to_html(true))
+			_c.set_value("settings", settings_dict[key]["name"], ctrl.color.to_html(true))
 	
 	for cat in category_container.get_children():
-		if cat is LogCategory and cat.defautl_check_btn.button_pressed:
+		if cat is LogCategory and cat.default_checkbox.button_pressed:
 			_c.set_value("categories", "default_category", cat.category_name)
 			break
 	# _c.set_value("categories", "default_category", config.get_value("categories", "default_category", ""))
@@ -1387,7 +1387,8 @@ func _on_column_slider_value_changed(value: int) -> void:
 	category_container.columns = _get_column_value(value)
 	column_slider.tooltip_text = str("Columns: ", _get_column_value(value))
 	config.set_value("settings", "columns", _get_column_value(value))
-	config.save(PATH)
+	# config.save(PATH)
+	save_data()
 
 
 func _on_line_edit_highlight_changed(highlight_on: bool, line_edit: LineEdit) -> void:
