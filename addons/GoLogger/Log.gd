@@ -138,10 +138,10 @@ var instance_id: String = "":
 	set(value):
 		instance_id = value
 		config.load(PATH)
-		var fnt_sz := int(config.get_value("settings", "id_overlay_font_size", settings_dict.get("defaults").get("id_overlay_font_size")))
-		var fnt_col := Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict.get("defaults").get("id_overlay_color"))
-		var ol_sz := int(config.get_value("settings", "id_overlay_outline_size", settings_dict.get("defaults").get("id_overlay_outline_size")))
-		var ol_col := Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict.get("defaults").get("id_overlay_outline_color"))
+		var fnt_sz := int(config.get_value("settings", "id_font_size", settings_dict.get("defaults").get("id_font_size")))
+		var fnt_col := Color.from_string(config.get_value("settings", "id_color", "ffffffff"), settings_dict.get("defaults").get("id_color"))
+		var ol_sz := int(config.get_value("settings", "id_outline_size", settings_dict.get("defaults").get("id_outline_size")))
+		var ol_col := Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict.get("defaults").get("id_outline_color"))
 		instance_id_label.text = str("  [font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]", value, "  ")
 
 
@@ -153,14 +153,14 @@ var settings_dict := {
 	"entry_format": 							{"value":						 "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
 	"autostart_session": 					{"value": true, 		"type": TYPE_BOOL, 		"default": true},
 	"use_utc": 										{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_overlay_print": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_overlay_toggle": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_overlay_startup_state": 	{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_overlay_align":						{"value": 0, 				"type": TYPE_INT,			"default": 0},
-	"id_overlay_font_size":				{"value": 12, 			"type": TYPE_INT, 		"default": 12},
-	"id_overlay_font_color":			{"value": "ffffff", "type": TYPE_STRING, 	"default": "ffffff"},
-	"id_overlay_outline_size":		{"value": 8,				"type": TYPE_INT,			"default": 8},
-	"id_overlay_outline_color":		{"value": "000000", "type": TYPE_STRING,	"default": "000000"},
+	"id_print": 									{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_toggle": 									{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_startup_state": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
+	"id_align":										{"value": 0, 				"type": TYPE_INT,			"default": 0},
+	"id_font_size":								{"value": 12, 			"type": TYPE_INT, 		"default": 12},
+	"id_font_color":							{"value": "ffffff", "type": TYPE_STRING, 	"default": "ffffff"},
+	"id_outline_size":						{"value": 8,				"type": TYPE_INT,			"default": 8},
+	"id_outline_color":						{"value": "000000", "type": TYPE_STRING,	"default": "000000"},
 	"limit_method": 							{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"entry_count_action": 				{"value": 0, 				"type": TYPE_INT, 		"default": 0},
 	"session_timer_action": 			{"value": 0, 				"type": TYPE_INT, 		"default": 0},
@@ -178,14 +178,14 @@ var settings_dict := {
 		"entry_format": 									"[{hh}:{mi}:{ss}] {instance_id}: {entry}",
 		"autostart_session": 							true,
 		"use_utc": 												false,
-		"id_overlay_print": 							false,
-		"id_overlay_toggle": 							false,
-		"id_overlay_startup_state": 			false,
-		"id_overlay_align":								0,
-		"id_overlay_font_size":						12,
-		"id_overlay_color": 							"ffffff",
-		"id_overlay_outline_size":				8,
-		"id_overlay_outline_color":				"000000",
+		"id_print": 											false,
+		"id_toggle": 											false,
+		"id_startup_state": 							false,
+		"id_align":												0,
+		"id_font_size":										12,
+		"id_color": 											"ffffff",
+		"id_outline_size":								8,
+		"id_outline_color":								"000000",
 		"limit_method": 									0,
 		"entry_count_action": 						0,
 		"session_timer_action": 					0,
@@ -204,14 +204,14 @@ var settings_dict := {
 		"entry_format": 						"settings/entry_format",
 		"autostart_session": 				"settings/autostart_session",
 		"use_utc": 									"settings/use_utc",
-		"id_overlay_print": 				"settings/id_overlay_print",
-		"id_overlay_toggle": 				"settings/id_overlay_toggle",
-		"id_overlay_startup_state": "settings/id_overlay_startup_state",
-		"id_overlay_align":					"settings/id_overlay_align",
-		"id_overlay_font_size":			"settings/id_overlay_font_size",
-		"id_overlay_color": 				"settings/id_overlay_color",
-		"id_overlay_outline_size":	"settings/id_overlay_outline_size",
-		"id_overlay_outline_color": "settings/id_overlay_outline_color",
+		"id_print": 								"settings/id_overlay_print",
+		"id_toggle": 								"settings/id_overlay_toggle",
+		"id_startup_state": 				"settings/id_overlay_startup_state",
+		"id_align":									"settings/id_overlay_align",
+		"id_font_size":							"settings/id_overlay_font_size",
+		"id_color": 								"settings/id_overlay_color",
+		"id_outline_size":					"settings/id_overlay_outline_size",
+		"id_outline_color": 				"settings/id_overlay_outline_color",
 		"limit_method": 						"settings/limit_method",
 		"entry_count_action": 			"settings/entry_count_action",
 		"session_timer_action": 		"settings/session_timer_action",
@@ -255,15 +255,15 @@ func _ready() -> void:
 
 	config.load(PATH)
 
-	var id_toggle = config.get_value("settings", "id_overlay_toggle", false)
-	var id_startup = config.get_value("settings", "id_overlay_startup_state", false)
+	var id_toggle = config.get_value("settings", "id_toggle", false)
+	var id_startup = config.get_value("settings", "id_startup_state", false)
 	if id_toggle:
 		instance_id_label.visible = id_startup
 
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
-	match _get_config_value("settings", "id_overlay_align"):
+	match _get_config_value("settings", "id_align"):
 		0: # Top L
 			instance_id_label.horizontal_alignment = 	0
 			instance_id_label.vertical_alignment = 		0
@@ -315,20 +315,20 @@ func _input(event: InputEvent) -> void:
 
 
 			config.load(PATH)
-			var id_toggle = config.get_value("settings", "id_overlay_toggle", false)
-			var id_startup = config.get_value("settings", "id_overlay_startup_state", false)
+			var id_toggle = config.get_value("settings", "id_toggle", false)
+			var id_startup = config.get_value("settings", "id_startup_state", false)
 
 			if gl_hotkeys.display_instance_id_hotkey.shortcut.matches_event(event):
 				if id_toggle:
 					if event.is_released():
 						instance_id_label.hide() if instance_id_label.visible else instance_id_label.show()
-						if _get_config_value("settings", "id_overlay_print"):
+						if _get_config_value("settings", "id_print"):
 							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
 
 				else:
 					if event.is_pressed():
 						instance_id_label.show()
-						if _get_config_value("settings", "id_overlay_print"):
+						if _get_config_value("settings", "id_print"):
 							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: ", instance_id)
 					if event.is_released():
 						instance_id_label.hide()
@@ -661,14 +661,14 @@ func create_settings_file() -> void: # Mirror
 	cf.set_value("settings", "entry_format", 										settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
 	cf.set_value("settings", "autostart_session", 							settings_dict.get("defaults", {}).get("autostart_session", true))
 	cf.set_value("settings", "use_utc", 												settings_dict.get("defaults", {}).get("use_utc", false))
-	cf.set_value("settings", "id_overlay_print", 								settings_dict.get("defaults", {}).get("id_overlay_print", false))
-	cf.set_value("settings", "id_overlay_toggle", 							settings_dict.get("defaults", {}).get("id_overlay_toggle", false))
-	cf.set_value("settings", "id_overlay_startup_state", 				settings_dict.get("defaults", {}).get("id_overlay_startup_state", false))
-	cf.set_value("settings", "id_overlay_align", 								settings_dict.get("defaults").get("id_overlay_align", 0))
-	cf.set_value("settings", "id_overlay_font_size", 						settings_dict.get("defaults", {}).get("id_overlay_font_size", 12))
-	cf.set_value("settings", "id_overlay_color", 					Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
-	cf.set_value("settings", "id_overlay_outline_size", 				settings_dict.get("defaults", {}).get("id_overlay_outline_size", 8))
-	cf.set_value("settings", "id_overlay_outline_color",	Color(settings_dict.get("defaults", {}).get("id_overlay_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "id_print", 												settings_dict.get("defaults", {}).get("id_print", false))
+	cf.set_value("settings", "id_toggle", 											settings_dict.get("defaults", {}).get("id_toggle", false))
+	cf.set_value("settings", "id_startup_state", 								settings_dict.get("defaults", {}).get("id_startup_state", false))
+	cf.set_value("settings", "id_align", 												settings_dict.get("defaults").get("id_align", 0))
+	cf.set_value("settings", "id_font_size", 										settings_dict.get("defaults", {}).get("id_font_size", 12))
+	cf.set_value("settings", "id_color", 									Color(settings_dict.get("defaults", {}).get("id_color", "ffffff")).to_html(true))
+	cf.set_value("settings", "id_outline_size", 								settings_dict.get("defaults", {}).get("id_outline_size", 8))
+	cf.set_value("settings", "id_outline_color",					Color(settings_dict.get("defaults", {}).get("id_color", "ffffff")).to_html(true))
 	cf.set_value("settings", "limit_method", 										settings_dict.get("defaults", {}).get("limit_method", 0))
 	cf.set_value("settings", "entry_count_action", 							settings_dict.get("defaults", {}).get("entry_count_action", 0))
 	cf.set_value("settings", "session_timer_action", 						settings_dict.get("defaults", {}).get("session_timer_action", 0))

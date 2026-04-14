@@ -46,7 +46,7 @@ signal change_category_name_finished
 signal open_hotkey_resource()
 
 # @onready var categories_tab: VBoxContainer = %Categories
-@onready var _add_category_btn: Button = %AddCategoryButton
+@onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
 @onready var cat_del_warn_rlbl: RichTextLabel = %CatDelWarningRLabel
@@ -110,7 +110,7 @@ var session_duration_spinbox_line: LineEdit
 
 @onready var open_hotkey_btn: Button = %OpenHotkeyButton
 
-@onready var print_instance_id_btn: CheckBox = %PrintInstanceIDCheckBox
+@onready var id_print_btn: CheckBox = %PrintInstanceIDCheckBox
 @onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontSizeHBox
 @onready var id_overlay_example_lbl: RichTextLabel = %IDOverlayExampleLabel
 
@@ -240,14 +240,14 @@ var settings_dict := {
 	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"value": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
 	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"value": true, 			"type": TYPE_BOOL, 		"control": null, "default": true},
 	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_overlay_print": 					{"section": "settings", 	"name": "id_overlay_print", 					"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_overlay_toggle": 					{"section": "settings", 	"name": "id_overlay_toggle", 					"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_overlay_startup_state": 	{"section": "settings", 	"name": "id_overlay_startup_state", 	"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_overlay_align":						{"section": "settings", 	"name": "id_overlay_align", 					"value": 0, 				"type": TYPE_INT,			"control": null, "default": 0},
-	"id_overlay_font_size":				{"section": "settings", 	"name": "id_overlay_font_size", 			"value": 12, 				"type": TYPE_INT, 		"control": null, "default": 12},
-	"id_overlay_font_color":			{"section": "settings", 	"name": "id_overlay_font_color", 			"value": "ffffff", 	"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
-	"id_overlay_outline_size":		{"section": "settings", 	"name": "id_overlay_outline_size", 		"value": 8,					"type": TYPE_INT,			"control": null, "default": 8},
-	"id_overlay_outline_color":		{"section": "settings", 	"name": "id_overlay_outline_color", 	"value": "000000", 	"type": TYPE_STRING,	"control": null, "default": "000000"},
+	"id_print": 									{"section": "settings", 	"name": "id_print", 									"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_align":										{"section": "settings", 	"name": "id_align", 									"value": 0, 				"type": TYPE_INT,			"control": null, "default": 0},
+	"id_font_size":								{"section": "settings", 	"name": "id_font_size", 							"value": 12, 				"type": TYPE_INT, 		"control": null, "default": 12},
+	"id_font_color":							{"section": "settings", 	"name": "id_font_color", 							"value": "ffffff", 	"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
+	"id_outline_size":						{"section": "settings", 	"name": "id_outline_size", 						"value": 8,					"type": TYPE_INT,			"control": null, "default": 8},
+	"id_outline_color":						{"section": "settings", 	"name": "id_outline_color", 					"value": "000000", 	"type": TYPE_STRING,	"control": null, "default": "000000"},
 	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
 	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
 	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
@@ -272,7 +272,7 @@ func _ready() -> void:
 		_ensure_default_category()
 
 		cat_del_warn_rlbl.modulate = Color.TRANSPARENT
-		id_overlay_startup_btn.show() if config.get_value("settings", "id_overlay_toggle", false) else id_overlay_startup_btn.hide()
+		id_overlay_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_overlay_startup_btn.hide()
 		base_dir_apply_btn.hide()
 		log_header_apply_btn.hide()
 		entry_format_apply_btn.hide()
@@ -285,7 +285,7 @@ func _ready() -> void:
 
 		# Signal connections
 		settings.settings_changed.connect(_on_editor_settings_changed)
-		_add_category_btn.button_up.connect(_add_category)
+		add_category_btn.button_up.connect(_add_category) # Can delete after log category refactor
 		open_dir_btn.button_up.connect(_open_directory)
 		column_slider.value_changed.connect(_on_column_slider_value_changed)
 		reset_settings_btn.button_up.connect(reset_to_default)
@@ -350,7 +350,7 @@ func _ready() -> void:
 			entry_format_apply_btn,
 			autostart_btn,
 			utc_btn,
-			print_instance_id_btn,
+			id_print_btn,
 			id_overlay_toggle_btn,
 			id_overlay_align_opt_btn,
 			id_overlay_font_size_spinbox,
@@ -483,8 +483,6 @@ func _ready() -> void:
 
 		open_hotkey_btn.button_up.connect(func() -> void: open_hotkey_resource.emit())
 
-
-		# match config.get_value("settings", "limit_method", settings_dict.get("defaults", {}).get("limit_method", 0)):
 		match config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)):
 			LimitMethod.ENTRY_COUNT:
 				entry_count_action_container.show()
@@ -520,14 +518,14 @@ func _ready() -> void:
 		settings_dict["entry_format"]["control"] = 							entry_format_line
 		settings_dict["autostart_session"]["control"] = 				autostart_btn
 		settings_dict["use_utc"]["control"] = 									utc_btn
-		settings_dict["id_overlay_print"]["control"] = 					print_instance_id_btn
-		settings_dict["id_overlay_toggle"]["control"] = 				id_overlay_toggle_btn
-		settings_dict["id_overlay_startup_state"]["control"] = 	id_overlay_startup_btn
-		settings_dict["id_overlay_align"]["control"] = 					id_overlay_align_opt_btn
-		settings_dict["id_overlay_font_size"]["control"] = 			id_overlay_font_size_spinbox
-		settings_dict["id_overlay_font_color"]["control"] =			id_overlay_font_col_btn
-		settings_dict["id_overlay_outline_size"]["control"] = 	id_overlay_outline_size_spinbox
-		settings_dict["id_overlay_outline_color"]["control"] =	id_overlay_outline_col_btn
+		settings_dict["id_print"]["control"] = 									id_print_btn
+		settings_dict["id_toggle"]["control"] = 								id_overlay_toggle_btn
+		settings_dict["id_startup_state"]["control"] = 					id_overlay_startup_btn
+		settings_dict["id_align"]["control"] = 									id_overlay_align_opt_btn
+		settings_dict["id_font_size"]["control"] = 							id_overlay_font_size_spinbox
+		settings_dict["id_font_color"]["control"] =							id_overlay_font_col_btn
+		settings_dict["id_outline_size"]["control"] = 					id_overlay_outline_size_spinbox
+		settings_dict["id_outline_color"]["control"] =					id_overlay_outline_col_btn
 		settings_dict["limit_method"]["control"] = 							limit_method_btn
 		settings_dict["entry_count_action"]["control"] = 				entry_count_action_btn
 		settings_dict["session_timer_action"]["control"] = 			session_timer_action_btn
@@ -536,9 +534,6 @@ func _ready() -> void:
 		settings_dict["session_duration"]["control"] = 					session_duration_spinbox
 		settings_dict["error_reporting"]["control"] = 					error_rep_btn
 		settings_dict["columns"]["control"] = 									column_slider
-
-
-
 
 
 
@@ -568,42 +563,43 @@ func create_settings_file() -> void: # Mirror
 
 
 func reset_to_default() -> void:
-	var cf := ConfigFile.new()
-	cf.load(PATH)
+	var c := ConfigFile.new()
+	c.load(PATH)
 
 	for key in settings_dict.keys():
 		if settings_dict[key]["section"] == "categories":
 			continue
 
-		cf.set_value("settings", key, settings_dict.get(key, {}).get("defaults", null))
+		c.set_value("settings", key, settings_dict.get(key, {}).get("default", null))
 
-	cf.set_value("categories.game", "category_name", "game")
-	cf.set_value("categories.game", "category_index", 0)
-	cf.set_value("categories.game", "file_count", 0)
-	cf.set_value("categories.game", "is_locked", false)
-	cf.save(PATH)
+	c.set_value("categories.game", "category_name", "game")
+	c.set_value("categories.game", "file_count", 0)
+	c.set_value("categories.game", "is_locked", false)
+	c.save(PATH)
 
-	base_dir_line.text = 											settings_dict.get("base_directory"								).get("value", "user://GoLogger/")
-	log_header_line.text = 										settings_dict.get("log_header_format"							).get("value", "")
-	entry_format_line.text = 									settings_dict.get("entry_count_format"						).get("value", "")
-	autostart_btn.button_pressed = 						settings_dict.get("autostart_session"							).get("value", true)
-	utc_btn.button_pressed = 									settings_dict.get("use_utc"												).get("value", false)
-	print_instance_id_btn.button_pressed = 		settings_dict.get("id_overlay_print"							).get("value", false)
-	id_overlay_toggle_btn.button_pressed = 		settings_dict.get("id_overlay_toggle"							).get("value", false)
-	id_overlay_startup_btn.button_pressed = 	settings_dict.get("id_overlay_startup_state"			).get("value", false)
-	id_overlay_align_opt_btn.selected = 			settings_dict.get("id_overlay_align"							).get("value", 0)
-	id_overlay_font_size_spinbox.value = 			settings_dict.get("id_overlay_font_size"					).get("value", 12)
-	id_overlay_font_col_btn.color = 		Color(settings_dict.get("id_overlay_color"							).get("value", "ffffff"))
-	id_overlay_font_size_spinbox.value = 			settings_dict.get("id_overlay_outline_size"				).get("value", 8)
-	id_overlay_outline_col_btn.color = 	Color(settings_dict.get("id_overlay_outline_color"			).get("value"))
-	limit_method_btn.selected = 							settings_dict.get("limit_method"									).get("value", 0)
-	entry_count_action_btn.selected = 				settings_dict.get("entry_count_action"						).get("value", 0)
-	session_timer_action_btn.selected = 			settings_dict.get("session_timer_action"					).get("value", 0)
-	file_count_spinbox.value = 								settings_dict.get("file_cap"											).get("value", 10)
-	entry_count_spinbox.value = 							settings_dict.get("entry_cap"											).get("value", 1200)
-	session_duration_spinbox.value = 					settings_dict.get("session_duration"							).get("value", 900)
-	error_rep_btn.selected = 									settings_dict.get("error_reporting"								).get("value", 0)
-	column_slider.value = 										_get_column_value(settings_dict.get("columns", {}	).get("value", 5))
+	for key in settings_dict.keys():
+		var _s: Dictionary = settings_dict[key]
+		var ctrl = settings_dict[key].get("control")
+		var value = settings_dict[key]["default"] 
+
+		if ctrl is CheckBox:
+			ctrl.button_pressed = value
+		
+		elif ctrl is SpinBox:
+			ctrl.value = value
+		
+		elif ctrl is HSlider:
+			ctrl.value = _get_column_value(value)
+		
+		elif ctrl is OptionButton:
+			ctrl.selected = value
+
+		elif ctrl is LineEdit:
+			ctrl.text = value
+		
+		elif ctrl is ColorPickerButton:
+			ctrl.color = Color.from_string(value, Color.WHITE)
+			_on_colorpicker_color_changed(Color.from_string(value, Color.WHITE), ctrl) 
 
 	base_dir_apply_btn.disabled = true
 	base_dir_apply_btn.hide()
@@ -646,13 +642,12 @@ func validate_settings() -> void: # Mirror
 						if not _e.is_empty():
 							push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
 
-			# Validate
-			# Presence
+			# Validate Presence
 			if !config.has_section(setting["section"]) or !config.has_section_key(setting["section"], setting["name"]):
 				config.set_value(setting["section"], setting["name"], setting["default"])
 				continue
 
-			# Type
+			# Validate Type
 			if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
 				config.set_value(setting["section"], setting["name"], setting["default"])
 
@@ -681,65 +676,56 @@ func initialize_dock() -> void:
 				cat.default_checkbox.button_pressed = true
 				break
 
-	# Settings
-	base_dir_line.text = 										_c.get_value("settings", "base_directory", 						settings_dict.get("defaults", 									{}).get("base_directory", "user://GoLogger/"))
-	log_header_line.text = 									_c.get_value("settings", "log_header_format", 				settings_dict.get("defaults", 									{}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
-	entry_format_line.text = 								_c.get_value("settings", "entry_format", 							settings_dict.get("defaults", 									{}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	autostart_btn.button_pressed = 					_c.get_value("settings", "autostart_session", 				settings_dict.get("autostart_session", 					{}).get("default"))
-	utc_btn.button_pressed = 								_c.get_value("settings", "use_utc", 									settings_dict.get("use_utc", {}).get("default", false))
-	print_instance_id_btn.button_pressed = 	_c.get_value("settings", "id_overlay_print", 					settings_dict.get("id_overlay_print", 					{}).get("default"))
-	id_overlay_toggle_btn.button_pressed = 	_c.get_value("settings", "id_overlay_toggle", 				settings_dict.get("id_overlay_toggle", 					{}).get("default"))
-	id_overlay_startup_btn.button_pressed = _c.get_value("settings", "id_overlay_startup_state", 	settings_dict.get("id_overlay_startup_state", 	{}).get("default"))
-	id_overlay_font_size_spinbox.value = 		_c.get_value("settings", "id_overlay_font_size", 			settings_dict.get("id_overlay_font_size", 			{}).get("default"))
-	id_overlay_font_col_btn.color = 	Color(_c.get_value("settings", "id_overlay_color", 					settings_dict.get("id_overlay_color", 					{}).get("default")))
-	id_overlay_outline_size_spinbox.value = _c.get_value("settings", "id_overlay_outline_size", 	settings_dict.get("id_overlay_outline_size", 		{}).get("default"))
-	id_overlay_outline_col_btn.color =Color(_c.get_value("settings", "id_overlay_outline_color",	settings_dict.get("id_overlay_outline_color",		{}).get("default")))
-	limit_method_btn.selected = 						_c.get_value("settings", "limit_method", 							settings_dict.get("limit_method", 							{}).get("default"))
-	entry_count_action_btn.selected = 			_c.get_value("settings", "entry_count_action", 				settings_dict.get("entry_count_action", 				{}).get("default"))
-	session_timer_action_btn.selected = 		_c.get_value("settings", "session_timer_action", 			settings_dict.get("session_timer_action", 			{}).get("default"))
-	file_count_spinbox.value = 							_c.get_value("settings", "file_cap", 									settings_dict.get("file_cap", 									{}).get("default"))
-	entry_count_spinbox.value = 						_c.get_value("settings", "entry_cap", 								settings_dict.get("entry_cap", 									{}).get("default"))
-	session_duration_spinbox.value = 				_c.get_value("settings", "session_duration", 					settings_dict.get("session_duration", 					{}).get("default"))
-	error_rep_btn.selected = 								_c.get_value("settings", "error_reporting", 					settings_dict.get("error_reporting", 						{}).get("default"))
-	column_slider.value = 									_get_column_value(_c.get_value("settings", "columns", settings_dict.get("columns", 										{}).get("default")))
-	save_data()
+	# Settings 
+	for key in settings_dict.keys():
+		var _s: Dictionary = settings_dict[key]
+		var ctrl = settings_dict[key].get("control")
+		var value = _c.get_value("settings", _s["name"], _s["default"])
+
+		if ctrl is Button or ctrl is CheckBox:
+			ctrl.button_pressed = value
+		
+		elif ctrl is SpinBox:
+			ctrl.value = value
+		
+		elif ctrl is HSlider:
+			ctrl.value = _get_column_value(value)
+		
+		elif ctrl is OptionButton:
+			ctrl.selected = value
+
+		elif ctrl is LineEdit:
+			ctrl.text = value
+		
+		elif ctrl is ColorPickerButton:
+			ctrl.color = Color.from_string(value, Color.WHITE) 
+
+	save_data(false, true)
 	config.load(PATH)
 
 
 
 ## Saves all the dock data ( categories and settings state ) to file according to the state/data of the dock.
-func save_data(deferred: bool = false) -> void:
+func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
 
 	config.load(PATH)
 	var _c := ConfigFile.new()
-	_ensure_default_category()
-
-	# Categories
 	var _cat_names = []
-	for log_category in category_container.get_children():
-		if log_category is LogCategory:
-			if log_category.category_name == "":
-				continue
-
-			_cat_names.append(log_category.category_name)
-			_c.set_value("categories." + log_category.category_name, "file_name", 			config.get_value("categories." + log_category.category_name, "file_name", ""))
-			_c.set_value("categories." + log_category.category_name, "file_path", 			config.get_value("categories." + log_category.category_name, "file_path", ""))
-			_c.set_value("categories." + log_category.category_name, "category_name", 	log_category.category_name)
-			_c.set_value("categories." + log_category.category_name, "category_index", 	log_category.index)
-			_c.set_value("categories." + log_category.category_name, "file_count", 			config.get_value("categories." + log_category.category_name, "file_count", 0))
-			_c.set_value("categories." + log_category.category_name, "is_locked", 			log_category.is_locked)
-			_c.set_value("categories." + log_category.category_name, "entry_count", 		config.get_value("categories." + log_category.category_name, "entry_count", 0))
-
-	_c.set_value("categories", "category_names", _cat_names)
-
 	var err: int = 0
 	var offenders: Array[String] = []
+	_ensure_default_category()
+
+	# Setting first as blank so "categories" section at top of file
+	_c.set_value("categories", "category_names", []) 
+	_c.set_value("categories", "default_category", config.get_value("categories", "default_category", ""))
+
+	# Settings
 	for key in settings_dict.keys():
 		var ctrl = settings_dict[key].get("control", null)
 		
-		if ctrl == null and settings_dict[key]["section"] != "categories":
+		if !ignore_errors and ctrl == null and settings_dict[key]["section"] != "categories":
 			err += 1
 			offenders.append(str(settings_dict[key].get("name", "")))
 			continue
@@ -761,11 +747,27 @@ func save_data(deferred: bool = false) -> void:
 		if cat is LogCategory and cat.default_checkbox.button_pressed:
 			_c.set_value("categories", "default_category", cat.category_name)
 			break
-	# _c.set_value("categories", "default_category", config.get_value("categories", "default_category", ""))
+	
+	# Categories
+	for log_category in category_container.get_children():
+		if log_category is LogCategory:
+			if log_category.category_name == "":
+				continue
+
+			_cat_names.append(log_category.category_name)
+			_c.set_value("categories." + log_category.category_name, "file_name", 			config.get_value("categories." + log_category.category_name, "file_name", ""))
+			_c.set_value("categories." + log_category.category_name, "file_path", 			config.get_value("categories." + log_category.category_name, "file_path", ""))
+			_c.set_value("categories." + log_category.category_name, "category_name", 	log_category.category_name) 
+			_c.set_value("categories." + log_category.category_name, "file_count", 			config.get_value("categories." + log_category.category_name, "file_count", 0))
+			_c.set_value("categories." + log_category.category_name, "is_locked", 			log_category.is_locked)
+			_c.set_value("categories." + log_category.category_name, "entry_count", 		config.get_value("categories." + log_category.category_name, "entry_count", 0))
+
+	_c.set_value("categories", "category_names", _cat_names)
+
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
 	if  err_rep_lv <= ErrorReportLevel.ERRORS:
 		if err > 0:
-			push_error(str("GoLogger error: Failed to save settings. No Control nodes found for settings: ", offenders))
+			push_error(str("GoLogger error: Failed to save settings. No Control references found for settings: \n\t", offenders))
 
 	var _e = _c.save(PATH)
 	if _e != OK:
@@ -776,21 +778,31 @@ func save_data(deferred: bool = false) -> void:
 
 
 ## `save_after` should be used when the user adds categories manually via the dock. Not when loading categories from config.
-func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false, save_after: bool = false) -> void:
+func _add_category(_name: String = "", _is_locked: bool = false, save_after: bool = false) -> void:
 	config.load(PATH)
-	var _n = category_scene.instantiate()
+	var _n = category_scene.instantiate() as LogCategory
 	_n.dock = self
 	_n.category_name = _name
-	_n.is_locked = _is_locked
-	_n.index = category_container.get_children().size()
+	_n.is_locked = _is_locked 
 	category_container.add_child(_n)
 
-	_n.log_category_changed.connect(_category_changed)
-	_n.request_log_deletion.connect(_delete_category)
+	_n.log_category_changed.connect(save_categories) 
 	_n.move_category_requested.connect(_change_category_order)
 	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
 	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
 	_n.default_checkbox.button_pressed = true if config.get_value("categories", "default_category", "") == _name else false
+	_n.category_deleted.connect(func() -> void:
+		await get_tree().create_timer(0.01)
+		save_categories()
+		if get_tree().is_inside_tree():
+			var tw = get_tree().create_tween()
+			tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
+			await get_tree().create_timer(8.0).timeout
+			var twe = get_tree().create_tween()
+			twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 0.5)
+		else:
+			cat_del_warn_rlbl.modulate = Color.TRANSPARENT
+		)
 
 	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
 	_handle_category_mov_button_state()
@@ -800,54 +812,39 @@ func _add_category(_name: String = "", _index: int = 0, _is_locked: bool = false
 
 
 
-func apply_categories() -> void:
+func save_categories() -> void:
 	config.load(PATH)
 	var c := ConfigFile.new()
+	var c_names = []
+	var c_def: String = ""
 
 	for setting in settings_dict.keys():
 		if setting == "category_names" or setting == "default_category":
-			c.set_value("categories", setting, config.get_value("categories", setting))
-
+			# c.set_value("categories", setting, config.get_value("categories", setting))
+			continue
 		else:
 			c.set_value("settings", setting, config.get_value("settings", setting, settings_dict[setting]["default"]))
 			c.set_value("settings", setting, config.get_value("settings", setting, settings_dict.get(setting, {}).get("default", settings_dict.get("default", {}).get(setting, null))))
 
 	for cat in category_container.get_children():
 		if cat is LogCategory:
+			c_names.append(cat.category_name)
+			if cat.default_checkbox.button_pressed:
+				c_def = cat.category_name
+
 			c.set_value("categories." + cat.category_name, "file_name" , "")
 			c.set_value("categories." + cat.category_name, "file_path", "")
-			c.set_value("categories." + cat.category_name, "category_name", cat.category_name)
-			c.set_value("categories." + cat.category_name, "category_index", cat.index)
+			c.set_value("categories." + cat.category_name, "category_name", cat.category_name) 
 			c.set_value("categories." + cat.category_name, "file_count", config.get_value("categories." + cat.category_name, "file_count", 0))
 			c.set_value("categories." + cat.category_name, "is_locked", cat.is_locked)
 			c.set_value("categories." + cat.category_name, "entry_count", config.get_value("categories." + cat.category_name, "entry_count", 0))
 
+	c.set_value("categories", "category_names", c_names)
+	c.set_value("categories", "default_category", c_def)
+
+	_handle_category_mov_button_state()
 	c.save(PATH)
-
-
-
-## Called when a category has changed (name, lock state, etc) by the dock UI.
-func _category_changed(log_category: LogCategory, is_name_change: bool, old_name) -> void:
 	config.load(PATH)
-	config.set_value("categories." + log_category.category_name, "file_name", "")
-	config.set_value("categories." + log_category.category_name, "file_path", "")
-	config.set_value("categories." + log_category.category_name, "category_name", log_category.category_name)
-	config.set_value("categories." + log_category.category_name, "category_index", log_category.index)
-	config.set_value("categories." + log_category.category_name, "file_count", config.get_value("categories." + log_category.category_name, "file_count", 0))
-	config.set_value("categories." + log_category.category_name, "is_locked", log_category.is_locked)
-	config.set_value("categories." + log_category.category_name, "entry_count", config.get_value("categories." + log_category.category_name, "entry_count", 0))
-	if is_name_change:
-		# Remove old category section
-		if config.has_section("categories." + old_name):
-			config.erase_section("categories." + old_name)
-
-		var _categg = []
-		for i in category_container.get_children():
-			if i is LogCategory:
-				_categg.append(i.category_name)
-		config.set_value("categories", "category_names", _categg)
-
-	config.save(PATH)
 
 
 
@@ -872,60 +869,54 @@ func set_default_category(cat: LogCategory, set_status: bool) -> void:
 
 
 
-func _delete_category(log_category: LogCategory) -> void:
-	if log_category.get_parent() == category_container:
+# func _delete_category(log_category: LogCategory) -> void:
+# 	if log_category.get_parent() == category_container:
 
-		config.load(PATH)
-		_ensure_default_category()
+# 		config.load(PATH)
+# 		_ensure_default_category()
 
-		var def_c: String = config.get_value("categories", "default_category", "")
-		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
-			config.set_value("categories", "default_category", "")
+# 		var def_c: String = config.get_value("categories", "default_category", "")
+# 		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
+# 			config.set_value("categories", "default_category", "")
 
-		category_container.remove_child(log_category)
-		log_category.queue_free()
-		if config.has_section("categories." + log_category.category_name):
-			config.erase_section("categories." + log_category.category_name)
-		config.save(PATH)
-		_assign_category_indices()
+# 		category_container.remove_child(log_category)
+# 		log_category.queue_free()
+# 		if config.has_section("categories." + log_category.category_name):
+# 			config.erase_section("categories." + log_category.category_name)
+# 		config.save(PATH)
+# 		_assign_category_indices()
 
-		if get_tree().is_inside_tree():
-			var tw = get_tree().create_tween()
-			tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
-			await get_tree().create_timer(8.0).timeout
-			var twe = get_tree().create_tween()
-			twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 0.5)
-		else:
-			cat_del_warn_rlbl.modulate = Color.TRANSPARENT
+# 		if get_tree().is_inside_tree():
+# 			var tw = get_tree().create_tween()
+# 			tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
+# 			await get_tree().create_timer(8.0).timeout
+# 			var twe = get_tree().create_tween()
+# 			twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 0.5)
+# 		else:
+# 			cat_del_warn_rlbl.modulate = Color.TRANSPARENT
 
 
 
 func _change_category_order(category: LogCategory, direction: int) -> void:
-	var new_index = category.index + direction
-	if new_index < 0 or new_index >= category_container.get_child_count():
+	var cats: Array = category_container.get_children()
+	var from: int = category.get_index()
+	var to: int = from
+	to += direction
+	
+	if to < 0 or to >= cats.size():
 		return
 
-	category_container.move_child(category, category.index + direction)
-	_assign_category_indices()
-
-
-
-func _assign_category_indices() -> void:
-	for i in range(category_container.get_child_count()):
-		var category = category_container.get_child(i)
-		if category is LogCategory:
-			category.index = i
-
-	save_data()
+	category_container.move_child(category, to)
 	_handle_category_mov_button_state()
+	save_categories() 
 
 
 
 func _handle_category_mov_button_state() -> void:
 	for i in range(category_container.get_child_count()):
 		var category = category_container.get_child(i)
-		category.move_left_btn.disabled = (category.index == 0)
-		category.move_right_btn.disabled = (category.index == category_container.get_child_count() - 1)
+		category.move_left_btn.disabled = (i == 0)
+		category.move_right_btn.disabled = (i == category_container.get_child_count() - 1)
 
 
 func _check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
@@ -996,9 +987,11 @@ func _open_user_dir() -> void:
 	OS.shell_open(abs_path)
 
 
+
 func _open_directory() -> void:
 	var abs_path = ProjectSettings.globalize_path(config.get_value("settings", "base_directory"))
 	OS.shell_open(abs_path)
+
 
 
 func _apply_new_base_directory() -> void:
@@ -1060,9 +1053,9 @@ func _apply_new_base_directory() -> void:
 	base_dir_apply_btn.disabled = true
 
 
+
 func _is_entry_format_valid(format: String) -> bool:
 	return true if format.contains("{entry}") else false
-
 
 
 
@@ -1071,6 +1064,7 @@ func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
 		node.add_theme_color_override("font_color", c_font_hover)
 	else:
 		node.add_theme_color_override("font_color", c_font_normal)
+
 
 
 func _on_button_button_up(node: Button) -> void:
@@ -1104,8 +1098,8 @@ func _on_button_button_up(node: Button) -> void:
 			entry_format_line.release_focus()
 			log_header_apply_btn.hide()
 
-
 	save_data()
+
 
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
@@ -1146,6 +1140,7 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 				entry_format_apply_btn.hide()
 
 
+
 func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 	match node:
 		base_dir_line:
@@ -1160,6 +1155,7 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 		entry_format_line:
 			entry_format_line.release_focus()
 			entry_format_apply_btn.hide()
+
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
@@ -1206,12 +1202,13 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 				print_rich(c_print_history, "Error Reporting level changed.")
 
 		id_overlay_align_opt_btn:
-			config.set_value("settings", "id_overlay_align", index)
+			config.set_value("settings", "id_align", index)
 
 			if !suppress_history_prints:
 				print_rich(c_print_history,"ID Overlay anchor alignment changed.")
 
 	save_data()
+
 
 
 func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
@@ -1227,22 +1224,23 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 			if !suppress_history_prints:
 				print_rich(c_print_history + "Use UTC option " + "enabled." if toggled_on else c_print_history + "Use UTC option " + "disabled.")
 
-		print_instance_id_btn:
-			config.set_value("settings", "id_overlay_print", toggled_on)
+		id_print_btn:
+			config.set_value("settings", "id_print", toggled_on)
 			if !suppress_history_prints:
 				print_rich(c_print_history + "Print Instance ID option " + "enabled." if toggled_on else c_print_history + "Print Instance ID option " + "disabled.")
 
 		id_overlay_toggle_btn:
-			config.set_value("settings", "id_overlay_toggle", toggled_on)
+			config.set_value("settings", "id_toggle", toggled_on)
 			id_overlay_startup_btn.show() if toggled_on else id_overlay_startup_btn.hide()
 			if !suppress_history_prints:
 				print_rich(c_print_history + "Instance ID Overlay " + "enabled." if toggled_on else c_print_history + "Instance ID Overlay " + "disabled.")
 
 		id_overlay_startup_btn:
-			config.set_value("settings", "id_overlay_startup_state", toggled_on)
+			config.set_value("settings", "id_startup_state", toggled_on)
 			if !suppress_history_prints:
 				print_rich(c_print_history + "Instance ID Overlay on startup " + "enabled." if toggled_on else c_print_history + "Instance ID Overlay on startup " + "disabled.")
 	save_data()
+
 
 
 func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
@@ -1271,10 +1269,10 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 				print_rich(c_print_history, "File count limit changed.")
 
 		id_overlay_font_size_spinbox:
-			config.set_value("settings", "id_overlay_font_size", value)
-			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict["id_overlay_color"].get("default"))
-			var ol_sz := 		config.get_value("settings", "id_overlay_outline_size", settings_dict["id_overlay_outline_size"].get("default"))
-			var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict["id_overlay_outline_color"].get("defaults"))
+			config.set_value("settings", "id_font_size", value)
+			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
+			var ol_sz := 		config.get_value("settings", "id_outline_size", settings_dict["id_outline_size"].get("default", Color.WHITE))
+			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default", Color.BLACK))
 
 			id_overlay_example_lbl.text = str("[font_size=", value, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
 
@@ -1282,10 +1280,10 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 				print_rich(c_print_history, "ID Overlay Font Size changed.")
 
 		id_overlay_outline_size_spinbox:
-			config.set_value("settings", "id_overlay_outline_size", value)
-			var fnt_sz := 	int(config.get_value("settings", "id_overlay_font_size", settings_dict["id_overlay_font_size"].get("default")))
-			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict["id_overlay_color"].get("default"))
-			var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict["id_overlay_outline_color"].get("default"))
+			config.set_value("settings", "id_outline_size", value)
+			var fnt_sz := 	int(config.get_value("settings", "id_font_size", settings_dict["id_font_size"].get("default")))
+			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
+			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
 
 			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", value, "][outline_color=", ol_col.to_html(), "]h9Em2")
 			
@@ -1293,6 +1291,7 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 				print_rich(c_print_history, "ID Overlay Outline Size changed.")
 
 	save_data()
+
 
 
 func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
@@ -1324,10 +1323,10 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 				print_rich(c_print_history, "Session duration changed.")
 
 		id_overlay_font_size_spinbox:
-			config.set_value("settings", "id_overlay_font_size", int(new_text))
-			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict["id_overlay_color"].get("default"))
-			var ol_sz := 		config.get_value("settings", "id_overlay_outline_size", settings_dict["id_overlay_outline_size"].get("default"))
-			var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict["id_overlay_outline_color"].get("default"))
+			config.set_value("settings", "id_font_size", int(new_text))
+			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
+			var ol_sz := 		config.get_value("settings", "id_outline_size", settings_dict["id_outline_size"].get("default"))
+			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
 
 			id_overlay_example_lbl.text = str("[font_size=", int(new_text), "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
 
@@ -1335,10 +1334,10 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 				print_rich(c_print_history, "ID Overlay Font Size changed.")
 
 		id_overlay_outline_size_spinbox:
-			config.set_value("settings", "id_overlay_font_size", int(new_text))
-			var fnt_sz := 	int(config.get_value("settings", "id_overlay_font_size", settings_dict["id_overlay_font_size"].get("default")))
-			var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict["id_overlay_color"].get("default"))
-			var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict["id_overlay_outline_color"].get("default"))
+			config.set_value("settings", "id_font_size", int(new_text))
+			var fnt_sz := 	int(config.get_value("settings", "id_font_size", settings_dict["id_font_size"].get("default")))
+			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
+			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
 
 			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", int(new_text), "][outline_color=", ol_col.to_html(), "]h9Em2")
 
@@ -1348,16 +1347,17 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 	save_data()
 
 
+
 func _on_colorpicker_color_changed(col: Color, node: ColorPickerButton) -> void:
 	config.load(PATH)
-	var fnt_sz := 	int(config.get_value("settings", "id_overlay_font_size", settings_dict["id_overlay_font_size"].get("default")))
-	var fnt_col := 	Color.from_string(config.get_value("settings", "id_overlay_color", "ffffffff"), settings_dict["id_overlay_color"].get("default"))
-	var ol_sz := 		config.get_value("settings", "id_overlay_outline_size", settings_dict["id_overlay_outline_size"].get("default"))
-	var ol_col := 	Color.from_string(config.get_value("settings", "id_overlay_outline_color", "00000000"), settings_dict["id_overlay_outline_color"].get("default"))
+	var fnt_sz := 	int(config.get_value("settings", "id_font_size", settings_dict["id_font_size"].get("default")))
+	var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
+	var ol_sz := 		config.get_value("settings", "id_outline_size", settings_dict["id_outline_size"].get("default"))
+	var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
 
 	match node:
 		id_overlay_font_col_btn:
-			config.set_value("settings", "id_overlay_color", col.to_html())
+			config.set_value("settings", "id_font_color", col.to_html())
 
 			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
 
@@ -1365,13 +1365,14 @@ func _on_colorpicker_color_changed(col: Color, node: ColorPickerButton) -> void:
 				print_rich(c_print_history, "Instance ID Overlay color changed.")
 
 		id_overlay_outline_col_btn:
-			config.set_value("settings", "id_overlay_outline_color", col.to_html())
+			config.set_value("settings", "id_outline_color", col.to_html())
 			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", col.to_html(), "]h9Em2")
 
 			if !suppress_history_prints:
 				print_rich(c_print_history, "Instance ID Overlay outline color changed.")
 
 	config.save(PATH)
+
 
 
 func _on_category_line_focus(data: Array, focused: bool) -> void:
@@ -1391,11 +1392,13 @@ func _on_column_slider_value_changed(value: int) -> void:
 	save_data()
 
 
+
 func _on_line_edit_highlight_changed(highlight_on: bool, line_edit: LineEdit) -> void:
 	if highlight_on:
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_highlight)
 	else:
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+
 
 
 func _on_editor_settings_changed() -> void:
@@ -1407,6 +1410,7 @@ func _on_editor_settings_changed() -> void:
 ## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
 	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
+
 
 
 func _ensure_default_category() -> void:
@@ -1459,7 +1463,6 @@ func _get_theme_colors() -> Dictionary:
 		}
 	}
 	return colors
-
 
 
 

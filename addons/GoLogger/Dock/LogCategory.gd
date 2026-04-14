@@ -2,9 +2,8 @@
 class_name LogCategory extends PanelContainer
 
 ## Emitted when any property of the LogCategory changes to GologgerDock.gd so it can update its data accordingly.
-signal log_category_changed(log_category: LogCategory, is_name_change: bool, old_name: String)
-signal log_category_deleted
-signal request_log_deletion(log_category: LogCategory)
+signal log_category_changed 
+# signal request_log_deletion(log_category: LogCategory)
 signal move_category_requested(log_category: LogCategory, direction : int)
 
 ## Emitted when a category is deleted so GoLoggerDock.gd can update the indices of the remaining categories.
@@ -29,12 +28,12 @@ var sb_line_edit_invalid: StyleBoxFlat = preload("uid://sqhht0mdddoi")
 
 const PATH = "user://gologger_data.ini"
 var config = ConfigFile.new()
-var dock : TabContainer:
-	set(value):
-		dock = value
-		if dock != null:
-			if move_right_btn != null:
-				move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
+var dock : TabContainer#:
+	# set(value):
+	# 	dock = value
+	# 	if dock != null:
+	# 		if move_right_btn != null:
+	# 			move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
 
 # Deprecated? - Unused in this script at least
 var invalid_name : bool = false
@@ -59,15 +58,15 @@ var category_name: String = "":
 			if line_edit != null: line_edit.text = category_name
 
 ## Simply used to maintain the same order between sessions
-var index : int = 0:
-	set(value):
-		if value != index:
-			log_category_changed.emit(self, false, "")
-		index = value
-		if move_left_btn  != null:
-			move_left_btn.disabled = true if index == 0 else false
-		if move_right_btn != null:
-			move_right_btn.disabled = true if index == dock.category_container.get_child_count() - 1 else false
+# var index : int = 0:
+# 	set(value):
+# 		if value != index:
+# 			log_category_changed.emit(self, false, "")
+# 		index = value
+# 		if move_left_btn  != null:
+# 			move_left_btn.disabled = true if index == 0 else false
+# 		if move_right_btn != null:
+# 			move_right_btn.disabled = true if index == dock.category_container.get_child_count() - 1 else false
 
 
 func _ready() -> void:
@@ -201,10 +200,7 @@ func apply_name(new_name: String) -> void:
 	default_checkbox.show()
 
 
-func move_log_category(direction: int = 0) -> void:
-	if direction == 0:
-		return
-
+func move_log_category(direction: int) -> void:
 	move_category_requested.emit(self, direction)
 
 
@@ -221,7 +217,8 @@ func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 
 func _on_del_button_up() -> void:
 	print_rich("[color=878787][GoLogger] Category <" + category_name + "> deleted.")
-	request_log_deletion.emit(self)
+	category_deleted.emit()
+	queue_free()
 
 
 func _get_theme_colors() -> Dictionary:

@@ -171,13 +171,13 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Columns: 3"
+tooltip_text = "Columns: 6"
 mouse_default_cursor_shape = 10
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 3.0
+value = 6.0
 rounded = true
 
 [node name="CatDelWarningRLabel" type="RichTextLabel" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=789262824]
@@ -219,7 +219,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 3
+columns = 6
 
 [node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
 visible = false
@@ -656,8 +656,6 @@ grow_vertical = 2
 theme_override_constants/outline_size = 8
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qo8nw")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qo8nw")
-theme_override_styles/background = SubResource("StyleBoxEmpty_qo8nw")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_qo8nw")
 bbcode_enabled = true
 text = "[font_size=8.0][color=ffffffff][outline_size=8][outline_color=000000ff]h9Em2"
 horizontal_alignment = 1
@@ -1232,8 +1230,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "GoLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: 
     [i][color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"This is my first log entry.\"[/color], [color=#ce9178]\"game\"[/color])[/i]
@@ -1273,8 +1269,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "A session defines when logging is active. Sessions can be started or stopped at any time using hotkeys or through code.
 By default, a session starts automatically when the project runs (this can be disabled in the Settings tab)."
@@ -1307,8 +1301,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "Each category in the Category tab corresponds to a folder in the base directory. When a session starts, a .log file is created inside that folder, named with the date, timestamp, and category.
 
@@ -1340,8 +1332,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "Messages(msg) or entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging. 
 
@@ -1386,8 +1376,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[/color] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[/color] hotkey([i]Ctrl + Shift + I[/]) to print that instance's ID to output."
 fit_content = true
@@ -1428,8 +1416,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "[font_size=14]All methods are accessible using the [color=violet]Log[color=white] autoload.
 Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GoLogger/[/i][color=white], where the shortcut resources are located.
@@ -1480,8 +1466,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "There are four hotkeys available to interact with GoLogger during runtime. 
 [b]Start Session[/b][/color][color=#d4d4d4]:[/color]           [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]O[/color]
@@ -1516,8 +1500,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GoLogger includes several features to control logging behavior. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
 
@@ -1578,8 +1560,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "[font_size=14]There are times that running multiple instances at the same time while debugging/testing your project. Such is the case for multiplayer games. However, when doing so. You have two instances logging into one log file and you need some way to know which instance logged which entry. This is possible by adding the {instance_id} tag to the Entry Format setting. An instance ID is a simple ID string that is generated at runtime(much like UIDs). 
 
@@ -1612,8 +1592,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/background = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/fill = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "Log Header and Entries can be formatted in any way you may want in the Settings tab. You can add any string you want but you can also add tags to include useful data to said settings. Such as the project name, version, date and time. You can format the date and time for your preference/region.
 
