@@ -1038,7 +1038,7 @@ func _on_button_button_up(node: Button) -> void:
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 			base_dir_apply_btn.hide()
-
+		
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
 			var err := config.save(PATH) 
@@ -1229,17 +1229,35 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 
 		id_overlay_font_size_spinbox:
 			config.set_value("settings", "id_font_size", int(new_text))
-			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
-			var ol_sz := 		config.get_value("settings", "id_outline_size", settings_dict["id_outline_size"].get("default"))
-			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
+			var fnt_col := 	Color.from_string(config.get_value(
+				"settings", "id_font_color", "ffffffff"), 
+				settings_dict["id_font_color"].get("default")
+			)
+			var ol_sz := 		config.get_value(
+				"settings", "id_outline_size", 
+				settings_dict["id_outline_size"].get("default")
+			)
+			var ol_col := 	Color.from_string(config.get_value(
+				"settings", "id_outline_color", "00000000"), 
+				settings_dict["id_outline_color"].get("default")
+			)
 
 			id_overlay_example_lbl.text = str("[font_size=", int(new_text), "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2") 
 
 		id_overlay_outline_size_spinbox:
 			config.set_value("settings", "id_font_size", int(new_text))
-			var fnt_sz := 	int(config.get_value("settings", "id_font_size", settings_dict["id_font_size"].get("default")))
-			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
-			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
+			var fnt_sz := 	int(config.get_value(
+				"settings", "id_font_size", 
+				settings_dict["id_font_size"].get("default"))
+			)
+			var fnt_col := 	Color.from_string(
+				config.get_value("settings", "id_font_color", "ffffffff"), 
+				settings_dict["id_font_color"].get("default")
+			)
+			var ol_col := 	Color.from_string(
+				config.get_value("settings", "id_outline_color", "00000000"), 
+				settings_dict["id_outline_color"].get("default")
+			)
 
 			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", int(new_text), "][outline_color=", ol_col.to_html(), "]h9Em2") 
 
@@ -1249,10 +1267,22 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 
 func _on_colorpicker_color_changed(col: Color, node: ColorPickerButton) -> void:
 	config.load(PATH)
-	var fnt_sz := 	int(config.get_value("settings", "id_font_size", settings_dict["id_font_size"].get("default")))
-	var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
-	var ol_sz := 		config.get_value("settings", "id_outline_size", settings_dict["id_outline_size"].get("default"))
-	var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
+	var fnt_sz := 	int(config.get_value(
+		"settings", "id_font_size", 
+		settings_dict["id_font_size"].get("default"))
+	)
+	var fnt_col := 	Color.from_string(
+		config.get_value("settings", "id_font_color", "ffffffff"), 
+		settings_dict["id_font_color"].get("default")
+	)
+	var ol_sz := 		config.get_value(
+		"settings", "id_outline_size", 
+		settings_dict["id_outline_size"].get("default")
+	)
+	var ol_col := 	Color.from_string(
+		config.get_value("settings", "id_outline_color", "00000000"), 
+		settings_dict["id_outline_color"].get("default")
+	)
 
 	match node:
 		id_overlay_font_col_btn:
