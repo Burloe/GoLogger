@@ -1,13 +1,15 @@
 @tool
 class_name LogCategory extends PanelContainer
 
-## Emitted when any property of the LogCategory changes to GologgerDock.gd so it can update its data accordingly.
+## Emitted o GoLoggerDock.gd when any change is made in order to save the categories.
 signal log_category_changed 
-# signal request_log_deletion(log_category: LogCategory)
+## Emitted to GoLoggerDock.gd to move the categories and save them.
 signal move_category_requested(log_category: LogCategory, direction : int)
 
-## Emitted when a category is deleted so GoLoggerDock.gd can update the indices of the remaining categories.
-signal category_deleted()
+signal set_default_category(category: LogCategory, toggle_on: bool)
+
+## Emitted to GoLoggerDock.gd to apply save the categories and show delete warning.
+signal category_deleted(name: String)
 
 @onready var move_left_btn: Button = 				%MoveLeftButton
 @onready var move_right_btn: Button = 			%MoveRightButton
@@ -27,22 +29,13 @@ var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid: StyleBoxFlat = preload("uid://sqhht0mdddoi")
 
 const PATH = "user://gologger_data.ini"
-var config = ConfigFile.new()
-var dock : TabContainer#:
-	# set(value):
-	# 	dock = value
-	# 	if dock != null:
-	# 		if move_right_btn != null:
-	# 			move_right_btn.disabled = true if dock.category_container.get_child_count() >= index - 1 else false
-
-# Deprecated? - Unused in this script at least
-var invalid_name : bool = false
+var config = ConfigFile.new() 
 
 ## Lock status (locks the category name and disables the erase button)
 var is_locked : bool = false:
 	set(value):
 		is_locked = value
-		log_category_changed.emit(self, false, "")
+		log_category_changed.emit()
 		add_theme_stylebox_override("panel", sb_panel_round_base_accent_border if is_locked else sb_panel_round_base)
 		if lock_btn != null: lock_btn.button_pressed = is_locked
 		if line_edit != null: line_edit.editable = !value
@@ -55,18 +48,8 @@ var category_name: String = "":
 
 		if category_name != value:
 			category_name = value
-			if line_edit != null: line_edit.text = category_name
+			if line_edit != null: line_edit.text = category_name 
 
-## Simply used to maintain the same order between sessions
-# var index : int = 0:
-# 	set(value):
-# 		if value != index:
-# 			log_category_changed.emit(self, false, "")
-# 		index = value
-# 		if move_left_btn  != null:
-# 			move_left_btn.disabled = true if index == 0 else false
-# 		if move_right_btn != null:
-# 			move_right_btn.disabled = true if index == dock.category_container.get_child_count() - 1 else false
 
 
 func _ready() -> void:
@@ -83,8 +66,8 @@ func _ready() -> void:
 		del_btn.button_up.connect(_on_del_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
 		line_edit.editing_toggled.connect(_on_line_edit_editing_toggled)
-		move_left_btn.button_up.connect(move_log_category.bind(-1))
-		move_right_btn.button_up.connect(move_log_category.bind(1))
+		move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
+		move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
 		revert_btn.button_up.connect(
 			func() -> void:
@@ -128,17 +111,14 @@ func _ready() -> void:
 
 		default_checkbox.toggled.connect(
 			func(pressed: bool) -> void:
-				dock.set_default_category(self, pressed)
+				set_default_category.emit(self, pressed) 
 		)
 
 		line_edit.text = category_name
 		lock_btn.button_pressed = is_locked
 		size = Vector2.ZERO
-		if line_edit.text == "":
-			invalid_name = true
-			apply_btn.hide()
-		else:
-			invalid_name = false
+		if line_edit.text == "": 
+			apply_btn.hide() 
 
 
 
@@ -146,17 +126,16 @@ func handle_name_state() -> void:
 	if line_edit.text == "" or line_edit.text == category_name:
 		apply_btn.hide()
 		apply_btn.disabled = true
-		default_checkbox.show()
-		invalid_name = true
+		default_checkbox.show() 
 
 	else:
 		apply_btn.show()
 		apply_btn.disabled = false
-		default_checkbox.hide()
-		invalid_name = true
+		default_checkbox.hide() 
 
 	if check_name_conflict():
 		apply_btn.disabled = true
+
 
 
 func check_name_conflict() -> bool:
@@ -164,21 +143,25 @@ func check_name_conflict() -> bool:
 	return config.get_value("categories", "category_names", []).has(line_edit.text)
 
 
-func apply_name(new_name: String) -> void:
-	config.load(PATH)
 
+func apply_name(new_name: String) -> void:
+	if new_name.is_empty():
+		return
+		
+	config.load(PATH)
 	var cat: Array = config.get_value("categories", "category_names", []).duplicate()
 	var def: String = config.get_value("categories", "default_category", "")
 	var old_name: String = category_name
 
-	if old_name == "": # Is new LogCategory
+	# New LogCategory
+	if old_name == "": 
 		cat.append(new_name)
 
-	if cat.has(old_name) and old_name != "": # Is existing LogCategory
+	# Existing LogCategory
+	if cat.has(old_name) and old_name != "": 
 		for c in cat.size():
 			if cat[c] == old_name:
-				cat[c] = new_name
-				printerr(c, " +++ ", cat)
+				cat[c] = new_name 
 				break
 
 	if old_name == def:
@@ -187,26 +170,24 @@ func apply_name(new_name: String) -> void:
 	config.set_value("categories", "category_names", cat)
 	config.save(PATH)
 
-	if category_name == "":
-		print_rich("[color=878787][GoLogger] Category <" + new_name + "> created.")
-	else:
-		print_rich("[color=878787][GoLogger] Category <" + category_name + "> renamed to <" + new_name + ">.")
+	# if category_name == "":
+	# 	print_rich("[color=878787][GoLogger] Category <" + new_name + "> created.")
+	# else:
+	# 	print_rich("[color=878787][GoLogger] Category <" + category_name + "> renamed to <" + new_name + ">.")
 
 	category_name = new_name
 	line_edit.text = new_name
-	log_category_changed.emit(self, true, new_name)
+	log_category_changed.emit()
 	line_edit.release_focus()
 	apply_btn.hide()
 	default_checkbox.show()
 
 
-func move_log_category(direction: int) -> void:
-	move_category_requested.emit(self, direction)
-
 
 func _on_text_changed(new_text: String) -> void:
 	if new_text != category_name and category_name != "":
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid if check_name_conflict() else sb_line_edit_normal)
+
 
 
 func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
@@ -215,10 +196,10 @@ func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 		revert_btn.visible = toggled_on
 
 
-func _on_del_button_up() -> void:
-	print_rich("[color=878787][GoLogger] Category <" + category_name + "> deleted.")
-	category_deleted.emit()
+
+func _on_del_button_up() -> void: 
 	queue_free()
+
 
 
 func _get_theme_colors() -> Dictionary:
@@ -264,11 +245,11 @@ func _get_theme_colors() -> Dictionary:
 	return colors
 
 
+
 func _on_editor_settings_changed() -> void:
 	var _c: Dictionary = _get_theme_colors()
 	for btn in [move_left_btn, move_right_btn]:
-		if btn != null:
-			print(_c["accent"]["col"], _c["accent"]["dark"])
+		if btn != null: 
 			btn.add_theme_color_override("icon_hover_color", _c["accent"]["light"])
 			btn.add_theme_color_override("icon_pressed_color", _c["accent"]["dark"])
 			btn.add_theme_color_override("icon_hover_pressed_color", _c["accent"]["dark"])

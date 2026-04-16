@@ -48,8 +48,7 @@ signal open_hotkey_resource()
 # @onready var categories_tab: VBoxContainer = %Categories
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
-@onready var open_dir_btn: Button = %OpenDirCatButton
-@onready var cat_del_warn_rlbl: RichTextLabel = %CatDelWarningRLabel
+@onready var open_dir_btn: Button = %OpenDirCatButton 
 
 @onready var column_slider: HSlider = %ColumnsHSlider
 @onready var reset_settings_btn: Button = %ResetSettingsButton
@@ -271,7 +270,6 @@ func _ready() -> void:
 		config.load(PATH)
 		_ensure_default_category()
 
-		cat_del_warn_rlbl.modulate = Color.TRANSPARENT
 		id_overlay_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_overlay_startup_btn.hide()
 		base_dir_apply_btn.hide()
 		log_header_apply_btn.hide()
@@ -537,6 +535,52 @@ func _ready() -> void:
 
 
 
+func initialize_dock() -> void: 
+	if config.load(PATH) != OK:
+		printerr("GoLogger error: Failed to load settings.ini file!")
+		return
+
+	validate_settings()
+
+	for name in config.get_value("categories", "category_names", []):
+		_add_category(
+			name,
+			config.get_value("categories." + name, "category_index", 0),
+			config.get_value("categories." + name, "is_locked", false)
+		)
+	var def_cat = config.get_value("categories", "default_category", "")
+	if def_cat != "":
+		for cat in category_container.get_children():
+			if cat is LogCategory and cat.category_name == def_cat and cat.default_checkbox != null:
+				cat.default_checkbox.button_pressed = true
+				break
+
+	# Settings 
+	for key in settings_dict.keys():
+		var _s: Dictionary = settings_dict[key]
+		var ctrl = settings_dict[key].get("control")
+		var value = config.get_value("settings", _s["name"], _s["default"])
+
+		if ctrl is Button or ctrl is CheckBox:
+			ctrl.button_pressed = value
+		
+		elif ctrl is SpinBox:
+			ctrl.value = value
+		
+		elif ctrl is HSlider:
+			ctrl.value = _get_column_value(value)
+		
+		elif ctrl is OptionButton:
+			ctrl.selected = value
+
+		elif ctrl is LineEdit:
+			ctrl.text = value
+		
+		elif ctrl is ColorPickerButton:
+			ctrl.color = Color.from_string(value, Color.WHITE) 
+
+
+
 func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new()
 
@@ -562,20 +606,64 @@ func create_settings_file() -> void: # Mirror
 	_ensure_default_category()
 
 
+
+func validate_settings() -> void: # Mirror
+	config.load(PATH)
+	_ensure_default_category()
+
+	for key in settings_dict.keys():
+		var setting: Dictionary = settings_dict.get(key, {})
+		var a_fields = ["section", "name", "value", "type", "control", "default"]
+		var b_fields = ["section", "name", "value", "type", "default"]
+		var err: Array[bool] = [false, false,false, false, false, false]
+
+		# Check missing fields
+		for i in range(a_fields.size()):
+
+			if setting.has("section"):
+				var fs = a_fields.duplicate()
+
+				if setting["section"] == "categories":
+					fs = b_fields.duplicate()
+
+				# Collect + report missing fields
+				if !setting.has_all(fs):
+					var _e: Array[String] = []
+					for j in range(fs.size()):
+						if !setting.has(fs[j]):
+							_e.append(fs[j])
+
+					if not _e.is_empty():
+						push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
+
+		# Validate Presence
+		if !config.has_section(setting["section"]) or !config.has_section_key(setting["section"], setting["name"]):
+			config.set_value(setting["section"], setting["name"], setting["default"])
+			continue
+
+		# Validate Type
+		if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
+			config.set_value(setting["section"], setting["name"], setting["default"])
+
+	config.save(PATH)
+
+
+
 func reset_to_default() -> void:
 	var c := ConfigFile.new()
-	c.load(PATH)
+	config.load(PATH)
+	suppress_history_prints
 
 	for key in settings_dict.keys():
 		if settings_dict[key]["section"] == "categories":
 			continue
 
-		c.set_value("settings", key, settings_dict.get(key, {}).get("default", null))
+		config.set_value("settings", key, settings_dict.get(key, {}).get("default", null))
 
-	c.set_value("categories.game", "category_name", "game")
-	c.set_value("categories.game", "file_count", 0)
-	c.set_value("categories.game", "is_locked", false)
-	c.save(PATH)
+	config.set_value("categories.game", "category_name", "game")
+	config.set_value("categories.game", "file_count", 0)
+	config.set_value("categories.game", "is_locked", false)
+	config.save(PATH)
 
 	for key in settings_dict.keys():
 		var _s: Dictionary = settings_dict[key]
@@ -607,101 +695,9 @@ func reset_to_default() -> void:
 	log_header_apply_btn.hide()
 	entry_format_apply_btn.disabled = true
 	entry_format_apply_btn.hide()
+	suppress_history_prints = true 
 
-	if !suppress_history_prints:
-		print_rich(str(c_print_history, "Reset Categories and settings to defaults."))
-
-
-
-func validate_settings() -> void: # Mirror
-	config.load(PATH)
-	_ensure_default_category()
-
-	for key in settings_dict.keys():
-			var setting: Dictionary = settings_dict.get(key, {})
-			var a_fields = ["section", "name", "value", "type", "control", "default"]
-			var b_fields = ["section", "name", "value", "type", "default"]
-			var err: Array[bool] = [false, false,false, false, false, false]
-
-			# Check missing fields
-			for i in range(a_fields.size()):
-
-				if setting.has("section"):
-					var fs = a_fields.duplicate()
-
-					if setting["section"] == "categories":
-						fs = b_fields.duplicate()
-
-					# Collect + report missing fields
-					if !setting.has_all(fs):
-						var _e: Array[String] = []
-						for j in range(fs.size()):
-							if !setting.has(fs[j]):
-								_e.append(fs[j])
-
-						if not _e.is_empty():
-							push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
-
-			# Validate Presence
-			if !config.has_section(setting["section"]) or !config.has_section_key(setting["section"], setting["name"]):
-				config.set_value(setting["section"], setting["name"], setting["default"])
-				continue
-
-			# Validate Type
-			if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
-				config.set_value(setting["section"], setting["name"], setting["default"])
-
-			config.save(PATH)
-
-
-
-func initialize_dock() -> void:
-	var _c = ConfigFile.new()
-	if _c.load(PATH) != OK:
-		printerr("GoLogger error: Failed to load settings.ini file!")
-		return
-
-	validate_settings()
-
-	for name in _c.get_value("categories", "category_names", []):
-		_add_category(
-			name,
-			_c.get_value("categories." + name, "category_index", 0),
-			_c.get_value("categories." + name, "is_locked", false)
-		)
-	var def_cat = _c.get_value("categories", "default_category", "")
-	if def_cat != "":
-		for cat in category_container.get_children():
-			if cat is LogCategory and cat.category_name == def_cat and cat.default_checkbox != null:
-				cat.default_checkbox.button_pressed = true
-				break
-
-	# Settings 
-	for key in settings_dict.keys():
-		var _s: Dictionary = settings_dict[key]
-		var ctrl = settings_dict[key].get("control")
-		var value = _c.get_value("settings", _s["name"], _s["default"])
-
-		if ctrl is Button or ctrl is CheckBox:
-			ctrl.button_pressed = value
-		
-		elif ctrl is SpinBox:
-			ctrl.value = value
-		
-		elif ctrl is HSlider:
-			ctrl.value = _get_column_value(value)
-		
-		elif ctrl is OptionButton:
-			ctrl.selected = value
-
-		elif ctrl is LineEdit:
-			ctrl.text = value
-		
-		elif ctrl is ColorPickerButton:
-			ctrl.color = Color.from_string(value, Color.WHITE) 
-
-	save_data(false, true)
-	config.load(PATH)
+	print_rich(str(c_print_history, "Settings reset to defaults."))
 
 
 
@@ -713,8 +709,8 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 	config.load(PATH)
 	var _c := ConfigFile.new()
 	var _cat_names = []
-	var err: int = 0
-	var offenders: Array[String] = []
+	var _err: int = 0
+	var _offenders: Array[String] = []
 	_ensure_default_category()
 
 	# Setting first as blank so "categories" section at top of file
@@ -723,11 +719,11 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 
 	# Settings
 	for key in settings_dict.keys():
-		var ctrl = settings_dict[key].get("control", null)
+		var ctrl = settings_dict[key].get("control")
 		
 		if !ignore_errors and ctrl == null and settings_dict[key]["section"] != "categories":
-			err += 1
-			offenders.append(str(settings_dict[key].get("name", "")))
+			_err += 1
+			_offenders.append(str(settings_dict[key].get("name", "")))
 			continue
 		
 		if   ctrl is LineEdit:
@@ -741,18 +737,16 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 		elif ctrl is HSlider:
 			_c.set_value("settings", settings_dict[key]["name"], int(column_slider.value))
 		elif ctrl is ColorPickerButton:
-			_c.set_value("settings", settings_dict[key]["name"], ctrl.color.to_html(true))
-	
-	for cat in category_container.get_children():
-		if cat is LogCategory and cat.default_checkbox.button_pressed:
-			_c.set_value("categories", "default_category", cat.category_name)
-			break
+			_c.set_value("settings", settings_dict[key]["name"], ctrl.color.to_html())
 	
 	# Categories
 	for log_category in category_container.get_children():
 		if log_category is LogCategory:
 			if log_category.category_name == "":
 				continue
+
+			if log_category is LogCategory and log_category.default_checkbox.button_pressed:
+				_c.set_value("categories", "default_category", log_category.category_name)
 
 			_cat_names.append(log_category.category_name)
 			_c.set_value("categories." + log_category.category_name, "file_name", 			config.get_value("categories." + log_category.category_name, "file_name", ""))
@@ -766,49 +760,14 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
 	if  err_rep_lv <= ErrorReportLevel.ERRORS:
-		if err > 0:
-			push_error(str("GoLogger error: Failed to save settings. No Control references found for settings: \n\t", offenders))
+		if _err > 0:
+			push_error(str("GoLogger error: Failed to save settings. No Control references found for settings: \n\t", _offenders))
 
 	var _e = _c.save(PATH)
 	if _e != OK:
 		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
 	config.load(PATH)
-
-
-
-## `save_after` should be used when the user adds categories manually via the dock. Not when loading categories from config.
-func _add_category(_name: String = "", _is_locked: bool = false, save_after: bool = false) -> void:
-	config.load(PATH)
-	var _n = category_scene.instantiate() as LogCategory
-	_n.dock = self
-	_n.category_name = _name
-	_n.is_locked = _is_locked 
-	category_container.add_child(_n)
-
-	_n.log_category_changed.connect(save_categories) 
-	_n.move_category_requested.connect(_change_category_order)
-	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
-	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
-	_n.default_checkbox.button_pressed = true if config.get_value("categories", "default_category", "") == _name else false
-	_n.category_deleted.connect(func() -> void:
-		await get_tree().create_timer(0.01)
-		save_categories()
-		if get_tree().is_inside_tree():
-			var tw = get_tree().create_tween()
-			tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
-			await get_tree().create_timer(8.0).timeout
-			var twe = get_tree().create_tween()
-			twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 0.5)
-		else:
-			cat_del_warn_rlbl.modulate = Color.TRANSPARENT
-		)
-
-	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
-	_handle_category_mov_button_state()
-
-	if save_after:
-		save_data()
 
 
 
@@ -819,15 +778,19 @@ func save_categories() -> void:
 	var c_def: String = ""
 
 	for setting in settings_dict.keys():
-		if setting == "category_names" or setting == "default_category":
+		if settings_dict[setting]["name"] == "category_names" or settings_dict[setting]["name"] == "default_category":
 			# c.set_value("categories", setting, config.get_value("categories", setting))
 			continue
 		else:
 			c.set_value("settings", setting, config.get_value("settings", setting, settings_dict[setting]["default"]))
 			c.set_value("settings", setting, config.get_value("settings", setting, settings_dict.get(setting, {}).get("default", settings_dict.get("default", {}).get(setting, null))))
+	
+	
 
 	for cat in category_container.get_children():
 		if cat is LogCategory:
+			if cat.category_name.is_empty():
+				continue
 			c_names.append(cat.category_name)
 			if cat.default_checkbox.button_pressed:
 				c_def = cat.category_name
@@ -848,7 +811,36 @@ func save_categories() -> void:
 
 
 
-func set_default_category(cat: LogCategory, set_status: bool) -> void:
+## `prevent_save` is used when loading the plugin.
+func _add_category(_name: String = "", _is_locked: bool = false, prevent_save: bool = false) -> void:
+	config.load(PATH)
+	var _n = category_scene.instantiate() as LogCategory
+	_n.category_name = _name
+	_n.is_locked = _is_locked 
+	category_container.add_child(_n)
+
+	_n.log_category_changed.connect(save_categories) 
+	_n.set_default_category.connect(_on_set_default_category)
+	_n.move_category_requested.connect(_on_category_move_requested)
+	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
+	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
+	_n.default_checkbox.button_pressed = config.get_value("categories", "default_category", "") == _name 
+	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
+
+	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
+	_handle_category_mov_button_state()
+
+	if prevent_save:
+		save_data()
+
+
+
+func _on_category_tree_exited(name: String) -> void:
+	# await get_tree().physics_frame 
+	save_categories()
+
+
+func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
 	if _default_setting_in_progress:
 		return
 
@@ -869,35 +861,7 @@ func set_default_category(cat: LogCategory, set_status: bool) -> void:
 
 
 
-# func _delete_category(log_category: LogCategory) -> void:
-# 	if log_category.get_parent() == category_container:
-
-# 		config.load(PATH)
-# 		_ensure_default_category()
-
-# 		var def_c: String = config.get_value("categories", "default_category", "")
-# 		if log_category.default_checkbox.button_pressed and log_category.category_name == def_c:
-# 			config.set_value("categories", "default_category", "")
-
-# 		category_container.remove_child(log_category)
-# 		log_category.queue_free()
-# 		if config.has_section("categories." + log_category.category_name):
-# 			config.erase_section("categories." + log_category.category_name)
-# 		config.save(PATH)
-# 		_assign_category_indices()
-
-# 		if get_tree().is_inside_tree():
-# 			var tw = get_tree().create_tween()
-# 			tw.tween_property(cat_del_warn_rlbl, "modulate", Color.WHITE, 0.5)
-# 			await get_tree().create_timer(8.0).timeout
-# 			var twe = get_tree().create_tween()
-# 			twe.tween_property(cat_del_warn_rlbl, "modulate", Color.TRANSPARENT, 0.5)
-# 		else:
-# 			cat_del_warn_rlbl.modulate = Color.TRANSPARENT
-
-
-
-func _change_category_order(category: LogCategory, direction: int) -> void:
+func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 	var cats: Array = category_container.get_children()
 	var from: int = category.get_index()
 	var to: int = from
@@ -919,9 +883,10 @@ func _handle_category_mov_button_state() -> void:
 		category.move_right_btn.disabled = (i == category_container.get_child_count() - 1)
 
 
+
 func _check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
 	for log_category in category_container.get_children():
-		if log_category == cat_obj: # Disregard category being checked
+		if log_category == cat_obj:
 			continue
 		elif log_category.category_name == new_name:
 			if name == "": return false
@@ -1162,27 +1127,23 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 	match node:
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
+			entry_count_action_container.hide()
+			entry_count_container.hide()
+			session_timer_action_container.hide()
+			session_duration_container.hide()
+			
 			match index:
 				LimitMethod.ENTRY_COUNT:
 					entry_count_action_container.show()
-					entry_count_container.show()
-					session_timer_action_container.hide()
-					session_duration_container.hide()
-				LimitMethod.SESSION_TIMER:
-					entry_count_action_container.hide()
-					entry_count_container.hide()
+					entry_count_container.show() 
+				LimitMethod.SESSION_TIMER: 
 					session_timer_action_container.show()
 					session_duration_container.show()
 				LimitMethod.BOTH:
 					entry_count_action_container.show()
 					entry_count_container.show()
 					session_timer_action_container.show()
-					session_duration_container.show()
-				LimitMethod.NONE:
-					entry_count_action_container.hide()
-					entry_count_container.hide()
-					session_timer_action_container.hide()
-					session_duration_container.hide()
+					session_duration_container.show() 
 			if !suppress_history_prints:
 				print_rich(c_print_history, "Limit method changed.")
 
