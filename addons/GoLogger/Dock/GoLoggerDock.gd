@@ -8,9 +8,6 @@ extends TabContainer
 	# Implement the logic for applying the setting in signal function like _on_button_button_up()
 
 # TODO:
-	#
-	#
-
 	# DOCK CATEGORY TAB:
 
 
@@ -213,8 +210,7 @@ enum ErrorReportLevel {
 
 const PATH = "user://gologger_data.ini"
 var category_scene = preload("uid://c3n416c5fajm5")
-var config = ConfigFile.new()
-var suppress_history_prints: bool = false
+var config = ConfigFile.new() 
 var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
@@ -228,8 +224,7 @@ var focused_category: Array = []
 var btn_array: Array[Control] = []
 var container_array: Array[Control] = []
 var c_font_normal := Color("9d9ea0")
-var c_font_hover := Color("ffffff")
-var c_print_history := "[color=878787][GoLogger] "
+var c_font_hover := Color("ffffff") 
 
 var settings_dict := {
 	"category_names": 						{"section": "categories", "name": "category_names", 						"value": ["game"], 	"type": TYPE_ARRAY,  	"default": ["game"]},
@@ -503,13 +498,11 @@ func _ready() -> void:
 				session_timer_action_container.hide()
 				session_duration_container.hide()
 
-
-		suppress_history_prints = true
+ 
 		initialize_dock()
 		_apply_theme_colors(self)
 
-		await get_tree().process_frame
-		suppress_history_prints = false
+		await get_tree().process_frame 
 
 		settings_dict["base_directory"]["control"] = 						base_dir_line
 		settings_dict["log_header_format"]["control"] = 				log_header_line
@@ -651,8 +644,7 @@ func validate_settings() -> void: # Mirror
 
 func reset_to_default() -> void:
 	var c := ConfigFile.new()
-	config.load(PATH)
-	suppress_history_prints
+	config.load(PATH) 
 
 	for key in settings_dict.keys():
 		if settings_dict[key]["section"] == "categories":
@@ -695,9 +687,6 @@ func reset_to_default() -> void:
 	log_header_apply_btn.hide()
 	entry_format_apply_btn.disabled = true
 	entry_format_apply_btn.hide()
-	suppress_history_prints = true 
-
-	print_rich(str(c_print_history, "Settings reset to defaults."))
 
 
 
@@ -1012,9 +1001,7 @@ func _apply_new_base_directory() -> void:
 		return
 
 	base_dir_line.text = new_dir
-
-	if !suppress_history_prints:
-		print_rich(c_print_history, "Base directory changed.")
+ 
 	base_dir_apply_btn.disabled = true
 
 
@@ -1047,18 +1034,14 @@ func _on_button_button_up(node: Button) -> void:
 			_open_directory()
 
 		log_header_apply_btn:
-			config.set_value("settings", "log_header_format", log_header_line.text)
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Log header changed.")
+			config.set_value("settings", "log_header_format", log_header_line.text) 
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 			base_dir_apply_btn.hide()
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
-			var err := config.save(PATH)
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Entry format changed.")
+			var err := config.save(PATH) 
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus()
 			log_header_apply_btn.hide()
@@ -1143,30 +1126,19 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 					entry_count_action_container.show()
 					entry_count_container.show()
 					session_timer_action_container.show()
-					session_duration_container.show() 
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Limit method changed.")
+					session_duration_container.show()
 
 		entry_count_action_btn:
-			config.set_value("settings", "entry_count_action", index)
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Entry Count Action changed")
+			config.set_value("settings", "entry_count_action", index) 
 
 		session_timer_action_btn:
-			config.set_value("settings", "session_timer_action", index)
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Session Timer Action changed.")
+			config.set_value("settings", "session_timer_action", index) 
 
 		error_rep_btn:
-			config.set_value("settings", "error_reporting", index)
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Error Reporting level changed.")
+			config.set_value("settings", "error_reporting", index) 
 
 		id_overlay_align_opt_btn:
-			config.set_value("settings", "id_align", index)
-
-			if !suppress_history_prints:
-				print_rich(c_print_history,"ID Overlay anchor alignment changed.")
+			config.set_value("settings", "id_align", index) 
 
 	save_data()
 
@@ -1176,30 +1148,20 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 	match node:
 
 		autostart_btn:
-			config.set_value("settings", "autostart_session", toggled_on)
-			if !suppress_history_prints:
-				print_rich(c_print_history + "Autostart session option " + "enabled." if toggled_on else c_print_history + "Autostart session option " + "disabled.")
+			config.set_value("settings", "autostart_session", toggled_on) 
 
 		utc_btn:
-			config.set_value("settings", "use_utc", toggled_on)
-			if !suppress_history_prints:
-				print_rich(c_print_history + "Use UTC option " + "enabled." if toggled_on else c_print_history + "Use UTC option " + "disabled.")
+			config.set_value("settings", "use_utc", toggled_on) 
 
 		id_print_btn:
-			config.set_value("settings", "id_print", toggled_on)
-			if !suppress_history_prints:
-				print_rich(c_print_history + "Print Instance ID option " + "enabled." if toggled_on else c_print_history + "Print Instance ID option " + "disabled.")
+			config.set_value("settings", "id_print", toggled_on) 
 
 		id_overlay_toggle_btn:
 			config.set_value("settings", "id_toggle", toggled_on)
-			id_overlay_startup_btn.show() if toggled_on else id_overlay_startup_btn.hide()
-			if !suppress_history_prints:
-				print_rich(c_print_history + "Instance ID Overlay " + "enabled." if toggled_on else c_print_history + "Instance ID Overlay " + "disabled.")
+			id_overlay_startup_btn.show() if toggled_on else id_overlay_startup_btn.hide() 
 
 		id_overlay_startup_btn:
-			config.set_value("settings", "id_startup_state", toggled_on)
-			if !suppress_history_prints:
-				print_rich(c_print_history + "Instance ID Overlay on startup " + "enabled." if toggled_on else c_print_history + "Instance ID Overlay on startup " + "disabled.")
+			config.set_value("settings", "id_startup_state", toggled_on) 
 	save_data()
 
 
@@ -1215,19 +1177,13 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 
 	match node:
 		entry_count_spinbox:
-			config.set_value("settings", "entry_cap", int(value))
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Entry count limit changed.")
+			config.set_value("settings", "entry_cap", int(value)) 
 
 		session_duration_spinbox:
-			config.set_value("settings", "session_duration", int(value))
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Session duration changed.")
+			config.set_value("settings", "session_duration", int(value)) 
 
 		file_count_spinbox:
-			config.set_value("settings", "file_cap", int(value))
-			if !suppress_history_prints:
-				print_rich(c_print_history, "File count limit changed.")
+			config.set_value("settings", "file_cap", int(value)) 
 
 		id_overlay_font_size_spinbox:
 			config.set_value("settings", "id_font_size", value)
@@ -1235,10 +1191,7 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 			var ol_sz := 		config.get_value("settings", "id_outline_size", settings_dict["id_outline_size"].get("default", Color.WHITE))
 			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default", Color.BLACK))
 
-			id_overlay_example_lbl.text = str("[font_size=", value, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
-
-			if !suppress_history_prints:
-				print_rich(c_print_history, "ID Overlay Font Size changed.")
+			id_overlay_example_lbl.text = str("[font_size=", value, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2") 
 
 		id_overlay_outline_size_spinbox:
 			config.set_value("settings", "id_outline_size", value)
@@ -1246,10 +1199,7 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
 			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
 
-			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", value, "][outline_color=", ol_col.to_html(), "]h9Em2")
-			
-			if !suppress_history_prints:
-				print_rich(c_print_history, "ID Overlay Outline Size changed.")
+			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", value, "][outline_color=", ol_col.to_html(), "]h9Em2") 
 
 	save_data()
 
@@ -1263,25 +1213,19 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			var value = int(new_text)
 			config.set_value("settings", "file_cap", value)
 			file_count_spinbox_line.release_focus()
-			file_count_spinbox.release_focus()
-			if !suppress_history_prints:
-				print_rich(c_print_history, "File count limit changed.")
+			file_count_spinbox.release_focus() 
 
 		entry_count_spinbox_line:
 			var value = int(new_text)
 			config.set_value("settings", "entry_cap", value)
 			entry_count_spinbox.release_focus()
-			entry_count_spinbox_line.release_focus()
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Entry count limit changed.")
+			entry_count_spinbox_line.release_focus() 
 
 		session_duration_spinbox_line:
 			var value = float(new_text)
 			config.set_value("settings", "session_duration", value)
 			session_duration_spinbox.release_focus()
-			session_duration_spinbox_line.release_focus()
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Session duration changed.")
+			session_duration_spinbox_line.release_focus() 
 
 		id_overlay_font_size_spinbox:
 			config.set_value("settings", "id_font_size", int(new_text))
@@ -1289,10 +1233,7 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			var ol_sz := 		config.get_value("settings", "id_outline_size", settings_dict["id_outline_size"].get("default"))
 			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
 
-			id_overlay_example_lbl.text = str("[font_size=", int(new_text), "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
-
-			if !suppress_history_prints:
-				print_rich(c_print_history, "ID Overlay Font Size changed.")
+			id_overlay_example_lbl.text = str("[font_size=", int(new_text), "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2") 
 
 		id_overlay_outline_size_spinbox:
 			config.set_value("settings", "id_font_size", int(new_text))
@@ -1300,10 +1241,7 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
 			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
 
-			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", int(new_text), "][outline_color=", ol_col.to_html(), "]h9Em2")
-
-			if !suppress_history_prints:
-				print_rich(c_print_history, "ID Overlay Outline Size changed.")
+			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", int(new_text), "][outline_color=", ol_col.to_html(), "]h9Em2") 
 
 	save_data()
 
@@ -1320,17 +1258,11 @@ func _on_colorpicker_color_changed(col: Color, node: ColorPickerButton) -> void:
 		id_overlay_font_col_btn:
 			config.set_value("settings", "id_font_color", col.to_html())
 
-			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2")
-
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Instance ID Overlay color changed.")
+			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2") 
 
 		id_overlay_outline_col_btn:
 			config.set_value("settings", "id_outline_color", col.to_html())
-			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", col.to_html(), "]h9Em2")
-
-			if !suppress_history_prints:
-				print_rich(c_print_history, "Instance ID Overlay outline color changed.")
+			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", col.to_html(), "]h9Em2") 
 
 	config.save(PATH)
 
@@ -1362,12 +1294,6 @@ func _on_line_edit_highlight_changed(highlight_on: bool, line_edit: LineEdit) ->
 
 
 
-func _on_editor_settings_changed() -> void:
-	settings = EditorInterface.get_editor_settings()
-	editor_base_col = settings.get("interface/theme/base_color")
-	_apply_theme_colors(self)
-
-
 ## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
 	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
@@ -1380,6 +1306,13 @@ func _ensure_default_category() -> void:
 	or !config.get_value("categories", "category_names").has(config.get_value("categories", "default_category")):
 		config.set_value("categories", "default_category", "")
 		config.save(PATH)
+
+
+
+func _on_editor_settings_changed() -> void:
+	settings = EditorInterface.get_editor_settings()
+	editor_base_col = settings.get("interface/theme/base_color")
+	_apply_theme_colors(self)
 
 
 
