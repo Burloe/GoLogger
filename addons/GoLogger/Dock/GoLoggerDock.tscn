@@ -409,7 +409,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Limit method"
+text = "Method"
 vertical_alignment = 1
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
@@ -457,7 +457,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Entry Count action"
+text = "Count Action"
 vertical_alignment = 1
 
 [node name="EntryActionOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
@@ -500,7 +500,7 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Entry count limit"
+text = "Entry limit"
 vertical_alignment = 1
 
 [node name="EntryCountSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountHBox" unique_id=1695558902]
@@ -533,7 +533,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Session Timer action"
+text = "Timer Action"
 vertical_alignment = 1
 
 [node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
@@ -573,7 +573,7 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Session duration"
+text = "Duration"
 vertical_alignment = 1
 
 [node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionDurationHBox" unique_id=956442988]

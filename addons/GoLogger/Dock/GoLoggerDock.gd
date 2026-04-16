@@ -8,6 +8,8 @@ extends TabContainer
 	# Implement the logic for applying the setting in signal function like _on_button_button_up()
 
 # TODO:
+	# Bugs:
+	#		Limit method(and probably more) settings aren't inilitalized properly 
 	# DOCK CATEGORY TAB:
 
 
@@ -227,29 +229,29 @@ var c_font_normal := Color("9d9ea0")
 var c_font_hover := Color("ffffff") 
 
 var settings_dict := {
-	"category_names": 						{"section": "categories", "name": "category_names", 						"value": ["game"], 	"type": TYPE_ARRAY,  	"default": ["game"]},
-	"default_category": 					{"section": "categories", "name": "default_category", 					"value": "", 				"type": TYPE_STRING,  "default": ""},
-	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"value": "user://GoLogger/", "type": TYPE_STRING, "control": null, "default": "user://GoLogger/"},
-	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"value": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", "type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"value": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"value": true, 			"type": TYPE_BOOL, 		"control": null, "default": true},
-	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_print": 									{"section": "settings", 	"name": "id_print", 									"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"value": false, 		"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_align":										{"section": "settings", 	"name": "id_align", 									"value": 0, 				"type": TYPE_INT,			"control": null, "default": 0},
-	"id_font_size":								{"section": "settings", 	"name": "id_font_size", 							"value": 12, 				"type": TYPE_INT, 		"control": null, "default": 12},
-	"id_font_color":							{"section": "settings", 	"name": "id_font_color", 							"value": "ffffff", 	"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
-	"id_outline_size":						{"section": "settings", 	"name": "id_outline_size", 						"value": 8,					"type": TYPE_INT,			"control": null, "default": 8},
-	"id_outline_color":						{"section": "settings", 	"name": "id_outline_color", 					"value": "000000", 	"type": TYPE_STRING,	"control": null, "default": "000000"},
-	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"value": 10, 				"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"value": 1200, 			"type": TYPE_INT, 		"control": null, "default": 1200},
-	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"value": 900, 			"type": TYPE_INT, 		"control": null, "default": 900},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"value": 0, 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"columns": 										{"section": "settings", 	"name": "columns", 										"value": 5, 				"type": TYPE_INT, 		"control": null, "default": 5}
+	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
+	"default_category": 					{"section": "categories", "name": "default_category", 	 				"type": TYPE_STRING,  "default": ""},
+	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"type": TYPE_STRING, "control": null, "default": "user://GoLogger/"},
+	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
+	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
+	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"type": TYPE_BOOL, 		"control": null, "default": true},
+	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_print": 									{"section": "settings", 	"name": "id_print", 									"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0},
+	"id_font_size":								{"section": "settings", 	"name": "id_font_size", 							"type": TYPE_INT, 		"control": null, "default": 12},
+	"id_font_color":							{"section": "settings", 	"name": "id_font_color", 							"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
+	"id_outline_size":						{"section": "settings", 	"name": "id_outline_size", 						"type": TYPE_INT,			"control": null, "default": 8},
+	"id_outline_color":						{"section": "settings", 	"name": "id_outline_color", 					"type": TYPE_STRING,	"control": null, "default": "000000"},
+	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"type": TYPE_INT, 		"control": null, "default": 0},
+	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},
+	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"type": TYPE_INT, 		"control": null, "default": 10},
+	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 1200},
+	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 900},
+	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"type": TYPE_INT, 		"control": null, "default": 0},
+	"columns": 										{"section": "settings", 	"name": "columns", 										"type": TYPE_INT, 		"control": null, "default": 5}
 }
 
 
@@ -578,7 +580,7 @@ func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new()
 
 	for key in settings_dict.keys():
-		for field in ["section", "value", "type", "control", "default"]:
+		for field in ["section", "default", "type", "control", "default"]:
 			if field == "control" and settings_dict[key]["section"] == "categories":
 				continue
 
@@ -606,8 +608,8 @@ func validate_settings() -> void: # Mirror
 
 	for key in settings_dict.keys():
 		var setting: Dictionary = settings_dict.get(key, {})
-		var a_fields = ["section", "name", "value", "type", "control", "default"]
-		var b_fields = ["section", "name", "value", "type", "default"]
+		var a_fields = ["section", "name", "type", "control", "default"]
+		var b_fields = ["section", "name", "type", "default"]
 		var err: Array[bool] = [false, false,false, false, false, false]
 
 		# Check missing fields
@@ -1038,7 +1040,7 @@ func _on_button_button_up(node: Button) -> void:
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus()
 			base_dir_apply_btn.hide()
-		
+
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
 			var err := config.save(PATH) 

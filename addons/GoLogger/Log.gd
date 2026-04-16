@@ -138,113 +138,49 @@ var instance_id: String = "":
 	set(value):
 		instance_id = value
 		config.load(PATH)
-		var fnt_sz := int(config.get_value("settings", "id_font_size", settings_dict.get("defaults").get("id_font_size")))
-		var fnt_col := Color.from_string(config.get_value("settings", "id_color", "ffffffff"), settings_dict.get("defaults").get("id_color"))
-		var ol_sz := int(config.get_value("settings", "id_outline_size", settings_dict.get("defaults").get("id_outline_size")))
-		var ol_col := Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict.get("defaults").get("id_outline_color"))
+		var fnt_sz := int(config.get_value(
+			"settings", "id_font_size", 
+			settings_dict.get("id_font_size").get("default"))
+		)
+		var fnt_col := Color.from_string(
+			config.get_value("settings", "id_color", "ffffffff"), 
+			settings_dict.get("id_color").get("default")
+		)
+		var ol_sz := int(config.get_value(
+			"settings", "id_outline_size", 
+			settings_dict.get("id_outline_size").get("default"))
+		)
+		var ol_col := Color.from_string(
+			config.get_value("settings", "id_outline_color", "00000000"), 
+			settings_dict.get("id_outline_color").get("default")
+		)
 		instance_id_label.text = str("  [font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]", value, "  ")
 
 
 var settings_dict := {
-	"category_names": 						["game"],
-	"default_category": 					"",
-	"base_directory": 						{"value": "user://GoLogger/", "type": TYPE_STRING, "default": "user://GoLogger/"},
-	"log_header_format": 					{"value": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", "type": TYPE_STRING, "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"value":						 "[{hh}:{mi}:{ss}] {instance_id}: {entry}", "type": TYPE_STRING, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"autostart_session": 					{"value": true, 		"type": TYPE_BOOL, 		"default": true},
-	"use_utc": 										{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_print": 									{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_toggle": 									{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_startup_state": 					{"value": false, 		"type": TYPE_BOOL, 		"default": false},
-	"id_align":										{"value": 0, 				"type": TYPE_INT,			"default": 0},
-	"id_font_size":								{"value": 12, 			"type": TYPE_INT, 		"default": 12},
-	"id_font_color":							{"value": "ffffff", "type": TYPE_STRING, 	"default": "ffffff"},
-	"id_outline_size":						{"value": 8,				"type": TYPE_INT,			"default": 8},
-	"id_outline_color":						{"value": "000000", "type": TYPE_STRING,	"default": "000000"},
-	"limit_method": 							{"value": 0, 				"type": TYPE_INT, 		"default": 0},
-	"entry_count_action": 				{"value": 0, 				"type": TYPE_INT, 		"default": 0},
-	"session_timer_action": 			{"value": 0, 				"type": TYPE_INT, 		"default": 0},
-	"file_cap": 									{"value": 10, 			"type": TYPE_INT, 		"default": 10},
-	"entry_cap": 									{"value": 1200, 		"type": TYPE_INT, 		"default": 1200},
-	"session_duration": 					{"value": 900, 			"type": TYPE_INT, 		"default": 900},
-	"error_reporting": 						{"value": 0, 				"type": TYPE_INT, 		"default": 0},
-	"columns": 										{"value": 5, 				"type": TYPE_INT, 		"default": 5},
-
-	"defaults": {
-		"category_names": 								["game"],
-		"default_category": 							"",
-		"base_directory": 								"user://GoLogger/",
-		"log_header_format": 							"{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:",
-		"entry_format": 									"[{hh}:{mi}:{ss}] {instance_id}: {entry}",
-		"autostart_session": 							true,
-		"use_utc": 												false,
-		"id_print": 											false,
-		"id_toggle": 											false,
-		"id_startup_state": 							false,
-		"id_align":												0,
-		"id_font_size":										12,
-		"id_color": 											"ffffff",
-		"id_outline_size":								8,
-		"id_outline_color":								"000000",
-		"limit_method": 									0,
-		"entry_count_action": 						0,
-		"session_timer_action": 					0,
-		"file_cap": 											10,
-		"entry_cap": 											300,
-		"session_duration": 							300,
-		"error_reporting": 								0,
-		"columns": 												5
-	},
-	"expected_settings": {
-		"category_names": 					"categories/category_names",
-		"default_category": 				"categories/default_category",
-		"base_directory": 					"settings/base_directory",
-		"columns": 									"settings/columns",
-		"log_header_format": 				"settings/log_header_format",
-		"entry_format": 						"settings/entry_format",
-		"autostart_session": 				"settings/autostart_session",
-		"use_utc": 									"settings/use_utc",
-		"id_print": 								"settings/id_overlay_print",
-		"id_toggle": 								"settings/id_overlay_toggle",
-		"id_startup_state": 				"settings/id_overlay_startup_state",
-		"id_align":									"settings/id_overlay_align",
-		"id_font_size":							"settings/id_overlay_font_size",
-		"id_color": 								"settings/id_overlay_color",
-		"id_outline_size":					"settings/id_overlay_outline_size",
-		"id_outline_color": 				"settings/id_overlay_outline_color",
-		"limit_method": 						"settings/limit_method",
-		"entry_count_action": 			"settings/entry_count_action",
-		"session_timer_action": 		"settings/session_timer_action",
-		"file_cap": 								"settings/file_cap",
-		"entry_cap": 								"settings/entry_cap",
-		"session_duration": 				"settings/session_duration",
-		"error_reporting": 					"settings/error_reporting"
-	},
-	"expected_types": {
-		"categories/category_names": 					TYPE_ARRAY,
-		"categories/default_category": 				TYPE_STRING,
-		"settings/base_directory": 						TYPE_STRING,
-		"settings/columns": 									TYPE_INT,
-		"settings/log_header_format": 				TYPE_STRING,
-		"settings/entry_format" : 						TYPE_STRING,
-		"settings/autostart_session": 				TYPE_BOOL,
-		"settings/use_utc": 									TYPE_BOOL,
-		"settings/id_overlay_print": 					TYPE_BOOL,
-		"settings/id_overlay_toggle":					TYPE_BOOL,
-		"settings/id_overlay_startup_state": 	TYPE_BOOL,
-		"settings/id_overlay_align":					TYPE_INT,
-		"settings/id_overlay_font_size":			TYPE_INT,
-		"settings/id_overlay_color":					TYPE_STRING,
-		"settings/id_overlay_outline_size":		TYPE_INT,
-		"settings/id_overlay_outline_color":	TYPE_STRING,
-		"settings/limit_method": 							TYPE_INT,
-		"settings/entry_count_action": 				TYPE_INT,
-		"settings/session_timer_action": 			TYPE_INT,
-		"settings/file_cap": 									TYPE_INT,
-		"settings/entry_cap": 								TYPE_INT,
-		"settings/session_duration": 					TYPE_INT,
-		"settings/error_reporting": 					TYPE_INT
-	}
+	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
+	"default_category": 					{"section": "categories", "name": "default_category", 	 				"type": TYPE_STRING,  "default": ""},
+	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"type": TYPE_STRING, 	"control": null, "default": "user://GoLogger/"},
+	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"type": TYPE_STRING,	"control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
+	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"type": TYPE_STRING,	"control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
+	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"type": TYPE_BOOL, 		"control": null, "default": true},
+	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_print": 									{"section": "settings", 	"name": "id_print", 									"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0},
+	"id_font_size":								{"section": "settings", 	"name": "id_font_size", 							"type": TYPE_INT, 		"control": null, "default": 12},
+	"id_font_color":							{"section": "settings", 	"name": "id_font_color", 							"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
+	"id_outline_size":						{"section": "settings", 	"name": "id_outline_size", 						"type": TYPE_INT,			"control": null, "default": 8},
+	"id_outline_color":						{"section": "settings", 	"name": "id_outline_color", 					"type": TYPE_STRING,	"control": null, "default": "000000"},
+	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"type": TYPE_INT, 		"control": null, "default": 0},
+	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},
+	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"type": TYPE_INT, 		"control": null, "default": 10},
+	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 1200},
+	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 900},
+	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"type": TYPE_INT, 		"control": null, "default": 0},
+	"columns": 										{"section": "settings", 	"name": "columns", 										"type": TYPE_INT, 		"control": null, "default": 5}
 }
 
 
@@ -416,7 +352,11 @@ func start_session() -> void:
 	for i in range(cat_data["categories"]["category_names"].size()):
 		var c_name: String = cat_data["categories"]["category_names"][i]
 		var f_name: String = _get_file_name(c_name) # e.g. "game.log"
-		var f_path: String = str(config.get_value("settings", "base_directory", settings_dict.get("defaults", {}).get("base_directory", "")), c_name, "_logs/", f_name)
+		var f_path: String = str(
+			config.get_value(
+			"settings", "base_directory",	settings_dict.get("base_directory").get("default")
+			), c_name, "_logs/", f_name
+		)
 
 		config.set_value("categories." + str(c_name), "file_name", f_name)
 		config.set_value("categories." + str(c_name), "file_path", f_path)
@@ -604,6 +544,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", _target_cat, "> ", new_entry.dedent())
 
 
+
 func stop_session() -> void:
 	if !session_status:	return
 
@@ -650,32 +591,21 @@ func stop_session() -> void:
 	session_status = false
 
 
+
 func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new()
-	cf.set_value("categories", "category_names", 								["game"])
-	cf.set_value("categories", "default_category", 							settings_dict.get("defaults", {}).get("default_category", ""))
 
-	cf.set_value("settings", "base_directory", 									settings_dict.get("defaults", {}).get("base_directory", "user://GoLogger/"))
-	cf.set_value("settings", "columns", 												settings_dict.get("defaults", {}).get("columns", 5))
-	cf.set_value("settings", "log_header_format", 							settings_dict.get("defaults", {}).get("log_header_format", "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"))
-	cf.set_value("settings", "entry_format", 										settings_dict.get("defaults", {}).get("entry_format", "[{hh}:{mi}:{ss}] {instance_id}: {entry}"))
-	cf.set_value("settings", "autostart_session", 							settings_dict.get("defaults", {}).get("autostart_session", true))
-	cf.set_value("settings", "use_utc", 												settings_dict.get("defaults", {}).get("use_utc", false))
-	cf.set_value("settings", "id_print", 												settings_dict.get("defaults", {}).get("id_print", false))
-	cf.set_value("settings", "id_toggle", 											settings_dict.get("defaults", {}).get("id_toggle", false))
-	cf.set_value("settings", "id_startup_state", 								settings_dict.get("defaults", {}).get("id_startup_state", false))
-	cf.set_value("settings", "id_align", 												settings_dict.get("defaults").get("id_align", 0))
-	cf.set_value("settings", "id_font_size", 										settings_dict.get("defaults", {}).get("id_font_size", 12))
-	cf.set_value("settings", "id_color", 									Color(settings_dict.get("defaults", {}).get("id_color", "ffffff")).to_html(true))
-	cf.set_value("settings", "id_outline_size", 								settings_dict.get("defaults", {}).get("id_outline_size", 8))
-	cf.set_value("settings", "id_outline_color",					Color(settings_dict.get("defaults", {}).get("id_color", "ffffff")).to_html(true))
-	cf.set_value("settings", "limit_method", 										settings_dict.get("defaults", {}).get("limit_method", 0))
-	cf.set_value("settings", "entry_count_action", 							settings_dict.get("defaults", {}).get("entry_count_action", 0))
-	cf.set_value("settings", "session_timer_action", 						settings_dict.get("defaults", {}).get("session_timer_action", 0))
-	cf.set_value("settings", "file_cap", 												settings_dict.get("defaults", {}).get("file_cap", 10))
-	cf.set_value("settings", "entry_cap", 											settings_dict.get("defaults", {}).get("entry_cap", 300))
-	cf.set_value("settings", "session_duration", 								settings_dict.get("defaults", {}).get("session_duration", 300))
-	cf.set_value("settings", "error_reporting", 								settings_dict.get("defaults", {}).get("error_reporting", 0))
+	for key in settings_dict.keys():
+		for field in ["section", "default", "type", "control", "default"]:
+			if field == "control" and settings_dict[key]["section"] == "categories":
+				continue
+
+			if not settings_dict[key].has(field):
+				push_error("GoLogger: Error creating a settings file. 'settings_dict' entry '%s' missing '", field, "' field", % key)
+				continue
+
+		var section = settings_dict[key].get("section", "settings")
+		cf.set_value(section, key, settings_dict[key]["default"])
 
 	var _s = cf.save(PATH)
 	if _s != OK:
@@ -683,26 +613,49 @@ func create_settings_file() -> void: # Mirror
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
 		return
 
-	config.load(PATH)
+	config.load(PATH) 
+
 
 
 func validate_settings() -> void: # Mirror
-	# Validate presence -> Write default
-	for setting in settings_dict.get("expected_settings", {}).keys():
-		var splits = settings_dict["expected_settings"][setting].split("/")
-		if !config.has_section(splits[0]) or !config.has_section_key(splits[0], splits[1]):
-			config.set_value(splits[0], splits[1], settings_dict.get("defaults", {}).get(setting))
+	config.load(PATH) 
 
-	# Validate types -> Apply default
-	for type_key in settings_dict.get("expected_types", {}).keys():
-		var splits = type_key.split("/")
-		var expected_type = settings_dict["expected_types"][type_key]
-		var value = config.get_value(splits[0], splits[1])
+	for key in settings_dict.keys():
+		var setting: Dictionary = settings_dict.get(key, {})
+		var a_fields = ["section", "name", "type", "control", "default"]
+		var b_fields = ["section", "name", "type", "default"]
+		var err: Array[bool] = [false, false,false, false, false, false]
 
-		if typeof(value) != expected_type:
-			config.set_value(splits[0], splits[1], settings_dict.get("defaults", {}).get(splits[1]))
+		# Check missing fields
+		for i in range(a_fields.size()):
+
+			if setting.has("section"):
+				var fs = a_fields.duplicate()
+
+				if setting["section"] == "categories":
+					fs = b_fields.duplicate()
+
+				# Collect + report missing fields
+				if !setting.has_all(fs):
+					var _e: Array[String] = []
+					for j in range(fs.size()):
+						if !setting.has(fs[j]):
+							_e.append(fs[j])
+
+					if not _e.is_empty():
+						push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
+
+		# Validate Presence
+		if !config.has_section(setting["section"]) or !config.has_section_key(setting["section"], setting["name"]):
+			config.set_value(setting["section"], setting["name"], setting["default"])
+			continue
+
+		# Validate Type
+		if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
+			config.set_value(setting["section"], setting["name"], setting["default"])
 
 	config.save(PATH)
+
 
 
 static func get_error(error : int, object_type : String = "") -> String:
@@ -757,6 +710,7 @@ static func get_error(error : int, object_type : String = "") -> String:
 	return "N/A"
 
 
+
 ## Retrieves a value from the config file, validating settings beforehand. Simple wrapper for ConfigFile.get_value().
 func _get_config_value(section: String, value : String, default_value: Variant = null) -> Variant:
 	validate_settings()
@@ -770,10 +724,11 @@ func _get_config_value(section: String, value : String, default_value: Variant =
 		push_error(str("GoLogger: ConfigFile failed to load settings.ini file."))
 		return null
 
-	var _val = config.get_value(section, value, settings_dict.get("defaults", {}).get(value))
+	var _val = config.get_value(section, value, settings_dict.get(value, {}).get("default"))
 	if _val == null:
 		push_error(str("GoLogger: ConfigFile failed to load settings value from file."))
 	return _val
+
 
 
 func _check_category_name_conflicts() -> Array[String]:
@@ -789,6 +744,7 @@ func _check_category_name_conflicts() -> Array[String]:
 			found_conflicts.append(name)
 		else: seen_names.append(name)
 	return found_conflicts
+
 
 
 func _get_header(category_name: String = "") -> String:
@@ -835,6 +791,7 @@ func _get_header(category_name: String = "") -> String:
 
 		return str(_header, " ")
 	return ""
+
 
 
 func _get_entry_format(entry: String, category_name: String) -> String:
