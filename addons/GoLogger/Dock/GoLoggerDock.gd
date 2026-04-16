@@ -41,8 +41,7 @@ extends TabContainer
 		# No type mismatching with the values of the settings and the 'expected_types' dict
 
 signal update_index
-signal change_category_name_finished
-signal open_hotkey_resource()
+signal change_category_name_finished 
 
 # @onready var categories_tab: VBoxContainer = %Categories
 @onready var add_category_btn: Button = %AddCategoryButton
@@ -106,7 +105,6 @@ var session_duration_spinbox_line: LineEdit
 @onready var plugin_version_cat_lbl: Label = %PluginVersionCatLabel
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
-@onready var open_hotkey_btn: Button = %OpenHotkeyButton
 
 @onready var id_print_btn: CheckBox = %PrintInstanceIDCheckBox
 @onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontSizeHBox
@@ -140,6 +138,9 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
 @onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var id_overlay_fold_cont: FoldableContainer = %IDOverlayFoldableContainer
+
+@onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
+var inspector: EditorInspector
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -182,7 +183,6 @@ var sb_spinbox_up_pressed 						:= preload("uid://q0h5bi585ik6")
 var sb_spinbox_down_highlight 				:= preload("uid://ba2pkgbcu0dlo")
 var sb_spinbox_down_pressed 					:= preload("uid://daw4nhpnjj6i1")
 
-var gl_hotkeys: GLShortcut 						=  preload("uid://dyi2aml73k4g8")
 
 ## SEPERATOR has index 3, should not be used.
 enum LimitMethod {
@@ -257,9 +257,16 @@ var settings_dict := {
 
 
 
+
+
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
+
+		inspector = EditorInspector.new() 
+		hotkey_container.add_child(inspector)
+		inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 		if !FileAccess.file_exists(PATH):
 			create_settings_file()
@@ -474,9 +481,7 @@ func _ready() -> void:
 		for btn in [base_dir_apply_btn, log_header_apply_btn, entry_format_apply_btn]:
 			if btn.button_up.is_connected(_on_button_button_up):
 				btn.button_up.disconnect(_on_button_button_up)
-			btn.button_up.connect(_on_button_button_up.bind(btn))
-
-		open_hotkey_btn.button_up.connect(func() -> void: open_hotkey_resource.emit())
+			btn.button_up.connect(_on_button_button_up.bind(btn)) 
 
 		match config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)):
 			LimitMethod.ENTRY_COUNT:
@@ -573,6 +578,11 @@ func initialize_dock() -> void:
 		
 		elif ctrl is ColorPickerButton:
 			ctrl.color = Color.from_string(value, Color.WHITE) 
+
+
+
+func set_resource(res: GLShortcut):
+		inspector.edit(res)
 
 
 

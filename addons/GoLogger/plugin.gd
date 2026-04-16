@@ -6,8 +6,9 @@ var dock
 func _enter_tree() -> void:
 	dock = preload("res://addons/GoLogger/Dock/GoLoggerDock.tscn").instantiate()
 	add_control_to_bottom_panel(dock, "GoLogger")
-	dock.plugin_version = get_plugin_version()
-	dock.open_hotkey_resource.connect(_on_open_hotkey_resource)
+	dock.plugin_version = get_plugin_version() 
+	var res = ResourceLoader.load("uid://dyi2aml73k4g8")
+	dock.set_resource(res)
 
 func _exit_tree() -> void:
 	dock.save_data()
@@ -25,9 +26,4 @@ func _disable_plugin() -> void:
 		remove_autoload_singleton("Log")
 
 
-func _on_open_hotkey_resource() -> void:
-	var res = ResourceLoader.load("uid://dyi2aml73k4g8")
-	if res:
-		get_editor_interface().edit_resource(res)
-	else:
-		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] Could not load hotkey resource.")
+
