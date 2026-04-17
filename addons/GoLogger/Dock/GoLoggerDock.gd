@@ -43,7 +43,7 @@ extends TabContainer
 signal update_index
 signal change_category_name_finished 
 
-# @onready var categories_tab: VBoxContainer = %Categories
+# Category tab
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton 
@@ -51,6 +51,7 @@ signal change_category_name_finished
 @onready var column_slider: HSlider = %ColumnsHSlider
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
+# Settings tab
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
 @onready var base_dir_apply_btn: Button = %BaseDirApplyButton
@@ -131,8 +132,6 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 @onready var id_overlay_outline_col_lbl: Label = %IDOverlayOutlineColorLabel
 @onready var id_overlay_outline_col_container: HBoxContainer = %IDOverlayOutlineColorHBox
 
-
-# @onready var help_tab_container: TabContainer = %HelpTabContainer
 @onready var user_dir_btn: Button = %UserDirButton
 @onready var cat_top_bar: Panel = %TopBarPanel
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
@@ -141,6 +140,17 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 
 @onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
+
+# Help tab
+@onready var help_setup: 					FoldableContainer = %Setup
+@onready var help_sessions: 			FoldableContainer = %Sessions
+@onready var help_categories: 		FoldableContainer = %Categories
+@onready var help_messages: 			FoldableContainer = %Messages
+@onready var help_concurrencies: 	FoldableContainer = %Concurrencies
+@onready var help_functions: 			FoldableContainer = %Functions
+@onready var help_hotkeys: 				FoldableContainer = %Hotkeys
+@onready var help_file_limits: 		FoldableContainer = %FileLimits
+@onready var help_formatting: 		FoldableContainer = %Formatting
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -1363,8 +1373,8 @@ func _on_editor_settings_changed() -> void:
 
 
 func _get_theme_colors() -> Dictionary:
-	var contrast: float = settings.get("interface/theme/contrast")
-	var base_col: Color = settings.get("interface/theme/base_color")
+	var contrast: 	float = settings.get("interface/theme/contrast")
+	var base_col: 	Color = settings.get("interface/theme/base_color")
 	var accent_col: Color = settings.get("interface/theme/accent_color")
 
 	var base_light 			= base_col.lerp(Color.WHITE, contrast)
@@ -1376,7 +1386,7 @@ func _get_theme_colors() -> Dictionary:
 	var accent_dark 		= accent_col.lerp(Color.BLACK, contrast)
 	var accent_light_h 	= accent_col.lerp(Color.WHITE, contrast * 0.5)
 	var accent_dark_h 	= accent_col.lerp(Color.BLACK, contrast * 0.5)
-
+	# print("base_col: " base_col, "    setting base col: ", base_col)
 	var colors := {
 		"contrast": contrast,
 		"base": {
@@ -1399,7 +1409,9 @@ func _get_theme_colors() -> Dictionary:
 			"interact_normal": base_col,
 			"interact_hover": base_light,
 			"interact_pressed": base_col,
-			"interact_hover_pressed": base_light
+			"interact_hover_pressed": base_light,
+			"fold_normal": Color(0.702, 0.702, 0.702),
+			"fold_hover": Color(0.949, 0.949, 0.949)
 		}
 	}
 	return colors
@@ -1417,43 +1429,43 @@ func _apply_theme_colors(current_node: Control):
 	sb_clrpicker_normal.bg_color 		= Color.TRANSPARENT
 	sb_clrpicker_highlight.bg_color = Color.TRANSPARENT
 
-	if editor_base_col != theme_colors["base"]["col"] or editor_contrast != theme_colors["contrast"]:
-		panel_round_base.bg_color 											= theme_colors["base"]["col"]
-		panel_round_highlight.bg_color 									= theme_colors["base"]["col"]
-		panel_round_base_border_highlight.bg_color 			= theme_colors["base"]["col"]
-		panel_top_round_base.bg_color 									= theme_colors["base"]["col"]
-		panel_top_round_base_highlight.bg_color 				= theme_colors["base"]["col"]
-		panel_rounded_no_top_base												= theme_colors["base"]["col"]
-		foldable_container_panel.border_color						= theme_colors["base"]["col"]
-		sb_tab_bar_bg.bg_color 													= theme_colors["base"]["col"]
-		sb_tab_panel_bg.bg_color 												= theme_colors["base"]["col"]
-		panel_round_bg.bg_color 												= theme_colors["base"]["dark"]
-		sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
-		sb_line_edit_highlight.bg_color 								= theme_colors["base"]["dark_highlight"]
+	# if editor_base_col != theme_colors["base"]["col"] or editor_contrast != theme_colors["contrast"]: 
+	panel_round_base.bg_color 											= theme_colors["base"]["col"]
+	panel_round_highlight.bg_color 									= theme_colors["base"]["col"]
+	panel_round_base_border_highlight.bg_color 			= theme_colors["base"]["col"]
+	panel_top_round_base.bg_color 									= theme_colors["base"]["col"]
+	panel_top_round_base_highlight.bg_color 				= theme_colors["base"]["col"]
+	panel_rounded_no_top_base.border_color					= theme_colors["base"]["col"]
+	foldable_container_panel.border_color						= theme_colors["base"]["col"]
+	sb_tab_bar_bg.bg_color 													= theme_colors["base"]["col"]
+	sb_tab_panel_bg.bg_color 												= theme_colors["base"]["dark"]
+	panel_round_bg.bg_color 												= theme_colors["base"]["dark"]
+	sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
+	sb_line_edit_highlight.bg_color 								= theme_colors["base"]["dark_highlight"]
 
 
-	if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]:
-		panel_round_highlight.border_color 							= theme_colors["accent"]["col"]
-		panel_round_base_border_highlight.border_color 	= theme_colors["accent"]["col"]
-		panel_round_accent.bg_color 										= theme_colors["accent"]["col"]
-		panel_top_round_base_highlight.border_color 		= theme_colors["accent"]["col"]
-		panel_top_round_accent.bg_color 								= theme_colors["accent"]["col"]
-		sb_tab_hover.border_color 											= theme_colors["accent"]["col"]
-		sb_btn_highlight.border_color 									= theme_colors["accent"]["col"]
-		sb_btn_apply.bg_color 													= theme_colors["accent"]["col"]
-		sb_btn_top_highlight.border_color 							= theme_colors["accent"]["col"]
-		sb_clrpicker_highlight.border_color 						= theme_colors["accent"]["col"]
-		sb_line_edit_highlight.border_color 						= theme_colors["accent"]["col"]
-		sb_tab_selected.bg_color 												= theme_colors["accent"]["dark"]
-		panel_round_accent_muted.bg_color 							= theme_colors["accent"]["dark_highlight"]
-		panel_top_round_accent_muted.bg_color 					= theme_colors["accent"]["dark_highlight"]
+	# if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]:
+	panel_round_highlight.border_color 							= theme_colors["accent"]["col"]
+	panel_round_base_border_highlight.border_color 	= theme_colors["accent"]["col"]
+	panel_round_accent.bg_color 										= theme_colors["accent"]["col"]
+	panel_top_round_base_highlight.border_color 		= theme_colors["accent"]["col"]
+	panel_top_round_accent.bg_color 								= theme_colors["accent"]["col"]
+	sb_btn_highlight.border_color 									= theme_colors["accent"]["col"]
+	sb_btn_apply.bg_color 													= theme_colors["accent"]["col"]
+	sb_btn_top_highlight.border_color 							= theme_colors["accent"]["col"]
+	sb_clrpicker_highlight.border_color 						= theme_colors["accent"]["col"]
+	sb_line_edit_highlight.border_color 						= theme_colors["accent"]["col"]
+	sb_tab_hover.bg_color 													= theme_colors["accent"]["light"]
+	sb_tab_selected.bg_color 												= theme_colors["accent"]["dark"]
+	panel_round_accent_muted.bg_color 							= theme_colors["accent"]["dark_highlight"]
+	panel_top_round_accent_muted.bg_color 					= theme_colors["accent"]["dark_highlight"]
 
 
-	for cont in [general_fold_cont, limit_fold_cont, id_overlay_fold_cont]:
-		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
-		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
-		cont.add_theme_color_override("collapsed_font_color", 	Color.WHITE 											if theme_colors["base"]["light_highlight"].v 				< 0.7 else theme_colors["base"]["col"])
-		cont.add_theme_color_override("title_collapsed_hover", 	Color.WHITE 											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["base"]["col"])
+	for cont in [general_fold_cont, limit_fold_cont, id_overlay_fold_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
+		cont.add_theme_color_override("font_color", 						theme_colors["font"]["fold_normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
+		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["fold_hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
+		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_highlight"].v 				< 0.7 else theme_colors["base"]["col"])
+		# cont.add_theme_color_override("title_collapsed_hover", 	Color.WHITE 											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["base"]["col"])
 
 	for btn in [error_rep_btn, limit_method_btn, entry_count_action_btn,	session_timer_action_btn,	id_overlay_align_opt_btn]:
 		btn.add_theme_color_override("font_color", 								theme_colors["font"]["normal"] 	if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["accent"]["col"])

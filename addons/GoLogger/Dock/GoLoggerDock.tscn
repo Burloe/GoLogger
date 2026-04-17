@@ -20,7 +20,6 @@
 [ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="14_fx5fv"]
 [ext_resource type="StyleBox" uid="uid://q0h5bi585ik6" path="res://addons/GoLogger/Resources/theme/spinbox_up_pressed.tres" id="14_itauu"]
 [ext_resource type="StyleBox" uid="uid://ba2pkgbcu0dlo" path="res://addons/GoLogger/Resources/theme/spinbox_down_highlight.tres" id="15_cp33x"]
-[ext_resource type="StyleBox" uid="uid://0nxkxhcntsj3" path="res://addons/GoLogger/Resources/theme/panel_top_rounded_base_col_highlighted.tres" id="15_k47fi"]
 [ext_resource type="StyleBox" uid="uid://bth006ulwoyl3" path="res://addons/GoLogger/Resources/theme/clr_picker_btn_normal.tres" id="16_cp33x"]
 [ext_resource type="StyleBox" uid="uid://daw4nhpnjj6i1" path="res://addons/GoLogger/Resources/theme/spinbox_down_pressed.tres" id="16_xov76"]
 [ext_resource type="StyleBox" uid="uid://bv58jw0dd3sve" path="res://addons/GoLogger/Resources/theme/clr_picker_btn_highlight.tres" id="17_xov76"]
@@ -86,7 +85,7 @@ offset_right = -0.120117
 offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/side_margin = 13
+theme_override_constants/side_margin = 8
 theme_override_constants/tab_separation = 6
 theme_override_styles/panel = ExtResource("1_cp33x")
 theme_override_styles/tabbar_background = ExtResource("1_itauu")
@@ -246,13 +245,13 @@ theme_override_constants/separation = 15
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/hover_font_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/collapsed_font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "General"
@@ -290,7 +289,7 @@ icon_alignment = 2
 unique_name_in_owner = true
 layout_direction = 3
 layout_mode = 2
-tooltip_text = "Uses UTC as opposed to the local system time when timestamping files and entries."
+tooltip_text = "Uses Universal Time Code instead of the local system time when timestamping files and entries."
 theme = SubResource("Theme_fcs7p")
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
@@ -341,13 +340,13 @@ popup/item_3/id = 3
 [node name="LimitersFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1108637460]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/hover_font_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/collapsed_font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Limiters"
@@ -601,14 +600,13 @@ select_all_on_focus = true
 [node name="IDOverlayFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/hover_font_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/collapsed_font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "ID Overlay"
@@ -1157,6 +1155,9 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
@@ -1198,12 +1199,16 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 
 [node name="Setup" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=1364899289]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Setup"
@@ -1237,12 +1242,16 @@ By default, a session starts automatically when the project runs (this can be di
 fit_content = true
 
 [node name="Sessions" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=478545896]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Sessions"
@@ -1269,12 +1278,16 @@ By default, a session starts automatically when the project runs (this can be di
 fit_content = true
 
 [node name="Categories" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=1969559512]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Categories"
@@ -1302,12 +1315,16 @@ Additionally, you can mark one of your categories as 'Default'. Logging entries 
 fit_content = true
 
 [node name="Messages" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=487613138]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Messages"
@@ -1346,12 +1363,16 @@ You can also use [i]print_msg[/i] to print individual entries if desired.
 fit_content = true
 
 [node name="Concurrencies" type="FoldableContainer" parent="Help/GettingStarted/VBoxContainer" unique_id=665020188]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Multiple Instances"
@@ -1390,13 +1411,17 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 
 [node name="Functions" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=347626334]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 title = "Functions"
 
@@ -1439,12 +1464,16 @@ There are two signals available to help you synchronize sessions with game logic
 fit_content = true
 
 [node name="Hotkeys" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=664124483]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Hotkeys"
@@ -1473,12 +1502,16 @@ Hotkeys can be changed using InputEventShortcut resources. As such, they're excl
 fit_content = true
 
 [node name="FileLimits" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=1580460435]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "File Limits"
@@ -1533,12 +1566,16 @@ Using the Entry Count method with the Overwrite Entries action provides the most
 fit_content = true
 
 [node name="Instances" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=67261972]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Instances"
@@ -1565,12 +1602,16 @@ Use the [b]Display Instance ID[/b] hotkey to see display the ID of an instance i
 fit_content = true
 
 [node name="Formatting" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=1185594613]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Formatting"
