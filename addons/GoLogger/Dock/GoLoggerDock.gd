@@ -164,6 +164,7 @@ var panel_top_round_base 							:= preload("uid://cqnilt2rk14bi")
 var panel_top_round_base_highlight 		:= preload("uid://0nxkxhcntsj3")
 var panel_top_round_accent 						:= preload("uid://dve2ih1gvvua7")
 var panel_top_round_accent_muted 			:= preload("uid://7s65f804p1jc")
+var panel_rounded_no_top_base					:= preload("uid://bqxadvxd6q2yj")
 var foldable_container_panel					:= preload("uid://bkl7j8mna8rwb")
 
 var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
@@ -774,17 +775,20 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 
 func save_categories() -> void:
 	config.load(PATH)
-	var c := ConfigFile.new()
-	var c_names = []
-	var c_def: String = ""
+	var _c := ConfigFile.new()
+	var _c_names = []
+	var _c_def: String = ""
+
+	# Setting first as blank so "categories" section at top of file
+	_c.set_value("categories", "category_names", []) 
+	_c.set_value("categories", "default_category", config.get_value("categories", "default_category", ""))
 
 	for setting in settings_dict.keys():
 		if settings_dict[setting]["name"] == "category_names" or settings_dict[setting]["name"] == "default_category":
-			# c.set_value("categories", setting, config.get_value("categories", setting))
 			continue
 		else:
-			c.set_value("settings", setting, config.get_value("settings", setting, settings_dict[setting]["default"]))
-			c.set_value("settings", setting, config.get_value("settings", setting, settings_dict.get(setting, {}).get("default", settings_dict.get("default", {}).get(setting, null))))
+			_c.set_value("settings", setting, config.get_value("settings", setting, settings_dict[setting]["default"]))
+			_c.set_value("settings", setting, config.get_value("settings", setting, settings_dict.get(setting, {}).get("default", settings_dict.get("default", {}).get(setting, null))))
 	
 	
 
@@ -792,22 +796,22 @@ func save_categories() -> void:
 		if cat is LogCategory:
 			if cat.category_name.is_empty():
 				continue
-			c_names.append(cat.category_name)
+			_c_names.append(cat.category_name)
 			if cat.default_checkbox.button_pressed:
-				c_def = cat.category_name
+				_c_def = cat.category_name
 
-			c.set_value("categories." + cat.category_name, "file_name" , "")
-			c.set_value("categories." + cat.category_name, "file_path", "")
-			c.set_value("categories." + cat.category_name, "category_name", cat.category_name) 
-			c.set_value("categories." + cat.category_name, "file_count", config.get_value("categories." + cat.category_name, "file_count", 0))
-			c.set_value("categories." + cat.category_name, "is_locked", cat.is_locked)
-			c.set_value("categories." + cat.category_name, "entry_count", config.get_value("categories." + cat.category_name, "entry_count", 0))
+			_c.set_value("categories." + cat.category_name, "file_name" , "")
+			_c.set_value("categories." + cat.category_name, "file_path", "")
+			_c.set_value("categories." + cat.category_name, "category_name", cat.category_name) 
+			_c.set_value("categories." + cat.category_name, "file_count", config.get_value("categories." + cat.category_name, "file_count", 0))
+			_c.set_value("categories." + cat.category_name, "is_locked", cat.is_locked)
+			_c.set_value("categories." + cat.category_name, "entry_count", config.get_value("categories." + cat.category_name, "entry_count", 0))
 
-	c.set_value("categories", "category_names", c_names)
-	c.set_value("categories", "default_category", c_def)
+	_c.set_value("categories", "category_names", _c_names)
+	_c.set_value("categories", "default_category", _c_def)
 
 	_handle_category_mov_button_state()
-	c.save(PATH)
+	_c.save(PATH)
 	config.load(PATH)
 
 
@@ -1419,6 +1423,7 @@ func _apply_theme_colors(current_node: Control):
 		panel_round_base_border_highlight.bg_color 			= theme_colors["base"]["col"]
 		panel_top_round_base.bg_color 									= theme_colors["base"]["col"]
 		panel_top_round_base_highlight.bg_color 				= theme_colors["base"]["col"]
+		panel_rounded_no_top_base												= theme_colors["base"]["col"]
 		foldable_container_panel.border_color						= theme_colors["base"]["col"]
 		sb_tab_bar_bg.bg_color 													= theme_colors["base"]["col"]
 		sb_tab_panel_bg.bg_color 												= theme_colors["base"]["col"]

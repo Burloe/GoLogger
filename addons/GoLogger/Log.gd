@@ -143,8 +143,8 @@ var instance_id: String = "":
 			settings_dict.get("id_font_size").get("default"))
 		)
 		var fnt_col := Color.from_string(
-			config.get_value("settings", "id_color", "ffffffff"), 
-			settings_dict.get("id_color").get("default")
+			config.get_value("settings", "id_font_color", "ffffffff"), 
+			settings_dict.get("id_font_color").get("default")
 		)
 		var ol_sz := int(config.get_value(
 			"settings", "id_outline_size", 

@@ -25,6 +25,7 @@
 [ext_resource type="StyleBox" uid="uid://daw4nhpnjj6i1" path="res://addons/GoLogger/Resources/theme/spinbox_down_pressed.tres" id="16_xov76"]
 [ext_resource type="StyleBox" uid="uid://bv58jw0dd3sve" path="res://addons/GoLogger/Resources/theme/clr_picker_btn_highlight.tres" id="17_xov76"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="18_k47fi"]
+[ext_resource type="StyleBox" uid="uid://bqxadvxd6q2yj" path="res://addons/GoLogger/Resources/theme/panel_rounded_no_top_base.tres" id="22_xov76"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/GoLogger/Resources/theme/panel_rounded_base_col.tres" id="26_xov76"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4fkd"]
@@ -92,14 +93,13 @@ theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
-current_tab = 1
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1562.0, 1529.0]
 
 [node name="Categories" type="VBoxContainer" parent="." unique_id=1224284395]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 0
@@ -213,6 +213,7 @@ theme_override_constants/v_separation = 8
 columns = 6
 
 [node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 1
@@ -253,10 +254,12 @@ theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "General"
 title_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer" unique_id=1603064615]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -848,7 +851,7 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(0, 183)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = ExtResource("12_cp33x")
+theme_override_styles/panel = ExtResource("22_xov76")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Settings/VBoxContainer/R_TopPanel" unique_id=101034697]
 layout_mode = 1
@@ -1159,6 +1162,7 @@ theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "Hotkeys"
 
 [node name="Help" type="TabContainer" parent="." unique_id=1603064086]
@@ -1172,16 +1176,15 @@ theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
-current_tab = 1
+current_tab = 0
 tab_0/title = "Getting Started"
 tab_1/title = "Methods & Hotkeys"
 tab_2/title = "More Info"
 metadata/_tab_index = 2
 
 [node name="GettingStarted" type="ScrollContainer" parent="Help" unique_id=1377872369]
-visible = false
 layout_mode = 2
-scroll_vertical = 47
+scroll_vertical = 42
 scroll_vertical_custom_step = 20.0
 scroll_hint_mode = 1
 tile_scroll_hint = true
@@ -1306,9 +1309,11 @@ theme_override_styles/title_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("15_k47fi")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "Messages"
 
 [node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted/VBoxContainer/Messages" unique_id=496326699]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1372,6 +1377,7 @@ text = "When running multiple instances of your project, prevalent in cases with
 fit_content = true
 
 [node name="Methods&Hotkeys" type="ScrollContainer" parent="Help" unique_id=830461916]
+visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 metadata/_tab_index = 1
@@ -1384,6 +1390,7 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 
 [node name="Functions" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=347626334]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
