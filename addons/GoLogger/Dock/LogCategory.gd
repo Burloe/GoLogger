@@ -22,9 +22,7 @@ signal category_deleted(name: String)
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
-@onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
-var sb_panel_round_base: StyleBoxFlat = preload("uid://cywnobmluy31i")
-var sb_panel_round_base_accent_border: StyleBoxFlat = preload("uid://qbiwr8hnwf5n")
+@onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
 var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid: StyleBoxFlat = preload("uid://sqhht0mdddoi")
 
@@ -35,8 +33,7 @@ var config = ConfigFile.new()
 var is_locked : bool = false:
 	set(value):
 		is_locked = value
-		log_category_changed.emit()
-		add_theme_stylebox_override("panel", sb_panel_round_base_accent_border if is_locked else sb_panel_round_base)
+		log_category_changed.emit() 
 		if lock_btn != null: lock_btn.button_pressed = is_locked
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
@@ -56,8 +53,7 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		config.load(PATH)
 
-		_on_editor_settings_changed()
-		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+		_on_editor_settings_changed() 
 		revert_btn.hide()
 		if category_name != "":
 			revert_btn.tooltip_text = str("Revert to '", category_name, "'")
@@ -168,12 +164,7 @@ func apply_name(new_name: String) -> void:
 		config.set_value("categories", "default_category", new_name)
 
 	config.set_value("categories", "category_names", cat)
-	config.save(PATH)
-
-	# if category_name == "":
-	# 	print_rich("[color=878787][GoLogger] Category <" + new_name + "> created.")
-	# else:
-	# 	print_rich("[color=878787][GoLogger] Category <" + category_name + "> renamed to <" + new_name + ">.")
+	config.save(PATH) 
 
 	category_name = new_name
 	line_edit.text = new_name

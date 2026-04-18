@@ -36,10 +36,6 @@ content_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tayiv"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
-font_size = 12
-font_color = Color(1, 1, 1, 0.352941)
-
 [sub_resource type="Theme" id="Theme_fcs7p"]
 CheckButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 CheckButton/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
@@ -50,6 +46,10 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qo8nw"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
+font_size = 12
+font_color = Color(1, 1, 1, 0.352941)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fx5fv"]
 
@@ -133,9 +133,9 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create new category"
 mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.19215687, 0.6, 0.12156863, 1)
-theme_override_colors/icon_hover_color = Color(0.61875, 0.9, 0.225, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.192, 0.6, 0.12, 1)
+theme_override_colors/icon_pressed_color = Color(0.23921569, 0.49019608, 0.19607843, 1)
+theme_override_colors/icon_hover_color = Color(0.68999994, 0.9, 0.396, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.24009998, 0.49, 0.196, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
@@ -149,9 +149,9 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Opens Base Directory using OS file browser"
 mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.19999999, 0.5333332, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
+theme_override_colors/icon_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.39999998, 0.64999986, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
@@ -176,22 +176,6 @@ min_value = 1.0
 max_value = 10.0
 value = 6.0
 rounded = true
-
-[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=1428465256]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 11
-alignment = 2
-
-[node name="PluginVersionCatLabel" type="Label" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1992775800]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 3
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-horizontal_alignment = 2
-vertical_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Categories" unique_id=642802176]
 layout_mode = 2
@@ -870,9 +854,9 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 tooltip_text = "Open the base directory folder"
-theme_override_colors/icon_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.53333336, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.34901962, 0.101960786, 0.4, 1)
+theme_override_colors/icon_pressed_color = Color(0.37000003, 0.22000001, 0.4, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.4, 0.6509804, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = ExtResource("13_fcs7p")
 theme_override_styles/pressed = ExtResource("13_fcs7p")
@@ -885,10 +869,10 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
-tooltip_text = "Reset to default (settings and categories)"
-theme_override_colors/icon_pressed_color = Color(0.7490196, 0.16470589, 0.16470589, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.21960784, 0.21960784, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.16500002, 0.16500002, 1)
+tooltip_text = "Reset to all settings to default"
+theme_override_colors/icon_pressed_color = Color(0.56078434, 0.21176471, 0.21176471, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.48000002, 0.48000002, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.56, 0.2128, 0.2128, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
 theme_override_styles/pressed = ExtResource("13_fcs7p")
 theme_override_styles/hover = ExtResource("13_fcs7p")

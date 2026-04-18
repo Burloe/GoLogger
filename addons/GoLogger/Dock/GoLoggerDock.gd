@@ -17,28 +17,101 @@ extends TabContainer
 
 
 # RELEASE CHECKLIST:
-	# Ensure proper tab states - CATEGORIES tab - Getting Started	in Help tab
-	# Check font highlighting on mouse over for settings tab
-	# Check print history works as expected
-	# Check Category:
-		# Category section is added to .ini file after naming a new category
-		# Old category section is removed from .ini file after renaming a category
-		# Category section is removed from .ini file after deleting a category
-	# Check LogCategory:
-		# Renaming a category adds an int to the name
-		# Reordering categories works
-		# Locking & Deletion
-		# Marking as default
-	# Check that settings tooltips remain uniform between the buttons and their containers:
-		# There are two nodes per setting ( the container + the control( button/line edit/spin box ) )
-		# Both nodes should have the same tooltip text
-	# Ensure ConfigFile updates properly with:
-		# Applying name
-		# Adding category
-		# Removing category
-		# Reordering categories
-		# Changing settings values
-		# No type mismatching with the values of the settings and the 'expected_types' dict
+	# Ensure proper tab states - CATEGORIES tab is active, all [FoldableContainer]s are collapsed in both Settings and Help tab
+	# Ensure gologger_data.ini is created if not present when loading the plugin
+	#
+	# In sessions:
+		# Start of session:
+			# Session starts when it can be
+			# gologger_data.ini:
+				# gologger_data.ini is created if not present
+				# [categories.category_name] is present in file
+				# [categories.category_name] - following keys are updated:
+					# file_name - contains the current file_name ("game(260417_020435).log")
+					# file_path - contains the absolute filepath of current file (base_directory + file_name)
+					# category_name
+					# file_count - current number of .log files in directory
+					# is_locked - true/false based on LogCategory state
+					# entry_count - current count of entries in current .log file
+			# Directory:
+				# Ensure .log file is created with the current date- and timestamp
+				# log_header is inside the file
+				# File count removes the oldest file AND that the correct number of files are maintained
+			# InstanceID:
+				# Check unique session_id is indeed generated 
+				# Check ID Overlay displays proper the instance_id 
+				# Check ID Overlay visuals are applied properly according to settings
+		#
+		# During sessions:
+			# Session Timer:
+				# Check that session timer wait time is properly set according to [session_duration]
+				# Ensure session is stopped/restarted properly on timeout
+			# Entry count:
+				# Check that entry_count is enforced at the appropriate integer count
+				# Ensure session is stopped/restarted or entries are overwritten when entry_count is hit
+				# Check that oldest entry is indeed the one removed
+			# msg():
+				# Check entry is logged properly
+				# Check entry_format is applied to each entry and that the session ID is added if tag is present
+				# Entry isn't logged when a session isn't started
+		#
+		# End of sessions:
+			# gologger_data.ini:
+				# file_name, file_path and entry_count are set to blank value			
+	#
+	#
+	# Categories:
+		# In gologger_data.ini:
+			# Following section and keys should update whenever ANY category change is made in dock:
+				# [categories][category_names] - [categories][defautl_category]
+				# [categories.category_name]:
+					# file_name - file_path - category_name - file_count - is_locked - entry_count
+			# [categories][category_names] - has names and order in array according to dock state
+			# [categories][category_names] - reorders array entries properly when moving categories
+			# [categories][category_names] - deletes proper category from array
+			# [categories][default_categories] - assigns and reassigns properly 
+			# [categories][default_categories] - clears when ticked off
+			# [categories.category_name] - is initialized with blank values when creating a new category
+			# [categories.category_name] - each key is updated properly during sessions:
+				# "file_name" - The current file name when starting any session
+				# "file_path" - The absolute path when starting any session
+				# "category_name" - The category name when a name is applied in the dock
+				# "file_count" - Increments during session
+				# "is_locked" - True/false based on dock LogCategory button state
+				# "entry_count" - Increments during session
+			# Settings are validated properly
+			# Clobbered/stray settings are removed 
+		#
+		# In Dock:
+			# Apply[Button] and DefaultCategory[CheckBox] toggles properly when modifying the category name
+			# Apply[Button] disables when an invalid name is currently in the [LineEdit]
+			# Reset[Button] shows when CategoryName[LineEdit] is being edited
+			# Reset[Button] in the CategoryName[LineEdit] reverts to the last applied 'category_name'
+			# Lock[Button] disables CategoryName[LineEdit] and Delete[Button]
+			# DefaultCategory[CheckBox] toggles on/off properly across LogCategories
+			# Move[Button]s properly moves LogCategories AND that they disables appropriately on the left- and rightmost ones respectively 
+			# Delete[Button] properly queue frees it's LogCategory
+	#
+	# Dock:
+		# Category tab:
+			# Add[Button] adds blank LogCategories and focuses on the CategoryName[LineEdit] of the added LogCategory
+			# OpenDirectory[Button] opens the current base_directory
+			# Column slider appropriately changes the Category Container's column value
+		# Settings tab:
+			# Ensure theme uniformity - theme adheres to EditorSettings <base_color>, <accent_color> settings and <contrast> AND that elements changes colors between light/dark together with the EditorTheme
+			# Labels for each setting is highlighted when either the setting OR container is mouse_entered/exited
+			# Ensure each setting applies it's value to the .ini file as well as loads the proper value
+			# Ensure each setting's value is applied to it's function and works
+			# BaseDirectory, LogHeaderFormat and EntryFormat shows the Apply[Button] when a valid name is in the [LineEdit]
+			# See that the Inspector module for Hotkeys are loading and showing properly.
+
+			# Check that settings tooltips remain uniform between the buttons and their containers:
+			# There are two nodes per setting ( the container + the control( button/line edit/spin box ) )
+			# Both nodes should have the same tooltip text
+	#
+		# Help tab:
+			# Simply spell and grammar check everything
+			# Check that everything is according to the newest version
 
 signal update_index
 signal change_category_name_finished 
@@ -103,7 +176,6 @@ var session_duration_spinbox_line: LineEdit
 @onready var error_rep_lbl: Label = %ErrorRepLabel
 @onready var error_rep_container: HBoxContainer = %ErrorRepHBox
 
-@onready var plugin_version_cat_lbl: Label = %PluginVersionCatLabel
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
 
@@ -227,8 +299,6 @@ var config = ConfigFile.new()
 var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
-		if plugin_version_cat_lbl != null:
-			plugin_version_cat_lbl.text = str("GoLogger v.", value)
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
 
