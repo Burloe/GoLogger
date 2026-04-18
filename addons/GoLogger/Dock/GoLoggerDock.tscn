@@ -22,7 +22,6 @@
 [ext_resource type="StyleBox" uid="uid://ba2pkgbcu0dlo" path="res://addons/GoLogger/Resources/theme/spinbox_down_highlight.tres" id="15_cp33x"]
 [ext_resource type="StyleBox" uid="uid://bth006ulwoyl3" path="res://addons/GoLogger/Resources/theme/clr_picker_btn_normal.tres" id="16_cp33x"]
 [ext_resource type="StyleBox" uid="uid://daw4nhpnjj6i1" path="res://addons/GoLogger/Resources/theme/spinbox_down_pressed.tres" id="16_xov76"]
-[ext_resource type="StyleBox" uid="uid://bv58jw0dd3sve" path="res://addons/GoLogger/Resources/theme/clr_picker_btn_highlight.tres" id="17_xov76"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="18_k47fi"]
 [ext_resource type="StyleBox" uid="uid://bqxadvxd6q2yj" path="res://addons/GoLogger/Resources/theme/panel_rounded_no_top_base.tres" id="22_xov76"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/GoLogger/Resources/theme/panel_rounded_base_col.tres" id="26_xov76"]
@@ -245,9 +244,9 @@ theme_override_constants/separation = 15
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/font_color = Color(0.702, 0.702, 0.702, 1)
+theme_override_colors/hover_font_color = Color(0.949, 0.949, 0.949, 1)
+theme_override_colors/collapsed_font_color = Color(0.702, 0.702, 0.702, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
@@ -317,14 +316,10 @@ text = "Error report level"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/font_pressed_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 selected = 0
 item_count = 4
 popup/item_0/text = "Warnings & Errors    "
@@ -340,9 +335,9 @@ popup/item_3/id = 3
 [node name="LimitersFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1108637460]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/font_color = Color(0.702, 0.702, 0.702, 1)
+theme_override_colors/hover_font_color = Color(0.949, 0.949, 0.949, 1)
+theme_override_colors/collapsed_font_color = Color(0.702, 0.702, 0.702, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
@@ -421,14 +416,10 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Method used to limit file size. 
 Use the selected Actions below to determine what happens once the method condition is fullfilled."
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/font_pressed_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 selected = 0
 allow_reselect = true
 item_count = 5
@@ -470,14 +461,10 @@ size_flags_vertical = 4
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
 Overwrite Entries removes the oldest entry as new ones are logged.
 "
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/font_pressed_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 selected = 0
 allow_reselect = true
 item_count = 3
@@ -544,14 +531,10 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/font_pressed_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 selected = 0
 allow_reselect = true
 item_count = 2
@@ -600,9 +583,9 @@ select_all_on_focus = true
 [node name="IDOverlayFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_colors/font_color = Color(0.702, 0.702, 0.702, 1)
+theme_override_colors/hover_font_color = Color(0.949, 0.949, 0.949, 1)
+theme_override_colors/collapsed_font_color = Color(0.702, 0.702, 0.702, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
@@ -629,7 +612,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1651403943]
 layout_mode = 2
-text = "Overlay Example:"
+text = "Overlay Preview:"
 
 [node name="Panel" type="Panel" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1156760820]
 custom_minimum_size = Vector2(0, 64)
@@ -666,14 +649,10 @@ text = "Alignment"
 [node name="IDOverlayAlignOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=1922500613]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.878, 0.878, 0.878, 1)
-theme_override_colors/font_pressed_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("13_fcs7p")
-theme_override_styles/pressed = ExtResource("14_fx5fv")
-theme_override_styles/hover = ExtResource("14_fx5fv")
-theme_override_styles/hover_pressed = ExtResource("14_fx5fv")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 alignment = 2
 selected = 0
 item_count = 11
@@ -743,9 +722,9 @@ layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Modulate for ID Overlay"
 theme_override_styles/normal = ExtResource("16_cp33x")
-theme_override_styles/pressed = ExtResource("17_xov76")
-theme_override_styles/hover = ExtResource("17_xov76")
-theme_override_styles/hover_pressed = ExtResource("17_xov76")
+theme_override_styles/pressed = ExtResource("16_cp33x")
+theme_override_styles/hover = ExtResource("16_cp33x")
+theme_override_styles/hover_pressed = ExtResource("16_cp33x")
 autowrap_mode = 3
 color = Color(1, 1, 1, 1)
 
@@ -790,9 +769,9 @@ custom_minimum_size = Vector2(86, 31)
 layout_mode = 2
 tooltip_text = "Modulate for ID Overlay"
 theme_override_styles/normal = ExtResource("16_cp33x")
-theme_override_styles/pressed = ExtResource("17_xov76")
-theme_override_styles/hover = ExtResource("17_xov76")
-theme_override_styles/hover_pressed = ExtResource("17_xov76")
+theme_override_styles/pressed = ExtResource("16_cp33x")
+theme_override_styles/hover = ExtResource("16_cp33x")
+theme_override_styles/hover_pressed = ExtResource("16_cp33x")
 autowrap_mode = 3
 
 [node name="HSeparator" type="HSeparator" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1043223854]
@@ -969,7 +948,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". "
-theme = SubResource("Theme_fcs7p")
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = ExtResource("18_k47fi")
 text = "user://GoLogger/"
@@ -1563,42 +1541,6 @@ This option defines the maximum number of .log files allowed in each category fo
 
 [b]Recommended:[/b]
 Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed."
-fit_content = true
-
-[node name="Instances" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=67261972]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_colors/hover_font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
-theme_override_styles/panel = ExtResource("12_cp33x")
-folded = true
-title = "Instances"
-
-[node name="MarginContainer" type="MarginContainer" parent="Help/Methods&Hotkeys/VBoxContainer/Instances" unique_id=186307347]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/Methods&Hotkeys/VBoxContainer/Instances/MarginContainer" unique_id=717151763]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "[font_size=14]There are times that running multiple instances at the same time while debugging/testing your project. Such is the case for multiplayer games. However, when doing so. You have two instances logging into one log file and you need some way to know which instance logged which entry. This is possible by adding the {instance_id} tag to the Entry Format setting. An instance ID is a simple ID string that is generated at runtime(much like UIDs). 
-
-Use the [b]Display Instance ID[/b] hotkey to see display the ID of an instance in the top left corner of your viewport."
 fit_content = true
 
 [node name="Formatting" type="FoldableContainer" parent="Help/Methods&Hotkeys/VBoxContainer" unique_id=1185594613]

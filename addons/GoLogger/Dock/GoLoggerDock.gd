@@ -334,25 +334,6 @@ func _ready() -> void:
 		entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
 		session_duration_spinbox_line = session_duration_spinbox.get_line_edit()
 
-
-		var line_edits: Array[LineEdit] = [
-			base_dir_line,
-			log_header_line,
-			entry_format_line,
-			id_overlay_font_size_spinbox_line,
-			id_overlay_outline_size_spinbox_line,
-			file_count_spinbox_line,
-			entry_count_spinbox_line,
-			session_duration_spinbox_line
-		]
-		for line in line_edits:
-			if line == null: return
-
-			line.add_theme_stylebox_override("normal", sb_line_edit_normal)
-			line.editing_toggled.connect(_on_line_edit_highlight_changed.bind(line))
-			line.mouse_entered.connect(_on_line_edit_highlight_changed.bind(true, line))
-			line.mouse_exited.connect(_on_line_edit_highlight_changed.bind(false, line))
-
 		btn_array = [
 			base_dir_line,
 			base_dir_apply_btn,
@@ -518,7 +499,7 @@ func _ready() -> void:
 
  
 		initialize_dock()
-		_apply_theme_colors(self)
+		_apply_theme_colors()
 
 		await get_tree().process_frame 
 
@@ -1342,14 +1323,6 @@ func _on_column_slider_value_changed(value: int) -> void:
 
 
 
-func _on_line_edit_highlight_changed(highlight_on: bool, line_edit: LineEdit) -> void:
-	if highlight_on:
-		line_edit.add_theme_stylebox_override("normal", sb_line_edit_highlight)
-	else:
-		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
-
-
-
 ## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
 	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
@@ -1368,7 +1341,7 @@ func _ensure_default_category() -> void:
 func _on_editor_settings_changed() -> void:
 	settings = EditorInterface.get_editor_settings()
 	editor_base_col = settings.get("interface/theme/base_color")
-	_apply_theme_colors(self)
+	_apply_theme_colors()
 
 
 
@@ -1404,21 +1377,23 @@ func _get_theme_colors() -> Dictionary:
 			"dark_highlight": accent_dark_h,
 		},
 		"font": {
-			"normal": Color(0.878, 0.878, 0.878),
-			"hover": Color(0.95, 0.95, 0.95),
+			"normal": Color("9d9ea0"),
+			"hover": Color("ffffff"),
 			"interact_normal": base_col,
 			"interact_hover": base_light,
 			"interact_pressed": base_col,
 			"interact_hover_pressed": base_light,
-			"fold_normal": Color(0.702, 0.702, 0.702),
-			"fold_hover": Color(0.949, 0.949, 0.949)
+			"fold_normal": Color("b3b3b3"),
+			"fold_hover": Color("f2f2f2")
 		}
 	}
+	# var c_font_normal := Color("9d9ea0")Color(0.878, 0.878, 0.878)
+	# var c_font_hover := Color("ffffff") Color(0.95, 0.95, 0.95),
 	return colors
 
 
 
-func _apply_theme_colors(current_node: Control):
+func _apply_theme_colors():
 	theme_colors = _get_theme_colors()
 
 	sb_tab_unselected.bg_color 			= Color.TRANSPARENT
@@ -1462,8 +1437,8 @@ func _apply_theme_colors(current_node: Control):
 
 
 	for cont in [general_fold_cont, limit_fold_cont, id_overlay_fold_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
-		cont.add_theme_color_override("font_color", 						theme_colors["font"]["fold_normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
-		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["fold_hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
+		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
+		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_highlight"].v 				< 0.7 else theme_colors["base"]["col"])
 		# cont.add_theme_color_override("title_collapsed_hover", 	Color.WHITE 											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["base"]["col"])
 

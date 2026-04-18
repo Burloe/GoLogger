@@ -54,8 +54,8 @@ corner_detail = 5
 
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
 custom_minimum_size = Vector2(200, 85)
-offset_right = 332.0
-offset_bottom = 85.0
+offset_right = 328.0
+offset_bottom = 89.0
 theme_override_styles/panel = ExtResource("1_7kr4p")
 script = ExtResource("1_8da2w")
 
@@ -67,9 +67,9 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move left"
 mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.15686275, 0.3882353, 0.33333334, 1)
-theme_override_colors/icon_hover_color = Color(0.7200001, 0.32, 0.8, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.15599999, 0.39, 0.3315, 1)
+theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
 theme_override_styles/normal = ExtResource("3_7kr4p")
 theme_override_styles/pressed = ExtResource("3_7kr4p")
 theme_override_styles/hover = ExtResource("3_7kr4p")
@@ -88,9 +88,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_uneditable_color = Color(0.960784, 0.647059, 0.105882, 1)
-theme_override_colors/font_selected_color = Color(0.2236, 0.86, 0.594833, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("6_lnuxt")
@@ -101,6 +99,7 @@ max_length = 20
 
 [node name="RevertButton" type="Button" parent="HBoxContainer/VBoxContainer/CategoryNameLineEdit" unique_id=1421057895]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -157,9 +156,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 15)
 layout_mode = 2
 tooltip_text = "Mark as Default Category
-
-For more information, see:
-	Help > Getting Started >  Default Category"
+See: 	Help > Getting Started >  Categories"
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = ExtResource("3_7kr4p")
 theme_override_styles/pressed = ExtResource("3_7kr4p")
@@ -214,8 +211,9 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Move right"
 mouse_default_cursor_shape = 2
-theme_override_colors/icon_hover_color = Color(0.22352941, 0.56078434, 0.4745098, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.15599999, 0.39, 0.3315, 1)
+theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
 theme_override_styles/normal = ExtResource("3_7kr4p")
 theme_override_styles/pressed = ExtResource("3_7kr4p")
 theme_override_styles/hover = ExtResource("3_7kr4p")
