@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dm7mwwoselesw"]
 
 [ext_resource type="Script" uid="uid://dwsq1eyit7cex" path="res://addons/GoLogger/Log.gd" id="1_qpie0"]
+[ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/GoLogger/Resources/id_overlay_lbl_settings.tres" id="2_vptd1"]
 
 [node name="Log" type="Node" unique_id=925760869]
 script = ExtResource("1_qpie0")
@@ -23,11 +24,11 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="InstanceIDLabel" type="RichTextLabel" parent="GoLoggerElements/MarginContainer" unique_id=423741853]
+[node name="InstanceIDLabel" type="Label" parent="GoLoggerElements/MarginContainer" unique_id=1512920177]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+size_flags_vertical = 1
 mouse_filter = 1
-bbcode_enabled = true
-text = "  [color=white][outline_size= 8]e82J9"
-fit_content = true
+text = "   e82J9"
+label_settings = ExtResource("2_vptd1")

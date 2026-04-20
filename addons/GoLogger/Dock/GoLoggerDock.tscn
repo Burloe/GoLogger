@@ -20,9 +20,9 @@
 [ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="14_fx5fv"]
 [ext_resource type="StyleBox" uid="uid://q0h5bi585ik6" path="res://addons/GoLogger/Resources/theme/spinbox_up_pressed.tres" id="14_itauu"]
 [ext_resource type="StyleBox" uid="uid://ba2pkgbcu0dlo" path="res://addons/GoLogger/Resources/theme/spinbox_down_highlight.tres" id="15_cp33x"]
-[ext_resource type="StyleBox" uid="uid://bth006ulwoyl3" path="res://addons/GoLogger/Resources/theme/clr_picker_btn_normal.tres" id="16_cp33x"]
 [ext_resource type="StyleBox" uid="uid://daw4nhpnjj6i1" path="res://addons/GoLogger/Resources/theme/spinbox_down_pressed.tres" id="16_xov76"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="18_k47fi"]
+[ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/GoLogger/Resources/id_overlay_lbl_settings.tres" id="19_cp33x"]
 [ext_resource type="StyleBox" uid="uid://bqxadvxd6q2yj" path="res://addons/GoLogger/Resources/theme/panel_rounded_no_top_base.tres" id="22_xov76"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/GoLogger/Resources/theme/panel_rounded_base_col.tres" id="26_xov76"]
 
@@ -93,13 +93,14 @@ theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
-current_tab = 0
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1562.0, 1529.0]
 
 [node name="Categories" type="VBoxContainer" parent="." unique_id=1224284395]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 0
@@ -197,7 +198,6 @@ theme_override_constants/v_separation = 8
 columns = 6
 
 [node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 1
@@ -235,7 +235,7 @@ theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
 theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
@@ -331,7 +331,7 @@ theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
 theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
@@ -583,7 +583,7 @@ suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="IDOverlayFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1336991210]
+[node name="IDFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
@@ -591,65 +591,78 @@ theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
 theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
-theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
-folded = true
 title = "ID Overlay"
 title_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer" unique_id=251070164]
-visible = false
+[node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer" unique_id=251070164]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer" unique_id=570791839]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer" unique_id=570791839]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1069184227]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1651403943]
-layout_mode = 2
-text = "Overlay Preview:"
-
-[node name="Panel" type="Panel" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1156760820]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_tayiv")
-
-[node name="IDOverlayExampleLabel" type="RichTextLabel" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/VBoxContainer/Panel" unique_id=692227105]
+[node name="IDToggleShowCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=1117143264]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/outline_size = 8
-theme_override_styles/normal = SubResource("StyleBoxEmpty_qo8nw")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_qo8nw")
-bbcode_enabled = true
-text = "[font_size=8.0][color=ffffffff][outline_size=8][outline_color=000000ff]h9Em2"
-horizontal_alignment = 1
-vertical_alignment = 1
+layout_direction = 3
+layout_mode = 2
+tooltip_text = "Toggles the ID Overlay instead of while the button is pressed."
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+text = "Toggle on key release"
+alignment = 2
+icon_alignment = 2
 
-[node name="IDOverlayAlignHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=33450767]
+[node name="IDStartupCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=810743569]
+unique_name_in_owner = true
+visible = false
+layout_direction = 3
+layout_mode = 2
+tooltip_text = "Shows ID on startup IF 'Toggle ID Overlay' is enabled"
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+text = "Show ID Overlay on startup"
+alignment = 2
+icon_alignment = 2
+
+[node name="IDPrintCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=2142215854]
+unique_name_in_owner = true
+layout_direction = 3
+layout_mode = 2
+tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+text = "Print ID to output on hotkey press"
+alignment = 2
+icon_alignment = 2
+
+[node name="IDAlignHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=33450767]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IDOverlayAlignLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=799453164]
+[node name="IDAlignLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDAlignHBox" unique_id=799453164]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Alignment"
 
-[node name="IDOverlayAlignOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayAlignHBox" unique_id=1922500613]
+[node name="IDAlignOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDAlignHBox" unique_id=1922500613]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
@@ -686,146 +699,44 @@ popup/item_9/id = 8
 popup/item_10/text = "Bottom - Right"
 popup/item_10/id = 9
 
-[node name="IDOverlayFontSizeHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1957436368]
-unique_name_in_owner = true
+[node name="IDExample" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=1069184227]
 layout_mode = 2
 
-[node name="IDOverlayFontSizeLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayFontSizeHBox" unique_id=1669599151]
+[node name="Label" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDExample" unique_id=1651403943]
+layout_mode = 2
+text = "Overlay Preview:"
+
+[node name="Panel" type="Panel" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDExample" unique_id=1156760820]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tayiv")
+
+[node name="IDExampleLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDExample/Panel" unique_id=1725815860]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qo8nw")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qo8nw")
+text = "h9Em2"
+label_settings = ExtResource("19_cp33x")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IDFontFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=2082572762]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Font Size"
-
-[node name="IDOverlayFontSizeSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayFontSizeHBox" unique_id=291883263]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_styles/up_background_hovered = ExtResource("13_tvbkj")
-theme_override_styles/up_background_pressed = ExtResource("14_itauu")
-theme_override_styles/down_background_hovered = ExtResource("15_cp33x")
-theme_override_styles/down_background_pressed = ExtResource("16_xov76")
-min_value = 4.0
-value = 8.0
-rounded = true
-allow_greater = true
-alignment = 2
-custom_arrow_round = true
-
-[node name="IDOverlayFontColorHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=2003757341]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="IDOverlayFontColorLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayFontColorHBox" unique_id=1090939026]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Font Color"
-
-[node name="IDOverlayFontColorColorPickerButton" type="ColorPickerButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayFontColorHBox" unique_id=1951015668]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(86, 31)
-layout_mode = 2
-size_flags_vertical = 4
-tooltip_text = "Modulate for ID Overlay"
-theme_override_styles/normal = ExtResource("16_cp33x")
-theme_override_styles/pressed = ExtResource("16_cp33x")
-theme_override_styles/hover = ExtResource("16_cp33x")
-theme_override_styles/hover_pressed = ExtResource("16_cp33x")
-autowrap_mode = 3
-color = Color(1, 1, 1, 1)
-
-[node name="IDOverlayOutlineSizeHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=899472860]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="IDOverlayOutlineSizeLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=962088629]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Outline Size"
-
-[node name="IDOverlayOutlineSizeSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayOutlineSizeHBox" unique_id=182452828]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_styles/up_background_hovered = ExtResource("13_tvbkj")
-theme_override_styles/up_background_pressed = ExtResource("14_itauu")
-theme_override_styles/down_background_hovered = ExtResource("15_cp33x")
-theme_override_styles/down_background_pressed = ExtResource("16_xov76")
-value = 8.0
-rounded = true
-allow_greater = true
-alignment = 2
-custom_arrow_round = true
-
-[node name="IDOverlayOutlineColorHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1968747032]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="IDOverlayOutlineColorLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayOutlineColorHBox" unique_id=2032884393]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Outline Color"
-
-[node name="IDOverlayOutlineColorColorPickerButton" type="ColorPickerButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer/IDOverlayOutlineColorHBox" unique_id=1745076468]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(86, 31)
-layout_mode = 2
-tooltip_text = "Modulate for ID Overlay"
-theme_override_styles/normal = ExtResource("16_cp33x")
-theme_override_styles/pressed = ExtResource("16_cp33x")
-theme_override_styles/hover = ExtResource("16_cp33x")
-theme_override_styles/hover_pressed = ExtResource("16_cp33x")
-autowrap_mode = 3
-
-[node name="HSeparator" type="HSeparator" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1043223854]
-layout_mode = 2
-
-[node name="IDOverlayToggleShowCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=1117143264]
-unique_name_in_owner = true
-layout_direction = 3
-layout_mode = 2
-tooltip_text = "Toggles the ID Overlay instead of while the button is pressed."
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-text = "Toggle on key release"
-alignment = 2
-icon_alignment = 2
-
-[node name="ShowOnStartupInstanceIDCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=810743569]
-unique_name_in_owner = true
-visible = false
-layout_direction = 3
-layout_mode = 2
-tooltip_text = "Shows ID on startup IF 'Toggle ID Overlay' is enabled"
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-text = "Show ID Overlay on startup"
-alignment = 2
-icon_alignment = 2
-
-[node name="PrintInstanceIDCheckBox" type="CheckBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDOverlayFoldableContainer/MarginContainer/VBoxContainer" unique_id=2142215854]
-unique_name_in_owner = true
-layout_direction = 3
-layout_mode = 2
-tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-text = "Print ID to output on hotkey press"
-alignment = 2
-icon_alignment = 2
+size_flags_vertical = 3
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
+theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
+title = "Font Settings"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings" unique_id=245325224]
 layout_mode = 2

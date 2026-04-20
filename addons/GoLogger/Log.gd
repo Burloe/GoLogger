@@ -70,7 +70,7 @@ signal session_stopped ## Emitted when a log session has been stopped.
 @export var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
-@onready var instance_id_label: RichTextLabel = %InstanceIDLabel
+@onready var instance_id_label: Label = %InstanceIDLabel
 
 enum LimitMethod {
 	ENTRY_COUNT,
@@ -137,42 +137,22 @@ var cat_data : Dictionary = {
 var instance_id: String = "":
 	set(value):
 		instance_id = value
-		config.load(PATH)
-		var fnt_sz := int(config.get_value(
-			"settings", "id_font_size", 
-			settings_dict.get("id_font_size").get("default"))
-		)
-		var fnt_col := Color.from_string(
-			config.get_value("settings", "id_font_color", "ffffffff"), 
-			settings_dict.get("id_font_color").get("default")
-		)
-		var ol_sz := int(config.get_value(
-			"settings", "id_outline_size", 
-			settings_dict.get("id_outline_size").get("default"))
-		)
-		var ol_col := Color.from_string(
-			config.get_value("settings", "id_outline_color", "00000000"), 
-			settings_dict.get("id_outline_color").get("default")
-		)
-		instance_id_label.text = str("  [font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]", value, "  ")
+		config.load(PATH) 
+		instance_id_label.text = str("  ", value, "  ")
 
 
 var settings_dict := {
 	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
 	"default_category": 					{"section": "categories", "name": "default_category", 	 				"type": TYPE_STRING,  "default": ""},
-	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"type": TYPE_STRING, 	"control": null, "default": "user://GoLogger/"},
-	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"type": TYPE_STRING,	"control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"type": TYPE_STRING,	"control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
+	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"type": TYPE_STRING, "control": null, "default": "user://GoLogger/"},
+	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
+	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
 	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"type": TYPE_BOOL, 		"control": null, "default": true},
 	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"type": TYPE_BOOL, 		"control": null, "default": false},
 	"id_print": 									{"section": "settings", 	"name": "id_print", 									"type": TYPE_BOOL, 		"control": null, "default": false},
 	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"type": TYPE_BOOL, 		"control": null, "default": false},
 	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0},
-	"id_font_size":								{"section": "settings", 	"name": "id_font_size", 							"type": TYPE_INT, 		"control": null, "default": 12},
-	"id_font_color":							{"section": "settings", 	"name": "id_font_color", 							"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
-	"id_outline_size":						{"section": "settings", 	"name": "id_outline_size", 						"type": TYPE_INT,			"control": null, "default": 8},
-	"id_outline_color":						{"section": "settings", 	"name": "id_outline_color", 					"type": TYPE_STRING,	"control": null, "default": "000000"},
+	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0}, 
 	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"type": TYPE_INT, 		"control": null, "default": 0},
 	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
 	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},

@@ -8,11 +8,10 @@ extends TabContainer
 	# Implement the logic for applying the setting in signal function like _on_button_button_up()
 
 # TODO:
-	# Bugs:
-	#		Limit method(and probably more) settings aren't inilitalized properly 
+	# Bugs: 
+		# 
 	# DOCK CATEGORY TAB:
-
-
+		# 
 	# DOCK SETTINGS TAB:
 
 
@@ -82,41 +81,25 @@ var session_duration_spinbox_line: LineEdit
 
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
+@onready var id_overlay_fold_cont: FoldableContainer = %IDFoldableContainer
+@onready var id_align_container: HBoxContainer = %IDAlignHBox
+@onready var id_align_lbl: Label = %IDAlignLabel
+@onready var id_align_opt_btn: OptionButton = %IDAlignOptButton
 
-@onready var id_print_btn: CheckBox = %PrintInstanceIDCheckBox
-@onready var id_overlay_font_size_hbox: HBoxContainer = %IDOverlayFontSizeHBox
-@onready var id_overlay_example_lbl: RichTextLabel = %IDOverlayExampleLabel
+@onready var id_toggle_btn: CheckBox = %IDToggleShowCheckBox
+@onready var id_startup_btn: CheckBox = %IDStartupCheckBox
+@onready var id_print_btn: CheckBox = %IDPrintCheckBox 
 
-@onready var id_overlay_align_container: HBoxContainer = %IDOverlayAlignHBox
-@onready var id_overlay_align_opt_btn: OptionButton = %IDOverlayAlignOptButton
-@onready var id_overlay_align_lbl: Label = %IDOverlayAlignLabel
-
-var id_overlay_font_size_spinbox_line: LineEdit
-@onready var id_overlay_font_size_spinbox: SpinBox = %IDOverlayFontSizeSpinBox
-@onready var id_overlay_font_size_lbl: Label = %IDOverlayFontSizeLabel
-@onready var id_overlay_toggle_btn: CheckBox = %IDOverlayToggleShowCheckBox
-@onready var id_overlay_startup_btn: CheckBox = %ShowOnStartupInstanceIDCheckBox
-@onready var id_overlay_font_col_btn: ColorPickerButton = %IDOverlayFontColorColorPickerButton
-@onready var id_overlay_font_col_lbl: Label = %IDOverlayFontColorLabel
-@onready var id_overlay_font_col_container: HBoxContainer = %IDOverlayFontColorHBox
-
-var id_overlay_outline_size_spinbox_line: LineEdit
-@onready var id_overlay_outline_size_hbox: HBoxContainer = %IDOverlayOutlineSizeHBox
-@onready var id_overlay_outline_size_spinbox: SpinBox = %IDOverlayOutlineSizeSpinBox
-@onready var id_overlay_outline_size_lbl: Label = %IDOverlayOutlineSizeLabel
-@onready var id_overlay_outline_col_btn: ColorPickerButton = %IDOverlayOutlineColorColorPickerButton
-@onready var id_overlay_outline_col_lbl: Label = %IDOverlayOutlineColorLabel
-@onready var id_overlay_outline_col_container: HBoxContainer = %IDOverlayOutlineColorHBox
-
-@onready var user_dir_btn: Button = %UserDirButton
-@onready var cat_top_bar: Panel = %TopBarPanel
-@onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
-@onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
-@onready var id_overlay_fold_cont: FoldableContainer = %IDOverlayFoldableContainer
+@onready var id_lbl_sett_cont: FoldableContainer = %IDFontFoldableContainer
+var id_inspector: EditorInspector
 
 @onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
-var id_inspector: EditorInspector
+
+@onready var user_dir_btn: Button = %UserDirButton
+# @onready var cat_top_bar: Panel = %TopBarPanel
+@onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
+@onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 
 # Help tab
 @onready var help_setup: 					FoldableContainer = %Setup
@@ -171,8 +154,7 @@ var sb_spinbox_up_pressed 						:= preload("uid://q0h5bi585ik6")
 var sb_spinbox_down_highlight 				:= preload("uid://ba2pkgbcu0dlo")
 var sb_spinbox_down_pressed 					:= preload("uid://daw4nhpnjj6i1")
 
-
-## SEPERATOR has index 3, should not be used.
+## Index 3 is a SEPERATOR and should not be used.
 enum LimitMethod {
 	ENTRY_COUNT,
 	SESSION_TIMER,
@@ -210,9 +192,9 @@ var plugin_version: String =  "1.4":
 var _default_setting_in_progress: bool = false
 var focused_category: Array = []
 var btn_array: Array[Control] = []
-var container_array: Array[Control] = []
-# var c_font_normal := Color("9d9ea0")
-# var c_font_hover := Color("ffffff") 
+var container_array: Array[Control] = [] 
+
+var id_font_settings_min_size: int = 200
 
 var settings_dict := {
 	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
@@ -225,11 +207,7 @@ var settings_dict := {
 	"id_print": 									{"section": "settings", 	"name": "id_print", 									"type": TYPE_BOOL, 		"control": null, "default": false},
 	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"type": TYPE_BOOL, 		"control": null, "default": false},
 	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0},
-	"id_font_size":								{"section": "settings", 	"name": "id_font_size", 							"type": TYPE_INT, 		"control": null, "default": 12},
-	"id_font_color":							{"section": "settings", 	"name": "id_font_color", 							"type": TYPE_STRING, 	"control": null, "default": "ffffff"},
-	"id_outline_size":						{"section": "settings", 	"name": "id_outline_size", 						"type": TYPE_INT,			"control": null, "default": 8},
-	"id_outline_color":						{"section": "settings", 	"name": "id_outline_color", 					"type": TYPE_STRING,	"control": null, "default": "000000"},
+	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0}, 
 	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"type": TYPE_INT, 		"control": null, "default": 0},
 	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
 	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},
@@ -243,28 +221,18 @@ var settings_dict := {
 
 
 
-
-
-func _update_limit_setting_visibility(limit_method: int) -> void:
-	var show_entry_limit: bool = limit_method == LimitMethod.ENTRY_COUNT or limit_method == LimitMethod.BOTH
-	var show_session_limit: bool = limit_method == LimitMethod.SESSION_TIMER or limit_method == LimitMethod.BOTH
-	entry_count_action_container.visible = show_entry_limit
-	entry_count_container.visible = show_entry_limit
-	session_timer_action_container.visible = show_session_limit
-	session_duration_container.visible = show_session_limit
-
-
-
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
-		theme_colors = _get_theme_colors()
-		inspector = EditorInspector.new() 
-		id_inspector = EditorInspector.new()
-		id_overlay_fold_cont.add_child(id_inspector)
-		hotkey_container.add_child(inspector)
-		inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		theme_colors = _get_theme_colors() 
+		inspector = _create_editor_inspector(hotkey_container)
+		inspector.edit(ResourceLoader.load("uid://dyi2aml73k4g8"))
+		id_inspector = _create_editor_inspector(id_lbl_sett_cont)
+		id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
+		id_lbl_sett_cont.folding_changed.connect(
+			func(is_folded: bool) -> void: 
+				id_lbl_sett_cont.custom_minimum_size.y = 0 if is_folded else id_font_settings_min_size
+		)
 
 		if !FileAccess.file_exists(PATH):
 			create_settings_file()
@@ -272,7 +240,7 @@ func _ready() -> void:
 		config.load(PATH)
 		_ensure_default_category()
 
-		id_overlay_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_overlay_startup_btn.hide()
+		id_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_startup_btn.hide()
 		base_dir_apply_btn.hide()
 		log_header_apply_btn.hide()
 		entry_format_apply_btn.hide()
@@ -284,30 +252,15 @@ func _ready() -> void:
 
 
 		# Signal connections
-		settings.settings_changed.connect(_on_editor_settings_changed)
-		add_category_btn.button_up.connect(_add_category)
-		open_dir_btn.button_up.connect(_open_directory)
-		column_slider.value_changed.connect(_on_column_slider_value_changed)
-		reset_settings_btn.button_up.connect(reset_to_default)
-		user_dir_btn.button_up.connect(_open_user_dir)
+		_connect_unique(settings.settings_changed, _on_editor_settings_changed)
+		_connect_unique(add_category_btn.button_up, _add_category)
+		_connect_unique(open_dir_btn.button_up, _open_directory)
+		_connect_unique(column_slider.value_changed, _on_column_slider_value_changed)
+		_connect_unique(reset_settings_btn.button_up, reset_to_default)
+		_connect_unique(user_dir_btn.button_up, _open_user_dir)
 
-		# SpinBoxes
-		file_count_spinbox_line = file_count_spinbox.get_line_edit()
-		entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
-		session_duration_spinbox_line = session_duration_spinbox.get_line_edit()
-		id_overlay_font_size_spinbox_line = id_overlay_font_size_spinbox.get_line_edit()
-		id_overlay_outline_size_spinbox_line = id_overlay_outline_size_spinbox.get_line_edit()
-
-		for line_edit in [
-			file_count_spinbox_line,
-			entry_count_spinbox_line,
-			session_duration_spinbox_line,
-			id_overlay_font_size_spinbox_line,
-			id_overlay_outline_size_spinbox_line
-		]:
-			if line_edit.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-				line_edit.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-			line_edit.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(line_edit))
+		_assign_spinbox_line_edits()
+		_connect_spinbox_line_submitted()
 
 		btn_array = [
 			base_dir_line,
@@ -320,15 +273,9 @@ func _ready() -> void:
 			autostart_btn,
 			utc_btn,
 			id_print_btn,
-			id_overlay_toggle_btn,
-			id_overlay_align_opt_btn,
-			id_overlay_font_size_spinbox,
-			id_overlay_font_size_spinbox_line,
-			id_overlay_font_col_btn,
-			id_overlay_outline_size_spinbox,
-			id_overlay_outline_size_spinbox_line,
-			id_overlay_outline_col_btn,
-			id_overlay_startup_btn,
+			id_toggle_btn,
+			id_align_opt_btn,
+			id_startup_btn,
 			limit_method_btn,
 			entry_count_action_btn,
 			session_timer_action_btn,
@@ -342,43 +289,11 @@ func _ready() -> void:
 		]
 
 
-		for i in range(btn_array.size()):
-			if btn_array[i] is Button:
-				if btn_array[i].button_up.is_connected(_on_button_button_up):
-					btn_array[i].button_up.disconnect(_on_button_button_up)
-				btn_array[i].button_up.connect(_on_button_button_up.bind(btn_array[i]))
-
-			if btn_array[i] is CheckBox:
-				if btn_array[i].toggled.is_connected(_on_checkbox_toggled):
-					btn_array[i].toggled.disconnect(_on_checkbox_toggled)
-				btn_array[i].toggled.connect(_on_checkbox_toggled.bind(btn_array[i]))
-
-			elif btn_array[i] is OptionButton:
-				if btn_array[i].item_selected.is_connected(_on_optbtn_item_selected):
-					btn_array[i].item_selected.disconnect(_on_optbtn_item_selected)
-				btn_array[i].item_selected.connect(_on_optbtn_item_selected.bind(btn_array[i]))
-
-			elif btn_array[i] is LineEdit:
-				if btn_array[i].text_changed.is_connected(_on_line_edit_text_changed):
-					btn_array[i].text_changed.disconnect(_on_line_edit_text_changed)
-				btn_array[i].text_changed.connect(_on_line_edit_text_changed.bind(btn_array[i]))
-
-				if btn_array[i].text_submitted.is_connected(_on_line_edit_text_submitted):
-					btn_array[i].text_submitted.disconnect(_on_line_edit_text_submitted)
-				btn_array[i].text_submitted.connect(_on_line_edit_text_submitted.bind(btn_array[i]))
-
-			elif btn_array[i] is SpinBox:
-				if btn_array[i].value_changed.is_connected(_on_spinbox_value_changed):
-					btn_array[i].value_changed.disconnect(_on_spinbox_value_changed)
-				btn_array[i].value_changed.connect(_on_spinbox_value_changed.bind(btn_array[i]))
-
-			elif btn_array[i] is ColorPickerButton:
-				if btn_array[i].color_changed.is_connected(_on_colorpicker_color_changed):
-					btn_array[i].color_changed.disconnect(_on_colorpicker_color_changed)
-				btn_array[i].color_changed.connect(_on_colorpicker_color_changed.bind(btn_array[i]))
+		for node in btn_array:
+			_connect_control_signal(node)
 
 
-		container_array = [
+		var	container_array: Array[HBoxContainer] = [
 			base_dir_container,
 			log_header_container,
 			entry_format_container,
@@ -389,14 +304,10 @@ func _ready() -> void:
 			entry_count_container,
 			session_duration_container,
 			error_rep_container,
-			id_overlay_align_container,
-			id_overlay_font_size_hbox,
-			id_overlay_font_col_container,
-			id_overlay_outline_size_hbox,
-			id_overlay_outline_col_container
+			id_align_container
 		]
 
-		var btns_array = [
+		var btns_array: Array[Control] = [
 			base_dir_line,
 			log_header_line,
 			entry_format_line,
@@ -407,14 +318,10 @@ func _ready() -> void:
 			entry_count_spinbox,
 			session_duration_spinbox,
 			error_rep_btn,
-			id_overlay_align_opt_btn,
-			id_overlay_font_size_spinbox,
-			id_overlay_font_col_btn,
-			id_overlay_outline_size_spinbox,
-			id_overlay_outline_col_btn
+			id_align_opt_btn
 		]
 
-		var corresponding_lbls = [
+		var corresponding_lbls: Array[Label] = [
 			base_dir_lbl,
 			log_header_lbl,
 			entry_format_lbl,
@@ -425,59 +332,111 @@ func _ready() -> void:
 			entry_count_lbl,
 			session_duration_lbl,
 			error_rep_lbl,
-			id_overlay_align_lbl,
-			id_overlay_font_size_lbl,
-			id_overlay_font_col_lbl,
-			id_overlay_outline_size_lbl,
-			id_overlay_outline_col_lbl
+			id_align_lbl,
 		]
 
-		for i in range(container_array.size()):
-			# Update font color on container mouse over containers signals
-			container_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
-			container_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
-
-			# Update font color on button mouse over signals
-			btns_array[i].mouse_entered.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], true))
-			btns_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
-
-		for lbl in corresponding_lbls:
-			lbl.add_theme_color_override("font_color", theme_colors["font"]["normal"])
-
-
-		_update_limit_setting_visibility(config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)))
+		_bind_hover_groups(container_array, btns_array, corresponding_lbls)
+		_apply_limit_method_visibility(config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)))
 
 		initialize_dock()
 		_apply_theme_colors()
 
 		await get_tree().process_frame 
 
-		var controls_by_setting := {
-			"base_directory": base_dir_line,
-			"log_header_format": log_header_line,
-			"entry_format": entry_format_line,
-			"autostart_session": autostart_btn,
-			"use_utc": utc_btn,
-			"id_print": id_print_btn,
-			"id_toggle": id_overlay_toggle_btn,
-			"id_startup_state": id_overlay_startup_btn,
-			"id_align": id_overlay_align_opt_btn,
-			"id_font_size": id_overlay_font_size_spinbox,
-			"id_font_color": id_overlay_font_col_btn,
-			"id_outline_size": id_overlay_outline_size_spinbox,
-			"id_outline_color": id_overlay_outline_col_btn,
-			"limit_method": limit_method_btn,
-			"entry_count_action": entry_count_action_btn,
-			"session_timer_action": session_timer_action_btn,
-			"file_cap": file_count_spinbox,
-			"entry_cap": entry_count_spinbox,
-			"session_duration": session_duration_spinbox,
-			"error_reporting": error_rep_btn,
-			"columns": column_slider
-		}
+		_assign_settings_controls()
 
-		for key in controls_by_setting:
-			settings_dict[key]["control"] = controls_by_setting[key]
+
+func _create_editor_inspector(parent: Control) -> EditorInspector:
+	var new_inspector := EditorInspector.new()
+	parent.add_child(new_inspector)
+	new_inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	new_inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	return new_inspector
+
+
+func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
+	if signal_obj.is_connected(callback):
+		signal_obj.disconnect(callback)
+	signal_obj.connect(callback)
+
+
+func _assign_spinbox_line_edits() -> void:
+	file_count_spinbox_line = file_count_spinbox.get_line_edit()
+	entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
+	session_duration_spinbox_line = session_duration_spinbox.get_line_edit() 
+
+
+func _connect_spinbox_line_submitted() -> void:
+	var line_edits: Array[LineEdit] = [
+		file_count_spinbox_line,
+		entry_count_spinbox_line,
+		session_duration_spinbox_line 
+	]
+
+	for line_edit in line_edits:
+		_connect_unique(line_edit.text_submitted, _on_spinbox_lineedit_submitted.bind(line_edit))
+
+
+func _connect_control_signal(node: Control) -> void:
+	if node is Button:
+		_connect_unique(node.button_up, _on_button_button_up.bind(node))
+
+	if node is CheckBox:
+		_connect_unique(node.toggled, _on_checkbox_toggled.bind(node))
+	elif node is OptionButton:
+		_connect_unique(node.item_selected, _on_optbtn_item_selected.bind(node))
+	elif node is LineEdit:
+		_connect_unique(node.text_changed, _on_line_edit_text_changed.bind(node))
+		_connect_unique(node.text_submitted, _on_line_edit_text_submitted.bind(node))
+	elif node is SpinBox:
+		_connect_unique(node.value_changed, _on_spinbox_value_changed.bind(node)) 
+
+
+func _bind_hover_groups(containers: Array[HBoxContainer], controls: Array[Control], labels: Array[Label]) -> void:
+	for i in range(containers.size()):
+		_connect_unique(containers[i].mouse_entered, _on_dock_mouse_hover_changed.bind(labels[i], true))
+		_connect_unique(containers[i].mouse_exited, _on_dock_mouse_hover_changed.bind(labels[i], false))
+		_connect_unique(controls[i].mouse_entered, _on_dock_mouse_hover_changed.bind(labels[i], true))
+		_connect_unique(controls[i].mouse_exited, _on_dock_mouse_hover_changed.bind(labels[i], false))
+
+	for lbl in labels:
+		lbl.add_theme_color_override("font_color", theme_colors["font"]["normal"])
+
+
+func _apply_limit_method_visibility(method: int) -> void:
+	var show_entry_limits := method == LimitMethod.ENTRY_COUNT or method == LimitMethod.BOTH
+	var show_time_limits := method == LimitMethod.SESSION_TIMER or method == LimitMethod.BOTH
+
+	entry_count_action_container.visible = show_entry_limits
+	entry_count_container.visible = show_entry_limits
+	session_timer_action_container.visible = show_time_limits
+	session_duration_container.visible = show_time_limits
+
+
+func _assign_settings_controls() -> void:
+	var control_map := {
+		"base_directory": base_dir_line,
+		"log_header_format": log_header_line,
+		"entry_format": entry_format_line,
+		"autostart_session": autostart_btn,
+		"use_utc": utc_btn,
+		"id_print": id_print_btn,
+		"id_toggle": id_toggle_btn,
+		"id_startup_state": id_startup_btn,
+		"id_align": id_align_opt_btn, 
+		"limit_method": limit_method_btn,
+		"entry_count_action": entry_count_action_btn,
+		"session_timer_action": session_timer_action_btn,
+		"file_cap": file_count_spinbox,
+		"entry_cap": entry_count_spinbox,
+		"session_duration": session_duration_spinbox,
+		"error_reporting": error_rep_btn,
+		"columns": column_slider
+	}
+
+	for key in control_map.keys():
+		if settings_dict.has(key):
+			settings_dict[key]["control"] = control_map[key]
 
 
 
@@ -520,10 +479,7 @@ func initialize_dock() -> void:
 			ctrl.selected = value
 
 		elif ctrl is LineEdit:
-			ctrl.text = value
-		
-		elif ctrl is ColorPickerButton:
-			ctrl.color = Color.from_string(value, Color.WHITE) 
+			ctrl.text = value 
 
 
 
@@ -633,11 +589,7 @@ func reset_to_default() -> void:
 			ctrl.selected = value
 
 		elif ctrl is LineEdit:
-			ctrl.text = value
-		
-		elif ctrl is ColorPickerButton:
-			ctrl.color = Color.from_string(value, Color.WHITE)
-			_on_colorpicker_color_changed(Color.from_string(value, Color.WHITE), ctrl) 
+			ctrl.text = value 
 
 	base_dir_apply_btn.disabled = true
 	base_dir_apply_btn.hide()
@@ -682,9 +634,7 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 		elif ctrl is OptionButton:
 			_c.set_value("settings", settings_dict[key]["name"], ctrl.selected)
 		elif ctrl is HSlider:
-			_c.set_value("settings", settings_dict[key]["name"], int(column_slider.value))
-		elif ctrl is ColorPickerButton:
-			_c.set_value("settings", settings_dict[key]["name"], ctrl.color.to_html())
+			_c.set_value("settings", settings_dict[key]["name"], int(column_slider.value)) 
 	
 	# Categories
 	for log_category in category_container.get_children():
@@ -708,7 +658,7 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
 	if  err_rep_lv <= ErrorReportLevel.ERRORS:
 		if _err > 0:
-			push_error(str("GoLogger error: Failed to save settings. No Control references found for settings: \n\t", _offenders))
+			push_error(str("GoLogger error: Failed to save settings. Null Control references found for settings: \n\t", _offenders))
 
 	var _e = _c.save(PATH)
 	if _e != OK:
@@ -1095,7 +1045,7 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 		error_rep_btn:
 			config.set_value("settings", "error_reporting", index) 
 
-		id_overlay_align_opt_btn:
+		id_align_opt_btn:
 			config.set_value("settings", "id_align", index) 
 
 	save_data()
@@ -1114,11 +1064,11 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 		id_print_btn:
 			config.set_value("settings", "id_print", toggled_on) 
 
-		id_overlay_toggle_btn:
+		id_toggle_btn:
 			config.set_value("settings", "id_toggle", toggled_on)
-			id_overlay_startup_btn.show() if toggled_on else id_overlay_startup_btn.hide() 
+			id_startup_btn.show() if toggled_on else id_startup_btn.hide() 
 
-		id_overlay_startup_btn:
+		id_startup_btn:
 			config.set_value("settings", "id_startup_state", toggled_on) 
 	save_data()
 
@@ -1142,22 +1092,6 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 
 		file_count_spinbox:
 			config.set_value("settings", "file_cap", int(value)) 
-
-		id_overlay_font_size_spinbox:
-			config.set_value("settings", "id_font_size", value)
-			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
-			var ol_sz := 		config.get_value("settings", "id_outline_size", settings_dict["id_outline_size"].get("default", Color.WHITE))
-			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default", Color.BLACK))
-
-			id_overlay_example_lbl.text = str("[font_size=", value, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2") 
-
-		id_overlay_outline_size_spinbox:
-			config.set_value("settings", "id_outline_size", value)
-			var fnt_sz := 	int(config.get_value("settings", "id_font_size", settings_dict["id_font_size"].get("default")))
-			var fnt_col := 	Color.from_string(config.get_value("settings", "id_font_color", "ffffffff"), settings_dict["id_font_color"].get("default"))
-			var ol_col := 	Color.from_string(config.get_value("settings", "id_outline_color", "00000000"), settings_dict["id_outline_color"].get("default"))
-
-			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", value, "][outline_color=", ol_col.to_html(), "]h9Em2") 
 
 	save_data()
 
@@ -1185,74 +1119,7 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus() 
 
-		id_overlay_font_size_spinbox:
-			config.set_value("settings", "id_font_size", int(new_text))
-			var fnt_col := 	Color.from_string(config.get_value(
-				"settings", "id_font_color", "ffffffff"), 
-				settings_dict["id_font_color"].get("default")
-			)
-			var ol_sz := 		config.get_value(
-				"settings", "id_outline_size", 
-				settings_dict["id_outline_size"].get("default")
-			)
-			var ol_col := 	Color.from_string(config.get_value(
-				"settings", "id_outline_color", "00000000"), 
-				settings_dict["id_outline_color"].get("default")
-			)
-
-			id_overlay_example_lbl.text = str("[font_size=", int(new_text), "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2") 
-
-		id_overlay_outline_size_spinbox:
-			config.set_value("settings", "id_font_size", int(new_text))
-			var fnt_sz := 	int(config.get_value(
-				"settings", "id_font_size", 
-				settings_dict["id_font_size"].get("default"))
-			)
-			var fnt_col := 	Color.from_string(
-				config.get_value("settings", "id_font_color", "ffffffff"), 
-				settings_dict["id_font_color"].get("default")
-			)
-			var ol_col := 	Color.from_string(
-				config.get_value("settings", "id_outline_color", "00000000"), 
-				settings_dict["id_outline_color"].get("default")
-			)
-
-			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", int(new_text), "][outline_color=", ol_col.to_html(), "]h9Em2") 
-
 	save_data()
-
-
-
-func _on_colorpicker_color_changed(col: Color, node: ColorPickerButton) -> void:
-	config.load(PATH)
-	var fnt_sz := 	int(config.get_value(
-		"settings", "id_font_size", 
-		settings_dict["id_font_size"].get("default"))
-	)
-	var fnt_col := 	Color.from_string(
-		config.get_value("settings", "id_font_color", "ffffffff"), 
-		settings_dict["id_font_color"].get("default")
-	)
-	var ol_sz := 		config.get_value(
-		"settings", "id_outline_size", 
-		settings_dict["id_outline_size"].get("default")
-	)
-	var ol_col := 	Color.from_string(
-		config.get_value("settings", "id_outline_color", "00000000"), 
-		settings_dict["id_outline_color"].get("default")
-	)
-
-	match node:
-		id_overlay_font_col_btn:
-			config.set_value("settings", "id_font_color", col.to_html())
-
-			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", col.to_html(), "][outline_size=", ol_sz, "][outline_color=", ol_col.to_html(), "]h9Em2") 
-
-		id_overlay_outline_col_btn:
-			config.set_value("settings", "id_outline_color", col.to_html())
-			id_overlay_example_lbl.text = str("[font_size=", fnt_sz, "][color=", fnt_col.to_html(), "][outline_size=", ol_sz, "][outline_color=", col.to_html(), "]h9Em2") 
-
-	config.save(PATH)
 
 
 
@@ -1337,9 +1204,7 @@ func _get_theme_colors() -> Dictionary:
 			"fold_normal": Color("b3b3b3"),
 			"fold_hover": Color("f2f2f2")
 		}
-	}
-	# var c_font_normal := Color("9d9ea0")Color(0.878, 0.878, 0.878)
-	# var c_font_hover := Color("ffffff") Color(0.95, 0.95, 0.95),
+	} 
 	return colors
 
 
@@ -1387,13 +1252,13 @@ func _apply_theme_colors():
 	panel_top_round_accent_muted.bg_color 					= theme_colors["accent"]["dark_highlight"]
 
 
-	for cont in [general_fold_cont, limit_fold_cont, id_overlay_fold_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
+	for cont in [general_fold_cont, limit_fold_cont, id_overlay_fold_cont, id_lbl_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
 		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_highlight"].v 				< 0.7 else theme_colors["base"]["col"])
 		# cont.add_theme_color_override("title_collapsed_hover", 	Color.WHITE 											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["base"]["col"])
 
-	for btn in [error_rep_btn, limit_method_btn, entry_count_action_btn,	session_timer_action_btn,	id_overlay_align_opt_btn]:
+	for btn in [error_rep_btn, limit_method_btn, entry_count_action_btn,	session_timer_action_btn,	id_align_opt_btn]:
 		btn.add_theme_color_override("font_color", 								theme_colors["font"]["normal"] 	if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["accent"]["col"])
 		btn.add_theme_color_override("font_pressed_color", 				theme_colors["font"]["hover"] 	if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["accent"]["col"])
 		btn.add_theme_color_override("font_hover_color", 					Color.WHITE 										if theme_colors["font"]["interact_pressed"].v 			< 0.7 else theme_colors["accent"]["col"])
