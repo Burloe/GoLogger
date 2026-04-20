@@ -275,8 +275,8 @@ func _input(event: InputEvent) -> void:
 			msg("Test entry ", "game", true)
 		if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
 			msg("Test entry without category name.")
-		if event is InputEventKey and event.keycode == KEY_M and event.is_released():
-			msg("Test entry in non-existent category.", "non_existant_category[THIS SHOULD REPORT ERROR!]")
+		if event is InputEventKey and event.keycode == KEY_MINUS and event.is_released():
+			msg("Test entry in non-existent category.", "non_existant_category(should report error with no assigned default category)")
 
 
 

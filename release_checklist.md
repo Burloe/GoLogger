@@ -1,10 +1,18 @@
 # GoLogger Release Checklist
 
+This file should be deleted if it was installed with the plugin. Please only install the `addons\GoLogger`
+
 ## General
 
 - [ ] Ensure the `CATEGORIES` tab is active.
 - [ ] Ensure all `FoldableContainer`s are collapsed in both the `Settings` and `Help` tabs.
 - [ ] Ensure `gologger_data.ini` is created if it is not present when loading the plugin.
+
+## Code
+- [ ] Remove any comments made throughout the code aside from relevant documentation comments
+- [ ] Remove debugging `print()` calls
+- [ ] At bottom of `_input(event: InputEvent)`, comment out the three debug `msg()` lines for keys `,.-`
+- [ ] Go through code and make it uniform. For example, in `for` loops where category names are iterated through. Make all `for` loops have same naming conventions.
 
 ## Sessions
 

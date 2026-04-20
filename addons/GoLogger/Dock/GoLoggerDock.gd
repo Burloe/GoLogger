@@ -16,102 +16,6 @@ extends TabContainer
 	# DOCK SETTINGS TAB:
 
 
-# RELEASE CHECKLIST:
-	# Ensure proper tab states - CATEGORIES tab is active, all [FoldableContainer]s are collapsed in both Settings and Help tab
-	# Ensure gologger_data.ini is created if not present when loading the plugin
-	#
-	# In sessions:
-		# Start of session:
-			# Session starts when it can be
-			# gologger_data.ini:
-				# gologger_data.ini is created if not present
-				# [categories.category_name] is present in file
-				# [categories.category_name] - following keys are updated:
-					# file_name - contains the current file_name ("game(260417_020435).log")
-					# file_path - contains the absolute filepath of current file (base_directory + file_name)
-					# category_name
-					# file_count - current number of .log files in directory
-					# is_locked - true/false based on LogCategory state
-					# entry_count - current count of entries in current .log file
-			# Directory:
-				# Ensure .log file is created with the current date- and timestamp
-				# log_header is inside the file
-				# File count removes the oldest file AND that the correct number of files are maintained
-			# InstanceID:
-				# Check unique session_id is indeed generated 
-				# Check ID Overlay displays proper the instance_id 
-				# Check ID Overlay visuals are applied properly according to settings
-		#
-		# During sessions:
-			# Session Timer:
-				# Check that session timer wait time is properly set according to [session_duration]
-				# Ensure session is stopped/restarted properly on timeout
-			# Entry count:
-				# Check that entry_count is enforced at the appropriate integer count
-				# Ensure session is stopped/restarted or entries are overwritten when entry_count is hit
-				# Check that oldest entry is indeed the one removed
-			# msg():
-				# Check entry is logged properly
-				# Check entry_format is applied to each entry and that the session ID is added if tag is present
-				# Entry isn't logged when a session isn't started
-		#
-		# End of sessions:
-			# gologger_data.ini:
-				# file_name, file_path and entry_count are set to blank value			
-	#
-	#
-	# Categories:
-		# In gologger_data.ini:
-			# Following section and keys should update whenever ANY category change is made in dock:
-				# [categories][category_names] - [categories][defautl_category]
-				# [categories.category_name]:
-					# file_name - file_path - category_name - file_count - is_locked - entry_count
-			# [categories][category_names] - has names and order in array according to dock state
-			# [categories][category_names] - reorders array entries properly when moving categories
-			# [categories][category_names] - deletes proper category from array
-			# [categories][default_categories] - assigns and reassigns properly 
-			# [categories][default_categories] - clears when ticked off
-			# [categories.category_name] - is initialized with blank values when creating a new category
-			# [categories.category_name] - each key is updated properly during sessions:
-				# "file_name" - The current file name when starting any session
-				# "file_path" - The absolute path when starting any session
-				# "category_name" - The category name when a name is applied in the dock
-				# "file_count" - Increments during session
-				# "is_locked" - True/false based on dock LogCategory button state
-				# "entry_count" - Increments during session
-			# Settings are validated properly
-			# Clobbered/stray settings are removed 
-		#
-		# In Dock:
-			# Apply[Button] and DefaultCategory[CheckBox] toggles properly when modifying the category name
-			# Apply[Button] disables when an invalid name is currently in the [LineEdit]
-			# Reset[Button] shows when CategoryName[LineEdit] is being edited
-			# Reset[Button] in the CategoryName[LineEdit] reverts to the last applied 'category_name'
-			# Lock[Button] disables CategoryName[LineEdit] and Delete[Button]
-			# DefaultCategory[CheckBox] toggles on/off properly across LogCategories
-			# Move[Button]s properly moves LogCategories AND that they disables appropriately on the left- and rightmost ones respectively 
-			# Delete[Button] properly queue frees it's LogCategory
-	#
-	# Dock:
-		# Category tab:
-			# Add[Button] adds blank LogCategories and focuses on the CategoryName[LineEdit] of the added LogCategory
-			# OpenDirectory[Button] opens the current base_directory
-			# Column slider appropriately changes the Category Container's column value
-		# Settings tab:
-			# Ensure theme uniformity - theme adheres to EditorSettings <base_color>, <accent_color> settings and <contrast> AND that elements changes colors between light/dark together with the EditorTheme
-			# Labels for each setting is highlighted when either the setting OR container is mouse_entered/exited
-			# Ensure each setting applies it's value to the .ini file as well as loads the proper value
-			# Ensure each setting's value is applied to it's function and works
-			# BaseDirectory, LogHeaderFormat and EntryFormat shows the Apply[Button] when a valid name is in the [LineEdit]
-			# See that the Inspector module for Hotkeys are loading and showing properly.
-
-			# Check that settings tooltips remain uniform between the buttons and their containers:
-			# There are two nodes per setting ( the container + the control( button/line edit/spin box ) )
-			# Both nodes should have the same tooltip text
-	#
-		# Help tab:
-			# Simply spell and grammar check everything
-			# Check that everything is according to the newest version
 
 signal update_index
 signal change_category_name_finished 
@@ -212,6 +116,7 @@ var id_overlay_outline_size_spinbox_line: LineEdit
 
 @onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
+var id_inspector: EditorInspector
 
 # Help tab
 @onready var help_setup: 					FoldableContainer = %Setup
@@ -306,8 +211,8 @@ var _default_setting_in_progress: bool = false
 var focused_category: Array = []
 var btn_array: Array[Control] = []
 var container_array: Array[Control] = []
-var c_font_normal := Color("9d9ea0")
-var c_font_hover := Color("ffffff") 
+# var c_font_normal := Color("9d9ea0")
+# var c_font_hover := Color("ffffff") 
 
 var settings_dict := {
 	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
@@ -340,11 +245,23 @@ var settings_dict := {
 
 
 
+func _update_limit_setting_visibility(limit_method: int) -> void:
+	var show_entry_limit: bool = limit_method == LimitMethod.ENTRY_COUNT or limit_method == LimitMethod.BOTH
+	var show_session_limit: bool = limit_method == LimitMethod.SESSION_TIMER or limit_method == LimitMethod.BOTH
+	entry_count_action_container.visible = show_entry_limit
+	entry_count_container.visible = show_entry_limit
+	session_timer_action_container.visible = show_session_limit
+	session_duration_container.visible = show_session_limit
+
+
+
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
-
+		theme_colors = _get_theme_colors()
 		inspector = EditorInspector.new() 
+		id_inspector = EditorInspector.new()
+		id_overlay_fold_cont.add_child(id_inspector)
 		hotkey_container.add_child(inspector)
 		inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -368,41 +285,29 @@ func _ready() -> void:
 
 		# Signal connections
 		settings.settings_changed.connect(_on_editor_settings_changed)
-		add_category_btn.button_up.connect(_add_category) # Can delete after log category refactor
+		add_category_btn.button_up.connect(_add_category)
 		open_dir_btn.button_up.connect(_open_directory)
 		column_slider.value_changed.connect(_on_column_slider_value_changed)
 		reset_settings_btn.button_up.connect(reset_to_default)
 		user_dir_btn.button_up.connect(_open_user_dir)
 
 		# SpinBoxes
-		var spinboxes: Array = [
-			[
-				file_count_spinbox,
-				entry_count_spinbox,
-				session_duration_spinbox,
-				id_overlay_font_size_spinbox,
-				id_overlay_outline_size_spinbox
-			],
-			[
-				file_count_spinbox_line,
-				entry_count_spinbox_line,
-				session_duration_spinbox_line,
-				id_overlay_font_size_spinbox_line,
-				id_overlay_outline_size_spinbox_line
-			]
-		]
-
-		for i in range(spinboxes[0].size()):
-			if spinboxes[1][i] == null: spinboxes[1][i] = spinboxes[0][i].get_line_edit()
-			if spinboxes[1][i].text_submitted.is_connected(_on_spinbox_lineedit_submitted):
-				spinboxes[1][i].text_submitted.disconnect(_on_spinbox_lineedit_submitted)
-			spinboxes[1][i].text_submitted.connect(_on_spinbox_lineedit_submitted.bind(spinboxes[1][i]))
-
-		id_overlay_font_size_spinbox_line = id_overlay_font_size_spinbox.get_line_edit()
-		id_overlay_outline_size_spinbox_line = id_overlay_outline_size_spinbox.get_line_edit()
 		file_count_spinbox_line = file_count_spinbox.get_line_edit()
 		entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
 		session_duration_spinbox_line = session_duration_spinbox.get_line_edit()
+		id_overlay_font_size_spinbox_line = id_overlay_font_size_spinbox.get_line_edit()
+		id_overlay_outline_size_spinbox_line = id_overlay_outline_size_spinbox.get_line_edit()
+
+		for line_edit in [
+			file_count_spinbox_line,
+			entry_count_spinbox_line,
+			session_duration_spinbox_line,
+			id_overlay_font_size_spinbox_line,
+			id_overlay_outline_size_spinbox_line
+		]:
+			if line_edit.text_submitted.is_connected(_on_spinbox_lineedit_submitted):
+				line_edit.text_submitted.disconnect(_on_spinbox_lineedit_submitted)
+			line_edit.text_submitted.connect(_on_spinbox_lineedit_submitted.bind(line_edit))
 
 		btn_array = [
 			base_dir_line,
@@ -537,63 +442,42 @@ func _ready() -> void:
 			btns_array[i].mouse_exited.connect(_on_dock_mouse_hover_changed.bind(corresponding_lbls[i], false))
 
 		for lbl in corresponding_lbls:
-			lbl.add_theme_color_override("font_color", c_font_normal)
+			lbl.add_theme_color_override("font_color", theme_colors["font"]["normal"])
 
 
-		for btn in [base_dir_apply_btn, log_header_apply_btn, entry_format_apply_btn]:
-			if btn.button_up.is_connected(_on_button_button_up):
-				btn.button_up.disconnect(_on_button_button_up)
-			btn.button_up.connect(_on_button_button_up.bind(btn)) 
+		_update_limit_setting_visibility(config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)))
 
-		match config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)):
-			LimitMethod.ENTRY_COUNT:
-				entry_count_action_container.show()
-				entry_count_container.show()
-				session_timer_action_container.hide()
-				session_duration_container.hide()
-			LimitMethod.SESSION_TIMER:
-				entry_count_action_container.hide()
-				entry_count_container.hide()
-				session_timer_action_container.show()
-				session_duration_container.show()
-			LimitMethod.BOTH:
-				entry_count_action_container.show()
-				entry_count_container.show()
-				session_timer_action_container.show()
-				session_duration_container.show()
-			LimitMethod.NONE:
-				entry_count_action_container.hide()
-				entry_count_container.hide()
-				session_timer_action_container.hide()
-				session_duration_container.hide()
-
- 
 		initialize_dock()
 		_apply_theme_colors()
 
 		await get_tree().process_frame 
 
-		settings_dict["base_directory"]["control"] = 						base_dir_line
-		settings_dict["log_header_format"]["control"] = 				log_header_line
-		settings_dict["entry_format"]["control"] = 							entry_format_line
-		settings_dict["autostart_session"]["control"] = 				autostart_btn
-		settings_dict["use_utc"]["control"] = 									utc_btn
-		settings_dict["id_print"]["control"] = 									id_print_btn
-		settings_dict["id_toggle"]["control"] = 								id_overlay_toggle_btn
-		settings_dict["id_startup_state"]["control"] = 					id_overlay_startup_btn
-		settings_dict["id_align"]["control"] = 									id_overlay_align_opt_btn
-		settings_dict["id_font_size"]["control"] = 							id_overlay_font_size_spinbox
-		settings_dict["id_font_color"]["control"] =							id_overlay_font_col_btn
-		settings_dict["id_outline_size"]["control"] = 					id_overlay_outline_size_spinbox
-		settings_dict["id_outline_color"]["control"] =					id_overlay_outline_col_btn
-		settings_dict["limit_method"]["control"] = 							limit_method_btn
-		settings_dict["entry_count_action"]["control"] = 				entry_count_action_btn
-		settings_dict["session_timer_action"]["control"] = 			session_timer_action_btn
-		settings_dict["file_cap"]["control"] = 									file_count_spinbox
-		settings_dict["entry_cap"]["control"] = 								entry_count_spinbox
-		settings_dict["session_duration"]["control"] = 					session_duration_spinbox
-		settings_dict["error_reporting"]["control"] = 					error_rep_btn
-		settings_dict["columns"]["control"] = 									column_slider
+		var controls_by_setting := {
+			"base_directory": base_dir_line,
+			"log_header_format": log_header_line,
+			"entry_format": entry_format_line,
+			"autostart_session": autostart_btn,
+			"use_utc": utc_btn,
+			"id_print": id_print_btn,
+			"id_toggle": id_overlay_toggle_btn,
+			"id_startup_state": id_overlay_startup_btn,
+			"id_align": id_overlay_align_opt_btn,
+			"id_font_size": id_overlay_font_size_spinbox,
+			"id_font_color": id_overlay_font_col_btn,
+			"id_outline_size": id_overlay_outline_size_spinbox,
+			"id_outline_color": id_overlay_outline_col_btn,
+			"limit_method": limit_method_btn,
+			"entry_count_action": entry_count_action_btn,
+			"session_timer_action": session_timer_action_btn,
+			"file_cap": file_count_spinbox,
+			"entry_cap": entry_count_spinbox,
+			"session_duration": session_duration_spinbox,
+			"error_reporting": error_rep_btn,
+			"columns": column_slider
+		}
+
+		for key in controls_by_setting:
+			settings_dict[key]["control"] = controls_by_setting[key]
 
 
 
@@ -1089,10 +973,7 @@ func _is_entry_format_valid(format: String) -> bool:
 
 
 func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
-	if is_hovered:
-		node.add_theme_color_override("font_color", c_font_hover)
-	else:
-		node.add_theme_color_override("font_color", c_font_normal)
+	node.add_theme_color_override("font_color", theme_colors["font"]["hover"] if is_hovered else theme_colors["font"]["normal"])
 
 
 
