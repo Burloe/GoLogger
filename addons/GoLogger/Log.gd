@@ -388,6 +388,20 @@ func start_session() -> void:
 
 func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
 	load_category_data()
+
+	var data: Dictionary = {
+		"categories": _get_config_value("categories", "category_names", []),
+		"target_category": _get_config_value("categories", category_names", []),
+		"default_category": _get_config_value("categories", "default_categories", settings_dict("default_category", "default")),
+		"target_filepath": _get_config_value(str("categories." + cateogry_name"), "file_path", "Failed to get file path!"),
+		"limit_method": _get_config_value("settings", "limit_method", settings_dict.get("limit_method", "default")),
+		"entry_action: _get_config_value("settings", "entry_action", settings_dict.get("entry_action", default")),
+		"entry_cap": _get_config_value("settings", "entry_cap", settings_dict.get("entry_cap", "default")),
+		"session_timer_action": _get_config_value("settings", "session_timer_action", settings_dict.get("session_timer_action", "default")),
+		"session_duration": _get_config_value("settings", "session_duration", settings_dict.get("session_duration", "default")),
+		"err_lv": _get_config_value("settings", "error_reporting", settings_dict.get("error_reporting", "default")),
+	}
+	
 	var _target_cat: String = 				category_name
 	var _cats: Array = 								_get_config_value("categories", "category_names", [])
 	var _default_cat: String = 				_get_config_value("categories", "default_category", "")
