@@ -49,6 +49,11 @@ axis_stretch_vertical = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qo8nw"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_cp33x"]
+font_size = 12
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
 font_size = 12
 font_color = Color(1, 1, 1, 0.352941)
@@ -78,7 +83,6 @@ content_margin_top = 8.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2vjd2"]
 
 [node name="GoLoggerDock" type="TabContainer" unique_id=1764928138]
-clip_children = 2
 anchors_preset = -1
 anchor_right = 0.686
 anchor_bottom = 0.281
@@ -487,7 +491,7 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Entry limit"
+text = "Entry Limit"
 vertical_alignment = 1
 
 [node name="EntryCountSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountHBox" unique_id=1695558902]
@@ -586,6 +590,7 @@ select_all_on_focus = true
 [node name="IDFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
 theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
@@ -594,10 +599,12 @@ theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "ID Overlay"
 title_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer" unique_id=251070164]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -618,7 +625,7 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-text = "Toggle on key release"
+text = "Toggle overlay"
 alignment = 2
 icon_alignment = 2
 
@@ -647,7 +654,7 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-text = "Print ID to output on hotkey press"
+text = "Print on hotkey press"
 alignment = 2
 icon_alignment = 2
 
@@ -660,7 +667,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Alignment"
+text = "Overlay Position"
 
 [node name="IDAlignOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDAlignHBox" unique_id=1922500613]
 unique_name_in_owner = true
@@ -699,19 +706,13 @@ popup/item_9/id = 8
 popup/item_10/text = "Bottom - Right"
 popup/item_10/id = 9
 
-[node name="IDExample" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=1069184227]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDExample" unique_id=1651403943]
-layout_mode = 2
-text = "Overlay Preview:"
-
-[node name="Panel" type="Panel" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDExample" unique_id=1156760820]
+[node name="IDExample" type="Panel" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=1156760820]
+clip_children = 2
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_tayiv")
 
-[node name="IDExampleLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDExample/Panel" unique_id=1725815860]
+[node name="IDExampleLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDExample" unique_id=1725815860]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -726,10 +727,23 @@ label_settings = ExtResource("19_cp33x")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Label" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer/IDExample" unique_id=1651403943]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Preview:"
+label_settings = SubResource("LabelSettings_cp33x")
+
 [node name="IDFontFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=2082572762]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
 theme_override_styles/title_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
@@ -846,7 +860,7 @@ layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". 
 
-It's not recommended to use \"user://logs/\" since Godot stores it's own logs "
+Do not use \"user://logs/\" because Godot stores its own logs there."
 theme_override_constants/separation = 8
 
 [node name="BaseDirLabel" type="Label" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
@@ -1290,7 +1304,9 @@ size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "When running multiple instances of your project, prevalent in cases with mutliplayer games. The two or more instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instances logged an entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[/color] setting. In any instance, you can hit the [color=fc4674]Print Instance ID[/color] hotkey([i]Ctrl + Shift + I[/]) to print that instance's ID to output."
+text = "When running multiple instances of your project, as is the case with multiplayer games where two or more instances is run for debugging. The two instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instance logged what entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[/color] setting.
+
+To see the ID of an instance, use the [color=fc4674]Print Instance ID[/color] hotkey([i]Ctrl + Shift + I[/i] by default). This will display the instance ID on your screen in your game. Within the Settings tab of the dock, under ID Overlay, you'll find settings to customize it's behavior and how it's displayed. Including the font used, size, outline and color to suit your game's resolution and ensure it is clearly visible. "
 fit_content = true
 
 [node name="Methods&Hotkeys" type="ScrollContainer" parent="Help" unique_id=830461916]

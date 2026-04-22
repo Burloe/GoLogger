@@ -67,7 +67,6 @@ extends Node
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
 
-@export var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
 @onready var instance_id_label: Label = %InstanceIDLabel
@@ -113,6 +112,7 @@ enum ErrorCodes { #NYI - For future use in error/warning messages
 }
 
 const PATH = "user://gologger_data.ini" # Mirror in GoLoggerDock.gd
+var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
 var config := ConfigFile.new()
 var copy_name : String = ""
 var session_status: bool = false:
@@ -220,19 +220,16 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if !Engine.is_editor_hint():
-		if event is InputEventKey\
-		or event is InputEventJoypadButton\
-		or event is InputEventJoypadMotion and event.axis == 4\
-		or event is InputEventJoypadMotion and event.axis == 5: # Only allow trigger axes
+		if event is InputEventKey \
+		or event is InputEventJoypadButton \
+		or (event is InputEventJoypadMotion and (event.axis == 4 or event.axis == 5)): # Only allow trigger axes
 			if gl_hotkeys.start_session_hotkey.shortcut.matches_event(event) and event.is_released():
 				start_session()
 			if gl_hotkeys.stop_session_hotkey.shortcut.matches_event(event) and event.is_released():
 				stop_session()
 
-
 			config.load(PATH)
 			var id_toggle = config.get_value("settings", "id_toggle", false)
-			var id_startup = config.get_value("settings", "id_startup_state", false)
 
 			if gl_hotkeys.display_instance_id_hotkey.shortcut.matches_event(event):
 				if id_toggle:
@@ -251,19 +248,19 @@ func _input(event: InputEvent) -> void:
 
 
 		# Test entry logging
-		if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
-			msg("Test entry ", "game", true)
-		if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
-			msg("Test entry without category name.")
-		if event is InputEventKey and event.keycode == KEY_MINUS and event.is_released():
-			msg("Test entry in non-existent category.", "non_existant_category(should report error with no assigned default category)")
+		# if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
+		# 	msg("Test entry ", "game", true)
+		# if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
+		# 	msg("Test entry without category name.")
+		# if event is InputEventKey and event.keycode == KEY_MINUS and event.is_released():
+		# 	msg("Test entry in non-existent category.", "non_existant_category(should report error with no assigned default category)")
 
 
 
 
 ## Loads category data from the config file into the cat_data dictionary.[br]
 ## Use instead of 'config.load(PATH)' whenever category data is needed.
-func load_category_data(new_session: bool = false) -> void:
+func load_category_data(_new_session: bool = false) -> void:
 	config.load(PATH)
 	cat_data.clear()
 
@@ -284,7 +281,7 @@ func load_category_data(new_session: bool = false) -> void:
 			"entry_count": 0,
 			"is_locked": config.get_value("categories." + str(c_name), "is_locked", false)
 		}
-		config.save(PATH)
+	config.save(PATH)
 
 
 ## Saves category data from the cat_data dictionary into the config file.[br]
@@ -371,7 +368,7 @@ func start_session() -> void:
 
 				var _err = DirAccess.get_open_error() # Checks for errors during dir.remove()
 				if _err != OK and _get_config_value("settings", "error_reporting") != 2:
-					push_warning("GoLoggger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
+					push_warning("GoLogger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 
 		var header: String = _get_header(c_name)
 		if header != "":
@@ -380,14 +377,24 @@ func start_session() -> void:
 
 	save_category_data()
 	session_status = true
-	if session_timer.is_stopped() and _get_config_value("settings", "session_timer_action") == 1\
-	or session_timer.is_stopped() and _get_config_value("settings", "session_timer_action") == 2:
+	if session_timer.is_stopped() and _get_config_value("settings", "session_timer_action") in [1, 2]:
 		if session_timer != null: session_timer.start()
-	session_started.emit()
 
 
 func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
 	load_category_data()
+	var data: Dictionary = {
+		"target_category": 			category_name,
+		"categories": 					_get_config_value("categories", "category_names", []),
+		"default_category":	 		_get_config_value("categories", "default_categories", settings_dict.get("default_category", "default")),
+		"target_filepath": 			_get_config_value(str("categories." + category_name), "file_path", "Failed to get file path!"),
+		"limit_method": 				_get_config_value("settings", "limit_method", settings_dict.get("limit_method", "default")),
+		"entry_action": 				_get_config_value("settings", "entry_action", settings_dict.get("entry_action", "default")),
+		"entry_cap": 						_get_config_value("settings", "entry_cap", settings_dict.get("entry_cap", "default")),
+		"session_timer_action": _get_config_value("settings", "session_timer_action", settings_dict.get("session_timer_action", "default")),
+		"session_duration": 		_get_config_value("settings", "session_duration", settings_dict.get("session_duration", "default")),
+		"err_lv": 							_get_config_value("settings", "error_reporting", settings_dict.get("error_reporting", "default")),
+	}
 	var _target_cat: String = 				category_name
 	var _cats: Array = 								_get_config_value("categories", "category_names", [])
 	var _default_cat: String = 				_get_config_value("categories", "default_category", "")
@@ -396,7 +403,6 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var _entry_action: int = 					_get_config_value("settings", "entry_count_action")
 	var _entry_cap: int = 						_get_config_value("settings", "entry_cap")
 	var _session_timer_action: int = 	_get_config_value("settings", "session_timer_action")
-	var _session_duration: int = 			_get_config_value("settings", "session_duration")
 	var _err_lv = 										_get_config_value("settings", "error_reporting")
 
 
@@ -406,27 +412,27 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
 
-	if category_name == "": # Unspecified category -> Use Default category
-		if _default_cat != "" and _cats.has(_default_cat):
-			_target_cat = _default_cat
-			_target_filepath = config.get_value(str("categories." + _default_cat), "file_path", "")
+	if data["target_category"] == "": # Unspecified category -> Use Default category
+		if data["default_category"] != "" and data["categories"].has(data["default_category"]):
+			_target_cat = data["default_category"]
+			data["target_filepath"] = config.get_value(str("categories." + data["default_category"]), "file_path", "")
 		else:
 			if _err_lv != 2:
-				if _default_cat.is_empty():
-					printerr("GoLogger: Attempted to log entry into default category when one hasn't assigned:\n\t", msg)
+				if data["default_category"].is_empty():
+					printerr("GoLogger: Attempted to log entry into default category when one hasn't been assigned. Entry: ", log_msg)
 				else:
-					if !_cats.has(_default_cat):
-						printerr("GoLogger: Entry failed to log into default category[", _default_cat, "] that does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
-					printerr("GoLogger: Attempted to log entry into a default category[", _default_cat,"] that doesn't exist.")
+					if !data["target_category"].has(data["default_category"]):
+						printerr("GoLogger: Entry failed to log into default category[", data["default_category"], "] that does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
+					printerr("GoLogger: Attempted to log entry into a default category[", data["default_category"],"] that doesn't exist.")
 
 			return
 
-	if _cats.is_empty():
+	if data["target_category"].is_empty():
 		if _err_lv != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
-	if _target_cat not in _cats:
+	if _target_cat not in data["target_category"]:
 		if _err_lv != 2:
 			printerr("GoLogger: Category '" + _target_cat + "' not found. Check correct spelling.")
 		return
@@ -434,14 +440,14 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	if !session_status:
 		return
 
-	if _target_filepath == "":
+	if data["target_filepath"] == "":
 		if _err_lv != 2:
 			printerr("GoLogger: No valid file path found for category '" + _target_cat + "[" + instance_id + "]'.")
 		return
 
 
 	# Read existing Entries (note that first entry is Log Header)
-	var _f = FileAccess.open(_target_filepath, FileAccess.READ)
+	var _f = FileAccess.open(data["target_filepath"], FileAccess.READ)
 	if !_f: # ER
 		var _err = FileAccess.get_open_error()
 		if _err != OK and _err_lv != 2:
@@ -459,10 +465,10 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	config.save(PATH)
 
 	# Handle Limit Methods
-	match _limit_method:
+	match data["limit_method"]:
 
 		LimitMethod.ENTRY_COUNT:
-			match _entry_action:
+			match data["entry_action"]:
 				EntryCountAction.OVERWRITE_ENTRIES:
 					while lines.size() >= _entry_cap:
 						lines.remove_at(1) # Retain header
@@ -492,22 +498,22 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 					return
 
 		LimitMethod.BOTH:
-			match _entry_action:
-				SessionTimerAction.RESTART:
+			match data["entry_action"]:
+				EntryCountAction.RESTART:
 					if lines.size() >= _entry_cap:
 						stop_session()
 						start_session()
 						msg(log_msg, _target_cat)
 						return
 
-				SessionTimerAction.STOP:
+				EntryCountAction.STOP:
 					if lines.size() >= _entry_cap:
 						stop_session()
 						return
 
 	# Rewrite file with existing lines / Update entry count
 	cat_data[_target_cat]["entry_count"] = lines.size()
-	var _fw = FileAccess.open(_target_filepath, FileAccess.WRITE)
+	var _fw = FileAccess.open(data["target_filepath"], FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
 		if err != OK and _err_lv != 2:
@@ -576,7 +582,7 @@ func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new()
 
 	for key in settings_dict.keys():
-		for field in ["section", "default", "type", "control", "default"]:
+		for field in ["section", "default", "type", "control"]:
 			if field == "control" and settings_dict[key]["section"] == "categories":
 				continue
 
@@ -604,26 +610,23 @@ func validate_settings() -> void: # Mirror
 		var setting: Dictionary = settings_dict.get(key, {})
 		var a_fields = ["section", "name", "type", "control", "default"]
 		var b_fields = ["section", "name", "type", "default"]
-		var err: Array[bool] = [false, false,false, false, false, false]
 
 		# Check missing fields
-		for i in range(a_fields.size()):
+		if setting.has("section"):
+			var fs = a_fields.duplicate()
 
-			if setting.has("section"):
-				var fs = a_fields.duplicate()
+			if setting["section"] == "categories":
+				fs = b_fields.duplicate()
 
-				if setting["section"] == "categories":
-					fs = b_fields.duplicate()
+			# Collect + report missing fields
+			if !setting.has_all(fs):
+				var _e: Array[String] = []
+				for field in fs:
+					if !setting.has(field):
+						_e.append(field)
 
-				# Collect + report missing fields
-				if !setting.has_all(fs):
-					var _e: Array[String] = []
-					for j in range(fs.size()):
-						if !setting.has(fs[j]):
-							_e.append(fs[j])
-
-					if not _e.is_empty():
-						push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
+				if not _e.is_empty():
+					push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
 
 		# Validate Presence
 		if !config.has_section(setting["section"]) or !config.has_section_key(setting["section"], setting["name"]):
@@ -704,7 +707,8 @@ func _get_config_value(section: String, value : String, default_value: Variant =
 		push_error(str("GoLogger: ConfigFile failed to load settings.ini file."))
 		return null
 
-	var _val = config.get_value(section, value, settings_dict.get(value, {}).get("default"))
+	var fallback = default_value if default_value != null else settings_dict.get(value, {}).get("default")
+	var _val = config.get_value(section, value, fallback)
 	if _val == null:
 		push_error(str("GoLogger: ConfigFile failed to load settings value from file."))
 	return _val

@@ -1,7 +1,7 @@
 @tool
 class_name LogCategory extends PanelContainer
 
-## Emitted o GoLoggerDock.gd when any change is made in order to save the categories.
+## Emitted to GoLoggerDock.gd when any change is made in order to save the categories.
 signal log_category_changed 
 ## Emitted to GoLoggerDock.gd to move the categories and save them.
 signal move_category_requested(log_category: LogCategory, direction : int)
@@ -85,7 +85,7 @@ func _ready() -> void:
 		)
 
 		line_edit.text_changed.connect(
-			func(new_text: String) -> void:
+			func(_new_text: String) -> void:
 				handle_name_state()
 		)
 
@@ -119,18 +119,12 @@ func _ready() -> void:
 
 
 func handle_name_state() -> void:
-	if line_edit.text == "" or line_edit.text == category_name:
-		apply_btn.hide()
-		apply_btn.disabled = true
-		default_checkbox.show() 
+	var is_unchanged := line_edit.text == "" or line_edit.text == category_name
+	var has_conflict := check_name_conflict()
 
-	else:
-		apply_btn.show()
-		apply_btn.disabled = false
-		default_checkbox.hide() 
-
-	if check_name_conflict():
-		apply_btn.disabled = true
+	apply_btn.visible = !is_unchanged
+	apply_btn.disabled = is_unchanged or has_conflict
+	default_checkbox.visible = is_unchanged
 
 
 
@@ -193,20 +187,20 @@ func _on_del_button_up() -> void:
 
 
 
-func _get_theme_colors() -> Dictionary:
+func _get_theme_colors() -> Dictionary: # Returns a structured palette based on current editor theme
 	var contrast: float = settings.get("interface/theme/contrast")
 	var base_col: Color = settings.get("interface/theme/base_color")
 	var accent_col: Color = settings.get("interface/theme/accent_color")
 
-	var base_light 			= base_col.lerp(Color.WHITE, contrast)
-	var base_dark 			= base_col.lerp(Color.BLACK, contrast)
-	var base_light_h 		= base_col.lerp(Color.WHITE, contrast * 0.5)
-	var base_dark_h 		= base_col.lerp(Color.BLACK, contrast * 0.5)
+	var base_light: Color 		= base_col.lerp(Color.WHITE, contrast)
+	var base_dark: Color 			= base_col.lerp(Color.BLACK, contrast)
+	var base_light_h: Color 	= base_col.lerp(Color.WHITE, contrast * 0.5)
+	var base_dark_h: Color 		= base_col.lerp(Color.BLACK, contrast * 0.5)
 
-	var accent_light 		= accent_col.lerp(Color.WHITE, contrast)
-	var accent_dark 		= accent_col.lerp(Color.BLACK, contrast)
-	var accent_light_h 	= accent_col.lerp(Color.WHITE, contrast * 0.5)
-	var accent_dark_h 	= accent_col.lerp(Color.BLACK, contrast * 0.5)
+	var accent_light: Color 	= accent_col.lerp(Color.WHITE, contrast)
+	var accent_dark: Color 		= accent_col.lerp(Color.BLACK, contrast)
+	var accent_light_h: Color = accent_col.lerp(Color.WHITE, contrast * 0.5)
+	var accent_dark_h: Color 	= accent_col.lerp(Color.BLACK, contrast * 0.5)
 
 	var colors := {
 		"contrast": contrast,

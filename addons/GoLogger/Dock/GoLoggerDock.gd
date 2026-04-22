@@ -81,7 +81,7 @@ var session_duration_spinbox_line: LineEdit
 
 @onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
 
-@onready var id_overlay_fold_cont: FoldableContainer = %IDFoldableContainer
+@onready var id_fold_cont: FoldableContainer = %IDFoldableContainer
 @onready var id_align_container: HBoxContainer = %IDAlignHBox
 @onready var id_align_lbl: Label = %IDAlignLabel
 @onready var id_align_opt_btn: OptionButton = %IDAlignOptButton
@@ -90,7 +90,7 @@ var session_duration_spinbox_line: LineEdit
 @onready var id_startup_btn: CheckBox = %IDStartupCheckBox
 @onready var id_print_btn: CheckBox = %IDPrintCheckBox 
 
-@onready var id_lbl_sett_cont: FoldableContainer = %IDFontFoldableContainer
+@onready var id_font_sett_cont: FoldableContainer = %IDFontFoldableContainer
 var id_inspector: EditorInspector
 
 @onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
@@ -189,8 +189,7 @@ var plugin_version: String =  "1.4":
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
 
-var _default_setting_in_progress: bool = false
-var focused_category: Array = []
+var _default_setting_in_progress: bool = false 
 var btn_array: Array[Control] = []
 var container_array: Array[Control] = [] 
 
@@ -227,11 +226,13 @@ func _ready() -> void:
 		theme_colors = _get_theme_colors() 
 		inspector = _create_editor_inspector(hotkey_container)
 		inspector.edit(ResourceLoader.load("uid://dyi2aml73k4g8"))
-		id_inspector = _create_editor_inspector(id_lbl_sett_cont)
+		id_inspector = _create_editor_inspector(id_font_sett_cont)
 		id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
-		id_lbl_sett_cont.folding_changed.connect(
+		id_font_sett_cont.folding_changed.connect(
 			func(is_folded: bool) -> void: 
-				id_lbl_sett_cont.custom_minimum_size.y = 0 if is_folded else id_font_settings_min_size
+				id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+				id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+				# id_lbl_sett_cont.custom_minimum_size.y = 0 if is_folded else id_font_settings_min_size
 		)
 
 		if !FileAccess.file_exists(PATH):
@@ -245,10 +246,10 @@ func _ready() -> void:
 		log_header_apply_btn.hide()
 		entry_format_apply_btn.hide()
 
-		for i in category_container.get_children():
-			if i is LogCategory:
-				i.queue_free()
-			else: print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", i.get_name(), "{", i.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
+		for log_c in category_container.get_children():
+			if log_c is LogCategory:
+				log_c.queue_free()
+			else: print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
 
 
 		# Signal connections
@@ -447,11 +448,11 @@ func initialize_dock() -> void:
 
 	validate_settings()
 
-	for name in config.get_value("categories", "category_names", []):
+	for c_name in config.get_value("categories", "category_names", []):
 		_add_category(
-			name,
-			config.get_value("categories." + name, "category_index", 0),
-			config.get_value("categories." + name, "is_locked", false)
+			c_name,
+			config.get_value("categories." + c_name, "category_index", 0),
+			config.get_value("categories." + c_name, "is_locked", false)
 		)
 	var def_cat = config.get_value("categories", "default_category", "")
 	if def_cat != "":
@@ -600,7 +601,7 @@ func reset_to_default() -> void:
 
 
 
-## Saves all the dock data ( categories and settings state ) to file according to the state/data of the dock.
+## Saves dock state to file.
 func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
@@ -637,21 +638,21 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 			_c.set_value("settings", settings_dict[key]["name"], int(column_slider.value)) 
 	
 	# Categories
-	for log_category in category_container.get_children():
-		if log_category is LogCategory:
-			if log_category.category_name == "":
+	for log_c in category_container.get_children():
+		if log_c is LogCategory:
+			if log_c.category_name == "":
 				continue
 
-			if log_category is LogCategory and log_category.default_checkbox.button_pressed:
-				_c.set_value("categories", "default_category", log_category.category_name)
+			if log_c is LogCategory and log_c.default_checkbox.button_pressed:
+				_c.set_value("categories", "default_category", log_c.category_name)
 
-			_cat_names.append(log_category.category_name)
-			_c.set_value("categories." + log_category.category_name, "file_name", 			config.get_value("categories." + log_category.category_name, "file_name", ""))
-			_c.set_value("categories." + log_category.category_name, "file_path", 			config.get_value("categories." + log_category.category_name, "file_path", ""))
-			_c.set_value("categories." + log_category.category_name, "category_name", 	log_category.category_name) 
-			_c.set_value("categories." + log_category.category_name, "file_count", 			config.get_value("categories." + log_category.category_name, "file_count", 0))
-			_c.set_value("categories." + log_category.category_name, "is_locked", 			log_category.is_locked)
-			_c.set_value("categories." + log_category.category_name, "entry_count", 		config.get_value("categories." + log_category.category_name, "entry_count", 0))
+			_cat_names.append(log_c.category_name)
+			_c.set_value("categories." + log_c.category_name, "file_name", 			config.get_value("categories." + log_c.category_name, "file_name", ""))
+			_c.set_value("categories." + log_c.category_name, "file_path", 			config.get_value("categories." + log_c.category_name, "file_path", ""))
+			_c.set_value("categories." + log_c.category_name, "category_name", 	log_c.category_name) 
+			_c.set_value("categories." + log_c.category_name, "file_count", 			config.get_value("categories." + log_c.category_name, "file_count", 0))
+			_c.set_value("categories." + log_c.category_name, "is_locked", 			log_c.is_locked)
+			_c.set_value("categories." + log_c.category_name, "entry_count", 		config.get_value("categories." + log_c.category_name, "entry_count", 0))
 
 	_c.set_value("categories", "category_names", _cat_names)
 
@@ -687,20 +688,20 @@ func save_categories() -> void:
 	
 	
 
-	for cat in category_container.get_children():
-		if cat is LogCategory:
-			if cat.category_name.is_empty():
+	for log_c in category_container.get_children():
+		if log_c is LogCategory:
+			if log_c.category_name.is_empty():
 				continue
-			_c_names.append(cat.category_name)
-			if cat.default_checkbox.button_pressed:
-				_c_def = cat.category_name
+			_c_names.append(log_c.category_name)
+			if log_c.default_checkbox.button_pressed:
+				_c_def = log_c.category_name
 
-			_c.set_value("categories." + cat.category_name, "file_name" , "")
-			_c.set_value("categories." + cat.category_name, "file_path", "")
-			_c.set_value("categories." + cat.category_name, "category_name", cat.category_name) 
-			_c.set_value("categories." + cat.category_name, "file_count", config.get_value("categories." + cat.category_name, "file_count", 0))
-			_c.set_value("categories." + cat.category_name, "is_locked", cat.is_locked)
-			_c.set_value("categories." + cat.category_name, "entry_count", config.get_value("categories." + cat.category_name, "entry_count", 0))
+			_c.set_value("categories." + log_c.category_name, "file_name" , "")
+			_c.set_value("categories." + log_c.category_name, "file_path", "")
+			_c.set_value("categories." + log_c.category_name, "category_name", log_c.category_name) 
+			_c.set_value("categories." + log_c.category_name, "file_count", config.get_value("categories." + log_c.category_name, "file_count", 0))
+			_c.set_value("categories." + log_c.category_name, "is_locked", log_c.is_locked)
+			_c.set_value("categories." + log_c.category_name, "entry_count", config.get_value("categories." + log_c.category_name, "entry_count", 0))
 
 	_c.set_value("categories", "category_names", _c_names)
 	_c.set_value("categories", "default_category", _c_def)
@@ -721,9 +722,7 @@ func _add_category(_name: String = "", _is_locked: bool = false, prevent_save: b
 
 	_n.log_category_changed.connect(save_categories) 
 	_n.set_default_category.connect(_on_set_default_category)
-	_n.move_category_requested.connect(_on_category_move_requested)
-	_n.line_edit.focus_entered.connect(_on_category_line_focus.bind([_n, _n.line_edit.text], true))
-	_n.line_edit.focus_exited.connect(_on_category_line_focus.bind([], false))
+	_n.move_category_requested.connect(_on_category_move_requested) 
 	_n.default_checkbox.button_pressed = config.get_value("categories", "default_category", "") == _name 
 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
 
@@ -748,10 +747,10 @@ func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
 	config.load(PATH)
 	config.set_value("categories", "default_category", cat.category_name if set_status else "")
 
-	for categ in category_container.get_children():
-		if categ is LogCategory and categ.default_checkbox != null:
-			if categ != cat:
-				categ.default_checkbox.button_pressed = false
+	for log_c in category_container.get_children():
+		if log_c is LogCategory and log_c.default_checkbox != null:
+			if log_c != cat:
+				log_c.default_checkbox.button_pressed = false
 
 	if set_status and cat.default_checkbox != null:
 		cat.default_checkbox.button_pressed = true
@@ -785,10 +784,10 @@ func _handle_category_mov_button_state() -> void:
 
 
 func _check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
-	for log_category in category_container.get_children():
-		if log_category == cat_obj:
+	for log_c in category_container.get_children():
+		if log_c == cat_obj:
 			continue
-		elif log_category.category_name == new_name:
+		elif log_c.category_name == new_name:
 			if name == "": return false
 			return true
 	return false
@@ -847,6 +846,7 @@ static func get_error(error: int, object_type: String = "") -> String:
 	return "N/A"
 
 
+
 func _open_user_dir() -> void:
 	var abs_path = ProjectSettings.globalize_path("user://")
 	OS.shell_open(abs_path)
@@ -863,8 +863,7 @@ func _apply_new_base_directory() -> void:
 	config.load(PATH)
 	var old_dir = config.get_value("settings", "base_directory")
 	var new_dir = base_dir_line.text.strip_edges()
-
-	# Don't accept empty path
+ 
 	if new_dir == "":
 		if config.get_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Base directory cannot be empty. Reverting to previous path[", old_dir, "].")
@@ -1123,14 +1122,6 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 
 
 
-func _on_category_line_focus(data: Array, focused: bool) -> void:
-	# Stores the data of the currently focused category line edit to compare against
-	if focused and data.size() > 0:
-		focused_category.append(data)
-	else:
-		focused_category.clear()
-
-
 func _on_column_slider_value_changed(value: int) -> void:
 	config.load(PATH)
 	category_container.columns = _get_column_value(value)
@@ -1252,7 +1243,7 @@ func _apply_theme_colors():
 	panel_top_round_accent_muted.bg_color 					= theme_colors["accent"]["dark_highlight"]
 
 
-	for cont in [general_fold_cont, limit_fold_cont, id_overlay_fold_cont, id_lbl_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
+	for cont in [general_fold_cont, limit_fold_cont, id_fold_cont, id_font_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
 		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_highlight"].v 				< 0.7 else theme_colors["base"]["col"])
