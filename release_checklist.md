@@ -1,13 +1,13 @@
 # GoLogger Release Checklist
 
-This file should be deleted if it was installed with the plugin. Please only install the `addons\GoLogger`
+This file should be deleted if it was installed with the plugin. Please only install the `addons\GoLogger\`
 
 ## General
 
 - [ ] Ensure the `CATEGORIES` tab is active.
 - [ ] Ensure all `FoldableContainer`s are collapsed in both the `Settings` and `Help` tabs.
 - [ ] Ensure `gologger_data.ini` is created if it is not present when loading the plugin.
-- [ ] Ensure hotkeys all work as intended (as well as rebinding).
+- [ ] Ensure hotkeys all work as intended (and after rebinding).
 
 ## Code
 - [ ] Remove any comments made throughout the code aside from relevant documentation comments
@@ -15,45 +15,99 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] At bottom of `_input(event: InputEvent)`, comment out the three debug `msg()` lines for keys `,.-`
 - [ ] Go through code and make it uniform. For example, in `for` loops where category names are iterated through. Make all `for` loops have same naming conventions.
 
+## Settings task list
+- [ ] `category_names`:
+  - [ ] New category names are appended to array
+  - [ ] Rename is applied to it's existing array entry.
+  - [ ] Moving categories in Dock moves the array order.
+  - [ ] Array entry is removed when LogCategory is queue freed
+- [ ] `default_category`:
+  - [ ] Category name is saved to file appropriately.
+  - [ ] (In Dock) Existing default category's CheckBox is unchecked when another is checked
+  - [ ] Unchecking clears setting to ""
+
+- [ ] `base_directory`:
+  - [ ] New directory is created when change.
+  - [ ] Directory is created when running the game if it doesn't exist
+  - [ ] Checks directory is valid before applying and reverting if not
+- [ ] `log_header_format`:
+  - [ ] New log header is used when starting a session.
+  - [ ] Check all tags work properly.
+- [ ] `entry_format`:
+  - [ ] Proper format is applied to entries.
+  - [ ] Check all tags work properly.
+- [ ] `autostart_session`:
+  - [ ] Session is started automatically or not
+- [ ] `use_utc`:
+	- [ ] UTC time used for .log file name, log header and entry format.
+- [ ] `id_print`:
+  - [ ] ID is printed when the hotkey it released / on toggle if `id_toggle` is true.
+- [ ] `id_toggle`:
+	- [ ] ID overlay is toggled instead of only during prints.
+- [ ] `id_startup_state`:
+	- [ ] ID overlay is shown when true / off when false. Only applicable if `id_toggle` is true.
+- [ ] `id_align`:
+	- [ ] Check label aligns to all nine positions properly
+	- [ ] Check label fills viewport for different resolutions
+- [ ] `limit_method`:
+	- [ ] Ensure correct limit method
+- [ ] `entry_count_action`:
+	- [ ] Ensure action is enforced for the count / timer. i.e. the action is triggered at the count cap and the session timer wait time is set properly 
+	- [ ] ensure 
+- [ ] `session_timer_action`:
+	- [ ] 
+- [ ] `file_cap`:
+	- [ ] Ensure file cap is enforced when value is hit.
+- [ ] `entry_cap`:
+	- [ ] Ensure entry count action is triggered when this value is hit.
+- [ ] `session_duration`:
+	- [ ] Ensure session timer wait time is set to this value
+- [ ] `error_reporting`:
+	- [ ] Check warnings and errors are pushed/printed properly according to setting.
+- [ ] `columns`:
+	- [ ] Check CategoryGridContainer is working with HSlider, and that the value is saved to file
+
+
 ## Sessions
 
-### Start of Session
+- [ ] Start Session:
+  - [ ] Verify a session starts when it should.
+  - [ ] Ensure `gologger_data.ini` is created if missing.
+  - [ ] Ensure `[categories.category_name]` exists in `gologger_data.ini`.
+  - [ ] Ensure `[categories.category_name].file_name` contains the current file name, for example `game(260417_020435).log`.
+  - [ ] Ensure `[categories.category_name].file_path` contains the absolute file path of the current file.
+  - [ ] Ensure `[categories.category_name].category_name` is updated correctly.
+  - [ ] Ensure `[categories.category_name].file_count` matches the number of `.log` files in the directory.
+  - [ ] Ensure `[categories.category_name].is_locked` reflects the `LogCategory` lock state.
+  - [ ] Ensure `[categories.category_name].entry_count` matches the number of entries in the current `.log` file.
+  - [ ] Ensure a `.log` file is created with the current date and timestamp.
+  - [ ] Ensure `log_header` is written into the file.
+  - [ ] Ensure file count limiting removes the oldest file and preserves the correct number of files.
+  - [ ] Verify a unique `session_id` is generated.
+  - [ ] Verify the ID overlay displays the correct `instance_id`.
+  - [ ] Verify ID overlay visuals are applied according to settings.
 
-- [ ] Verify a session starts when it should.
-- [ ] Ensure `gologger_data.ini` is created if missing.
-- [ ] Ensure `[categories.category_name]` exists in `gologger_data.ini`.
-- [ ] Ensure `[categories.category_name].file_name` contains the current file name, for example `game(260417_020435).log`.
-- [ ] Ensure `[categories.category_name].file_path` contains the absolute file path of the current file.
-- [ ] Ensure `[categories.category_name].category_name` is updated correctly.
-- [ ] Ensure `[categories.category_name].file_count` matches the number of `.log` files in the directory.
-- [ ] Ensure `[categories.category_name].is_locked` reflects the `LogCategory` lock state.
-- [ ] Ensure `[categories.category_name].entry_count` matches the number of entries in the current `.log` file.
-- [ ] Ensure a `.log` file is created with the current date and timestamp.
-- [ ] Ensure `log_header` is written into the file.
-- [ ] Ensure file count limiting removes the oldest file and preserves the correct number of files.
-- [ ] Verify a unique `session_id` is generated.
-- [ ] Verify the ID overlay displays the correct `instance_id`.
-- [ ] Verify ID overlay visuals are applied according to settings.
+- [ ] During Session:
+  - [ ] Verify session timer wait time is set correctly from `session_duration`.
+  - [ ] Ensure the session stops or restarts correctly on timeout.
+  - [ ] Verify `entry_count` is enforced at the correct limit.
+  - [ ] Ensure the session stops, restarts, or overwrites entries when the limit is reached.
+  - [ ] Ensure the oldest entry is the one removed.
+  - [ ] Verify `msg()` logs entries correctly.
+  - [ ] Verify `entry_format` is applied to each entry.
+  - [ ] Verify the session ID is added if the tag is present.
+  - [ ] Verify entries are not logged when a session has not started.
 
-### During Sessions
+- [ ] End of Session:
+  - [ ] Ensure `file_name`, `file_path`, and `entry_count` are reset to blank values in `gologger_data.ini`.
 
-- [ ] Verify session timer wait time is set correctly from `session_duration`.
-- [ ] Ensure the session stops or restarts correctly on timeout.
-- [ ] Verify `entry_count` is enforced at the correct limit.
-- [ ] Ensure the session stops, restarts, or overwrites entries when the limit is reached.
-- [ ] Ensure the oldest entry is the one removed.
-- [ ] Verify `msg()` logs entries correctly.
-- [ ] Verify `entry_format` is applied to each entry.
-- [ ] Verify the session ID is added if the tag is present.
-- [ ] Verify entries are not logged when a session has not started.
+### Hotkeys
 
-### End of Session
+- [ ] Check `start_session` hotkey
+- [ ] Check `stop_session` hotkey
+- [ ] Check `display_instance_id` hotkey
 
-- [ ] Ensure `file_name`, `file_path`, and `entry_count` are reset to blank values in `gologger_data.ini`.
-
-## Categories
-
-### In `gologger_data.ini`
+### `gologger_data.ini`
 
 - [ ] Ensure `[categories][category_names]` updates whenever any category change is made in the dock.
 - [ ] Ensure `[categories][default_category]` updates whenever any category change is made in the dock.
@@ -66,9 +120,9 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Ensure new category sections are initialized with blank values.
 - [ ] Ensure category session fields update correctly during sessions.
 - [ ] Ensure settings are validated properly.
-- [ ] Ensure clobbered or stray settings are removed.
+- [ ] Ensure
 
-### In the Dock
+## Dock
 
 - [ ] Ensure `Apply` and `DefaultCategory` toggle correctly when modifying a category name.
 - [ ] Ensure `Apply` is disabled when the current `LineEdit` value is invalid.
@@ -79,15 +133,6 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Ensure move buttons reposition `LogCategory` items correctly.
 - [ ] Ensure leftmost and rightmost move buttons disable correctly.
 - [ ] Ensure `Delete` properly `queue_free()`s the target `LogCategory`.
-
-## Dock
-
-### Category Tab
-
-- [ ] Ensure `Add` creates a blank `LogCategory`.
-- [ ] Ensure focus moves to the new `CategoryName[LineEdit]`.
-- [ ] Ensure `OpenDirectory` opens the current `base_directory`.
-- [ ] Ensure the column slider updates the category container column count correctly.
 
 ### Settings Tab
 
