@@ -157,8 +157,8 @@ var settings_dict := {
 	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
 	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},
 	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 1200},
-	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 900},
+	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 2000},
+	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 1200},
 	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"type": TYPE_INT, 		"control": null, "default": 0},
 	"columns": 										{"section": "settings", 	"name": "columns", 										"type": TYPE_INT, 		"control": null, "default": 5}
 }

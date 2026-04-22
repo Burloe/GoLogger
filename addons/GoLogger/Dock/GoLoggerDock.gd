@@ -211,8 +211,8 @@ var settings_dict := {
 	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
 	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},
 	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 1200},
-	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 900},
+	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 2000},
+	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 1200},
 	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"type": TYPE_INT, 		"control": null, "default": 0},
 	"columns": 										{"section": "settings", 	"name": "columns", 										"type": TYPE_INT, 		"control": null, "default": 5}
 }
@@ -231,8 +231,7 @@ func _ready() -> void:
 		id_font_sett_cont.folding_changed.connect(
 			func(is_folded: bool) -> void: 
 				id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-				id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-				# id_lbl_sett_cont.custom_minimum_size.y = 0 if is_folded else id_font_settings_min_size
+				id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
 		)
 
 		if !FileAccess.file_exists(PATH):
@@ -481,11 +480,6 @@ func initialize_dock() -> void:
 
 		elif ctrl is LineEdit:
 			ctrl.text = value 
-
-
-
-func set_resource(res: GLShortcut):
-		inspector.edit(res)
 
 
 
