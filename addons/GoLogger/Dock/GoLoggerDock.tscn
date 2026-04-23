@@ -11,6 +11,7 @@
 [ext_resource type="StyleBox" uid="uid://427jdnrjcbba" path="res://addons/GoLogger/Resources/theme/tab_unselected.tres" id="4_cp33x"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/GoLogger/Resources/id_example_panel_tex.png" id="5_7ntic"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/GoLogger/Resources/theme/panel_rounded_bg.tres" id="6_cp33x"]
+[ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/GoLogger/GLData.gd" id="7_cp33x"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/GoLogger/Resources/theme/foldable_container_panel.tres" id="12_cp33x"]
@@ -25,6 +26,10 @@
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/GoLogger/Resources/id_overlay_lbl_settings.tres" id="19_cp33x"]
 [ext_resource type="StyleBox" uid="uid://bqxadvxd6q2yj" path="res://addons/GoLogger/Resources/theme/panel_rounded_no_top_base.tres" id="22_xov76"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/GoLogger/Resources/theme/panel_rounded_base_col.tres" id="26_xov76"]
+
+[sub_resource type="Resource" id="Resource_xov76"]
+script = ExtResource("7_cp33x")
+metadata/_custom_type_script = "uid://dcm4iew3h2l7p"
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4fkd"]
 content_margin_left = 8.0
@@ -101,6 +106,7 @@ current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
+data = SubResource("Resource_xov76")
 metadata/_edit_vertical_guides_ = [1562.0, 1529.0]
 
 [node name="Categories" type="VBoxContainer" parent="." unique_id=1224284395]
@@ -338,12 +344,10 @@ theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
-folded = true
 title = "Limiters"
 title_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer" unique_id=742064564]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -424,7 +428,7 @@ allow_reselect = true
 item_count = 5
 popup/item_0/text = "Entry Count"
 popup/item_0/id = 0
-popup/item_1/text = "SessionTimer    "
+popup/item_1/text = "Session Timer    "
 popup/item_1/id = 1
 popup/item_2/text = "Both"
 popup/item_2/id = 2
@@ -471,7 +475,7 @@ theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 selected = 0
 allow_reselect = true
 item_count = 3
-popup/item_0/text = "Overwrite entries    "
+popup/item_0/text = "Overwrite entry"
 popup/item_0/id = 2
 popup/item_1/text = "Restart session"
 popup/item_1/id = 1

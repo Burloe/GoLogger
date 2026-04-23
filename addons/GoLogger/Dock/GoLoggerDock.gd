@@ -19,6 +19,8 @@ extends TabContainer
 signal update_index
 signal change_category_name_finished 
 
+@export var data: GLData = preload("uid://dj7h7t2v8csck")
+
 # Category tab
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
