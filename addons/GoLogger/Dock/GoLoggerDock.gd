@@ -547,7 +547,7 @@ func validate_settings() -> void: # Mirror
 		if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
 			config.set_value(setting["section"], setting["name"], setting["default"])
 
-	config.save(PATH)
+	save_data()
 
 
 
@@ -561,7 +561,7 @@ func reset_to_default() -> void:
 
 		config.set_value("settings", key, settings_dict.get(key, {}).get("default", null))
 
-	config.save(PATH)
+	save_data()
 
 	for key in settings_dict.keys():
 		var _s: Dictionary = settings_dict[key]
