@@ -385,7 +385,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	load_category_data()
 	var data: Dictionary = {
 		"target_category": 			category_name,
-		"categories": 					_get_config_value("categories", "category_names", []),
+		"category_names": 			_get_config_value("categories", "category_names", []),
 		"default_category":	 		_get_config_value("categories", "default_categories", settings_dict.get("default_category", "default")),
 		"target_filepath": 			_get_config_value(str("categories." + category_name), "file_path", "Failed to get file path!"),
 		"limit_method": 				_get_config_value("settings", "limit_method", settings_dict.get("limit_method", "default")),
@@ -403,7 +403,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		return
 
 	if data["target_category"] == "": # Unspecified category -> Use Default category
-		if data["default_category"] != "" and data["categories"].has(data["default_category"]):
+		if data["default_category"] != "" and data["category_names"].has(data["default_category"]):
 			data["target_cat"] = data["default_category"]
 			data["target_filepath"] = config.get_value(str("categories." + data["default_category"]), "file_path", "")
 		else:
@@ -422,9 +422,9 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
-	if data["target_cat"] not in data["target_category"]:
+	if data["target_category"] not in data["category_names"]:
 		if data["error_reporting"] != 2:
-			printerr("GoLogger: Category '" + data["target_cat"] + "' not found. Check correct spelling.")
+			printerr("GoLogger: Category '" + data["target_category"] + "' not found. Check correct spelling.")
 		return
 
 	if !session_status:
@@ -432,7 +432,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 
 	if data["target_filepath"] == "":
 		if data["error_reporting"] != 2:
-			printerr("GoLogger: No valid file path found for category '" + data["target_cat"] + "[" + instance_id + "]'.")
+			printerr("GoLogger: No valid file path found for category '" + data["target_category"] + "[" + instance_id + "]'.")
 		return
 
 
@@ -451,7 +451,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			lines.append(_l)
 	_f.close()
 	config.load(PATH)
-	config.set_value("categories." + str(data["target_cat"]), "entry_count", lines.size())
+	config.set_value("categories." + str(data["target_category"]), "entry_count", lines.size())
 	config.save(PATH)
 
 	# Handle Limit Methods
@@ -467,7 +467,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 					if lines.size() >= data["entry_cap"]:
 						stop_session()
 						start_session()
-						msg(log_msg, data["target_cat"])
+						msg(log_msg, data["target_category"])
 						return
 
 				EntryCountAction.STOP:
@@ -480,7 +480,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 				SessionTimerAction.RESTART:
 					stop_session()
 					start_session()
-					msg(log_msg, data["target_cat"])
+					msg(log_msg, data["target_category"])
 					return
 
 				SessionTimerAction.STOP:
@@ -493,7 +493,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 					if lines.size() >= data["entry_cap"]:
 						stop_session()
 						start_session()
-						msg(log_msg, data["target_cat"])
+						msg(log_msg, data["target_category"])
 						return
 
 				EntryCountAction.STOP:
@@ -502,7 +502,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 						return
 
 	# Rewrite file with existing lines / Update entry count
-	cat_data[data["target_cat"]]["entry_count"] = lines.size()
+	cat_data[data["target_category"]]["entry_count"] = lines.size()
 	var _fw = FileAccess.open(data["target_filepath"], FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
@@ -513,11 +513,11 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		_fw.store_line(str(line))
 
 	# Write new entry
-	var new_entry: String = _get_entry_format(log_msg, data["target_cat"])
+	var new_entry: String = _get_entry_format(log_msg, data["target_category"])
 	_fw.store_line(new_entry)
 	_fw.close()
 	if print_msg:
-		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", data["target_cat"], "> ", new_entry.dedent())
+		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", data["target_category"], "> ", new_entry.dedent())
 
 
 

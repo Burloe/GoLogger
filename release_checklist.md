@@ -28,8 +28,8 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 - [ ] `base_directory`:
   - [x] New directory is created when change.
-  - [ ] Directories for all the categories are created when running the game if,
-  - [ ] Checks directory is valid before applying and reverting if not.
+  - [x] Directories for all the categories are created when running the game if,
+  - [x] Checks directory is valid before applying and reverting if not.
 - [ ] `log_header_format`:
   - [ ] New log header is used when starting a session.
   - [ ] Check all tags work properly.
