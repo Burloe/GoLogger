@@ -561,9 +561,6 @@ func reset_to_default() -> void:
 
 		config.set_value("settings", key, settings_dict.get(key, {}).get("default", null))
 
-	config.set_value("categories.game", "category_name", "game")
-	config.set_value("categories.game", "file_count", 0)
-	config.set_value("categories.game", "is_locked", false)
 	config.save(PATH)
 
 	for key in settings_dict.keys():
@@ -669,7 +666,7 @@ func save_categories() -> void:
 	var _c_names = []
 	var _c_def: String = ""
 
-	# Setting first as blank so "categories" section at top of file
+	# Ensuring [categories] section is on top of list
 	_c.set_value("categories", "category_names", []) 
 	_c.set_value("categories", "default_category", config.get_value("categories", "default_category", ""))
 
