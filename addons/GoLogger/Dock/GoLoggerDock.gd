@@ -593,15 +593,12 @@ func reset_to_default() -> void:
 
 
 ## Saves dock state to file.
-func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
-	if deferred:
-		await get_tree().physics_frame
-
+func save_data(ignore_errors: bool = false) -> int: 
 	config.load(PATH)
 	var _c := ConfigFile.new()
 	var _cat_names = []
 	var _err: int = 0
-	var _offenders: Array[String] = []
+	var _offenders: Array[String] = [] 
 	_ensure_default_category()
 
 	# Setting first as blank so "categories" section at top of file
@@ -652,11 +649,12 @@ func save_data(deferred: bool = false, ignore_errors: bool = false) -> void:
 		if _err > 0:
 			push_error(str("GoLogger error: Failed to save settings. Null Control references found for settings: \n\t", _offenders))
 
-	var _e = _c.save(PATH)
+	var _e: int = _c.save(PATH)
 	if _e != OK:
 		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(_e, "ConfigFile")))
-		return
+		return _e
 	config.load(PATH)
+	return _e
 
 
 
@@ -867,8 +865,8 @@ func _apply_new_base_directory() -> void:
 		new_dir += "/"
 
 
-	var d = DirAccess.open(new_dir)
-	if d == null:
+	var d = DirAccess.open(new_dir) 
+	if d == null or DirAccess.get_open_error() != OK:
 		var res : int = OK
 
 		var create_path = new_dir
@@ -885,15 +883,9 @@ func _apply_new_base_directory() -> void:
 
 		d = DirAccess.open(new_dir)
 
-	if d == null or DirAccess.get_open_error() != OK:
-		if config.get_value("settings", "error_reporting") != 2:
-			push_warning("GoLogger: Failed to access newly created directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
-		base_dir_line.text = old_dir
-		base_dir_apply_btn.disabled = true
-		return
-
 	config.set_value("settings", "base_directory", new_dir)
-	var save_err = config.save(PATH)
+	
+	var save_err = save_data()
 	if save_err != OK:
 		if config.get_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to save settings.ini after changing base_directory. Reverting back to previous directory path[", old_dir, "].")

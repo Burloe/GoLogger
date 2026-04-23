@@ -394,55 +394,45 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		"session_timer_action": _get_config_value("settings", "session_timer_action", settings_dict.get("session_timer_action", "default")),
 		"session_duration": 		_get_config_value("settings", "session_duration", settings_dict.get("session_duration", "default")),
 		"err_lv": 							_get_config_value("settings", "error_reporting", settings_dict.get("error_reporting", "default")),
-	}
-	var _target_cat: String = 				category_name
-	var _cats: Array = 								_get_config_value("categories", "category_names", [])
-	var _default_cat: String = 				_get_config_value("categories", "default_category", "")
-	var _target_filepath: String = 		_get_config_value(str("categories." + category_name), "file_path", "")
-	var _limit_method: int = 					_get_config_value("settings", "limit_method")
-	var _entry_action: int = 					_get_config_value("settings", "entry_count_action")
-	var _entry_cap: int = 						_get_config_value("settings", "entry_cap")
-	var _session_timer_action: int = 	_get_config_value("settings", "session_timer_action")
-	var _err_lv = 										_get_config_value("settings", "error_reporting")
-
+	} 
 
 
 	if log_msg == "":
-		if _err_lv != 2:
+		if data["error_reporting"] != 2:
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
 
 	if data["target_category"] == "": # Unspecified category -> Use Default category
 		if data["default_category"] != "" and data["categories"].has(data["default_category"]):
-			_target_cat = data["default_category"]
+			data["target_cat"] = data["default_category"]
 			data["target_filepath"] = config.get_value(str("categories." + data["default_category"]), "file_path", "")
 		else:
-			if _err_lv != 2:
+			if data["error_reporting"] != 2:
 				if data["default_category"].is_empty():
-					printerr("GoLogger: Attempted to log entry into default category when one hasn't been assigned. Entry: ", log_msg)
+					printerr("GoLogger: msg() called without specifying a category name and no default category assigned.\n\t Entry:\n", log_msg)
 				else:
 					if !data["target_category"].has(data["default_category"]):
-						printerr("GoLogger: Entry failed to log into default category[", data["default_category"], "] that does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
+						printerr("GoLogger: Entry failed to log into default category[", data["default_category"], "] assigned does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
 					printerr("GoLogger: Attempted to log entry into a default category[", data["default_category"],"] that doesn't exist.")
 
 			return
 
 	if data["target_category"].is_empty():
-		if _err_lv != 2:
+		if data["error_reporting"] != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
-	if _target_cat not in data["target_category"]:
-		if _err_lv != 2:
-			printerr("GoLogger: Category '" + _target_cat + "' not found. Check correct spelling.")
+	if data["target_cat"] not in data["target_category"]:
+		if data["error_reporting"] != 2:
+			printerr("GoLogger: Category '" + data["target_cat"] + "' not found. Check correct spelling.")
 		return
 
 	if !session_status:
 		return
 
 	if data["target_filepath"] == "":
-		if _err_lv != 2:
-			printerr("GoLogger: No valid file path found for category '" + _target_cat + "[" + instance_id + "]'.")
+		if data["error_reporting"] != 2:
+			printerr("GoLogger: No valid file path found for category '" + data["target_cat"] + "[" + instance_id + "]'.")
 		return
 
 
@@ -450,7 +440,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var _f = FileAccess.open(data["target_filepath"], FileAccess.READ)
 	if !_f: # ER
 		var _err = FileAccess.get_open_error()
-		if _err != OK and _err_lv != 2:
+		if _err != OK and data["error_reporting"] != 2:
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
@@ -461,7 +451,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			lines.append(_l)
 	_f.close()
 	config.load(PATH)
-	config.set_value("categories." + str(_target_cat), "entry_count", lines.size())
+	config.set_value("categories." + str(data["target_cat"]), "entry_count", lines.size())
 	config.save(PATH)
 
 	# Handle Limit Methods
@@ -470,27 +460,27 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		LimitMethod.ENTRY_COUNT:
 			match data["entry_action"]:
 				EntryCountAction.OVERWRITE_ENTRIES:
-					while lines.size() >= _entry_cap:
+					while lines.size() >= data["entry_cap"]:
 						lines.remove_at(1) # Retain header
 
 				EntryCountAction.RESTART:
-					if lines.size() >= _entry_cap:
+					if lines.size() >= data["entry_cap"]:
 						stop_session()
 						start_session()
-						msg(log_msg, _target_cat)
+						msg(log_msg, data["target_cat"])
 						return
 
 				EntryCountAction.STOP:
-					if lines.size() >= _entry_cap:
+					if lines.size() >= data["entry_cap"]:
 						stop_session()
 						return
 
 		LimitMethod.SESSION_TIMER:
-			match _session_timer_action:
+			match data["session_timer_action"]:
 				SessionTimerAction.RESTART:
 					stop_session()
 					start_session()
-					msg(log_msg, _target_cat)
+					msg(log_msg, data["target_cat"])
 					return
 
 				SessionTimerAction.STOP:
@@ -500,34 +490,34 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		LimitMethod.BOTH:
 			match data["entry_action"]:
 				EntryCountAction.RESTART:
-					if lines.size() >= _entry_cap:
+					if lines.size() >= data["entry_cap"]:
 						stop_session()
 						start_session()
-						msg(log_msg, _target_cat)
+						msg(log_msg, data["target_cat"])
 						return
 
 				EntryCountAction.STOP:
-					if lines.size() >= _entry_cap:
+					if lines.size() >= data["entry_cap"]:
 						stop_session()
 						return
 
 	# Rewrite file with existing lines / Update entry count
-	cat_data[_target_cat]["entry_count"] = lines.size()
+	cat_data[data["target_cat"]]["entry_count"] = lines.size()
 	var _fw = FileAccess.open(data["target_filepath"], FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
-		if err != OK and _err_lv != 2:
+		if err != OK and data["error_reporting"] != 2:
 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 
 	for line in lines:
 		_fw.store_line(str(line))
 
 	# Write new entry
-	var new_entry: String = _get_entry_format(log_msg, _target_cat)
+	var new_entry: String = _get_entry_format(log_msg, data["target_cat"])
 	_fw.store_line(new_entry)
 	_fw.close()
 	if print_msg:
-		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", _target_cat, "> ", new_entry.dedent())
+		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", data["target_cat"], "> ", new_entry.dedent())
 
 
 

@@ -16,20 +16,20 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Go through code and make it uniform. For example, in `for` loops where category names are iterated through. Make all `for` loops have same naming conventions.
 
 ## Settings task list
-- [ ] `category_names`:
-  - [ ] New category names are appended to array
-  - [ ] Rename is applied to it's existing array entry.
-  - [ ] Moving categories in Dock moves the array order.
-  - [ ] Array entry is removed when LogCategory is queue freed
-- [ ] `default_category`:
-  - [ ] Category name is saved to file appropriately.
-  - [ ] (In Dock) Existing default category's CheckBox is unchecked when another is checked
-  - [ ] Unchecking clears setting to ""
+- [x] `category_names`:
+  - [x] New category names are appended to array at end.
+  - [x] Rename is applied to it's existing array entry.
+  - [x] Moving categories in Dock moves the array order.
+  - [x] Array entry is removed when LogCategory is queue freed.
+- [x] `default_category`:
+  - [x] Category name is saved to file appropriately.
+  - [x] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
+  - [x] Unchecking clears setting to "",
 
 - [ ] `base_directory`:
-  - [ ] New directory is created when change.
-  - [ ] Directory is created when running the game if it doesn't exist
-  - [ ] Checks directory is valid before applying and reverting if not
+  - [x] New directory is created when change.
+  - [ ] Directories for all the categories are created when running the game if,
+  - [ ] Checks directory is valid before applying and reverting if not.
 - [ ] `log_header_format`:
   - [ ] New log header is used when starting a session.
   - [ ] Check all tags work properly.
@@ -37,7 +37,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [ ] Proper format is applied to entries.
   - [ ] Check all tags work properly.
 - [ ] `autostart_session`:
-  - [ ] Session is started automatically or not
+  - [ ] Session is started automatically or not.
 - [ ] `use_utc`:
 	- [ ] UTC time used for .log file name, log header and entry format.
 - [ ] `id_print`:
@@ -47,15 +47,14 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] `id_startup_state`:
 	- [ ] ID overlay is shown when true / off when false. Only applicable if `id_toggle` is true.
 - [ ] `id_align`:
-	- [ ] Check label aligns to all nine positions properly
-	- [ ] Check label fills viewport for different resolutions
+	- [ ] Check label aligns to all nine positions properly.
+	- [ ] Check label fills viewport for different resolutions.
 - [ ] `limit_method`:
-	- [ ] Ensure correct limit method
+	- [ ] Ensure correct limit method.
 - [ ] `entry_count_action`:
-	- [ ] Ensure action is enforced for the count / timer. i.e. the action is triggered at the count cap and the session timer wait time is set properly 
-	- [ ] ensure 
+	- [ ] Ensure action is enforced for the count / timer. i.e. the action is triggered at the count cap and the session timer wait time is set properly.
 - [ ] `session_timer_action`:
-	- [ ] 
+	- [ ] Ensure that the proper action is used and works
 - [ ] `file_cap`:
 	- [ ] Ensure file cap is enforced when value is hit.
 - [ ] `entry_cap`:
