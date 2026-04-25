@@ -24,7 +24,7 @@ signal category_deleted(name: String)
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
 var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
-var sb_line_edit_invalid: StyleBoxFlat = preload("uid://sqhht0mdddoi")
+var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx")
 
 const PATH = "user://gologger_data.ini"
 var config = ConfigFile.new() 
@@ -38,7 +38,7 @@ var is_locked : bool = false:
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
 
-## Holds the last applied category name
+##  Last applied category name
 var category_name: String = "":
 	set(value):
 		config.load(PATH)

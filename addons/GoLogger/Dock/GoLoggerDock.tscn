@@ -16,12 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/GoLogger/Resources/theme/foldable_container_panel.tres" id="12_cp33x"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/GoLogger/Resources/theme/btn_normal.tres" id="13_fcs7p"]
-[ext_resource type="StyleBox" uid="uid://bvek0vh8shw5l" path="res://addons/GoLogger/Resources/theme/spinbox_up_highlight.tres" id="13_tvbkj"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/GoLogger/Resources/theme/panel_top_rounded_base_col.tres" id="14_fcs7p"]
 [ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="14_fx5fv"]
-[ext_resource type="StyleBox" uid="uid://q0h5bi585ik6" path="res://addons/GoLogger/Resources/theme/spinbox_up_pressed.tres" id="14_itauu"]
-[ext_resource type="StyleBox" uid="uid://ba2pkgbcu0dlo" path="res://addons/GoLogger/Resources/theme/spinbox_down_highlight.tres" id="15_cp33x"]
-[ext_resource type="StyleBox" uid="uid://daw4nhpnjj6i1" path="res://addons/GoLogger/Resources/theme/spinbox_down_pressed.tres" id="16_xov76"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="18_k47fi"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/GoLogger/Resources/id_overlay_lbl_settings.tres" id="19_cp33x"]
 [ext_resource type="StyleBox" uid="uid://bqxadvxd6q2yj" path="res://addons/GoLogger/Resources/theme/panel_rounded_no_top_base.tres" id="22_xov76"]
@@ -44,8 +40,6 @@ content_margin_bottom = 8.0
 [sub_resource type="Theme" id="Theme_fcs7p"]
 CheckButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 CheckButton/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_itauu"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tayiv"]
 texture = ExtResource("5_7ntic")
@@ -228,6 +222,7 @@ grow_vertical = 2
 theme_override_constants/scrollbar_h_separation = 8
 theme_override_constants/scrollbar_v_separation = 8
 follow_focus = true
+scroll_vertical = 52
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
@@ -307,7 +302,6 @@ layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Error report level"
-label_settings = SubResource("LabelSettings_itauu")
 
 [node name="ErrorRepOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/MarginContainer/VBoxContainer/ErrorRepHBox" unique_id=619537097]
 unique_name_in_owner = true
@@ -381,10 +375,6 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
 0 value will disable this feature *USE WITH CAUTION*"
-theme_override_styles/up_background_hovered = ExtResource("13_tvbkj")
-theme_override_styles/up_background_pressed = ExtResource("14_itauu")
-theme_override_styles/down_background_hovered = ExtResource("15_cp33x")
-theme_override_styles/down_background_pressed = ExtResource("16_xov76")
 max_value = 50.0
 value = 10.0
 alignment = 2
@@ -409,7 +399,7 @@ vertical_alignment = 1
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(168, 0)
+custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -444,7 +434,6 @@ layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
 Overwrite Entries removes the oldest entry as new ones are logged.
 "
-theme_override_constants/separation = 44
 alignment = 2
 
 [node name="EntryActionLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
@@ -455,15 +444,30 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Count Action"
 vertical_alignment = 1
 
-[node name="EntryActionOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=1695558902]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "Action taken when Limit Method is set to Entry Count.
-Overwrite Entries removes the oldest entry as new ones are logged.
-"
+tooltip_text = "Number of entries until the entry count action is triggered."
+min_value = 1.0
+max_value = 5000.0
+value = 2000.0
+alignment = 2
+update_on_text_changed = true
+custom_arrow_step = 10.0
+
+[node name="EntryActionOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "What action is taken when the Limit condition is met.
+
+Overwrite - Overwrites the oldest entry
+Restart - Restarts the logging session
+Stop - Stops the logging session"
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
@@ -475,52 +479,18 @@ theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 selected = 0
 allow_reselect = true
 item_count = 3
-popup/item_0/text = "Overwrite entry"
+popup/item_0/text = "Overwrite"
 popup/item_0/id = 2
-popup/item_1/text = "Restart session"
+popup/item_1/text = "Restart"
 popup/item_1/id = 1
-popup/item_2/text = "Stop session"
+popup/item_2/text = "Stop"
 popup/item_2/id = 1
-
-[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=898921581]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Number of entries until the entry count action is triggered."
-theme_override_constants/separation = 119
-alignment = 2
-
-[node name="EntryCountLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountHBox" unique_id=2026197059]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-size_flags_horizontal = 2
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Entry Limit"
-vertical_alignment = 1
-
-[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountHBox" unique_id=1695558902]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Number of entries until the entry count action is triggered."
-theme_override_styles/up_background_hovered = ExtResource("13_tvbkj")
-theme_override_styles/up_background_pressed = ExtResource("14_itauu")
-theme_override_styles/down_background_hovered = ExtResource("15_cp33x")
-theme_override_styles/down_background_pressed = ExtResource("16_xov76")
-min_value = 1.0
-max_value = 5000.0
-value = 300.0
-alignment = 2
-update_on_text_changed = true
-custom_arrow_step = 10.0
 
 [node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=53869427]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
-theme_override_constants/separation = 28
 alignment = 2
 
 [node name="SessionTimerActionLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
@@ -531,13 +501,32 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Timer Action"
 vertical_alignment = 1
 
-[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
+[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=956442988]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "Action taken when Limit Method is set to Session Timer. "
+tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
+max_value = 10000.0
+value = 1200.0
+rounded = true
+allow_greater = true
+alignment = 2
+update_on_text_changed = true
+suffix = "s"
+custom_arrow_step = 1.0
+select_all_on_focus = true
+
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "What action is taken when the Limit condition is met.
+
+Restart - Restarts the logging session
+Stop - Stops the logging session"
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
@@ -549,47 +538,10 @@ theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 selected = 0
 allow_reselect = true
 item_count = 2
-popup/item_0/text = "Restart session    "
+popup/item_0/text = "Restart    "
 popup/item_0/id = 0
-popup/item_1/text = "Stop session"
+popup/item_1/text = "Stop"
 popup/item_1/id = 1
-
-[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer" unique_id=578085250]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
-theme_override_constants/separation = 117
-alignment = 2
-
-[node name="SessionDurationLabel" type="Label" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionDurationHBox" unique_id=1344647890]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-size_flags_horizontal = 2
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Duration"
-vertical_alignment = 1
-
-[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionDurationHBox" unique_id=956442988]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "The duration of a logging session in seconds if Session Timer is used as the Limit Method."
-theme_override_styles/up_background_hovered = ExtResource("13_tvbkj")
-theme_override_styles/up_background_pressed = ExtResource("14_itauu")
-theme_override_styles/down_background_hovered = ExtResource("15_cp33x")
-theme_override_styles/down_background_pressed = ExtResource("16_xov76")
-max_value = 1800.0
-value = 300.0
-rounded = true
-allow_greater = true
-alignment = 2
-update_on_text_changed = true
-suffix = "s"
-custom_arrow_step = 1.0
-select_all_on_focus = true
 
 [node name="IDFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
@@ -885,6 +837,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The directory where logs are stored in. 
 Default path is \"user://GoLogger/\". "
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = ExtResource("18_k47fi")
 text = "user://GoLogger/"

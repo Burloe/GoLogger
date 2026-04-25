@@ -57,25 +57,19 @@ signal change_category_name_finished
 @onready var entry_count_action_btn: OptionButton = %EntryActionOptButton
 @onready var entry_count_action_lbl: Label = %EntryActionLabel
 @onready var entry_count_action_container: HBoxContainer = %EntryCountActionHBox
+var entry_count_spinbox_line: LineEdit
+@onready var entry_count_spinbox: SpinBox = %EntryCountSpinBox
 
 @onready var session_timer_action_btn: OptionButton = %SessionTimerActionOptButton
 @onready var session_timer_action_lbl: Label = %SessionTimerActionLabel
 @onready var session_timer_action_container: HBoxContainer = %SessionTimerActionHBox
+var session_duration_spinbox_line: LineEdit
+@onready var session_duration_spinbox: SpinBox = %SessionDurationSpinBox
 
 var file_count_spinbox_line: LineEdit
 @onready var file_count_spinbox: SpinBox = %FileCountSpinBox
 @onready var file_count_lbl: Label = %FileCountLabel
-@onready var file_count_container: HBoxContainer = %FileCountHBox
-
-var entry_count_spinbox_line: LineEdit
-@onready var entry_count_spinbox: SpinBox = %EntryCountSpinBox
-@onready var entry_count_lbl: Label = %EntryCountLabel
-@onready var entry_count_container: HBoxContainer = %EntryCountHBox
-
-var session_duration_spinbox_line: LineEdit
-@onready var session_duration_spinbox: SpinBox = %SessionDurationHBox/SessionDurationSpinBox
-@onready var session_duration_lbl: Label = %SessionDurationLabel
-@onready var session_duration_container: HBoxContainer = %SessionDurationHBox
+@onready var file_count_container: HBoxContainer = %FileCountHBox 
 
 @onready var error_rep_btn: OptionButton = %ErrorRepOptButton
 @onready var error_rep_lbl: Label = %ErrorRepLabel
@@ -143,19 +137,10 @@ var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
 var sb_btn_highlight 									:= preload("uid://dcjwu6ej2w2s4")
 var sb_btn_top_highlight 							:= preload("uid://lyngp43l4n0n")
 var sb_btn_apply 											:= preload("uid://bwsfno28una6g")
+var sb_btn_apply_highlight						:= preload("uid://cws5raq1oykdn") 
 
-var sb_clrpicker_normal								:= preload("uid://bth006ulwoyl3")
-var sb_clrpicker_highlight 						:= preload("uid://bv58jw0dd3sve")
-
-var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
-var sb_line_edit_highlight 						:= preload("uid://dl1ay0wubtp2m")
-var sb_line_edit_invalid 							:= preload("uid://sqhht0mdddoi")
-
-var sb_spinbox_up_highlight 					:= preload("uid://bvek0vh8shw5l")
-var sb_spinbox_up_pressed 						:= preload("uid://q0h5bi585ik6")
-var sb_spinbox_down_highlight 				:= preload("uid://ba2pkgbcu0dlo")
-var sb_spinbox_down_pressed 					:= preload("uid://daw4nhpnjj6i1")
-
+var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")  
+var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 ## Index 3 is a SEPERATOR and should not be used.
 enum LimitMethod {
 	ENTRY_COUNT,
@@ -192,10 +177,16 @@ var plugin_version: String =  "1.4":
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
 
 var _default_setting_in_progress: bool = false 
+var _is_shutting_down: bool = false
 var btn_array: Array[Control] = []
 var container_array: Array[Control] = [] 
-
 var id_font_settings_min_size: int = 200
+
+var line_edit_states: Dictionary = {
+	"base_dir": {"mouse": false, "edit": false},
+	"log_header": {"mouse": false, "edit": false},
+	"entry_format": {"mouse": false, "edit": false}
+}
 
 var settings_dict := {
 	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
@@ -219,6 +210,13 @@ var settings_dict := {
 	"columns": 										{"section": "settings", 	"name": "columns", 										"type": TYPE_INT, 		"control": null, "default": 5}
 }
 
+
+
+# var a: int = 0
+# func _physics_process(delta):
+# 	entry_count_spinbox_line.add_theme_color_override("font_color", theme_colors["font"]["hover"] if a >= 60 else theme_colors["font"]["normal"])
+# 	if a < 120: a += 1
+# 	else:a = 0 
 
 
 
@@ -261,6 +259,7 @@ func _ready() -> void:
 		_connect_unique(reset_settings_btn.button_up, reset_to_default)
 		_connect_unique(user_dir_btn.button_up, _open_user_dir)
 
+		_connect_line_edit_toggled()
 		_assign_spinbox_line_edits()
 		_connect_spinbox_line_submitted()
 
@@ -299,12 +298,8 @@ func _ready() -> void:
 			base_dir_container,
 			log_header_container,
 			entry_format_container,
-			limit_method_container,
-			entry_count_action_container,
-			session_timer_action_container,
-			file_count_container,
-			entry_count_container,
-			session_duration_container,
+			limit_method_container, 
+			file_count_container, 
 			error_rep_container,
 			id_align_container
 		]
@@ -313,12 +308,8 @@ func _ready() -> void:
 			base_dir_line,
 			log_header_line,
 			entry_format_line,
-			limit_method_btn,
-			entry_count_action_btn,
-			session_timer_action_btn,
+			limit_method_btn, 
 			file_count_spinbox,
-			entry_count_spinbox,
-			session_duration_spinbox,
 			error_rep_btn,
 			id_align_opt_btn
 		]
@@ -327,17 +318,13 @@ func _ready() -> void:
 			base_dir_lbl,
 			log_header_lbl,
 			entry_format_lbl,
-			limit_method_lbl,
-			entry_count_action_lbl,
-			session_timer_action_lbl,
-			file_count_lbl,
-			entry_count_lbl,
-			session_duration_lbl,
+			limit_method_lbl, 
+			file_count_lbl, 
 			error_rep_lbl,
 			id_align_lbl,
 		]
 
-		_bind_hover_groups(container_array, btns_array, corresponding_lbls)
+		_bind_settings_hover_groups()
 		_apply_limit_method_visibility(config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)))
 
 		initialize_dock()
@@ -348,6 +335,10 @@ func _ready() -> void:
 		_assign_settings_controls()
 
 
+func _exit_tree() -> void: 
+	_is_shutting_down = true
+
+
 func _create_editor_inspector(parent: Control) -> EditorInspector:
 	var new_inspector := EditorInspector.new()
 	parent.add_child(new_inspector)
@@ -356,16 +347,27 @@ func _create_editor_inspector(parent: Control) -> EditorInspector:
 	return new_inspector
 
 
+
 func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 	if signal_obj.is_connected(callback):
 		signal_obj.disconnect(callback)
 	signal_obj.connect(callback)
 
 
+
+func _connect_line_edit_toggled() -> void:
+	base_dir_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(base_dir_line))
+	# base_dir_line.focus_exited.connect(_on_line_edit_edit_toggled.bind(base_dir_line))
+	log_header_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(log_header_line))
+	entry_format_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(entry_format_line))
+
+
+
 func _assign_spinbox_line_edits() -> void:
 	file_count_spinbox_line = file_count_spinbox.get_line_edit()
 	entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
 	session_duration_spinbox_line = session_duration_spinbox.get_line_edit() 
+
 
 
 func _connect_spinbox_line_submitted() -> void:
@@ -378,6 +380,8 @@ func _connect_spinbox_line_submitted() -> void:
 	for line_edit in line_edits:
 		_connect_unique(line_edit.text_submitted, _on_spinbox_lineedit_submitted.bind(line_edit))
 
+# func _physics_process(delta):
+# 	base_dir_line.editable = !base_dir_line.editable
 
 func _connect_control_signal(node: Control) -> void:
 	if node is Button:
@@ -394,25 +398,125 @@ func _connect_control_signal(node: Control) -> void:
 		_connect_unique(node.value_changed, _on_spinbox_value_changed.bind(node)) 
 
 
-func _bind_hover_groups(containers: Array[HBoxContainer], controls: Array[Control], labels: Array[Label]) -> void:
-	for i in range(containers.size()):
-		_connect_unique(containers[i].mouse_entered, _on_dock_mouse_hover_changed.bind(labels[i], true))
-		_connect_unique(containers[i].mouse_exited, _on_dock_mouse_hover_changed.bind(labels[i], false))
-		_connect_unique(controls[i].mouse_entered, _on_dock_mouse_hover_changed.bind(labels[i], true))
-		_connect_unique(controls[i].mouse_exited, _on_dock_mouse_hover_changed.bind(labels[i], false))
 
-	for lbl in labels:
-		lbl.add_theme_color_override("font_color", theme_colors["font"]["normal"])
+func _bind_settings_hover_groups() -> void:
+	var _groups = [
+		[
+			base_dir_container,
+			base_dir_line,
+			base_dir_lbl
+		],
+		[
+			log_header_container,
+			log_header_line,
+			log_header_lbl
+		],
+		[
+			entry_format_container,
+			entry_format_line,
+			entry_format_lbl
+		],
+		[
+			error_rep_container,
+			error_rep_btn,
+			error_rep_lbl
+		],
+		[
+			file_count_container,
+			file_count_spinbox,
+			file_count_lbl
+		],
+		[
+			limit_method_container,
+			limit_method_btn,
+			limit_method_lbl
+		],
+		[
+			entry_count_action_container, 
+			entry_count_action_btn, 
+			entry_count_spinbox,
+			entry_count_action_lbl
+		],
+		[
+			session_timer_action_container, 
+			session_timer_action_btn, 
+			session_duration_spinbox,
+			session_timer_action_lbl
+		],
+		[
+			id_align_container,
+			id_align_opt_btn,
+			id_align_lbl
+		]
+	]
+
+	for group in _groups:
+		for ctrl in group:
+			if ctrl is Label: continue
+
+			_connect_unique(ctrl.mouse_entered, _on_setting_hover.bind(group, true))
+			_connect_unique(ctrl.mouse_exited, _on_setting_hover.bind(group, false))
+
+
+
+func _on_setting_hover(group: Array, is_hovered: bool) -> void:
+	theme_colors = _get_theme_colors()
+	var c_norm:  Color = theme_colors["font"]["normal"] 
+	var c_hover: Color = theme_colors["font"]["hover"] 
+
+	for ctrl in group:
+		if ctrl is HBoxContainer:
+			continue
+
+		if ctrl is LineEdit:
+			var key: String = ""
+			match ctrl:
+				base_dir_line: key = "base_dir"
+				log_header_line: key = "log_header"
+				entry_format_line: key = "entry_format"
+
+			line_edit_states[key]["mouse"] = is_hovered
+			if not line_edit_states[key]["edit"]:
+				ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
+
+		if ctrl is OptionButton:
+			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
+			continue
+
+		if ctrl is SpinBox:
+			ctrl.get_line_edit().add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
+			continue
+		
+		if ctrl is Label:
+			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
+
+
+
+func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:
+	theme_colors = _get_theme_colors()
+	var c_norm:  Color = theme_colors["font"]["normal"] 
+	var c_hover: Color = theme_colors["font"]["hover"] 
+	var key: String
+	
+	match node:
+		base_dir_line: key = "base_dir"
+		log_header_line: key = "log_header"
+		entry_format_line: key = "entry_format"
+	
+	line_edit_states[key]["edit"] = toggled_on
+	if not line_edit_states[key]["mouse"]:
+		node.add_theme_color_override("font_color", c_hover if toggled_on else c_norm) 
 
 
 func _apply_limit_method_visibility(method: int) -> void:
 	var show_entry_limits := method == LimitMethod.ENTRY_COUNT or method == LimitMethod.BOTH
 	var show_time_limits := method == LimitMethod.SESSION_TIMER or method == LimitMethod.BOTH
 
-	entry_count_action_container.visible = show_entry_limits
-	entry_count_container.visible = show_entry_limits
-	session_timer_action_container.visible = show_time_limits
-	session_duration_container.visible = show_time_limits
+	entry_count_action_container.visible = show_entry_limits 
+	session_timer_action_container.visible = show_time_limits 
+
+	entry_count_action_lbl.text = "Entry Action" if method == LimitMethod.BOTH else "Action"
+	session_timer_action_lbl.text = "Timer Action" if method == LimitMethod.BOTH else "Action"
 
 
 func _assign_settings_controls() -> void:
@@ -447,12 +551,11 @@ func initialize_dock() -> void:
 		printerr("GoLogger error: Failed to load settings.ini file!")
 		return
 
-	validate_settings()
+	validate_settings(true)
 
 	for c_name in config.get_value("categories", "category_names", []):
 		_add_category(
-			c_name,
-			config.get_value("categories." + c_name, "category_index", 0),
+			c_name, 
 			config.get_value("categories." + c_name, "is_locked", false)
 		)
 	var def_cat = config.get_value("categories", "default_category", "")
@@ -511,7 +614,7 @@ func create_settings_file() -> void: # Mirror
 
 
 
-func validate_settings() -> void: # Mirror
+func validate_settings(ignore_errors: bool = false) -> void: # Mirror
 	config.load(PATH)
 	_ensure_default_category()
 
@@ -549,7 +652,7 @@ func validate_settings() -> void: # Mirror
 		if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
 			config.set_value(setting["section"], setting["name"], setting["default"])
 
-	save_data()
+	save_data(ignore_errors)
 
 
 
@@ -596,55 +699,46 @@ func reset_to_default() -> void:
 
 ## Saves dock state to file.
 func save_data(ignore_errors: bool = false) -> int: 
-	config.load(PATH)
+	if _is_shutting_down:
+		return OK
+
+	var load_err := config.load(PATH)
+	if load_err != OK:
+		return load_err
+
 	var _c := ConfigFile.new()
-	var _cat_names = []
 	var _err: int = 0
 	var _offenders: Array[String] = [] 
 	_ensure_default_category()
 
-	# Setting first as blank so "categories" section at top of file
-	_c.set_value("categories", "category_names", []) 
-	_c.set_value("categories", "default_category", config.get_value("categories", "default_category", ""))
+	# Start from current file state, then override with live UI values when available.
+	for section in config.get_sections():
+		for key in config.get_section_keys(section):
+			_c.set_value(section, key, config.get_value(section, key))
 
 	# Settings
 	for key in settings_dict.keys():
 		var ctrl = settings_dict[key].get("control")
+		var setting_name: String = settings_dict[key].get("name", key)
+		var section_name: String = settings_dict[key].get("section", "settings")
 		
 		if !ignore_errors and ctrl == null and settings_dict[key]["section"] != "categories":
 			_err += 1
-			_offenders.append(str(settings_dict[key].get("name", "")))
+			_offenders.append(str(setting_name))
+
+		if section_name == "categories":
 			continue
 		
 		if   ctrl is LineEdit:
-			_c.set_value("settings", settings_dict[key]["name"], ctrl.text)
+			_c.set_value("settings", setting_name, ctrl.text)
 		elif ctrl is SpinBox:
-			_c.set_value("settings", settings_dict[key]["name"], int(ctrl.value))
+			_c.set_value("settings", setting_name, int(ctrl.value))
 		elif ctrl is CheckBox:
-			_c.set_value("settings", settings_dict[key]["name"], ctrl.button_pressed)
+			_c.set_value("settings", setting_name, ctrl.button_pressed)
 		elif ctrl is OptionButton:
-			_c.set_value("settings", settings_dict[key]["name"], ctrl.selected)
+			_c.set_value("settings", setting_name, ctrl.selected)
 		elif ctrl is HSlider:
-			_c.set_value("settings", settings_dict[key]["name"], int(column_slider.value)) 
-	
-	# Categories
-	for log_c in category_container.get_children():
-		if log_c is LogCategory:
-			if log_c.category_name == "":
-				continue
-
-			if log_c is LogCategory and log_c.default_checkbox.button_pressed:
-				_c.set_value("categories", "default_category", log_c.category_name)
-
-			_cat_names.append(log_c.category_name)
-			_c.set_value("categories." + log_c.category_name, "file_name", 			config.get_value("categories." + log_c.category_name, "file_name", ""))
-			_c.set_value("categories." + log_c.category_name, "file_path", 			config.get_value("categories." + log_c.category_name, "file_path", ""))
-			_c.set_value("categories." + log_c.category_name, "category_name", 	log_c.category_name) 
-			_c.set_value("categories." + log_c.category_name, "file_count", 			config.get_value("categories." + log_c.category_name, "file_count", 0))
-			_c.set_value("categories." + log_c.category_name, "is_locked", 			log_c.is_locked)
-			_c.set_value("categories." + log_c.category_name, "entry_count", 		config.get_value("categories." + log_c.category_name, "entry_count", 0))
-
-	_c.set_value("categories", "category_names", _cat_names)
+			_c.set_value("settings", setting_name, int(column_slider.value)) 
 
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
 	if  err_rep_lv <= ErrorReportLevel.ERRORS:
@@ -661,6 +755,9 @@ func save_data(ignore_errors: bool = false) -> int:
 
 
 func save_categories() -> void:
+	if _is_shutting_down:
+		return
+
 	config.load(PATH)
 	var _c := ConfigFile.new()
 	var _c_names = []
@@ -704,7 +801,7 @@ func save_categories() -> void:
 
 
 ## `prevent_save` is used when loading the plugin.
-func _add_category(_name: String = "", _is_locked: bool = false, prevent_save: bool = false) -> void:
+func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	config.load(PATH)
 	var _n = category_scene.instantiate() as LogCategory
 	_n.category_name = _name
@@ -719,14 +816,14 @@ func _add_category(_name: String = "", _is_locked: bool = false, prevent_save: b
 
 	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
 	_handle_category_mov_button_state()
-
-	if prevent_save:
-		save_data()
+ 
 
 
 
 func _on_category_tree_exited(name: String) -> void:
 	# await get_tree().physics_frame 
+	if _is_shutting_down:
+		return
 	save_categories()
 
 
@@ -906,11 +1003,6 @@ func _is_entry_format_valid(format: String) -> bool:
 
 
 
-func _on_dock_mouse_hover_changed(node: Label, is_hovered: bool) -> void:
-	node.add_theme_color_override("font_color", theme_colors["font"]["hover"] if is_hovered else theme_colors["font"]["normal"])
-
-
-
 func _on_button_button_up(node: Button) -> void:
 	config.load(PATH)
 	_ensure_default_category()
@@ -1002,23 +1094,17 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 	match node:
 		limit_method_btn:
 			config.set_value("settings", "limit_method", index)
-			entry_count_action_container.hide()
-			entry_count_container.hide()
-			session_timer_action_container.hide()
-			session_duration_container.hide()
+			entry_count_action_container.hide() 
+			session_timer_action_container.hide() 
 			
 			match index:
 				LimitMethod.ENTRY_COUNT:
-					entry_count_action_container.show()
-					entry_count_container.show() 
+					entry_count_action_container.show() 
 				LimitMethod.SESSION_TIMER: 
-					session_timer_action_container.show()
-					session_duration_container.show()
+					session_timer_action_container.show() 
 				LimitMethod.BOTH:
 					entry_count_action_container.show()
-					entry_count_container.show()
-					session_timer_action_container.show()
-					session_duration_container.show()
+					session_timer_action_container.show() 
 
 		entry_count_action_btn:
 			config.set_value("settings", "entry_count_action", index) 
@@ -1111,8 +1197,7 @@ func _on_column_slider_value_changed(value: int) -> void:
 	config.load(PATH)
 	category_container.columns = _get_column_value(value)
 	column_slider.tooltip_text = str("Columns: ", _get_column_value(value))
-	config.set_value("settings", "columns", _get_column_value(value))
-	# config.save(PATH)
+	config.set_value("settings", "columns", _get_column_value(value)) 
 	save_data()
 
 
@@ -1125,8 +1210,9 @@ func _get_column_value(slider_value: int) -> int:
 
 func _ensure_default_category() -> void:
 	config.load(PATH)
-	if  config.get_value("categories", "category_names").is_empty() and config.get_value("categories", "default_category")\
-	or !config.get_value("categories", "category_names").has(config.get_value("categories", "default_category")):
+	var cat_names: Array = config.get_value("categories", "category_names", [])
+	var def_cat: String = config.get_value("categories", "default_category", "")
+	if cat_names.is_empty() and def_cat != "" or !cat_names.has(def_cat):
 		config.set_value("categories", "default_category", "")
 		config.save(PATH)
 
@@ -1192,9 +1278,7 @@ func _apply_theme_colors():
 	sb_tab_hover.bg_color 					= Color.TRANSPARENT
 	sb_btn_normal.bg_color 					= Color.TRANSPARENT
 	sb_btn_highlight.bg_color 			= Color.TRANSPARENT
-	sb_btn_top_highlight.bg_color 	= Color.TRANSPARENT
-	sb_clrpicker_normal.bg_color 		= Color.TRANSPARENT
-	sb_clrpicker_highlight.bg_color = Color.TRANSPARENT
+	sb_btn_top_highlight.bg_color 	= Color.TRANSPARENT 
 
 	# if editor_base_col != theme_colors["base"]["col"] or editor_contrast != theme_colors["contrast"]: 
 	panel_round_base.bg_color 											= theme_colors["base"]["col"]
@@ -1208,7 +1292,6 @@ func _apply_theme_colors():
 	sb_tab_panel_bg.bg_color 												= theme_colors["base"]["dark"]
 	panel_round_bg.bg_color 												= theme_colors["base"]["dark"]
 	sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
-	sb_line_edit_highlight.bg_color 								= theme_colors["base"]["dark_highlight"]
 
 
 	# if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]:
@@ -1219,9 +1302,8 @@ func _apply_theme_colors():
 	panel_top_round_accent.bg_color 								= theme_colors["accent"]["col"]
 	sb_btn_highlight.border_color 									= theme_colors["accent"]["col"]
 	sb_btn_apply.bg_color 													= theme_colors["accent"]["col"]
+	sb_btn_apply.bg_color 													= theme_colors["accent"]["col"]
 	sb_btn_top_highlight.border_color 							= theme_colors["accent"]["col"]
-	sb_clrpicker_highlight.border_color 						= theme_colors["accent"]["col"]
-	sb_line_edit_highlight.border_color 						= theme_colors["accent"]["col"]
 	sb_tab_hover.bg_color 													= theme_colors["accent"]["light"]
 	sb_tab_selected.bg_color 												= theme_colors["accent"]["dark"]
 	panel_round_accent_muted.bg_color 							= theme_colors["accent"]["dark_highlight"]
