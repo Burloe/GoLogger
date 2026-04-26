@@ -26,13 +26,13 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [x] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
   - [x] Unchecking clears setting to "",
 
-- [ ] `base_directory`:
+- [x] `base_directory`:
   - [x] New directory is created when change.
   - [x] Directories for all the categories are created when running the game if,
   - [x] Checks directory is valid before applying and reverting if not.
-- [ ] `log_header_format`:
-  - [ ] New log header is used when starting a session.
-  - [ ] Check all tags work properly.
+- [x] `log_header_format`:
+  - [x] New log header is used when starting a session.
+  - [x] Check all tags work properly.
 - [ ] `entry_format`:
   - [ ] Proper format is applied to entries.
   - [ ] Check all tags work properly.

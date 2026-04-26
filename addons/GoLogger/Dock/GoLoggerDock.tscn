@@ -96,26 +96,25 @@ theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
-current_tab = 1
+current_tab = 0
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
 data = SubResource("Resource_xov76")
 metadata/_edit_vertical_guides_ = [1562.0, 1529.0]
 
-[node name="Categories" type="VBoxContainer" parent="." unique_id=1224284395]
-visible = false
+[node name="Categories" type="HBoxContainer" parent="." unique_id=35875088]
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 0
 
-[node name="TopBarPanel" type="Panel" parent="Categories" unique_id=1547891829]
+[node name="SidePanel" type="Panel" parent="Categories" unique_id=1547891829]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(46, 100)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("1_itauu")
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/TopBarPanel" unique_id=1878771389]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/SidePanel" unique_id=1878771389]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -127,15 +126,10 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/TopBarPanel/MarginContainer" unique_id=1236446976]
+[node name="TitleHBoxContainer" type="VBoxContainer" parent="Categories/SidePanel/MarginContainer" unique_id=1347103215]
 layout_mode = 2
 
-[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer" unique_id=498612491]
-custom_minimum_size = Vector2(0, 31)
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="AddCategoryButton" type="Button" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1822746076]
+[node name="AddCategoryButton" type="Button" parent="Categories/SidePanel/MarginContainer/TitleHBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create new category"
@@ -151,7 +145,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
 
-[node name="OpenDirCatButton" type="Button" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=594576567]
+[node name="OpenDirCatButton" type="Button" parent="Categories/SidePanel/MarginContainer/TitleHBoxContainer" unique_id=594576567]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Opens Base Directory using OS file browser"
@@ -167,16 +161,17 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("2_6725a")
 icon_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=990503779]
+[node name="HSeparator" type="Control" parent="Categories/SidePanel/MarginContainer/TitleHBoxContainer" unique_id=303410936]
+custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 
-[node name="ColumnsHSlider" type="HSlider" parent="Categories/TopBarPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1743312277]
+[node name="ColumnsVSlider" type="VSlider" parent="Categories/SidePanel/MarginContainer/TitleHBoxContainer" unique_id=2082939439]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_horizontal = 1
+size_flags_vertical = 3
 tooltip_text = "Columns: 6"
-mouse_default_cursor_shape = 10
+mouse_default_cursor_shape = 9
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
@@ -186,22 +181,20 @@ rounded = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Categories" unique_id=642802176]
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/ScrollContainer" unique_id=333286901]
+[node name="CategoryGridContainer" type="GridContainer" parent="Categories/ScrollContainer" unique_id=2014106739]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 9
-
-[node name="CategoryGridContainer" type="GridContainer" parent="Categories/ScrollContainer/CategoriesHBoxContainer" unique_id=2014106739]
-unique_name_in_owner = true
-layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 6
 
 [node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 1
@@ -441,7 +434,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Count Action"
+text = "Action"
 vertical_alignment = 1
 
 [node name="EntryCountSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=1695558902]
@@ -498,7 +491,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-text = "Timer Action"
+text = "Action"
 vertical_alignment = 1
 
 [node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=956442988]
@@ -848,7 +841,7 @@ emoji_menu_enabled = false
 [node name="BaseDirApplyButton" type="Button" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1831127922]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 tooltip_text = "Applies a new base directory"
 theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
@@ -907,7 +900,7 @@ emoji_menu_enabled = false
 [node name="LogHeaderApplyButton" type="Button" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1394228566]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 tooltip_text = "Apply the new log header format"
 theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
@@ -1002,7 +995,7 @@ vertical_alignment = 1
 [node name="EntryFormatApplyButton" type="Button" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=1933647225]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 tooltip_text = "Apply new entry format"
 theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)

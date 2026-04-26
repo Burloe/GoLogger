@@ -26,7 +26,7 @@ signal change_category_name_finished
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton 
 
-@onready var column_slider: HSlider = %ColumnsHSlider
+@onready var column_slider: VSlider = %ColumnsVSlider
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 # Settings tab
@@ -176,6 +176,19 @@ var plugin_version: String =  "1.4":
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
 
+var log_header_value: String = "":
+	set(value):
+		if value != log_header_value:
+			config.load(PATH)
+			config.set_value("settings", "log_header_format", value)
+			config.save(PATH)
+var entry_format_value: String = "":
+	set(value):
+		if value != entry_format_value:
+			config.load(PATH)
+			config.set_value("settings", "entry_format", value)
+			config.save(PATH)
+
 var _default_setting_in_progress: bool = false 
 var _is_shutting_down: bool = false
 var btn_array: Array[Control] = []
@@ -212,14 +225,6 @@ var settings_dict := {
 
 
 
-# var a: int = 0
-# func _physics_process(delta):
-# 	entry_count_spinbox_line.add_theme_color_override("font_color", theme_colors["font"]["hover"] if a >= 60 else theme_colors["font"]["normal"])
-# 	if a < 120: a += 1
-# 	else:a = 0 
-
-
-
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
@@ -240,6 +245,9 @@ func _ready() -> void:
 		config.load(PATH)
 		_ensure_default_category()
 
+		
+		log_header_value = config.get_value("settings", "log_header_format", settings_dict.get("log_header_format", {}).get("default", ""))
+		entry_format_value = config.get_value("settings", "entry_format", settings_dict.get("entry_format", {}).get("default", ""))
 		id_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_startup_btn.hide()
 		base_dir_apply_btn.hide()
 		log_header_apply_btn.hide()
@@ -252,6 +260,10 @@ func _ready() -> void:
 
 
 		# Signal connections
+		id_font_sett_cont.folding_changed.connect(
+			func(is_folded: bool) -> void:
+				id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+		)
 		_connect_unique(settings.settings_changed, _on_editor_settings_changed)
 		_connect_unique(add_category_btn.button_up, _add_category)
 		_connect_unique(open_dir_btn.button_up, _open_directory)
@@ -293,6 +305,7 @@ func _ready() -> void:
 		for node in btn_array:
 			_connect_control_signal(node)
 
+		print(log_header_line.text_submitted.is_connected(_on_line_edit_text_submitted))
 
 		var	container_array: Array[HBoxContainer] = [
 			base_dir_container,
@@ -357,7 +370,6 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 func _connect_line_edit_toggled() -> void:
 	base_dir_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(base_dir_line))
-	# base_dir_line.focus_exited.connect(_on_line_edit_edit_toggled.bind(base_dir_line))
 	log_header_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(log_header_line))
 	entry_format_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(entry_format_line))
 
@@ -380,8 +392,7 @@ func _connect_spinbox_line_submitted() -> void:
 	for line_edit in line_edits:
 		_connect_unique(line_edit.text_submitted, _on_spinbox_lineedit_submitted.bind(line_edit))
 
-# func _physics_process(delta):
-# 	base_dir_line.editable = !base_dir_line.editable
+
 
 func _connect_control_signal(node: Control) -> void:
 	if node is Button:
@@ -508,6 +519,7 @@ func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:
 		node.add_theme_color_override("font_color", c_hover if toggled_on else c_norm) 
 
 
+
 func _apply_limit_method_visibility(method: int) -> void:
 	var show_entry_limits := method == LimitMethod.ENTRY_COUNT or method == LimitMethod.BOTH
 	var show_time_limits := method == LimitMethod.SESSION_TIMER or method == LimitMethod.BOTH
@@ -517,6 +529,7 @@ func _apply_limit_method_visibility(method: int) -> void:
 
 	entry_count_action_lbl.text = "Entry Action" if method == LimitMethod.BOTH else "Action"
 	session_timer_action_lbl.text = "Timer Action" if method == LimitMethod.BOTH else "Action"
+
 
 
 func _assign_settings_controls() -> void:
@@ -577,7 +590,7 @@ func initialize_dock() -> void:
 		elif ctrl is SpinBox:
 			ctrl.value = value
 		
-		elif ctrl is HSlider:
+		elif ctrl is VSlider:
 			ctrl.value = _get_column_value(value)
 		
 		elif ctrl is OptionButton:
@@ -679,7 +692,7 @@ func reset_to_default() -> void:
 		elif ctrl is SpinBox:
 			ctrl.value = value
 		
-		elif ctrl is HSlider:
+		elif ctrl is VSlider:
 			ctrl.value = _get_column_value(value)
 		
 		elif ctrl is OptionButton:
@@ -737,7 +750,7 @@ func save_data(ignore_errors: bool = false) -> int:
 			_c.set_value("settings", setting_name, ctrl.button_pressed)
 		elif ctrl is OptionButton:
 			_c.set_value("settings", setting_name, ctrl.selected)
-		elif ctrl is HSlider:
+		elif ctrl is VSlider:
 			_c.set_value("settings", setting_name, int(column_slider.value)) 
 
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
@@ -812,7 +825,7 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested) 
 	_n.default_checkbox.button_pressed = config.get_value("categories", "default_category", "") == _name 
-	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
+	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name)) 
 
 	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
 	_handle_category_mov_button_state()
@@ -1074,6 +1087,8 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 
 
 func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
+	print("Node: ", node.get_name())
+	config.load(PATH)
 	match node:
 		base_dir_line:
 			base_dir_line.release_focus()
@@ -1083,11 +1098,13 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 		log_header_line:
 			log_header_line.release_focus()
 			log_header_apply_btn.hide()
+			log_header_value = new_text # Setter saves to file
 
 		entry_format_line:
 			entry_format_line.release_focus()
 			entry_format_apply_btn.hide()
-
+			entry_format_value = new_text # Setter saves to file
+	save_data()
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:

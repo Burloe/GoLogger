@@ -220,13 +220,28 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if !Engine.is_editor_hint():
-		if event is InputEventKey \
-		or event is InputEventJoypadButton \
-		or (event is InputEventJoypadMotion and (event.axis == 4 or event.axis == 5)): # Only allow trigger axes
-			if gl_hotkeys.start_session_hotkey.shortcut.matches_event(event) and event.is_released():
-				start_session()
-			if gl_hotkeys.stop_session_hotkey.shortcut.matches_event(event) and event.is_released():
-				stop_session()
+		if event is InputEventKey or event is InputEventJoypadButton or event is InputEventMouseButton:
+			if gl_hotkeys.start_session_hotkey is InputEventShortcut:
+
+				if gl_hotkeys.start_session_hotkey.shortcut.matches_event(event) and event.is_released():
+					start_session()
+			
+			if gl_hotkeys.start_session_hotkey is InputEventMouseButton\
+			or gl_hotkeys.start_session_hotkey is InputEventJoypadButton\
+			or gl_hotkeys.start_session_hotkey is InputEventKey:
+				if gl_hotkeys.start_session_hotkey.is_match(event) and event.is_released():
+					start_session() 
+
+
+			if gl_hotkeys.stop_session_hotkey is InputEventShortcut:
+				if gl_hotkeys.stop_session_hotkey.shortcut.matches_event(event) and event.is_released():
+					start_session()
+			
+			if gl_hotkeys.stop_session_hotkey is InputEventMouseButton\
+			or gl_hotkeys.stop_session_hotkey is InputEventJoypadButton\
+			or gl_hotkeys.stop_session_hotkey is InputEventKey:
+				if gl_hotkeys.stop_session_hotkey.is_match(event) and event.is_released():
+					start_session()
 
 			config.load(PATH)
 			var id_toggle = config.get_value("settings", "id_toggle", false)

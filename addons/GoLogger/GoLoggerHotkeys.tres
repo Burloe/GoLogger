@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://cvahhjknn2nxq" path="res://addons/GoLogger/GLogShortcut.gd" id="1_tvptr"]
 
+[sub_resource type="InputEventJoypadButton" id="InputEventJoypadButton_tvptr"]
+
 [sub_resource type="InputEventKey" id="InputEventKey_e18rc"]
 device = -1
 shift_pressed = true
@@ -25,4 +27,5 @@ script = ExtResource("1_tvptr")
 start_session_hotkey = SubResource("InputEventKey_xopda")
 stop_session_hotkey = SubResource("InputEventKey_r67vl")
 display_instance_id_hotkey = SubResource("InputEventKey_e18rc")
+asdf = SubResource("InputEventJoypadButton_tvptr")
 metadata/_custom_type_script = "uid://cvahhjknn2nxq"
