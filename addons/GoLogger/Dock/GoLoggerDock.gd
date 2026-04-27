@@ -32,18 +32,24 @@ signal change_category_name_finished
 # Settings tab
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
+@onready var base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
 @onready var base_dir_apply_btn: Button = %BaseDirApplyButton
+@onready var base_dir_revert_btn: Button = %BaseDirRevertButton
 @onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
 @onready var base_dir_container: HBoxContainer = %BaseDirHBox
 
 @onready var log_header_line: LineEdit = %LogHeaderLineEdit
 @onready var log_header_lbl: Label = %LogHeaderLabel
+@onready var log_header_line_btn_cont: Panel = %LogHeaderLineEditButtons
 @onready var log_header_apply_btn: Button = %LogHeaderApplyButton
+@onready var log_header_revert_btn: Button = %LogHeaderRevertButton
 @onready var log_header_container: HBoxContainer = %LogHeaderHBox
 
 @onready var entry_format_line: LineEdit = %EntryFormatLineEdit
 @onready var entry_format_lbl: Label = %EntryFormatLabel
+@onready var entry_format_line_btn_cont: Panel = %EntryFormatLineEditButtons
 @onready var entry_format_apply_btn: Button = %EntryFormatApplyButton
+@onready var entry_format_revert_btn: Button = %EntryFormatRevertButton
 @onready var entry_format_warning: Panel = %EntryFormatWarning
 @onready var entry_format_container: HBoxContainer = %EntryFormatHBox
 
@@ -179,15 +185,19 @@ var plugin_version: String =  "1.4":
 var log_header_value: String = "":
 	set(value):
 		if value != log_header_value:
+			log_header_value = value
+			log_header_revert_btn.tooltip_text = str("Revert to '", value, "'")
 			config.load(PATH)
 			config.set_value("settings", "log_header_format", value)
 			config.save(PATH)
 var entry_format_value: String = "":
 	set(value):
 		if value != entry_format_value:
+			entry_format_value = value
+			entry_format_revert_btn.tooltip_text = str("Revert to '", value, "'")
 			config.load(PATH)
 			config.set_value("settings", "entry_format", value)
-			config.save(PATH)
+			config.save(PATH) 
 
 var _default_setting_in_progress: bool = false 
 var _is_shutting_down: bool = false
@@ -239,8 +249,8 @@ func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableCo
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
-		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
 		theme_colors = _get_theme_colors() 
+		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
 		inspector = _create_editor_inspector(hotkey_container)
 		inspector.edit(ResourceLoader.load("uid://dyi2aml73k4g8"))
 		id_inspector = _create_editor_inspector(id_font_sett_cont)
@@ -256,16 +266,16 @@ func _ready() -> void:
 
 		
 		log_header_value = config.get_value("settings", "log_header_format", settings_dict.get("log_header_format", {}).get("default", ""))
-		entry_format_value = config.get_value("settings", "entry_format", settings_dict.get("entry_format", {}).get("default", ""))
+		entry_format_value = config.get_value("settings", "entry_format", settings_dict.get("entry_format", {}).get("default", "")) 
 		id_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_startup_btn.hide()
-		base_dir_apply_btn.hide()
-		log_header_apply_btn.hide()
-		entry_format_apply_btn.hide()
+		base_dir_line_btn_cont.hide()
+		log_header_line_btn_cont.hide()
+		entry_format_line_btn_cont.hide()
 
 		for log_c in category_container.get_children():
-			if log_c is LogCategory:
-				log_c.queue_free()
-			else: print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
+			if log_c is not LogCategory:
+				print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
+			log_c.queue_free() 
 
 
 		# Signal connections 
@@ -283,11 +293,14 @@ func _ready() -> void:
 		btn_array = [
 			base_dir_line,
 			base_dir_apply_btn,
+			base_dir_revert_btn,
 			base_dir_opendir_btn,
 			log_header_line,
 			log_header_apply_btn,
+			log_header_revert_btn,
 			entry_format_line,
 			entry_format_apply_btn,
+			entry_format_revert_btn,
 			autostart_btn,
 			utc_btn,
 			id_print_btn,
@@ -309,8 +322,6 @@ func _ready() -> void:
 
 		for node in btn_array:
 			_connect_control_signal(node)
-
-		print(log_header_line.text_submitted.is_connected(_on_line_edit_text_submitted))
 
 		var	container_array: Array[HBoxContainer] = [
 			base_dir_container,
@@ -515,9 +526,15 @@ func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:
 	var key: String
 	
 	match node:
-		base_dir_line: key = "base_dir"
-		log_header_line: key = "log_header"
-		entry_format_line: key = "entry_format"
+		base_dir_line: 
+			base_dir_line_btn_cont.visible = toggled_on
+			key = "base_dir"
+		log_header_line: 
+			log_header_line_btn_cont.visible = toggled_on
+			key = "log_header"
+		entry_format_line: 
+			entry_format_line_btn_cont.visible = toggled_on
+			key = "entry_format"
 	
 	line_edit_states[key]["edit"] = toggled_on
 	if not line_edit_states[key]["mouse"]:
@@ -1011,13 +1028,14 @@ func _apply_new_base_directory() -> void:
 		return
 
 	base_dir_line.text = new_dir
+	base_dir_revert_btn.tooltip_text = str("Revert to '", new_dir, "'")
  
 	base_dir_apply_btn.disabled = true
 
 
-
+## Returns true if {entry} tag is present or is NOT empty.
 func _is_entry_format_valid(format: String) -> bool:
-	return true if format.contains("{entry}") else false
+	return true if format.contains("{entry}") or format != "" else false
 
 
 
@@ -1029,6 +1047,13 @@ func _on_button_button_up(node: Button) -> void:
 		base_dir_apply_btn:
 			_apply_new_base_directory()
 			base_dir_apply_btn.hide()
+			base_dir_line_btn_cont.hide()
+		
+		base_dir_revert_btn:
+			base_dir_line.text = config.get_value("settings", "base_directory", settings_dict.get("base_directory", {}).get("default", ""))
+			base_dir_apply_btn.disabled = true
+			base_dir_revert_btn.disabled = true
+			base_dir_line_btn_cont.hide()
 
 		base_dir_opendir_btn:
 			if config.get_value("settings", "base_directory") == "":
@@ -1038,15 +1063,27 @@ func _on_button_button_up(node: Button) -> void:
 		log_header_apply_btn:
 			config.set_value("settings", "log_header_format", log_header_line.text) 
 			log_header_apply_btn.disabled = true
-			log_header_line.release_focus()
-			base_dir_apply_btn.hide()
+			log_header_line.release_focus() 
+			log_header_line_btn_cont.hide()
+		
+		log_header_revert_btn:
+			log_header_line.text = log_header_value
+			log_header_apply_btn.disabled = true
+			log_header_revert_btn.disabled = true
+			log_header_line_btn_cont.hide()
 
 		entry_format_apply_btn:
 			config.set_value("settings", "entry_format", entry_format_line.text)
 			var err := config.save(PATH) 
 			entry_format_apply_btn.disabled = true
-			entry_format_line.release_focus()
-			log_header_apply_btn.hide()
+			entry_format_line.release_focus() 
+			entry_format_line_btn_cont.hide()
+
+		entry_format_revert_btn:
+			entry_format_line.text = entry_format_value
+			entry_format_apply_btn.disabled = true
+			entry_format_revert_btn.disabled = true
+			entry_format_line_btn_cont.hide()
 
 	save_data()
 
@@ -1057,37 +1094,34 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 	match node:
 		base_dir_line:
 			if new_text == "":
-				base_dir_apply_btn.disabled = true
-				base_dir_apply_btn.hide()
+				base_dir_apply_btn.disabled = true 
 			if new_text != config.get_value("settings", "base_directory"):
-				base_dir_apply_btn.disabled = false
-				base_dir_apply_btn.show()
+				base_dir_apply_btn.disabled = false 
 			else:
-				base_dir_apply_btn.disabled = true
-				base_dir_apply_btn.hide()
+				base_dir_apply_btn.disabled = true 
 
 		log_header_line:
-			if new_text != config.get_value("settings", "log_header_format", ""):
-				log_header_apply_btn.disabled = false
-				log_header_apply_btn.show()
+			if new_text != log_header_value:
+				log_header_revert_btn.disabled = false
+				log_header_apply_btn.disabled = false  
 			else:
 				log_header_apply_btn.disabled = true
-				log_header_apply_btn.hide()
 
-		entry_format_line:
-			if _is_entry_format_valid(new_text):
-				entry_format_line.add_theme_stylebox_override("normal", sb_line_edit_normal)
-				entry_format_warning.visible = false
-			else:
-				entry_format_line.add_theme_stylebox_override("normal", sb_line_edit_invalid)
-				entry_format_warning.visible = true
+		entry_format_line: 
+			entry_format_apply_btn.disabled = true
+			entry_format_revert_btn.disabled = true 
+			entry_format_line.add_theme_stylebox_override(
+				"normal", 
+				sb_line_edit_normal if _is_entry_format_valid(new_text) else sb_line_edit_invalid
+			)
 
-			if new_text != config.get_value("settings", "entry_format", "") and _is_entry_format_valid(new_text):
-				entry_format_apply_btn.disabled = false
-				entry_format_apply_btn.show()
-			else:
-				entry_format_apply_btn.disabled = true
-				entry_format_apply_btn.hide()
+			if new_text != entry_format_value and _is_entry_format_valid(new_text):
+				entry_format_apply_btn.disabled = false 
+				entry_format_revert_btn.disabled = false 
+				entry_format_warning.visible = !_is_entry_format_valid(new_text)
+			
+
+
 
 
 
@@ -1097,17 +1131,17 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 	match node:
 		base_dir_line:
 			base_dir_line.release_focus()
-			base_dir_apply_btn.hide()
+			base_dir_apply_btn.disabled = true
 			_apply_new_base_directory()
 
 		log_header_line:
 			log_header_line.release_focus()
-			log_header_apply_btn.hide()
+			log_header_apply_btn.disabled = true
 			log_header_value = new_text # Setter saves to file
 
 		entry_format_line:
 			entry_format_line.release_focus()
-			entry_format_apply_btn.hide()
+			entry_format_apply_btn.disabled = true
 			entry_format_value = new_text # Setter saves to file
 	save_data()
 
@@ -1335,6 +1369,8 @@ func _apply_theme_colors():
 	panel_round_accent_muted.bg_color 							= theme_colors["accent"]["dark_highlight"]
 	panel_top_round_accent_muted.bg_color 					= theme_colors["accent"]["dark_highlight"]
 
+	for line in [base_dir_line, log_header_line, entry_format_line]:
+		line.add_theme_color_override("font_color", theme_colors["font"]["normal"])
 
 	for cont in [general_fold_cont, limit_fold_cont, id_fold_cont, id_font_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
 		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])

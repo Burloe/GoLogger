@@ -22,7 +22,7 @@ outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
 [node name="CategoryModule" type="FoldableContainer" unique_id=901480254]
-custom_minimum_size = Vector2(200, 600)
+custom_minimum_size = Vector2(350, 600)
 anchors_preset = -1
 anchor_right = 0.104
 anchor_bottom = 0.55600005
@@ -46,9 +46,11 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="EntryLabel" type="Label" parent="MarginContainer/EntryContainer" unique_id=926917080]
+custom_minimum_size = Vector2(330, 0)
 layout_mode = 2
 text = "This is an entry"
 label_settings = SubResource("LabelSettings_67y4n")
+autowrap_mode = 3
 
 [node name="EntryLabel2" type="Label" parent="MarginContainer/EntryContainer" unique_id=2038358134]
 layout_mode = 2

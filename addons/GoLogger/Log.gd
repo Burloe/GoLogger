@@ -64,8 +64,7 @@ extends Node
 
 
 
-signal session_started ## Emitted when a log session has started.
-signal session_stopped ## Emitted when a log session has been stopped.
+signal session_toggled(toggled_on: bool) ## Emitted when a log session is started or stopped.
 signal msg_logged(category: String, msg: String) ## Emitted when a log message is logged.
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
@@ -119,8 +118,7 @@ var copy_name : String = ""
 var session_status: bool = false:
 	set(value):
 		session_status = value
-		if value: session_started.emit()
-		else: session_stopped.emit()
+		session_toggled.emit(session_status)
 
 var cat_data : Dictionary = {
 	"game": {

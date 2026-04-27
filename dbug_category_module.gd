@@ -25,6 +25,8 @@ func add_msg(msg: String) -> void:
 	lset.outline_color = Color.BLACK
 	lset.outline_size = 4
 	lbl.label_settings = lset
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl.custom_minimum_size.x = entry_container.size.x
 
 	lbl.text = msg
 	var e: Array = [lbl, msg]
@@ -34,8 +36,6 @@ func add_msg(msg: String) -> void:
 
 
 
-func remove_msg() -> void:
-	# for child in entry_container.get_children():
-	# 	if child == entries[0][0]:
+func remove_msg() -> void: 
 	entries[0][0].queue_free()
 	entries.remove_at(0)

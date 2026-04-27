@@ -135,6 +135,10 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Ensure move buttons reposition `LogCategory` items correctly.
 - [ ] Ensure leftmost and rightmost move buttons disable correctly.
 - [ ] Ensure `Delete` properly `queue_free()`s the target `LogCategory`.
+- [ ] Apply and Revert buttons for LineEdits:
+  - [ ] `base_directory`, `log_header_format` and `entry_format` Revert buttons.
+  - [ ] `base_directory`, `log_header_format` and `entry_format` Apply buttons and Enter keypress applies the values.
+  - [ ] `base_directory`, `log_header_format` and `entry_format` Revert buttons reverts to the last applied value.
 
 ### Settings Tab
 
