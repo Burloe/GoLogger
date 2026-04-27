@@ -2,30 +2,45 @@
 
 [ext_resource type="Script" uid="uid://cvahhjknn2nxq" path="res://addons/GoLogger/GLogShortcut.gd" id="1_tvptr"]
 
-[sub_resource type="InputEventJoypadButton" id="InputEventJoypadButton_tvptr"]
-
-[sub_resource type="InputEventKey" id="InputEventKey_e18rc"]
+[sub_resource type="InputEventKey" id="InputEventKey_tvptr"]
 device = -1
 shift_pressed = true
 ctrl_pressed = true
 keycode = 73
 
-[sub_resource type="InputEventKey" id="InputEventKey_xopda"]
+[sub_resource type="Shortcut" id="Shortcut_3ks3f"]
+events = [SubResource("InputEventKey_tvptr")]
+
+[sub_resource type="InputEventShortcut" id="InputEventShortcut_om78g"]
+shortcut = SubResource("Shortcut_3ks3f")
+
+[sub_resource type="InputEventKey" id="InputEventKey_ch6qm"]
 device = -1
 shift_pressed = true
 ctrl_pressed = true
 keycode = 79
 
-[sub_resource type="InputEventKey" id="InputEventKey_r67vl"]
+[sub_resource type="Shortcut" id="Shortcut_dwasb"]
+events = [SubResource("InputEventKey_ch6qm")]
+
+[sub_resource type="InputEventShortcut" id="InputEventShortcut_n15gp"]
+shortcut = SubResource("Shortcut_dwasb")
+
+[sub_resource type="InputEventKey" id="InputEventKey_k5l23"]
 device = -1
 shift_pressed = true
 ctrl_pressed = true
 keycode = 80
 
+[sub_resource type="Shortcut" id="Shortcut_fbvch"]
+events = [SubResource("InputEventKey_k5l23")]
+
+[sub_resource type="InputEventShortcut" id="InputEventShortcut_if0i7"]
+shortcut = SubResource("Shortcut_fbvch")
+
 [resource]
 script = ExtResource("1_tvptr")
-start_session_hotkey = SubResource("InputEventKey_xopda")
-stop_session_hotkey = SubResource("InputEventKey_r67vl")
-display_instance_id_hotkey = SubResource("InputEventKey_e18rc")
-asdf = SubResource("InputEventJoypadButton_tvptr")
+start_session_hotkey = SubResource("InputEventShortcut_n15gp")
+stop_session_hotkey = SubResource("InputEventShortcut_if0i7")
+display_instance_id_hotkey = SubResource("InputEventShortcut_om78g")
 metadata/_custom_type_script = "uid://cvahhjknn2nxq"

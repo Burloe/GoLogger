@@ -20,7 +20,6 @@
 [ext_resource type="StyleBox" uid="uid://dcjwu6ej2w2s4" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="14_fx5fv"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="18_k47fi"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/GoLogger/Resources/id_overlay_lbl_settings.tres" id="19_cp33x"]
-[ext_resource type="StyleBox" uid="uid://bqxadvxd6q2yj" path="res://addons/GoLogger/Resources/theme/panel_rounded_no_top_base.tres" id="22_xov76"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/GoLogger/Resources/theme/panel_rounded_base_col.tres" id="26_xov76"]
 
 [sub_resource type="Resource" id="Resource_xov76"]
@@ -36,6 +35,9 @@ content_margin_bottom = 8.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ntic"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tayiv"]
+
+[sub_resource type="FoldableGroup" id="FoldableGroup_k47fi"]
+allow_folding_all = true
 
 [sub_resource type="Theme" id="Theme_fcs7p"]
 CheckButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
@@ -53,9 +55,8 @@ font_size = 12
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
-font_size = 12
-font_color = Color(1, 1, 1, 0.352941)
+[sub_resource type="FoldableGroup" id="FoldableGroup_fcs7p"]
+allow_folding_all = true
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fx5fv"]
 
@@ -81,6 +82,10 @@ content_margin_top = 8.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2vjd2"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
+font_size = 12
+font_color = Color(1, 1, 1, 0.352941)
+
 [node name="GoLoggerDock" type="TabContainer" unique_id=1764928138]
 anchors_preset = -1
 anchor_right = 0.686
@@ -96,14 +101,14 @@ theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
-current_tab = 0
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
 data = SubResource("Resource_xov76")
-metadata/_edit_vertical_guides_ = [1562.0, 1529.0]
 
 [node name="Categories" type="HBoxContainer" parent="." unique_id=35875088]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 0
@@ -194,7 +199,6 @@ theme_override_constants/v_separation = 8
 columns = 6
 
 [node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 1
@@ -215,7 +219,6 @@ grow_vertical = 2
 theme_override_constants/scrollbar_h_separation = 8
 theme_override_constants/scrollbar_v_separation = 8
 follow_focus = true
-scroll_vertical = 52
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
@@ -236,12 +239,11 @@ theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
-folded = true
 title = "General"
 title_alignment = 1
+foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer" unique_id=1603064615]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -331,10 +333,13 @@ theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "Limiters"
 title_alignment = 1
+foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer" unique_id=742064564]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -539,7 +544,7 @@ popup/item_1/id = 1
 [node name="IDFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 2
+size_flags_vertical = 0
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
 theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
@@ -551,6 +556,7 @@ theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "ID Overlay"
 title_alignment = 1
+foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="MarginContainer" type="MarginContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer" unique_id=251070164]
 visible = false
@@ -689,7 +695,7 @@ label_settings = SubResource("LabelSettings_cp33x")
 [node name="IDFontFoldableContainer" type="FoldableContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/MarginContainer/VBoxContainer" unique_id=2082572762]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 2
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
 theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
@@ -701,55 +707,44 @@ theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Overlay Settings"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings" unique_id=245325224]
+[node name="ScrollContainer" type="ScrollContainer" parent="Settings" unique_id=101034697]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="R_TopPanel" type="Panel" parent="Settings/VBoxContainer" unique_id=1299947772]
-custom_minimum_size = Vector2(0, 183)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = ExtResource("22_xov76")
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Settings/VBoxContainer/R_TopPanel" unique_id=101034697]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 follow_focus = true
 scroll_hint_mode = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer" unique_id=1453026303]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/ScrollContainer" unique_id=245325224]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 0
+theme_override_constants/separation = 8
 
-[node name="TopbarPanel" type="Panel" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer" unique_id=946287046]
-custom_minimum_size = Vector2(0, 46)
+[node name="FoldableContainer" type="FoldableContainer" parent="Settings/ScrollContainer/VBoxContainer" unique_id=934129937]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("1_itauu")
+theme_override_styles/title_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
+theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
+theme_override_styles/panel = ExtResource("12_cp33x")
+title = "Directory and Formats"
+foldable_group = SubResource("FoldableGroup_fcs7p")
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/TopbarPanel" unique_id=1118705646]
+[node name="Control" type="Control" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer" unique_id=1869616791]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/Control" unique_id=94297257]
+custom_minimum_size = Vector2(278, 0)
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_top = -28.0
+offset_bottom = -4.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 8
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer" unique_id=94297257]
-layout_mode = 2
 alignment = 2
 
-[node name="BaseDirOpenDirButton" type="Button" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=918067150]
+[node name="BaseDirOpenDirButton" type="Button" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/Control/HBoxContainer" unique_id=918067150]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 tooltip_text = "Open the base directory folder"
 theme_override_colors/icon_pressed_color = Color(0.37000003, 0.22000001, 0.4, 1)
@@ -763,9 +758,8 @@ theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("2_6725a")
 icon_alignment = 1
 
-[node name="ResetSettingsButton" type="Button" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1084513318]
+[node name="ResetSettingsButton" type="Button" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/Control/HBoxContainer" unique_id=1084513318]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 tooltip_text = "Reset to all settings to default"
 theme_override_colors/icon_pressed_color = Color(0.56078434, 0.21176471, 0.21176471, 1)
@@ -778,20 +772,7 @@ theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("3_y66hb")
 icon_alignment = 1
 
-[node name="Control" type="Control" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=40616766]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/TopbarPanel/MarginContainer/HBoxContainer" unique_id=1523429579]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-text = "GoLogger v.1.3.1"
-label_settings = SubResource("LabelSettings_11ofg")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer" unique_id=1266912916]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer" unique_id=1266912916]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -800,11 +781,11 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 13
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer" unique_id=1504669251]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer" unique_id=1504669251]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="BaseDirHBox" type="HBoxContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer" unique_id=669120101]
+[node name="BaseDirHBox" type="HBoxContainer" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer" unique_id=669120101]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
@@ -813,7 +794,7 @@ Default path is \"user://GoLogger/\".
 Do not use \"user://logs/\" because Godot stores its own logs there."
 theme_override_constants/separation = 8
 
-[node name="BaseDirLabel" type="Label" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
+[node name="BaseDirLabel" type="Label" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -823,7 +804,7 @@ theme_override_font_sizes/font_size = 14
 text = "Base Directory:"
 vertical_alignment = 1
 
-[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
+[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -838,7 +819,7 @@ placeholder_text = "user://GoLogger/"
 expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="BaseDirApplyButton" type="Button" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1831127922]
+[node name="BaseDirApplyButton" type="Button" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/BaseDirHBox" unique_id=1831127922]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(28, 28)
@@ -858,7 +839,7 @@ disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
 
-[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer" unique_id=2063796377]
+[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer" unique_id=2063796377]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
@@ -870,7 +851,7 @@ Supported format tags:
     {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
 theme_override_constants/separation = 8
 
-[node name="LogHeaderLabel" type="Label" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
+[node name="LogHeaderLabel" type="Label" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -879,7 +860,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Log Header Format:"
 vertical_alignment = 1
 
-[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
+[node name="LogHeaderLineEdit" type="LineEdit" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -897,7 +878,7 @@ text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 emoji_menu_enabled = false
 
-[node name="LogHeaderApplyButton" type="Button" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1394228566]
+[node name="LogHeaderApplyButton" type="Button" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1394228566]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(28, 28)
@@ -917,7 +898,7 @@ disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
 
-[node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer" unique_id=154378586]
+[node name="EntryFormatHBox" type="HBoxContainer" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer" unique_id=154378586]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -931,7 +912,7 @@ Supported tags:
     {hh}   {mi}   {ss} - hour, minute, second "
 theme_override_constants/separation = 8
 
-[node name="EntryFormatLabel" type="Label" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
+[node name="EntryFormatLabel" type="Label" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -941,7 +922,7 @@ theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 text = "Entry Format:"
 vertical_alignment = 1
 
-[node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
+[node name="EntryFormatLineEdit" type="LineEdit" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -961,7 +942,7 @@ placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="EntryFormatWarning" type="Panel" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
+[node name="EntryFormatWarning" type="Panel" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -975,7 +956,7 @@ offset_bottom = 21.5
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1926394639]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1926394639]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -986,13 +967,13 @@ theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 
-[node name="Label" type="Label" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning/MarginContainer" unique_id=1412207838]
+[node name="Label" type="Label" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning/MarginContainer" unique_id=1412207838]
 layout_mode = 2
 text = "{entry} tag required"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EntryFormatApplyButton" type="Button" parent="Settings/VBoxContainer/R_TopPanel/ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=1933647225]
+[node name="EntryFormatApplyButton" type="Button" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/MarginContainer/VBoxContainer/EntryFormatHBox" unique_id=1933647225]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(28, 28)
@@ -1012,7 +993,7 @@ disabled = true
 icon = ExtResource("8_11ofg")
 icon_alignment = 1
 
-[node name="HotkeyFoldableContainer" type="FoldableContainer" parent="Settings/VBoxContainer" unique_id=1889098366]
+[node name="HotkeyFoldableContainer" type="FoldableContainer" parent="Settings/ScrollContainer/VBoxContainer" unique_id=1889098366]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -1026,6 +1007,7 @@ theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
 folded = true
 title = "Hotkeys"
+foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="Help" type="TabContainer" parent="." unique_id=1603064086]
 visible = false
@@ -1564,6 +1546,16 @@ tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
 theme_override_font_sizes/font_size = 24
 text = "Wiki"
 uri = "https://github.com/Burloe/GoLogger/wiki"
+
+[node name="PluginVersionSettLabel" type="Label" parent="Help/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1523429579]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+text = "GoLogger v.1.3.1"
+label_settings = SubResource("LabelSettings_11ofg")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Help/MoreInfo/MarginContainer/HBoxContainer" unique_id=1785138075]
 layout_mode = 2

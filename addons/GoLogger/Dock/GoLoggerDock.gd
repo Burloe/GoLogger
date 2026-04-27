@@ -224,6 +224,18 @@ var settings_dict := {
 }
 
 
+func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableContainer) -> void:
+	match fold_container:
+		id_font_sett_cont:
+			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+			id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
+			id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+		hotkey_container:
+			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+			hotkey_container.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
+			hotkey_container.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+
+
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
@@ -233,11 +245,8 @@ func _ready() -> void:
 		inspector.edit(ResourceLoader.load("uid://dyi2aml73k4g8"))
 		id_inspector = _create_editor_inspector(id_font_sett_cont)
 		id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
-		id_font_sett_cont.folding_changed.connect(
-			func(is_folded: bool) -> void: 
-				id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-				id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
-		)
+		id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
+		hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
 
 		if !FileAccess.file_exists(PATH):
 			create_settings_file()
@@ -259,11 +268,7 @@ func _ready() -> void:
 			else: print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
 
 
-		# Signal connections
-		id_font_sett_cont.folding_changed.connect(
-			func(is_folded: bool) -> void:
-				id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
-		)
+		# Signal connections 
 		_connect_unique(settings.settings_changed, _on_editor_settings_changed)
 		_connect_unique(add_category_btn.button_up, _add_category)
 		_connect_unique(open_dir_btn.button_up, _open_directory)
