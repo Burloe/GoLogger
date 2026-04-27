@@ -129,23 +129,19 @@ var sb_tab_hover 											:= preload("uid://yxpx0pyjme8s")
 var panel_round_bg 										:= preload("uid://dqfhm2ywaj4dr")
 var panel_round_base 									:= preload("uid://cywnobmluy31i")
 var panel_round_base_border_highlight := preload("uid://qbiwr8hnwf5n")
-var panel_round_highlight 						:= preload("uid://b0ho2njwihy2p")
 var panel_round_accent 								:= preload("uid://3r3hhcvqp2au")
 var panel_round_accent_muted 					:= preload("uid://l18dbl63e366")
 var panel_top_round_base 							:= preload("uid://cqnilt2rk14bi")
-var panel_top_round_base_highlight 		:= preload("uid://0nxkxhcntsj3")
 var panel_top_round_accent 						:= preload("uid://dve2ih1gvvua7")
 var panel_top_round_accent_muted 			:= preload("uid://7s65f804p1jc")
 var panel_rounded_no_top_base					:= preload("uid://bqxadvxd6q2yj")
 var foldable_container_panel					:= preload("uid://bkl7j8mna8rwb")
 
 var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
-var sb_btn_highlight 									:= preload("uid://dcjwu6ej2w2s4")
-var sb_btn_top_highlight 							:= preload("uid://lyngp43l4n0n")
 var sb_btn_apply 											:= preload("uid://bwsfno28una6g")
-var sb_btn_apply_highlight						:= preload("uid://cws5raq1oykdn") 
+var sb_btn_apply_highlight						:= preload("uid://cws5raq1oykdn")
 
-var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")  
+var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 ## Index 3 is a SEPERATOR and should not be used.
 enum LimitMethod {
@@ -1337,15 +1333,11 @@ func _apply_theme_colors():
 	sb_tab_unselected.bg_color 			= Color.TRANSPARENT
 	sb_tab_hover.bg_color 					= Color.TRANSPARENT
 	sb_btn_normal.bg_color 					= Color.TRANSPARENT
-	sb_btn_highlight.bg_color 			= Color.TRANSPARENT
-	sb_btn_top_highlight.bg_color 	= Color.TRANSPARENT 
 
 	# if editor_base_col != theme_colors["base"]["col"] or editor_contrast != theme_colors["contrast"]: 
 	panel_round_base.bg_color 											= theme_colors["base"]["col"]
-	panel_round_highlight.bg_color 									= theme_colors["base"]["col"]
 	panel_round_base_border_highlight.bg_color 			= theme_colors["base"]["col"]
 	panel_top_round_base.bg_color 									= theme_colors["base"]["col"]
-	panel_top_round_base_highlight.bg_color 				= theme_colors["base"]["col"]
 	panel_rounded_no_top_base.border_color					= theme_colors["base"]["col"]
 	foldable_container_panel.border_color						= theme_colors["base"]["col"]
 	sb_tab_bar_bg.bg_color 													= theme_colors["base"]["col"]
@@ -1354,16 +1346,12 @@ func _apply_theme_colors():
 	sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
 
 
-	# if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]:
-	panel_round_highlight.border_color 							= theme_colors["accent"]["col"]
+	# if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]: 
 	panel_round_base_border_highlight.border_color 	= theme_colors["accent"]["col"]
 	panel_round_accent.bg_color 										= theme_colors["accent"]["col"]
-	panel_top_round_base_highlight.border_color 		= theme_colors["accent"]["col"]
 	panel_top_round_accent.bg_color 								= theme_colors["accent"]["col"]
-	sb_btn_highlight.border_color 									= theme_colors["accent"]["col"]
 	sb_btn_apply.bg_color 													= theme_colors["accent"]["col"]
 	sb_btn_apply.bg_color 													= theme_colors["accent"]["col"]
-	sb_btn_top_highlight.border_color 							= theme_colors["accent"]["col"]
 	sb_tab_hover.bg_color 													= theme_colors["accent"]["light"]
 	sb_tab_selected.bg_color 												= theme_colors["accent"]["dark"]
 	panel_round_accent_muted.bg_color 							= theme_colors["accent"]["dark_highlight"]
@@ -1375,8 +1363,7 @@ func _apply_theme_colors():
 	for cont in [general_fold_cont, limit_fold_cont, id_fold_cont, id_font_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
 		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
-		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_highlight"].v 				< 0.7 else theme_colors["base"]["col"])
-		# cont.add_theme_color_override("title_collapsed_hover", 	Color.WHITE 											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["base"]["col"])
+		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_highlight"].v 				< 0.7 else theme_colors["base"]["col"]) 
 
 	for btn in [error_rep_btn, limit_method_btn, entry_count_action_btn,	session_timer_action_btn,	id_align_opt_btn]:
 		btn.add_theme_color_override("font_color", 								theme_colors["font"]["normal"] 	if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["accent"]["col"])

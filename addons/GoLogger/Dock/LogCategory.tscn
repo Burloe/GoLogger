@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://goc0tdkq3dym" path="res://addons/GoLogger/Resources/icons/Remove.svg" id="5_hkawy"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="6_lnuxt"]
 [ext_resource type="StyleBox" uid="uid://bwsfno28una6g" path="res://addons/GoLogger/Resources/theme/btn_apply.tres" id="8_7kr4p"]
-[ext_resource type="StyleBox" uid="uid://cws5raq1oykdn" path="res://addons/GoLogger/Resources/theme/btn_apply_highlight.tres" id="9_lnuxt"]
+[ext_resource type="StyleBox" uid="uid://cws5raq1oykdn" path="res://addons/GoLogger/Resources/theme/btn_highlight.tres" id="9_lnuxt"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="11_lnuxt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hqlwo"]
