@@ -66,6 +66,7 @@ extends Node
 
 signal session_started ## Emitted when a log session has started.
 signal session_stopped ## Emitted when a log session has been stopped.
+signal msg_logged(category: String, msg: String) ## Emitted when a log message is logged.
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
@@ -233,21 +234,22 @@ func _input(event: InputEvent) -> void:
 			config.load(PATH)
 			var id_toggle = config.get_value("settings", "id_toggle", false)
 			var id_startup = config.get_value("settings", "id_startup_state", false)
+			var id_print = _get_config_value("settings", "id_print")
 
 			if gl_hotkeys.display_instance_id_hotkey.shortcut.matches_event(event):
 				if id_toggle:
 					if event.is_released():
 						instance_id_label.hide() if instance_id_label.visible else instance_id_label.show()
-						if _get_config_value("settings", "id_print"):
+						if id_print:
 							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
 
 				else:
 					if event.is_pressed():
 						instance_id_label.show()
-						if _get_config_value("settings", "id_print"):
-							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: ", instance_id)
 					if event.is_released():
 						instance_id_label.hide()
+						if id_print:
+							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
 
 		# Test entry logging
 		# if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
@@ -518,6 +520,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var new_entry: String = _get_entry_format(log_msg, data["target_category"])
 	_fw.store_line(new_entry)
 	_fw.close()
+	msg_logged.emit(data["target_category"], new_entry)
 	if print_msg:
 		print_rich("[color=fc4674][font_size=12][GoLogger][color=white] <", data["target_category"], "> ", new_entry.dedent())
 

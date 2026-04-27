@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bb6slgxo7qwae"]
+
+[ext_resource type="Script" uid="uid://bodvp2c6xrbog" path="res://debug_scene.gd" id="1_akvua"]
+[ext_resource type="PackedScene" uid="uid://dgdg4n7lsq031" path="res://dbug_category_module.tscn" id="2_xre04"]
+
+[node name="DebugScene" type="Control" unique_id=153873720]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_akvua")
+
+[node name="DebugTimer" type="Timer" parent="." unique_id=2116733478]
+unique_name_in_owner = true
+autostart = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1841675467]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer" unique_id=457563702]
+layout_mode = 2
+
+[node name="CategoryContainer" type="HBoxContainer" parent="MarginContainer/ScrollContainer" unique_id=52624981]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CategoryModule" parent="MarginContainer/ScrollContainer/CategoryContainer" unique_id=2145796241 instance=ExtResource("2_xre04")]
+layout_mode = 2

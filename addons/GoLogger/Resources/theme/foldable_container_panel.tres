@@ -1,6 +1,10 @@
 [gd_resource type="StyleBoxFlat" format=3 uid="uid://bkl7j8mna8rwb"]
 
 [resource]
+content_margin_left = 13.0
+content_margin_top = 13.0
+content_margin_right = 13.0
+content_margin_bottom = 13.0
 draw_center = false
 border_width_left = 5
 border_width_right = 5

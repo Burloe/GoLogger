@@ -24,7 +24,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [x] `default_category`:
   - [x] Category name is saved to file appropriately.
   - [x] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
-  - [x] Unchecking clears setting to "",
+  - [x] Unchecking clears setting to "".
 
 - [x] `base_directory`:
   - [x] New directory is created when change.
@@ -36,16 +36,19 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [x] `entry_format`:
   - [x] Proper format is applied to entries.
   - [x] Check all tags work properly.
-- [ ] `autostart_session`:
-  - [ ] Session is started automatically or not.
-- [ ] `use_utc`:
-	- [ ] UTC time used for .log file name, log header and entry format.
-- [ ] `id_print`:
-  - [ ] ID is printed when the hotkey it released / on toggle if `id_toggle` is true.
+- [x] `autostart_session`:
+  - [x] Session is started automatically or not.
+- [x] `use_utc`:
+	- [x] UTC time used for .log file name, log header and entry format.
 - [ ] `id_toggle`:
-	- [ ] ID overlay is toggled instead of only during prints.
+  - [x] ID visibility is toggled.
 - [ ] `id_startup_state`:
 	- [ ] ID overlay is shown when true / off when false. Only applicable if `id_toggle` is true.
+- [x] `id_print`:
+  - [x] ID visible when `id_toggle` is false and hotkey is held.
+  - [x] ID is shown on startup if `id_toggle` and `id_startup_state`.
+  - [x] ID is printed on hotkey released.
+  - [x] ID is printed when the hotkey if released / on toggle if `id_toggle` is true.
 - [ ] `id_align`:
 	- [ ] Check label aligns to all nine positions properly.
 	- [ ] Check label fills viewport for different resolutions.

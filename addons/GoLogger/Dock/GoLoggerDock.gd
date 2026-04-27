@@ -1118,6 +1118,8 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 			config.set_value("settings", "limit_method", index)
 			entry_count_action_container.hide() 
 			session_timer_action_container.hide() 
+			entry_count_action_lbl.text = "Action"
+			session_timer_action_lbl.text = "Action"
 			
 			match index:
 				LimitMethod.ENTRY_COUNT:
@@ -1127,6 +1129,8 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 				LimitMethod.BOTH:
 					entry_count_action_container.show()
 					session_timer_action_container.show() 
+					entry_count_action_lbl.text = "Entry Action"
+					session_timer_action_lbl.text = "Timer Action"
 
 		entry_count_action_btn:
 			config.set_value("settings", "entry_count_action", index) 

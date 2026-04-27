@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://dgdg4n7lsq031"]
+
+[ext_resource type="Script" uid="uid://fsg1yorflyu2" path="res://dbug_category_module.gd" id="1_j5pg7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vf2ha"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+border_width_left = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0.627451)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_67y4n"]
+font_size = 10
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="CategoryModule" type="FoldableContainer" unique_id=901480254]
+custom_minimum_size = Vector2(200, 600)
+anchors_preset = -1
+anchor_right = 0.104
+anchor_bottom = 0.55600005
+offset_right = 0.31999207
+offset_bottom = -0.4800415
+theme_override_styles/panel = SubResource("StyleBoxFlat_vf2ha")
+title = "Category Name"
+title_alignment = 1
+script = ExtResource("1_j5pg7")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1450852387]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="EntryContainer" type="VBoxContainer" parent="MarginContainer" unique_id=2145796241]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EntryLabel" type="Label" parent="MarginContainer/EntryContainer" unique_id=926917080]
+layout_mode = 2
+text = "This is an entry"
+label_settings = SubResource("LabelSettings_67y4n")
+
+[node name="EntryLabel2" type="Label" parent="MarginContainer/EntryContainer" unique_id=2038358134]
+layout_mode = 2
+text = "This is an entry"
+label_settings = SubResource("LabelSettings_67y4n")
