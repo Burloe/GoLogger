@@ -21,6 +21,7 @@ var cat_containers: Array[GridContainer] = []
 
 func _ready() -> void:
 	_load_log_browser()
+	lw_close_btn.button_up.connect(_on_log_viewer_close_button_up)
 	log_viewer.hide()
 
 
@@ -35,7 +36,7 @@ func _load_log_browser() -> void:
 		printerr("Failed to load Base Directory!")
 	if cats.is_empty():
 		printerr("Failed to load Categories!")
-	print(base_dir, "   ", cats)
+	# print(base_dir, "   ", cats)
 
 	categories.clear()
 	for child in category_tab_container.get_children():
@@ -45,27 +46,29 @@ func _load_log_browser() -> void:
 
 		if c == "":
 				continue
-		print("0")
+		
 		var gc: GridContainer = GridContainer.new()
 		gc.set_name(c)
 		gc.columns = grid_columns
-		add_child(gc)
+		category_tab_container.add_child(gc)
+		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL
+		# print(gc)
 		var n: Array = [c, gc]
 		categories.append(n)
-		print("1")
 		_load_logfiles(c)
 
 
 
 func _load_logfiles(category_name: String) -> void: 
 	var file_list: PackedStringArray = get_category_files(category_name)
-	print(file_list)
+	# print(file_list)
 
 	for file in file_list:
-		var file_path: String = str(base_dir.path_join(str(category_name), "_logs").path_join(file), "/")
+		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file), "/")
 		
 		if not FileAccess.file_exists(file_path):
-			#? Add broken file icon?
+			#? Add broken file icon? 
 			continue
 
 		var f = FileAccess.open(file_path, FileAccess.READ)
@@ -76,7 +79,7 @@ func _load_logfiles(category_name: String) -> void:
 		lf.file_name = file
 
 		for c in categories:
-			print("category_namae: ", category_name, "   iterated category: ", c, "    saved array category: ", c)
+			# print("category_namae: ", category_name, "   iterated category: ", c, "    saved array category: ", c)
 			if c[0] != category_name:
 				continue
 			
@@ -84,18 +87,8 @@ func _load_logfiles(category_name: String) -> void:
 			lf.button_up.connect(_on_log_file_button_up.bind(category_name, file, content))
 			log_file_added.emit(lf)
 
-		lw_contents_lbl.lbl.text = content
-		print("3")
-		# var _f = FileAccess.open(file_path, FileAccess.READ)
-		# if !_f: # ER
-		# 	#? Add broken file icon? 
-		# 	continue
+		lw_contents_lbl.text = content
 
-		# var lines : Array[String] = []
-		# while not _f.eof_reached():
-		# 	var _l = _f.get_line().strip_edges(false, true)
-		# 	if _l != "":
-		# 		lines.append(_l)
 
 
 func get_category_files(category_name: String) -> PackedStringArray:
@@ -111,13 +104,12 @@ func get_category_files(category_name: String) -> PackedStringArray:
 		return d.get_files()
 
 	printerr("Failed to open category path: ", c_path)
-	
 	return []
 
 
 
 func _on_log_file_button_up(category_name: String, file_name: String, content: String) -> void:
-	lw_title_lbl.text = str(category_name, " - file")
+	lw_title_lbl.text = str(category_name, " - ", file_name)
 	lw_contents_lbl.text = content
 	log_viewer.show()
 

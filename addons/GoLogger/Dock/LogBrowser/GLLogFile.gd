@@ -47,6 +47,7 @@ func _ready() -> void:
 	autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var lset := LabelSettings.new()
 	lset.font_size = 10
+	lset.line_spacing = 0
 	lbl.label_settings = lset
 	lbl.text = display_name if display_name != "" else placeholder_name
 	hbox.add_child(lbl)
@@ -75,12 +76,13 @@ func _get_name(file_name: String) -> String:
 
 
 
-func _get_year(year: int) -> String:
+func _get_year(year: String) -> String:
 	return str("20", year)
 
 
 
-func _get_month(month: int) -> String:
+func _get_month(month: String) -> String:
+	var i := month.to_int()
 	var _m: Array[String] = [
 		"N/A",
 		"Jan",
@@ -96,4 +98,4 @@ func _get_month(month: int) -> String:
 		"Nov",
 		"Dec"
 	]
-	return _m[month]
+	return _m[i]
