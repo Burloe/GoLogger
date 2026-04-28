@@ -265,8 +265,11 @@ func _ready() -> void:
 		entry_format_value = config.get_value("settings", "entry_format", settings_dict.get("entry_format", {}).get("default", "")) 
 		id_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_startup_btn.hide()
 		base_dir_line_btn_cont.hide()
+		base_dir_revert_btn.disabled = true
 		log_header_line_btn_cont.hide()
+		log_header_revert_btn.disabled = true
 		entry_format_line_btn_cont.hide()
+		entry_format_revert_btn.disabled = true
 
 		for log_c in category_container.get_children():
 			if log_c is not LogCategory:
@@ -978,7 +981,7 @@ func _open_directory() -> void:
 
 
 
-func _apply_new_base_directory() -> void:
+func _apply_new_base_directory() -> bool:
 	config.load(PATH)
 	var old_dir = config.get_value("settings", "base_directory")
 	var new_dir = base_dir_line.text.strip_edges()
@@ -987,8 +990,7 @@ func _apply_new_base_directory() -> void:
 		if config.get_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Base directory cannot be empty. Reverting to previous path[", old_dir, "].")
 		base_dir_line.text = old_dir
-		base_dir_apply_btn.disabled = true
-		return
+		return false
 
 
 	if not new_dir.ends_with("/"):
@@ -1007,9 +1009,8 @@ func _apply_new_base_directory() -> void:
 		if res != OK:
 			if config.get_value("settings", "error_reporting") != 2:
 				push_warning("GoLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
-			base_dir_line.text = old_dir
-			base_dir_apply_btn.disabled = true
-			return
+			base_dir_line.text = old_dir 
+			return false
 
 		d = DirAccess.open(new_dir)
 
@@ -1019,14 +1020,13 @@ func _apply_new_base_directory() -> void:
 	if save_err != OK:
 		if config.get_value("settings", "error_reporting") != 2:
 			push_warning("GoLogger: Failed to save settings.ini after changing base_directory. Reverting back to previous directory path[", old_dir, "].")
-		base_dir_line.text = old_dir
-		base_dir_apply_btn.disabled = true
-		return
+		base_dir_line.text = old_dir 
+		return false
 
 	base_dir_line.text = new_dir
 	base_dir_revert_btn.tooltip_text = str("Revert to '", new_dir, "'")
  
-	base_dir_apply_btn.disabled = true
+	return true
 
 
 ## Returns true if {entry} tag is present or is NOT empty.
@@ -1089,23 +1089,24 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 	config.load(PATH)
 	match node:
 		base_dir_line:
-			if new_text == "":
-				base_dir_apply_btn.disabled = true 
+			base_dir_apply_btn.disabled = true 
+			base_dir_revert_btn.disabled = true 
+
 			if new_text != config.get_value("settings", "base_directory"):
 				base_dir_apply_btn.disabled = false 
-			else:
-				base_dir_apply_btn.disabled = true 
+				base_dir_revert_btn.disabled = false
 
 		log_header_line:
+			log_header_apply_btn.disabled = true 
+			log_header_revert_btn.disabled = true
 			if new_text != log_header_value:
 				log_header_revert_btn.disabled = false
-				log_header_apply_btn.disabled = false  
-			else:
-				log_header_apply_btn.disabled = true
+				log_header_apply_btn.disabled = false
 
 		entry_format_line: 
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true 
+			entry_format_warning.visible = !_is_entry_format_valid(new_text)
 			entry_format_line.add_theme_stylebox_override(
 				"normal", 
 				sb_line_edit_normal if _is_entry_format_valid(new_text) else sb_line_edit_invalid
@@ -1114,30 +1115,33 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			if new_text != entry_format_value and _is_entry_format_valid(new_text):
 				entry_format_apply_btn.disabled = false 
 				entry_format_revert_btn.disabled = false 
-				entry_format_warning.visible = !_is_entry_format_valid(new_text)
 			
 
 
 
 
 
-func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
-	print("Node: ", node.get_name())
+func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void: 
 	config.load(PATH)
 	match node:
 		base_dir_line:
-			base_dir_line.release_focus()
-			base_dir_apply_btn.disabled = true
-			_apply_new_base_directory()
+			var v = config.get_value("settings", "base_directory", settings_dict.get("base_directory", {}).get("default", ""))
+
+			if _apply_new_base_directory():
+				base_dir_line.release_focus()
+				base_dir_apply_btn.disabled = true
+				base_dir_revert_btn.disabled = true
 
 		log_header_line:
 			log_header_line.release_focus()
 			log_header_apply_btn.disabled = true
+			log_header_revert_btn.disabled = true
 			log_header_value = new_text # Setter saves to file
 
 		entry_format_line:
 			entry_format_line.release_focus()
 			entry_format_apply_btn.disabled = true
+			entry_format_revert_btn.disabled = true
 			entry_format_value = new_text # Setter saves to file
 	save_data()
 
