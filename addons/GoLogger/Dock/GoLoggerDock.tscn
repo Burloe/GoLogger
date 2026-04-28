@@ -14,10 +14,11 @@
 [ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/GoLogger/GLData.gd" id="7_cp33x"]
 [ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/GoLogger/Dock/LogBrowser/LogBrowser.gd" id="10_k47fi"]
-[ext_resource type="PackedScene" uid="uid://bq7nahsc5aca7" path="res://addons/GoLogger/Dock/LogBrowser/LogFile.tscn" id="11_fx5fv"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/GoLogger/Resources/icons/gologger_icon_flat.png" id="11_tayiv"]
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/GoLogger/Resources/theme/foldable_container_panel.tres" id="12_cp33x"]
+[ext_resource type="StyleBox" uid="uid://xy4uummjvhgu" path="res://addons/GoLogger/Resources/theme/log_file_button_normal.tres" id="12_tvbkj"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/GoLogger/Resources/theme/btn_normal.tres" id="13_fcs7p"]
+[ext_resource type="Script" uid="uid://d0mv8q7rr2bxr" path="res://addons/GoLogger/Dock/LogBrowser/GLLogFile.gd" id="13_itauu"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/GoLogger/Resources/theme/panel_top_rounded_base_col.tres" id="14_fcs7p"]
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/GoLogger/Resources/icons/Close.svg" id="14_fx5fv"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="18_k47fi"]
@@ -37,6 +38,8 @@ content_margin_bottom = 8.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ntic"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tayiv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xov76"]
 
 [sub_resource type="FoldableGroup" id="FoldableGroup_k47fi"]
 allow_folding_all = true
@@ -241,63 +244,45 @@ script = ExtResource("10_k47fi")
 metadata/_custom_type_script = "uid://bg42rstww6k77"
 metadata/_tab_index = 1
 
-[node name="TabContainer" type="TabContainer" parent="LogBrowser" unique_id=1100305618]
+[node name="CategoryTabContainer" type="TabContainer" parent="LogBrowser" unique_id=1149614450]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = ExtResource("1_cp33x")
+theme_override_styles/panel = ExtResource("6_cp33x")
 theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
 current_tab = 0
 
-[node name="GridContainer" type="GridContainer" parent="LogBrowser/TabContainer" unique_id=966485637]
+[node name="GridContainer" type="GridContainer" parent="LogBrowser/CategoryTabContainer" unique_id=1867467603]
 layout_mode = 2
-columns = 5
 metadata/_tab_index = 0
 
-[node name="LogFile" parent="LogBrowser/TabContainer/GridContainer" unique_id=332590141 instance=ExtResource("11_fx5fv")]
+[node name="GLLogFile" type="Button" parent="LogBrowser/CategoryTabContainer/GridContainer" unique_id=1593069428]
+custom_minimum_size = Vector2(100, 52)
 layout_mode = 2
+theme_override_styles/normal = ExtResource("12_tvbkj")
+theme_override_styles/pressed = ExtResource("12_tvbkj")
+theme_override_styles/hover = ExtResource("12_tvbkj")
+script = ExtResource("13_itauu")
+metadata/_custom_type_script = "uid://d0mv8q7rr2bxr"
 
-[node name="LogFile2" parent="LogBrowser/TabContainer/GridContainer" unique_id=82869327 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
+[node name="LogViewer" type="Panel" parent="LogBrowser" unique_id=538579702]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("6_cp33x")
 
-[node name="LogFile3" parent="LogBrowser/TabContainer/GridContainer" unique_id=319549377 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
-
-[node name="LogFile4" parent="LogBrowser/TabContainer/GridContainer" unique_id=1570337333 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
-
-[node name="LogFile5" parent="LogBrowser/TabContainer/GridContainer" unique_id=1942143235 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
-
-[node name="LogFile6" parent="LogBrowser/TabContainer/GridContainer" unique_id=1434316776 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
-
-[node name="LogFile7" parent="LogBrowser/TabContainer/GridContainer" unique_id=362248601 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
-
-[node name="LogFile8" parent="LogBrowser/TabContainer/GridContainer" unique_id=94803746 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
-
-[node name="LogFile9" parent="LogBrowser/TabContainer/GridContainer" unique_id=1258051427 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
-
-[node name="LogFile10" parent="LogBrowser/TabContainer/GridContainer" unique_id=589770211 instance=ExtResource("11_fx5fv")]
-layout_mode = 2
-
-[node name="LogViewer2" type="Panel" parent="LogBrowser" unique_id=720129014]
-layout_mode = 0
-offset_right = 1300.9999
-offset_bottom = 239.99997
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowser/LogViewer2" unique_id=650400340]
+[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowser/LogViewer" unique_id=1192892138]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -305,43 +290,50 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TitlePanel" type="Panel" parent="LogBrowser/LogViewer2/VBoxContainer" unique_id=1797752478]
-custom_minimum_size = Vector2(0, 47)
+[node name="TitlePanel" type="Panel" parent="LogBrowser/LogViewer/VBoxContainer" unique_id=1361312407]
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("26_xov76")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="LogBrowser/LogViewer2/VBoxContainer/TitlePanel" unique_id=2017014121]
+[node name="HBoxContainer" type="HBoxContainer" parent="LogBrowser/LogViewer/VBoxContainer/TitlePanel" unique_id=1756423417]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-alignment = 1
 
-[node name="Label" type="Label" parent="LogBrowser/LogViewer2/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1937058753]
+[node name="ViewerTitleLabel" type="Label" parent="LogBrowser/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1706935697]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "    CategoryName LogFileName"
+size_flags_vertical = 1
+text = "    game - game(260423-213401).log"
+label_settings = SubResource("LabelSettings_xov76")
+vertical_alignment = 1
 
-[node name="Button" type="Button" parent="LogBrowser/LogViewer2/VBoxContainer/TitlePanel/HBoxContainer" unique_id=451268738]
-custom_minimum_size = Vector2(47, 47)
+[node name="ViewerFontSizeHSlider" type="HSlider" parent="LogBrowser/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=822774563]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-theme_override_colors/icon_pressed_color = Color(0.58, 0.0696, 0.35031983, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.23000002, 0.23000002, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.5803922, 0.07058824, 0.34901962, 1)
+size_flags_vertical = 1
+
+[node name="ViewerCloseButton" type="Button" parent="LogBrowser/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1844859999]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
 theme_override_styles/normal = ExtResource("13_fcs7p")
 theme_override_styles/pressed = ExtResource("13_fcs7p")
 theme_override_styles/hover = ExtResource("13_fcs7p")
+theme_override_styles/hover_pressed = ExtResource("13_fcs7p")
 icon = ExtResource("14_fx5fv")
 icon_alignment = 1
 
-[node name="LogViewer" type="ScrollContainer" parent="LogBrowser/LogViewer2/VBoxContainer" unique_id=110777046]
+[node name="ScrollContainer" type="ScrollContainer" parent="LogBrowser/LogViewer/VBoxContainer" unique_id=624240055]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("6_cp33x")
 
-[node name="Label" type="Label" parent="LogBrowser/LogViewer2/VBoxContainer/LogViewer" unique_id=1279769875]
+[node name="ContentLabel" type="Label" parent="LogBrowser/LogViewer/VBoxContainer/ScrollContainer" unique_id=48868420]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

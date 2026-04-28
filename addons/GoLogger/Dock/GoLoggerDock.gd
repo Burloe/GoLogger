@@ -31,8 +31,6 @@ signal change_category_name_finished
 
 # Log Browser
 @onready var log_browser: GLLogBrowser = %LogBrowser
-@onready var log_file_container: GridContainer = %LogFileContainer
-
 # Settings tab
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
@@ -1366,7 +1364,7 @@ func _apply_theme_colors():
 	sb_tab_panel_bg.bg_color 												= theme_colors["base"]["dark"]
 	panel_round_bg.bg_color 												= theme_colors["base"]["dark"]
 	sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
-	sb_log_file_button_normal												= theme_colors["base"]["col"]
+	sb_log_file_button_normal.bg_color							= theme_colors["base"]["col"]
 
 
 	# if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]: 
