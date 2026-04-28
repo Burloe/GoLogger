@@ -263,17 +263,19 @@ current_tab = 0
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="GLLogFile" type="Button" parent="LogBrowser/CategoryTabContainer/GridContainer" unique_id=1593069428]
+[node name="GLLogFile" type="Button" parent="LogBrowser/CategoryTabContainer/GridContainer" unique_id=631309028]
 custom_minimum_size = Vector2(100, 52)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("12_tvbkj")
 theme_override_styles/pressed = ExtResource("12_tvbkj")
 theme_override_styles/hover = ExtResource("12_tvbkj")
+autowrap_mode = 3
 script = ExtResource("13_itauu")
 metadata/_custom_type_script = "uid://d0mv8q7rr2bxr"
 
 [node name="LogViewer" type="Panel" parent="LogBrowser" unique_id=538579702]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -304,6 +306,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ViewerTitleLabel" type="Label" parent="LogBrowser/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1706935697]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1

@@ -8,7 +8,7 @@ signal log_file_added(log_file: GLLogFile) ## Emitted to Dock to update font col
 @onready var lw_title_lbl: Label = %ViewerTitleLabel
 @onready var lw_close_btn: Button = %ViewerCloseButton
 @onready var lw_font_size_slider: HSlider = %ViewerFontSizeHSlider
-@onready var lw_contents_lbl: Label = %ContentsLabel
+@onready var lw_contents_lbl: Label = %ContentLabel
 
 @export var grid_columns: int = 10
 const PATH = "user://gologger_data.ini"
@@ -21,6 +21,7 @@ var cat_containers: Array[GridContainer] = []
 
 func _ready() -> void:
 	_load_log_browser()
+	log_viewer.hide()
 
 
 
@@ -42,24 +43,26 @@ func _load_log_browser() -> void:
 
 	for c in cats:
 
-		if c.is_empty():
+		if c == "":
 				continue
-
+		print("0")
 		var gc: GridContainer = GridContainer.new()
 		gc.set_name(c)
 		gc.columns = grid_columns
 		add_child(gc)
 		var n: Array = [c, gc]
 		categories.append(n)
+		print("1")
 		_load_logfiles(c)
 
 
 
-func _load_logfiles(category_name: String) -> void:
+func _load_logfiles(category_name: String) -> void: 
 	var file_list: PackedStringArray = get_category_files(category_name)
+	print(file_list)
 
 	for file in file_list:
-		var file_path := str(base_dir, category_name, "/", file)
+		var file_path: String = str(base_dir.path_join(str(category_name), "_logs").path_join(file), "/")
 		
 		if not FileAccess.file_exists(file_path):
 			#? Add broken file icon?
@@ -73,6 +76,7 @@ func _load_logfiles(category_name: String) -> void:
 		lf.file_name = file
 
 		for c in categories:
+			print("category_namae: ", category_name, "   iterated category: ", c, "    saved array category: ", c)
 			if c[0] != category_name:
 				continue
 			
@@ -81,7 +85,7 @@ func _load_logfiles(category_name: String) -> void:
 			log_file_added.emit(lf)
 
 		lw_contents_lbl.lbl.text = content
-		
+		print("3")
 		# var _f = FileAccess.open(file_path, FileAccess.READ)
 		# if !_f: # ER
 		# 	#? Add broken file icon? 
@@ -97,13 +101,18 @@ func _load_logfiles(category_name: String) -> void:
 func get_category_files(category_name: String) -> PackedStringArray:
 	if categories.is_empty():
 		return []	
-	if base_dir != "":
+	if base_dir == "":
 		return []
 
-	var c_path: String = str(base_dir, category_name, "/")
+	var c_path: String = str(base_dir.path_join(category_name), "_logs/")
 
 	var d := DirAccess.open(c_path)
-	return d.get_files()
+	if d != null:
+		return d.get_files()
+
+	printerr("Failed to open category path: ", c_path)
+	
+	return []
 
 
 

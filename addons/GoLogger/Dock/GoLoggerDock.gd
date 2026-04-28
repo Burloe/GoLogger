@@ -8,6 +8,8 @@ extends TabContainer
 	# Implement the logic for applying the setting in signal function like _on_button_button_up()
 
 # TODO:
+	# GENERAL:
+		# Make a function that hides and shows everything properly that's called at the end of the _ready() function so you don't have to rely on manually showing and hiding all the proper elements constantly.
 	# Bugs: 
 		# 
 	# DOCK CATEGORY TAB:
