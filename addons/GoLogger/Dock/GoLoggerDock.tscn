@@ -19,6 +19,7 @@
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/GoLogger/Resources/theme/foldable_container_panel.tres" id="12_cp33x"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/GoLogger/Resources/theme/btn_normal.tres" id="13_fcs7p"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/GoLogger/Resources/theme/panel_top_rounded_base_col.tres" id="14_fcs7p"]
+[ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/GoLogger/Resources/icons/Close.svg" id="14_fx5fv"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/GoLogger/Resources/theme/line_edit_normal.tres" id="18_k47fi"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/GoLogger/Resources/id_overlay_lbl_settings.tres" id="19_cp33x"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/GoLogger/Resources/theme/panel_rounded_base_col.tres" id="26_xov76"]
@@ -233,51 +234,117 @@ theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 6
 
-[node name="Log Browser" type="TabContainer" parent="." unique_id=572746850]
+[node name="LogBrowser" type="Control" parent="." unique_id=1609261724]
+unique_name_in_owner = true
 layout_mode = 2
+script = ExtResource("10_k47fi")
+metadata/_custom_type_script = "uid://bg42rstww6k77"
+metadata/_tab_index = 1
+
+[node name="TabContainer" type="TabContainer" parent="LogBrowser" unique_id=1100305618]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = ExtResource("1_cp33x")
 theme_override_styles/tabbar_background = ExtResource("1_itauu")
 theme_override_styles/tab_unselected = ExtResource("4_cp33x")
 theme_override_styles/tab_hovered = ExtResource("2_tvbkj")
 theme_override_styles/tab_selected = ExtResource("3_itauu")
 current_tab = 0
-script = ExtResource("10_k47fi")
-metadata/_tab_index = 1
 
-[node name="CategoryFiles" type="GridContainer" parent="Log Browser" unique_id=966485637]
+[node name="GridContainer" type="GridContainer" parent="LogBrowser/TabContainer" unique_id=966485637]
 layout_mode = 2
 columns = 5
 metadata/_tab_index = 0
 
-[node name="LogFile" parent="Log Browser/CategoryFiles" unique_id=332590141 instance=ExtResource("11_fx5fv")]
+[node name="LogFile" parent="LogBrowser/TabContainer/GridContainer" unique_id=332590141 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile2" parent="Log Browser/CategoryFiles" unique_id=82869327 instance=ExtResource("11_fx5fv")]
+[node name="LogFile2" parent="LogBrowser/TabContainer/GridContainer" unique_id=82869327 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile3" parent="Log Browser/CategoryFiles" unique_id=319549377 instance=ExtResource("11_fx5fv")]
+[node name="LogFile3" parent="LogBrowser/TabContainer/GridContainer" unique_id=319549377 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile4" parent="Log Browser/CategoryFiles" unique_id=1570337333 instance=ExtResource("11_fx5fv")]
+[node name="LogFile4" parent="LogBrowser/TabContainer/GridContainer" unique_id=1570337333 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile5" parent="Log Browser/CategoryFiles" unique_id=1942143235 instance=ExtResource("11_fx5fv")]
+[node name="LogFile5" parent="LogBrowser/TabContainer/GridContainer" unique_id=1942143235 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile6" parent="Log Browser/CategoryFiles" unique_id=1434316776 instance=ExtResource("11_fx5fv")]
+[node name="LogFile6" parent="LogBrowser/TabContainer/GridContainer" unique_id=1434316776 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile7" parent="Log Browser/CategoryFiles" unique_id=362248601 instance=ExtResource("11_fx5fv")]
+[node name="LogFile7" parent="LogBrowser/TabContainer/GridContainer" unique_id=362248601 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile8" parent="Log Browser/CategoryFiles" unique_id=94803746 instance=ExtResource("11_fx5fv")]
+[node name="LogFile8" parent="LogBrowser/TabContainer/GridContainer" unique_id=94803746 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile9" parent="Log Browser/CategoryFiles" unique_id=1258051427 instance=ExtResource("11_fx5fv")]
+[node name="LogFile9" parent="LogBrowser/TabContainer/GridContainer" unique_id=1258051427 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
 
-[node name="LogFile10" parent="Log Browser/CategoryFiles" unique_id=589770211 instance=ExtResource("11_fx5fv")]
+[node name="LogFile10" parent="LogBrowser/TabContainer/GridContainer" unique_id=589770211 instance=ExtResource("11_fx5fv")]
 layout_mode = 2
+
+[node name="LogViewer2" type="Panel" parent="LogBrowser" unique_id=720129014]
+layout_mode = 0
+offset_right = 1300.9999
+offset_bottom = 239.99997
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowser/LogViewer2" unique_id=650400340]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitlePanel" type="Panel" parent="LogBrowser/LogViewer2/VBoxContainer" unique_id=1797752478]
+custom_minimum_size = Vector2(0, 47)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("26_xov76")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LogBrowser/LogViewer2/VBoxContainer/TitlePanel" unique_id=2017014121]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="LogBrowser/LogViewer2/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1937058753]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "    CategoryName LogFileName"
+
+[node name="Button" type="Button" parent="LogBrowser/LogViewer2/VBoxContainer/TitlePanel/HBoxContainer" unique_id=451268738]
+custom_minimum_size = Vector2(47, 47)
+layout_mode = 2
+theme_override_colors/icon_pressed_color = Color(0.58, 0.0696, 0.35031983, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.23000002, 0.23000002, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.5803922, 0.07058824, 0.34901962, 1)
+theme_override_styles/normal = ExtResource("13_fcs7p")
+theme_override_styles/pressed = ExtResource("13_fcs7p")
+theme_override_styles/hover = ExtResource("13_fcs7p")
+icon = ExtResource("14_fx5fv")
+icon_alignment = 1
+
+[node name="LogViewer" type="ScrollContainer" parent="LogBrowser/LogViewer2/VBoxContainer" unique_id=110777046]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("6_cp33x")
+
+[node name="Label" type="Label" parent="LogBrowser/LogViewer2/VBoxContainer/LogViewer" unique_id=1279769875]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
 visible = false
@@ -459,11 +526,13 @@ theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "Limiters"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer" unique_id=348562578]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -839,14 +908,17 @@ theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("26_xov76")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "Directory and Formats"
 foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="Control" type="Control" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer" unique_id=1869616791]
+visible = false
 layout_mode = 2
 mouse_filter = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer" unique_id=1504669251]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -854,9 +926,9 @@ theme_override_constants/separation = 15
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
-Default path is \"user://GoLogger/\". 
+Recommended to use either a directory within \"user://\" or \"res://\"
 
-Do not use \"user://logs/\" because Godot stores its own logs there."
+Default path is \"user://GoLogger/\". "
 theme_override_constants/separation = 8
 
 [node name="BaseDirLabel" type="Label" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
@@ -875,6 +947,8 @@ custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The directory where logs are stored in. 
+Recommended to use either a directory within \"user://\" or \"res://\"
+
 Default path is \"user://GoLogger/\". "
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_font_sizes/font_size = 14
@@ -886,6 +960,7 @@ emoji_menu_enabled = false
 
 [node name="BaseDirLineEditButtons" type="Panel" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/VBoxContainer/BaseDirHBox" unique_id=1809329385]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(66, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fcs7p")
@@ -940,6 +1015,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
+disabled = true
 icon = ExtResource("3_y66hb")
 icon_alignment = 1
 
@@ -985,6 +1061,7 @@ emoji_menu_enabled = false
 
 [node name="LogHeaderLineEditButtons" type="Panel" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=1877077072]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(66, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fcs7p")
@@ -1026,7 +1103,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Revert to last applied name"
+tooltip_text = "Revert to '{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:'"
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.07450981, 1)
@@ -1039,6 +1116,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
+disabled = true
 icon = ExtResource("3_y66hb")
 icon_alignment = 1
 
@@ -1120,6 +1198,7 @@ vertical_alignment = 1
 
 [node name="EntryFormatLineEditButtons" type="Panel" parent="Settings/ScrollContainer/VBoxContainer/FoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=1167054414]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(66, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fcs7p")
@@ -1161,7 +1240,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Revert to last applied name"
+tooltip_text = "Revert to '[{hh}:{mi}:{ss}] {instance_id}: {entry}'"
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.07450981, 1)
@@ -1174,6 +1253,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
+disabled = true
 icon = ExtResource("3_y66hb")
 icon_alignment = 1
 
@@ -1406,10 +1486,12 @@ theme_override_styles/title_hover_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_panel = ExtResource("14_fcs7p")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("26_xov76")
 theme_override_styles/panel = ExtResource("12_cp33x")
+folded = true
 title = "Multiple Instances"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
 [node name="MarginContainer" type="MarginContainer" parent="Help/GettingStarted/VBoxContainer/Concurrencies" unique_id=1561208560]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

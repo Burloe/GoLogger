@@ -1,30 +1,21 @@
 class_name GLLogFile extends Button
 
+@onready var lbl: Label = %Label
+
+var base_dir
 var category_name: String = ""
+
 var file_name: String = "":
 	set(value):
 		file_name = value
 		if value != "":
-			assign_name()
-
+			display_name = _get_name(file_name) 
+ 
 var display_name: String = ""
 
 
-
-
-
-
-func assign_name() -> void:
-	var time: String
-	var _name: String = str(get_time(int()))
-	pass
-
- 
-
-
-
-func _get_name(name: String) -> String:
-	var _timestamp: String = name.lstrip(str(category_name, "(")).rstrip(str(").log"))
+func _get_name(file_name: String) -> String:
+	var _timestamp: String = file_name.lstrip(str(category_name, "(")).rstrip(str(").log"))
 	var _splits: Array = _timestamp.split("_") 
 
 	var fin_time: String = str(
@@ -40,13 +31,6 @@ func _get_name(name: String) -> String:
 	)
 
 	return fin_time + fin_date
-
-
-
-func _get_date(name: String) -> String:
-	var 
-
-	return "s"
 
 
 

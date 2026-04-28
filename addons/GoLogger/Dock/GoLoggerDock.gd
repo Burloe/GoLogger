@@ -29,6 +29,10 @@ signal change_category_name_finished
 @onready var column_slider: VSlider = %ColumnsVSlider
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
+# Log Browser
+@onready var log_browser: GLLogBrowser = %LogBrowser
+@onready var log_file_container: GridContainer = %LogFileContainer
+
 # Settings tab
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
@@ -143,6 +147,10 @@ var sb_btn_apply_highlight						:= preload("uid://cws5raq1oykdn")
 
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
+
+var sb_log_file_button_normal					:= preload("uid://xy4uummjvhgu")
+
+
 ## Index 3 is a SEPERATOR and should not be used.
 enum LimitMethod {
 	ENTRY_COUNT,
@@ -253,6 +261,9 @@ func _ready() -> void:
 		id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
 		id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
 		hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
+
+		log_browser.log_file_added.connect(_on_log_file_added)
+
 
 		if !FileAccess.file_exists(PATH):
 			create_settings_file()
@@ -1277,6 +1288,13 @@ func _ensure_default_category() -> void:
 		config.save(PATH)
 
 
+func _on_log_file_added(logfile: GLLogFile) -> void:
+	var theme_colors = _get_theme_colors()
+	logfile.add_theme_color_override("font_normal", theme_colors["font"]["normal"])
+	logfile.add_theme_color_override("font_hover", theme_colors["font"]["hover"])
+	logfile.add_theme_color_override("font_pressed", theme_colors["font"]["normal"])
+
+
 
 func _on_editor_settings_changed() -> void:
 	settings = EditorInterface.get_editor_settings()
@@ -1348,6 +1366,7 @@ func _apply_theme_colors():
 	sb_tab_panel_bg.bg_color 												= theme_colors["base"]["dark"]
 	panel_round_bg.bg_color 												= theme_colors["base"]["dark"]
 	sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
+	sb_log_file_button_normal												= theme_colors["base"]["col"]
 
 
 	# if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]: 
