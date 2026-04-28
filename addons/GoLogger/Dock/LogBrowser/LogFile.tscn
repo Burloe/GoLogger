@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://bq7nahsc5aca7"]
+
+[ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/GoLogger/Resources/theme/panel_rounded_base_col.tres" id="1_k5dds"]
+[ext_resource type="Texture2D" uid="uid://chfkhfc65al6t" path="res://addons/GoLogger/Resources/icons/File.svg" id="2_orxho"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c2ld7"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.105882354, 0.14509805, 0.14901961, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_8s4l5"]
+line_spacing = 0.0
+font_size = 10
+
+[node name="Button" type="Button" unique_id=332590141]
+custom_minimum_size = Vector2(100, 52)
+theme_override_styles/normal = SubResource("StyleBoxFlat_c2ld7")
+theme_override_styles/pressed = ExtResource("1_k5dds")
+theme_override_styles/hover = ExtResource("1_k5dds")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1917279376]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer" unique_id=318183905]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_orxho")
+stretch_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer" unique_id=270058186]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "17:22:53
+April 27
+2026"
+label_settings = SubResource("LabelSettings_8s4l5")
+autowrap_mode = 3
