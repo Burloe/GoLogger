@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dt4rwugiiq5qf"
-path="res://.godot/imported/ArrowLeft.svg-e56f628ddda510af016201212d48efd6.ctex"
+path="res://.godot/imported/ArrowLeft.svg-7096f019b454b3fbb33961da641a1ade.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/GoLogger/resources/icons/ArrowLeft.svg"
-dest_files=["res://.godot/imported/ArrowLeft.svg-e56f628ddda510af016201212d48efd6.ctex"]
+source_file="res://addons/gologger/resources/icons/ArrowLeft.svg"
+dest_files=["res://.godot/imported/ArrowLeft.svg-7096f019b454b3fbb33961da641a1ade.ctex"]
 
 [params]
 

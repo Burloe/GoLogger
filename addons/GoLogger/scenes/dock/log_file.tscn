@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bq7nahsc5aca7"]
 
-[ext_resource type="StyleBox" uid="uid://xy4uummjvhgu" path="res://addons/GoLogger/resources/theme/log_file_button_normal.tres" id="1_iertm"]
-[ext_resource type="Texture2D" uid="uid://chfkhfc65al6t" path="res://addons/GoLogger/resources/icons/File.svg" id="2_kwjcy"]
-[ext_resource type="Script" uid="uid://d0mv8q7rr2bxr" path="res://addons/GoLogger/scripts/dock/log_file.gd" id="3_u25kw"]
+[ext_resource type="StyleBox" uid="uid://xy4uummjvhgu" path="res://addons/gologger/resources/theme/log_file_button_normal.tres" id="1_iertm"]
+[ext_resource type="Texture2D" uid="uid://chfkhfc65al6t" path="res://addons/gologger/resources/icons/File.svg" id="2_kwjcy"]
+[ext_resource type="Script" uid="uid://d0mv8q7rr2bxr" path="res://addons/gologger/scripts/dock/log_file.gd" id="3_u25kw"]
 
 [node name="LogFileButton" type="Button" unique_id=332590141]
 custom_minimum_size = Vector2(120, 85)

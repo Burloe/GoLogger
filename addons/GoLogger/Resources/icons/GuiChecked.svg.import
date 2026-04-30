@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cqmm78hvk5hc3"
-path="res://.godot/imported/GuiChecked.svg-cdab72655b65d4f67d85a93ced87e5d3.ctex"
+path="res://.godot/imported/GuiChecked.svg-73d21a63e07b05740e3aee6ff01874ed.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/GoLogger/resources/icons/GuiChecked.svg"
-dest_files=["res://.godot/imported/GuiChecked.svg-cdab72655b65d4f67d85a93ced87e5d3.ctex"]
+source_file="res://addons/gologger/resources/icons/GuiChecked.svg"
+dest_files=["res://.godot/imported/GuiChecked.svg-73d21a63e07b05740e3aee6ff01874ed.ctex"]
 
 [params]
 

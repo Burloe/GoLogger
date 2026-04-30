@@ -18,13 +18,13 @@ extends TabContainer
 
 
 
-signal update_index
-signal change_category_name_finished
+signal update_index # The hell is this? Delete?
+signal change_category_name_finished # Deprecated? 
 
 @export var data: GLData = preload("uid://dj7h7t2v8csck")
 
 # Category tab
-@onready var categories: HBoxContainer = %Categories
+@onready var category_tab: HBoxContainer = %Categories
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton 
@@ -35,6 +35,7 @@ signal change_category_name_finished
 @onready var log_browser: GLLogBrowser = %LogBrowser
 
 # Settings tab
+@onready var settings_tab: HBoxContainer = %Settings
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
 @onready var base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
@@ -103,8 +104,7 @@ var id_inspector: EditorInspector
 @onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
 
-@onready var user_dir_btn: Button = %UserDirButton
-# @onready var cat_top_bar: Panel = %TopBarPanel
+@onready var user_dir_btn: Button = %UserDirButton 
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
 @onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
@@ -265,6 +265,9 @@ func _ready() -> void:
 
 		tab_changed.connect(func(tab: int) -> void: if tab == 1: log_browser._load_log_browser())
 		log_browser.log_file_added.connect(_on_log_file_added)
+		settings_tab.request_save.connect(save_data)
+		settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
+		settings_tab.open_directory.connect(_open_directory)
 
 
 		if !FileAccess.file_exists(PATH):
@@ -1392,6 +1395,8 @@ func _get_theme_colors() -> Dictionary:
 			"fold_hover": Color("f2f2f2")
 		}
 	} 
+	category_tab.theme_colors = colors
+	settings_tab.theme_colors = colors
 	return colors
 
 

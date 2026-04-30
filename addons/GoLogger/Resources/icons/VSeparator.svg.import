@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://rsgyd2ce2sad"
-path="res://.godot/imported/VSeparator.svg-6c434525f9778b6537d78347ce9adf84.ctex"
+path="res://.godot/imported/VSeparator.svg-8dd2346cd8bb9fe8f3db1fa5e609c42e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/GoLogger/resources/icons/VSeparator.svg"
-dest_files=["res://.godot/imported/VSeparator.svg-6c434525f9778b6537d78347ce9adf84.ctex"]
+source_file="res://addons/gologger/resources/icons/VSeparator.svg"
+dest_files=["res://.godot/imported/VSeparator.svg-8dd2346cd8bb9fe8f3db1fa5e609c42e.ctex"]
 
 [params]
 

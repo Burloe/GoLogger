@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpjylpwpcptc1"
-path="res://.godot/imported/ArrowUp.svg-7c07d533af0dd7103d4eee38ddbddd99.ctex"
+path="res://.godot/imported/ArrowUp.svg-10b541e85e2b256a4a305c979ffe6186.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/GoLogger/resources/icons/ArrowUp.svg"
-dest_files=["res://.godot/imported/ArrowUp.svg-7c07d533af0dd7103d4eee38ddbddd99.ctex"]
+source_file="res://addons/gologger/resources/icons/ArrowUp.svg"
+dest_files=["res://.godot/imported/ArrowUp.svg-10b541e85e2b256a4a305c979ffe6186.ctex"]
 
 [params]
 

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="GLData" format=3 uid="uid://dj7h7t2v8csck"]
 
-[ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/GoLogger/scripts/gl_data_resource.gd" id="1_4ggqs"]
+[ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gologger/scripts/gl_data_resource.gd" id="1_4ggqs"]
 
 [resource]
 script = ExtResource("1_4ggqs")
