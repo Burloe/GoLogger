@@ -6,12 +6,17 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var category_tab_container = %CategoryTabContainer
 @onready var fake_topbar: VBoxContainer = %FakeTopBar
 @onready var log_viewer: Panel = %LogViewer
-@onready var lw_title_lbl: Label = %ViewerTitleLabel
-@onready var lw_refresh_btn: Button = %ViewerRefreshButton
-@onready var lw_close_btn: Button = %ViewerCloseButton
-@onready var lw_font_size_slider: VSlider = %ViewerFontSizeVSlider
-@onready var lw_contents_lbl: Label = %ContentLabel
+@onready var lv_title_lbl: Label = %ViewerTitleLabel
+@onready var lv_refresh_btn: Button = %ViewerRefreshButton
+@onready var lv_close_btn: Button = %ViewerCloseButton
+@onready var lv_font_size_slider: VSlider = %ViewerFontSizeVSlider
+@onready var lv_contents_lbl: Label = %ContentLabel
 @onready var ctrl_padding: Control = %Padding
+
+@onready var lv_panel: Panel = %LVPanel
+@onready var lv_scroll_container: ScrollContainer = %LVScrollContainer
+# @onready var lv_panel: Panel = %LVPanel
+
 
 @export var grid_columns: int = 10
 const PATH = "user://gologger_data.ini"
@@ -20,36 +25,74 @@ var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
 var config: ConfigFile = ConfigFile.new()
 var base_dir = ""
 var categories: Array = [] # 2D array of category names and it's associated [GridContainer]
-var cat_containers: Array[GridContainer] = []
+var cat_containers: Array[GridContainer] = [] 
 
 enum BrowserState {
 	LIST_VIEW,
 	LOG_VIEW
 }
 var state: BrowserState = BrowserState.LIST_VIEW
-
+var mo_states: Dictionary = {
+	"log_browser": {
+		"state": false,
+		"ref": self
+	},
+	"category_tab_container": {
+		"state": false,
+		"ref": category_tab_container
+	},
+	"log_viewer": {
+		"state": false,
+		"ref": log_viewer
+	},
+	"lv_panel": {
+		"state": false,
+		"ref": lv_panel
+	},
+	"lv_scroll_container": {
+		"state": false,
+		"ref": lv_scroll_container
+	},
+	"content_lbl": {
+		"state": false,
+		"ref": lv_contents_lbl
+	}
+}
 
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_released():
-		if state == BrowserState.LOG_VIEW:
+		if state == BrowserState.LOG_VIEW and is_any_hovered():
 			_toggle_view()
-
 
 
 
 func _ready() -> void:
 	_load_log_browser(true)
-	lw_close_btn.button_up.connect(_on_button_up.bind(lw_close_btn))
-	lw_refresh_btn.button_up.connect(_on_button_up.bind(lw_refresh_btn))
-	lw_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lw_font_size_slider))
-	lw_font_size_slider.value = lw_contents_lbl.label_settings.font_size 
+	lv_close_btn.button_up.connect(_on_button_up.bind(lv_close_btn))
+	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn))
+	lv_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lv_font_size_slider))
+	lv_font_size_slider.value = lv_contents_lbl.label_settings.font_size 
 	
+	mo_states["log_browser"]["ref"] = self
+	mo_states["category_tab_container"]["ref"] = category_tab_container
+	mo_states["log_viewer"]["ref"] = log_viewer
+	mo_states["lv_panel"]["ref"] = lv_panel
+	mo_states["lv_scroll_container"]["ref"] = lv_scroll_container
+	mo_states["content_lbl"]["ref"] = lv_contents_lbl
+
+	for key in mo_states.keys():
+		if mo_states[key]["ref"] != null:
+			mo_states[key]["ref"].mouse_entered.connect(func() -> void: mo_states[key]["state"] = true)
+			mo_states[key]["ref"].mouse_exited.connect(func() -> void: mo_states[key]["state"] = false)
+			print(key)
+
+	# Initialize visibility
 	category_tab_container.show()
 	log_viewer.hide()
-	lw_refresh_btn.show()
-	lw_close_btn.hide()
-	lw_font_size_slider.hide()
+	lv_refresh_btn.show()
+	lv_close_btn.hide()
+	lv_font_size_slider.hide()
 	ctrl_padding.show()
 	state = BrowserState.LIST_VIEW 
 
@@ -73,11 +116,11 @@ func _load_log_browser(is_initializing: bool = false) -> void:
 		child.queue_free()
 	
 	if !is_initializing:
-		lw_refresh_btn.disabled = true
+		lv_refresh_btn.disabled = true
 		category_tab_container.hide()
 		fake_topbar.show()
 		await get_tree().create_timer(0.1).timeout 
-		lw_refresh_btn.disabled = false
+		lv_refresh_btn.disabled = false
 		category_tab_container.show()
 		fake_topbar.hide()
 
@@ -124,7 +167,7 @@ func _load_logfiles(category_name: String) -> void:
 			lf.button_up.connect(_on_log_file_button_up.bind(category_name, file, content))
 			log_file_added.emit(lf)
 
-		lw_contents_lbl.text = content
+		lv_contents_lbl.text = content
 
 
 
@@ -151,39 +194,77 @@ func _toggle_view() -> void:
 		BrowserState.LIST_VIEW:
 			category_tab_container.hide()
 			log_viewer.show()
-			lw_refresh_btn.hide()
-			lw_close_btn.show()
-			lw_font_size_slider.show()
+			lv_refresh_btn.hide()
+			lv_close_btn.show()
+			lv_font_size_slider.show()
 			ctrl_padding.hide()
 			state = BrowserState.LOG_VIEW
 		BrowserState.LOG_VIEW:
 			category_tab_container.show()
 			log_viewer.hide()
-			lw_refresh_btn.show()
-			lw_close_btn.hide()
-			lw_font_size_slider.hide()
+			lv_refresh_btn.show()
+			lv_close_btn.hide()
+			lv_font_size_slider.hide()
 			ctrl_padding.show()
 			state = BrowserState.LIST_VIEW
 
 
 
 func _on_log_file_button_up(category_name: String, file_name: String, content: String) -> void:
-	lw_title_lbl.text = str(category_name, " - ", file_name)
-	lw_contents_lbl.text = content
+	var _timestamp: String = file_name.lstrip(str(category_name, "(")).rstrip(str(").log"))
+	var _splits: Array = _timestamp.split("_") 
+	var _m: Array[String] = [
+		"N/A",
+		"Jan ",
+		"Feb ",
+		"March ",
+		"April ",
+		"May ",
+		"June ",
+		"July ",
+		"Aug ",
+		"Sep ",
+		"Oct ",
+		"Nov ",
+		"Dec "
+	]
+
+	var fin_time: String = str(
+		_splits[1].substr(0, 2), ":", 
+		_splits[1].substr(2, 2), ":", 
+		_splits[1].substr(4, 2)	
+	)
+	
+	var fin_date: String = str(
+		_m[int(_splits[0].substr(2, 2))],
+		_splits[0].substr(4, 2), " ", 
+		str(20, (_splits[0].substr(0, 2)))
+	) 
+
+	lv_title_lbl.text = str("    ", category_name.capitalize(), " [",fin_time, "] ", fin_date, "   -   ", file_name)
+	lv_contents_lbl.text = content
 	_toggle_view() 
+
+
+
+func is_any_hovered() -> bool: 
+	for key in mo_states.keys():
+		if mo_states[key]["state"]:
+			return true
+	return false
 
 
 
 func _on_button_up(btn: Button) -> void:
 	match btn:
-		lw_close_btn:
+		lv_close_btn:
 			_toggle_view()  
-		lw_refresh_btn:
+		lv_refresh_btn:
 			_load_log_browser()
 
 
 
 func on_slider_value_changed(value: int, slider: VSlider) -> void:
 	match slider:
-		lw_font_size_slider:
+		lv_font_size_slider:
 			cont_lbl_sett.font_size = value
