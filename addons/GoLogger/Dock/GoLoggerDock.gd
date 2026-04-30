@@ -126,6 +126,7 @@ var theme_colors: Dictionary = {}
 
 var sb_tab_bar_bg 										:= preload("uid://beo2bu5ofsw0u")
 var sb_tab_panel_bg										:= preload("uid://br4lwoor8v8mi")
+var sb_tab_panel_no_side_margins 			:= preload("uid://cv3q5yacoro7d")
 var sb_tab_unselected 								:= preload("uid://427jdnrjcbba")
 var sb_tab_selected 									:= preload("uid://cy0ifp487jfcg")
 var sb_tab_hover 											:= preload("uid://yxpx0pyjme8s")
@@ -140,6 +141,7 @@ var panel_top_round_accent 						:= preload("uid://dve2ih1gvvua7")
 var panel_top_round_accent_muted 			:= preload("uid://7s65f804p1jc")
 var panel_rounded_no_top_base					:= preload("uid://bqxadvxd6q2yj")
 var foldable_container_panel					:= preload("uid://bkl7j8mna8rwb")
+var content_panel											:= preload("uid://dsitl204qf1y3")
 
 var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
 var sb_btn_apply 											:= preload("uid://bwsfno28una6g")
@@ -149,6 +151,9 @@ var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 
 var sb_log_file_button_normal					:= preload("uid://xy4uummjvhgu")
+
+var lw_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
+var gl_logfile_button_lbl_settings		:= preload("uid://c8w51vy1pqjq8")
 
 
 ## Index 3 is a SEPERATOR and should not be used.
@@ -262,6 +267,7 @@ func _ready() -> void:
 		id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
 		hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
 
+		tab_changed.connect(func() -> void: log_browser._load_log_browser())
 		log_browser.log_file_added.connect(_on_log_file_added)
 
 
@@ -1288,11 +1294,11 @@ func _ensure_default_category() -> void:
 		config.save(PATH)
 
 
-func _on_log_file_added(logfile: GLLogFile) -> void:
-	var theme_colors = _get_theme_colors()
-	logfile.add_theme_color_override("font_normal", theme_colors["font"]["normal"])
-	logfile.add_theme_color_override("font_hover", theme_colors["font"]["hover"])
-	logfile.add_theme_color_override("font_pressed", theme_colors["font"]["normal"])
+func _on_log_file_added(logfile: Button) -> void:
+	var theme_colors = _get_theme_colors() 
+	logfile.add_theme_color_override("normal", theme_colors["font"]["normal"])
+	logfile.add_theme_color_override("hover", theme_colors["font"]["hover"])
+	logfile.add_theme_color_override("pressed", theme_colors["font"]["normal"]) 
 
 
 
@@ -1352,6 +1358,9 @@ func _get_theme_colors() -> Dictionary:
 func _apply_theme_colors():
 	theme_colors = _get_theme_colors()
 
+	lw_content_lbl_settings.font_color = theme_colors["font"]["normal"]
+	gl_logfile_button_lbl_settings.font_color = theme_colors["font"]["normal"]
+
 	sb_tab_unselected.bg_color 			= Color.TRANSPARENT
 	sb_tab_hover.bg_color 					= Color.TRANSPARENT
 	sb_btn_normal.bg_color 					= Color.TRANSPARENT
@@ -1364,9 +1373,11 @@ func _apply_theme_colors():
 	foldable_container_panel.border_color						= theme_colors["base"]["col"]
 	sb_tab_bar_bg.bg_color 													= theme_colors["base"]["col"]
 	sb_tab_panel_bg.bg_color 												= theme_colors["base"]["dark"]
+	sb_tab_panel_no_side_margins.bg_color						= theme_colors["base"]["dark"]
 	panel_round_bg.bg_color 												= theme_colors["base"]["dark"]
 	sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
 	sb_log_file_button_normal.bg_color							= theme_colors["base"]["col"]
+	content_panel.border_color											= theme_colors["base"]["col"] 
 
 
 	# if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]: 
