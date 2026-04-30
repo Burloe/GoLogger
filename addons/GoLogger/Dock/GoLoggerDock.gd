@@ -19,20 +19,21 @@ extends TabContainer
 
 
 signal update_index
-signal change_category_name_finished 
+signal change_category_name_finished
 
 @export var data: GLData = preload("uid://dj7h7t2v8csck")
 
 # Category tab
+@onready var categories: HBoxContainer = %Categories
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton 
-
 @onready var column_slider: VSlider = %ColumnsVSlider
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 # Log Browser
 @onready var log_browser: GLLogBrowser = %LogBrowser
+
 # Settings tab
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
@@ -106,17 +107,21 @@ var inspector: EditorInspector
 # @onready var cat_top_bar: Panel = %TopBarPanel
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
 @onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
+@onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
 # Help tab
-@onready var help_setup: 					FoldableContainer = %Setup
-@onready var help_sessions: 			FoldableContainer = %Sessions
-@onready var help_categories: 		FoldableContainer = %Categories
-@onready var help_messages: 			FoldableContainer = %Messages
-@onready var help_concurrencies: 	FoldableContainer = %Concurrencies
-@onready var help_functions: 			FoldableContainer = %Functions
-@onready var help_hotkeys: 				FoldableContainer = %Hotkeys
-@onready var help_file_limits: 		FoldableContainer = %FileLimits
-@onready var help_formatting: 		FoldableContainer = %Formatting
+@onready var help_tab: 						TabContainer = %Help
+@onready var getting_started_tab: ScrollContainer = %GettingStarted
+@onready var help_setup: 					FoldableContainer = %SetupHelp
+@onready var help_sessions: 			FoldableContainer = %SessionsHelp
+@onready var help_categories: 		FoldableContainer = %CategoriesHelp
+@onready var help_messages: 			FoldableContainer = %MessagesHelp
+@onready var help_concurrencies: 	FoldableContainer = %ConcurrenciesHelp
+@onready var help_log_browser:		FoldableContainer = %LogBrowserHelp
+@onready var help_functions: 			FoldableContainer = %FunctionsHelp
+@onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
+@onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
+@onready var help_formatting: 		FoldableContainer = %FormattingHelp
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -243,16 +248,7 @@ var settings_dict := {
 }
 
 
-func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableContainer) -> void:
-	match fold_container:
-		id_font_sett_cont:
-			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-			id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
-			id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
-		hotkey_container:
-			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-			hotkey_container.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
-			hotkey_container.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+
 
 
 
@@ -267,7 +263,7 @@ func _ready() -> void:
 		id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
 		hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
 
-		tab_changed.connect(func() -> void: log_browser._load_log_browser())
+		tab_changed.connect(func(tab: int) -> void: if tab == 1: log_browser._load_log_browser())
 		log_browser.log_file_added.connect(_on_log_file_added)
 
 
@@ -382,6 +378,36 @@ func _ready() -> void:
 
 func _exit_tree() -> void: 
 	_is_shutting_down = true
+
+
+func _init_visibility() -> void:
+	set_current_tab(0)
+	help_tab.set_current_tab(0)
+
+	var fold_conts: Array[FoldableContainer] = [
+		general_fold_cont,
+		limit_fold_cont,
+		id_fold_cont,
+		dir_fold_cont,
+		hotkey_container,
+		help_setup,
+		help_sessions,
+		help_categories,
+		help_messages,
+		help_concurrencies,
+		help_log_browser,
+		help_functions,
+		help_hotkeys,
+		help_file_limits,
+		help_formatting
+	]
+	for container in fold_conts:
+		container.folded = true 
+	
+	dir_fold_cont.folded = false 
+
+
+
 
 
 func _create_editor_inspector(parent: Control) -> EditorInspector:
@@ -635,7 +661,9 @@ func initialize_dock() -> void:
 			ctrl.selected = value
 
 		elif ctrl is LineEdit:
-			ctrl.text = value 
+			ctrl.text = value
+
+		_init_visibility()
 
 
 
@@ -1282,6 +1310,19 @@ func _on_column_slider_value_changed(value: int) -> void:
 ## Returns the inverted value for the column slider
 func _get_column_value(slider_value: int) -> int:
 	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
+
+
+
+func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableContainer) -> void:
+	match fold_container:
+		id_font_sett_cont:
+			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+			id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
+			id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+		hotkey_container:
+			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+			hotkey_container.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
+			hotkey_container.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
 
 
 
