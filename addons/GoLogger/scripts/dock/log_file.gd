@@ -75,3 +75,8 @@ func _get_month(month: String) -> String:
 		"Dec "
 	]
 	return _m[i]
+
+
+
+func set_icon(is_valid: bool) -> void:
+	icon = file_ico if is_valid else file_broken_ico

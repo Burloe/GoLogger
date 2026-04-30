@@ -5,9 +5,9 @@
 [ext_resource type="Script" uid="uid://d0mv8q7rr2bxr" path="res://addons/gologger/scripts/dock/log_file.gd" id="3_u25kw"]
 
 [node name="LogFileButton" type="Button" unique_id=332590141]
-custom_minimum_size = Vector2(120, 85)
+custom_minimum_size = Vector2(120, 69)
 offset_right = 120.0
-offset_bottom = 85.0
+offset_bottom = 69.0
 theme_override_styles/normal = ExtResource("1_iertm")
 theme_override_styles/pressed = ExtResource("1_iertm")
 theme_override_styles/hover = ExtResource("1_iertm")

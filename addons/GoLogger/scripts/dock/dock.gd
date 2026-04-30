@@ -256,7 +256,7 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		theme_colors = _get_theme_colors()
 
-		tab_changed.connect(func(tab: int) -> void: if tab == 1: log_browser_tab._load_log_browser())
+		tab_changed.connect(func(tab: int) -> void: if tab == 1: log_browser_tab.load_log_browser())
 		log_browser_tab.log_file_added.connect(_on_log_file_added)
 		settings_tab.request_save.connect(save_data)
 		settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
@@ -324,13 +324,6 @@ func _init_visibility() -> void:
 
 
 
-# func _create_editor_inspector(parent: Control) -> EditorInspector:
-# 	var new_inspector := EditorInspector.new()
-# 	parent.add_child(new_inspector)
-# 	new_inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-# 	new_inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
-# 	return new_inspector
-
 
 
 func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
@@ -338,163 +331,6 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 		signal_obj.disconnect(callback)
 	signal_obj.connect(callback)
 
-
-
-# func _connect_line_edit_toggled() -> void:
-# 	base_dir_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(base_dir_line))
-# 	log_header_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(log_header_line))
-# 	entry_format_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(entry_format_line))
-
-
-
-# func _assign_spinbox_line_edits() -> void:
-# 	file_count_spinbox_line = file_count_spinbox.get_line_edit()
-# 	entry_count_spinbox_line = entry_count_spinbox.get_line_edit()
-# 	session_duration_spinbox_line = session_duration_spinbox.get_line_edit() 
-
-
-
-# func _connect_spinbox_line_submitted() -> void:
-# 	var line_edits: Array[LineEdit] = [
-# 		file_count_spinbox_line,
-# 		entry_count_spinbox_line,
-# 		session_duration_spinbox_line 
-# 	]
-
-# 	for line_edit in line_edits:
-# 		_connect_unique(line_edit.text_submitted, _on_spinbox_lineedit_submitted.bind(line_edit))
-
-
-
-# func _connect_control_signal(node: Control) -> void:
-# 	if node is Button:
-# 		_connect_unique(node.button_up, _on_button_button_up.bind(node))
-
-# 	if node is CheckBox:
-# 		_connect_unique(node.toggled, _on_checkbox_toggled.bind(node))
-# 	elif node is OptionButton:
-# 		_connect_unique(node.item_selected, _on_optbtn_item_selected.bind(node))
-# 	elif node is LineEdit:
-# 		_connect_unique(node.text_changed, _on_line_edit_text_changed.bind(node))
-# 		_connect_unique(node.text_submitted, _on_line_edit_text_submitted.bind(node))
-	# elif node is SpinBox:
-	# 	_connect_unique(node.value_changed, _on_spinbox_value_changed.bind(node)) 
-
-
-
-# func _bind_settings_hover_groups() -> void:
-# 	var _groups = [
-# 		[
-# 			base_dir_container,
-# 			base_dir_line,
-# 			base_dir_lbl
-# 		],
-# 		[
-# 			log_header_container,
-# 			log_header_line,
-# 			log_header_lbl
-# 		],
-# 		[
-# 			entry_format_container,
-# 			entry_format_line,
-# 			entry_format_lbl
-# 		],
-# 		[
-# 			error_rep_container,
-# 			error_rep_btn,
-# 			error_rep_lbl
-# 		],
-# 		[
-# 			file_count_container,
-# 			file_count_spinbox,
-# 			file_count_lbl
-# 		],
-# 		[
-# 			limit_method_container,
-# 			limit_method_btn,
-# 			limit_method_lbl
-# 		],
-# 		[
-# 			entry_count_action_container, 
-# 			entry_count_action_btn, 
-# 			entry_count_spinbox,
-# 			entry_count_action_lbl
-# 		],
-# 		[
-# 			session_timer_action_container, 
-# 			session_timer_action_btn, 
-# 			session_duration_spinbox,
-# 			session_timer_action_lbl
-# 		],
-# 		[
-# 			id_align_container,
-# 			id_align_opt_btn,
-# 			id_align_lbl
-# 		]
-# 	]
-
-# 	for group in _groups:
-# 		for ctrl in group:
-# 			if ctrl is Label: continue
-
-# 			_connect_unique(ctrl.mouse_entered, _on_setting_hover.bind(group, true))
-# 			_connect_unique(ctrl.mouse_exited, _on_setting_hover.bind(group, false))
-
-
-
-# func _on_setting_hover(group: Array, is_hovered: bool) -> void:
-# 	theme_colors = _get_theme_colors()
-# 	var c_norm:  Color = theme_colors["font"]["normal"] 
-# 	var c_hover: Color = theme_colors["font"]["hover"] 
-
-# 	for ctrl in group:
-# 		if ctrl is HBoxContainer:
-# 			continue
-
-# 		if ctrl is LineEdit:
-# 			var key: String = ""
-# 			match ctrl:
-# 				base_dir_line: key = "base_dir"
-# 				log_header_line: key = "log_header"
-# 				entry_format_line: key = "entry_format"
-
-# 			line_edit_states[key]["mouse"] = is_hovered
-# 			if not line_edit_states[key]["edit"]:
-# 				ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-
-# 		if ctrl is OptionButton:
-# 			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-# 			continue
-
-# 		if ctrl is SpinBox:
-# 			ctrl.get_line_edit().add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-# 			continue
-		
-# 		if ctrl is Label:
-# 			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-
-
-
-# func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:
-# 	theme_colors = _get_theme_colors()
-# 	var c_norm:  Color = theme_colors["font"]["normal"] 
-# 	var c_hover: Color = theme_colors["font"]["hover"] 
-# 	var key: String
-	
-# 	match node:
-# 		base_dir_line: 
-# 			base_dir_line_btn_cont.visible = toggled_on
-# 			key = "base_dir"
-# 		log_header_line: 
-# 			log_header_line_btn_cont.visible = toggled_on
-# 			key = "log_header"
-# 		entry_format_line: 
-# 			entry_format_line_btn_cont.visible = toggled_on
-# 			key = "entry_format"
-	
-# 	line_edit_states[key]["edit"] = toggled_on
-# 	if not line_edit_states[key]["mouse"]:
-# 		node.add_theme_color_override("font_color", c_hover if toggled_on else c_norm) 
 
 
 
@@ -690,8 +526,8 @@ func reset_to_default() -> void:
 
 
 
-## Saves dock state to file.
-func save_data(ignore_errors: bool = false) -> int: 
+## Saves dock state to file. "external_source" is used to debug what func/signal called this from another tab script.
+func save_data(ignore_errors: bool = false, external_source: String = "") -> int: 
 	if _is_shutting_down:
 		return OK
 
@@ -740,7 +576,12 @@ func save_data(ignore_errors: bool = false) -> int:
 
 	var _e: int = _c.save(PATH)
 	if _e != OK:
-		printerr(str("GoLogger error: Failed to save settings.ini file! ", get_error(_e, "ConfigFile")))
+		printerr(
+			str(
+				"GoLogger error: Failed to save settings.ini file! " if external_source.is_empty() else str("GoLogger error: Failed to save settings.ini file after source <", external_source, "> attempted to save!"), 
+				get_error(_e, "ConfigFile")
+			)
+		)
 		return _e
 	config.load(PATH)
 	return _e
@@ -940,278 +781,6 @@ func _open_directory() -> void:
 
 
 
-# func _apply_new_base_directory() -> bool:
-# 	config.load(PATH)
-# 	var old_dir = config.get_value("settings", "base_directory")
-# 	var new_dir = base_dir_line.text.strip_edges()
- 
-# 	if new_dir == "":
-# 		if config.get_value("settings", "error_reporting") != 2:
-# 			push_warning("GoLogger: Base directory cannot be empty. Reverting to previous path[", old_dir, "].")
-# 		base_dir_line.text = old_dir
-# 		return false
-
-
-# 	if not new_dir.ends_with("/"):
-# 		new_dir += "/"
-
-
-# 	var d = DirAccess.open(new_dir) 
-# 	if d == null or DirAccess.get_open_error() != OK:
-# 		var res : int = OK
-
-# 		var create_path = new_dir
-# 		if new_dir.begins_with("user://") or new_dir.begins_with("res://"):
-# 			create_path = ProjectSettings.globalize_path(new_dir)
-
-# 		res = DirAccess.make_dir_absolute(create_path)
-# 		if res != OK:
-# 			if config.get_value("settings", "error_reporting") != 2:
-# 				push_warning("GoLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
-# 			base_dir_line.text = old_dir 
-# 			return false
-
-# 		d = DirAccess.open(new_dir)
-
-# 	config.set_value("settings", "base_directory", new_dir)
-	
-# 	var save_err = save_data()
-# 	if save_err != OK:
-# 		if config.get_value("settings", "error_reporting") != 2:
-# 			push_warning("GoLogger: Failed to save settings.ini after changing base_directory. Reverting back to previous directory path[", old_dir, "].")
-# 		base_dir_line.text = old_dir 
-# 		return false
-
-# 	base_dir_line.text = new_dir
-# 	base_dir_revert_btn.tooltip_text = str("Revert to '", new_dir, "'")
- 
-# 	return true
-
-
-# ## Returns true if {entry} tag is present or is NOT empty.
-# func _is_entry_format_valid(format: String) -> bool:
-# 	return true if format.contains("{entry}") or format != "" else false
-
-
-
-# func _on_button_button_up(node: Button) -> void:
-# 	config.load(PATH)
-# 	_ensure_default_category()
-
-# 	match node:
-# 		base_dir_apply_btn:
-# 			_apply_new_base_directory()
-# 			base_dir_apply_btn.hide()
-# 			base_dir_line_btn_cont.hide()
-		
-# 		base_dir_revert_btn:
-# 			base_dir_line.text = config.get_value("settings", "base_directory", settings_dict.get("base_directory", {}).get("default", ""))
-# 			base_dir_apply_btn.disabled = true
-# 			base_dir_revert_btn.disabled = true
-# 			base_dir_line_btn_cont.hide()
-
-# 		base_dir_opendir_btn:
-# 			if config.get_value("settings", "base_directory") == "":
-# 				push_warning("GoLogger: Base directory path isn't set. Please set a valid directory path before opening the directory.")
-# 			_open_directory()
-
-# 		log_header_apply_btn:
-# 			config.set_value("settings", "log_header_format", log_header_line.text) 
-# 			log_header_apply_btn.disabled = true
-# 			log_header_line.release_focus() 
-# 			log_header_line_btn_cont.hide()
-		
-# 		log_header_revert_btn:
-# 			log_header_line.text = log_header_value
-# 			log_header_apply_btn.disabled = true
-# 			log_header_revert_btn.disabled = true
-# 			log_header_line_btn_cont.hide()
-
-# 		entry_format_apply_btn:
-# 			config.set_value("settings", "entry_format", entry_format_line.text)
-# 			var err := config.save(PATH) 
-# 			entry_format_apply_btn.disabled = true
-# 			entry_format_line.release_focus() 
-# 			entry_format_line_btn_cont.hide()
-
-# 		entry_format_revert_btn:
-# 			entry_format_line.text = entry_format_value
-# 			entry_format_apply_btn.disabled = true
-# 			entry_format_revert_btn.disabled = true
-# 			entry_format_line_btn_cont.hide()
-
-# 	save_data()
-
-
-
-# func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
-# 	config.load(PATH)
-# 	match node:
-# 		base_dir_line:
-# 			base_dir_apply_btn.disabled = true 
-# 			base_dir_revert_btn.disabled = true 
-
-# 			if new_text != config.get_value("settings", "base_directory"):
-# 				base_dir_apply_btn.disabled = false 
-# 				base_dir_revert_btn.disabled = false
-
-# 		log_header_line:
-# 			log_header_apply_btn.disabled = true 
-# 			log_header_revert_btn.disabled = true
-# 			if new_text != log_header_value:
-# 				log_header_revert_btn.disabled = false
-# 				log_header_apply_btn.disabled = false
-
-# 		entry_format_line: 
-# 			entry_format_apply_btn.disabled = true
-# 			entry_format_revert_btn.disabled = true 
-# 			entry_format_warning.visible = !_is_entry_format_valid(new_text)
-# 			entry_format_line.add_theme_stylebox_override(
-# 				"normal", 
-# 				sb_line_edit_normal if _is_entry_format_valid(new_text) else sb_line_edit_invalid
-# 			)
-
-# 			if new_text != entry_format_value and _is_entry_format_valid(new_text):
-# 				entry_format_apply_btn.disabled = false 
-# 				entry_format_revert_btn.disabled = false 
-			
-
-
-
-
-
-# func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void: 
-# 	config.load(PATH)
-# 	match node:
-# 		base_dir_line:
-# 			var v = config.get_value("settings", "base_directory", settings_dict.get("base_directory", {}).get("default", ""))
-
-# 			if _apply_new_base_directory():
-# 				base_dir_line.release_focus()
-# 				base_dir_apply_btn.disabled = true
-# 				base_dir_revert_btn.disabled = true
-
-# 		log_header_line:
-# 			log_header_line.release_focus()
-# 			log_header_apply_btn.disabled = true
-# 			log_header_revert_btn.disabled = true
-# 			log_header_value = new_text # Setter saves to file
-
-# 		entry_format_line:
-# 			entry_format_line.release_focus()
-# 			entry_format_apply_btn.disabled = true
-# 			entry_format_revert_btn.disabled = true
-# 			entry_format_value = new_text # Setter saves to file
-# 	save_data()
-
-
-# func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
-# 	match node:
-# 		limit_method_btn:
-# 			config.set_value("settings", "limit_method", index)
-# 			entry_count_action_container.hide() 
-# 			session_timer_action_container.hide() 
-# 			entry_count_action_lbl.text = "Action"
-# 			session_timer_action_lbl.text = "Action"
-			
-# 			match index:
-# 				LimitMethod.ENTRY_COUNT:
-# 					entry_count_action_container.show() 
-# 				LimitMethod.SESSION_TIMER: 
-# 					session_timer_action_container.show() 
-# 				LimitMethod.BOTH:
-# 					entry_count_action_container.show()
-# 					session_timer_action_container.show() 
-# 					entry_count_action_lbl.text = "Entry Action"
-# 					session_timer_action_lbl.text = "Timer Action"
-
-# 		entry_count_action_btn:
-# 			config.set_value("settings", "entry_count_action", index) 
-
-# 		session_timer_action_btn:
-# 			config.set_value("settings", "session_timer_action", index) 
-
-# 		error_rep_btn:
-# 			config.set_value("settings", "error_reporting", index) 
-
-# 		id_align_opt_btn:
-# 			config.set_value("settings", "id_align", index) 
-
-# 	save_data()
-
-
-
-# func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
-# 	match node:
-
-# 		autostart_btn:
-# 			config.set_value("settings", "autostart_session", toggled_on) 
-
-# 		utc_btn:
-# 			config.set_value("settings", "use_utc", toggled_on) 
-
-# 		id_print_btn:
-# 			config.set_value("settings", "id_print", toggled_on) 
-
-# 		id_toggle_btn:
-# 			config.set_value("settings", "id_toggle", toggled_on)
-# 			id_startup_btn.show() if toggled_on else id_startup_btn.hide() 
-
-# 		id_startup_btn:
-# 			config.set_value("settings", "id_startup_state", toggled_on) 
-# 	save_data()
-
-
-
-# func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
-# 	config.load(PATH)
-
-# 	var u_line = node.get_line_edit()
-# 	u_line.set_caret_column(u_line.text.length())
-# 	if u_line.get_caret_column() == u_line.text.length() - 1:
-# 		u_line.set_caret_column(u_line.text.length())
-# 	else: u_line.set_caret_column(u_line.get_caret_column() + 1)
-
-# 	match node:
-# 		entry_count_spinbox:
-# 			config.set_value("settings", "entry_cap", int(value)) 
-
-# 		session_duration_spinbox:
-# 			config.set_value("settings", "session_duration", int(value)) 
-
-# 		file_count_spinbox:
-# 			config.set_value("settings", "file_cap", int(value)) 
-
-# 	save_data()
-
-
-
-# func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
-# 	config.load(PATH)
-# 	match node:
-
-# 		file_count_spinbox_line:
-# 			var value = int(new_text)
-# 			config.set_value("settings", "file_cap", value)
-# 			file_count_spinbox_line.release_focus()
-# 			file_count_spinbox.release_focus() 
-
-# 		entry_count_spinbox_line:
-# 			var value = int(new_text)
-# 			config.set_value("settings", "entry_cap", value)
-# 			entry_count_spinbox.release_focus()
-# 			entry_count_spinbox_line.release_focus() 
-
-# 		session_duration_spinbox_line:
-# 			var value = float(new_text)
-# 			config.set_value("settings", "session_duration", value)
-# 			session_duration_spinbox.release_focus()
-# 			session_duration_spinbox_line.release_focus() 
-
-# 	save_data()
-
-
-
 func _on_column_slider_value_changed(value: int) -> void:
 	config.load(PATH)
 	category_container.columns = _get_column_value(value)
@@ -1251,9 +820,9 @@ func _ensure_default_category() -> void:
 
 func _on_log_file_added(logfile: Button) -> void:
 	var theme_colors = _get_theme_colors() 
-	logfile.add_theme_color_override("normal", theme_colors["font"]["normal"])
-	logfile.add_theme_color_override("hover", theme_colors["font"]["hover"])
-	logfile.add_theme_color_override("pressed", theme_colors["font"]["normal"]) 
+	logfile.add_theme_color_override("font_color", theme_colors["font"]["normal"])
+	logfile.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
+	logfile.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"]) 
 
 
 
@@ -1361,3 +930,4 @@ func _apply_theme_colors():
 		btn.add_theme_color_override("font_pressed_color", 				theme_colors["font"]["hover"] 	if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["accent"]["col"])
 		btn.add_theme_color_override("font_hover_color", 					Color.WHITE 										if theme_colors["font"]["interact_pressed"].v 			< 0.7 else theme_colors["accent"]["col"])
 		btn.add_theme_color_override("font_hover_pressed_color", 	Color.WHITE											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["accent"]["col"])
+# 1364

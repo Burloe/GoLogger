@@ -9,59 +9,9 @@ extends Node
 ## repo.
 
 #TODO:
-	# [Done] Implement the custom header format in start_session()
-	# [Done] Implement the custom entry format in entry()
-	# [Done] Add new setting for the custom header format called "log_header_fomat" to the config file creation, saving and loading logic
-	# [Done] Add new setting for the custom entry format called "entry_format" to the config file creation, saving and loading logic
-	# [Done] Consider adding {instance_id} tag to entry format
-	#	[Done] Add 'instance_id' to solve issue with concurrency in multiplayer projects
-	# [Done] Refactor .ini settings handling <needed to do to finish instance_id task
-	#	[Done] Remove 'category_index' parameter from entry() method, in favor of using category_name only
-	# [Done] Move 'base_directory' to 'settings' section in .ini file
-	# [Done] Add a new hotkey -> Print instance_id and a corresponding button in the dock to change it.
-	# [Done] BUG - Enabling/disabling plugin erases all settings in .ini file.
-	# [Done] BUG - When enabling the plugin, the .ini file's settings are reset to default values. Technically isn't an issue because the dock loads the settings correctly before they're overwritten and should overwrite the default values whenever anything is changed, but still not ideal.
-	# [Done] Add checkbox to LogCategory that marks one category as Default. When marked, that category is used whenever an unspecified category name is passed to entry()
-	#
-	# [Postponed?]Add proper error codes to all error/warning messages. Link to a wiki page detailing each error code?
-	#
-	# [Proposal] Add create_category(category_name:String, id: String) method allow users to create temporary categories programmatically - Store temporary categories in a runtime memory structure only, not in the .ini file
-	# [Proposal] Add remove_category(category_name:String) method to allow users to remove temporary categories programmatically
-	# [Proposal] Add list_categories() method to return an array of current category names
-	# [Proposal] Add a custom node that users can attach to objects in their scene tree that creates a unique temp category for that object only while the scene is running
+
 
 #BUG:
-	# Creating and applying a name doesn't save the new category in `cateogry_names` array in the .ini file, so the category doesn't persist after the session ends.
-	# [FixedEntry count isn't working
-	# [Fixed] When deleting a category. The [category.category_name] section remains in the .ini file.
-
-#TODO - Debugging:
-	# Check that file count actually deletes old files when file cap is reached
-	# Check that file count deletes the correct files (oldest first)
-
-### Release Checklist: ###
-	# REMOVE Test manual test entry with KEY_COMMA in _input()
-	# Check all settings load and save correctly
-	# File counting and deletion works correctly when file cap is reached
-	# Entry counting and limit methods work correctly when entry cap is reached
-	# Session timer limit method works correctly when time is up
-	# start_session():
-		# File count is updated and managed properly
-		# current file is saved to ConfigFile
-	# entry():
-		# uses entry_format,
-		# entry_count is managed properly
-		# default_category is handled appropriately
-	# stop_session():
-		# Session is stopped
-		# current_file in ConfigFile is cleared
-##########################
-
-
-##  Started adding default cateogry but not finished yet.
-## Need to handle clearing default category when a category is deleted, etc.
-## In entry(), added logic for it that sets the parameter category_name to the default category if no category name is specified but can you really do that?
-
 
 
 signal session_toggled(toggled_on: bool) ## Emitted when a log session is started or stopped.
@@ -96,7 +46,7 @@ enum ErrorReportLevel {
 	NONE
 }
 
-enum ErrorCodes { #NYI - For future use in error/warning messages
+enum ErrorCodes { #NYI - For future use in error/warning messages - On hold
 		ERR_NONE,
 		ERR_LOAD_CATEGORIES_FAILED,
 		ERR_SAVE_CATEGORIES_FAILED,

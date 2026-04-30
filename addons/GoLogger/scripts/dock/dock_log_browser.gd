@@ -68,7 +68,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	_load_log_browser(true)
+	load_log_browser(true)
 	lv_close_btn.button_up.connect(_on_button_up.bind(lv_close_btn))
 	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn))
 	lv_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lv_font_size_slider))
@@ -101,7 +101,7 @@ func init_visibility() -> void:
 
 
 
-func _load_log_browser(is_initializing: bool = false) -> void:
+func load_log_browser(is_initializing: bool = false) -> void:
 	var e := config.load(PATH)
 	if e != OK: printerr("Failed to load config: ", error_string(e))
 	base_dir = config.get_value("settings", "base_directory", "")
@@ -137,6 +137,8 @@ func _load_log_browser(is_initializing: bool = false) -> void:
 		gc.set_name(c)
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
+		gc.add_theme_constant_override("h_separation", 8)
+		gc.add_theme_constant_override("v_separation", 8)
 		var n: Array = [c, gc]
 		categories.append(n)
 		_load_logfiles(c)
@@ -262,7 +264,7 @@ func _on_button_up(btn: Button) -> void:
 		lv_close_btn:
 			_toggle_view()  
 		lv_refresh_btn:
-			_load_log_browser()
+			load_log_browser()
 
 
 
