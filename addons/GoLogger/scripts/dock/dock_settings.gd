@@ -185,7 +185,109 @@ func _ready() -> void:
 		id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
 		id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
 		hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
+
+		_connect_line_edit_toggled()
+		_assign_spinbox_line_edits()
+		_connect_spinbox_line_submitted()
+
+		btn_array = [
+			base_dir_line,
+			base_dir_apply_btn,
+			base_dir_revert_btn,
+			base_dir_opendir_btn,
+			log_header_line,
+			log_header_apply_btn,
+			log_header_revert_btn,
+			entry_format_line,
+			entry_format_apply_btn,
+			entry_format_revert_btn,
+			autostart_btn,
+			utc_btn,
+			id_print_btn,
+			id_toggle_btn,
+			id_align_opt_btn,
+			id_startup_btn,
+			limit_method_btn,
+			entry_count_action_btn,
+			session_timer_action_btn,
+			file_count_spinbox,
+			file_count_spinbox_line,
+			entry_count_spinbox,
+			entry_count_spinbox_line,
+			session_duration_spinbox,
+			session_duration_spinbox_line,
+			error_rep_btn,
+		]
+
+
+		for node in btn_array:
+			_connect_control_signal(node)
+
+		var	container_array: Array[HBoxContainer] = [
+			base_dir_container,
+			log_header_container,
+			entry_format_container,
+			limit_method_container, 
+			file_count_container, 
+			error_rep_container,
+			id_align_container
+		]
+
+		var btns_array: Array[Control] = [
+			base_dir_line,
+			log_header_line,
+			entry_format_line,
+			limit_method_btn, 
+			file_count_spinbox,
+			error_rep_btn,
+			id_align_opt_btn
+		]
+
+		var corresponding_lbls: Array[Label] = [
+			base_dir_lbl,
+			log_header_lbl,
+			entry_format_lbl,
+			limit_method_lbl, 
+			file_count_lbl, 
+			error_rep_lbl,
+			id_align_lbl,
+		]
+
+		_bind_settings_hover_groups()
+		_handle_limit_method_visibility(config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)))
+
+
+
 	
+
+
+func init_visibility() -> void:
+	var fold_conts: Array[FoldableContainer] = [
+		general_fold_cont,
+		limit_fold_cont,
+		id_fold_cont,
+		dir_fold_cont,
+		hotkey_container
+	]
+
+	for container in fold_conts:
+		container.folded = true 
+	
+	dir_fold_cont.folded = false 
+
+
+
+func init_settings() -> void:
+	log_header_value = config.get_value("settings", "log_header_format", settings_dict.get("log_header_format", {}).get("default", ""))
+	entry_format_value = config.get_value("settings", "entry_format", settings_dict.get("entry_format", {}).get("default", "")) 
+	id_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_startup_btn.hide()
+	base_dir_line_btn_cont.hide()
+	base_dir_revert_btn.disabled = true
+	log_header_line_btn_cont.hide()
+	log_header_revert_btn.disabled = true
+	entry_format_line_btn_cont.hide()
+	entry_format_revert_btn.disabled = true
+
 
 
 func _create_editor_inspector(parent: Control) -> EditorInspector:
@@ -384,6 +486,18 @@ func _apply_new_base_directory() -> bool:
 	base_dir_revert_btn.tooltip_text = str("Revert to '", new_dir, "'")
  
 	return true
+
+
+
+func _handle_limit_method_visibility(method: int) -> void:
+	var show_entry_limits := method == LimitMethod.ENTRY_COUNT or method == LimitMethod.BOTH
+	var show_time_limits := method == LimitMethod.SESSION_TIMER or method == LimitMethod.BOTH
+
+	entry_count_action_container.visible = show_entry_limits 
+	session_timer_action_container.visible = show_time_limits 
+
+	entry_count_action_lbl.text = "Entry Action" if method == LimitMethod.BOTH else "Action"
+	session_timer_action_lbl.text = "Timer Action" if method == LimitMethod.BOTH else "Action"
 
 #endregion
 

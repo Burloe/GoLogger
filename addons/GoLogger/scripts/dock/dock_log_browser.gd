@@ -1,5 +1,5 @@
 @tool
-class_name GLLogBrowser extends Control
+extends Control
 
 signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
@@ -87,7 +87,9 @@ func _ready() -> void:
 			mo_states[key]["ref"].mouse_exited.connect(func() -> void: mo_states[key]["state"] = false)
 			print(key)
 
-	# Initialize visibility
+
+
+func init_visibility() -> void:
 	category_tab_container.show()
 	log_viewer.hide()
 	lv_refresh_btn.show()
