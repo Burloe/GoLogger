@@ -1,8 +1,12 @@
 @tool
 class_name GLData extends Resource
 
-# Proposal for a resourced based saving system rather than a ConfigFile approach
+#! TBD NYI
+## Proposed resourced based saving system rather than a ConfigFile approach
 
+
+# Would implement a CustomResource for the categories that replaces the [categories.category_name] section
+# @export var categories: Array[GLCategory] = [] 
 @export var category_names: Array[String] = ["game"]
 @export var default_category: String = ""
 

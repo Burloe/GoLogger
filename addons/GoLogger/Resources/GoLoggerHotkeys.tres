@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="GLShortcut" format=3 uid="uid://dyi2aml73k4g8"]
 
-[ext_resource type="Script" uid="uid://cvahhjknn2nxq" path="res://addons/GoLogger/GLogShortcut.gd" id="1_tvptr"]
+[ext_resource type="Script" uid="uid://cvahhjknn2nxq" path="res://addons/GoLogger/scripts/gl_log_shortcut_resource.gd" id="1_tvptr"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_tvptr"]
 device = -1

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://y2rhmuimm4nm"
-path="res://.godot/imported/InputEventShortcut.svg-bfd20381b5a3327b92d8123862e0727b.ctex"
+path="res://.godot/imported/InputEventShortcut.svg-29527bd3c8de99b44c3a2ee7738d7ea4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/GoLogger/Resources/icons/InputEventShortcut.svg"
-dest_files=["res://.godot/imported/InputEventShortcut.svg-bfd20381b5a3327b92d8123862e0727b.ctex"]
+source_file="res://addons/GoLogger/resources/icons/InputEventShortcut.svg"
+dest_files=["res://.godot/imported/InputEventShortcut.svg-29527bd3c8de99b44c3a2ee7738d7ea4.ctex"]
 
 [params]
 
