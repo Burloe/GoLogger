@@ -1,5 +1,5 @@
 @tool
-extends Button
+class_name GLLogFile extends Button
 
 @onready var lbl: Label = null
 
@@ -10,7 +10,7 @@ var file_broken_ico := preload("uid://bt0xt83bipjft")
 
 var base_dir
 var category_name: String = ""
-
+var file_path: String = ""
 var file_name: String = "":
 	set(value):
 		file_name = value
@@ -22,6 +22,8 @@ var display_name: String = "":
 		display_name = value
 		if lbl != null:
 			lbl.text = value
+
+var file_contents: String = ""
 
 @export var placeholder_name: String = str("17:22:53\nApril 27\n2026") 
 
@@ -78,5 +80,5 @@ func _get_month(month: String) -> String:
 
 
 
-func set_icon(is_valid: bool) -> void:
+func assign_icon(is_valid: bool) -> void:
 	icon = file_ico if is_valid else file_broken_ico

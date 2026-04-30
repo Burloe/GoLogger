@@ -144,7 +144,7 @@ theme_override_styles/tabbar_background = ExtResource("2_3wac3")
 theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
-current_tab = 2
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 tab_1/title = "Log Browser"
@@ -246,7 +246,6 @@ columns = 6
 
 [node name="LogBrowser" type="Control" parent="." unique_id=1609261724]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 script = ExtResource("10_kapcw")
 metadata/_tab_index = 1
@@ -435,6 +434,7 @@ autowrap_mode = 3
 
 [node name="Settings" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("19_luwxg")

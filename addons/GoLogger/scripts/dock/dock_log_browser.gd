@@ -100,7 +100,7 @@ func init_visibility() -> void:
 
 
 
-
+## Used to both initialize and reload the file list
 func load_log_browser(is_initializing: bool = false) -> void:
 	var e := config.load(PATH)
 	if e != OK: printerr("Failed to load config: ", error_string(e))
@@ -146,21 +146,26 @@ func load_log_browser(is_initializing: bool = false) -> void:
 
 
 func _load_logfiles(category_name: String) -> void: 
-	var file_list: PackedStringArray = get_category_files(category_name) 
+	var file_list: PackedStringArray = _get_category_files(category_name) 
 
 	for file in file_list:
 		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file), "/")
 		
 		if not FileAccess.file_exists(file_path):
-			#? Add broken file icon? 
 			continue
 
 		var f = FileAccess.open(file_path, FileAccess.READ)
 		var content = f.get_file_as_string(file_path)
+			
 
 		var lf: Button = log_file_btn.instantiate() as Button
 		lf.category_name = category_name
-		lf.file_name = file
+		lf.file_name = file 
+		lf.file_path = file_path
+		lf.file_contents = f.get_file_as_string(file_path)
+
+		if lf.file_contents.is_empty() or f.get_open_error() != OK:
+			lf.assign_icon(false)
 
 		for c in categories:
 			# print("category_namae: ", category_name, "   iterated category: ", c, "    saved array category: ", c)
@@ -168,14 +173,32 @@ func _load_logfiles(category_name: String) -> void:
 				continue
 			
 			c[1].add_child(lf)
-			lf.button_up.connect(_on_log_file_button_up.bind(category_name, file, content))
+			lf.button_up.connect(_open_log_file.bind(lf))
 			log_file_added.emit(lf)
 
 		lv_contents_lbl.text = content
 
 
 
-func get_category_files(category_name: String) -> PackedStringArray:
+
+
+
+func _fetch_file_contents(log_file: GLLogFile) -> String:
+	var f := FileAccess.open(log_file.file_path, FileAccess.READ)
+	if f == null:
+		return str("Failed to fetch file contents - FileAccess error[", f.get_open_error(), "] opening: ", log_file.file_path)
+	var content: String = f.get_file_as_string(log_file.file_path)
+
+	if content.is_empty():
+		return str("Failed to fetch file contents - FileAccess error[", f.get_open_error(), "] opening: ", log_file.file_path)
+	
+	log_file.file_contents = content
+	
+	return content
+
+
+
+func _get_category_files(category_name: String) -> PackedStringArray:
 	if categories.is_empty():
 		return []	
 	if base_dir == "":
@@ -214,23 +237,29 @@ func _toggle_view() -> void:
 
 
 
-func _on_log_file_button_up(category_name: String, file_name: String, content: String) -> void:
-	var _timestamp: String = file_name.lstrip(str(category_name, "(")).rstrip(str(").log"))
+func _open_log_file(log_file: GLLogFile) -> void:
+	var log_content: String = _fetch_file_contents(log_file)
+	if log_content.begins_with("Failed"):
+		display_log_file_error(log_file)
+		return
+
+
+	var _timestamp: String = log_file.file_name.lstrip(str(log_file.category_name, "(")).rstrip(str(").log"))
 	var _splits: Array = _timestamp.split("_") 
 	var _m: Array[String] = [
 		"N/A",
-		"Jan ",
-		"Feb ",
-		"March ",
-		"April ",
-		"May ",
-		"June ",
-		"July ",
-		"Aug ",
-		"Sep ",
-		"Oct ",
-		"Nov ",
-		"Dec "
+		" Jan ",
+		" Feb ",
+		" March ",
+		" April ",
+		" May ",
+		" June ",
+		" July ",
+		" Aug ",
+		" Sep ",
+		" Oct ",
+		" Nov ",
+		" Dec "
 	]
 
 	var fin_time: String = str(
@@ -240,14 +269,19 @@ func _on_log_file_button_up(category_name: String, file_name: String, content: S
 	)
 	
 	var fin_date: String = str(
+		_splits[0].substr(4, 2),
 		_m[int(_splits[0].substr(2, 2))],
-		_splits[0].substr(4, 2), " ", 
 		str(20, (_splits[0].substr(0, 2)))
 	) 
 
-	lv_title_lbl.text = str("    ", category_name.capitalize(), " [",fin_time, "] ", fin_date, "   -   ", file_name)
-	lv_contents_lbl.text = content
+	lv_title_lbl.text = str("    ", log_file.category_name.capitalize(), " ", fin_date, " [",fin_time, "] ", "   -   ", log_file.file_name)
+	lv_contents_lbl.text = log_content
 	_toggle_view() 
+
+
+
+func display_log_file_error(log_file: GLLogFile) -> void:
+	pass
 
 
 
