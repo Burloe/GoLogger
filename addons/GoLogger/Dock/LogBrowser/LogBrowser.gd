@@ -39,17 +39,24 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	_load_log_browser()
+	_load_log_browser(true)
 	lw_close_btn.button_up.connect(_on_button_up.bind(lw_close_btn))
 	lw_refresh_btn.button_up.connect(_on_button_up.bind(lw_refresh_btn))
 	lw_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lw_font_size_slider))
 	lw_font_size_slider.value = lw_contents_lbl.label_settings.font_size 
-	_toggle_view()  
+	
+	category_tab_container.show()
+	log_viewer.hide()
+	lw_refresh_btn.show()
+	lw_close_btn.hide()
+	lw_font_size_slider.hide()
+	ctrl_padding.show()
+	state = BrowserState.LIST_VIEW 
 
 
 
 
-func _load_log_browser() -> void:
+func _load_log_browser(is_initializing: bool = false) -> void:
 	var e := config.load(PATH)
 	if e != OK: printerr("Failed to load config: ", error_string(e))
 	base_dir = config.get_value("settings", "base_directory", "")
@@ -65,15 +72,14 @@ func _load_log_browser() -> void:
 	for child in category_tab_container.get_children():
 		child.queue_free()
 	
-	lw_refresh_btn.disabled = true
-	category_tab_container.hide()
-	fake_topbar.show()
-	# await get_tree().create_timer(0.01).timeout
-	await get_tree().process_frame
-	await get_tree().process_frame
-	lw_refresh_btn.disabled = false
-	category_tab_container.show()
-	fake_topbar.hide()
+	if !is_initializing:
+		lw_refresh_btn.disabled = true
+		category_tab_container.hide()
+		fake_topbar.show()
+		await get_tree().create_timer(0.1).timeout 
+		lw_refresh_btn.disabled = false
+		category_tab_container.show()
+		fake_topbar.hide()
 
 	for c in cats:
 
@@ -84,7 +90,6 @@ func _load_log_browser() -> void:
 		gc.columns = grid_columns
 		category_tab_container.add_child(gc)
 		gc.set_name(c)
-		print(c)
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
 		var n: Array = [c, gc]
@@ -141,6 +146,7 @@ func get_category_files(category_name: String) -> PackedStringArray:
 
 
 func _toggle_view() -> void:
+	fake_topbar.hide()
 	match state:
 		BrowserState.LIST_VIEW:
 			category_tab_container.hide()
