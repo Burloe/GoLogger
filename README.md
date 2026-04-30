@@ -21,12 +21,15 @@
 # Resulting entry: [19:17:27] Took 26.0 damage from <Hob Goblin> - current health: 74 / 100
 </code></pre>
 
-<p><em>GoLogger allows you to have categories so you can sort your entries. Using <code>Log.msg(log_msg: String, category: String)</code>) you define a category name after the string. You are able to mark one of your categories as the default category, which designates it as the category .</em></p>
+<p><em>GoLogger allows you to have categories so you can sort your entries inte separate .log files. Using <code>Log.msg(log_msg: String, category: String)</code>) you define a category name after the string. You are able to mark one of your categories as the default category, which designates it as the category .</em></p>
 
 <img width="1397" height="358" alt="image" src="https://github.com/user-attachments/assets/b7c69f21-2a79-4393-bc07-b303d64aad66" />
 
 <p><img src="https://github.com/user-attachments/assets/8f5de66b-3bb0-48d6-9c74-2171b0b7bd1c" align=center></p>
 
+
+<h2>integrated Log File Viewer
+<p>within the editor, you are able to view the log files in the Log Viewer tab. You can list the different log files of each category, as well as view the contents of each file. 
 
 
 <h2>Documentation / Wiki</h2>
