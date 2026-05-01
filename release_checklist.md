@@ -140,6 +140,13 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [ ] `base_directory`, `log_header_format` and `entry_format` Apply buttons and Enter keypress applies the values.
   - [ ] `base_directory`, `log_header_format` and `entry_format` Revert buttons reverts to the last applied value.
 
+### Log Browser
+- [ ] Ensure categories are loaded and that the tabs in the TabContainer are named appropriately.
+- [ ] Ensure log files are properly refreshed and loaded when pressing `ReloadButton`.
+- [ ] Check that `VSlider`indeed changes the font size of the content label.
+- [ ] Ensure files that can't open displays the error.
+- [ ] R-Click closes an open log file, ONLY WHEN CLICKED INSIDE THE CONTENTS CONTAINER.
+
 ### Settings Tab
 
 - [ ] Ensure theme uniformity follows `EditorSettings` `base_color`, `accent_color`, and `contrast`.
