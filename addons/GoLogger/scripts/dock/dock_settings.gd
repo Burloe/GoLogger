@@ -7,7 +7,7 @@ extends HBoxContainer
 @onready var base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
 @onready var base_dir_apply_btn: Button = %BaseDirApplyButton
 @onready var base_dir_revert_btn: Button = %BaseDirRevertButton
-@onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
+# @onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
 @onready var base_dir_container: HBoxContainer = %BaseDirHBox
 
 @onready var log_header_line: LineEdit = %LogHeaderLineEdit
@@ -78,7 +78,7 @@ var inspector: EditorInspector
 
 signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_theme_colors
-signal open_directory
+# signal open_directory
 
 
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
@@ -114,39 +114,19 @@ var entry_format_value: String = "":
 
 var _default_setting_in_progress: bool = false 
 var _is_shutting_down: bool = false
-var btn_array: Array[Control] = []
-var container_array: Array[Control] = [] 
 var id_font_settings_min_size: int = 200
 
+var btn_array: Array[Control] = []
+var container_array: Array[Control] = [] 
+
+var theme_colors = {}
+var settings_dict: Dictionary = {}
 var line_edit_states: Dictionary = {
 	"base_dir": {"mouse": false, "edit": false},
 	"log_header": {"mouse": false, "edit": false},
 	"entry_format": {"mouse": false, "edit": false}
 }
 
-var theme_colors = {}
-
-var settings_dict := {
-	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
-	"default_category": 					{"section": "categories", "name": "default_category", 	 				"type": TYPE_STRING,  "default": ""},
-	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"type": TYPE_STRING, "control": null, "default": "user://GoLogger/"},
-	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"type": TYPE_BOOL, 		"control": null, "default": true},
-	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_print": 									{"section": "settings", 	"name": "id_print", 									"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0}, 
-	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"type": TYPE_INT, 		"control": null, "default": 0},
-	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},
-	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 2000},
-	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 1200},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"type": TYPE_INT, 		"control": null, "default": 0},
-	"columns": 										{"section": "settings", 	"name": "columns", 										"type": TYPE_INT, 		"control": null, "default": 5}
-}
 
 ## Index 3 is a SEPERATOR and should not be used.
 enum LimitMethod {
@@ -193,8 +173,7 @@ func _ready() -> void:
 		btn_array = [
 			base_dir_line,
 			base_dir_apply_btn,
-			base_dir_revert_btn,
-			base_dir_opendir_btn,
+			base_dir_revert_btn, 
 			log_header_line,
 			log_header_apply_btn,
 			log_header_revert_btn,
@@ -258,6 +237,24 @@ func _ready() -> void:
 
 
 
+
+func initialize_tab() -> void:
+	for key in settings_dict.keys():
+		var _s: Dictionary = settings_dict[key]
+		var ctrl = settings_dict[key].get("control")
+		var value = config.get_value("settings", _s["name"], _s["default"])
+
+		if ctrl is Button or ctrl is CheckBox:
+			ctrl.button_pressed = value
+		
+		elif ctrl is SpinBox:
+			ctrl.value = value 
+		
+		elif ctrl is OptionButton:
+			ctrl.selected = value
+
+		elif ctrl is LineEdit:
+			ctrl.text = value
 	
 
 
@@ -519,6 +516,19 @@ func _handle_limit_method_visibility(method: int) -> void:
 	entry_count_action_lbl.text = "Entry Action" if method == LimitMethod.BOTH else "Action"
 	session_timer_action_lbl.text = "Timer Action" if method == LimitMethod.BOTH else "Action"
 
+
+
+func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableContainer) -> void:
+	match fold_container:
+		id_font_sett_cont:
+			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+			id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
+			id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+		hotkey_container:
+			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+			hotkey_container.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
+			hotkey_container.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+
 #endregion
 
 
@@ -532,21 +542,6 @@ func _handle_limit_method_visibility(method: int) -> void:
 ## Returns true if {entry} tag is present or is NOT empty.
 func _is_entry_format_valid(format: String) -> bool:
 	return true if format.contains("{entry}") or format != "" else false
-
-
-
-
-
-func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableContainer) -> void:
-	match fold_container:
-		id_font_sett_cont:
-			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-			id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
-			id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
-		hotkey_container:
-			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-			hotkey_container.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
-			hotkey_container.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
 
 #endregion
 
@@ -609,11 +604,11 @@ func _on_button_button_up(node: Button) -> void:
 			base_dir_line_btn_cont.hide()
 			request_save.emit(false, "Base Directory Revert Button Button Up")
 
-		base_dir_opendir_btn:
-			if config.get_value("settings", "base_directory") == "":
-				push_warning("GoLogger: Base directory path isn't set. Please set a valid directory path before opening the directory.")
-			open_directory.emit()
-			request_save.emit(false, "Base Directory OpenDirectory Button Button Up")
+		# base_dir_opendir_btn: #! This is handled in dock.gd
+		# 	if config.get_value("settings", "base_directory") == "":
+		# 		push_warning("GoLogger: Base directory path isn't set. Please set a valid directory path before opening the directory.")
+		# 	open_directory.emit()
+		# 	request_save.emit(false, "Base Directory OpenDirectory Button Button Up")
 
 		log_header_apply_btn:
 			config.set_value("settings", "log_header_format", log_header_line.text) 

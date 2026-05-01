@@ -24,7 +24,7 @@ signal change_category_name_finished # Deprecated?
 @export var data: GLData = preload("uid://dj7h7t2v8csck")
 
 # Category tab
-@onready var category_tab: HBoxContainer = %Categories
+@onready var category_tab: HBoxContainer = %CategoriesTab
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton 
@@ -32,10 +32,10 @@ signal change_category_name_finished # Deprecated?
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 # Log Browser
-@onready var log_browser_tab: Control = %LogBrowser
+@onready var log_browser_tab: Control = %LogBrowserTab
 
 # Settings tab
-@onready var settings_tab: HBoxContainer = %Settings
+@onready var settings_tab: HBoxContainer = %SettingsTab
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
 @onready var base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
@@ -104,13 +104,13 @@ var id_inspector: EditorInspector
 @onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
 
-@onready var user_dir_btn: Button = %UserDirButton 
+@onready var user_dir_btn: Button = %UserDirButton ## Opens "user://"
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
 @onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
 # Help tab
-@onready var help_tab: 						TabContainer = %Help
+@onready var help_tab: 						TabContainer = %HelpTab
 @onready var getting_started_tab: ScrollContainer = %GettingStarted
 @onready var help_setup: 					FoldableContainer = %SetupHelp
 @onready var help_sessions: 			FoldableContainer = %SessionsHelp
@@ -170,13 +170,13 @@ enum LimitMethod {
 	NONE
 }
 
-enum EntryCountAction {
+enum EntryCountAction { #Delete?
 	OVERWRITE_ENTRIES,
 	RESTART,
 	STOP
 }
 
-enum SessionTimerAction {
+enum SessionTimerAction {#Delete?
 	RESTART,
 	STOP
 }
@@ -214,16 +214,8 @@ var entry_format_value: String = "":
 			config.save(PATH) 
 
 var _is_shutting_down: bool = false
-var _default_setting_in_progress: bool = false 
-# var btn_array: Array[Control] = []
-# var container_array: Array[Control] = [] 
+var _default_setting_in_progress: bool = false  
 var id_font_settings_min_size: int = 200
-
-# var line_edit_states: Dictionary = {
-# 	"base_dir": {"mouse": false, "edit": false},
-# 	"log_header": {"mouse": false, "edit": false},
-# 	"entry_format": {"mouse": false, "edit": false}
-# }
 
 var settings_dict := {
 	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
@@ -252,44 +244,49 @@ var settings_dict := {
 
 
 
-func _ready() -> void:
-	if Engine.is_editor_hint():
-		theme_colors = _get_theme_colors()
+func _ready() -> void: 
+	theme_colors = _get_theme_colors()
 
-		tab_changed.connect(func(tab: int) -> void: if tab == 1: log_browser_tab.load_log_browser())
-		log_browser_tab.log_file_added.connect(_on_log_file_added)
-		settings_tab.request_save.connect(save_data)
-		settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
-		settings_tab.open_directory.connect(_open_directory)
-
-
-		if !FileAccess.file_exists(PATH):
-			create_settings_file()
-
-		config.load(PATH)
-		_ensure_default_category()
+	tab_changed.connect(func(tab: int) -> void: if tab == 1: log_browser_tab.load_log_browser())
+	category_tab.request_save.connect(save_data)
+	category_tab.request_categories_save.connect(save_categories)
+	log_browser_tab.log_file_added.connect(_on_log_file_added)
+	settings_tab.request_save.connect(save_data)
+	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors()) 
 
 
-		for log_c in category_container.get_children():
-			if log_c is not LogCategory:
-				print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
-			log_c.queue_free() 
+	if !FileAccess.file_exists(PATH):
+		create_settings_file()
+
+	config.load(PATH)
+	# _ensure_default_category()
 
 
-		# Signal connections 
-		_connect_unique(settings.settings_changed, _on_editor_settings_changed)
-		_connect_unique(add_category_btn.button_up, _add_category)
-		_connect_unique(open_dir_btn.button_up, _open_directory)
-		_connect_unique(column_slider.value_changed, _on_column_slider_value_changed)
-		_connect_unique(reset_settings_btn.button_up, reset_to_default)
-		_connect_unique(user_dir_btn.button_up, _open_user_dir)
+	# for log_c in category_container.get_children():
+	# 	if log_c is not LogCategory:
+	# 		print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
+	# 	log_c.queue_free() 
 
-		initialize_dock()
-		_apply_theme_colors()
 
-		await get_tree().process_frame 
+	# Signal connections 
+	_connect_unique(settings.settings_changed, _on_editor_settings_changed)
+	# _connect_unique(add_category_btn.button_up, _add_category)
+	_connect_unique(open_dir_btn.button_up, _open_directory)
+	# _connect_unique(column_slider.value_changed, _on_column_slider_value_changed)
+	# _connect_unique(reset_settings_btn.button_up, reset_to_default)
+	_connect_unique(user_dir_btn.button_up, _open_user_dir) 
+	_connect_unique(base_dir_opendir_btn.button_up, _open_directory)
 
-		_assign_settings_controls()
+	initialize_dock()
+	_apply_theme_colors()
+
+	await get_tree().process_frame 
+
+	_assign_settings_controls()
+	category_tab.initialize_tab()
+	settings_tab.initialize_tab()
+	# Log Browser doesn't require initialization and loads all files
+	# when the tab is selected.
 
 
 func _exit_tree() -> void: 
@@ -300,7 +297,7 @@ func _init_visibility() -> void:
 	set_current_tab(0)
 	help_tab.set_current_tab(0)
 
-	category_tab.init_visibility()
+	# category_tab.init_visibility()
 	log_browser_tab.init_visibility()
 	settings_tab.init_visibility()
 
@@ -323,9 +320,6 @@ func _init_visibility() -> void:
 
 
 
-
-
-
 func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 	if signal_obj.is_connected(callback):
 		signal_obj.disconnect(callback)
@@ -334,18 +328,18 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 
 
-func _apply_limit_method_visibility(method: int) -> void:
-	var show_entry_limits := method == LimitMethod.ENTRY_COUNT or method == LimitMethod.BOTH
-	var show_time_limits := method == LimitMethod.SESSION_TIMER or method == LimitMethod.BOTH
+# func _apply_limit_method_visibility(method: int) -> void:
+# 	var show_entry_limits := method == LimitMethod.ENTRY_COUNT or method == LimitMethod.BOTH
+# 	var show_time_limits := method == LimitMethod.SESSION_TIMER or method == LimitMethod.BOTH
 
-	entry_count_action_container.visible = show_entry_limits 
-	session_timer_action_container.visible = show_time_limits 
+# 	entry_count_action_container.visible = show_entry_limits 
+# 	session_timer_action_container.visible = show_time_limits 
 
-	entry_count_action_lbl.text = "Entry Action" if method == LimitMethod.BOTH else "Action"
-	session_timer_action_lbl.text = "Timer Action" if method == LimitMethod.BOTH else "Action"
+# 	entry_count_action_lbl.text = "Entry Action" if method == LimitMethod.BOTH else "Action"
+# 	session_timer_action_lbl.text = "Timer Action" if method == LimitMethod.BOTH else "Action"
 
 
-
+## Reassigns all references after they're ready
 func _assign_settings_controls() -> void:
 	var control_map := {
 		"base_directory": base_dir_line,
@@ -370,6 +364,9 @@ func _assign_settings_controls() -> void:
 	for key in control_map.keys():
 		if settings_dict.has(key):
 			settings_dict[key]["control"] = control_map[key]
+	
+	category_tab.settings_dict = settings_dict 
+	settings_tab.settings_dict = settings_dict
 
 
 
@@ -380,40 +377,37 @@ func initialize_dock() -> void:
 
 	validate_settings(true)
 
-	for c_name in config.get_value("categories", "category_names", []):
-		_add_category(
-			c_name, 
-			config.get_value("categories." + c_name, "is_locked", false)
-		)
-	var def_cat = config.get_value("categories", "default_category", "")
-	if def_cat != "":
-		for cat in category_container.get_children():
-			if cat is LogCategory and cat.category_name == def_cat and cat.default_checkbox != null:
-				cat.default_checkbox.button_pressed = true
-				break
+	# for c_name in config.get_value("categories", "category_names", []):
+	# 	_add_category(
+	# 		c_name, 
+	# 		config.get_value("categories." + c_name, "is_locked", false)
+	# 	)
+	# var def_cat = config.get_value("categories", "default_category", "")
+	# if def_cat != "":
+	# 	for cat in category_container.get_children():
+	# 		if cat is LogCategory and cat.category_name == def_cat and cat.default_checkbox != null:
+	# 			cat.default_checkbox.button_pressed = true
+	# 			break
 
 	# Settings 
-	for key in settings_dict.keys():
-		var _s: Dictionary = settings_dict[key]
-		var ctrl = settings_dict[key].get("control")
-		var value = config.get_value("settings", _s["name"], _s["default"])
+	# for key in settings_dict.keys():
+	# 	var _s: Dictionary = settings_dict[key]
+	# 	var ctrl = settings_dict[key].get("control")
+	# 	var value = config.get_value("settings", _s["name"], _s["default"])
 
-		if ctrl is Button or ctrl is CheckBox:
-			ctrl.button_pressed = value
+	# 	if ctrl is Button or ctrl is CheckBox:
+	# 		ctrl.button_pressed = value
 		
-		elif ctrl is SpinBox:
-			ctrl.value = value
+	# 	elif ctrl is SpinBox:
+	# 		ctrl.value = value 
 		
-		elif ctrl is VSlider:
-			ctrl.value = _get_column_value(value)
-		
-		elif ctrl is OptionButton:
-			ctrl.selected = value
+	# 	elif ctrl is OptionButton:
+	# 		ctrl.selected = value
 
-		elif ctrl is LineEdit:
-			ctrl.text = value
+	# 	elif ctrl is LineEdit:
+	# 		ctrl.text = value
 
-		_init_visibility()
+	_init_visibility()
 
 
 
@@ -439,13 +433,13 @@ func create_settings_file() -> void: # Mirror
 		return
 
 	config.load(PATH)
-	_ensure_default_category()
+	category_tab.ensure_default_category()
 
 
 
 func validate_settings(ignore_errors: bool = false) -> void: # Mirror
 	config.load(PATH)
-	_ensure_default_category()
+	category_tab.ensure_default_category()
 
 	for key in settings_dict.keys():
 		var setting: Dictionary = settings_dict.get(key, {})
@@ -508,9 +502,6 @@ func reset_to_default() -> void:
 		elif ctrl is SpinBox:
 			ctrl.value = value
 		
-		elif ctrl is VSlider:
-			ctrl.value = _get_column_value(value)
-		
 		elif ctrl is OptionButton:
 			ctrl.selected = value
 
@@ -538,7 +529,7 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 	var _c := ConfigFile.new()
 	var _err: int = 0
 	var _offenders: Array[String] = [] 
-	_ensure_default_category()
+	category_tab.ensure_default_category()
 
 	# Start from current file state, then override with live UI values when available.
 	for section in config.get_sections():
@@ -628,91 +619,90 @@ func save_categories() -> void:
 	_c.set_value("categories", "category_names", _c_names)
 	_c.set_value("categories", "default_category", _c_def)
 
-	_handle_category_mov_button_state()
+	category_tab.handle_category_mov_button_state()
 	_c.save(PATH)
 	config.load(PATH)
 
 
 
-## `prevent_save` is used when loading the plugin.
-func _add_category(_name: String = "", _is_locked: bool = false) -> void:
-	config.load(PATH)
-	var _n = category_scene.instantiate() as LogCategory
-	_n.category_name = _name
-	_n.is_locked = _is_locked 
-	category_container.add_child(_n)
+# func _add_category(_name: String = "", _is_locked: bool = false) -> void:
+# 	config.load(PATH)
+# 	var _n = category_scene.instantiate() as LogCategory
+# 	_n.category_name = _name
+# 	_n.is_locked = _is_locked 
+# 	category_container.add_child(_n)
 
-	_n.log_category_changed.connect(save_categories) 
-	_n.set_default_category.connect(_on_set_default_category)
-	_n.move_category_requested.connect(_on_category_move_requested) 
-	_n.default_checkbox.button_pressed = config.get_value("categories", "default_category", "") == _name 
-	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name)) 
+# 	_n.log_category_changed.connect(save_categories) 
+# 	_n.set_default_category.connect(_on_set_default_category)
+# 	_n.move_category_requested.connect(_on_category_move_requested) 
+# 	_n.default_checkbox.button_pressed = config.get_value("categories", "default_category", "") == _name 
+# 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name)) 
 
-	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
-	_handle_category_mov_button_state()
+# 	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
+# 	_handle_category_mov_button_state()
  
 
 
 
-func _on_category_tree_exited(name: String) -> void:
-	# await get_tree().physics_frame 
-	if _is_shutting_down:
-		return
-	save_categories()
+# func _on_category_tree_exited(name: String) -> void:
+# 	# await get_tree().physics_frame 
+# 	if _is_shutting_down:
+# 		return
+# 	save_categories()
 
 
-func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
-	if _default_setting_in_progress:
-		return
+# func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
+# 	if _default_setting_in_progress:
+# 		return
 
-	_default_setting_in_progress = true
-	config.load(PATH)
-	config.set_value("categories", "default_category", cat.category_name if set_status else "")
+# 	_default_setting_in_progress = true
+# 	config.load(PATH)
+# 	config.set_value("categories", "default_category", cat.category_name if set_status else "")
 
-	for log_c in category_container.get_children():
-		if log_c is LogCategory and log_c.default_checkbox != null:
-			if log_c != cat:
-				log_c.default_checkbox.button_pressed = false
+# 	for log_c in category_container.get_children():
+# 		if log_c is LogCategory and log_c.default_checkbox != null:
+# 			if log_c != cat:
+# 				log_c.default_checkbox.button_pressed = false
 
-	if set_status and cat.default_checkbox != null:
-		cat.default_checkbox.button_pressed = true
+# 	if set_status and cat.default_checkbox != null:
+# 		cat.default_checkbox.button_pressed = true
 
-	config.save(PATH)
-	_default_setting_in_progress = false
+# 	config.save(PATH)
+# 	_default_setting_in_progress = false
 
 
 
-func _on_category_move_requested(category: LogCategory, direction: int) -> void:
-	var cats: Array = category_container.get_children()
-	var from: int = category.get_index()
-	var to: int = from
-	to += direction
+# func _on_category_move_requested(category: LogCategory, direction: int) -> void:
+# 	var cats: Array = category_container.get_children()
+# 	var from: int = category.get_index()
+# 	var to: int = from
+# 	to += direction
 	
-	if to < 0 or to >= cats.size():
-		return
+# 	if to < 0 or to >= cats.size():
+# 		return
 
-	category_container.move_child(category, to)
-	_handle_category_mov_button_state()
-	save_categories() 
-
-
-
-func _handle_category_mov_button_state() -> void:
-	for i in range(category_container.get_child_count()):
-		var category = category_container.get_child(i)
-		category.move_left_btn.disabled = (i == 0)
-		category.move_right_btn.disabled = (i == category_container.get_child_count() - 1)
+# 	category_container.move_child(category, to)
+# 	_handle_category_mov_button_state()
+# 	save_categories() 
 
 
 
-func _check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
-	for log_c in category_container.get_children():
-		if log_c == cat_obj:
-			continue
-		elif log_c.category_name == new_name:
-			if name == "": return false
-			return true
-	return false
+# func _handle_category_mov_button_state() -> void:
+# 	for i in range(category_container.get_child_count()):
+# 		var category = category_container.get_child(i)
+# 		category.move_left_btn.disabled = (i == 0)
+# 		category.move_right_btn.disabled = (i == category_container.get_child_count() - 1)
+
+
+
+# func _check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
+# 	for log_c in category_container.get_children():
+# 		if log_c == cat_obj:
+# 			continue
+# 		elif log_c.category_name == new_name:
+# 			if name == "": return false
+# 			return true
+# 	return false
 
 
 
@@ -781,41 +771,42 @@ func _open_directory() -> void:
 
 
 
-func _on_column_slider_value_changed(value: int) -> void:
-	config.load(PATH)
-	category_container.columns = _get_column_value(value)
-	column_slider.tooltip_text = str("Columns: ", _get_column_value(value))
-	config.set_value("settings", "columns", _get_column_value(value)) 
-	save_data()
+# func _on_column_slider_value_changed(value: int) -> void:
+# 	config.load(PATH)
+# 	category_container.columns = _get_column_value(value)
+# 	column_slider.tooltip_text = str("Columns: ", _get_column_value(value))
+# 	config.set_value("settings", "columns", _get_column_value(value)) 
+# 	save_data()
 
 
 
-## Returns the inverted value for the column slider
-func _get_column_value(slider_value: int) -> int:
-	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
+# ## Returns the inverted value for the column slider
+# func _get_column_value(slider_value: int) -> int:
+# 	return clampi(slider_value, column_slider.min_value, column_slider.max_value)
 
 
 
-func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableContainer) -> void:
-	match fold_container:
-		id_font_sett_cont:
-			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-			id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
-			id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
-		hotkey_container:
-			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
-			hotkey_container.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
-			hotkey_container.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+# func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableContainer) -> void:
+# 	match fold_container:
+# 		id_font_sett_cont:
+# 			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+# 			id_font_sett_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
+# 			id_font_sett_cont.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
+# 		hotkey_container:
+# 			id_fold_cont.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL
+# 			hotkey_container.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if is_folded else Control.SIZE_EXPAND_FILL 
+# 			hotkey_container.custom_minimum_size.y = id_font_settings_min_size if !is_folded else 0
 
 
 
-func _ensure_default_category() -> void:
-	config.load(PATH)
-	var cat_names: Array = config.get_value("categories", "category_names", [])
-	var def_cat: String = config.get_value("categories", "default_category", "")
-	if cat_names.is_empty() and def_cat != "" or !cat_names.has(def_cat):
-		config.set_value("categories", "default_category", "")
-		config.save(PATH)
+# func _ensure_default_category() -> void:
+# 	config.load(PATH)
+# 	var cat_names: Array = config.get_value("categories", "category_names", [])
+# 	var def_cat: String = config.get_value("categories", "default_category", "")
+# 	if cat_names.is_empty() and def_cat != "" or !cat_names.has(def_cat):
+# 		config.set_value("categories", "default_category", "")
+		# config.save(PATH)
+
 
 
 func _on_log_file_added(logfile: Button) -> void:

@@ -11,12 +11,30 @@ extends Control
 
 const PATH = "user://gologger_data.ini"
 
+const SIM_EVENT_TYPES := {
+	"damage_taken": "damage_taken",
+	"quest_accepted": "quest_accepted",
+	"level_transition": "level_transition",
+	"enemy_killed": "enemy_killed"
+}
+
+const SIM_ENEMIES := ["Hobgoblin", "Warg", "Grave Stalker", "Bog Witch", "Ravenous Slime"]
+const SIM_QUESTS := ["Blood in the Water", "Ashes of Fenwatch", "The Lost Cartographer", "Last Ember"]
+const SIM_LEVELS := ["swamp_a1.tscn", "crypt_b2.tscn", "highroad_gate.tscn", "fen_ruins_a3.tscn"]
+const SIM_SKILLS := ["Heroic Slam", "Piercing Bolt", "Serrated Strike", "Ember Lance"]
+const SIM_TARGET_NAMES := ["Warg", "Raider", "Hobgoblin", "Boneguard", "Fen Beast"]
+
+const PLAYER_NAME := "Player"
+const PLAYER_MAX_HP := 100
+
 var config := ConfigFile.new()
+var sim_hp: int = PLAYER_MAX_HP
 
 var c_module = preload("uid://dgdg4n7lsq031")
 
 
 func _ready() -> void:
+	randomize()
 	db_timer.timeout.connect(_on_timer_timeout)
 	Log.msg_logged.connect(_on_msg_logged)
 	config.load(PATH)
@@ -29,6 +47,58 @@ func _ready() -> void:
 		c_container.add_child(_n)
 		_n.category_name = c
 		_n.entry_limit = entry_limit
+
+
+func _pick_from(pool: Array) -> String:
+	if pool.is_empty():
+		return ""
+
+	return str(pool[randi() % pool.size()])
+
+
+func _sim_damage_taken() -> String:
+	var enemy := _pick_from(SIM_ENEMIES)
+	var damage := randi_range(8, 36)
+	sim_hp = maxi(0, sim_hp - damage)
+
+	# Occasionally heal a bit so the stream stays varied over longer runs.
+	if sim_hp == 0:
+		sim_hp = randi_range(42, PLAYER_MAX_HP)
+
+	return str(PLAYER_NAME, " took ", damage, " damage from ", enemy, ". Current HP ", sim_hp, " / ", PLAYER_MAX_HP)
+
+
+func _sim_quest_accepted() -> String:
+	var quest := _pick_from(SIM_QUESTS)
+	return str(PLAYER_NAME, " accepted quest '", quest, "'")
+
+
+func _sim_level_transition() -> String:
+	var level := _pick_from(SIM_LEVELS)
+	return str("Transitioned to level '", level, "'")
+
+
+func _sim_enemy_killed() -> String:
+	var enemy := _pick_from(SIM_TARGET_NAMES)
+	var skill := _pick_from(SIM_SKILLS)
+	var damage := randi_range(60, 180)
+	return str("Enemy ", enemy, " killed by ", PLAYER_NAME, " [", skill, "] for ", damage, " damage.")
+
+
+func _build_simulated_entry() -> String:
+	var event_type := _pick_from(SIM_EVENT_TYPES.values())
+
+	match event_type:
+		"damage_taken":
+			return _sim_damage_taken()
+		"quest_accepted":
+			return _sim_quest_accepted()
+		"level_transition":
+			return _sim_level_transition()
+		"enemy_killed":
+			return _sim_enemy_killed()
+		_:
+			return "Player rested at campfire."
 
 
 
@@ -54,7 +124,7 @@ func _on_timer_timeout() -> void:
 	if cats.is_empty() or cats == null: return
 
 	for c in cats:
-		Log.msg(str("This is a test entry for category [", c, "]."), c, true)
+		Log.msg(_build_simulated_entry(), c, true)
 
 	if def_c != "":
-		Log.msg(str("This is a test entry for the default category"), def_c)
+		Log.msg(_build_simulated_entry(), def_c)

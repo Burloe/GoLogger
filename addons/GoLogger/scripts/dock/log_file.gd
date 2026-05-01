@@ -31,6 +31,32 @@ var file_contents: String = ""
 
 func _ready() -> void:
 	text = display_name if display_name != "" else placeholder_name
+	mouse_entered.connect(
+		func() -> void:
+			get_file_content()
+	)
+
+
+func get_file_content() -> void:
+	if !check_file_availability():
+		return
+	
+	var f := FileAccess.open(file_path, FileAccess.READ)
+	var content: String = f.get_file_as_string(file_path)
+	var err := f.get_open_error()
+	tooltip_text = str("Failed to open file! Error[", f.get_open_error(), "]") if err != OK else "" 
+	assign_icon(content.is_empty())
+	f.close()
+	
+	file_contents = content
+
+
+
+func check_file_availability() -> bool:	
+	var is_available := FileAccess.file_exists(file_path)
+	assign_icon(is_available)
+	disabled = !is_available
+	return is_available
 
 
 

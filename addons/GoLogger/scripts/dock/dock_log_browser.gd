@@ -177,13 +177,14 @@ func _load_logfiles(category_name: String) -> void:
 			log_file_added.emit(lf)
 
 		lv_contents_lbl.text = content
+		f.close()
 
 
 
 
 
 
-func _fetch_file_contents(log_file: GLLogFile) -> String:
+func _get_file_contents(log_file: GLLogFile) -> String:
 	var f := FileAccess.open(log_file.file_path, FileAccess.READ)
 	if f == null:
 		return str("Failed to fetch file contents - FileAccess error[", f.get_open_error(), "] opening: ", log_file.file_path)
@@ -193,7 +194,8 @@ func _fetch_file_contents(log_file: GLLogFile) -> String:
 		return str("Failed to fetch file contents - FileAccess error[", f.get_open_error(), "] opening: ", log_file.file_path)
 	
 	log_file.file_contents = content
-	
+	f.close()
+
 	return content
 
 
@@ -238,7 +240,7 @@ func _toggle_view() -> void:
 
 
 func _open_log_file(log_file: GLLogFile) -> void:
-	var log_content: String = _fetch_file_contents(log_file)
+	var log_content: String = _get_file_contents(log_file)
 	if log_content.begins_with("Failed"):
 		display_log_file_error(log_file)
 		return
