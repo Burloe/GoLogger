@@ -20,7 +20,7 @@ var theme_colors: Dictionary = {}
 var category_scene = preload("uid://c3n416c5fajm5")
 var config = ConfigFile.new() 
 
-var _is_shutting_down: bool = false
+var is_shutting_down: bool = false
 var _default_setting_in_progress: bool = false  
 
 var settings_dict: Dictionary = {}
@@ -60,10 +60,7 @@ func _ready() -> void:
 	config.load(PATH)
 	ensure_default_category()
 
-	# request_save.connect(_handle_category_mov_button_state) # Not required
-	# request_categories_save.connect(_handle_category_mov_button_state) #! Called from dock.gd
 	_connect_unique(add_category_btn.button_up, _add_category)
-	# _connect_unique(open_dir_btn.button_up, _open_directory) #! Keeping this in dock.gd
 	_connect_unique(column_slider.value_changed, _on_column_slider_value_changed)
 
 	for log_c in category_container.get_children():
@@ -142,6 +139,7 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	config.load(PATH)
 	var _n = category_scene.instantiate() as LogCategory
+	var _def = config.get_value("categories", "default_category", "")
 	_n.category_name = _name
 	_n.is_locked = _is_locked 
 	category_container.add_child(_n)
@@ -149,25 +147,26 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
 	# _n.log_category_changed.connect(save_categories) 
 	_n.set_default_category.connect(_on_set_default_category)
-	_n.move_category_requested.connect(_on_category_move_requested) 
-	_n.default_checkbox.button_pressed = config.get_value("categories", "default_category", "") == _name 
+	_n.move_category_requested.connect(_on_category_move_requested)
+	if !_name.is_empty():
+		_n.default_checkbox.button_pressed = _def == _name
 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name)) 
 
-	if _name == "":	_n.line_edit.grab_focus() # For immediate renaming
+	if _name == "":	_n.line_edit.grab_focus()
 	handle_category_mov_button_state()
  
 
 
 
-func _on_category_tree_exited(name: String) -> void:
-	# await get_tree().physics_frame 
-	if _is_shutting_down:
+func _on_category_tree_exited(name: String) -> void: 
+	if is_shutting_down:
 		return
 	
 	handle_category_mov_button_state()
-	request_save.emit()
+	request_categories_save.emit()
 	# save_categories()
 
+	 
 
 func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
 	if _default_setting_in_progress:

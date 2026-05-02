@@ -213,9 +213,13 @@ var entry_format_value: String = "":
 			config.set_value("settings", "entry_format", value)
 			config.save(PATH) 
 
-var _is_shutting_down: bool = false
 var _default_setting_in_progress: bool = false  
 var id_font_settings_min_size: int = 200
+var is_shutting_down: bool = false:
+	set(value):
+		if is_shutting_down != value:
+			is_shutting_down = value
+			category_tab.is_shutting_down = value
 
 var settings_dict := {
 	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
@@ -290,7 +294,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void: 
-	_is_shutting_down = true
+	is_shutting_down = true
 
 
 func _init_visibility() -> void:
@@ -519,7 +523,7 @@ func reset_to_default() -> void:
 
 ## Saves dock state to file. "external_source" is used to debug what func/signal called this from another tab script.
 func save_data(ignore_errors: bool = false, external_source: String = "") -> int: 
-	if _is_shutting_down:
+	if is_shutting_down:
 		return OK
 
 	var load_err := config.load(PATH)
@@ -580,8 +584,10 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 
 
 func save_categories() -> void:
-	if _is_shutting_down:
+	if is_shutting_down:
 		return
+
+	await get_tree().create_timer(0.01).timeout
 
 	config.load(PATH)
 	var _c := ConfigFile.new()
@@ -589,8 +595,8 @@ func save_categories() -> void:
 	var _c_def: String = ""
 
 	# Ensuring [categories] section is on top of list
-	_c.set_value("categories", "category_names", []) 
-	_c.set_value("categories", "default_category", config.get_value("categories", "default_category", ""))
+	_c.set_value("categories", "category_names", _c_names) 
+	_c.set_value("categories", "default_category", config.get_value("categories", "default_category", _c_def))
 
 	for setting in settings_dict.keys():
 		if settings_dict[setting]["name"] == "category_names" or settings_dict[setting]["name"] == "default_category":
@@ -646,7 +652,7 @@ func save_categories() -> void:
 
 # func _on_category_tree_exited(name: String) -> void:
 # 	# await get_tree().physics_frame 
-# 	if _is_shutting_down:
+# 	if is_shutting_down:
 # 		return
 # 	save_categories()
 

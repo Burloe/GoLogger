@@ -126,6 +126,8 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 ## Dock
 
+### Categories
+
 - [ ] Ensure `Apply` and `DefaultCategory` toggle correctly when modifying a category name.
 - [ ] Ensure `Apply` is disabled when the current `LineEdit` value is invalid.
 - [ ] Ensure `Reset` appears when `CategoryName[LineEdit]` is being edited.
@@ -133,7 +135,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Ensure `Lock` disables `CategoryName[LineEdit]` and `Delete`.
 - [ ] Ensure `DefaultCategory` toggles correctly across all `LogCategory` instances.
 - [ ] Ensure move buttons reposition `LogCategory` items correctly.
-- [ ] Ensure leftmost and rightmost move buttons disable correctly.
+- [ ] Ensure left- and right-most move buttons disable correctly. Including after a `LogCategory` deletion.
 - [ ] Ensure `Delete` properly `queue_free()`s the target `LogCategory`.
 - [ ] Apply and Revert buttons for LineEdits:
   - [ ] `base_directory`, `log_header_format` and `entry_format` Revert buttons.

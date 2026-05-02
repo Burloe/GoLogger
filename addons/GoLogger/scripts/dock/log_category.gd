@@ -6,10 +6,7 @@ signal log_category_changed
 ## Emitted to GoLoggerDock.gd to move the categories and save them.
 signal move_category_requested(log_category: LogCategory, direction : int)
 
-signal set_default_category(category: LogCategory, toggle_on: bool)
-
-## Emitted to GoLoggerDock.gd to apply save the categories and show delete warning.
-signal category_deleted(name: String)
+signal set_default_category(category: LogCategory, toggle_on: bool) 
 
 @onready var move_left_btn: Button = 				%MoveLeftButton
 @onready var move_right_btn: Button = 			%MoveRightButton
@@ -183,7 +180,7 @@ func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 
 
 func _on_del_button_up() -> void: 
-	queue_free()
+	queue_free() # `exit_tree` signal handles saving categories after deletion
 
 
 

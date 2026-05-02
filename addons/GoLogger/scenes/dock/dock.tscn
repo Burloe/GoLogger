@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
+[ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/gologger/resources/icons/Info.svg" id="16_w3br5"]
 [ext_resource type="StyleBox" uid="uid://dsitl204qf1y3" path="res://addons/gologger/resources/theme/log_viewer_panel_content.tres" id="17_wsmmb"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/resources/file_content_label_settings.tres" id="18_03nd1"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
@@ -144,7 +145,7 @@ theme_override_styles/tabbar_background = ExtResource("2_3wac3")
 theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
-current_tab = 0
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 tab_0/title = "Categories"
@@ -156,6 +157,7 @@ data = SubResource("Resource_xov76")
 
 [node name="CategoriesTab" type="HBoxContainer" parent="." unique_id=35875088]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("8_y0aum")
@@ -224,13 +226,13 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 3
-tooltip_text = "Columns: 6"
+tooltip_text = "Columns: 7"
 mouse_default_cursor_shape = 9
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 10.0
-value = 6.0
+value = 7.0
 rounded = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CategoriesTab" unique_id=642802176]
@@ -245,13 +247,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 6
+columns = 7
 
 [node name="LogBrowserTab" type="Control" parent="." unique_id=1609261724]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 script = ExtResource("10_kapcw")
+min_cell_width = null
 metadata/_tab_index = 1
 metadata/_tab_name = "Log Browser"
 
@@ -290,11 +292,6 @@ theme_override_styles/disabled = ExtResource("12_7cref")
 icon = ExtResource("13_dg67q")
 icon_alignment = 1
 
-[node name="Padding" type="Control" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=637582784]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-
 [node name="ViewerCloseButton" type="Button" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=1844859999]
 unique_name_in_owner = true
 visible = false
@@ -307,13 +304,20 @@ theme_override_styles/hover_pressed = ExtResource("12_7cref")
 icon = ExtResource("14_y5kv3")
 icon_alignment = 1
 
-[node name="Padding2" type="Control" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=564762368]
-custom_minimum_size = Vector2(0, 20)
+[node name="TextureRect" type="TextureRect" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=1264311031]
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+tooltip_text = "Note that a category's folder isn't created until you run your project"
+texture = ExtResource("16_w3br5")
+stretch_mode = 3
+
+[node name="Padding" type="Control" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=637582784]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
 
 [node name="ViewerFontSizeVSlider" type="VSlider" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=1040588830]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(46, 50)
 layout_mode = 2
 size_flags_vertical = 3

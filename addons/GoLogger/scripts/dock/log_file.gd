@@ -5,8 +5,8 @@ class_name GLLogFile extends Button
 
 # var sb := preload("uid://xy4uummjvhgu")
 # var lbl_sett := preload("uid://c8w51vy1pqjq8")
-var file_ico := preload("uid://chfkhfc65al6t")
-var file_broken_ico := preload("uid://bt0xt83bipjft")
+var file_ico := preload("uid://dbc5xocqg7s8c")
+var file_broken_ico := preload("uid://cntk5aesu05sa")
 
 var base_dir
 var category_name: String = ""
@@ -45,7 +45,7 @@ func get_file_content() -> void:
 	var content: String = f.get_file_as_string(file_path)
 	var err := f.get_open_error()
 	tooltip_text = str("Failed to open file! Error[", f.get_open_error(), "]") if err != OK else "" 
-	assign_icon(content.is_empty())
+	assign_icon(!content.is_empty())
 	f.close()
 	
 	file_contents = content

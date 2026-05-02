@@ -17,7 +17,8 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var lv_scroll_container: ScrollContainer = %LVScrollContainer
 # @onready var lv_panel: Panel = %LVPanel
 
-
+@export var min_cell_width: int = 130
+var grid_conts: Array[GridContainer] = []
 @export var grid_columns: int = 10
 const PATH = "user://gologger_data.ini"
 var log_file_btn := preload("uid://bq7nahsc5aca7")
@@ -32,6 +33,8 @@ enum BrowserState {
 	LOG_VIEW
 }
 var state: BrowserState = BrowserState.LIST_VIEW
+## Used to check if mouse is within allowed Controls to allow R-Click
+## close a LogFIle.
 var mo_states: Dictionary = {
 	"log_browser": {
 		"state": false,
@@ -67,12 +70,21 @@ func _input(event: InputEvent) -> void:
 
 
 
+
+
+
+
+	
+
+
+
 func _ready() -> void:
 	load_log_browser(true)
 	lv_close_btn.button_up.connect(_on_button_up.bind(lv_close_btn))
 	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn))
 	lv_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lv_font_size_slider))
 	lv_font_size_slider.value = lv_contents_lbl.label_settings.font_size 
+	resized.connect(_update_columns)
 	
 	mo_states["log_browser"]["ref"] = self
 	mo_states["category_tab_container"]["ref"] = category_tab_container
@@ -85,7 +97,6 @@ func _ready() -> void:
 		if mo_states[key]["ref"] != null:
 			mo_states[key]["ref"].mouse_entered.connect(func() -> void: mo_states[key]["state"] = true)
 			mo_states[key]["ref"].mouse_exited.connect(func() -> void: mo_states[key]["state"] = false)
-			print(key)
 
 
 
@@ -113,6 +124,7 @@ func load_log_browser(is_initializing: bool = false) -> void:
 		printerr("Failed to load Categories!") 
 
 	categories.clear()
+	grid_conts.clear()
 
 	for child in category_tab_container.get_children():
 		child.queue_free()
@@ -131,8 +143,7 @@ func load_log_browser(is_initializing: bool = false) -> void:
 		if c == "":
 				continue
 		
-		var gc: GridContainer = GridContainer.new()
-		gc.columns = grid_columns
+		var gc: GridContainer = GridContainer.new() 
 		category_tab_container.add_child(gc)
 		gc.set_name(c)
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -212,7 +223,6 @@ func _get_category_files(category_name: String) -> PackedStringArray:
 	if d != null:
 		return d.get_files()
 
-	printerr("Failed to open category path: ", c_path)
 	return []
 
 
@@ -308,3 +318,14 @@ func on_slider_value_changed(value: int, slider: VSlider) -> void:
 	match slider:
 		lv_font_size_slider:
 			cont_lbl_sett.font_size = value
+
+
+
+func _update_columns() -> void:
+	if min_cell_width <= 0:
+		return
+	
+	var cols = max(1, int(size.x / min_cell_width))
+	for i in range(categories.size()):
+		if categories[i][1] is GridContainer and categories[i][1] != null:
+			categories[i][1].columns = cols
