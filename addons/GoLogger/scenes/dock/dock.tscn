@@ -17,7 +17,6 @@
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
-[ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/gologger/resources/icons/Info.svg" id="16_w3br5"]
 [ext_resource type="StyleBox" uid="uid://dsitl204qf1y3" path="res://addons/gologger/resources/theme/log_viewer_panel_content.tres" id="17_wsmmb"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/resources/file_content_label_settings.tres" id="18_03nd1"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
@@ -134,7 +133,7 @@ font_color = Color(1, 1, 1, 0.352941)
 anchors_preset = -1
 anchor_right = 0.686
 anchor_bottom = 0.281
-offset_right = -0.120117
+offset_right = -0.12011719
 offset_bottom = -0.480011
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -149,7 +148,6 @@ current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 tab_0/title = "Categories"
-tab_1/title = "Log Browser"
 tab_2/title = "Settings"
 tab_3/title = "Help"
 script = ExtResource("6_0swix")
@@ -158,6 +156,7 @@ data = SubResource("Resource_xov76")
 [node name="CategoriesTab" type="HBoxContainer" parent="." unique_id=35875088]
 unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("8_y0aum")
@@ -236,12 +235,14 @@ value = 7.0
 rounded = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CategoriesTab" unique_id=642802176]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="CategoryGridContainer" type="GridContainer" parent="CategoriesTab/ScrollContainer" unique_id=2014106739]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -249,159 +250,22 @@ theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 7
 
-[node name="LogBrowserTab" type="Control" parent="." unique_id=1609261724]
+[node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
-script = ExtResource("10_kapcw")
-min_cell_width = null
-metadata/_tab_index = 1
-metadata/_tab_name = "Log Browser"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="LogBrowserTab" unique_id=1085194574]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/separation = 8
+script = ExtResource("10_kapcw")
+metadata/_tab_index = 1
 
-[node name="SidePanel" type="Panel" parent="LogBrowserTab/HBoxContainer" unique_id=1192128886]
+[node name="SidePanel" type="Panel" parent="LogBrowserTab" unique_id=1192128886]
 custom_minimum_size = Vector2(46, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("11_5jaku")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowserTab/HBoxContainer/SidePanel" unique_id=1755458212]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ViewerRefreshButton" type="Button" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=1160699755]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-tooltip_text = "Reload files"
-theme_override_styles/normal = ExtResource("12_7cref")
-theme_override_styles/pressed = ExtResource("12_7cref")
-theme_override_styles/hover = ExtResource("12_7cref")
-theme_override_styles/hover_pressed = ExtResource("12_7cref")
-theme_override_styles/disabled = ExtResource("12_7cref")
-icon = ExtResource("13_dg67q")
-icon_alignment = 1
-
-[node name="ViewerCloseButton" type="Button" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=1844859999]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-theme_override_styles/normal = ExtResource("12_7cref")
-theme_override_styles/pressed = ExtResource("12_7cref")
-theme_override_styles/hover = ExtResource("12_7cref")
-theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = ExtResource("14_y5kv3")
-icon_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=1264311031]
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-tooltip_text = "Note that a category's folder isn't created until you run your project"
-texture = ExtResource("16_w3br5")
-stretch_mode = 3
-
-[node name="Padding" type="Control" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=637582784]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-
-[node name="ViewerFontSizeVSlider" type="VSlider" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=1040588830]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 50)
-layout_mode = 2
-size_flags_vertical = 3
-tooltip_text = "Font size"
-value = 13.0
-
-[node name="Padding3" type="Control" parent="LogBrowserTab/HBoxContainer/SidePanel/VBoxContainer" unique_id=232711114]
-custom_minimum_size = Vector2(0, 8)
-layout_mode = 2
-
-[node name="FakeTopBar" type="VBoxContainer" parent="LogBrowserTab/HBoxContainer" unique_id=2056692232]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Panel" type="Panel" parent="LogBrowserTab/HBoxContainer/FakeTopBar" unique_id=2141266303]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-theme_override_styles/panel = ExtResource("2_3wac3")
-
-[node name="Control" type="Control" parent="LogBrowserTab/HBoxContainer/FakeTopBar" unique_id=211109251]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="CategoryTabContainer" type="TabContainer" parent="LogBrowserTab/HBoxContainer" unique_id=1149614450]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = ExtResource("15_y3oat")
-theme_override_styles/tabbar_background = ExtResource("2_3wac3")
-theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
-theme_override_styles/tab_hovered = ExtResource("4_34fc4")
-theme_override_styles/tab_selected = ExtResource("5_51fa0")
-current_tab = 0
-
-[node name="LogViewer" type="Panel" parent="LogBrowserTab/HBoxContainer" unique_id=538579702]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = ExtResource("16_udfr3")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowserTab/HBoxContainer/LogViewer" unique_id=1192892138]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = -5
-
-[node name="TitlePanel" type="Panel" parent="LogBrowserTab/HBoxContainer/LogViewer/VBoxContainer" unique_id=1361312407]
-custom_minimum_size = Vector2(0, 46)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/panel = ExtResource("11_5jaku")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="LogBrowserTab/HBoxContainer/LogViewer/VBoxContainer/TitlePanel" unique_id=1756423417]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="ViewerTitleLabel" type="Label" parent="LogBrowserTab/HBoxContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1706935697]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "    game - game(260423-213401).log"
-label_settings = SubResource("LabelSettings_xov76")
-vertical_alignment = 1
-
-[node name="LVPanel" type="Panel" parent="LogBrowserTab/HBoxContainer/LogViewer/VBoxContainer" unique_id=1513453437]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("17_wsmmb")
-
-[node name="MarginContainer" type="MarginContainer" parent="LogBrowserTab/HBoxContainer/LogViewer/VBoxContainer/LVPanel" unique_id=1699993741]
+[node name="MarginContainer" type="MarginContainer" parent="LogBrowserTab/SidePanel" unique_id=509636274]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -413,12 +277,146 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="LVScrollContainer" type="ScrollContainer" parent="LogBrowserTab/HBoxContainer/LogViewer/VBoxContainer/LVPanel/MarginContainer" unique_id=624240055]
+[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowserTab/SidePanel/MarginContainer" unique_id=1755458212]
+layout_mode = 2
+theme_override_constants/separation = 72
+
+[node name="ViewerRefreshButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1160699755]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Reload files"
+theme_override_styles/normal = ExtResource("12_7cref")
+theme_override_styles/pressed = ExtResource("12_7cref")
+theme_override_styles/hover = ExtResource("12_7cref")
+theme_override_styles/hover_pressed = ExtResource("12_7cref")
+theme_override_styles/disabled = ExtResource("12_7cref")
+disabled = true
+icon = ExtResource("13_dg67q")
+icon_alignment = 1
+
+[node name="ViewerCloseButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1844859999]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("12_7cref")
+theme_override_styles/pressed = ExtResource("12_7cref")
+theme_override_styles/hover = ExtResource("12_7cref")
+theme_override_styles/hover_pressed = ExtResource("12_7cref")
+icon = ExtResource("14_y5kv3")
+icon_alignment = 1
+
+[node name="Padding" type="Control" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=637582784]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+
+[node name="ViewerFontSizeVSlider" type="VSlider" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1433236130]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 3
+tooltip_text = "Columns: 7"
+mouse_default_cursor_shape = 9
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
+min_value = 1.0
+max_value = 10.0
+value = 7.0
+rounded = true
+
+[node name="FakeTopBar" type="VBoxContainer" parent="LogBrowserTab" unique_id=2056692232]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="LogBrowserTab/FakeTopBar" unique_id=2141266303]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_3wac3")
+
+[node name="Control" type="Control" parent="LogBrowserTab/FakeTopBar" unique_id=211109251]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CategoryTabContainer" type="TabContainer" parent="LogBrowserTab" unique_id=1149614450]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("15_y3oat")
+theme_override_styles/tabbar_background = ExtResource("2_3wac3")
+theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
+theme_override_styles/tab_hovered = ExtResource("4_34fc4")
+theme_override_styles/tab_selected = ExtResource("5_51fa0")
+
+[node name="LogViewer" type="Panel" parent="LogBrowserTab" unique_id=538579702]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("16_udfr3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowserTab/LogViewer" unique_id=1192892138]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = -5
+
+[node name="TitlePanel" type="Panel" parent="LogBrowserTab/LogViewer/VBoxContainer" unique_id=1361312407]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("11_5jaku")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LogBrowserTab/LogViewer/VBoxContainer/TitlePanel" unique_id=1756423417]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ViewerTitleLabel" type="Label" parent="LogBrowserTab/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1706935697]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "    game - game(260423-213401).log"
+label_settings = SubResource("LabelSettings_xov76")
+vertical_alignment = 1
+
+[node name="LVPanel" type="Panel" parent="LogBrowserTab/LogViewer/VBoxContainer" unique_id=1513453437]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("17_wsmmb")
+
+[node name="MarginContainer" type="MarginContainer" parent="LogBrowserTab/LogViewer/VBoxContainer/LVPanel" unique_id=1699993741]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="LVScrollContainer" type="ScrollContainer" parent="LogBrowserTab/LogViewer/VBoxContainer/LVPanel/MarginContainer" unique_id=624240055]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ContentLabel" type="Label" parent="LogBrowserTab/HBoxContainer/LogViewer/VBoxContainer/LVPanel/MarginContainer/LVScrollContainer" unique_id=48868420]
+[node name="ContentLabel" type="Label" parent="LogBrowserTab/LogViewer/VBoxContainer/LVPanel/MarginContainer/LVScrollContainer" unique_id=48868420]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
@@ -443,6 +441,7 @@ autowrap_mode = 3
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("19_luwxg")
@@ -1376,6 +1375,7 @@ foldable_group = SubResource("FoldableGroup_fcs7p")
 [node name="HelpTab" type="TabContainer" parent="." unique_id=1603064086]
 unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

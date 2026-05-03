@@ -1,5 +1,5 @@
 @tool
-extends Control
+extends HBoxContainer
 
 signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
@@ -17,15 +17,14 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var lv_scroll_container: ScrollContainer = %LVScrollContainer
 # @onready var lv_panel: Panel = %LVPanel
 
-@export var min_cell_width: int = 130
 var grid_conts: Array[GridContainer] = []
-@export var grid_columns: int = 10
+var min_cell_width: int = 140
 const PATH = "user://gologger_data.ini"
 var log_file_btn := preload("uid://bq7nahsc5aca7")
 var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
 var config: ConfigFile = ConfigFile.new()
 var base_dir = ""
-var categories: Array = [] # 2D array of category names and it's associated [GridContainer]
+var categories: Array = [] # [["game", gameGridContainer], [player, playerGridContainer]]
 var cat_containers: Array[GridContainer] = [] 
 
 enum BrowserState {
@@ -84,7 +83,9 @@ func _ready() -> void:
 	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn))
 	lv_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lv_font_size_slider))
 	lv_font_size_slider.value = lv_contents_lbl.label_settings.font_size 
-	resized.connect(_update_columns)
+	resized.connect(_update_columns) 
+	_update_columns()
+	call_deferred("_update_columns")
 	
 	mo_states["log_browser"]["ref"] = self
 	mo_states["category_tab_container"]["ref"] = category_tab_container
@@ -143,9 +144,14 @@ func load_log_browser(is_initializing: bool = false) -> void:
 		if c == "":
 				continue
 		
-		var gc: GridContainer = GridContainer.new() 
-		category_tab_container.add_child(gc)
-		gc.set_name(c)
+		var sc: ScrollContainer = ScrollContainer.new()
+		sc.set_name(c)
+		category_tab_container.add_child(sc)
+		sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		var gc: GridContainer = GridContainer.new()
+		sc.add_child(gc)
+		# gc.set_name(c)
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
 		gc.add_theme_constant_override("h_separation", 8)
@@ -153,6 +159,8 @@ func load_log_browser(is_initializing: bool = false) -> void:
 		var n: Array = [c, gc]
 		categories.append(n)
 		_load_logfiles(c)
+	
+	resized.emit() # Manually emit to initialize the column value
 
 
 
