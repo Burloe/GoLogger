@@ -16,6 +16,8 @@ signal request_theme_colors
 
 const PATH = "user://gologger_data.ini"
 
+@export var min_cell_width: int = 120
+
 var theme_colors: Dictionary = {}
 var category_scene = preload("uid://c3n416c5fajm5")
 var config = ConfigFile.new() 
@@ -60,6 +62,7 @@ func _ready() -> void:
 	config.load(PATH)
 	ensure_default_category()
 
+	resized.connect(_update_columns)
 	_connect_unique(add_category_btn.button_up, _add_category)
 	_connect_unique(column_slider.value_changed, _on_column_slider_value_changed)
 
@@ -92,6 +95,8 @@ func initialize_tab() -> void:
 	column_slider.value = _get_column_value(
 		config.get_value("settings", "columns", settings_dict.get("columns", {}).get("default", 5))
 	)
+
+	resized.emit() # Manually emit to initialize the column value
 
 
 
@@ -154,6 +159,7 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 
 	if _name == "":	_n.line_edit.grab_focus()
 	handle_category_mov_button_state()
+	resized.emit() # Manually emit to initialize the column value
  
 
 
@@ -232,6 +238,16 @@ func _on_column_slider_value_changed(value: int) -> void:
 	column_slider.tooltip_text = str("Columns: ", _get_column_value(value))
 	config.set_value("settings", "columns", _get_column_value(value)) 
 	request_save.emit()
+
+
+func _update_columns() -> void:
+	if min_cell_width <= 0:
+		return
+	
+	# config.load(PATH)
+	# var categories = config.get_value("categories", "category_names")
+	var cols = max(1, int(category_container.size.x / min_cell_width))
+	category_container.columns = cols
 
 #endregion
 

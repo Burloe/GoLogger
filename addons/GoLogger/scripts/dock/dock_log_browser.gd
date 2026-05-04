@@ -170,14 +170,10 @@ func _load_logfiles(category_name: String) -> void:
 	for file in file_list:
 		if file.ends_with(".log"):
 			if strict_check and file.begins_with(category_name):
-				actionable_list.append(file)
-				printerr("111 ", file)
+				actionable_list.append(file) 
 			else:
 				if !strict_check:
 					actionable_list.append(file)
-					printerr("222 ", file)
-	
-	print_debug(actionable_list)
 
 	for file in actionable_list:
 		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file), "/")
