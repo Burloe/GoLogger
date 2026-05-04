@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dyx7cn83erunn"
-path="res://.godot/imported/gologger_icon_square.svg-958e39104c5d9003d2b4cd95400e9d69.ctex"
+uid="uid://3xfnobkyjg8d"
+path="res://.godot/imported/gologger_dock_icon.png-d683186db0ecf9ab4f9808adb0df2997.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gologger/resources/icons/gologger_icon_square.svg"
-dest_files=["res://.godot/imported/gologger_icon_square.svg-958e39104c5d9003d2b4cd95400e9d69.ctex"]
+source_file="res://addons/gologger/resources/icons/gologger_dock_icon.png"
+dest_files=["res://.godot/imported/gologger_dock_icon.png-d683186db0ecf9ab4f9808adb0df2997.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

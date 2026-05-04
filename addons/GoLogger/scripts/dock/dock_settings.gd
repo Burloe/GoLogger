@@ -291,7 +291,7 @@ func init_settings() -> void:
 		var ctrl = settings_dict[key].get("control")
 		var value = config.get_value("settings", _s["name"], _s["default"])
 
-		if ctrl is Button or ctrl is CheckBox:
+		if ctrl is Button or ctrl is CheckBox or ctrl is CheckButton:
 			ctrl.button_pressed = value
 		
 		elif ctrl is SpinBox:
@@ -443,7 +443,7 @@ func _assign_settings_controls() -> void:
 		"file_cap": file_count_spinbox,
 		"entry_cap": entry_count_spinbox,
 		"session_duration": session_duration_spinbox,
-		"error_reporting": error_rep_btn
+		"error_reporting": error_rep_btn,
 	}
 
 	for key in control_map.keys():

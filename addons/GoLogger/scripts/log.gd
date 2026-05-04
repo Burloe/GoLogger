@@ -91,25 +91,26 @@ var instance_id: String = "":
 
 
 var settings_dict := {
-	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
-	"default_category": 					{"section": "categories", "name": "default_category", 	 				"type": TYPE_STRING,  "default": ""},
-	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"type": TYPE_STRING, "control": null, "default": "user://GoLogger/"},
-	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"type": TYPE_BOOL, 		"control": null, "default": true},
-	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_print": 									{"section": "settings", 	"name": "id_print", 									"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0}, 
-	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"type": TYPE_INT, 		"control": null, "default": 0},
-	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},
-	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 2000},
-	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 1200},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"type": TYPE_INT, 		"control": null, "default": 0},
-	"columns": 										{"section": "settings", 	"name": "columns", 										"type": TYPE_INT, 		"control": null, "default": 5}
+	"category_names": 						{"section": "categories", "name": "category_names", 				"type": TYPE_ARRAY,  	"default": ["game"]},
+	"default_category": 					{"section": "categories", "name": "default_category", 	 		"type": TYPE_STRING,  "default": ""},
+	"base_directory": 						{"section": "settings", 	"name": "base_directory", 				"type": TYPE_STRING, "control": null, "default": "user://gologger/"},
+	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 			"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
+	"entry_format": 							{"section": "settings", 	"name": "entry_format", 					"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
+	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 			"type": TYPE_BOOL, 		"control": null, "default": true},
+	"use_utc": 										{"section": "settings", 	"name": "use_utc", 								"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_print": 									{"section": "settings", 	"name": "id_print", 							"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 							"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 			"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_align":										{"section": "settings", 	"name": "id_align", 							"type": TYPE_INT,			"control": null, "default": 0}, 
+	"limit_method": 							{"section": "settings", 	"name": "limit_method", 					"type": TYPE_INT, 		"control": null, "default": 0},
+	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 		"type": TYPE_INT, 		"control": null, "default": 0},
+	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 	"type": TYPE_INT, 		"control": null, "default": 0},
+	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
+	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
+	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
+	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"strict_name_check":					{"section": "settings",		"name": "strict_name_check", 			"type": TYPE_BOOL, 		"control": null, "default": true},
+	"columns": 										{"section": "settings", 	"name": "columns", 								"type": TYPE_INT, 		"control": null, "default": 5}
 }
 
 
@@ -245,7 +246,7 @@ func save_category_data() -> void:
 	var err = config.load(PATH)
 	if err != OK:
 		if _get_config_value("settings", "error_reporting") != 2:
-			push_warning("GoLogger: Failed to load existing config file while saving category data.")
+			push_warning("gologger: Failed to load existing config file while saving category data.")
 		return
 
 	config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
@@ -292,7 +293,7 @@ func start_session() -> void:
 		config.save(PATH)
 
 		# Open/create directory
-		var path: String = str(config.get_value("settings", "base_directory", "user://GoLogger/"), c_name, "_logs/")
+		var path: String = str(config.get_value("settings", "base_directory", "user://gologger/"), c_name, "_logs/")
 		var dir : DirAccess
 		if !DirAccess.dir_exists_absolute(path):
 			DirAccess.make_dir_recursive_absolute(path)

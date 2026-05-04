@@ -8,10 +8,12 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var log_viewer: Panel = %LogViewer
 @onready var lv_title_lbl: Label = %ViewerTitleLabel
 @onready var lv_refresh_btn: Button = %ViewerRefreshButton
+@onready var lv_strict_ctrl: Control = %ViewerStrictControl
+@onready var lv_strict_name_check_btn: CheckButton = %ViewerStrictCheckButton
 @onready var lv_close_btn: Button = %ViewerCloseButton
 @onready var lv_font_size_slider: VSlider = %ViewerFontSizeVSlider
 @onready var lv_contents_lbl: Label = %ContentLabel
-@onready var ctrl_padding: Control = %Padding
+# @onready var ctrl_padding: Control = %Padding
 
 @onready var lv_panel: Panel = %LVPanel
 @onready var lv_scroll_container: ScrollContainer = %LVScrollContainer
@@ -70,22 +72,16 @@ func _input(event: InputEvent) -> void:
 
 
 
-
-
-
-	
-
-
-
 func _ready() -> void:
+	config.load(PATH)
 	load_log_browser(true)
 	lv_close_btn.button_up.connect(_on_button_up.bind(lv_close_btn))
-	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn))
+	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn)) 
 	lv_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lv_font_size_slider))
 	lv_font_size_slider.value = lv_contents_lbl.label_settings.font_size 
-	resized.connect(_update_columns) 
-	_update_columns()
-	call_deferred("_update_columns")
+	lv_strict_name_check_btn.button_pressed = config.get_value("settings", "strict_name_check", true)
+	lv_strict_name_check_btn.button_up.connect(load_log_browser)
+	resized.connect(_update_columns)  
 	
 	mo_states["log_browser"]["ref"] = self
 	mo_states["category_tab_container"]["ref"] = category_tab_container
@@ -105,9 +101,10 @@ func init_visibility() -> void:
 	category_tab_container.show()
 	log_viewer.hide()
 	lv_refresh_btn.show()
+	lv_strict_ctrl.show()
 	lv_close_btn.hide()
-	lv_font_size_slider.hide()
-	ctrl_padding.show()
+	lv_font_size_slider.hide() 
+	lv_font_size_slider.tooltip_text = str("Text Size: ", lv_contents_lbl.label_settings.font_size)
 	state = BrowserState.LIST_VIEW 
 
 
@@ -165,9 +162,24 @@ func load_log_browser(is_initializing: bool = false) -> void:
 
 
 func _load_logfiles(category_name: String) -> void: 
+	config.load(PATH)
+	var strict_check: bool = config.get_value("settings", "strict_name_check", true)
 	var file_list: PackedStringArray = _get_category_files(category_name) 
 
+	var actionable_list: PackedStringArray = [] 
 	for file in file_list:
+		if file.ends_with(".log"):
+			if strict_check and file.begins_with(category_name):
+				actionable_list.append(file)
+				printerr("111 ", file)
+			else:
+				if !strict_check:
+					actionable_list.append(file)
+					printerr("222 ", file)
+	
+	print_debug(actionable_list)
+
+	for file in actionable_list:
 		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file), "/")
 		
 		if not FileAccess.file_exists(file_path):
@@ -182,8 +194,9 @@ func _load_logfiles(category_name: String) -> void:
 		lf.file_name = file 
 		lf.file_path = file_path
 		lf.file_contents = f.get_file_as_string(file_path)
+		lf.assign_icon(true)
 
-		if lf.file_contents.is_empty() or f.get_open_error() != OK:
+		if !lf.is_file_valid() or lf.file_contents.is_empty() or f.get_open_error() != OK:
 			lf.assign_icon(false)
 
 		for c in categories:
@@ -197,25 +210,6 @@ func _load_logfiles(category_name: String) -> void:
 
 		lv_contents_lbl.text = content
 		f.close()
-
-
-
-
-
-
-func _get_file_contents(log_file: GLLogFile) -> String:
-	var f := FileAccess.open(log_file.file_path, FileAccess.READ)
-	if f == null:
-		return str("Failed to fetch file contents - FileAccess error[", f.get_open_error(), "] opening: ", log_file.file_path)
-	var content: String = f.get_file_as_string(log_file.file_path)
-
-	if content.is_empty():
-		return str("Failed to fetch file contents - FileAccess error[", f.get_open_error(), "] opening: ", log_file.file_path)
-	
-	log_file.file_contents = content
-	f.close()
-
-	return content
 
 
 
@@ -242,26 +236,29 @@ func _toggle_view() -> void:
 			category_tab_container.hide()
 			log_viewer.show()
 			lv_refresh_btn.hide()
+			lv_strict_ctrl.hide()
 			lv_close_btn.show()
 			lv_font_size_slider.show()
-			ctrl_padding.hide()
 			state = BrowserState.LOG_VIEW
 		BrowserState.LOG_VIEW:
 			category_tab_container.show()
 			log_viewer.hide()
 			lv_refresh_btn.show()
+			lv_strict_ctrl.show()
 			lv_close_btn.hide()
 			lv_font_size_slider.hide()
-			ctrl_padding.show()
 			state = BrowserState.LIST_VIEW
 
 
 
 func _open_log_file(log_file: GLLogFile) -> void:
-	var log_content: String = _get_file_contents(log_file)
-	if log_content.begins_with("Failed"):
-		display_log_file_error(log_file)
+	if !log_file.file_name.ends_with(".log"):
 		return
+
+	var log_content: String = log_file.file_contents
+	# if log_content.begins_with("Failed"):
+	# 	display_log_file_error(log_file)
+	# 	return
 
 
 	var _timestamp: String = log_file.file_name.lstrip(str(log_file.category_name, "(")).rstrip(str(").log"))
@@ -315,10 +312,10 @@ func is_any_hovered() -> bool:
 
 func _on_button_up(btn: Button) -> void:
 	match btn:
+		lv_refresh_btn:
+			load_log_browser() 
 		lv_close_btn:
 			_toggle_view()  
-		lv_refresh_btn:
-			load_log_browser()
 
 
 
@@ -326,6 +323,7 @@ func on_slider_value_changed(value: int, slider: VSlider) -> void:
 	match slider:
 		lv_font_size_slider:
 			cont_lbl_sett.font_size = value
+			lv_font_size_slider.tooltip_text = str("Text Size: ", value)
 
 
 

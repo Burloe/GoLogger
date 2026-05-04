@@ -10,7 +10,7 @@ class_name GLData extends Resource
 @export var category_names: Array[String] = ["game"]
 @export var default_category: String = ""
 
-@export var base_directory: String = "user://GoLogger/"
+@export var base_directory: String = "user://gologger/"
 @export var log_header_format: String = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 @export var entry_format: String = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 @export var autostart_session: bool = true

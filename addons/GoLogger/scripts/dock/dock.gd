@@ -22,6 +22,7 @@ signal update_index # The hell is this? Delete?
 signal change_category_name_finished # Deprecated? 
 
 @export var data: GLData = preload("uid://dj7h7t2v8csck")
+@onready var renable_btn: Button = %RENABLEButton
 
 # Category tab
 @onready var category_tab: HBoxContainer = %CategoriesTab
@@ -33,6 +34,7 @@ signal change_category_name_finished # Deprecated?
 
 # Log Browser
 @onready var log_browser_tab: Control = %LogBrowserTab
+@onready var strict_name_check_btn: CheckButton = %ViewerStrictCheckButton
 
 # Settings tab
 @onready var settings_tab: HBoxContainer = %SettingsTab
@@ -222,25 +224,26 @@ var is_shutting_down: bool = false:
 			category_tab.is_shutting_down = value
 
 var settings_dict := {
-	"category_names": 						{"section": "categories", "name": "category_names", 					 	"type": TYPE_ARRAY,  	"default": ["game"]},
-	"default_category": 					{"section": "categories", "name": "default_category", 	 				"type": TYPE_STRING,  "default": ""},
-	"base_directory": 						{"section": "settings", 	"name": "base_directory", 						"type": TYPE_STRING, "control": null, "default": "user://GoLogger/"},
-	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 					"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"section": "settings", 	"name": "entry_format", 							"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 					"type": TYPE_BOOL, 		"control": null, "default": true},
-	"use_utc": 										{"section": "settings", 	"name": "use_utc", 										"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_print": 									{"section": "settings", 	"name": "id_print", 									"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 									"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 					"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_align":										{"section": "settings", 	"name": "id_align", 									"type": TYPE_INT,			"control": null, "default": 0}, 
-	"limit_method": 							{"section": "settings", 	"name": "limit_method", 							"type": TYPE_INT, 		"control": null, "default": 0},
-	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 			"type": TYPE_INT, 		"control": null, "default": 0},
-	"file_cap": 									{"section": "settings", 	"name": "file_cap", 									"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 									"type": TYPE_INT, 		"control": null, "default": 2000},
-	"session_duration": 					{"section": "settings", 	"name": "session_duration", 					"type": TYPE_INT, 		"control": null, "default": 1200},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 						"type": TYPE_INT, 		"control": null, "default": 0},
-	"columns": 										{"section": "settings", 	"name": "columns", 										"type": TYPE_INT, 		"control": null, "default": 5}
+	"category_names": 						{"section": "categories", "name": "category_names", 				"type": TYPE_ARRAY,  	"default": ["game"]},
+	"default_category": 					{"section": "categories", "name": "default_category", 	 		"type": TYPE_STRING,  "default": ""},
+	"base_directory": 						{"section": "settings", 	"name": "base_directory", 				"type": TYPE_STRING, "control": null, "default": "user://gologger/"},
+	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 			"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
+	"entry_format": 							{"section": "settings", 	"name": "entry_format", 					"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
+	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 			"type": TYPE_BOOL, 		"control": null, "default": true},
+	"use_utc": 										{"section": "settings", 	"name": "use_utc", 								"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_print": 									{"section": "settings", 	"name": "id_print", 							"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 							"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 			"type": TYPE_BOOL, 		"control": null, "default": false},
+	"id_align":										{"section": "settings", 	"name": "id_align", 							"type": TYPE_INT,			"control": null, "default": 0}, 
+	"limit_method": 							{"section": "settings", 	"name": "limit_method", 					"type": TYPE_INT, 		"control": null, "default": 0},
+	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 		"type": TYPE_INT, 		"control": null, "default": 0},
+	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 	"type": TYPE_INT, 		"control": null, "default": 0},
+	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
+	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
+	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
+	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"strict_name_check":					{"section": "settings",		"name": "strict_name_check", 			"type": TYPE_BOOL, 		"control": null, "default": true},
+	"columns": 										{"section": "settings", 	"name": "columns", 								"type": TYPE_INT, 		"control": null, "default": 5}
 }
 
 
@@ -258,6 +261,7 @@ func _ready() -> void:
 	log_browser_tab.log_file_added.connect(_on_log_file_added)
 	settings_tab.request_save.connect(save_data)
 	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors()) 
+	strict_name_check_btn.toggled.connect(_strict_name_toggle)
 
 
 	if !FileAccess.file_exists(PATH):
@@ -271,6 +275,7 @@ func _ready() -> void:
 	_connect_unique(open_dir_btn.button_up, _open_directory)
 	_connect_unique(user_dir_btn.button_up, _open_user_dir)
 	_connect_unique(base_dir_opendir_btn.button_up, _open_directory)
+	# _connect_unique(strict_name_check_btn.toggled, _strict_name_toggle)
 
 	initialize_dock()
 	_apply_theme_colors()
@@ -284,12 +289,13 @@ func _ready() -> void:
 	# loads all files when the tab is selected.
 
 
+
 func _exit_tree() -> void: 
 	is_shutting_down = true
 
 
 func _init_visibility() -> void:
-	set_current_tab(0)
+	set_current_tab(1)
 	help_tab.set_current_tab(0)
 
 	# category_tab.init_visibility()
@@ -340,7 +346,8 @@ func _assign_settings_controls() -> void:
 		"entry_cap": entry_count_spinbox,
 		"session_duration": session_duration_spinbox,
 		"error_reporting": error_rep_btn,
-		"columns": column_slider
+		"columns": column_slider,
+		"strict_name_check": strict_name_check_btn
 	}
 
 	for key in control_map.keys():
@@ -350,7 +357,11 @@ func _assign_settings_controls() -> void:
 	category_tab.settings_dict = settings_dict 
 	settings_tab.settings_dict = settings_dict
 
+#endregion
 
+
+
+#region Public
 
 func initialize_dock() -> void: 
 	if config.load(PATH) != OK:
@@ -358,13 +369,9 @@ func initialize_dock() -> void:
 		return
 
 	validate_settings(true) 
-
 	_init_visibility()
 
-#endregion
 
-
-#region Public 
 
 func create_settings_file() -> void: # Mirror
 	var cf := ConfigFile.new()
@@ -633,6 +640,8 @@ static func get_error(error: int, object_type: String = "") -> String:
 		48: return str("Error[47] ", object_type, " Bug error")
 	return "N/A"
 
+#endregion
+
 
 
 ## Opens "user://"
@@ -650,12 +659,20 @@ func _open_directory() -> void:
 #endregion
 
 
+#region Signal receivers
 
 func _on_log_file_added(logfile: Button) -> void:
 	var theme_colors = _get_theme_colors() 
 	logfile.add_theme_color_override("font_color", theme_colors["font"]["normal"])
 	logfile.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
 	logfile.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"]) 
+
+
+
+func _strict_name_toggle(toggled_on: bool) -> void: 
+	config.load(PATH)
+	config.set_value("settings", "strict_name_check", toggled_on)
+	config.save(PATH)
 
 
 
@@ -763,4 +780,6 @@ func _apply_theme_colors():
 		btn.add_theme_color_override("font_pressed_color", 				theme_colors["font"]["hover"] 	if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["accent"]["col"])
 		btn.add_theme_color_override("font_hover_color", 					Color.WHITE 										if theme_colors["font"]["interact_pressed"].v 			< 0.7 else theme_colors["accent"]["col"])
 		btn.add_theme_color_override("font_hover_pressed_color", 	Color.WHITE											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["accent"]["col"])
+
+#endregion
 # 1364

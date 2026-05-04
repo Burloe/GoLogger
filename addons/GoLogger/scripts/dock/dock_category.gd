@@ -105,7 +105,7 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 
 
-#region Public functions
+#region Public
 
 func ensure_default_category() -> void:
 	config.load(PATH)
