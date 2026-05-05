@@ -6,12 +6,12 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var category_tab_container = %CategoryTabContainer
 @onready var fake_topbar: VBoxContainer = %FakeTopBar
 @onready var log_viewer: Panel = %LogViewer
+@onready var h_split_cont: HSplitContainer = %HSplitContainer
 @onready var lv_title_lbl: Label = %ViewerTitleLabel
 @onready var lv_refresh_btn: Button = %ViewerRefreshButton
-@onready var lv_strict_ctrl: Control = %ViewerStrictControl
-@onready var lv_strict_name_check_btn: CheckButton = %ViewerStrictCheckButton
+@onready var lv_view_type_btn: Button = %ViewTypeButton
 @onready var lv_close_btn: Button = %ViewerCloseButton
-@onready var lv_font_size_slider: VSlider = %ViewerFontSizeVSlider
+@onready var lv_font_size_slider: HSlider = %ViewerFontSizeHSlider
 @onready var lv_contents_lbl: Label = %ContentLabel
 # @onready var ctrl_padding: Control = %Padding
 
@@ -19,9 +19,12 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var lv_scroll_container: ScrollContainer = %LVScrollContainer
 # @onready var lv_panel: Panel = %LVPanel
 
+const PATH = "user://gologger_data.ini"
+
 var grid_conts: Array[GridContainer] = []
 var min_cell_width: int = 140
-const PATH = "user://gologger_data.ini"
+var fullscreen_view := preload("uid://ijiplwclq5pu")
+var splitscreen_view := preload("uid://cp2p55wdq2wuk")
 var log_file_btn := preload("uid://bq7nahsc5aca7")
 var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
 var config: ConfigFile = ConfigFile.new()
@@ -31,7 +34,8 @@ var cat_containers: Array[GridContainer] = []
 
 enum BrowserState {
 	LIST_VIEW,
-	LOG_VIEW
+	LOG_VIEW,
+	SPLIT_VIEW
 }
 var state: BrowserState = BrowserState.LIST_VIEW
 ## Used to check if mouse is within allowed Controls to allow R-Click
@@ -64,10 +68,16 @@ var mo_states: Dictionary = {
 }
 
 
+#TODO
+#* 	Add Inspector for logviewer label settingsand drop down menu for the inspector 
+#* 	Add a button to toggle "Split View" that allows you to see file list and log view together.
+#*  Bug: When changing tab while viewing a log file, it changes into split view when going back to log browser
+
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_released():
 		if state == BrowserState.LOG_VIEW and is_any_hovered():
-			_toggle_view()
+			_set_view(BrowserState.LIST_VIEW)
 
 
 
@@ -75,12 +85,12 @@ func _input(event: InputEvent) -> void:
 func _ready() -> void:
 	config.load(PATH)
 	load_log_browser(true)
+	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
 	lv_close_btn.button_up.connect(_on_button_up.bind(lv_close_btn))
-	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn)) 
+	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn))
+	lv_view_type_btn.toggled.connect(_on_button_toggled.bind(lv_view_type_btn))
 	lv_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lv_font_size_slider))
-	lv_font_size_slider.value = lv_contents_lbl.label_settings.font_size 
-	lv_strict_name_check_btn.button_pressed = config.get_value("settings", "strict_name_check", true)
-	lv_strict_name_check_btn.button_up.connect(load_log_browser)
+	lv_font_size_slider.value = lv_contents_lbl.label_settings.font_size
 	resized.connect(_update_columns)  
 	
 	mo_states["log_browser"]["ref"] = self
@@ -100,8 +110,7 @@ func _ready() -> void:
 func init_visibility() -> void:
 	category_tab_container.show()
 	log_viewer.hide()
-	lv_refresh_btn.show()
-	lv_strict_ctrl.show()
+	lv_refresh_btn.show() 
 	lv_close_btn.hide()
 	lv_font_size_slider.hide() 
 	lv_font_size_slider.tooltip_text = str("Text Size: ", lv_contents_lbl.label_settings.font_size)
@@ -163,17 +172,12 @@ func load_log_browser(is_initializing: bool = false) -> void:
 
 func _load_logfiles(category_name: String) -> void: 
 	config.load(PATH)
-	var strict_check: bool = config.get_value("settings", "strict_name_check", true)
 	var file_list: PackedStringArray = _get_category_files(category_name) 
 
 	var actionable_list: PackedStringArray = [] 
 	for file in file_list:
-		if file.ends_with(".log"):
-			if strict_check and file.begins_with(category_name):
-				actionable_list.append(file) 
-			else:
-				if !strict_check:
-					actionable_list.append(file)
+		if file.ends_with(".log"): 
+			actionable_list.append(file)
 
 	for file in actionable_list:
 		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file), "/")
@@ -225,25 +229,28 @@ func _get_category_files(category_name: String) -> PackedStringArray:
 
 
 
-func _toggle_view() -> void:
+func _set_view(to: BrowserState) -> void:
 	fake_topbar.hide()
-	match state:
+	match to:
 		BrowserState.LIST_VIEW:
-			category_tab_container.hide()
-			log_viewer.show()
-			lv_refresh_btn.hide()
-			lv_strict_ctrl.hide()
-			lv_close_btn.show()
-			lv_font_size_slider.show()
-			state = BrowserState.LOG_VIEW
-		BrowserState.LOG_VIEW:
 			category_tab_container.show()
 			log_viewer.hide()
-			lv_refresh_btn.show()
-			lv_strict_ctrl.show()
+			lv_refresh_btn.show() 
 			lv_close_btn.hide()
 			lv_font_size_slider.hide()
-			state = BrowserState.LIST_VIEW
+		BrowserState.LOG_VIEW:
+			category_tab_container.hide()
+			log_viewer.show()
+			lv_refresh_btn.hide() 
+			lv_close_btn.show()
+			lv_font_size_slider.show() 
+		BrowserState.SPLIT_VIEW:
+			category_tab_container.show()
+			log_viewer.show()
+			lv_refresh_btn.show() 
+			lv_close_btn.hide()
+			lv_font_size_slider.show()
+
 
 
 
@@ -289,7 +296,7 @@ func _open_log_file(log_file: GLLogFile) -> void:
 
 	lv_title_lbl.text = str("    ", log_file.category_name.capitalize(), " ", fin_date, " [",fin_time, "] ", "   -   ", log_file.file_name)
 	lv_contents_lbl.text = log_content
-	_toggle_view() 
+	_set_view(BrowserState.LOG_VIEW) 
 
 
 
@@ -311,11 +318,22 @@ func _on_button_up(btn: Button) -> void:
 		lv_refresh_btn:
 			load_log_browser() 
 		lv_close_btn:
-			_toggle_view()  
+			_set_view(BrowserState.LIST_VIEW)  
 
 
 
-func on_slider_value_changed(value: int, slider: VSlider) -> void:
+func _on_button_toggled(toggled: bool, btn: Button) -> void:
+	match btn:
+		lv_view_type_btn:
+			lv_view_type_btn.icon = splitscreen_view if lv_view_type_btn.button_pressed else fullscreen_view
+			if toggled:
+				_set_view(BrowserState.SPLIT_VIEW)
+			else:
+				_set_view(BrowserState.LIST_VIEW)
+
+
+
+func on_slider_value_changed(value: int, slider: HSlider) -> void:
 	match slider:
 		lv_font_size_slider:
 			cont_lbl_sett.font_size = value

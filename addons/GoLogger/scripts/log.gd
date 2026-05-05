@@ -108,9 +108,7 @@ var settings_dict := {
 	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"strict_name_check":					{"section": "settings",		"name": "strict_name_check", 			"type": TYPE_BOOL, 		"control": null, "default": true},
-	"columns": 										{"section": "settings", 	"name": "columns", 								"type": TYPE_INT, 		"control": null, "default": 5}
+	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0}
 }
 
 

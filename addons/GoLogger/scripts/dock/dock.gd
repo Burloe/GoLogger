@@ -32,8 +32,7 @@ signal change_category_name_finished # Deprecated?
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 # Log Browser
-@onready var log_browser_tab: Control = %LogBrowserTab
-@onready var strict_name_check_btn: CheckButton = %ViewerStrictCheckButton
+@onready var log_browser_tab: Control = %LogBrowserTab 
 
 # Settings tab
 @onready var settings_tab: HBoxContainer = %SettingsTab
@@ -240,8 +239,7 @@ var settings_dict := {
 	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"strict_name_check":					{"section": "settings",		"name": "strict_name_check", 			"type": TYPE_BOOL, 		"control": null, "default": true}
+	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0}
 }
 
 
@@ -262,8 +260,7 @@ func _ready() -> void:
 	category_tab.request_categories_save.connect(save_categories)
 	log_browser_tab.log_file_added.connect(_on_log_file_added)
 	settings_tab.request_save.connect(save_data)
-	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors()) 
-	strict_name_check_btn.toggled.connect(_strict_name_toggle)
+	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
 
 
 	if !FileAccess.file_exists(PATH):
@@ -343,8 +340,7 @@ func _assign_settings_controls() -> void:
 		"file_cap": file_count_spinbox,
 		"entry_cap": entry_count_spinbox,
 		"session_duration": session_duration_spinbox,
-		"error_reporting": error_rep_btn, 
-		"strict_name_check": strict_name_check_btn
+		"error_reporting": error_rep_btn
 	}
 
 	for key in control_map.keys():
@@ -661,13 +657,6 @@ func _on_log_file_added(logfile: Button) -> void:
 	logfile.add_theme_color_override("font_color", theme_colors["font"]["normal"])
 	logfile.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
 	logfile.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"]) 
-
-
-
-func _strict_name_toggle(toggled_on: bool) -> void: 
-	config.load(PATH)
-	config.set_value("settings", "strict_name_check", toggled_on)
-	config.save(PATH)
 
 
 

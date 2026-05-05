@@ -7,8 +7,6 @@ extends HBoxContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
-@onready var testbtn:Button=%TESTButton
-
 
 signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_categories_save
@@ -64,9 +62,7 @@ func _ready() -> void:
 	config.load(PATH)
 	ensure_default_category()
 
-	testbtn.button_up.connect(_update_columns)
 	visibility_changed.connect(func() -> void: if visible: request_update_columns())
-
 	resized.connect(_update_columns)
 	_connect_unique(add_category_btn.button_up, _add_category) 
 	

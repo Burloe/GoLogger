@@ -13,7 +13,9 @@ var file_name: String = "":
 	set(value):
 		file_name = value
 		if value != "":
+			
 			display_name = _get_name(file_name) 
+			get_file_content()
  
 var display_name: String = "":
 	set(value):
@@ -21,7 +23,10 @@ var display_name: String = "":
 		if lbl != null:
 			lbl.text = value
 
-var file_contents: String = ""
+var file_contents: String = "":
+	set(value):
+		file_contents = value
+		assign_icon(!value.is_empty())
 
 @export var placeholder_name: String = str("17:22:53\nApril 27\n2026")
 @export var display_name_char_limit: int = 18
@@ -33,10 +38,11 @@ func _ready() -> void:
 	mouse_entered.connect(get_file_content)
 
 
-func get_file_content() -> void:
+
+func get_file_content() -> bool:
 	if !is_file_valid():
 		assign_icon(false)
-		return
+		return false
 	
 	var f := FileAccess.open(file_path, FileAccess.READ)
 	var content: String = f.get_file_as_string(file_path)
@@ -46,12 +52,15 @@ func get_file_content() -> void:
 	f.close()
 	
 	file_contents = content
+	return !content.is_empty()
 
 
 
 func is_file_valid() -> bool:	
-	var is_valid := FileAccess.file_exists(file_path) 
-	if file_name.is_empty() or !file_name.ends_with(".log"):
+	var is_valid: bool = FileAccess.file_exists(file_path)
+	# is_valid = get_file_content()
+
+	if file_name.is_empty() or file_contents.is_empty() or !file_name.ends_with(".log"):
 		is_valid = false
 	return is_valid
 
@@ -59,7 +68,8 @@ func is_file_valid() -> bool:
 
 func _get_name(_f_name: String) -> String:
 	if !_f_name.ends_with(".log"):
-		assign_icon(false)
+		return _f_name
+	if !_f_name.begins_with(category_name):
 		return _f_name
 
 	var _name: String =""
