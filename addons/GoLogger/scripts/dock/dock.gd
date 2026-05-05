@@ -28,8 +28,7 @@ signal change_category_name_finished # Deprecated?
 @onready var category_tab: HBoxContainer = %CategoriesTab
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
-@onready var open_dir_btn: Button = %OpenDirCatButton 
-@onready var column_slider: VSlider = %ColumnsVSlider
+@onready var open_dir_btn: Button = %OpenDirCatButton
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 # Log Browser
@@ -242,8 +241,7 @@ var settings_dict := {
 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
 	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"strict_name_check":					{"section": "settings",		"name": "strict_name_check", 			"type": TYPE_BOOL, 		"control": null, "default": true},
-	"columns": 										{"section": "settings", 	"name": "columns", 								"type": TYPE_INT, 		"control": null, "default": 5}
+	"strict_name_check":					{"section": "settings",		"name": "strict_name_check", 			"type": TYPE_BOOL, 		"control": null, "default": true}
 }
 
 
@@ -255,7 +253,11 @@ func _ready() -> void:
 	theme_colors = _get_theme_colors()
 
 	tab_changed.connect(
-		func(tab: int) -> void: if tab == 1: log_browser_tab.load_log_browser())
+		func(tab: int) -> void: 
+			match tab:
+				1: category_tab.request_update_columns()
+				2: log_browser_tab.load_log_browser()
+	)
 	category_tab.request_save.connect(save_data)
 	category_tab.request_categories_save.connect(save_categories)
 	log_browser_tab.log_file_added.connect(_on_log_file_added)
@@ -284,9 +286,7 @@ func _ready() -> void:
 
 	_assign_settings_controls()
 	category_tab.initialize_tab()
-	settings_tab.initialize_tab()
-	# Log Browser doesn't require initialization and 
-	# loads all files when the tab is selected.
+	settings_tab.initialize_tab() 
 
 
 
@@ -297,8 +297,6 @@ func _exit_tree() -> void:
 func _init_visibility() -> void:
 	set_current_tab(1)
 	help_tab.set_current_tab(0)
-
-	# category_tab.init_visibility()
 	log_browser_tab.init_visibility()
 	settings_tab.init_visibility()
 
@@ -345,8 +343,7 @@ func _assign_settings_controls() -> void:
 		"file_cap": file_count_spinbox,
 		"entry_cap": entry_count_spinbox,
 		"session_duration": session_duration_spinbox,
-		"error_reporting": error_rep_btn,
-		"columns": column_slider,
+		"error_reporting": error_rep_btn, 
 		"strict_name_check": strict_name_check_btn
 	}
 
@@ -518,9 +515,7 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 		elif ctrl is CheckBox:
 			_c.set_value("settings", setting_name, ctrl.button_pressed)
 		elif ctrl is OptionButton:
-			_c.set_value("settings", setting_name, ctrl.selected)
-		elif ctrl is VSlider:
-			_c.set_value("settings", setting_name, int(column_slider.value)) 
+			_c.set_value("settings", setting_name, ctrl.selected) 
 
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
 	if  err_rep_lv <= ErrorReportLevel.ERRORS:
@@ -782,4 +777,3 @@ func _apply_theme_colors():
 		btn.add_theme_color_override("font_hover_pressed_color", 	Color.WHITE											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["accent"]["col"])
 
 #endregion
-# 1364

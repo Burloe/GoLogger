@@ -327,7 +327,7 @@ func _update_columns() -> void:
 	if min_cell_width <= 0:
 		return
 	
-	var cols = max(1, int(size.x / min_cell_width))
+	var cols = max(1, int(category_tab_container.size.x / min_cell_width))
 	for i in range(categories.size()):
 		if categories[i][1] is GridContainer and categories[i][1] != null:
 			categories[i][1].columns = cols

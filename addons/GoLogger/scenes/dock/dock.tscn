@@ -43,13 +43,13 @@ content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ntic"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tayiv"]
-
 [sub_resource type="Theme" id="Theme_fcs7p"]
 CheckButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 CheckButton/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ntic"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tayiv"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_xov76"]
 
@@ -152,7 +152,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 1
+current_tab = 2
 all_tabs_in_front = true
 tab_focus_mode = 0
 tab_0/title = " "
@@ -173,6 +173,7 @@ metadata/_tab_name = " "
 
 [node name="CategoriesTab" type="HBoxContainer" parent="." unique_id=35875088]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -234,23 +235,14 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("9_m5iun")
 icon_alignment = 1
 
-[node name="HSeparator" type="Control" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=303410936]
-custom_minimum_size = Vector2(0, 15)
+[node name="Control" type="Control" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1669197090]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="ColumnsVSlider" type="VSlider" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=2082939439]
+[node name="TESTButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=137656156]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 1
-size_flags_vertical = 3
-tooltip_text = "Columns: 7"
-mouse_default_cursor_shape = 9
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
-min_value = 1.0
-max_value = 10.0
-value = 7.0
-rounded = true
+text = "T"
 
 [node name="RENABLEButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1634797201]
 unique_name_in_owner = true
@@ -269,11 +261,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 7
+columns = 3
 
 [node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -368,13 +359,13 @@ custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 10
-tooltip_text = "Text size"
+tooltip_text = "Text Size: 17"
 mouse_default_cursor_shape = 9
 theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_7ntic")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_tayiv")
 min_value = 1.0
 max_value = 150.0
-value = 10.0
+value = 17.0
 rounded = true
 
 [node name="FakeTopBar" type="VBoxContainer" parent="LogBrowserTab" unique_id=2056692232]
@@ -406,6 +397,7 @@ current_tab = 0
 
 [node name="LogViewer" type="Panel" parent="LogBrowserTab" unique_id=538579702]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("16_udfr3")
@@ -1558,7 +1550,8 @@ size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "A session defines when logging is active. Sessions can be started or stopped at any time using hotkeys or through code.
+text = "A session defines when the plugin is actively logging. Each session creates a new .log file ands sessions can be started or stopped at any time using hotkeys or through code.
+
 By default, a session starts automatically when the project runs (this can be disabled in the Settings tab)."
 fit_content = true
 
@@ -1662,7 +1655,7 @@ theme_override_styles/title_collapsed_panel = ExtResource("21_vkni8")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("11_5jaku")
 theme_override_styles/panel = ExtResource("22_apa57")
 folded = true
-title = "Multiple Instances"
+title = "Directories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
 [node name="MarginContainer" type="MarginContainer" parent="HelpTab/GettingStarted/VBoxContainer/DirectoryHelp" unique_id=1495629813]
