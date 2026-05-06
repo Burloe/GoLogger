@@ -32,7 +32,8 @@ signal change_category_name_finished # Deprecated?
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 # Log Browser
-@onready var log_browser_tab: Control = %LogBrowserTab 
+@onready var log_browser_tab: Control = %LogBrowserTab
+@onready var log_browser_view_btn: Button = %ViewTypeButton
 
 # Settings tab
 @onready var settings_tab: HBoxContainer = %SettingsTab
@@ -149,6 +150,7 @@ var foldable_container_panel					:= preload("uid://bkl7j8mna8rwb")
 var content_panel											:= preload("uid://dsitl204qf1y3")
 
 var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
+var sb_btn_toggled_on									:= preload("uid://bcprdy8psyd0k")
 var sb_btn_apply 											:= preload("uid://bwsfno28una6g")
 var sb_btn_apply_highlight						:= preload("uid://cws5raq1oykdn")
 
@@ -157,7 +159,8 @@ var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 
 var sb_log_file_button_normal					:= preload("uid://xy4uummjvhgu")
 
-var lw_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
+var lv_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
+var lv_popup_panel										:= preload("uid://dugr1wllj4x3")
 var gl_logfile_button_lbl_settings		:= preload("uid://c8w51vy1pqjq8")
 
 
@@ -239,7 +242,8 @@ var settings_dict := {
 	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0}
+	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
+	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false}
 }
 
 
@@ -294,7 +298,7 @@ func _exit_tree() -> void:
 func _init_visibility() -> void:
 	set_current_tab(1)
 	help_tab.set_current_tab(0)
-	log_browser_tab.init_visibility()
+	log_browser_tab.set_view(log_browser_tab.BrowserState.LIST_VIEW)
 	settings_tab.init_visibility()
 
 	var fold_conts: Array[FoldableContainer] = [
@@ -340,7 +344,8 @@ func _assign_settings_controls() -> void:
 		"file_cap": file_count_spinbox,
 		"entry_cap": entry_count_spinbox,
 		"session_duration": session_duration_spinbox,
-		"error_reporting": error_rep_btn
+		"error_reporting": error_rep_btn,
+		"broswer_view": log_browser_view_btn
 	}
 
 	for key in control_map.keys():
@@ -450,8 +455,11 @@ func reset_to_default() -> void:
 		var _s: Dictionary = settings_dict[key]
 		var ctrl = settings_dict[key].get("control")
 		var value = settings_dict[key]["default"] 
+		
+		if   ctrl is Button and ctrl.toggle_mode:
+			ctrl.button_pressed = value
 
-		if ctrl is CheckBox:
+		elif ctrl is CheckBox:
 			ctrl.button_pressed = value
 		
 		elif ctrl is SpinBox:
@@ -718,38 +726,54 @@ func _get_theme_colors() -> Dictionary:
 func _apply_theme_colors():
 	theme_colors = _get_theme_colors()
 
-	lw_content_lbl_settings.font_color = theme_colors["font"]["normal"]
-	gl_logfile_button_lbl_settings.font_color = theme_colors["font"]["normal"]
-
-	sb_tab_unselected.bg_color 			= Color.TRANSPARENT
-	sb_tab_hover.bg_color 					= Color.TRANSPARENT
-	sb_btn_normal.bg_color 					= Color.TRANSPARENT
-
-	# if editor_base_col != theme_colors["base"]["col"] or editor_contrast != theme_colors["contrast"]: 
-	panel_round_base.bg_color 											= theme_colors["base"]["col"]
-	panel_round_base_border_highlight.bg_color 			= theme_colors["base"]["col"]
-	panel_top_round_base.bg_color 									= theme_colors["base"]["col"]
-	panel_rounded_no_top_base.border_color					= theme_colors["base"]["col"]
-	foldable_container_panel.border_color						= theme_colors["base"]["col"]
-	sb_tab_bar_bg.bg_color 													= theme_colors["base"]["col"]
-	sb_tab_panel_bg.bg_color 												= theme_colors["base"]["dark"]
-	sb_tab_panel_no_side_margins.bg_color						= theme_colors["base"]["dark"]
-	panel_round_bg.bg_color 												= theme_colors["base"]["dark"]
-	sb_line_edit_normal.bg_color 										= theme_colors["base"]["dark_highlight"]
-	sb_log_file_button_normal.bg_color							= theme_colors["base"]["col"]
-	content_panel.border_color											= theme_colors["base"]["col"] 
-
-
-	# if editor_accent_col != theme_colors["accent"]["col"] or editor_contrast != theme_colors["contrast"]: 
-	panel_round_base_border_highlight.border_color 	= theme_colors["accent"]["col"]
-	panel_round_accent.bg_color 										= theme_colors["accent"]["col"]
-	panel_top_round_accent.bg_color 								= theme_colors["accent"]["col"]
-	sb_btn_apply.bg_color 													= theme_colors["accent"]["col"]
-	sb_btn_apply.bg_color 													= theme_colors["accent"]["col"]
-	sb_tab_hover.bg_color 													= theme_colors["accent"]["light"]
-	sb_tab_selected.bg_color 												= theme_colors["accent"]["dark"]
-	panel_round_accent_muted.bg_color 							= theme_colors["accent"]["dark_highlight"]
-	panel_top_round_accent_muted.bg_color 					= theme_colors["accent"]["dark_highlight"]
+	# Apply theme colors to all styleboxes and panels using a centralized color map.
+	var color_map := {
+		# Transparent elements
+		sb_tab_unselected: {"bg_color": Color.TRANSPARENT},
+		sb_btn_normal: {"bg_color": Color.TRANSPARENT},
+		
+		# Base color elements
+		panel_round_base: {"bg_color": theme_colors["base"]["col"]},
+		panel_round_base_border_highlight: {"bg_color": theme_colors["base"]["col"], "border_color": theme_colors["accent"]["col"]},
+		panel_top_round_base: {"bg_color": theme_colors["base"]["col"]},
+		panel_rounded_no_top_base: {"border_color": theme_colors["base"]["col"]},
+		foldable_container_panel: {"border_color": theme_colors["base"]["col"]},
+		sb_tab_bar_bg: {"bg_color": theme_colors["base"]["col"]},
+		sb_log_file_button_normal: {"bg_color": theme_colors["base"]["col"]},
+		content_panel: {"border_color": theme_colors["base"]["col"]},
+		sb_btn_toggled_on: {"bg_color": theme_colors["base"]["col"]},
+		
+		# Dark base variants
+		sb_tab_panel_bg: {"bg_color": theme_colors["base"]["dark"]},
+		sb_tab_panel_no_side_margins: {"bg_color": theme_colors["base"]["dark"]},
+		panel_round_bg: {"bg_color": theme_colors["base"]["dark"]},
+		lv_popup_panel: {"bg_color": theme_colors["base"]["dark"], "border_color": theme_colors["base"]["col"]},
+		
+		# Dark highlight
+		sb_line_edit_normal: {"bg_color": theme_colors["base"]["dark_highlight"]},
+		
+		# Accent color elements
+		panel_round_accent: {"bg_color": theme_colors["accent"]["col"]},
+		panel_top_round_accent: {"bg_color": theme_colors["accent"]["col"]},
+		sb_btn_apply: {"bg_color": theme_colors["accent"]["col"]},
+		sb_btn_toggled_on: {"border_color": theme_colors["accent"]["col"]},
+		sb_tab_hover: {"bg_color": theme_colors["accent"]["light"]},
+		sb_tab_selected: {"bg_color": theme_colors["accent"]["dark"]},
+		
+		# Accent muted variants
+		panel_round_accent_muted: {"bg_color": theme_colors["accent"]["dark_highlight"]},
+		panel_top_round_accent_muted: {"bg_color": theme_colors["accent"]["dark_highlight"]},
+		
+		# Label settings
+		lv_content_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
+		gl_logfile_button_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
+	}
+	
+	for resource: Resource in color_map:
+		var properties: Dictionary = color_map[resource]
+		for prop_name: String in properties:
+			resource[prop_name] = properties[prop_name]
+	
 
 	for line in [base_dir_line, log_header_line, entry_format_line]:
 		line.add_theme_color_override("font_color", theme_colors["font"]["normal"])

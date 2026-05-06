@@ -39,30 +39,62 @@ func _ready() -> void:
 
 
 
-func get_file_content() -> bool:
+func get_file_content() -> void:
 	if !is_file_valid():
-		assign_icon(false)
-		return false
+		return
 	
 	var f := FileAccess.open(file_path, FileAccess.READ)
 	var content: String = f.get_file_as_string(file_path)
 	var err := f.get_open_error()
 	tooltip_text = str("Failed to open file! Error[", f.get_open_error(), "]") if err != OK else file_name
-	assign_icon(!content.is_empty())
 	f.close()
-	
 	file_contents = content
-	return !content.is_empty()
+	assign_icon(!content.is_empty())
 
 
 
 func is_file_valid() -> bool:	
 	var is_valid: bool = FileAccess.file_exists(file_path)
-	# is_valid = get_file_content()
 
-	if file_name.is_empty() or file_contents.is_empty() or !file_name.ends_with(".log"):
+	if file_name.is_empty() or !file_name.ends_with(".log"):
+		print(file_name, "   - ", file_contents)
 		is_valid = false
+	
+	assign_icon(is_valid)	
+	disabled = !is_valid
 	return is_valid
+
+
+
+func is_gl_name(file_name_to_check: String) -> bool: 
+		if file_name_to_check.is_empty() or category_name.is_empty():
+				return false
+
+		var prefix := category_name + "("
+		if !file_name_to_check.begins_with(prefix) or !file_name_to_check.ends_with(").log"):
+				return false
+
+		# Get YYMMDD_HHMMSS
+		var stamp_len := file_name_to_check.length() - prefix.length() - 5
+		if stamp_len != 13:
+				return false
+
+		var stamp := file_name_to_check.substr(prefix.length(), stamp_len)
+		if stamp.substr(6, 1) != "_":
+				return false
+
+		var date_part := stamp.substr(0, 6)
+		var time_part := stamp.substr(7, 6)
+
+		if !date_part.is_valid_int() or !time_part.is_valid_int():
+				return false
+
+		return true 
+
+
+
+func assign_icon(is_valid: bool) -> void:
+	icon = file_ico if is_valid else file_broken_ico
 
 
 
@@ -120,9 +152,3 @@ func _get_month(month: String) -> String:
 		"Dec "
 	]
 	return _m[i]
-
-
-
-func assign_icon(is_valid: bool) -> void:
-	disabled = !is_valid
-	icon = file_ico if is_valid else file_broken_ico

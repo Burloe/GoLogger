@@ -132,7 +132,6 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 
 	category_container.move_child(category, to)
 	request_categories_save.emit()
-	# _update_columns()
 
 #endregion
 
@@ -254,7 +253,7 @@ func _update_columns() -> void:
 	
 	var cols = max(1, int(category_container.size.x / min_cell_width))
 	category_container.columns = cols
-	print("Size.x: ", category_container.size.x, "       Cell Width: ", min_cell_width, "       Applied column value: ", cols)
+	# print("Size.x: ", category_container.size.x, "       Cell Width: ", min_cell_width, "       Applied column value: ", cols)
 
 #endregion
 

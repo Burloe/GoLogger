@@ -3,6 +3,8 @@ extends HBoxContainer
 
 signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
+@onready var fb_margin_container: MarginContainer = %FBMarginContainer
+@onready var lv_margin_container: MarginContainer = %LVMarginContainer
 @onready var category_tab_container = %CategoryTabContainer
 @onready var fake_topbar: VBoxContainer = %FakeTopBar
 @onready var log_viewer: Panel = %LogViewer
@@ -11,13 +13,15 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var lv_refresh_btn: Button = %ViewerRefreshButton
 @onready var lv_view_type_btn: Button = %ViewTypeButton
 @onready var lv_close_btn: Button = %ViewerCloseButton
-@onready var lv_font_size_slider: HSlider = %ViewerFontSizeHSlider
 @onready var lv_contents_lbl: Label = %ContentLabel
-# @onready var ctrl_padding: Control = %Padding
 
 @onready var lv_panel: Panel = %LVPanel
 @onready var lv_scroll_container: ScrollContainer = %LVScrollContainer
-# @onready var lv_panel: Panel = %LVPanel
+
+@onready var lv_lbl_sett_btn: Button = %ViewerLblSettButton
+@onready var lv_lbl_sett_popup: PanelContainer = %LblSettInspectorPopup
+@onready var lv_lbl_sett_popup_scroll_cont: ScrollContainer = %LblSettPopupScrollContainer
+var inspector: EditorInspector
 
 const PATH = "user://gologger_data.ini"
 
@@ -69,17 +73,15 @@ var mo_states: Dictionary = {
 
 
 #TODO
-#* 	Add Inspector for logviewer label settingsand drop down menu for the inspector 
-#* 	Add a button to toggle "Split View" that allows you to see file list and log view together.
-#*  Bug: When changing tab while viewing a log file, it changes into split view when going back to log browser
+#* 	HSplitContainer divider moves when reloading files in split view
+#* Add a highlight stylebox to the currently opened file
 
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_released():
 		if state == BrowserState.LOG_VIEW and is_any_hovered():
-			_set_view(BrowserState.LIST_VIEW)
-
-
+			set_view(BrowserState.LIST_VIEW)
+	 
 
 
 func _ready() -> void:
@@ -89,9 +91,17 @@ func _ready() -> void:
 	lv_close_btn.button_up.connect(_on_button_up.bind(lv_close_btn))
 	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn))
 	lv_view_type_btn.toggled.connect(_on_button_toggled.bind(lv_view_type_btn))
-	lv_font_size_slider.value_changed.connect(on_slider_value_changed.bind(lv_font_size_slider))
-	lv_font_size_slider.value = lv_contents_lbl.label_settings.font_size
-	resized.connect(_update_columns)  
+	lv_lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lv_lbl_sett_btn))
+	resized.connect(_update_columns)
+	lv_title_lbl.text = ""
+	lv_contents_lbl.text = ""
+	lv_lbl_sett_popup.hide()
+	
+	inspector = EditorInspector.new()
+	inspector.edit(ResourceLoader.load("uid://cqn5x8cb7vjy3"))
+	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	lv_lbl_sett_popup.get_child(0).add_child(inspector)
 	
 	mo_states["log_browser"]["ref"] = self
 	mo_states["category_tab_container"]["ref"] = category_tab_container
@@ -107,14 +117,29 @@ func _ready() -> void:
 
 
 
-func init_visibility() -> void:
-	category_tab_container.show()
-	log_viewer.hide()
-	lv_refresh_btn.show() 
-	lv_close_btn.hide()
-	lv_font_size_slider.hide() 
-	lv_font_size_slider.tooltip_text = str("Text Size: ", lv_contents_lbl.label_settings.font_size)
-	state = BrowserState.LIST_VIEW 
+
+func set_view(to: BrowserState) -> void:
+	config.load(PATH)
+	if config.get_value("settings", "browser_view", false):
+		to = BrowserState.SPLIT_VIEW
+	fake_topbar.hide()
+	fb_margin_container.hide()
+	lv_margin_container.hide()
+	lv_close_btn.hide() 
+	if state == BrowserState.LOG_VIEW:
+		lv_contents_lbl.text = ""
+
+	match to:
+		BrowserState.LIST_VIEW:
+			fb_margin_container.show()
+		BrowserState.LOG_VIEW:
+			lv_margin_container.show()
+		BrowserState.SPLIT_VIEW:
+			fb_margin_container.show()
+			lv_margin_container.show()
+			lv_close_btn.show()
+	state = to
+
 
 
 
@@ -122,6 +147,7 @@ func init_visibility() -> void:
 func load_log_browser(is_initializing: bool = false) -> void:
 	var e := config.load(PATH)
 	if e != OK: printerr("Failed to load config: ", error_string(e))
+	lv_view_type_btn.button_pressed = config.get_value("settings", "browser_view", false)
 	base_dir = config.get_value("settings", "base_directory", "")
 	var cats = config.get_value("categories", "category_names", [])
 
@@ -138,11 +164,11 @@ func load_log_browser(is_initializing: bool = false) -> void:
 	
 	if !is_initializing:
 		lv_refresh_btn.disabled = true
-		category_tab_container.hide()
+		fb_margin_container.hide()
 		fake_topbar.show()
 		await get_tree().create_timer(0.1).timeout 
 		lv_refresh_btn.disabled = false
-		category_tab_container.show()
+		fb_margin_container.show()
 		fake_topbar.hide()
 
 	for c in cats:
@@ -229,74 +255,48 @@ func _get_category_files(category_name: String) -> PackedStringArray:
 
 
 
-func _set_view(to: BrowserState) -> void:
-	fake_topbar.hide()
-	match to:
-		BrowserState.LIST_VIEW:
-			category_tab_container.show()
-			log_viewer.hide()
-			lv_refresh_btn.show() 
-			lv_close_btn.hide()
-			lv_font_size_slider.hide()
-		BrowserState.LOG_VIEW:
-			category_tab_container.hide()
-			log_viewer.show()
-			lv_refresh_btn.hide() 
-			lv_close_btn.show()
-			lv_font_size_slider.show() 
-		BrowserState.SPLIT_VIEW:
-			category_tab_container.show()
-			log_viewer.show()
-			lv_refresh_btn.show() 
-			lv_close_btn.hide()
-			lv_font_size_slider.show()
-
-
-
 
 func _open_log_file(log_file: GLLogFile) -> void:
 	if !log_file.file_name.ends_with(".log"):
 		return
 
 	var log_content: String = log_file.file_contents
-	# if log_content.begins_with("Failed"):
-	# 	display_log_file_error(log_file)
-	# 	return
-
-
-	var _timestamp: String = log_file.file_name.lstrip(str(log_file.category_name, "(")).rstrip(str(").log"))
-	var _splits: Array = _timestamp.split("_") 
-	var _m: Array[String] = [
-		"N/A",
-		" Jan ",
-		" Feb ",
-		" March ",
-		" April ",
-		" May ",
-		" June ",
-		" July ",
-		" Aug ",
-		" Sep ",
-		" Oct ",
-		" Nov ",
-		" Dec "
-	]
-
-	var fin_time: String = str(
-		_splits[1].substr(0, 2), ":", 
-		_splits[1].substr(2, 2), ":", 
-		_splits[1].substr(4, 2)	
-	)
 	
-	var fin_date: String = str(
-		_splits[0].substr(4, 2),
-		_m[int(_splits[0].substr(2, 2))],
-		str(20, (_splits[0].substr(0, 2)))
-	) 
+	if log_file.is_gl_name(log_file.file_name):
+	
+		var _timestamp: String = log_file.file_name.lstrip(str(log_file.category_name, "(")).rstrip(str(").log"))
+		var _splits: Array = _timestamp.split("_") 
+		var _m: Array[String] = [
+			"N/A",
+			" Jan ",
+			" Feb ",
+			" March ",
+			" April ",
+			" May ",
+			" June ",
+			" July ",
+			" Aug ",
+			" Sep ",
+			" Oct ",
+			" Nov ",
+			" Dec "
+		]
 
-	lv_title_lbl.text = str("    ", log_file.category_name.capitalize(), " ", fin_date, " [",fin_time, "] ", "   -   ", log_file.file_name)
-	lv_contents_lbl.text = log_content
-	_set_view(BrowserState.LOG_VIEW) 
+		var fin_time: String = str(
+			_splits[1].substr(0, 2), ":", 
+			_splits[1].substr(2, 2), ":", 
+			_splits[1].substr(4, 2)	
+		)
+		
+		var fin_date: String = str(
+			_splits[0].substr(4, 2),
+			_m[int(_splits[0].substr(2, 2))],
+			str(20, (_splits[0].substr(0, 2)))
+		) 
+
+	lv_title_lbl.text = str("  ", log_file.file_name)
+	lv_contents_lbl.text = log_content if !log_content.is_empty() else "< File is empty or failed to load properly >"
+	set_view(BrowserState.LOG_VIEW) 
 
 
 
@@ -318,7 +318,8 @@ func _on_button_up(btn: Button) -> void:
 		lv_refresh_btn:
 			load_log_browser() 
 		lv_close_btn:
-			_set_view(BrowserState.LIST_VIEW)  
+
+			set_view(BrowserState.LIST_VIEW)  
 
 
 
@@ -327,17 +328,16 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 		lv_view_type_btn:
 			lv_view_type_btn.icon = splitscreen_view if lv_view_type_btn.button_pressed else fullscreen_view
 			if toggled:
-				_set_view(BrowserState.SPLIT_VIEW)
+				set_view(BrowserState.SPLIT_VIEW)
 			else:
-				_set_view(BrowserState.LIST_VIEW)
-
-
-
-func on_slider_value_changed(value: int, slider: HSlider) -> void:
-	match slider:
-		lv_font_size_slider:
-			cont_lbl_sett.font_size = value
-			lv_font_size_slider.tooltip_text = str("Text Size: ", value)
+				set_view(BrowserState.LIST_VIEW)
+			config.load(PATH)
+			config.set_value("settings", "browser_view", toggled)
+			config.save(PATH)
+		lv_lbl_sett_btn:
+			lv_lbl_sett_popup.visible = toggled
+			if toggled:
+				lv_lbl_sett_popup.modulate = Color.WHITE
 
 
 
