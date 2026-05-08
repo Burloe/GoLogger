@@ -122,6 +122,7 @@ func set_view(to: BrowserState) -> void:
 
 ## Used to both initialize and reload the file list
 func load_log_browser(is_initializing: bool = false) -> void:
+	_close_log_file()
 	is_reloading = true
 	var e := config.load(PATH)
 	if e != OK: printerr("Failed to load config: ", error_string(e))
@@ -288,9 +289,12 @@ func _open_log_file(log_file: GLLogFile) -> void:
 
 
 func _close_log_file() -> void:
-	set_view(BrowserState.FILE_LIST)  
-	cur_logfile.selected = false
-	cur_logfile = null
+	set_view(BrowserState.FILE_LIST)
+	if cur_logfile:
+		cur_logfile.selected = false
+		cur_logfile = null
+	await get_tree().physics_frame
+	_update_columns()
 
 
 
@@ -311,6 +315,8 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 			config.load(PATH)
 			config.set_value("settings", "browser_view", 1 if toggled else 0)
 			config.save(PATH)
+			await get_tree().physics_frame
+			_update_columns()
 
 		lv_lbl_sett_btn:
 			lv_lbl_sett_popup.visible = toggled 
