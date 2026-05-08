@@ -19,11 +19,10 @@
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
-[ext_resource type="StyleBox" uid="uid://dsitl204qf1y3" path="res://addons/gologger/resources/theme/log_viewer_panel_content.tres" id="17_wsmmb"]
+[ext_resource type="Texture2D" uid="uid://cp2p55wdq2wuk" path="res://addons/gologger/resources/icons/ControlAlignVCenterWide.svg" id="17_5orq7"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/resources/file_content_label_settings.tres" id="18_03nd1"]
-[ext_resource type="Texture2D" uid="uid://ijiplwclq5pu" path="res://addons/gologger/resources/icons/ControlAlignFullRect.svg" id="18_k8vct"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
-[ext_resource type="StyleBox" uid="uid://cws5raq1oykdn" path="res://addons/gologger/resources/theme/btn_highlight.tres" id="20_5orq7"]
+[ext_resource type="StyleBox" uid="uid://do71h5y0uj5j2" path="res://addons/gologger/resources/theme/log_file_button_pressed.tres" id="20_5orq7"]
 [ext_resource type="Texture2D" uid="uid://b6ib2jxq27nqq" path="res://addons/gologger/resources/icons/LabelSettings.svg" id="20_80tok"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/gologger/resources/icons/Reset.svg" id="20_nkhaa"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/gologger/resources/theme/panel_top_rounded_base_col.tres" id="21_vkni8"]
@@ -178,7 +177,7 @@ tab_3/title = "Settings"
 tab_4/title = "Help"
 script = ExtResource("6_0swix")
 data = SubResource("Resource_xov76")
-metadata/_edit_horizontal_guides_ = [90.0]
+metadata/_edit_horizontal_guides_ = [90.0, 49.0, 294.0]
 
 [node name="IconTabIGNORE" type="Control" parent="." unique_id=1209850644]
 visible = false
@@ -331,7 +330,8 @@ theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 toggle_mode = true
-icon = ExtResource("18_k8vct")
+button_pressed = true
+icon = ExtResource("17_5orq7")
 icon_alignment = 1
 
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
@@ -346,10 +346,12 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
 
 [node name="CategoryTabContainer" type="TabContainer" parent="LogBrowserTab/HSplitContainer/FBMarginContainer" unique_id=1149614450]
 unique_name_in_owner = true
 clip_contents = true
+custom_minimum_size = Vector2(137, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("15_y3oat")
@@ -380,7 +382,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = -5
+theme_override_constants/separation = 0
 
 [node name="TitlePanel" type="Panel" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer" unique_id=1361312407]
 custom_minimum_size = Vector2(0, 34)
@@ -410,7 +412,7 @@ clip_text = true
 
 [node name="ViewerLblSettButton" type="Button" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=326101769]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(34, 34)
+custom_minimum_size = Vector2(41, 41)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = ExtResource("12_7cref")
@@ -423,7 +425,7 @@ icon_alignment = 1
 
 [node name="ViewerCloseButton" type="Button" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1844859999]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(34, 34)
+custom_minimum_size = Vector2(41, 41)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
@@ -436,33 +438,33 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("17_wsmmb")
+theme_override_styles/panel = ExtResource("16_udfr3")
 
-[node name="MarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel" unique_id=1699993741]
+[node name="HBoxContainer" type="HBoxContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel" unique_id=1030215858]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
 
-[node name="LVScrollContainer" type="ScrollContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/MarginContainer" unique_id=624240055]
+[node name="MarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/HBoxContainer" unique_id=1699993741]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 0
+theme_override_constants/margin_top = 10
+
+[node name="LVScrollContainer" type="ScrollContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/HBoxContainer/MarginContainer" unique_id=624240055]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ContentLabel" type="Label" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/MarginContainer/LVScrollContainer" unique_id=48868420]
+[node name="ContentLabel" type="Label" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/HBoxContainer/MarginContainer/LVScrollContainer" unique_id=48868420]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-mouse_filter = 1
 text = "GoLogger 1.4 player session [26-05-03 | 15:34:37]:
 [15:34:38] 96FzW: Transitioned to level 'highroad_gate.tscn'
 [15:34:39] 96FzW: Player took 34 damage from Hobgoblin. Current HP 41 / 100
@@ -501,24 +503,15 @@ text = "GoLogger 1.4 player session [26-05-03 | 15:34:37]:
 label_settings = ExtResource("18_03nd1")
 autowrap_mode = 3
 
-[node name="LblSettInspectorPopup" type="PanelContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel" unique_id=982887318]
+[node name="LblSettInspectorPopup" type="PanelContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/HBoxContainer" unique_id=982887318]
 unique_name_in_owner = true
-visible = false
 z_index = 1
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -213.0
-offset_top = 5.0
-grow_horizontal = 0
-grow_vertical = 2
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
 size_flags_horizontal = 8
-size_flags_vertical = 0
 theme_override_styles/panel = ExtResource("25_equok")
 
-[node name="LblSettPopupScrollContainer" type="ScrollContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/LblSettInspectorPopup" unique_id=1431394006]
+[node name="LblSettPopupScrollContainer" type="ScrollContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/HBoxContainer/LblSettInspectorPopup" unique_id=1431394006]
 unique_name_in_owner = true
 layout_mode = 2
 

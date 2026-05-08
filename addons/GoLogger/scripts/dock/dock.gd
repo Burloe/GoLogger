@@ -522,7 +522,7 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 		elif ctrl is CheckBox:
 			_c.set_value("settings", setting_name, ctrl.button_pressed)
 		elif ctrl is OptionButton:
-			_c.set_value("settings", setting_name, ctrl.selected) 
+			_c.set_value("settings", setting_name, ctrl.selected)   
 
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
 	if  err_rep_lv <= ErrorReportLevel.ERRORS:

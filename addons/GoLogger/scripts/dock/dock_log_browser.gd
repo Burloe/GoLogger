@@ -42,53 +42,31 @@ var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], [player, playerGridContainer]]
 var cat_containers: Array[GridContainer] = []
-var cur_logfile: GLLogFile = null
+var cur_logfile: GLLogFile = null:
+	set(value):
+		cur_logfile = value
+		lv_contents_lbl.text = cur_logfile.file_contents if value else ""
 var log_files: Array[GLLogFile] = []
 
+var log_errors: Dictionary = {
+	"OK": "Success",
+	"FAIL_CONTENT_LOAD": "Failed to load log file contents...",
+	"ERR_FILE_ACCESS": "FileAccess error!"
+}
+
+var state: BrowserState = BrowserState.FILE_LIST
 enum BrowserState {
 	LOG_FULL,
 	LOG_SPLIT,
 	FILE_LIST
 }
-var state: BrowserState = BrowserState.FILE_LIST
-## Used to check if mouse is within allowed Controls to allow R-Click
-## close a LogFIle.
-var mo_states: Dictionary = {
-	"log_browser": {
-		"state": false,
-		"ref": self
-	},
-	"category_tab_container": {
-		"state": false,
-		"ref": category_tab_container
-	},
-	"log_viewer": {
-		"state": false,
-		"ref": log_viewer
-	},
-	"lv_panel": {
-		"state": false,
-		"ref": lv_panel
-	},
-	"lv_scroll_container": {
-		"state": false,
-		"ref": lv_scroll_container
-	},
-	"content_lbl": {
-		"state": false,
-		"ref": lv_contents_lbl
-	}
-}
 
 
-#TODO
-#* 	HSplitContainer divider moves when reloading files in split view
-#* Add a highlight stylebox to the currently opened file
 
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_released():
-		if state == BrowserState.LOG_FULL and is_content_hovered:
+		if state != BrowserState.FILE_LIST and is_content_hovered:
 			_close_log_file()
 	 
 
@@ -97,9 +75,12 @@ func _ready() -> void:
 	config.load(PATH)
 	load_log_browser(true)
 
+	for mo in [lv_contents_lbl, lv_scroll_container, lv_panel, lv_panel.get_child(0), lv_title_lbl, log_viewer, log_viewer.get_child(0)]:
+		if mo != null:
+			mo.mouse_entered.connect(func() -> void: is_content_hovered = true)
+			mo.mouse_exited.connect(func() -> void: is_content_hovered = false)
+
 	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
-	lv_contents_lbl.mouse_entered.connect(func() -> void: is_content_hovered = true)
-	lv_contents_lbl.mouse_entered.connect(func() -> void: is_content_hovered = false)
 	lv_close_btn.button_up.connect(_close_log_file)
 	lv_refresh_btn.button_up.connect(load_log_browser)
 	lv_view_type_btn.toggled.connect(_on_button_toggled.bind(lv_view_type_btn))
@@ -113,19 +94,7 @@ func _ready() -> void:
 	inspector.edit(ResourceLoader.load("uid://cqn5x8cb7vjy3"))
 	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	lv_lbl_sett_popup.get_child(0).add_child(inspector)
-	
-	mo_states["log_browser"]["ref"] = self
-	mo_states["category_tab_container"]["ref"] = category_tab_container
-	mo_states["log_viewer"]["ref"] = log_viewer
-	mo_states["lv_panel"]["ref"] = lv_panel
-	mo_states["lv_scroll_container"]["ref"] = lv_scroll_container
-	mo_states["content_lbl"]["ref"] = lv_contents_lbl
-
-	for key in mo_states.keys():
-		if mo_states[key]["ref"] != null:
-			mo_states[key]["ref"].mouse_entered.connect(func() -> void: mo_states[key]["state"] = true)
-			mo_states[key]["ref"].mouse_exited.connect(func() -> void: mo_states[key]["state"] = false)
+	lv_lbl_sett_popup.get_child(0).add_child(inspector) 
 
 
 
@@ -135,8 +104,6 @@ func set_view(to: BrowserState) -> void:
 	reload_hider.hide()
 	fb_margin_container.hide()
 	lv_margin_container.hide()
-	if state == BrowserState.LOG_FULL:
-		lv_contents_lbl.text = ""
 
 	match to:
 		BrowserState.FILE_LIST:
@@ -195,8 +162,7 @@ func load_log_browser(is_initializing: bool = false) -> void:
 		sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		var gc: GridContainer = GridContainer.new()
-		sc.add_child(gc)
-		# gc.set_name(c)
+		sc.add_child(gc) 
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
 		gc.add_theme_constant_override("h_separation", 8)
@@ -280,7 +246,7 @@ func _open_log_file(log_file: GLLogFile) -> void:
 	
 	if log_file.is_gl_name(log_file.file_name):
 	
-		var _timestamp: String = log_file.file_name.lstrip(str(log_file.category_name, "(")).rstrip(str(").log"))
+		var _timestamp: String = log_file.file_name.lstrip(str(log_file.category_name, "(")).rstrip(").log")
 		var _splits: Array = _timestamp.split("_") 
 		var _m: Array[String] = [
 			"N/A",
@@ -322,7 +288,6 @@ func _open_log_file(log_file: GLLogFile) -> void:
 
 
 func _close_log_file() -> void:
-	printerr("asdfasdf")
 	set_view(BrowserState.FILE_LIST)  
 	cur_logfile.selected = false
 	cur_logfile = null
@@ -334,36 +299,28 @@ func display_log_file_error(log_file: GLLogFile) -> void:
 
 
 
-func is_any_hovered() -> bool: 
-	for key in mo_states.keys():
-		if mo_states[key]["state"]:
-			return true
-	return false
-
-
-
 func _on_button_toggled(toggled: bool, btn: Button) -> void:
 	match btn:
 		lv_view_type_btn:
 			lv_view_type_btn.icon = splitscreen_view if lv_view_type_btn.button_pressed else fullscreen_view
 			if toggled:
-				set_view(BrowserState.LOG_SPLIT)
+				set_view(BrowserState.FILE_LIST if cur_logfile == null else BrowserState.LOG_SPLIT)
 			else:
-				set_view(BrowserState.FILE_LIST)
+				set_view(BrowserState.FILE_LIST if cur_logfile == null else BrowserState.LOG_FULL)
+
 			config.load(PATH)
 			config.set_value("settings", "browser_view", 1 if toggled else 0)
 			config.save(PATH)
+
 		lv_lbl_sett_btn:
-			lv_lbl_sett_popup.visible = toggled
-			if toggled:
-				lv_lbl_sett_popup.modulate = Color.WHITE
+			lv_lbl_sett_popup.visible = toggled 
+			lv_margin_container.custom_minimum_size.x = 315 if toggled else 115 
 
 
 
 func _update_columns() -> void:
 	if min_cell_width <= 0:
 		return
-	
 	var cols = max(1, int(category_tab_container.size.x / min_cell_width))
 	for i in range(categories.size()):
 		if categories[i][1] is GridContainer and categories[i][1] != null:
