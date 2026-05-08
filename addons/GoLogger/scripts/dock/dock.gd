@@ -32,7 +32,7 @@ signal change_category_name_finished # Deprecated?
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 # Log Browser
-@onready var log_browser_tab: Control = %LogBrowserTab
+@onready var log_browser_tab: HBoxContainer = %LogBrowserTab
 @onready var log_browser_view_btn: Button = %ViewTypeButton
 
 # Settings tab
@@ -243,7 +243,7 @@ var settings_dict := {
 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
 	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false}
+	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_INT, 		"control": null, "default": 0}
 }
 
 
@@ -298,7 +298,7 @@ func _exit_tree() -> void:
 func _init_visibility() -> void:
 	set_current_tab(1)
 	help_tab.set_current_tab(0)
-	log_browser_tab.set_view(log_browser_tab.BrowserState.LIST_VIEW)
+	log_browser_tab.set_view(log_browser_tab.BrowserState.FILE_LIST)
 	settings_tab.init_visibility()
 
 	var fold_conts: Array[FoldableContainer] = [
@@ -345,8 +345,9 @@ func _assign_settings_controls() -> void:
 		"entry_cap": entry_count_spinbox,
 		"session_duration": session_duration_spinbox,
 		"error_reporting": error_rep_btn,
-		"broswer_view": log_browser_view_btn
+		"browser_view": log_browser_view_btn
 	}
+	# printerr()
 
 	for key in control_map.keys():
 		if settings_dict.has(key):
@@ -514,6 +515,8 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 		
 		if   ctrl is LineEdit:
 			_c.set_value("settings", setting_name, ctrl.text)
+		elif ctrl is Button and ctrl.toggle_mode:
+			_c.set_value("settings", setting_name, 1 if ctrl.button_pressed else 0)
 		elif ctrl is SpinBox:
 			_c.set_value("settings", setting_name, int(ctrl.value))
 		elif ctrl is CheckBox:

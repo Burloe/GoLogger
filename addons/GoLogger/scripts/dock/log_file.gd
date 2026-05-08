@@ -5,7 +5,16 @@ class_name GLLogFile extends Button
 
 var file_ico := preload("uid://chfkhfc65al6t")
 var file_broken_ico := preload("uid://cntk5aesu05sa")
+var sb_selected := preload("uid://bcprdy8psyd0k")
+var sb_unselected := preload("uid://xy4uummjvhgu")
 
+var selected: bool = false:
+	set(value):
+		selected = value
+		add_theme_stylebox_override("normal", sb_selected if value else sb_unselected)
+		add_theme_stylebox_override("pressed", sb_selected if value else sb_unselected)
+		add_theme_stylebox_override("hover", sb_selected if value else sb_unselected)
+		add_theme_stylebox_override("hover_pressed", sb_selected if value else sb_unselected)
 var base_dir
 var category_name: String = ""
 var file_path: String = ""
@@ -14,7 +23,7 @@ var file_name: String = "":
 		file_name = value
 		if value != "":
 			
-			display_name = _get_name(file_name) 
+			display_name = _get_name(file_name)
 			get_file_content()
  
 var display_name: String = "":
@@ -26,7 +35,6 @@ var display_name: String = "":
 var file_contents: String = "":
 	set(value):
 		file_contents = value
-		assign_icon(!value.is_empty())
 
 @export var placeholder_name: String = str("17:22:53\nApril 27\n2026")
 @export var display_name_char_limit: int = 18
@@ -36,6 +44,7 @@ var file_contents: String = "":
 func _ready() -> void:
 	text = display_name if display_name != "" else placeholder_name
 	mouse_entered.connect(get_file_content)
+	# button_up.connect(func() -> void: selected = !selected)
 
 
 
@@ -49,7 +58,6 @@ func get_file_content() -> void:
 	tooltip_text = str("Failed to open file! Error[", f.get_open_error(), "]") if err != OK else file_name
 	f.close()
 	file_contents = content
-	assign_icon(!content.is_empty())
 
 
 

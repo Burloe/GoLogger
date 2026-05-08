@@ -6,7 +6,7 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var fb_margin_container: MarginContainer = %FBMarginContainer
 @onready var lv_margin_container: MarginContainer = %LVMarginContainer
 @onready var category_tab_container = %CategoryTabContainer
-@onready var fake_topbar: VBoxContainer = %FakeTopBar
+@onready var reload_hider: VBoxContainer = %ReloadHider
 @onready var log_viewer: Panel = %LogViewer
 @onready var h_split_cont: HSplitContainer = %HSplitContainer
 @onready var lv_title_lbl: Label = %ViewerTitleLabel
@@ -25,23 +25,32 @@ var inspector: EditorInspector
 
 const PATH = "user://gologger_data.ini"
 
-var grid_conts: Array[GridContainer] = []
-var min_cell_width: int = 140
 var fullscreen_view := preload("uid://ijiplwclq5pu")
 var splitscreen_view := preload("uid://cp2p55wdq2wuk")
 var log_file_btn := preload("uid://bq7nahsc5aca7")
 var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
+
 var config: ConfigFile = ConfigFile.new()
+var grid_conts: Array[GridContainer] = []
+var is_content_hovered: bool = false
+var is_reloading: bool = false:
+	set(value):
+		is_reloading = value
+		h_split_cont.visible = !value
+		reload_hider.visible = value
+var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], [player, playerGridContainer]]
-var cat_containers: Array[GridContainer] = [] 
+var cat_containers: Array[GridContainer] = []
+var cur_logfile: GLLogFile = null
+var log_files: Array[GLLogFile] = []
 
 enum BrowserState {
-	LIST_VIEW,
-	LOG_VIEW,
-	SPLIT_VIEW
+	LOG_FULL,
+	LOG_SPLIT,
+	FILE_LIST
 }
-var state: BrowserState = BrowserState.LIST_VIEW
+var state: BrowserState = BrowserState.FILE_LIST
 ## Used to check if mouse is within allowed Controls to allow R-Click
 ## close a LogFIle.
 var mo_states: Dictionary = {
@@ -79,17 +88,20 @@ var mo_states: Dictionary = {
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_released():
-		if state == BrowserState.LOG_VIEW and is_any_hovered():
-			set_view(BrowserState.LIST_VIEW)
+		if state == BrowserState.LOG_FULL and is_content_hovered:
+			_close_log_file()
 	 
 
 
 func _ready() -> void:
 	config.load(PATH)
 	load_log_browser(true)
+
 	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
-	lv_close_btn.button_up.connect(_on_button_up.bind(lv_close_btn))
-	lv_refresh_btn.button_up.connect(_on_button_up.bind(lv_refresh_btn))
+	lv_contents_lbl.mouse_entered.connect(func() -> void: is_content_hovered = true)
+	lv_contents_lbl.mouse_entered.connect(func() -> void: is_content_hovered = false)
+	lv_close_btn.button_up.connect(_close_log_file)
+	lv_refresh_btn.button_up.connect(load_log_browser)
 	lv_view_type_btn.toggled.connect(_on_button_toggled.bind(lv_view_type_btn))
 	lv_lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lv_lbl_sett_btn))
 	resized.connect(_update_columns)
@@ -120,24 +132,22 @@ func _ready() -> void:
 
 func set_view(to: BrowserState) -> void:
 	config.load(PATH)
-	if config.get_value("settings", "browser_view", false):
-		to = BrowserState.SPLIT_VIEW
-	fake_topbar.hide()
+	reload_hider.hide()
 	fb_margin_container.hide()
 	lv_margin_container.hide()
-	lv_close_btn.hide() 
-	if state == BrowserState.LOG_VIEW:
+	if state == BrowserState.LOG_FULL:
 		lv_contents_lbl.text = ""
 
 	match to:
-		BrowserState.LIST_VIEW:
+		BrowserState.FILE_LIST:
 			fb_margin_container.show()
-		BrowserState.LOG_VIEW:
+		BrowserState.LOG_FULL:
 			lv_margin_container.show()
-		BrowserState.SPLIT_VIEW:
+			fb_margin_container.add_theme_constant_override("margin_right", 0)
+		BrowserState.LOG_SPLIT:
 			fb_margin_container.show()
 			lv_margin_container.show()
-			lv_close_btn.show()
+			fb_margin_container.add_theme_constant_override("margin_right", 8)
 	state = to
 
 
@@ -145,11 +155,14 @@ func set_view(to: BrowserState) -> void:
 
 ## Used to both initialize and reload the file list
 func load_log_browser(is_initializing: bool = false) -> void:
+	is_reloading = true
 	var e := config.load(PATH)
 	if e != OK: printerr("Failed to load config: ", error_string(e))
-	lv_view_type_btn.button_pressed = config.get_value("settings", "browser_view", false)
+	var view = config.get_value("settings", "browser_view", 0)
+	lv_view_type_btn.button_pressed = true if view == 1 else false
 	base_dir = config.get_value("settings", "base_directory", "")
 	var cats = config.get_value("categories", "category_names", [])
+	log_files.clear()
 
 	if base_dir == "":
 		printerr("Failed to load Base Directory!")
@@ -165,11 +178,11 @@ func load_log_browser(is_initializing: bool = false) -> void:
 	if !is_initializing:
 		lv_refresh_btn.disabled = true
 		fb_margin_container.hide()
-		fake_topbar.show()
+		reload_hider.show()
 		await get_tree().create_timer(0.1).timeout 
 		lv_refresh_btn.disabled = false
 		fb_margin_container.show()
-		fake_topbar.hide()
+		reload_hider.hide()
 
 	for c in cats:
 
@@ -192,7 +205,8 @@ func load_log_browser(is_initializing: bool = false) -> void:
 		categories.append(n)
 		_load_logfiles(c)
 	
-	resized.emit() # Manually emit to initialize the column value
+	_update_columns()
+	is_reloading = false
 
 
 
@@ -215,14 +229,14 @@ func _load_logfiles(category_name: String) -> void:
 		var content = f.get_file_as_string(file_path)
 			
 
-		var lf: Button = log_file_btn.instantiate() as Button
+		var lf: GLLogFile = log_file_btn.instantiate() as GLLogFile
 		lf.category_name = category_name
-		lf.file_name = file 
+		lf.file_name = file
 		lf.file_path = file_path
 		lf.file_contents = f.get_file_as_string(file_path)
 		lf.assign_icon(true)
 
-		if !lf.is_file_valid() or lf.file_contents.is_empty() or f.get_open_error() != OK:
+		if !lf.is_file_valid() or f.get_open_error() != OK:
 			lf.assign_icon(false)
 
 		for c in categories:
@@ -231,6 +245,7 @@ func _load_logfiles(category_name: String) -> void:
 				continue
 			
 			c[1].add_child(lf)
+			log_files.append(lf)
 			lf.button_up.connect(_open_log_file.bind(lf))
 			log_file_added.emit(lf)
 
@@ -260,6 +275,7 @@ func _open_log_file(log_file: GLLogFile) -> void:
 	if !log_file.file_name.ends_with(".log"):
 		return
 
+	config.load(PATH)
 	var log_content: String = log_file.file_contents
 	
 	if log_file.is_gl_name(log_file.file_name):
@@ -292,11 +308,24 @@ func _open_log_file(log_file: GLLogFile) -> void:
 			_splits[0].substr(4, 2),
 			_m[int(_splits[0].substr(2, 2))],
 			str(20, (_splits[0].substr(0, 2)))
-		) 
-
+		)
+	for lf in log_files:
+		if lf != log_file and lf.selected:
+			lf.selected = false 
+	
+	log_file.selected = true 
 	lv_title_lbl.text = str("  ", log_file.file_name)
 	lv_contents_lbl.text = log_content if !log_content.is_empty() else "< File is empty or failed to load properly >"
-	set_view(BrowserState.LOG_VIEW) 
+	cur_logfile = log_file
+	set_view(config.get_value("settings", "browser_view"))
+	
+
+
+func _close_log_file() -> void:
+	printerr("asdfasdf")
+	set_view(BrowserState.FILE_LIST)  
+	cur_logfile.selected = false
+	cur_logfile = null
 
 
 
@@ -313,26 +342,16 @@ func is_any_hovered() -> bool:
 
 
 
-func _on_button_up(btn: Button) -> void:
-	match btn:
-		lv_refresh_btn:
-			load_log_browser() 
-		lv_close_btn:
-
-			set_view(BrowserState.LIST_VIEW)  
-
-
-
 func _on_button_toggled(toggled: bool, btn: Button) -> void:
 	match btn:
 		lv_view_type_btn:
 			lv_view_type_btn.icon = splitscreen_view if lv_view_type_btn.button_pressed else fullscreen_view
 			if toggled:
-				set_view(BrowserState.SPLIT_VIEW)
+				set_view(BrowserState.LOG_SPLIT)
 			else:
-				set_view(BrowserState.LIST_VIEW)
+				set_view(BrowserState.FILE_LIST)
 			config.load(PATH)
-			config.set_value("settings", "browser_view", toggled)
+			config.set_value("settings", "browser_view", 1 if toggled else 0)
 			config.save(PATH)
 		lv_lbl_sett_btn:
 			lv_lbl_sett_popup.visible = toggled
