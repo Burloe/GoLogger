@@ -13,6 +13,7 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var lv_refresh_btn: Button = %ViewerRefreshButton
 @onready var lv_view_type_btn: Button = %ViewTypeButton
 @onready var lv_close_btn: Button = %ViewerCloseButton
+@onready var lv_copy_content_btn: Button =%ViewerCopyContentButton
 @onready var lv_contents_lbl: Label = %ContentLabel
 
 @onready var lv_panel: Panel = %LVPanel
@@ -37,7 +38,9 @@ var is_reloading: bool = false:
 	set(value):
 		is_reloading = value
 		h_split_cont.visible = !value
+		fb_margin_container.visible = !value
 		reload_hider.visible = value
+		lv_refresh_btn.disabled = value
 var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], [player, playerGridContainer]]
@@ -46,6 +49,8 @@ var cur_logfile: GLLogFile = null:
 	set(value):
 		cur_logfile = value
 		lv_contents_lbl.text = cur_logfile.file_contents if value else ""
+		if value != null:
+			lv_copy_content_btn.visible = !cur_logfile.file_contents.is_empty() 
 var log_files: Array[GLLogFile] = []
 
 var log_errors: Dictionary = {
@@ -85,6 +90,7 @@ func _ready() -> void:
 	lv_refresh_btn.button_up.connect(load_log_browser)
 	lv_view_type_btn.toggled.connect(_on_button_toggled.bind(lv_view_type_btn))
 	lv_lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lv_lbl_sett_btn))
+	lv_copy_content_btn.button_up.connect(func() -> void: if cur_logfile != null: DisplayServer.clipboard_set(cur_logfile.file_contents))
 	resized.connect(_update_columns)
 	lv_title_lbl.text = ""
 	lv_contents_lbl.text = ""
@@ -104,13 +110,13 @@ func set_view(to: BrowserState) -> void:
 	reload_hider.hide()
 	fb_margin_container.hide()
 	lv_margin_container.hide()
+	fb_margin_container.add_theme_constant_override("margin_right", 0)
 
 	match to:
 		BrowserState.FILE_LIST:
 			fb_margin_container.show()
 		BrowserState.LOG_FULL:
 			lv_margin_container.show()
-			fb_margin_container.add_theme_constant_override("margin_right", 0)
 		BrowserState.LOG_SPLIT:
 			fb_margin_container.show()
 			lv_margin_container.show()
@@ -143,14 +149,8 @@ func load_log_browser(is_initializing: bool = false) -> void:
 	for child in category_tab_container.get_children():
 		child.queue_free()
 	
-	if !is_initializing:
-		lv_refresh_btn.disabled = true
-		fb_margin_container.hide()
-		reload_hider.show()
-		await get_tree().create_timer(0.1).timeout 
-		lv_refresh_btn.disabled = false
-		fb_margin_container.show()
-		reload_hider.hide()
+	# if !is_initializing:
+	await get_tree().create_timer(0.1).timeout
 
 	for c in cats:
 

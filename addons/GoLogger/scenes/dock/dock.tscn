@@ -23,8 +23,9 @@
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/resources/file_content_label_settings.tres" id="18_03nd1"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="StyleBox" uid="uid://do71h5y0uj5j2" path="res://addons/gologger/resources/theme/log_file_button_pressed.tres" id="20_5orq7"]
-[ext_resource type="Texture2D" uid="uid://b6ib2jxq27nqq" path="res://addons/gologger/resources/icons/LabelSettings.svg" id="20_80tok"]
 [ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/gologger/resources/icons/Reset.svg" id="20_nkhaa"]
+[ext_resource type="Texture2D" uid="uid://dwxenwifm3ujy" path="res://addons/gologger/resources/icons/GDScript.svg" id="21_5orq7"]
+[ext_resource type="Texture2D" uid="uid://cf6vrjxr67nqe" path="res://addons/gologger/resources/icons/ActionCopy.svg" id="21_equok"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/gologger/resources/theme/panel_top_rounded_base_col.tres" id="21_vkni8"]
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/gologger/resources/theme/foldable_container_panel.tres" id="22_apa57"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gologger/resources/id_example_panel_tex.png" id="23_qrqlu"]
@@ -177,7 +178,7 @@ tab_3/title = "Settings"
 tab_4/title = "Help"
 script = ExtResource("6_0swix")
 data = SubResource("Resource_xov76")
-metadata/_edit_horizontal_guides_ = [90.0, 49.0, 294.0]
+metadata/_edit_horizontal_guides_ = [49.0, 294.0]
 
 [node name="IconTabIGNORE" type="Control" parent="." unique_id=1209850644]
 visible = false
@@ -410,22 +411,36 @@ label_settings = SubResource("LabelSettings_xov76")
 vertical_alignment = 1
 clip_text = true
 
+[node name="ViewerCopyContentButton" type="Button" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1329618787]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+tooltip_text = "Copy log content to clipboard"
+focus_mode = 0
+theme_override_styles/normal = ExtResource("12_7cref")
+theme_override_styles/pressed = ExtResource("20_5orq7")
+theme_override_styles/hover = ExtResource("12_7cref")
+theme_override_styles/hover_pressed = ExtResource("20_5orq7")
+icon = ExtResource("21_equok")
+icon_alignment = 1
+
 [node name="ViewerLblSettButton" type="Button" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=326101769]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(41, 41)
+custom_minimum_size = Vector2(34, 34)
 layout_mode = 2
+tooltip_text = "Text settings"
 focus_mode = 0
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("20_5orq7")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("20_5orq7")
 toggle_mode = true
-icon = ExtResource("20_80tok")
+icon = ExtResource("21_5orq7")
 icon_alignment = 1
 
 [node name="ViewerCloseButton" type="Button" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1844859999]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(41, 41)
+custom_minimum_size = Vector2(34, 34)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
@@ -505,6 +520,7 @@ autowrap_mode = 3
 
 [node name="LblSettInspectorPopup" type="PanelContainer" parent="LogBrowserTab/HSplitContainer/LVMarginContainer/LogViewer/VBoxContainer/LVPanel/HBoxContainer" unique_id=982887318]
 unique_name_in_owner = true
+visible = false
 z_index = 1
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
