@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://comapb1cs4l7m" path="res://addons/gologger/resources/icons/Debug.svg" id="12_e4pb5"]
 [ext_resource type="Texture2D" uid="uid://clbmanmttjrs4" path="res://addons/gologger/resources/icons/Reload.svg" id="13_dg67q"]
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
+[ext_resource type="Texture2D" uid="uid://dox74nlveev6x" path="res://addons/gologger/resources/icons/Filesystem.svg" id="15_equok"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
 [ext_resource type="Texture2D" uid="uid://ijiplwclq5pu" path="res://addons/gologger/resources/icons/ControlAlignFullRect.svg" id="17_jajas"]
@@ -250,7 +251,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("9_m5iun")
 icon_alignment = 1
 
-[node name="ViewTypeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1807274223]
+[node name="ViewModeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1807274223]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
@@ -260,6 +261,18 @@ theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 icon = ExtResource("17_jajas")
+icon_alignment = 1
+
+[node name="SortModeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1985609884]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Sorting by: [Name Ascending]"
+theme_override_styles/normal = ExtResource("12_7cref")
+theme_override_styles/pressed = ExtResource("12_7cref")
+theme_override_styles/hover = ExtResource("12_7cref")
+theme_override_styles/hover_pressed = ExtResource("12_7cref")
+icon = ExtResource("15_equok")
 icon_alignment = 1
 
 [node name="PrintSizeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1205511631]

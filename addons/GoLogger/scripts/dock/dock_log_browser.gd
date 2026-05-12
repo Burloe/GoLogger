@@ -11,7 +11,8 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var h_split_cont: HSplitContainer = %HSplitContainer
 @onready var lv_title_lbl: Label = %ViewerTitleLabel
 @onready var lv_refresh_btn: Button = %ViewerRefreshButton
-@onready var lv_view_type_btn: Button = %ViewTypeButton
+@onready var lv_view_mode_btn: Button = %ViewModeButton
+@onready var lv_sort_mode_btn: Button = %SortModeButton
 @onready var lv_close_btn: Button = %ViewerCloseButton
 @onready var lv_copy_content_btn: Button =%ViewerCopyContentButton
 @onready var lv_contents_lbl: Label = %ContentLabel
@@ -55,9 +56,14 @@ var cur_logfile: GLLogFile = null:
 var cur_view: bool = false:
 	set(value):
 		cur_view = value
-		lv_view_type_btn.icon = ico_splitscreen_view if value else ico_fullscreen_view
-		lv_view_type_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
+		lv_view_mode_btn.icon = ico_splitscreen_view if value else ico_fullscreen_view
+		lv_view_mode_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
 		set_view(BrowserState.LOG_SPLIT if value else BrowserState.LOG_FULL)
+var cur_sort: int = 0: # [0] Name Descend, [1] Name Ascend, [2]Day Descend, [3] Day Ascend
+	set(value):
+		cur_sort = value
+		var modes := ["[Name Descending]", "[Name Descending]", "[Day Descending]", "[Day Ascending]"]
+		lv_sort_mode_btn.tooltip_text = str("Sorting by: ", modes[value])
 var reload_buffer_time: float = 0.01
 
 var log_errors: Dictionary = {
@@ -104,7 +110,12 @@ func _ready() -> void:
 	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
 	lv_close_btn.button_up.connect(_close_log_file) 
 	lv_refresh_btn.button_up.connect(load_log_browser)
-	lv_view_type_btn.button_up.connect(func() -> void: cur_view = !cur_view)
+	lv_view_mode_btn.button_up.connect(func() -> void: cur_view = !cur_view)
+	lv_sort_mode_btn.button_up.connect(
+		func() -> void:
+			cur_sort = (cur_sort + 1) % 4
+			load_log_browser()
+	)
 	lv_lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lv_lbl_sett_btn))
 	lv_copy_content_btn.button_up.connect(func() -> void: if cur_logfile != null: DisplayServer.clipboard_set(cur_logfile.file_contents))
 	resized.connect(_update_columns)
@@ -211,6 +222,8 @@ func _load_logfiles(category_name: String) -> void:
 	for file in file_list:
 		if file.ends_with(".log"): 
 			actionable_list.append(file)
+	
+	if cur_sort in [1, 3]: actionable_list.reverse()
 
 	for file in actionable_list:
 		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file), "/")
@@ -244,6 +257,16 @@ func _load_logfiles(category_name: String) -> void:
 
 		lv_contents_lbl.text = content
 		f.close()
+
+
+
+# func apply_sort(sort: int, files: Array) -> void:
+# 	match sort:
+# 		0: # time ascending
+# 			files.reverse()
+# 		1: # time descending
+
+# 		2: # day
 
 
 

@@ -36,7 +36,7 @@ signal change_category_name_finished # Deprecated?
 
 # Log Browser
 @onready var log_browser_tab: HBoxContainer = %LogBrowserTab
-@onready var log_browser_view_btn: Button = %ViewTypeButton
+@onready var log_browser_view_btn: Button = %ViewModeButton
 @onready var log_browser_open_dir_btn: Button = %ViewerOpenDirButton
 
 # Settings tab
