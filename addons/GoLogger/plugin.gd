@@ -22,7 +22,6 @@ func _exit_tree() -> void:
 
 
 
-
 func _enable_plugin() -> void:
 	if !Engine.has_singleton("Log"):
 		# print_rich("[color=fc4674][font_size=12][GoLogger][color=white] plugin enabled! See [url]https://github.com/Burloe/GoLogger/wiki[/url] for more information.")

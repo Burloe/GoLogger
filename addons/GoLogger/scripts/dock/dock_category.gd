@@ -143,19 +143,20 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	config.load(PATH)
 	var _n = category_scene.instantiate() as LogCategory
 	var _def = config.get_value("categories", "default_category", "")
-	_n.category_name = _name
+	var low_name: String = _name.to_lower()
+	_n.category_name = low_name
 	_n.is_locked = _is_locked 
 	category_container.add_child(_n)
 
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit())
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested)
-	if !_name.is_empty():
-		_n.default_checkbox.button_pressed = _def == _name
+	if !low_name.is_empty():
+		_n.default_checkbox.button_pressed = _def == low_name
 	_n.tree_entered.connect(request_update_columns)
 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name)) 
 
-	if _name == "":	_n.line_edit.grab_focus()
+	if low_name == "":	_n.line_edit.grab_focus()
 	handle_category_mov_button_state()
 	request_update_columns()
  

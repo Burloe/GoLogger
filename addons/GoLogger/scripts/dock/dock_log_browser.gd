@@ -45,13 +45,21 @@ var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], [player, playerGridContainer]]
 var cat_containers: Array[GridContainer] = []
+var log_files: Array[GLLogFile] = []
 var cur_logfile: GLLogFile = null:
 	set(value):
 		cur_logfile = value
 		lv_contents_lbl.text = cur_logfile.file_contents if value else ""
 		if value != null:
 			lv_copy_content_btn.visible = !cur_logfile.file_contents.is_empty() 
-var log_files: Array[GLLogFile] = []
+var cur_view: bool = false:
+	set(value):
+		cur_view = value
+		lv_view_type_btn.icon = splitscreen_view if value else fullscreen_view
+		lv_view_type_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
+		set_view(BrowserState.LOG_SPLIT if value else BrowserState.LOG_FULL)
+		config.load(PATH)
+		config.set_value("settings", "browser_view", value)
 
 var log_errors: Dictionary = {
 	"OK": "Success",
@@ -84,24 +92,24 @@ func _ready() -> void:
 		if mo != null:
 			mo.mouse_entered.connect(func() -> void: is_content_hovered = true)
 			mo.mouse_exited.connect(func() -> void: is_content_hovered = false)
-
 	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
-	lv_close_btn.button_up.connect(_close_log_file)
+	lv_close_btn.button_up.connect(_close_log_file) 
 	lv_refresh_btn.button_up.connect(load_log_browser)
-	lv_view_type_btn.toggled.connect(_on_button_toggled.bind(lv_view_type_btn))
+	lv_view_type_btn.button_up.connect(func() -> void: cur_view = !cur_view)
 	lv_lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lv_lbl_sett_btn))
 	lv_copy_content_btn.button_up.connect(func() -> void: if cur_logfile != null: DisplayServer.clipboard_set(cur_logfile.file_contents))
 	resized.connect(_update_columns)
-	lv_title_lbl.text = ""
-	lv_contents_lbl.text = ""
-	lv_lbl_sett_popup.hide()
 	
 	inspector = EditorInspector.new()
 	inspector.edit(ResourceLoader.load("uid://cqn5x8cb7vjy3"))
 	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	lv_lbl_sett_popup.get_child(0).add_child(inspector) 
+	set_view(BrowserState.FILE_LIST)
 
+	lv_title_lbl.text = ""
+	lv_contents_lbl.text = ""
+	lv_lbl_sett_popup.hide()
 
 
 
@@ -111,6 +119,9 @@ func set_view(to: BrowserState) -> void:
 	fb_margin_container.hide()
 	lv_margin_container.hide()
 	fb_margin_container.add_theme_constant_override("margin_right", 0)
+
+	if to != BrowserState.FILE_LIST and cur_logfile == null:
+		to = BrowserState.FILE_LIST
 
 	match to:
 		BrowserState.FILE_LIST:
@@ -122,18 +133,20 @@ func set_view(to: BrowserState) -> void:
 			lv_margin_container.show()
 			fb_margin_container.add_theme_constant_override("margin_right", 8)
 	state = to
+	await get_tree().physics_frame
+	_update_columns()
 
 
 
 
 ## Used to both initialize and reload the file list
-func load_log_browser(is_initializing: bool = false) -> void:
+func load_log_browser(is_initializing: bool = false) -> void: #Delete is_initlializing
 	_close_log_file()
 	is_reloading = true
 	var e := config.load(PATH)
 	if e != OK: printerr("Failed to load config: ", error_string(e))
-	var view = config.get_value("settings", "browser_view", 0)
-	lv_view_type_btn.button_pressed = true if view == 1 else false
+	var view = config.get_value("settings", "browser_view", 0) 
+	cur_view = config.get_value("settings", "base_view", false)
 	base_dir = config.get_value("settings", "base_directory", "")
 	var cats = config.get_value("categories", "category_names", [])
 	log_files.clear()
@@ -172,7 +185,8 @@ func load_log_browser(is_initializing: bool = false) -> void:
 		categories.append(n)
 		_load_logfiles(c)
 	
-	_update_columns()
+	set_view(BrowserState.LOG_SPLIT if cur_view else BrowserState.LOG_FULL)
+	_update_columns(true)
 	is_reloading = false
 
 
@@ -284,17 +298,15 @@ func _open_log_file(log_file: GLLogFile) -> void:
 	lv_title_lbl.text = str("  ", log_file.file_name)
 	lv_contents_lbl.text = log_content if !log_content.is_empty() else "< File is empty or failed to load properly >"
 	cur_logfile = log_file
-	set_view(config.get_value("settings", "browser_view"))
+	set_view(BrowserState.LOG_SPLIT if cur_view else BrowserState.LOG_FULL)
 	
 
 
 func _close_log_file() -> void:
-	set_view(BrowserState.FILE_LIST)
 	if cur_logfile:
 		cur_logfile.selected = false
 		cur_logfile = null
-	await get_tree().physics_frame
-	_update_columns()
+	set_view(BrowserState.FILE_LIST)
 
 
 
@@ -324,10 +336,12 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 
 
 
-func _update_columns() -> void:
+func _update_columns(is_initializing: bool = false) -> void:
 	if min_cell_width <= 0:
 		return
-	var cols = max(1, int(category_tab_container.size.x / min_cell_width))
+	
+	var width = int(size.x - 55) if is_initializing else category_tab_container.size.x
+	var cols = max(1, int(width / min_cell_width))
 	for i in range(categories.size()):
 		if categories[i][1] is GridContainer and categories[i][1] != null:
-			categories[i][1].columns = cols
+			categories[i][1].columns = cols 

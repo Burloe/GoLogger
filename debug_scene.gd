@@ -37,6 +37,7 @@ func _ready() -> void:
 	randomize()
 	db_timer.timeout.connect(_on_timer_timeout)
 	Log.msg_logged.connect(_on_msg_logged)
+	Log.session_toggled.connect(_on_session_status_toggled)
 	config.load(PATH)
 
 	for child in c_container.get_children():
@@ -107,6 +108,14 @@ func _on_msg_logged(category_name: String, msg: String) -> void:
 		if child.category_name == category_name:
 			child.add_msg(msg)
 		
+
+func _on_session_status_toggled(toggled_on: bool) -> void:
+	# if !toggled_on: 
+	# 	return
+
+	for child in c_container.get_children():
+		if toggled_on: child.clear_entries()
+		else: child.add_msg("Stopped Session.")
 
 
 func _on_timer_timeout() -> void:

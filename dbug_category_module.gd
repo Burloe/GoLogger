@@ -37,5 +37,12 @@ func add_msg(msg: String) -> void:
 
 
 func remove_msg() -> void: 
-	entries[0][0].queue_free()
+	if entries[0][0]:
+		entries[0][0].queue_free()
 	entries.remove_at(0)
+
+
+
+func clear_entries() -> void:
+	for child in entry_container.get_children():
+		child.queue_free()

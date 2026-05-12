@@ -243,7 +243,7 @@ var settings_dict := {
 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
 	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_INT, 		"control": null, "default": 0}
+	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false}
 }
 
 
@@ -278,7 +278,6 @@ func _ready() -> void:
 	_connect_unique(open_dir_btn.button_up, _open_directory)
 	_connect_unique(user_dir_btn.button_up, _open_user_dir)
 	_connect_unique(base_dir_opendir_btn.button_up, _open_directory)
-	# _connect_unique(strict_name_check_btn.toggled, _strict_name_toggle)
 
 	initialize_dock()
 	_apply_theme_colors()
@@ -497,6 +496,9 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 
 	# Start from current file state, then override with live UI values when available.
 	for section in config.get_sections():
+		if section.begins_with("categories."):
+			continue
+			
 		for key in config.get_section_keys(section):
 			_c.set_value(section, key, config.get_value(section, key))
 
@@ -539,6 +541,7 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 		)
 		return _e
 	config.load(PATH)
+	save_categories()
 	return _e
 
 
@@ -728,8 +731,6 @@ func _get_theme_colors() -> Dictionary:
 
 func _apply_theme_colors():
 	theme_colors = _get_theme_colors()
-
-	# Apply theme colors to all styleboxes and panels using a centralized color map.
 	var color_map := {
 		# Transparent elements
 		sb_tab_unselected: {"bg_color": Color.TRANSPARENT},
@@ -758,7 +759,6 @@ func _apply_theme_colors():
 		# Accent color elements
 		panel_round_accent: {"bg_color": theme_colors["accent"]["col"]},
 		panel_top_round_accent: {"bg_color": theme_colors["accent"]["col"]},
-		sb_btn_apply: {"bg_color": theme_colors["accent"]["col"]},
 		sb_btn_toggled_on: {"border_color": theme_colors["accent"]["col"]},
 		sb_tab_hover: {"bg_color": theme_colors["accent"]["light"]},
 		sb_tab_selected: {"bg_color": theme_colors["accent"]["dark"]},
@@ -766,6 +766,7 @@ func _apply_theme_colors():
 		# Accent muted variants
 		panel_round_accent_muted: {"bg_color": theme_colors["accent"]["dark_highlight"]},
 		panel_top_round_accent_muted: {"bg_color": theme_colors["accent"]["dark_highlight"]},
+		sb_btn_apply: {"bg_color": theme_colors["accent"]["dark_highlight"]},
 		
 		# Label settings
 		lv_content_lbl_settings: {"font_color": theme_colors["font"]["normal"]},

@@ -166,7 +166,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 2
+current_tab = 1
 all_tabs_in_front = true
 tab_focus_mode = 0
 tab_0/title = " "
@@ -188,7 +188,6 @@ metadata/_tab_name = " "
 
 [node name="CategoriesTab" type="HBoxContainer" parent="." unique_id=35875088]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -256,6 +255,7 @@ size_flags_vertical = 3
 
 [node name="RENABLEButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1634797201]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 icon = ExtResource("12_e4pb5")
@@ -277,6 +277,7 @@ columns = 3
 
 [node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -330,9 +331,21 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-toggle_mode = true
-button_pressed = true
 icon = ExtResource("17_5orq7")
+icon_alignment = 1
+
+[node name="PrintSizeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1205511631]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Reload files"
+theme_override_styles/normal = ExtResource("12_7cref")
+theme_override_styles/pressed = ExtResource("12_7cref")
+theme_override_styles/hover = ExtResource("12_7cref")
+theme_override_styles/hover_pressed = ExtResource("12_7cref")
+theme_override_styles/disabled = ExtResource("12_7cref")
+icon = ExtResource("12_e4pb5")
 icon_alignment = 1
 
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
@@ -347,7 +360,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 8
-theme_override_constants/margin_right = 8
+theme_override_constants/margin_right = 0
 
 [node name="CategoryTabContainer" type="TabContainer" parent="LogBrowserTab/HSplitContainer/FBMarginContainer" unique_id=1149614450]
 unique_name_in_owner = true
@@ -364,6 +377,7 @@ current_tab = 0
 
 [node name="LVMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1830750093]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(115, 0)
 layout_mode = 2
 size_flags_horizontal = 3

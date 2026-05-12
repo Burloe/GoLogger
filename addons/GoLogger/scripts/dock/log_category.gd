@@ -59,6 +59,7 @@ func _ready() -> void:
 		del_btn.button_up.connect(_on_del_button_up)
 		line_edit.text_changed.connect(_on_text_changed)
 		line_edit.editing_toggled.connect(_on_line_edit_editing_toggled)
+		line_edit.focus_exited.connect(_on_line_edit_focus_exited)
 		move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 		move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
@@ -136,29 +137,30 @@ func apply_name(new_name: String) -> void:
 		return
 		
 	config.load(PATH)
+	var low_name: String = new_name.to_lower()
 	var cat: Array = config.get_value("categories", "category_names", []).duplicate()
 	var def: String = config.get_value("categories", "default_category", "")
 	var old_name: String = category_name
 
 	# New LogCategory
 	if old_name == "": 
-		cat.append(new_name)
+		cat.append(low_name)
 
 	# Existing LogCategory
 	if cat.has(old_name) and old_name != "": 
 		for c in cat.size():
 			if cat[c] == old_name:
-				cat[c] = new_name 
+				cat[c] = low_name 
 				break
 
 	if old_name == def:
-		config.set_value("categories", "default_category", new_name)
+		config.set_value("categories", "default_category", low_name)
 
 	config.set_value("categories", "category_names", cat)
 	config.save(PATH) 
 
-	category_name = new_name
-	line_edit.text = new_name
+	category_name = low_name
+	line_edit.text = low_name
 	log_category_changed.emit()
 	line_edit.release_focus()
 	apply_btn.hide()
@@ -176,6 +178,13 @@ func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 	if !is_locked:
 		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 		revert_btn.visible = toggled_on
+
+
+
+func _on_line_edit_focus_exited() -> void:
+	if line_edit.text == category_name:
+		apply_btn.hide()
+		default_checkbox.show()
 
 
 
