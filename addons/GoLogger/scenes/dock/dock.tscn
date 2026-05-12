@@ -19,11 +19,10 @@
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
-[ext_resource type="Texture2D" uid="uid://cp2p55wdq2wuk" path="res://addons/gologger/resources/icons/ControlAlignVCenterWide.svg" id="17_5orq7"]
+[ext_resource type="Texture2D" uid="uid://ijiplwclq5pu" path="res://addons/gologger/resources/icons/ControlAlignFullRect.svg" id="17_jajas"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/resources/file_content_label_settings.tres" id="18_03nd1"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="StyleBox" uid="uid://do71h5y0uj5j2" path="res://addons/gologger/resources/theme/log_file_button_pressed.tres" id="20_5orq7"]
-[ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/gologger/resources/icons/Reset.svg" id="20_nkhaa"]
 [ext_resource type="Texture2D" uid="uid://dwxenwifm3ujy" path="res://addons/gologger/resources/icons/GDScript.svg" id="21_5orq7"]
 [ext_resource type="Texture2D" uid="uid://cf6vrjxr67nqe" path="res://addons/gologger/resources/icons/ActionCopy.svg" id="21_equok"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/gologger/resources/theme/panel_top_rounded_base_col.tres" id="21_vkni8"]
@@ -172,13 +171,15 @@ tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("6_w3br5")
 tab_0/disabled = true
-tab_1/title = "Categories"
-tab_2/title = "Log Browser"
+tab_1/title = "Logs"
+tab_2/title = "Categories"
 tab_3/title = "Settings"
 tab_4/title = "Help"
 script = ExtResource("6_0swix")
+dev_mode = true
 data = SubResource("Resource_xov76")
-metadata/_edit_horizontal_guides_ = [49.0, 294.0]
+metadata/_edit_horizontal_guides_ = [49.0, 294.0, 254.0]
+metadata/_edit_vertical_guides_ = [15.0]
 
 [node name="IconTabIGNORE" type="Control" parent="." unique_id=1209850644]
 visible = false
@@ -186,110 +187,20 @@ layout_mode = 2
 metadata/_tab_index = 0
 metadata/_tab_name = " "
 
-[node name="CategoriesTab" type="HBoxContainer" parent="." unique_id=35875088]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-theme_override_constants/separation = 8
-script = ExtResource("8_y0aum")
-min_cell_width = 350
-metadata/_tab_index = 1
-metadata/_tab_name = "Categories"
-
-[node name="SidebarPanel" type="Panel" parent="CategoriesTab" unique_id=1547891829]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(46, 100)
-layout_mode = 2
-theme_override_styles/panel = ExtResource("2_3wac3")
-
-[node name="MarginContainer" type="MarginContainer" parent="CategoriesTab/SidebarPanel" unique_id=1878771389]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="TitleHBoxContainer" type="VBoxContainer" parent="CategoriesTab/SidebarPanel/MarginContainer" unique_id=1347103215]
-layout_mode = 2
-
-[node name="AddCategoryButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1822746076]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Create new category"
-mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.23921569, 0.49019608, 0.19607843, 1)
-theme_override_colors/icon_hover_color = Color(0.68999994, 0.9, 0.396, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.24009998, 0.49, 0.196, 1)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = ExtResource("8_ym61x")
-icon_alignment = 1
-
-[node name="OpenDirCatButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=594576567]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Opens Base Directory using OS file browser"
-mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.39999998, 0.64999986, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = ExtResource("9_m5iun")
-icon_alignment = 1
-
-[node name="Control" type="Control" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1669197090]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="RENABLEButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1634797201]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-icon = ExtResource("12_e4pb5")
-icon_alignment = 1
-
-[node name="ScrollContainer" type="ScrollContainer" parent="CategoriesTab" unique_id=642802176]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="CategoryGridContainer" type="GridContainer" parent="CategoriesTab/ScrollContainer" unique_id=2014106739]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 3
-
 [node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 script = ExtResource("10_kapcw")
-metadata/_tab_index = 2
-metadata/_tab_name = "Log Browser"
+metadata/_tab_index = 1
+metadata/_tab_name = "Logs"
 
 [node name="SidePanel" type="Panel" parent="LogBrowserTab" unique_id=1192128886]
 clip_contents = true
-custom_minimum_size = Vector2(46, 0)
+custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("11_5jaku")
 
@@ -313,25 +224,42 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Reload files"
+tooltip_text = "Refresh files"
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = ExtResource("12_7cref")
+disabled = true
 icon = ExtResource("13_dg67q")
+icon_alignment = 1
+
+[node name="ViewerOpenDirButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=106065706]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Opens Base Directory using OS file browser"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.39999998, 0.64999986, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
+icon = ExtResource("9_m5iun")
 icon_alignment = 1
 
 [node name="ViewTypeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1807274223]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Split or full view mode"
+tooltip_text = "Fullscreen View"
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = ExtResource("17_5orq7")
+icon = ExtResource("17_jajas")
 icon_alignment = 1
 
 [node name="PrintSizeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1205511631]
@@ -348,12 +276,46 @@ theme_override_styles/disabled = ExtResource("12_7cref")
 icon = ExtResource("12_e4pb5")
 icon_alignment = 1
 
+[node name="Control" type="Control" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1387267252]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RENABLEButton1" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1733649966]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("12_e4pb5")
+icon_alignment = 1
+
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 14
 theme_override_styles/split_bar_background = SubResource("StyleBoxFlat_equok")
+split_offsets = PackedInt32Array(8)
+split_offset = 8
+
+[node name="ReloadTopper" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1446122225]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowserTab/HSplitContainer/ReloadTopper" unique_id=2056692232]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Topper" type="Panel" parent="LogBrowserTab/HSplitContainer/ReloadTopper/VBoxContainer" unique_id=2141266303]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_3wac3")
+
+[node name="Bottom" type="Panel" parent="LogBrowserTab/HSplitContainer/ReloadTopper/VBoxContainer" unique_id=359394392]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("16_udfr3")
 
 [node name="FBMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1407356486]
 unique_name_in_owner = true
@@ -373,7 +335,6 @@ theme_override_styles/tabbar_background = ExtResource("2_3wac3")
 theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
-current_tab = 0
 
 [node name="LVMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1830750093]
 unique_name_in_owner = true
@@ -494,40 +455,15 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "GoLogger 1.4 player session [26-05-03 | 15:34:37]:
-[15:34:38] 96FzW: Transitioned to level 'highroad_gate.tscn'
-[15:34:39] 96FzW: Player took 34 damage from Hobgoblin. Current HP 41 / 100
-[15:34:40] 96FzW: Transitioned to level 'crypt_b2.tscn'
-[15:34:41] 96FzW: Player took 35 damage from Warg. Current HP 59 / 100
-[15:34:42] 96FzW: Player took 33 damage from Warg. Current HP 26 / 100
-[15:34:43] 96FzW: Player took 18 damage from Hobgoblin. Current HP 47 / 100
-[15:34:44] 96FzW: Player took 13 damage from Ravenous Slime. Current HP 34 / 100
-[15:34:45] 96FzW: Transitioned to level 'highroad_gate.tscn'
-[15:34:46] 96FzW: Transitioned to level 'fen_ruins_a3.tscn'
-[15:34:47] 96FzW: Enemy Hobgoblin killed by Player [Piercing Bolt] for 93 damage.
-[15:34:48] 96FzW: Transitioned to level 'crypt_b2.tscn'
-[15:34:49] 96FzW: Player accepted quest 'Ashes of Fenwatch'
-[15:34:50] 96FzW: Enemy Hobgoblin killed by Player [Heroic Slam] for 165 damage.
-[15:34:51] 96FzW: Enemy Raider killed by Player [Piercing Bolt] for 160 damage.
-[15:34:52] 96FzW: Player took 10 damage from Ravenous Slime. Current HP 45 / 100
-[15:34:53] 96FzW: Transitioned to level 'fen_ruins_a3.tscn'
-[15:34:54] 96FzW: Player accepted quest 'Blood in the Water'
-[15:34:55] 96FzW: Player accepted quest 'Ashes of Fenwatch'
-[15:34:56] 96FzW: Enemy Hobgoblin killed by Player [Ember Lance] for 175 damage.
-[15:34:57] 96FzW: Transitioned to level 'crypt_b2.tscn'
-[15:34:58] 96FzW: Player accepted quest 'Ashes of Fenwatch'
-[15:34:59] 96FzW: Player accepted quest 'Ashes of Fenwatch'
-[15:35:00] 96FzW: Transitioned to level 'fen_ruins_a3.tscn'
-[15:35:01] 96FzW: Player took 23 damage from Bog Witch. Current HP 59 / 100
-[15:35:02] 96FzW: Transitioned to level 'crypt_b2.tscn'
-[15:35:03] 96FzW: Transitioned to level 'fen_ruins_a3.tscn'
-[15:35:04] 96FzW: Enemy Fen Beast killed by Player [Ember Lance] for 142 damage.
-[15:35:05] 96FzW: Player took 9 damage from Warg. Current HP 64 / 100
-[15:35:06] 96FzW: Player accepted quest 'Last Ember'
-[15:35:07] 96FzW: Player took 14 damage from Warg. Current HP 30 / 100
-[15:35:08] 96FzW: Enemy Boneguard killed by Player [Serrated Strike] for 164 damage.
-[15:35:09] 96FzW: Player accepted quest 'Blood in the Water'
-[15:35:10] 96FzW: Player accepted quest 'Last Ember'
+text = "GoLogger 1.4 player session [26-05-11 | 22:50:45]:
+[22:50:45] iZbpQ: Player accepted quest 'The Lost Cartographer'
+[22:50:46] iZbpQ: Player accepted quest 'Last Ember'
+[22:50:47] iZbpQ: Player took 17 damage from Warg. Current HP 40 / 100
+[22:50:48] iZbpQ: Player accepted quest 'Ashes of Fenwatch'
+[22:50:49] iZbpQ: Player took 17 damage from Bog Witch. Current HP 23 / 100
+[22:50:50] iZbpQ: Transitioned to level 'fen_ruins_a3.tscn'
+[22:50:51] iZbpQ: Player accepted quest 'Blood in the Water'
+[22:50:52] Stopped log session.
 "
 label_settings = ExtResource("18_03nd1")
 autowrap_mode = 3
@@ -545,21 +481,94 @@ theme_override_styles/panel = ExtResource("25_equok")
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ReloadHider" type="VBoxContainer" parent="LogBrowserTab" unique_id=2056692232]
+[node name="CategoriesTab" type="HBoxContainer" parent="." unique_id=35875088]
 unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 8
+script = ExtResource("8_y0aum")
+min_cell_width = 350
+metadata/_tab_index = 2
+metadata/_tab_name = "Categories"
 
-[node name="Topper" type="Panel" parent="LogBrowserTab/ReloadHider" unique_id=2141266303]
-custom_minimum_size = Vector2(0, 34)
+[node name="SidebarPanel" type="Panel" parent="CategoriesTab" unique_id=1547891829]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 100)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("2_3wac3")
 
-[node name="Bottom" type="Panel" parent="LogBrowserTab/ReloadHider" unique_id=359394392]
+[node name="MarginContainer" type="MarginContainer" parent="CategoriesTab/SidebarPanel" unique_id=1878771389]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="TitleHBoxContainer" type="VBoxContainer" parent="CategoriesTab/SidebarPanel/MarginContainer" unique_id=1347103215]
+layout_mode = 2
+
+[node name="AddCategoryButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1822746076]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Create new category"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.23921569, 0.49019608, 0.19607843, 1)
+theme_override_colors/icon_hover_color = Color(0.68999994, 0.9, 0.396, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.24009998, 0.49, 0.196, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
+icon = ExtResource("8_ym61x")
+icon_alignment = 1
+
+[node name="OpenDirCatButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=594576567]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Opens Base Directory using OS file browser"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.39999998, 0.64999986, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.36862746, 0.21960784, 0.4, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
+icon = ExtResource("9_m5iun")
+icon_alignment = 1
+
+[node name="Control" type="Control" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1669197090]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("16_udfr3")
+
+[node name="RENABLEButton2" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1634797201]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("12_e4pb5")
+icon_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CategoriesTab" unique_id=642802176]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CategoryGridContainer" type="GridContainer" parent="CategoriesTab/ScrollContainer" unique_id=2014106739]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
@@ -572,24 +581,44 @@ metadata/_tab_index = 3
 metadata/_tab_name = "Settings"
 
 [node name="SidebarPanel" type="Panel" parent="SettingsTab" unique_id=1779116936]
-custom_minimum_size = Vector2(46, 0)
+custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("11_5jaku")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SettingsTab/SidebarPanel" unique_id=481005282]
+[node name="MarginContainer" type="MarginContainer" parent="SettingsTab/SidebarPanel" unique_id=1901335982]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 15
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="Padding" type="Control" parent="SettingsTab/SidebarPanel/VBoxContainer" unique_id=2065135817]
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsTab/SidebarPanel/MarginContainer" unique_id=481005282]
 layout_mode = 2
 
-[node name="BaseDirOpenDirButton" type="Button" parent="SettingsTab/SidebarPanel/VBoxContainer" unique_id=918067150]
+[node name="ResetSettingsButton" type="Button" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=1084513318]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_direction = 2
+layout_mode = 2
+tooltip_text = "Reset to all settings to default"
+theme_override_colors/icon_pressed_color = Color(0.56078434, 0.21176471, 0.21176471, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.48000002, 0.48000002, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.56, 0.2128, 0.2128, 1)
+theme_override_styles/normal = ExtResource("12_7cref")
+theme_override_styles/pressed = ExtResource("12_7cref")
+theme_override_styles/hover = ExtResource("12_7cref")
+theme_override_styles/hover_pressed = ExtResource("12_7cref")
+icon = ExtResource("13_dg67q")
+icon_alignment = 1
+
+[node name="BaseDirOpenDirButton" type="Button" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=918067150]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Open the base directory folder"
 theme_override_colors/icon_pressed_color = Color(0.37000003, 0.22000001, 0.4, 1)
@@ -603,21 +632,16 @@ theme_override_styles/hover_pressed = ExtResource("12_7cref")
 icon = ExtResource("9_m5iun")
 icon_alignment = 1
 
-[node name="Padding2" type="Control" parent="SettingsTab/SidebarPanel/VBoxContainer" unique_id=1956845458]
+[node name="Control" type="Control" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=478747324]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="ResetSettingsButton" type="Button" parent="SettingsTab/SidebarPanel/VBoxContainer" unique_id=1084513318]
+[node name="RENABLEButton3" type="Button" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=80779388]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Reset to all settings to default"
-theme_override_colors/icon_pressed_color = Color(0.56078434, 0.21176471, 0.21176471, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.48000002, 0.48000002, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.56, 0.2128, 0.2128, 1)
-theme_override_styles/normal = ExtResource("12_7cref")
-theme_override_styles/pressed = ExtResource("12_7cref")
-theme_override_styles/hover = ExtResource("12_7cref")
-theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = ExtResource("20_nkhaa")
+icon = ExtResource("12_e4pb5")
 icon_alignment = 1
 
 [node name="L_Panel" type="Panel" parent="SettingsTab" unique_id=1757351944]

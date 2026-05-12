@@ -21,8 +21,11 @@ extends TabContainer
 signal update_index # The hell is this? Delete?
 signal change_category_name_finished # Deprecated? 
 
+@export var dev_mode: bool = false
 @export var data: GLData = preload("uid://dj7h7t2v8csck")
-@onready var renable_btn: Button = %RENABLEButton
+@onready var renable_btn1: Button = %RENABLEButton1
+@onready var renable_btn2: Button = %RENABLEButton2
+@onready var renable_btn3: Button = %RENABLEButton3
 
 # Category tab
 @onready var category_tab: HBoxContainer = %CategoriesTab
@@ -34,6 +37,7 @@ signal change_category_name_finished # Deprecated?
 # Log Browser
 @onready var log_browser_tab: HBoxContainer = %LogBrowserTab
 @onready var log_browser_view_btn: Button = %ViewTypeButton
+@onready var log_browser_open_dir_btn: Button = %ViewerOpenDirButton
 
 # Settings tab
 @onready var settings_tab: HBoxContainer = %SettingsTab
@@ -251,7 +255,9 @@ var settings_dict := {
 
 #region Inits and signals
 
-func _ready() -> void: 
+func _ready() -> void:
+	for i in [renable_btn1, renable_btn2, renable_btn3]:
+		if i: i.visible = dev_mode
 	theme_colors = _get_theme_colors()
 
 	tab_changed.connect(
@@ -276,6 +282,7 @@ func _ready() -> void:
 	# Signal connections 
 	_connect_unique(settings.settings_changed, _on_editor_settings_changed)
 	_connect_unique(open_dir_btn.button_up, _open_directory)
+	_connect_unique(log_browser_open_dir_btn.button_up, _open_directory)
 	_connect_unique(user_dir_btn.button_up, _open_user_dir)
 	_connect_unique(base_dir_opendir_btn.button_up, _open_directory)
 
@@ -515,7 +522,10 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 		if section_name == "categories":
 			continue
 		
-		if   ctrl is LineEdit:
+		if setting_name == "browser_view":
+			_c.set_value("settings", setting_name, log_browser_tab.cur_view)
+			# print("qweeeeeeeee", log_browser_tab.cur_view)
+		elif   ctrl is LineEdit:
 			_c.set_value("settings", setting_name, ctrl.text)
 		elif ctrl is Button and ctrl.toggle_mode:
 			_c.set_value("settings", setting_name, 1 if ctrl.button_pressed else 0)
@@ -524,7 +534,7 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 		elif ctrl is CheckBox:
 			_c.set_value("settings", setting_name, ctrl.button_pressed)
 		elif ctrl is OptionButton:
-			_c.set_value("settings", setting_name, ctrl.selected)   
+			_c.set_value("settings", setting_name, ctrl.selected)  
 
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
 	if  err_rep_lv <= ErrorReportLevel.ERRORS:

@@ -44,75 +44,80 @@ var category_name: String = "":
 			category_name = value
 			if line_edit != null: line_edit.text = category_name 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.keycode == KEY_ESCAPE:
+		if line_edit.has_focus():
+			line_edit.release_focus()
 
 
 func _ready() -> void:
-	if Engine.is_editor_hint():
-		config.load(PATH)
+	config.load(PATH)
 
-		_on_editor_settings_changed() 
-		revert_btn.hide()
-		if category_name != "":
-			revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
-		settings.settings_changed.connect(_on_editor_settings_changed)
-		del_btn.button_up.connect(_on_del_button_up)
-		line_edit.text_changed.connect(_on_text_changed)
-		line_edit.editing_toggled.connect(_on_line_edit_editing_toggled)
-		line_edit.focus_exited.connect(_on_line_edit_focus_exited)
-		move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
-		move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
-		revert_btn.button_up.connect(
-			func() -> void:
-				line_edit.unedit()
-				line_edit.release_focus()
+	_on_editor_settings_changed() 
+	revert_btn.hide()
+	if category_name != "":
+		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
+
+	settings.settings_changed.connect(_on_editor_settings_changed)
+	del_btn.button_up.connect(_on_del_button_up)
+	line_edit.text_changed.connect(_on_text_changed)
+	line_edit.editing_toggled.connect(_on_line_edit_editing_toggled)
+	line_edit.focus_exited.connect(_on_line_edit_focus_exited)
+	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
+	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
+
+	revert_btn.button_up.connect(
+		func() -> void:
+			line_edit.unedit()
+			line_edit.release_focus()
+			line_edit.text = category_name
+			apply_btn.hide()
+			default_checkbox.show()
+			revert_btn.hide()
+	)
+
+	line_edit.text_submitted.connect(
+		func(new_text: String) -> void:
+			if !check_name_conflict():
+				apply_name(new_text)
+			else:
 				line_edit.text = category_name
-				apply_btn.hide()
-				default_checkbox.show()
-				revert_btn.hide()
-		)
-
-		line_edit.text_submitted.connect(
-			func(new_text: String) -> void:
-				if !check_name_conflict():
-					apply_name(new_text)
-				else:
-					line_edit.text = category_name
-					handle_name_state()
-		)
-
-		line_edit.text_changed.connect(
-			func(_new_text: String) -> void:
 				handle_name_state()
-		)
+	)
 
-		apply_btn.button_up.connect(
-			func() -> void:
-				if !check_name_conflict():
-					apply_name(line_edit.text)
-		)
+	line_edit.text_changed.connect(
+		func(_new_text: String) -> void:
+			handle_name_state()
+	)
 
-		lock_btn.toggled.connect(
-			func(pressed: bool) -> void:
-				is_locked = pressed
-				line_edit.unedit()
-				line_edit.release_focus()
-				apply_btn.hide()
-				default_checkbox.show()
-				revert_btn.hide()
-		)
+	apply_btn.button_up.connect(
+		func() -> void:
+			if !check_name_conflict():
+				apply_name(line_edit.text)
+	)
 
-		default_checkbox.toggled.connect(
-			func(pressed: bool) -> void:
-				set_default_category.emit(self, pressed) 
-		)
+	lock_btn.toggled.connect(
+		func(pressed: bool) -> void:
+			is_locked = pressed
+			line_edit.unedit()
+			line_edit.release_focus()
+			apply_btn.hide()
+			default_checkbox.show()
+			revert_btn.hide()
+	)
 
-		line_edit.text = category_name
-		lock_btn.button_pressed = is_locked
-		size = Vector2.ZERO
-		if line_edit.text == "": 
-			apply_btn.hide() 
+	default_checkbox.toggled.connect(
+		func(pressed: bool) -> void:
+			set_default_category.emit(self, pressed) 
+	)
+
+	line_edit.text = category_name
+	lock_btn.button_pressed = is_locked
+	size = Vector2.ZERO
+	if line_edit.text == "": 
+		apply_btn.hide() 
 
 
 

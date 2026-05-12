@@ -44,7 +44,6 @@ var file_contents: String = "":
 func _ready() -> void:
 	text = display_name if display_name != "" else placeholder_name
 	mouse_entered.connect(get_file_content)
-	# button_up.connect(func() -> void: selected = !selected)
 
 
 

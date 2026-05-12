@@ -108,6 +108,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Check `start_session` hotkey
 - [ ] Check `stop_session` hotkey
 - [ ] Check `display_instance_id` hotkey
+- [ ] R-click INSIDE log content closes log file in Log Browser
 
 ### `gologger_data.ini`
 
@@ -145,7 +146,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 ### Log Browser
 - [ ] Ensure categories are loaded and that the tabs in the TabContainer are named appropriately.
 - [ ] Ensure log files are properly refreshed and loaded when pressing `ReloadButton`.
-- [ ] Check that `VSlider`indeed changes the font size of the content label.
+- [ ] Check that columns update automatically when resized and when `view` is changed.
 - [ ] Ensure files that can't open displays the error.
 - [ ] R-Click closes an open log file, ONLY WHEN CLICKED INSIDE THE CONTENTS CONTAINER.
 

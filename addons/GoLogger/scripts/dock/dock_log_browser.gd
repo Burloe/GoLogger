@@ -3,10 +3,10 @@ extends HBoxContainer
 
 signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
+@onready var reload_hider: MarginContainer = %ReloadTopper
 @onready var fb_margin_container: MarginContainer = %FBMarginContainer
 @onready var lv_margin_container: MarginContainer = %LVMarginContainer
 @onready var category_tab_container = %CategoryTabContainer
-@onready var reload_hider: VBoxContainer = %ReloadHider
 @onready var log_viewer: Panel = %LogViewer
 @onready var h_split_cont: HSplitContainer = %HSplitContainer
 @onready var lv_title_lbl: Label = %ViewerTitleLabel
@@ -26,8 +26,8 @@ var inspector: EditorInspector
 
 const PATH = "user://gologger_data.ini"
 
-var fullscreen_view := preload("uid://ijiplwclq5pu")
-var splitscreen_view := preload("uid://cp2p55wdq2wuk")
+var ico_fullscreen_view := preload("uid://ijiplwclq5pu")
+var ico_splitscreen_view := preload("uid://cp2p55wdq2wuk")
 var log_file_btn := preload("uid://bq7nahsc5aca7")
 var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
 
@@ -55,11 +55,10 @@ var cur_logfile: GLLogFile = null:
 var cur_view: bool = false:
 	set(value):
 		cur_view = value
-		lv_view_type_btn.icon = splitscreen_view if value else fullscreen_view
+		lv_view_type_btn.icon = ico_splitscreen_view if value else ico_fullscreen_view
 		lv_view_type_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
 		set_view(BrowserState.LOG_SPLIT if value else BrowserState.LOG_FULL)
-		config.load(PATH)
-		config.set_value("settings", "browser_view", value)
+var reload_buffer_time: float = 0.01
 
 var log_errors: Dictionary = {
 	"OK": "Success",
@@ -71,7 +70,8 @@ var state: BrowserState = BrowserState.FILE_LIST
 enum BrowserState {
 	LOG_FULL,
 	LOG_SPLIT,
-	FILE_LIST
+	FILE_LIST,
+	RELOAD_HIDE
 }
 
 
@@ -81,12 +81,21 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_released():
 		if state != BrowserState.FILE_LIST and is_content_hovered:
 			_close_log_file()
+	
+	if event is InputEventKey and event.keycode == KEY_ESCAPE:
+		_close_log_file()
+	
+	if event is InputEventKey and event.keycode == KEY_O:
+		if event.is_pressed():
+			set_view(BrowserState.RELOAD_HIDE)
+		if event.is_released():
+			set_view(BrowserState.FILE_LIST)
 	 
 
 
 func _ready() -> void:
 	config.load(PATH)
-	load_log_browser(true)
+	load_log_browser()
 
 	for mo in [lv_contents_lbl, lv_scroll_container, lv_panel, lv_panel.get_child(0), lv_title_lbl, log_viewer, log_viewer.get_child(0)]:
 		if mo != null:
@@ -132,6 +141,8 @@ func set_view(to: BrowserState) -> void:
 			fb_margin_container.show()
 			lv_margin_container.show()
 			fb_margin_container.add_theme_constant_override("margin_right", 8)
+		BrowserState.RELOAD_HIDE:
+			reload_hider.show()
 	state = to
 	await get_tree().physics_frame
 	_update_columns()
@@ -140,13 +151,12 @@ func set_view(to: BrowserState) -> void:
 
 
 ## Used to both initialize and reload the file list
-func load_log_browser(is_initializing: bool = false) -> void: #Delete is_initlializing
+func load_log_browser() -> void:
 	_close_log_file()
 	is_reloading = true
 	var e := config.load(PATH)
 	if e != OK: printerr("Failed to load config: ", error_string(e))
-	var view = config.get_value("settings", "browser_view", 0) 
-	cur_view = config.get_value("settings", "base_view", false)
+	cur_view = config.get_value("settings", "browser_view", false)
 	base_dir = config.get_value("settings", "base_directory", "")
 	var cats = config.get_value("categories", "category_names", [])
 	log_files.clear()
@@ -162,8 +172,10 @@ func load_log_browser(is_initializing: bool = false) -> void: #Delete is_initlia
 	for child in category_tab_container.get_children():
 		child.queue_free()
 	
-	# if !is_initializing:
-	await get_tree().create_timer(0.1).timeout
+	var prev_state := state
+	set_view(BrowserState.RELOAD_HIDE)
+	await get_tree().create_timer(reload_buffer_time).timeout
+	set_view(prev_state)
 
 	for c in cats:
 
@@ -317,19 +329,6 @@ func display_log_file_error(log_file: GLLogFile) -> void:
 
 func _on_button_toggled(toggled: bool, btn: Button) -> void:
 	match btn:
-		lv_view_type_btn:
-			lv_view_type_btn.icon = splitscreen_view if lv_view_type_btn.button_pressed else fullscreen_view
-			if toggled:
-				set_view(BrowserState.FILE_LIST if cur_logfile == null else BrowserState.LOG_SPLIT)
-			else:
-				set_view(BrowserState.FILE_LIST if cur_logfile == null else BrowserState.LOG_FULL)
-
-			config.load(PATH)
-			config.set_value("settings", "browser_view", 1 if toggled else 0)
-			config.save(PATH)
-			await get_tree().physics_frame
-			_update_columns()
-
 		lv_lbl_sett_btn:
 			lv_lbl_sett_popup.visible = toggled 
 			lv_margin_container.custom_minimum_size.x = 315 if toggled else 115 
