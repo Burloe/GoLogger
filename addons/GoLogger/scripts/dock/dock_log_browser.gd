@@ -44,7 +44,7 @@ var is_reloading: bool = false:
 		lv_refresh_btn.disabled = value
 var min_cell_width: int = 140
 var base_dir = ""
-var categories: Array = [] # [["game", gameGridContainer], [player, playerGridContainer]]
+var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
 var cat_containers: Array[GridContainer] = []
 var log_files: Array[GLLogFile] = []
 var cur_logfile: GLLogFile = null:
@@ -59,10 +59,10 @@ var cur_view: bool = false:
 		lv_view_mode_btn.icon = ico_splitscreen_view if value else ico_fullscreen_view
 		lv_view_mode_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
 		set_view(BrowserState.LOG_SPLIT if value else BrowserState.LOG_FULL)
-var cur_sort: int = 0: # [0] Name Descend, [1] Name Ascend, [2]Day Descend, [3] Day Ascend
+var cur_sort: SortModes = SortModes.DESCEND: 
 	set(value):
 		cur_sort = value
-		var modes := ["[Name Descending]", "[Name Descending]", "[Day Descending]", "[Day Ascending]"]
+		var modes := ["Descending", "Ascending", "Group by date Descending", "Group by date Ascending"]
 		lv_sort_mode_btn.tooltip_text = str("Sorting by: ", modes[value])
 var reload_buffer_time: float = 0.01
 
@@ -78,6 +78,12 @@ enum BrowserState {
 	LOG_SPLIT,
 	FILE_LIST,
 	RELOAD_HIDE
+}
+enum SortModes {
+	DESCEND,
+	ASCEND,
+	DATE_DESCEND,
+	DATE_ASCEND
 }
 
 
@@ -202,7 +208,7 @@ func load_log_browser() -> void:
 		sc.add_child(gc) 
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
-		gc.add_theme_constant_override("h_separation", 8)
+		gc.add_theme_constant_override("h_separation", 8 if cur_sort < 2 else 16)
 		gc.add_theme_constant_override("v_separation", 8)
 		var n: Array = [c, gc]
 		categories.append(n)
@@ -218,55 +224,111 @@ func _load_logfiles(category_name: String) -> void:
 	config.load(PATH)
 	var file_list: PackedStringArray = _get_category_files(category_name) 
 
-	var actionable_list: PackedStringArray = [] 
+	var actionable_list: PackedStringArray = []
+	var grouped_list: Dictionary = {}
+	var stray_file_lst: PackedStringArray = []
 	for file in file_list:
-		if file.ends_with(".log"): 
-			actionable_list.append(file)
+		if file.ends_with(".log"):
+
+			if cur_sort in [SortModes.DATE_DESCEND, SortModes.DATE_ASCEND]:
+				if file.is_empty() or !file.begins_with(category_name):
+					stray_file_lst.append(file)
+					continue
+
+				var start := file.find("(") + 1
+				var end := file.find("_")
+				if start == 0 or end == -1:
+					continue
+				
+				var file_date = file.substr(start, end - start)
+				# var file_date = file.lstrip(str(category_name, "(").rstrip(").log"))
+
+				if !grouped_list.has(file_date):
+					grouped_list[file_date] = []
+				
+				grouped_list[file_date].append(file)
+			
+			else:
+				actionable_list.append(file)
+	if cur_sort in [SortModes.ASCEND, SortModes.DATE_ASCEND]: actionable_list.reverse()
 	
-	if cur_sort in [1, 3]: actionable_list.reverse()
 
-	for file in actionable_list:
-		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file), "/")
+
+	if cur_sort in [SortModes.DATE_DESCEND, SortModes.DATE_ASCEND]:
+		for date in grouped_list.keys():
+			var gc := GridContainer.new()
+			gc.add_theme_constant_override("h_separation", 8)
+			gc.add_theme_constant_override("v_separation", 8)
+			gc.columns = 3
+			
+
+			for file in grouped_list[date]:
+				var lf: GLLogFile = _create_logfile_obj(category_name, file)
+
+				for c in categories:
+					if c[0] != category_name:
+						continue
+					if grouped_list[date].size() > 1:
+						c[1].add_child(gc)
+						gc.add_child(lf)
+					else:
+						c[1].add_child(lf)
+					log_files.append(lf)
+					lf.button_up.connect(_open_log_file.bind(lf))
+					log_file_added.emit(lf)
+			
+		for file in stray_file_lst:
+			var lf: GLLogFile = _create_logfile_obj(category_name, file)
+			
+			for c in categories:
+				if c[0] != category_name:
+					continue
+				
+				c[1].add_child(lf)
+				log_files.append(lf)
+				lf.button_up.connect(_open_log_file.bind(lf))
+				log_file_added.emit(lf)
+
+	else:
+		for file in actionable_list:
+
+			var lf: GLLogFile = _create_logfile_obj(category_name, file)
+
+			for c in categories:
+				if c[0] != category_name:
+					continue
+				
+				c[1].add_child(lf)
+				log_files.append(lf)
+				lf.button_up.connect(_open_log_file.bind(lf))
+				log_file_added.emit(lf)
+			
+
+
+
+func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
+	var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file_name), "/")
+	
+	if not FileAccess.file_exists(file_path):
+			return
+
+	var f = FileAccess.open(file_path, FileAccess.READ)
+	var content = f.get_file_as_string(file_path)
 		
-		if not FileAccess.file_exists(file_path):
-			continue
+	var lf: GLLogFile = log_file_btn.instantiate() as GLLogFile
+	lf.category_name = category_name
+	lf.file_name = file_name
+	lf.file_path = file_path
+	lf.file_contents = f.get_file_as_string(file_path)
+	lf.assign_icon(true)
 
-		var f = FileAccess.open(file_path, FileAccess.READ)
-		var content = f.get_file_as_string(file_path)
-			
+	if !lf.is_file_valid() or f.get_open_error() != OK:
+		lf.assign_icon(false)
 
-		var lf: GLLogFile = log_file_btn.instantiate() as GLLogFile
-		lf.category_name = category_name
-		lf.file_name = file
-		lf.file_path = file_path
-		lf.file_contents = f.get_file_as_string(file_path)
-		lf.assign_icon(true)
-
-		if !lf.is_file_valid() or f.get_open_error() != OK:
-			lf.assign_icon(false)
-
-		for c in categories:
-			# print("category_namae: ", category_name, "   iterated category: ", c, "    saved array category: ", c)
-			if c[0] != category_name:
-				continue
-			
-			c[1].add_child(lf)
-			log_files.append(lf)
-			lf.button_up.connect(_open_log_file.bind(lf))
-			log_file_added.emit(lf)
-
-		lv_contents_lbl.text = content
-		f.close()
+	f.close()
+	return lf
 
 
-
-# func apply_sort(sort: int, files: Array) -> void:
-# 	match sort:
-# 		0: # time ascending
-# 			files.reverse()
-# 		1: # time descending
-
-# 		2: # day
 
 
 

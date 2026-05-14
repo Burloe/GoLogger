@@ -105,6 +105,17 @@ func assign_icon(is_valid: bool) -> void:
 
 
 
+func get_date() -> String:
+	if file_name.is_empty():
+		return ""
+
+	if !file_name.begins_with(category_name):
+		return ""
+
+	return file_name.lstrip(str(category_name, "(")).rstrip(str(").log"))	
+
+
+
 func _get_name(_f_name: String) -> String:
 	if !_f_name.ends_with(".log"):
 		return _f_name

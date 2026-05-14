@@ -37,6 +37,7 @@ signal change_category_name_finished # Deprecated?
 # Log Browser
 @onready var log_browser_tab: HBoxContainer = %LogBrowserTab
 @onready var log_browser_view_btn: Button = %ViewModeButton
+@onready var log_browser_sort_btn: Button = %SortModeButton
 @onready var log_browser_open_dir_btn: Button = %ViewerOpenDirButton
 
 # Settings tab
@@ -247,7 +248,8 @@ var settings_dict := {
 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
 	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false}
+	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false},
+	"browser_sort":								{"section": "settings", 	"name": "browser_sort",						"type": TYPE_INT,			"control": null, "default": 0}
 }
 
 
@@ -351,7 +353,8 @@ func _assign_settings_controls() -> void:
 		"entry_cap": entry_count_spinbox,
 		"session_duration": session_duration_spinbox,
 		"error_reporting": error_rep_btn,
-		"browser_view": log_browser_view_btn
+		"browser_view": log_browser_view_btn,
+		"browser_sort": log_browser_sort_btn
 	}
 	# printerr()
 

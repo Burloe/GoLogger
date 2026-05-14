@@ -267,7 +267,8 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Sorting by: [Name Ascending]"
+tooltip_text = "Sorting: 
+Name Ascending"
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
