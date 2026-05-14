@@ -226,17 +226,7 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 	var actionable_list: PackedStringArray = []
 	var grouped_list: Dictionary = {}
 	var stray_file_lst: PackedStringArray = []
-	var cat: Array = []
-
-	for c in categories:
-		if c[0] != category_name:
-			continue
 		
-		cat = c
-		break
-
-
-	
 	for file in file_list:
 		if file.ends_with(".log"):
 
@@ -259,56 +249,41 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 			
 			else:
 				actionable_list.append(file)
-	if cur_sort in [SortModes.ASCEND, SortModes.DATE_ASCEND]: actionable_list.reverse()
 	
+	if cur_sort in [SortModes.ASCEND, SortModes.DATE_ASCEND]: 
+		actionable_list.reverse()
+
+	# TODO Need to reverse the grouped_list too
 
 
 	if cur_sort in [SortModes.DATE_DESCEND, SortModes.DATE_ASCEND]:
 
-		# Add grouped .log files
+		# Grouped files
 		for date in grouped_list.keys():
-			var gc := GridContainer.new()
-			gc.add_theme_constant_override("h_separation", 8)
-			gc.add_theme_constant_override("v_separation", 8)
-			gc.columns = 3
+			_add_logfiles_to_container(base_gc, true, grouped_list[date], category_name)
 
-			cat[1].add_child(gc)
-			for file in grouped_list[date]:
-				var lf: GLLogFile = _create_logfile_obj(category_name, file)
-				gc.add_child(lf)
-				log_files.append(lf)
-				lf.button_up.connect(_open_log_file.bind(lf))
-				log_file_added.emit(lf) 
-
-		# Add stray / renamed .log files
-		var gc := GridContainer.new()
-		gc.add_theme_constant_override("h_separation", 8)
-		gc.add_theme_constant_override("v_separation", 8)
-		gc.columns = 3
-		cat[1].add_child(gc)
-		
-		for file in stray_file_lst:
-			var lf: GLLogFile = _create_logfile_obj(category_name, file)
-			gc.add_child(lf)
-			log_files.append(lf)
-			lf.button_up.connect(_open_log_file.bind(lf))
-			log_file_added.emit(lf)
-
+		# Stray / renamed files		
+		_add_logfiles_to_container(base_gc, true, stray_file_lst, category_name)
 
 	else: 
-		# Add .log files as normal
-		var gc := GridContainer.new()
-		gc.add_theme_constant_override("h_separation", 8)
-		gc.add_theme_constant_override("v_separation", 8)
-		cat[1].add_child(gc)
+		# Files as normal
+		_add_logfiles_to_container(base_gc, false, actionable_list, category_name)
 
-		for file in actionable_list: 			
-			var lf: GLLogFile = _create_logfile_obj(category_name, file)
-			gc.add_child(lf)
-			log_files.append(lf)
-			lf.button_up.connect(_open_log_file.bind(lf))
-			log_file_added.emit(lf)
-			
+
+
+func _add_logfiles_to_container(base_gc: GridContainer, is_grouped: bool, list: Array, category_name: String) -> void:
+	var gc := GridContainer.new()
+	gc.add_theme_constant_override("h_separation", 8)
+	gc.add_theme_constant_override("v_separation", 8)
+	if is_grouped: gc.columns = 3
+	base_gc.add_child(gc)
+	
+	for file in list:
+		var lf: GLLogFile = _create_logfile_obj(category_name, file)
+		gc.add_child(lf)
+		log_files.append(lf)
+		lf.button_up.connect(_open_log_file.bind(lf))
+		log_file_added.emit(lf) 
 
 
 
