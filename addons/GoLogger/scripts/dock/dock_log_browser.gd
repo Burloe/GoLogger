@@ -208,11 +208,11 @@ func load_log_browser() -> void:
 		sc.add_child(gc) 
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
-		gc.add_theme_constant_override("h_separation", 8 if cur_sort < 2 else 16)
-		gc.add_theme_constant_override("v_separation", 8)
+		gc.add_theme_constant_override("h_separation", 8 if cur_sort < 2 else 24)
+		gc.add_theme_constant_override("v_separation", 8 if cur_sort < 2 else 24)
 		var n: Array = [c, gc]
 		categories.append(n)
-		_load_logfiles(c)
+		_load_logfiles(c, gc)
 	
 	set_view(BrowserState.LOG_SPLIT if cur_view else BrowserState.LOG_FULL)
 	_update_columns(true)
@@ -220,13 +220,23 @@ func load_log_browser() -> void:
 
 
 
-func _load_logfiles(category_name: String) -> void: 
+func _load_logfiles(category_name: String, base_gc: GridContainer) -> void: 
 	config.load(PATH)
 	var file_list: PackedStringArray = _get_category_files(category_name) 
-
 	var actionable_list: PackedStringArray = []
 	var grouped_list: Dictionary = {}
 	var stray_file_lst: PackedStringArray = []
+	var cat: Array = []
+
+	for c in categories:
+		if c[0] != category_name:
+			continue
+		
+		cat = c
+		break
+
+
+	
 	for file in file_list:
 		if file.ends_with(".log"):
 
@@ -241,7 +251,6 @@ func _load_logfiles(category_name: String) -> void:
 					continue
 				
 				var file_date = file.substr(start, end - start)
-				# var file_date = file.lstrip(str(category_name, "(").rstrip(").log"))
 
 				if !grouped_list.has(file_date):
 					grouped_list[file_date] = []
@@ -255,53 +264,50 @@ func _load_logfiles(category_name: String) -> void:
 
 
 	if cur_sort in [SortModes.DATE_DESCEND, SortModes.DATE_ASCEND]:
+
+		# Add grouped .log files
 		for date in grouped_list.keys():
 			var gc := GridContainer.new()
 			gc.add_theme_constant_override("h_separation", 8)
 			gc.add_theme_constant_override("v_separation", 8)
 			gc.columns = 3
-			
 
+			cat[1].add_child(gc)
 			for file in grouped_list[date]:
 				var lf: GLLogFile = _create_logfile_obj(category_name, file)
+				gc.add_child(lf)
+				log_files.append(lf)
+				lf.button_up.connect(_open_log_file.bind(lf))
+				log_file_added.emit(lf) 
 
-				for c in categories:
-					if c[0] != category_name:
-						continue
-					if grouped_list[date].size() > 1:
-						c[1].add_child(gc)
-						gc.add_child(lf)
-					else:
-						c[1].add_child(lf)
-					log_files.append(lf)
-					lf.button_up.connect(_open_log_file.bind(lf))
-					log_file_added.emit(lf)
-			
+		# Add stray / renamed .log files
+		var gc := GridContainer.new()
+		gc.add_theme_constant_override("h_separation", 8)
+		gc.add_theme_constant_override("v_separation", 8)
+		gc.columns = 3
+		cat[1].add_child(gc)
+		
 		for file in stray_file_lst:
 			var lf: GLLogFile = _create_logfile_obj(category_name, file)
-			
-			for c in categories:
-				if c[0] != category_name:
-					continue
-				
-				c[1].add_child(lf)
-				log_files.append(lf)
-				lf.button_up.connect(_open_log_file.bind(lf))
-				log_file_added.emit(lf)
+			gc.add_child(lf)
+			log_files.append(lf)
+			lf.button_up.connect(_open_log_file.bind(lf))
+			log_file_added.emit(lf)
 
-	else:
-		for file in actionable_list:
 
+	else: 
+		# Add .log files as normal
+		var gc := GridContainer.new()
+		gc.add_theme_constant_override("h_separation", 8)
+		gc.add_theme_constant_override("v_separation", 8)
+		cat[1].add_child(gc)
+
+		for file in actionable_list: 			
 			var lf: GLLogFile = _create_logfile_obj(category_name, file)
-
-			for c in categories:
-				if c[0] != category_name:
-					continue
-				
-				c[1].add_child(lf)
-				log_files.append(lf)
-				lf.button_up.connect(_open_log_file.bind(lf))
-				log_file_added.emit(lf)
+			gc.add_child(lf)
+			log_files.append(lf)
+			lf.button_up.connect(_open_log_file.bind(lf))
+			log_file_added.emit(lf)
 			
 
 
@@ -421,11 +427,13 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 
 
 func _update_columns(is_initializing: bool = false) -> void:
-	if min_cell_width <= 0:
+	if min_cell_width <= 0 and cur_sort in [2, 3]:
 		return
-	
+	# var min_c_w = min_cell_width * 3
 	var width = int(size.x - 55) if is_initializing else category_tab_container.size.x
+	# var cols = max(1, int(width / (min_cell_width if cur_sort in [0, 1] else min_c_w)))
 	var cols = max(1, int(width / min_cell_width))
 	for i in range(categories.size()):
 		if categories[i][1] is GridContainer and categories[i][1] != null:
 			categories[i][1].columns = cols 
+	print(cols)
