@@ -225,14 +225,14 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 	var file_list: PackedStringArray = _get_category_files(category_name) 
 	var actionable_list: PackedStringArray = []
 	var grouped_list: Dictionary = {}
-	var stray_file_lst: PackedStringArray = []
+	var stray_file_list: PackedStringArray = []
 		
 	for file in file_list:
 		if file.ends_with(".log"):
 
 			if cur_sort in [SortModes.DATE_DESCEND, SortModes.DATE_ASCEND]:
 				if file.is_empty() or !file.begins_with(category_name):
-					stray_file_lst.append(file)
+					stray_file_list.append(file)
 					continue
 
 				var start := file.find("(") + 1
@@ -252,6 +252,9 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 	
 	if cur_sort in [SortModes.ASCEND, SortModes.DATE_ASCEND]: 
 		actionable_list.reverse()
+	
+	# if cur_sort == SortModes.DATE_ASCEND:
+	# 	grouped_list.
 
 	# TODO Need to reverse the grouped_list too
 
@@ -263,7 +266,7 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 			_add_logfiles_to_container(base_gc, true, grouped_list[date], category_name)
 
 		# Stray / renamed files		
-		_add_logfiles_to_container(base_gc, true, stray_file_lst, category_name)
+		_add_logfiles_to_container(base_gc, true, stray_file_list, category_name)
 
 	else: 
 		# Files as normal
@@ -271,16 +274,75 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 
 
 
-func _add_logfiles_to_container(base_gc: GridContainer, is_grouped: bool, list: Array, category_name: String) -> void:
-	var gc := GridContainer.new()
-	gc.add_theme_constant_override("h_separation", 8)
-	gc.add_theme_constant_override("v_separation", 8)
-	if is_grouped: gc.columns = 3
-	base_gc.add_child(gc)
+func _sort_file_list(category_name: String, file_list: Array[String]) -> Array:
+	var fin_list: Array[String] = []
+	if cur_sort in [SortModes.DATE_ASCEND, SortModes.DATE_DESCEND]:
+		var grouped_list: Dictionary
+		var stray_files: Array[String] = []
+		for file in file_list:
+			if !file.ends_with(".log"):
+				continue
+
+			if file.is_empty() or !file.begins_with(category_name):
+				stray_files.append(file)
+
+			var start := file.find("(") + 1
+			var end := file.find("_")
+			if start == 0 or end == -1:
+				continue
+
+			var file_date = file.substr(start, end - start)
+
+			if !grouped_list.has(file_date):
+				grouped_list[file_date] = []
+			grouped_list[file_date].append(file)
+		
+		for date in grouped_list.keys():
+			for group in grouped_list[date]:
+				fin_list.append(group)
+		fin_list.append(stray_files)
+
+		if cur_sort == SortModes.DATE_ASCEND:
+			for group in fin_list:
+				group.reverse()
+			fin_list.reverse()
 	
+	if cur_sort in [SortModes.ASCEND, SortModes.DESCEND]:
+		var stray_files: Array[String] = []
+		for file in file_list:
+			if !file.ends_with(".log") or file.is_empty():
+				continue
+			
+			if !file.begins_with(category_name) or file.is_empty():
+				stray_files.append(file)
+				continue
+			fin_list.append(file)
+
+		if cur_sort == SortModes.ASCEND:
+			fin_list.reverse()
+
+	return fin_list
+
+
+
+
+func _add_logfiles_to_container(base_gc: GridContainer, is_grouped: bool, list: Array, category_name: String) -> void:
+	var gc : GridContainer
+	if is_grouped:
+		gc = GridContainer.new()
+		gc.add_theme_constant_override("h_separation", 8)
+		gc.add_theme_constant_override("v_separation", 8)
+		if is_grouped: gc.columns = 3
+		base_gc.add_child(gc)
+		gc.size_flags_horizontal = Control.SIZE_FILL
+		gc.size_flags_vertical = Control.SIZE_FILL
+
 	for file in list:
 		var lf: GLLogFile = _create_logfile_obj(category_name, file)
-		gc.add_child(lf)
+		if is_grouped:
+			gc.add_child(lf)
+		else:
+			base_gc.add_child(lf)
 		log_files.append(lf)
 		lf.button_up.connect(_open_log_file.bind(lf))
 		log_file_added.emit(lf) 
@@ -411,4 +473,4 @@ func _update_columns(is_initializing: bool = false) -> void:
 	for i in range(categories.size()):
 		if categories[i][1] is GridContainer and categories[i][1] != null:
 			categories[i][1].columns = cols 
-	print(cols)
+	# print(cols, category_tab_container.get_children()[0].get_children()[0].columns)
