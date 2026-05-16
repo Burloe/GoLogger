@@ -31,6 +31,10 @@ var ico_fullscreen_view := preload("uid://ijiplwclq5pu")
 var ico_splitscreen_view := preload("uid://cp2p55wdq2wuk")
 var log_file_btn := preload("uid://bq7nahsc5aca7")
 var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
+var ico_sort_date_new = preload("uid://b1fn0coq48ktv")
+var ico_sort_date_old = preload("uid://cifx5d8dmjt38")
+var ico_sort_new = preload("uid://dvjgbc6hibv5m")
+var ico_sort_old = preload("uid://bljitewxdnvuh")
 
 var config: ConfigFile = ConfigFile.new()
 var grid_conts: Array[GridContainer] = []
@@ -42,6 +46,7 @@ var is_reloading: bool = false:
 		fb_margin_container.visible = !value
 		reload_hider.visible = value
 		lv_refresh_btn.disabled = value
+var reload_buffer_time: float = 0.01
 var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
@@ -59,12 +64,16 @@ var cur_view: bool = false:
 		lv_view_mode_btn.icon = ico_splitscreen_view if value else ico_fullscreen_view
 		lv_view_mode_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
 		set_view(BrowserState.LOG_SPLIT if value else BrowserState.LOG_FULL)
-var cur_sort: SortModes = SortModes.DESCEND: 
+var cur_sort: SortModes = SortModes.NEW: 
 	set(value):
 		cur_sort = value
-		var modes := ["Descending", "Ascending", "Group by date Descending", "Group by date Ascending"]
-		lv_sort_mode_btn.tooltip_text = str("Sorting by: ", modes[value])
-var reload_buffer_time: float = 0.01
+		var modes := ["\nNew first", "\nOld first", "\nGroup by date - New first", "\nGroup by date - Old first"]
+		lv_sort_mode_btn.tooltip_text = str("Sorting by:", modes[value])
+		var icons := [ico_sort_new, ico_sort_old, ico_sort_date_new, ico_sort_date_old]
+		lv_sort_mode_btn.icon = icons[value]
+		config.load(PATH)
+		config.set_value("settings", "browser_sort", value)
+		config.save(PATH)
 
 var log_errors: Dictionary = {
 	"OK": "Success",
@@ -79,11 +88,12 @@ enum BrowserState {
 	FILE_LIST,
 	RELOAD_HIDE
 }
+
 enum SortModes {
-	DESCEND,
-	ASCEND,
-	DATE_DESCEND,
-	DATE_ASCEND
+	NEW,
+	OLD,
+	GROUP_NEW,
+	GROUP_OLD
 }
 
 
@@ -200,7 +210,7 @@ func load_log_browser() -> void:
 				continue
 		
 		var sc: ScrollContainer = ScrollContainer.new()
-		sc.set_name(c)
+		sc.set_name(c.capitalize())
 		category_tab_container.add_child(sc)
 		sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -226,59 +236,21 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 	var actionable_list: PackedStringArray = []
 	var grouped_list: Dictionary = {}
 	var stray_file_list: PackedStringArray = []
-		
-	for file in file_list:
-		if file.ends_with(".log"):
-
-			if cur_sort in [SortModes.DATE_DESCEND, SortModes.DATE_ASCEND]:
-				if file.is_empty() or !file.begins_with(category_name):
-					stray_file_list.append(file)
-					continue
-
-				var start := file.find("(") + 1
-				var end := file.find("_")
-				if start == 0 or end == -1:
-					continue
-				
-				var file_date = file.substr(start, end - start)
-
-				if !grouped_list.has(file_date):
-					grouped_list[file_date] = []
-				
-				grouped_list[file_date].append(file)
-			
-			else:
-				actionable_list.append(file)
 	
-	if cur_sort in [SortModes.ASCEND, SortModes.DATE_ASCEND]: 
-		actionable_list.reverse()
-	
-	# if cur_sort == SortModes.DATE_ASCEND:
-	# 	grouped_list.
-
-	# TODO Need to reverse the grouped_list too
-
-
-	if cur_sort in [SortModes.DATE_DESCEND, SortModes.DATE_ASCEND]:
-
-		# Grouped files
-		for date in grouped_list.keys():
-			_add_logfiles_to_container(base_gc, true, grouped_list[date], category_name)
-
-		# Stray / renamed files		
-		_add_logfiles_to_container(base_gc, true, stray_file_list, category_name)
-
-	else: 
-		# Files as normal
-		_add_logfiles_to_container(base_gc, false, actionable_list, category_name)
+	var fin_list: Array = _sort_file_list(category_name, file_list)
+	if cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]:
+		for group in fin_list: 
+			_add_logfiles_to_container(base_gc, group, category_name)
+	else:
+		_add_logfiles_to_container(base_gc, fin_list, category_name)
 
 
 
-func _sort_file_list(category_name: String, file_list: Array[String]) -> Array:
-	var fin_list: Array[String] = []
-	if cur_sort in [SortModes.DATE_ASCEND, SortModes.DATE_DESCEND]:
-		var grouped_list: Dictionary
-		var stray_files: Array[String] = []
+func _sort_file_list(category_name: String, file_list: PackedStringArray) -> Array:
+	var fin_list: Array = []
+	if cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]:
+		var grouped_list: Dictionary = {}
+		var stray_files: PackedStringArray = []
 		for file in file_list:
 			if !file.ends_with(".log"):
 				continue
@@ -298,36 +270,32 @@ func _sort_file_list(category_name: String, file_list: Array[String]) -> Array:
 			grouped_list[file_date].append(file)
 		
 		for date in grouped_list.keys():
-			for group in grouped_list[date]:
-				fin_list.append(group)
-		fin_list.append(stray_files)
+			fin_list.append(grouped_list[date])
+		if !stray_files.is_empty():
+			fin_list.append(stray_files)
 
-		if cur_sort == SortModes.DATE_ASCEND:
+		if cur_sort == SortModes.GROUP_NEW:
 			for group in fin_list:
 				group.reverse()
 			fin_list.reverse()
 	
-	if cur_sort in [SortModes.ASCEND, SortModes.DESCEND]:
-		var stray_files: Array[String] = []
+	if cur_sort in [SortModes.NEW, SortModes.OLD]:
 		for file in file_list:
 			if !file.ends_with(".log") or file.is_empty():
 				continue
-			
-			if !file.begins_with(category_name) or file.is_empty():
-				stray_files.append(file)
-				continue
+
 			fin_list.append(file)
 
-		if cur_sort == SortModes.ASCEND:
+		if cur_sort == SortModes.OLD:
 			fin_list.reverse()
 
 	return fin_list
 
 
 
-
-func _add_logfiles_to_container(base_gc: GridContainer, is_grouped: bool, list: Array, category_name: String) -> void:
+func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_name: String) -> void:
 	var gc : GridContainer
+	var is_grouped: bool = cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]
 	if is_grouped:
 		gc = GridContainer.new()
 		gc.add_theme_constant_override("h_separation", 8)
@@ -338,7 +306,13 @@ func _add_logfiles_to_container(base_gc: GridContainer, is_grouped: bool, list: 
 		gc.size_flags_vertical = Control.SIZE_FILL
 
 	for file in list:
+		if typeof(file) != TYPE_STRING:
+			continue
+
 		var lf: GLLogFile = _create_logfile_obj(category_name, file)
+		if lf == null:
+			continue
+
 		if is_grouped:
 			gc.add_child(lf)
 		else:
@@ -373,8 +347,6 @@ func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
 
 
 
-
-
 func _get_category_files(category_name: String) -> PackedStringArray:
 	if categories.is_empty():
 		return []	
@@ -388,7 +360,6 @@ func _get_category_files(category_name: String) -> PackedStringArray:
 		return d.get_files()
 
 	return []
-
 
 
 
@@ -464,13 +435,22 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 
 
 func _update_columns(is_initializing: bool = false) -> void:
-	if min_cell_width <= 0 and cur_sort in [2, 3]:
+	if min_cell_width <= 0 or cur_sort in [2, 3]:
+		for child in category_tab_container.get_children():
+			for grid_cont in child.get_children():
+				if grid_cont is GridContainer:
+					grid_cont.columns = grid_cont.get_child_count()
 		return
+
 	# var min_c_w = min_cell_width * 3
 	var width = int(size.x - 55) if is_initializing else category_tab_container.size.x
 	# var cols = max(1, int(width / (min_cell_width if cur_sort in [0, 1] else min_c_w)))
 	var cols = max(1, int(width / min_cell_width))
-	for i in range(categories.size()):
-		if categories[i][1] is GridContainer and categories[i][1] != null:
-			categories[i][1].columns = cols 
+	for child in category_tab_container.get_children():
+		for grid_cont in child.get_children():
+			if grid_cont is GridContainer:
+				grid_cont.columns = cols
+	# for i in range(categories.size()):
+	# 	if categories[i][1] is GridContainer and categories[i][1] != null:
+	# 		categories[i][1].columns = cols 
 	# print(cols, category_tab_container.get_children()[0].get_children()[0].columns)

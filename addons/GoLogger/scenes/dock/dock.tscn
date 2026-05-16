@@ -16,11 +16,11 @@
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="12_7cref"]
 [ext_resource type="Texture2D" uid="uid://comapb1cs4l7m" path="res://addons/gologger/resources/icons/Debug.svg" id="12_e4pb5"]
 [ext_resource type="Texture2D" uid="uid://clbmanmttjrs4" path="res://addons/gologger/resources/icons/Reload.svg" id="13_dg67q"]
+[ext_resource type="Texture2D" uid="uid://cp2p55wdq2wuk" path="res://addons/gologger/resources/icons/ControlAlignVCenterWide.svg" id="14_equok"]
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
-[ext_resource type="Texture2D" uid="uid://dox74nlveev6x" path="res://addons/gologger/resources/icons/Filesystem.svg" id="15_equok"]
+[ext_resource type="Texture2D" uid="uid://dvjgbc6hibv5m" path="res://addons/gologger/resources/icons/SortNew.svg" id="15_equok"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
-[ext_resource type="Texture2D" uid="uid://ijiplwclq5pu" path="res://addons/gologger/resources/icons/ControlAlignFullRect.svg" id="17_jajas"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/resources/file_content_label_settings.tres" id="18_03nd1"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="StyleBox" uid="uid://do71h5y0uj5j2" path="res://addons/gologger/resources/theme/log_file_button_pressed.tres" id="20_5orq7"]
@@ -231,7 +231,6 @@ theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = ExtResource("12_7cref")
-disabled = true
 icon = ExtResource("13_dg67q")
 icon_alignment = 1
 
@@ -255,12 +254,12 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Fullscreen View"
+tooltip_text = "Splitscreen View"
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = ExtResource("17_jajas")
+icon = ExtResource("14_equok")
 icon_alignment = 1
 
 [node name="SortModeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1985609884]
@@ -303,7 +302,6 @@ icon_alignment = 1
 
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 14
@@ -313,6 +311,7 @@ split_offset = 8
 
 [node name="ReloadTopper" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1446122225]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 
@@ -349,6 +348,7 @@ theme_override_styles/tabbar_background = ExtResource("2_3wac3")
 theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
+current_tab = 0
 
 [node name="LVMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1830750093]
 unique_name_in_owner = true
@@ -469,16 +469,6 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "GoLogger 1.4 player session [26-05-11 | 22:50:45]:
-[22:50:45] iZbpQ: Player accepted quest 'The Lost Cartographer'
-[22:50:46] iZbpQ: Player accepted quest 'Last Ember'
-[22:50:47] iZbpQ: Player took 17 damage from Warg. Current HP 40 / 100
-[22:50:48] iZbpQ: Player accepted quest 'Ashes of Fenwatch'
-[22:50:49] iZbpQ: Player took 17 damage from Bog Witch. Current HP 23 / 100
-[22:50:50] iZbpQ: Transitioned to level 'fen_ruins_a3.tscn'
-[22:50:51] iZbpQ: Player accepted quest 'Blood in the Water'
-[22:50:52] Stopped log session.
-"
 label_settings = ExtResource("18_03nd1")
 autowrap_mode = 3
 
@@ -582,7 +572,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 3
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
