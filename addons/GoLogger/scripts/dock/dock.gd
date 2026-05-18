@@ -266,7 +266,9 @@ func _ready() -> void:
 		func(tab: int) -> void: 
 			match tab:
 				1: category_tab.request_update_columns()
-				2: log_browser_tab.load_log_browser()
+				2: 
+					log_browser_tab.load_log_browser()
+					log_browser_tab._update_columns(true)
 	)
 	category_tab.request_save.connect(save_data)
 	category_tab.request_categories_save.connect(save_categories)

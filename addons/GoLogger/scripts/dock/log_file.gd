@@ -64,7 +64,6 @@ func is_file_valid() -> bool:
 	var is_valid: bool = FileAccess.file_exists(file_path)
 
 	if file_name.is_empty() or !file_name.ends_with(".log"):
-		print(file_name, "   - ", file_contents)
 		is_valid = false
 	
 	assign_icon(is_valid)	
@@ -81,7 +80,6 @@ func is_gl_name(file_name_to_check: String) -> bool:
 		if !file_name_to_check.begins_with(prefix) or !file_name_to_check.ends_with(").log"):
 				return false
 
-		# Get YYMMDD_HHMMSS
 		var stamp_len := file_name_to_check.length() - prefix.length() - 5
 		if stamp_len != 13:
 				return false

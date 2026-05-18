@@ -232,12 +232,11 @@ func load_log_browser() -> void:
 
 func _load_logfiles(category_name: String, base_gc: GridContainer) -> void: 
 	config.load(PATH)
-	var file_list: PackedStringArray = _get_category_files(category_name) 
 	var actionable_list: PackedStringArray = []
 	var grouped_list: Dictionary = {}
 	var stray_file_list: PackedStringArray = []
-	
-	var fin_list: Array = _sort_file_list(category_name, file_list)
+	var fin_list: Array = _sort_file_list(category_name)
+
 	if cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]:
 		for group in fin_list: 
 			_add_logfiles_to_container(base_gc, group, category_name)
@@ -246,7 +245,8 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 
 
 
-func _sort_file_list(category_name: String, file_list: PackedStringArray) -> Array:
+func _sort_file_list(category_name: String) -> Array:
+	var file_list: PackedStringArray = _get_category_files(category_name) 
 	var fin_list: Array = []
 	if cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]:
 		var grouped_list: Dictionary = {}
@@ -271,23 +271,32 @@ func _sort_file_list(category_name: String, file_list: PackedStringArray) -> Arr
 		
 		for date in grouped_list.keys():
 			fin_list.append(grouped_list[date])
-		if !stray_files.is_empty():
-			fin_list.append(stray_files)
 
 		if cur_sort == SortModes.GROUP_NEW:
 			for group in fin_list:
 				group.reverse()
 			fin_list.reverse()
+		
+		if !stray_files.is_empty():
+			fin_list.append(stray_files)
 	
 	if cur_sort in [SortModes.NEW, SortModes.OLD]:
+		var stray_files: PackedStringArray = []
 		for file in file_list:
 			if !file.ends_with(".log") or file.is_empty():
 				continue
 
-			fin_list.append(file)
+			if file.begins_with(category_name):
+				fin_list.append(file)
+			else:
+				stray_files.append(file)
 
-		if cur_sort == SortModes.OLD:
+		if cur_sort == SortModes.NEW:
 			fin_list.reverse()
+	
+		if !stray_files.is_empty():
+			for file in stray_files:
+				fin_list.append(file)
 
 	return fin_list
 
@@ -304,12 +313,13 @@ func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_na
 		base_gc.add_child(gc)
 		gc.size_flags_horizontal = Control.SIZE_FILL
 		gc.size_flags_vertical = Control.SIZE_FILL
-
+	
 	for file in list:
 		if typeof(file) != TYPE_STRING:
 			continue
 
 		var lf: GLLogFile = _create_logfile_obj(category_name, file)
+
 		if lf == null:
 			continue
 
@@ -319,7 +329,7 @@ func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_na
 			base_gc.add_child(lf)
 		log_files.append(lf)
 		lf.button_up.connect(_open_log_file.bind(lf))
-		log_file_added.emit(lf) 
+		log_file_added.emit(lf)
 
 
 

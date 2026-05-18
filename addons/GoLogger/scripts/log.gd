@@ -129,35 +129,53 @@ func _ready() -> void:
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
-	match _get_config_value("settings", "id_align"):
-		0: # Top L
-			instance_id_label.horizontal_alignment = 	0
-			instance_id_label.vertical_alignment = 		0
-		1: # Top C
-			instance_id_label.horizontal_alignment = 	1
-			instance_id_label.vertical_alignment = 		0
-		2: # Top R
-			instance_id_label.horizontal_alignment = 	2
-			instance_id_label.vertical_alignment = 		0
-		4: # Center L
-			instance_id_label.horizontal_alignment = 	0
-			instance_id_label.vertical_alignment = 		1
-		5: # Center C
-			instance_id_label.horizontal_alignment = 	1
-			instance_id_label.vertical_alignment = 		1
-		6: # Center R
-			instance_id_label.horizontal_alignment = 	2
-			instance_id_label.vertical_alignment = 		1
-		8: # Bottom L
-			instance_id_label.horizontal_alignment = 	0
-			instance_id_label.vertical_alignment = 		2
-		9: # Bottom C
-			instance_id_label.horizontal_alignment = 	1
-			instance_id_label.vertical_alignment = 		2
-		10: # Bottom R
-			instance_id_label.horizontal_alignment = 	2
-			instance_id_label.vertical_alignment = 		2
+	var id_alignment = _get_config_value("settings", "id_align")
+	# match id_alignment:
+	# 	0: # Top L
+	# 		instance_id_label.horizontal_alignment = 	0
+	# 		instance_id_label.vertical_alignment = 		0
+	# 	1: # Top C
+	# 		instance_id_label.horizontal_alignment = 	1
+	# 		instance_id_label.vertical_alignment = 		0
+	# 	2: # Top R
+	# 		instance_id_label.horizontal_alignment = 	2
+	# 		instance_id_label.vertical_alignment = 		0
+	# 	4: # Center L
+	# 		instance_id_label.horizontal_alignment = 	0
+	# 		instance_id_label.vertical_alignment = 		1
+	# 	5: # Center C
+	# 		instance_id_label.horizontal_alignment = 	1
+	# 		instance_id_label.vertical_alignment = 		1
+	# 	6: # Center R
+	# 		instance_id_label.horizontal_alignment = 	2
+	# 		instance_id_label.vertical_alignment = 		1
+	# 	8: # Bottom L
+	# 		instance_id_label.horizontal_alignment = 	0
+	# 		instance_id_label.vertical_alignment = 		2
+	# 	9: # Bottom C
+	# 		instance_id_label.horizontal_alignment = 	1
+	# 		instance_id_label.vertical_alignment = 		2
+	# 	10: # Bottom R
+	# 		instance_id_label.horizontal_alignment = 	2
+	# 		instance_id_label.vertical_alignment = 		2
+	if id_alignment in [0,4,8]:
+		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	
+	if id_alignment in [1,5,9]:
+		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	
+	if id_alignment in [2,6,10]:
+		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
+	if id_alignment in [0,1,2]:
+		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	
+	if id_alignment in [4,5,6]:
+		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	
+	if id_alignment in [7,8,9]:
+		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	
 
 	instance_id = _get_instance_id()
 
