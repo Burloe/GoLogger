@@ -46,7 +46,6 @@ var is_reloading: bool = false:
 		fb_margin_container.visible = !value
 		reload_hider.visible = value
 		lv_refresh_btn.disabled = value
-var reload_buffer_time: float = 0.01
 var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
@@ -74,12 +73,6 @@ var cur_sort: SortModes = SortModes.NEW:
 		config.load(PATH)
 		config.set_value("settings", "browser_sort", value)
 		config.save(PATH)
-
-var log_errors: Dictionary = {
-	"OK": "Success",
-	"FAIL_CONTENT_LOAD": "Failed to load log file contents...",
-	"ERR_FILE_ACCESS": "FileAccess error!"
-}
 
 var state: BrowserState = BrowserState.FILE_LIST
 enum BrowserState {
@@ -172,6 +165,7 @@ func set_view(to: BrowserState) -> void:
 			reload_hider.show()
 	state = to
 	await get_tree().physics_frame
+	await get_tree().physics_frame
 	_update_columns()
 
 
@@ -197,11 +191,12 @@ func load_log_browser() -> void:
 	grid_conts.clear()
 
 	for child in category_tab_container.get_children():
+		category_tab_container.remove_child(child)
 		child.queue_free()
 	
 	var prev_state := state
 	set_view(BrowserState.RELOAD_HIDE)
-	await get_tree().create_timer(reload_buffer_time).timeout
+	await get_tree().process_frame
 	set_view(prev_state)
 
 	for c in cats:
@@ -445,22 +440,20 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 
 
 func _update_columns(is_initializing: bool = false) -> void:
-	if min_cell_width <= 0 or cur_sort in [2, 3]:
+	# pass
+	if min_cell_width <= 0: return
+
+	if cur_sort in [SortModes.GROUP_NEW, SortModes.GROUP_OLD]:
 		for child in category_tab_container.get_children():
 			for grid_cont in child.get_children():
 				if grid_cont is GridContainer:
 					grid_cont.columns = grid_cont.get_child_count()
 		return
 
-	# var min_c_w = min_cell_width * 3
+
 	var width = int(size.x - 55) if is_initializing else category_tab_container.size.x
-	# var cols = max(1, int(width / (min_cell_width if cur_sort in [0, 1] else min_c_w)))
 	var cols = max(1, int(width / min_cell_width))
 	for child in category_tab_container.get_children():
 		for grid_cont in child.get_children():
 			if grid_cont is GridContainer:
-				grid_cont.columns = cols
-	# for i in range(categories.size()):
-	# 	if categories[i][1] is GridContainer and categories[i][1] != null:
-	# 		categories[i][1].columns = cols 
-	# print(cols, category_tab_container.get_children()[0].get_children()[0].columns)
+				grid_cont.columns = cols 
