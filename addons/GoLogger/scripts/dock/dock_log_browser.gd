@@ -426,11 +426,6 @@ func _close_log_file() -> void:
 
 
 
-func display_log_file_error(log_file: GLLogFile) -> void:
-	pass
-
-
-
 func _on_button_toggled(toggled: bool, btn: Button) -> void:
 	match btn:
 		lv_lbl_sett_btn:
@@ -440,7 +435,6 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 
 
 func _update_columns(is_initializing: bool = false) -> void:
-	# pass
 	if min_cell_width <= 0: return
 
 	if cur_sort in [SortModes.GROUP_NEW, SortModes.GROUP_OLD]:
@@ -449,11 +443,15 @@ func _update_columns(is_initializing: bool = false) -> void:
 				if grid_cont is GridContainer:
 					grid_cont.columns = grid_cont.get_child_count()
 		return
-
+	
+	await get_tree().physics_frame
+	await get_tree().physics_frame
 
 	var width = int(size.x - 55) if is_initializing else category_tab_container.size.x
-	var cols = max(1, int(width / min_cell_width))
 	for child in category_tab_container.get_children():
 		for grid_cont in child.get_children():
 			if grid_cont is GridContainer:
-				grid_cont.columns = cols 
+				if grid_cont.size.x > width:
+					width = grid_cont.size.x 
+				# print(child.name, " - ", grid_cont.size.x, "   width: ", width)
+				grid_cont.columns = max(1, int(width / min_cell_width)) 

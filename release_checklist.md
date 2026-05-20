@@ -16,39 +16,39 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Go through code and make it uniform. For example, in `for` loops where category names are iterated through. Make all `for` loops have same naming conventions.
 
 ## Settings task list
-- [x] `category_names`:
-  - [x] New category names are appended to array at end.
-  - [x] Rename is applied to it's existing array entry.
-  - [x] Moving categories in Dock moves the array order.
-  - [x] Array entry is removed when LogCategory is queue freed.
-- [x] `default_category`:
-  - [x] Category name is saved to file appropriately.
-  - [x] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
-  - [x] Unchecking clears setting to "".
+- [ ] `category_names`:
+  - [ ] New category names are appended to array at end.
+  - [ ] Rename is applied to it's existing array entry.
+  - [ ] Moving categories in Dock moves the array order.
+  - [ ] Array entry is removed when LogCategory is queue freed.
+- [ ] `default_category`:
+  - [ ] Category name is saved to file appropriately.
+  - [ ] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
+  - [ ] Unchecking clears setting to "".
 
-- [x] `base_directory`:
-  - [x] New directory is created when change.
-  - [x] Directories for all the categories are created when running the game if,
-  - [x] Checks directory is valid before applying and reverting if not.
-- [x] `log_header_format`:
-  - [x] New log header is used when starting a session.
-  - [x] Check all tags work properly.
-- [x] `entry_format`:
-  - [x] Proper format is applied to entries.
-  - [x] Check all tags work properly.
-- [x] `autostart_session`:
-  - [x] Session is started automatically or not.
-- [x] `use_utc`:
-	- [x] UTC time used for .log file name, log header and entry format.
+- [ ] `base_directory`:
+  - [ ] New directory is created when change.
+  - [ ] Directories for all the categories are created when running the game if,
+  - [ ] Checks directory is valid before applying and reverting if not.
+- [ ] `log_header_format`:
+  - [ ] New log header is used when starting a session.
+  - [ ] Check all tags work properly.
+- [ ] `entry_format`:
+  - [ ] Proper format is applied to entries.
+  - [ ] Check all tags work properly.
+- [ ] `autostart_session`:
+  - [ ] Session is started automatically or not.
+- [ ] `use_utc`:
+	- [ ] UTC time used for .log file name, log header and entry format.
 - [ ] `id_toggle`:
-  - [x] ID visibility is toggled.
+  - [ ] ID visibility is toggled.
 - [ ] `id_startup_state`:
 	- [ ] ID overlay is shown when true / off when false. Only applicable if `id_toggle` is true.
-- [x] `id_print`:
-  - [x] ID visible when `id_toggle` is false and hotkey is held.
-  - [x] ID is shown on startup if `id_toggle` and `id_startup_state`.
-  - [x] ID is printed on hotkey released.
-  - [x] ID is printed when the hotkey if released / on toggle if `id_toggle` is true.
+- [ ] `id_print`:
+  - [ ] ID visible when `id_toggle` is false and hotkey is held.
+  - [ ] ID is shown on startup if `id_toggle` and `id_startup_state`.
+  - [ ] ID is printed on hotkey released.
+  - [ ] ID is printed when the hotkey if released / on toggle if `id_toggle` is true.
 - [ ] `id_align`:
 	- [ ] Check label aligns to all nine positions properly.
 	- [ ] Check label fills viewport for different resolutions.

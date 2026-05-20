@@ -250,6 +250,10 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
 icon = ExtResource("9_m5iun")
 icon_alignment = 1
 
+[node name="Control" type="Control" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1387267252]
+layout_mode = 2
+size_flags_vertical = 3
+
 [node name="ViewModeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1807274223]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
@@ -274,24 +278,6 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 icon = ExtResource("15_equok")
 icon_alignment = 1
-
-[node name="PrintSizeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1205511631]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-tooltip_text = "Reload files"
-theme_override_styles/normal = ExtResource("12_7cref")
-theme_override_styles/pressed = ExtResource("12_7cref")
-theme_override_styles/hover = ExtResource("12_7cref")
-theme_override_styles/hover_pressed = ExtResource("12_7cref")
-theme_override_styles/disabled = ExtResource("12_7cref")
-icon = ExtResource("12_e4pb5")
-icon_alignment = 1
-
-[node name="Control" type="Control" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1387267252]
-layout_mode = 2
-size_flags_vertical = 3
 
 [node name="RENABLEButton1" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1733649966]
 unique_name_in_owner = true
@@ -1844,7 +1830,14 @@ text = "A new LogBrowser was added in 1.4 which allows you to see your .log file
 
 It detects files is by the file name and it's file type. Meaning the file has to begin with the category's name and end with \".log\" to be detected. The drawback with this is that it won't detect files that you've renamed. However, you can uncheck the setting \"Log Browser strict file name detection\"  under Settings tab > General. This will ignore the category name restriction, which will read all .log files.
 
-Currently, the Log Browser will only detect and find files in active category's. It won't look for folders of past/deleted categories. A proper file browser may be implemented in a future update."
+Currently, the Log Browser will only detect and find files in active category's. It won't look for folders of past/deleted categories. A proper file browser with actual folder navigation may be implemented in a future update if interest is shown.
+
+Future updates may include:
+	Proper folder navigation
+	File renaming
+	File deletion
+
+A discussion is open on the Github page where you can vote on what features you'd like or comment if you have any ideas."
 fit_content = true
 
 [node name="Methods&Hotkeys" type="ScrollContainer" parent="HelpTab" unique_id=830461916]

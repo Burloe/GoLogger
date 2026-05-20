@@ -21,7 +21,11 @@ extends TabContainer
 signal update_index # The hell is this? Delete?
 signal change_category_name_finished # Deprecated? 
 
-@export var dev_mode: bool = false
+@export var dev_mode: bool = false:
+	set(value):
+		dev_mode = value
+		for btn in [renable_btn1, renable_btn2, renable_btn3]:
+			if btn != null: btn.visible = value
 @export var data: GLData = preload("uid://dj7h7t2v8csck")
 @onready var renable_btn1: Button = %RENABLEButton1
 @onready var renable_btn2: Button = %RENABLEButton2
