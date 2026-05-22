@@ -133,7 +133,7 @@ func _on_timer_timeout() -> void:
 	if cats.is_empty() or cats == null: return
 
 	for c in cats:
-		Log.msg(_build_simulated_entry(), c, true)
+		Log.msg(_build_simulated_entry(), c, false)
 
 	if def_c != "":
 		Log.msg(_build_simulated_entry(), def_c)

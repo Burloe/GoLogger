@@ -16,15 +16,15 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Go through code and make it uniform. For example, in `for` loops where category names are iterated through. Make all `for` loops have same naming conventions.
 
 ## Settings task list
-- [ ] `category_names`:
-  - [ ] New category names are appended to array at end.
-  - [ ] Rename is applied to it's existing array entry.
-  - [ ] Moving categories in Dock moves the array order.
-  - [ ] Array entry is removed when LogCategory is queue freed.
-- [ ] `default_category`:
-  - [ ] Category name is saved to file appropriately.
-  - [ ] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
-  - [ ] Unchecking clears setting to "".
+- [x] `category_names`:
+  - [x] New category names are appended to array at end.
+  - [x] Rename is applied to it's existing array entry.
+  - [x] Moving categories in Dock moves the array order.
+  - [x] Array entry is removed when LogCategory is queue freed.
+- [x] `default_category`:
+  - [x] Category name is saved to file appropriately.
+  - [x] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
+  - [x] Unchecking clears setting to "".
 
 - [ ] `base_directory`:
   - [ ] New directory is created when change.

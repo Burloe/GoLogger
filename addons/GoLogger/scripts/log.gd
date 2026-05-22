@@ -328,14 +328,20 @@ func start_session() -> void:
 			push_warning("GoLogger: Failed to create log file for session(", f_path, ").")
 			continue
 
-		var _files = dir.get_files()
-		cat_data[c_name]["file_count"] = _files.size()
+		var _file_list = dir.get_files()
+		var _log_files: PackedStringArray = []
 
+		for file in _file_list:
+			if file.begins_with(c_name) and file.ends_with(".log"):
+				_log_files.append(file)
+
+		cat_data[c_name]["file_count"] = _log_files.size()
+		print(_log_files)
 		if _get_config_value("settings", "file_cap") > 0:
-			while _files.size() > _get_config_value("settings", "file_cap") -1:
-				_files.sort()
-				dir.remove(_files[0])
-				_files.remove_at(0)
+			while _log_files.size() > _get_config_value("settings", "file_cap") -1:
+				# _log_files.sort()
+				dir.remove(_log_files[0])
+				_log_files.remove_at(0)
 
 				var _err = DirAccess.get_open_error() # Checks for errors during dir.remove()
 				if _err != OK and _get_config_value("settings", "error_reporting") != 2:

@@ -1985,7 +1985,9 @@ The default settings are intentionally conservative to minimize potential issues
 
 
 [font_size=14]File Count:[font_size=14]
-This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one.
+This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one. 
+
+Only [i].log[/i] files that haven't been renamed are subject to the file count handling,
 
 [color=darkgray][i]Recommended:[/i][/color]
 [i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported.[/i]

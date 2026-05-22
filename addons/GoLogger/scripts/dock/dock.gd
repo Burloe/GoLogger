@@ -362,7 +362,6 @@ func _assign_settings_controls() -> void:
 		"browser_view": log_browser_view_btn,
 		"browser_sort": log_browser_sort_btn
 	}
-	# printerr()
 
 	for key in control_map.keys():
 		if settings_dict.has(key):
