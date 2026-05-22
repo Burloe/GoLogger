@@ -109,7 +109,7 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 
 
-#region Public
+#region Public Functions
 
 func ensure_default_category() -> void:
 	config.load(PATH)
@@ -137,7 +137,7 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 
 
 
-#region Private functions
+#region Private Functions
 
 func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	config.load(PATH)
@@ -185,7 +185,6 @@ func _deferred_update_columns() -> void:
 		_column_update_pending = false
 		return
 
-	# Wait two frames so editor dock/tab layout has settled before sizing.
 	await get_tree().process_frame
 	await get_tree().process_frame
 
@@ -198,19 +197,21 @@ func _deferred_update_columns() -> void:
 func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
 	if _default_setting_in_progress:
 		return
-
+	var _c = []
 	_default_setting_in_progress = true
 	config.load(PATH)
-	config.set_value("categories", "default_category", cat.category_name if set_status else "")
 
 	for log_c in category_container.get_children():
 		if log_c is LogCategory and log_c.default_checkbox != null:
+			_c.append(log_c.category_name)
 			if log_c != cat:
 				log_c.default_checkbox.button_pressed = false
 
 	if set_status and cat.default_checkbox != null:
 		cat.default_checkbox.button_pressed = true
-
+	print(_c)
+	config.set_value("categories", "category_names", config.get_value("settings", "category_names", _c))
+	config.set_value("categories", "default_category", cat.category_name if set_status else "")
 	config.save(PATH)
 	_default_setting_in_progress = false
 

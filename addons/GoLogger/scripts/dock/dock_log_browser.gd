@@ -176,16 +176,15 @@ func load_log_browser() -> void:
 	_close_log_file()
 	is_reloading = true
 	var e := config.load(PATH)
-	if e != OK: printerr("Failed to load config: ", error_string(e))
+	if e != OK and e != Error.ERR_FILE_NOT_FOUND: 
+		printerr("[GoLogger] Failed to load config: ", error_string(e))
 	cur_view = config.get_value("settings", "browser_view", false)
 	base_dir = config.get_value("settings", "base_directory", "")
 	var cats = config.get_value("categories", "category_names", [])
 	log_files.clear()
 
 	if base_dir == "":
-		printerr("Failed to load Base Directory!")
-	if cats.is_empty():
-		printerr("Failed to load Categories!") 
+		printerr("[GoLogger] Failed to load Base Directory!") 
 
 	categories.clear()
 	grid_conts.clear()
