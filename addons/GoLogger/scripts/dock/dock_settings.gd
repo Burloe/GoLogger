@@ -724,7 +724,6 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 
 func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 	match node:
-
 		autostart_btn:
 			config.set_value("settings", "autostart_session", toggled_on) 
 			request_save.emit(false, "Autostart Checkbox Toggled")

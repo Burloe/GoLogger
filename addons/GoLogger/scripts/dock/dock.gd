@@ -513,10 +513,15 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 	# Start from current file state, then override with live UI values when available.
 	for section in config.get_sections():
 		if section.begins_with("categories."):
+			for key in config.get_section_keys(section):
+				_c.set_value(section, key, config.get_value(section, key))
+				print_rich("[color=lightblue]", section, " - ", key, ": ", config.get_value(section, key))
 			continue
 			
 		for key in config.get_section_keys(section):
 			_c.set_value(section, key, config.get_value(section, key))
+			print_rich("[color=pink]", section, " - ", key, ": ", config.get_value(section, key))
+
 
 	# Settings
 	for key in settings_dict.keys():
@@ -536,14 +541,14 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 			# print("qweeeeeeeee", log_browser_tab.cur_view)
 		elif   ctrl is LineEdit:
 			_c.set_value("settings", setting_name, ctrl.text)
-		elif ctrl is Button and ctrl.toggle_mode:
-			_c.set_value("settings", setting_name, 1 if ctrl.button_pressed else 0)
-		elif ctrl is SpinBox:
-			_c.set_value("settings", setting_name, int(ctrl.value))
 		elif ctrl is CheckBox:
 			_c.set_value("settings", setting_name, ctrl.button_pressed)
+		elif ctrl is SpinBox:
+			_c.set_value("settings", setting_name, int(ctrl.value))
 		elif ctrl is OptionButton:
 			_c.set_value("settings", setting_name, ctrl.selected)  
+		elif ctrl is Button and ctrl.toggle_mode:
+			_c.set_value("settings", setting_name, 1 if ctrl.button_pressed else 0)
 
 	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
 	if  err_rep_lv <= ErrorReportLevel.ERRORS:
@@ -597,12 +602,14 @@ func save_categories() -> void:
 			if log_c.default_checkbox.button_pressed:
 				_c_def = log_c.category_name
 
-			_c.set_value("categories." + log_c.category_name, "file_name" , "")
-			_c.set_value("categories." + log_c.category_name, "file_path", "")
-			_c.set_value("categories." + log_c.category_name, "category_name", log_c.category_name) 
-			_c.set_value("categories." + log_c.category_name, "file_count", config.get_value("categories." + log_c.category_name, "file_count", 0))
-			_c.set_value("categories." + log_c.category_name, "is_locked", log_c.is_locked)
-			_c.set_value("categories." + log_c.category_name, "entry_count", config.get_value("categories." + log_c.category_name, "entry_count", 0))
+			var section: String = "categories." + log_c.category_name
+
+			_c.set_value(section, "file_name" , config.get_value(section, "file_name", ""))
+			_c.set_value(section, "file_path", config.get_value(section, "file_path", ""))
+			_c.set_value(section, "category_name", log_c.category_name) 
+			_c.set_value(section, "file_count", config.get_value(section, "file_count", config.get_value(section, "file_count", 0)))
+			_c.set_value(section, "is_locked", log_c.is_locked)
+			_c.set_value(section, "entry_count", config.get_value(section, "entry_count", 0))
 
 	_c.set_value("categories", "category_names", _c_names)
 	_c.set_value("categories", "default_category", _c_def)

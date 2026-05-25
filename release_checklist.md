@@ -36,10 +36,10 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [x] `entry_format`:
   - [x] Proper format is applied to entries.
   - [x] Check all tags work properly.
-  - [ ] BUG: Warning isn't displayed properly or hidden/shown properly
-  - [ ] BUG: Text color isn't proper
-  - [ ] BUG: Apply button hides?
-  - [ ] BUG: Warning isn't hidden if reset is pressed while shown
+  - [x] BUG: Warning isn't displayed properly or hidden/shown properly
+  - [x] BUG: Text color isn't proper
+  - [x] BUG: Apply button hides?
+  - [x] BUG: Warning isn't hidden if reset is pressed while shown
 - [ ] `autostart_session`:
   - [ ] Session is started automatically or not.
 - [ ] `use_utc`:

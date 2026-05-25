@@ -73,7 +73,6 @@ var session_status: bool = false:
 var cat_data : Dictionary = {
 	"game": {
 		"category_name": "game",
-		"category_index": 0,
 		"file_name": "game(251113_161313).log",
 		"file_path": "user://GoLogger/game_logs/game(251113_161313).log",
 		"file_count": 0,
@@ -245,7 +244,6 @@ func load_category_data(_new_session: bool = false) -> void:
 
 		cat_data[c_name] = {
 			"category_name": c_name,
-			"category_index": config.get_value("categories." + str(c_name), "category_index", 0),
 			"file_name": config.get_value("categories." + c_name, "file_name", ""),
 			"file_path": config.get_value("categories." + c_name, "file_path", ""),
 			"file_count": config.get_value("categories." + str(c_name), "file_count", 0),
@@ -276,7 +274,6 @@ func save_category_data() -> void:
 		var base_section := "categories." + str(c["category_name"])
 
 		config.set_value(base_section, "category_name", c.get("category_name", c_name))
-		config.set_value(base_section, "category_index", c.get("category_index", 0))
 		config.set_value(base_section, "file_count", c.get("file_count", 0))
 		config.set_value(base_section, "entry_count", c.get("entry_count", 0))
 		config.set_value(base_section, "is_locked", c.get("is_locked", false))
@@ -375,7 +372,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 
 
 	if log_msg == "":
-		if data["error_reporting"] != 2:
+		if data["err_lv"] != 2:
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
 
@@ -384,7 +381,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			data["target_cat"] = data["default_category"]
 			data["target_filepath"] = config.get_value(str("categories." + data["default_category"]), "file_path", "")
 		else:
-			if data["error_reporting"] != 2:
+			if data["err_lv"] != 2:
 				if data["default_category"].is_empty():
 					printerr("GoLogger: msg() called without specifying a category name and no default category assigned.\n\t Entry:\n", log_msg)
 				else:
@@ -395,12 +392,12 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			return
 
 	if data["target_category"].is_empty():
-		if data["error_reporting"] != 2:
+		if data["err_lv"] != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
 	if data["target_category"] not in data["category_names"]:
-		if data["error_reporting"] != 2:
+		if data["err_lv"] != 2:
 			printerr("GoLogger: Category '" + data["target_category"] + "' not found. Check correct spelling.")
 		return
 
@@ -408,7 +405,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		return
 
 	if data["target_filepath"] == "":
-		if data["error_reporting"] != 2:
+		if data["err_lv"] != 2:
 			printerr("GoLogger: No valid file path found for category '" + data["target_category"] + "[" + instance_id + "]'.")
 		return
 
@@ -417,7 +414,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var _f = FileAccess.open(data["target_filepath"], FileAccess.READ)
 	if !_f: # ER
 		var _err = FileAccess.get_open_error()
-		if _err != OK and data["error_reporting"] != 2:
+		if _err != OK and data["err_lv"] != 2:
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
@@ -483,7 +480,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var _fw = FileAccess.open(data["target_filepath"], FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
-		if err != OK and data["error_reporting"] != 2:
+		if err != OK and data["err_lv"] != 2:
 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 
 	for line in lines:
