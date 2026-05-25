@@ -1,13 +1,14 @@
 [gd_scene format=3 uid="uid://bq7nahsc5aca7"]
 
 [ext_resource type="StyleBox" uid="uid://xy4uummjvhgu" path="res://addons/gologger/resources/theme/log_file_button_normal.tres" id="1_iertm"]
-[ext_resource type="Texture2D" uid="uid://chfkhfc65al6t" path="res://addons/gologger/resources/icons/LogFile.svg" id="2_7hkrn"]
+[ext_resource type="Texture2D" uid="uid://baeavb2jo8lgw" path="res://addons/gologger/resources/icons/File.svg" id="2_7hkrn"]
 [ext_resource type="Script" uid="uid://d0mv8q7rr2bxr" path="res://addons/gologger/scripts/dock/log_file.gd" id="3_u25kw"]
 
 [node name="LogFileButton" type="Button" unique_id=332590141]
 custom_minimum_size = Vector2(120, 69)
 offset_right = 120.0
 offset_bottom = 69.0
+theme_override_constants/icon_max_width = 32
 theme_override_styles/normal = ExtResource("1_iertm")
 theme_override_styles/pressed = ExtResource("1_iertm")
 theme_override_styles/hover = ExtResource("1_iertm")
@@ -18,6 +19,7 @@ April 27
 icon = ExtResource("2_7hkrn")
 alignment = 0
 autowrap_mode = 2
+expand_icon = true
 script = ExtResource("3_u25kw")
 placeholder_name = "17:22:53
 April 27

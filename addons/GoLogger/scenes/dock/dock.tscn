@@ -16,7 +16,7 @@
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="12_7cref"]
 [ext_resource type="Texture2D" uid="uid://comapb1cs4l7m" path="res://addons/gologger/resources/icons/Debug.svg" id="12_e4pb5"]
 [ext_resource type="Texture2D" uid="uid://clbmanmttjrs4" path="res://addons/gologger/resources/icons/Reload.svg" id="13_dg67q"]
-[ext_resource type="Texture2D" uid="uid://cp2p55wdq2wuk" path="res://addons/gologger/resources/icons/ControlAlignVCenterWide.svg" id="14_equok"]
+[ext_resource type="Texture2D" uid="uid://ijiplwclq5pu" path="res://addons/gologger/resources/icons/ControlAlignFullRect.svg" id="14_equok"]
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
 [ext_resource type="Texture2D" uid="uid://dvjgbc6hibv5m" path="res://addons/gologger/resources/icons/SortNew.svg" id="15_equok"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
@@ -166,7 +166,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 4
+current_tab = 3
 all_tabs_in_front = true
 tab_focus_mode = 0
 tab_0/title = " "
@@ -179,8 +179,8 @@ tab_4/title = "Help"
 script = ExtResource("6_0swix")
 dev_mode = true
 data = SubResource("Resource_xov76")
-metadata/_edit_horizontal_guides_ = [49.0, 294.0, 254.0]
-metadata/_edit_vertical_guides_ = [15.0]
+metadata/_edit_horizontal_guides_ = [49.0, 294.0, 254.0, 188.0, 223.0]
+metadata/_edit_vertical_guides_ = [15.0, 640.0]
 
 [node name="IconTabIGNORE" type="Control" parent="." unique_id=1209850644]
 visible = false
@@ -259,7 +259,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Splitscreen View"
+tooltip_text = "Fullscreen View"
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
@@ -562,7 +562,6 @@ theme_override_constants/v_separation = 8
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -1403,32 +1402,28 @@ emoji_menu_enabled = false
 
 [node name="EntryFormatWarning" type="Panel" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = -235.0
-offset_top = -19.5
-offset_right = -60.0
-offset_bottom = 21.5
+anchors_preset = -1
+anchor_left = -0.003
+anchor_top = -0.065000005
+anchor_right = -0.003
+anchor_bottom = 1.065
+offset_left = -160.041
+offset_top = 0.015000105
+offset_right = -12.041
+offset_bottom = -0.015003204
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
 
-[node name="MarginContainer" type="MarginContainer" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1926394639]
+[node name="Label" type="Label" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1412207838]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-
-[node name="Label" type="Label" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning/MarginContainer" unique_id=1412207838]
-layout_mode = 2
-text = "{entry} tag required"
+text = "{entry} required"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1511,6 +1506,7 @@ foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="HelpTab" type="TabContainer" parent="." unique_id=1603064086]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1985,9 +1981,7 @@ The default settings are intentionally conservative to minimize potential issues
 
 
 [font_size=14]File Count:[font_size=14]
-This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one. 
-
-Only [i].log[/i] files that haven't been renamed are subject to the file count handling,
+This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one. Only [i].log[/i] files that haven't been renamed are subject to the file count handling,
 
 [color=darkgray][i]Recommended:[/i][/color]
 [i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported.[/i]

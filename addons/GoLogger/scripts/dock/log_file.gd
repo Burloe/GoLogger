@@ -3,8 +3,8 @@ class_name GLLogFile extends Button
 
 @onready var lbl: Label = null
 
-var file_ico := preload("uid://chfkhfc65al6t")
-var file_broken_ico := preload("uid://cntk5aesu05sa")
+var file_ico := preload("uid://baeavb2jo8lgw")
+var file_broken_ico := preload("uid://bt0xt83bipjft")
 var sb_selected := preload("uid://bcprdy8psyd0k")
 var sb_unselected := preload("uid://xy4uummjvhgu")
 
@@ -44,6 +44,8 @@ var file_contents: String = "":
 func _ready() -> void:
 	text = display_name if display_name != "" else placeholder_name
 	mouse_entered.connect(get_file_content)
+	expand_icon = true
+	add_theme_constant_override("icon_max_width", 32)
 
 
 
@@ -100,6 +102,7 @@ func is_gl_name(file_name_to_check: String) -> bool:
 
 func assign_icon(is_valid: bool) -> void:
 	icon = file_ico if is_valid else file_broken_ico
+
 
 
 

@@ -76,7 +76,7 @@ var inspector: EditorInspector
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
 
-signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
+signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_theme_colors
 # signal open_directory
 
@@ -94,23 +94,6 @@ var plugin_version: String =  "1.4":
 		plugin_version = value
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
-
-var log_header_value: String = "":
-	set(value):
-		if value != log_header_value:
-			log_header_value = value
-			log_header_revert_btn.tooltip_text = str("Revert to '", value, "'")
-			config.load(PATH)
-			config.set_value("settings", "log_header_format", value)
-			config.save(PATH)
-var entry_format_value: String = "":
-	set(value):
-		if value != entry_format_value:
-			entry_format_value = value
-			entry_format_revert_btn.tooltip_text = str("Revert to '", value, "'")
-			config.load(PATH)
-			config.set_value("settings", "entry_format", value)
-			config.save(PATH) 
 
 var _default_setting_in_progress: bool = false 
 var _is_shutting_down: bool = false
@@ -283,9 +266,6 @@ func init_visibility() -> void:
 
 
 func init_settings() -> void:
-	log_header_value = config.get_value("settings", "log_header_format", settings_dict.get("log_header_format", {}).get("default", ""))
-	entry_format_value = config.get_value("settings", "entry_format", settings_dict.get("entry_format", {}).get("default", "")) 
-
 	for key in settings_dict.keys():
 		var _s: Dictionary = settings_dict[key]
 		var ctrl = settings_dict[key].get("control")
@@ -541,7 +521,8 @@ func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableCo
 
 ## Returns true if {entry} tag is present or is NOT empty.
 func _is_entry_format_valid(format: String) -> bool:
-	return true if format.contains("{entry}") or format != "" else false
+	if format.is_empty(): return false
+	return format.contains("{entry}")
 
 #endregion
 
@@ -604,12 +585,6 @@ func _on_button_button_up(node: Button) -> void:
 			base_dir_line_btn_cont.hide()
 			request_save.emit(false, "Base Directory Revert Button Button Up")
 
-		# base_dir_opendir_btn: #! This is handled in dock.gd
-		# 	if config.get_value("settings", "base_directory") == "":
-		# 		push_warning("GoLogger: Base directory path isn't set. Please set a valid directory path before opening the directory.")
-		# 	open_directory.emit()
-		# 	request_save.emit(false, "Base Directory OpenDirectory Button Button Up")
-
 		log_header_apply_btn:
 			config.set_value("settings", "log_header_format", log_header_line.text) 
 			log_header_apply_btn.disabled = true
@@ -618,7 +593,7 @@ func _on_button_button_up(node: Button) -> void:
 			request_save.emit(false, "Log Header Apply Button Button Up")
 		
 		log_header_revert_btn:
-			log_header_line.text = log_header_value
+			log_header_line.text = config.get_value("settings", "log_header_format")
 			log_header_apply_btn.disabled = true
 			log_header_revert_btn.disabled = true
 			log_header_line_btn_cont.hide()
@@ -633,7 +608,7 @@ func _on_button_button_up(node: Button) -> void:
 			request_save.emit(false, "Entry Format Apply Button Button Up")
 
 		entry_format_revert_btn:
-			entry_format_line.text = entry_format_value
+			entry_format_line.text = config.get_value("settings", "entry_format")
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true
 			entry_format_line_btn_cont.hide()
@@ -644,6 +619,7 @@ func _on_button_button_up(node: Button) -> void:
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 	config.load(PATH)
+	var last_applied_value: String = ""
 	match node:
 		base_dir_line:
 			base_dir_apply_btn.disabled = true 
@@ -652,29 +628,32 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			if new_text != config.get_value("settings", "base_directory"):
 				base_dir_apply_btn.disabled = false 
 				base_dir_revert_btn.disabled = false
-			request_save.emit(false, "Base Directory LineEdit Text Changed")
+			# request_save.emit(false, "Base Directory LineEdit Text Changed")
 
 		log_header_line:
+			last_applied_value = config.get_value("settings", "log_header_format")
 			log_header_apply_btn.disabled = true 
 			log_header_revert_btn.disabled = true
-			if new_text != log_header_value:
+			if new_text != last_applied_value:
 				log_header_revert_btn.disabled = false
 				log_header_apply_btn.disabled = false
-			request_save.emit(false, "Log Header LineEdit Text Changed")
+			# request_save.emit(false, "Log Header LineEdit Text Changed")
 
 		entry_format_line: 
+			last_applied_value = config.get_value("settings", "entry_format")
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true 
+			
 			entry_format_warning.visible = !_is_entry_format_valid(new_text)
 			entry_format_line.add_theme_stylebox_override(
 				"normal", 
 				sb_line_edit_normal if _is_entry_format_valid(new_text) else sb_line_edit_invalid
 			)
 
-			if new_text != entry_format_value and _is_entry_format_valid(new_text):
+			if new_text != last_applied_value and _is_entry_format_valid(new_text):
 				entry_format_apply_btn.disabled = false 
 				entry_format_revert_btn.disabled = false
-			request_save.emit(false, "Entry Format LineEdit Text Changed")
+			# request_save.emit(false, "Entry Format LineEdit Text Changed")
 			
 
 
@@ -694,14 +673,12 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			log_header_line.release_focus()
 			log_header_apply_btn.disabled = true
 			log_header_revert_btn.disabled = true
-			log_header_value = new_text # Setter saves to file
 			request_save.emit(false, "Log Header LineEdit Text Submitted")
 
 		entry_format_line:
 			entry_format_line.release_focus()
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true
-			entry_format_value = new_text # Setter saves to file
 			request_save.emit(false, "Entry Format LineEdit Text Submitted")
 
 

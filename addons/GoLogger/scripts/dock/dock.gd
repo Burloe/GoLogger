@@ -293,6 +293,7 @@ func _ready() -> void:
 	_connect_unique(log_browser_open_dir_btn.button_up, _open_directory)
 	_connect_unique(user_dir_btn.button_up, _open_user_dir)
 	_connect_unique(base_dir_opendir_btn.button_up, _open_directory)
+	_connect_unique(reset_settings_btn.button_up, reset_to_default)
 
 	initialize_dock()
 	_apply_theme_colors()
@@ -470,6 +471,7 @@ func reset_to_default() -> void:
 		var _s: Dictionary = settings_dict[key]
 		var ctrl = settings_dict[key].get("control")
 		var value = settings_dict[key]["default"] 
+		# print(key, " - ", value)
 		
 		if   ctrl is Button and ctrl.toggle_mode:
 			ctrl.button_pressed = value
@@ -484,14 +486,13 @@ func reset_to_default() -> void:
 			ctrl.selected = value
 
 		elif ctrl is LineEdit:
-			ctrl.text = value 
+			ctrl.text = value
 
 	base_dir_apply_btn.disabled = true
-	base_dir_apply_btn.hide()
 	log_header_apply_btn.disabled = true
-	log_header_apply_btn.hide()
 	entry_format_apply_btn.disabled = true
-	entry_format_apply_btn.hide()
+	entry_format_warning.hide()
+
 
 
 

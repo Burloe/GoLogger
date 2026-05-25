@@ -30,12 +30,16 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [ ] New directory is created when change.
   - [ ] Directories for all the categories are created when running the game if,
   - [ ] Checks directory is valid before applying and reverting if not.
-- [ ] `log_header_format`:
-  - [ ] New log header is used when starting a session.
-  - [ ] Check all tags work properly.
-- [ ] `entry_format`:
-  - [ ] Proper format is applied to entries.
-  - [ ] Check all tags work properly.
+- [x] `log_header_format`:
+  - [x] New log header is used when starting a session.
+  - [x] Check all tags work properly.
+- [x] `entry_format`:
+  - [x] Proper format is applied to entries.
+  - [x] Check all tags work properly.
+  - [ ] BUG: Warning isn't displayed properly or hidden/shown properly
+  - [ ] BUG: Text color isn't proper
+  - [ ] BUG: Apply button hides?
+  - [ ] BUG: Warning isn't hidden if reset is pressed while shown
 - [ ] `autostart_session`:
   - [ ] Session is started automatically or not.
 - [ ] `use_utc`:
@@ -66,8 +70,8 @@ This file should be deleted if it was installed with the plugin. Please only ins
 	- [ ] Ensure session timer wait time is set to this value
 - [ ] `error_reporting`:
 	- [ ] Check warnings and errors are pushed/printed properly according to setting.
-- [ ] `columns`:
-	- [ ] Check CategoryGridContainer is working with HSlider, and that the value is saved to file
+- [ ] `Reset to Default`:
+	- [ ] Check all settings are indeed reset to their default values when pressed
 
 
 ## Sessions
