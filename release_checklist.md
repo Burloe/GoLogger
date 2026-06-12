@@ -2,6 +2,10 @@
 
 This file should be deleted if it was installed with the plugin. Please only install the `addons\GoLogger\`
 
+
+## BUGS
+- [ ] 
+
 ## General
 
 - [x] Ensure the `Logs` tab is active on startup.
@@ -36,14 +40,10 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [x] `entry_format`:
   - [x] Proper format is applied to entries.
   - [x] Check all tags work properly.
-  - [x] BUG: Warning isn't displayed properly or hidden/shown properly
-  - [x] BUG: Text color isn't proper
-  - [x] BUG: Apply button hides?
-  - [x] BUG: Warning isn't hidden if reset is pressed while shown
-- [ ] `autostart_session`:
-  - [ ] Session is started automatically or not.
-- [ ] `use_utc`:
-	- [ ] UTC time used for .log file name, log header and entry format.
+- [x] `autostart_session`:
+  - [x] Session is started automatically or not.
+- [x] `use_utc`:
+	- [x] UTC time used for .log file name, log header and entry format.
 - [ ] `id_toggle`:
   - [ ] ID visibility is toggled.
 - [ ] `id_startup_state`:
@@ -54,7 +54,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [ ] ID is printed on hotkey released.
   - [ ] ID is printed when the hotkey if released / on toggle if `id_toggle` is true.
 - [ ] `id_align`:
-	- [ ] Check label aligns to all nine positions properly.
+	- [x] Check label aligns to all nine positions properly.
 	- [ ] Check label fills viewport for different resolutions.
 - [ ] `limit_method`:
 	- [ ] Ensure correct limit method.

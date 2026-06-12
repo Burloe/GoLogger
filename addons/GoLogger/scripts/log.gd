@@ -758,7 +758,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 		"{entry}"
 	]
 
-	var dt: Dictionary = Time.get_datetime_dict_from_system(_get_config_value("settings", "use_utc"))
+	var dt: Dictionary = Time.get_datetime_dict_from_system(_get_config_value("settings", "use_utc", false))
 
 	var yy: String = str(dt["year"]).substr(2, 2)
 	var mm: String = str(dt["month"]  if dt["month"]  > 9 else str("0", dt["month"]))
@@ -781,7 +781,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 		"{entry}": entry
 	}
 
-	var format: String = _get_config_value("settings", "entry_format")
+	var format: String = _get_config_value("settings", "entry_format", settings_dict.get("entry_format", {}).get("default"))
 	var final_entry: String = format
 	for tag in _tags:
 		if tag in replacements:

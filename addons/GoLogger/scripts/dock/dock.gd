@@ -510,17 +510,12 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 	var _offenders: Array[String] = [] 
 	category_tab.ensure_default_category()
 
-	# Start from current file state, then override with live UI values when available.
 	for section in config.get_sections():
 		if section.begins_with("categories."):
-			for key in config.get_section_keys(section):
-				_c.set_value(section, key, config.get_value(section, key))
-				print_rich("[color=lightblue]", section, " - ", key, ": ", config.get_value(section, key))
 			continue
 			
 		for key in config.get_section_keys(section):
 			_c.set_value(section, key, config.get_value(section, key))
-			print_rich("[color=pink]", section, " - ", key, ": ", config.get_value(section, key))
 
 
 	# Settings

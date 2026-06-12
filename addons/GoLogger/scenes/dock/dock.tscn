@@ -166,8 +166,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 3
-all_tabs_in_front = true
+current_tab = 1
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("6_w3br5")
@@ -190,7 +189,6 @@ metadata/_tab_name = " "
 
 [node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -201,8 +199,8 @@ metadata/_tab_index = 1
 metadata/_tab_name = "Logs"
 
 [node name="SidePanel" type="Panel" parent="LogBrowserTab" unique_id=1192128886]
-clip_contents = true
 custom_minimum_size = Vector2(48, 0)
+clip_contents = true
 layout_mode = 2
 theme_override_styles/panel = ExtResource("11_5jaku")
 
@@ -326,8 +324,8 @@ theme_override_constants/margin_right = 0
 
 [node name="CategoryTabContainer" type="TabContainer" parent="LogBrowserTab/HSplitContainer/FBMarginContainer" unique_id=1149614450]
 unique_name_in_owner = true
-clip_contents = true
 custom_minimum_size = Vector2(137, 0)
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("15_y3oat")
@@ -562,6 +560,7 @@ theme_override_constants/v_separation = 8
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -592,8 +591,8 @@ layout_mode = 2
 [node name="ResetSettingsButton" type="Button" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=1084513318]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
-layout_direction = 2
 layout_mode = 2
+layout_direction = 2
 tooltip_text = "Reset to all settings to default"
 theme_override_colors/icon_pressed_color = Color(0.56078434, 0.21176471, 0.21176471, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.48000002, 0.48000002, 1)
@@ -681,8 +680,8 @@ theme_override_constants/separation = 12
 
 [node name="AutostartCheckBox" type="CheckBox" parent="SettingsTab/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1746833626]
 unique_name_in_owner = true
-layout_direction = 3
 layout_mode = 2
+layout_direction = 3
 tooltip_text = "Autostarts session at runtime."
 theme = SubResource("Theme_fcs7p")
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
@@ -697,8 +696,8 @@ icon_alignment = 2
 
 [node name="UTCCheckBox" type="CheckBox" parent="SettingsTab/L_Panel/ScrollContainer/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1429760816]
 unique_name_in_owner = true
-layout_direction = 3
 layout_mode = 2
+layout_direction = 3
 tooltip_text = "Uses Universal Time Code instead of the local system time when timestamping files and entries."
 theme = SubResource("Theme_fcs7p")
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
@@ -988,8 +987,8 @@ theme_override_constants/separation = 8
 
 [node name="IDToggleShowCheckBox" type="CheckBox" parent="SettingsTab/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1117143264]
 unique_name_in_owner = true
-layout_direction = 3
 layout_mode = 2
+layout_direction = 3
 tooltip_text = "Toggles the ID Overlay instead of while the button is pressed."
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
@@ -1003,8 +1002,8 @@ icon_alignment = 2
 [node name="IDStartupCheckBox" type="CheckBox" parent="SettingsTab/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=810743569]
 unique_name_in_owner = true
 visible = false
-layout_direction = 3
 layout_mode = 2
+layout_direction = 3
 tooltip_text = "Shows ID on startup IF 'Toggle ID Overlay' is enabled"
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
@@ -1017,8 +1016,8 @@ icon_alignment = 2
 
 [node name="IDPrintCheckBox" type="CheckBox" parent="SettingsTab/L_Panel/ScrollContainer/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=2142215854]
 unique_name_in_owner = true
-layout_direction = 3
 layout_mode = 2
+layout_direction = 3
 tooltip_text = "Print instance ID to output when Display Instance ID hotkey is pressed"
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
@@ -1402,6 +1401,7 @@ emoji_menu_enabled = false
 
 [node name="EntryFormatWarning" type="Panel" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = -0.003

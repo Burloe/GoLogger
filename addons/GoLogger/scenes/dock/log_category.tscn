@@ -149,7 +149,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 15)
 layout_mode = 2
 tooltip_text = "Mark as Default Category
-See: 	Help > Getting Started >  Categories"
+
+Default Category is used when Log.msg() is called without defining a category."
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = ExtResource("3_xjf83")
 theme_override_styles/pressed = ExtResource("3_xjf83")

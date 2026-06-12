@@ -46,7 +46,8 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="EntryLabel" type="Label" parent="MarginContainer/EntryContainer" unique_id=926917080]
-custom_minimum_size = Vector2(330, 0)
+custom_minimum_size = Vector2(330, 14)
+custom_maximum_size = Vector2(330, -1)
 layout_mode = 2
 text = "This is an entry"
 label_settings = SubResource("LabelSettings_67y4n")
