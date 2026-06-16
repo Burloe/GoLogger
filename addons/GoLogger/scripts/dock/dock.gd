@@ -517,7 +517,7 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 		for key in config.get_section_keys(section):
 			_c.set_value(section, key, config.get_value(section, key))
 
-
+	
 	# Settings
 	for key in settings_dict.keys():
 		var ctrl = settings_dict[key].get("control")
@@ -533,7 +533,6 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> int
 		
 		if setting_name == "browser_view":
 			_c.set_value("settings", setting_name, log_browser_tab.cur_view)
-			# print("qweeeeeeeee", log_browser_tab.cur_view)
 		elif   ctrl is LineEdit:
 			_c.set_value("settings", setting_name, ctrl.text)
 		elif ctrl is CheckBox:

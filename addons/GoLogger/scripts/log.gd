@@ -128,35 +128,7 @@ func _ready() -> void:
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
-	var id_alignment = _get_config_value("settings", "id_align")
-	# match id_alignment:
-	# 	0: # Top L
-	# 		instance_id_label.horizontal_alignment = 	0
-	# 		instance_id_label.vertical_alignment = 		0
-	# 	1: # Top C
-	# 		instance_id_label.horizontal_alignment = 	1
-	# 		instance_id_label.vertical_alignment = 		0
-	# 	2: # Top R
-	# 		instance_id_label.horizontal_alignment = 	2
-	# 		instance_id_label.vertical_alignment = 		0
-	# 	4: # Center L
-	# 		instance_id_label.horizontal_alignment = 	0
-	# 		instance_id_label.vertical_alignment = 		1
-	# 	5: # Center C
-	# 		instance_id_label.horizontal_alignment = 	1
-	# 		instance_id_label.vertical_alignment = 		1
-	# 	6: # Center R
-	# 		instance_id_label.horizontal_alignment = 	2
-	# 		instance_id_label.vertical_alignment = 		1
-	# 	8: # Bottom L
-	# 		instance_id_label.horizontal_alignment = 	0
-	# 		instance_id_label.vertical_alignment = 		2
-	# 	9: # Bottom C
-	# 		instance_id_label.horizontal_alignment = 	1
-	# 		instance_id_label.vertical_alignment = 		2
-	# 	10: # Bottom R
-	# 		instance_id_label.horizontal_alignment = 	2
-	# 		instance_id_label.vertical_alignment = 		2
+	var id_alignment = _get_config_value("settings", "id_align") 
 	if id_alignment in [0,4,8]:
 		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	
@@ -359,17 +331,17 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	load_category_data()
 	var data: Dictionary = {
 		"target_category": 			category_name,
-		"category_names": 			_get_config_value("categories", "category_names", []),
-		"default_category":	 		_get_config_value("categories", "default_categories", settings_dict.get("default_category", "default")),
+		"category_names": 			_get_config_value("categories", "category_names"),
+		"default_category":	 		_get_config_value("categories", "default_category"),
 		"target_filepath": 			_get_config_value(str("categories." + category_name), "file_path", "Failed to get file path!"),
-		"limit_method": 				_get_config_value("settings", "limit_method", settings_dict.get("limit_method", "default")),
-		"entry_action": 				_get_config_value("settings", "entry_action", settings_dict.get("entry_action", "default")),
-		"entry_cap": 						_get_config_value("settings", "entry_cap", settings_dict.get("entry_cap", "default")),
-		"session_timer_action": _get_config_value("settings", "session_timer_action", settings_dict.get("session_timer_action", "default")),
-		"session_duration": 		_get_config_value("settings", "session_duration", settings_dict.get("session_duration", "default")),
-		"err_lv": 							_get_config_value("settings", "error_reporting", settings_dict.get("error_reporting", "default")),
+		"limit_method": 				_get_config_value("settings", "limit_method"),
+		"entry_action": 				_get_config_value("settings", "entry_count_action"),
+		"entry_cap": 						_get_config_value("settings", "entry_cap"),
+		"session_timer_action": _get_config_value("settings", "session_timer_action"),
+		"session_duration": 		_get_config_value("settings", "session_duration"),
+		"err_lv": 							_get_config_value("settings", "error_reporting"),
 	} 
-
+	print(data)
 
 	if log_msg == "":
 		if data["err_lv"] != 2:
@@ -404,7 +376,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	if !session_status:
 		return
 
-	if data["target_filepath"] == "":
+	if data["target_filepath"] == "" or !data["target_filepath"]:
 		if data["err_lv"] != 2:
 			printerr("GoLogger: No valid file path found for category '" + data["target_category"] + "[" + instance_id + "]'.")
 		return
@@ -659,24 +631,38 @@ static func get_error(error : int, object_type : String = "") -> String:
 
 
 
-## Retrieves a value from the config file, validating settings beforehand. Simple wrapper for ConfigFile.get_value().
+## ConfigFile.get_value() wrapper - Retrieves a value from the config file, validating settings beforehand and getting default value if failed.
 func _get_config_value(section: String, value : String, default_value: Variant = null) -> Variant:
-	validate_settings()
-	var _result = config.load(PATH)
+	var fallback: Variant = null
+	if default_value == null:
+		fallback = settings_dict.get(value, {}).get("default")
+	else:
+		fallback = default_value
 
 	if !FileAccess.file_exists(PATH):
 		push_warning(str("GoLogger: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
 		create_settings_file()
+		if !FileAccess.file_exists(PATH):
+			return fallback
 
-	if _result != OK:
-		push_error(str("GoLogger: ConfigFile failed to load settings.ini file."))
-		return null
+	var _result = config.load(PATH)
 
-	var fallback = default_value if default_value != null else settings_dict.get(value, {}).get("default")
+	if _result != OK: 
+		# push_error(str("GoLogger: ConfigFile failed to load settings.ini file. <", error_string(_result), ">"))
+		return fallback
+
 	var _val = config.get_value(section, value, fallback)
 	if _val == null:
-		push_error(str("GoLogger: ConfigFile failed to load settings value from file."))
+		push_error(str("GoLogger: ConfigFile failed to load settings value from file. Returning fallback for <", section, ".", value, ">."))
+		return fallback
+
+	# prints("get_config_value(", section, value, default_value,")")
 	return _val
+
+
+
+func _get_default(key: String, custom_default: Variant = null) -> Variant:
+	return settings_dict.get(key, {}).get("default", custom_default)
 
 
 
@@ -787,6 +773,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 		if tag in replacements:
 			final_entry = final_entry.replace(tag, replacements[tag])
 	return final_entry
+
 
 
 func _get_file_name(category_name : String) -> String:
