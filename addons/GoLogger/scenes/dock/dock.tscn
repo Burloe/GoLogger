@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/gologger/scripts/dock/dock.gd" id="6_0swix"]
 [ext_resource type="Texture2D" uid="uid://3xfnobkyjg8d" path="res://addons/gologger/resources/icons/gologger_dock_icon.png" id="6_w3br5"]
 [ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gologger/scripts/gl_data_resource.gd" id="7_2ik8n"]
+[ext_resource type="Script" uid="uid://bm8lbc8d2cd4r" path="res://addons/gologger/scripts/gl_category_data_resource.gd" id="8_jajas"]
 [ext_resource type="Script" uid="uid://cn351cc4ofrco" path="res://addons/gologger/scripts/dock/dock_category.gd" id="8_y0aum"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/gologger/resources/icons/Add.svg" id="8_ym61x"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/gologger/resources/icons/Folder.svg" id="9_m5iun"]
@@ -37,9 +38,18 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4pb5"]
 
+[sub_resource type="Resource" id="Resource_qiahn"]
+script = ExtResource("8_jajas")
+metadata/_custom_type_script = "uid://bm8lbc8d2cd4r"
+
 [sub_resource type="Resource" id="Resource_xov76"]
 script = ExtResource("7_2ik8n")
-base_directory = "user://GoLogger/"
+categories = Array[ExtResource("8_jajas")]([SubResource("Resource_qiahn")])
+base_dir = null
+header_format = null
+autostart = null
+utc = null
+id_startup = null
 metadata/_custom_type_script = "uid://dcm4iew3h2l7p"
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4fkd"]
@@ -166,7 +176,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 1
+current_tab = 3
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("6_w3br5")
@@ -189,6 +199,7 @@ metadata/_tab_name = " "
 
 [node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -560,7 +571,6 @@ theme_override_constants/v_separation = 8
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -735,16 +745,13 @@ theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 selected = 0
-item_count = 4
+item_count = 3
 popup/item_0/text = "Warnings & Errors    "
 popup/item_0/id = 0
 popup/item_1/text = "Errors only"
 popup/item_1/id = 1
-popup/item_2/id = 2
-popup/item_2/disabled = true
-popup/item_2/separator = true
-popup/item_3/text = "None"
-popup/item_3/id = 3
+popup/item_2/text = "None"
+popup/item_2/id = 3
 
 [node name="LimitersFoldableContainer" type="FoldableContainer" parent="SettingsTab/L_Panel/ScrollContainer/VBoxContainer" unique_id=1108637460]
 unique_name_in_owner = true
@@ -1004,13 +1011,13 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 layout_direction = 3
-tooltip_text = "Shows ID on startup IF 'Toggle ID Overlay' is enabled"
+tooltip_text = "Shows ID on startup IF 'Toggle Overlay' is enabled"
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-text = "Show ID Overlay on startup"
+text = "Show on startup"
 alignment = 2
 icon_alignment = 2
 

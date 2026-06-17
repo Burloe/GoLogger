@@ -199,7 +199,6 @@ enum ErrorReportLevel {
 	NONE
 }
 
-const PATH = "user://gologger_data.ini"
 var category_scene = preload("uid://c3n416c5fajm5")
 var config = ConfigFile.new() 
 var plugin_version: String =  "1.4":
@@ -279,12 +278,6 @@ func _ready() -> void:
 	log_browser_tab.log_file_added.connect(_on_log_file_added)
 	settings_tab.request_save.connect(save_data)
 	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
-
-
-	if !FileAccess.file_exists(PATH):
-		create_settings_file()
-
-	config.load(PATH) 
 
 
 	# Signal connections 
@@ -382,97 +375,19 @@ func initialize_dock() -> void:
 		printerr("GoLogger error: Failed to load settings.ini file!")
 		return
 
-	validate_settings(true) 
 	_init_visibility()
 
 
 
-func create_settings_file() -> void: # Mirror
-	var cf := ConfigFile.new()
-
-	for key in settings_dict.keys():
-		for field in ["section", "default", "type", "control", "default"]:
-			if field == "control" and settings_dict[key]["section"] == "categories":
-				continue
-
-			if not settings_dict[key].has(field):
-				push_error("GoLogger: Error creating a settings file. 'settings_dict' entry '%s' missing '", field, "' field", % key)
-				continue
-
-		var section = settings_dict[key].get("section", "settings")
-		cf.set_value(section, key, settings_dict[key]["default"])
-
-	var _s = cf.save(PATH)
-	if _s != OK:
-		var _e = cf.get_open_error()
-		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
-		return
-
-	config.load(PATH)
-	category_tab.ensure_default_category()
-
-
-
-func validate_settings(ignore_errors: bool = false) -> void: # Mirror
-	config.load(PATH)
-	category_tab.ensure_default_category()
-
-	for key in settings_dict.keys():
-		var setting: Dictionary = settings_dict.get(key, {})
-		var a_fields = ["section", "name", "type", "control", "default"]
-		var b_fields = ["section", "name", "type", "default"]
-		var err: Array[bool] = [false, false,false, false, false, false]
-
-		# Check missing fields
-		for i in range(a_fields.size()):
-
-			if setting.has("section"):
-				var fs = a_fields.duplicate()
-
-				if setting["section"] == "categories":
-					fs = b_fields.duplicate()
-
-				# Collect + report missing fields
-				if !setting.has_all(fs):
-					var _e: Array[String] = []
-					for j in range(fs.size()):
-						if !setting.has(fs[j]):
-							_e.append(fs[j])
-
-					if not _e.is_empty():
-						push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
-
-		# Validate Presence
-		if !config.has_section(setting["section"]) or !config.has_section_key(setting["section"], setting["name"]):
-			config.set_value(setting["section"], setting["name"], setting["default"])
-			continue
-
-		# Validate Type
-		if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
-			config.set_value(setting["section"], setting["name"], setting["default"])
-
-	save_data(ignore_errors)
-
-
-
 func reset_to_default() -> void:
-	var c := ConfigFile.new()
-	config.load(PATH) 
+	data = GLData.new()
+	
+	var dl = data.list
 
-	for key in settings_dict.keys():
-		if settings_dict[key]["section"] == "categories":
-			continue
+	for setting in data.list.keys():
+		var value = dl[setting]["value"]
+		var ctrl: Control = dl[setting]["ctrl"]
 
-		config.set_value("settings", key, settings_dict.get(key, {}).get("default", null))
-
-	save_data()
-
-	for key in settings_dict.keys():
-		var _s: Dictionary = settings_dict[key]
-		var ctrl = settings_dict[key].get("control")
-		var value = settings_dict[key]["default"] 
-		# print(key, " - ", value)
-		
 		if   ctrl is Button and ctrl.toggle_mode:
 			ctrl.button_pressed = value
 
