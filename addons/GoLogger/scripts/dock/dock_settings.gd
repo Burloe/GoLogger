@@ -85,10 +85,11 @@ var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 
 
-const PATH = "user://gologger_data.ini"
+# const PATH = "user://gologger_data.ini"
 
+@export var data: GLData = preload("uid://dj7h7t2v8csck")
 
-var config = ConfigFile.new() 
+# var config = ConfigFile.new() 
 var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
@@ -437,13 +438,12 @@ func _assign_settings_controls() -> void:
 
 #region Local Functions
 
-func _apply_new_base_directory() -> bool:
-	config.load(PATH)
-	var old_dir = config.get_value("settings", "base_directory")
+func _apply_new_base_directory() -> bool: 
+	var old_dir = data.base_dir
 	var new_dir = base_dir_line.text.strip_edges()
  
 	if new_dir == "":
-		if config.get_value("settings", "error_reporting") != 2:
+		if data.error_reporting != ErrorReportLevel.NONE:
 			push_warning("GoLogger: Base directory cannot be empty. Reverting to previous path[", old_dir, "].")
 		base_dir_line.text = old_dir
 		return false
@@ -463,18 +463,18 @@ func _apply_new_base_directory() -> bool:
 
 		res = DirAccess.make_dir_absolute(create_path)
 		if res != OK:
-			if config.get_value("settings", "error_reporting") != 2:
+			if data.error_reporting != ErrorReportLevel.NONE:
 				push_warning("GoLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
 			base_dir_line.text = old_dir 
 			return false
 
 		d = DirAccess.open(new_dir)
 
-	config.set_value("settings", "base_directory", new_dir)
+	data.base_dir = new_dir
 	
 	var save_err = config.save(PATH)
 	if save_err != OK:
-		if config.get_value("settings", "error_reporting") != 2:
+		if data.error_reporting != ErrorReportLevel.NONE:
 			push_warning("GoLogger: Failed to save settings.ini after changing base_directory. Reverting back to previous directory path[", old_dir, "].")
 		base_dir_line.text = old_dir 
 		return false
@@ -569,69 +569,65 @@ func _on_setting_hover(group: Array, is_hovered: bool) -> void:
 
 
 func _on_button_button_up(node: Button) -> void:
-	config.load(PATH)
-
 	match node:
 		base_dir_apply_btn:
 			_apply_new_base_directory()
 			base_dir_apply_btn.hide()
 			base_dir_line_btn_cont.hide()
-			request_save.emit(false, "Base Directory Apply Button Button Up")
+			# request_save.emit(false, "Base Directory Apply Button Button Up")
 		
 		base_dir_revert_btn:
-			base_dir_line.text = config.get_value("settings", "base_directory", settings_dict.get("base_directory", {}).get("default", ""))
+			base_dir_line.text = data.base_dir
 			base_dir_apply_btn.disabled = true
 			base_dir_revert_btn.disabled = true
 			base_dir_line_btn_cont.hide()
-			request_save.emit(false, "Base Directory Revert Button Button Up")
+			# request_save.emit(false, "Base Directory Revert Button Button Up")
 
 		log_header_apply_btn:
-			config.set_value("settings", "log_header_format", log_header_line.text) 
+			data.header_format = log_header_line.text
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus() 
 			log_header_line_btn_cont.hide()
-			request_save.emit(false, "Log Header Apply Button Button Up")
+			# request_save.emit(false, "Log Header Apply Button Button Up")
 		
 		log_header_revert_btn:
-			log_header_line.text = config.get_value("settings", "log_header_format")
+			log_header_line.text = data.header_format
 			log_header_apply_btn.disabled = true
 			log_header_revert_btn.disabled = true
 			log_header_line_btn_cont.hide()
-			request_save.emit(false, "Log Header Revert Button Button Up")
+			# request_save.emit(false, "Log Header Revert Button Button Up")
 
 		entry_format_apply_btn:
-			config.set_value("settings", "entry_format", entry_format_line.text)
-			var err := config.save(PATH) 
+			data.entry_format = entry_format_line.text
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus() 
 			entry_format_line_btn_cont.hide()
-			request_save.emit(false, "Entry Format Apply Button Button Up")
+			# request_save.emit(false, "Entry Format Apply Button Button Up")
 
 		entry_format_revert_btn:
-			entry_format_line.text = config.get_value("settings", "entry_format")
+			entry_format_line.text = data.entry_format
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true
 			entry_format_line_btn_cont.hide()
-			request_save.emit(false, "Entry Format Revert Button Button Up")
+			# request_save.emit(false, "Entry Format Revert Button Button Up")
 
 
 
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
-	config.load(PATH)
 	var last_applied_value: String = ""
 	match node:
 		base_dir_line:
 			base_dir_apply_btn.disabled = true 
 			base_dir_revert_btn.disabled = true 
 
-			if new_text != config.get_value("settings", "base_directory"):
+			if new_text != data.base_dir:
 				base_dir_apply_btn.disabled = false 
 				base_dir_revert_btn.disabled = false
 			# request_save.emit(false, "Base Directory LineEdit Text Changed")
 
 		log_header_line:
-			last_applied_value = config.get_value("settings", "log_header_format")
+			last_applied_value = data.header_format
 			log_header_apply_btn.disabled = true 
 			log_header_revert_btn.disabled = true
 			if new_text != last_applied_value:
@@ -640,7 +636,7 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			# request_save.emit(false, "Log Header LineEdit Text Changed")
 
 		entry_format_line: 
-			last_applied_value = config.get_value("settings", "entry_format")
+			last_applied_value = data.entry_format
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true 
 			
@@ -658,35 +654,32 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 
 
 func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void: 
-	config.load(PATH)
 	match node:
 		base_dir_line:
-			var v = config.get_value("settings", "base_directory", settings_dict.get("base_directory", {}).get("default", ""))
-
 			if _apply_new_base_directory():
 				base_dir_line.release_focus()
 				base_dir_apply_btn.disabled = true
 				base_dir_revert_btn.disabled = true
-			request_save.emit(false, "Base Directory LineEdit Text Submitted")
+			# request_save.emit(false, "Base Directory LineEdit Text Submitted")
 
 		log_header_line:
 			log_header_line.release_focus()
 			log_header_apply_btn.disabled = true
 			log_header_revert_btn.disabled = true
-			request_save.emit(false, "Log Header LineEdit Text Submitted")
+			# request_save.emit(false, "Log Header LineEdit Text Submitted")
 
 		entry_format_line:
 			entry_format_line.release_focus()
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true
-			request_save.emit(false, "Entry Format LineEdit Text Submitted")
+			# request_save.emit(false, "Entry Format LineEdit Text Submitted")
 
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 	match node:
 		limit_method_btn:
-			config.set_value("settings", "limit_method", index)
+			data.limit_method = index
 			entry_count_action_container.hide() 
 			session_timer_action_container.hide() 
 			entry_count_action_lbl.text = "Action"
@@ -702,48 +695,48 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 					session_timer_action_container.show() 
 					entry_count_action_lbl.text = "Entry Action"
 					session_timer_action_lbl.text = "Timer Action"
-			request_save.emit(false, "Limit Method OptionButton Item Selected")
+			# request_save.emit(false, "Limit Method OptionButton Item Selected")
 
 		entry_count_action_btn:
-			config.set_value("settings", "entry_count_action", index)
-			request_save.emit(false, "Entry Count OptionButton Item Selected")
+			data.entry_count_action = index
+			# request_save.emit(false, "Entry Count OptionButton Item Selected")
 
 		session_timer_action_btn:
-			config.set_value("settings", "session_timer_action", index)
-			request_save.emit(false, "Session Timer OptionButton Item Selected")
+			data.session_timer_action = index
+			# request_save.emit(false, "Session Timer OptionButton Item Selected")
 
 		error_rep_btn:
-			config.set_value("settings", "error_reporting", index)
-			request_save.emit(false, "Error Report OptionButton Item Selected")
+			data.error_reporting = index
+			# request_save.emit(false, "Error Report OptionButton Item Selected")
 
 		id_align_opt_btn:
-			config.set_value("settings", "id_align", index)
-			request_save.emit(false, "ID Align OptionButton Item Selected")
+			data.id_align = index
+			# request_save.emit(false, "ID Align OptionButton Item Selected")
 
 
 
 func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 	match node:
 		autostart_btn:
-			config.set_value("settings", "autostart_session", toggled_on) 
-			request_save.emit(false, "Autostart Checkbox Toggled")
+			data.autostart = toggled_on
+			# request_save.emit(false, "Autostart Checkbox Toggled")
 
 		utc_btn:
-			config.set_value("settings", "use_utc", toggled_on) 
-			request_save.emit(false, "UTC Checkbox Toggled")
+			data.utc = toggled_on
+			# request_save.emit(false, "UTC Checkbox Toggled")
 
 		id_print_btn:
-			config.set_value("settings", "id_print", toggled_on)
-			request_save.emit(false, "ID Print Checkbox Toggled")
+			data.id_print = toggled_on
+			# request_save.emit(false, "ID Print Checkbox Toggled")
 
 		id_toggle_btn:
-			config.set_value("settings", "id_toggle", toggled_on)
+			data.id_toggle = toggled_on
 			id_startup_btn.show() if toggled_on else id_startup_btn.hide()
-			request_save.emit(false, "ID Toggle Checkbox Toggled")
+			# request_save.emit(false, "ID Toggle Checkbox Toggled")
 
 		id_startup_btn:
-			config.set_value("settings", "id_startup_state", toggled_on)
-			request_save.emit(false, "ID Startup Checkbox Toggled")
+			data.id_startup = toggled_on
+			# request_save.emit(false, "ID Startup Checkbox Toggled")
 
 
 
@@ -771,35 +764,28 @@ func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:
 
 
 func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
-	config.load(PATH)
 	match node:
-
 		file_count_spinbox_line:
-			var value = int(new_text)
-			config.set_value("settings", "file_cap", value)
+			data.file_cap = int(new_text)
 			file_count_spinbox_line.release_focus()
 			file_count_spinbox.release_focus() 
-			request_save.emit(false, "File Count SpinBox LineEdit Text Submitted")
+			# request_save.emit(false, "File Count SpinBox LineEdit Text Submitted")
 
 		entry_count_spinbox_line:
-			var value = int(new_text)
-			config.set_value("settings", "entry_cap", value)
+			data.entry_cap = int(new_text)
 			entry_count_spinbox.release_focus()
 			entry_count_spinbox_line.release_focus() 
-			request_save.emit(false, "Entry Count Spinbox LineEdit Text Submitted")
+			# request_save.emit(false, "Entry Count Spinbox LineEdit Text Submitted")
 
 		session_duration_spinbox_line:
-			var value = float(new_text)
-			config.set_value("settings", "session_duration", value)
+			data.session_duration = int(new_text)
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus() 
-			request_save.emit(false, "Session Duration Spinbox LineEdit Text Submitted")
+			# request_save.emit(false, "Session Duration Spinbox LineEdit Text Submitted")
 
 
 
 func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
-	config.load(PATH)
-
 	var u_line = node.get_line_edit()
 	u_line.set_caret_column(u_line.text.length())
 	if u_line.get_caret_column() == u_line.text.length() - 1:
@@ -808,16 +794,16 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 
 	match node:
 		file_count_spinbox:
-			config.set_value("settings", "file_cap", int(value)) 
-			request_save.emit(false, "File Count Spinbox Value Changed")
+			data.file_cap = int(value)
+			# request_save.emit(false, "File Count Spinbox Value Changed")
 			
 		entry_count_spinbox:
-			config.set_value("settings", "entry_cap", int(value)) 
-			request_save.emit(false, "Entry Count Spinbox Value Changed")
+			data.entry_cap = int(value
+			# request_save.emit(false, "Entry Count Spinbox Value Changed")
 
 		session_duration_spinbox:
-			config.set_value("settings", "session_duration", int(value)) 
-			request_save.emit(false, "Session Duration Spinbox Value Changed")
+			data.session_duration = int(value)
+			# request_save.emit(false, "Session Duration Spinbox Value Changed")
 
 #endregion
 
