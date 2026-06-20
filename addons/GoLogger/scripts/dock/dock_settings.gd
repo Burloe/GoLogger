@@ -217,33 +217,18 @@ func _ready() -> void:
 		]
 
 		_bind_settings_hover_groups()
-		_handle_limit_method_visibility(config.get_value("settings", "limit_method", settings_dict.get("limit_method", {}).get("default", 0)))
+		_handle_limit_method_visibility(data.limit_method)
 
 
 
 
 func initialize_tab() -> void:
-	for key in settings_dict.keys():
-		var _s: Dictionary = settings_dict[key]
-		var ctrl = settings_dict[key].get("control")
-		var value = config.get_value("settings", _s["name"], _s["default"])
-
-		if ctrl is Button or ctrl is CheckBox:
-			ctrl.button_pressed = value
-		
-		elif ctrl is SpinBox:
-			ctrl.value = value 
-		
-		elif ctrl is OptionButton:
-			ctrl.selected = value
-
-		elif ctrl is LineEdit:
-			ctrl.text = value
+	data.apply_values()
 	
 
 
 func init_visibility() -> void:
-	id_startup_btn.show() if config.get_value("settings", "id_toggle", false) else id_startup_btn.hide()
+	id_startup_btn.show() if data.id_startup else id_startup_btn.hide()
 	base_dir_line_btn_cont.hide()
 	base_dir_revert_btn.disabled = true
 	log_header_line_btn_cont.hide()
@@ -263,28 +248,6 @@ func init_visibility() -> void:
 		container.folded = true 
 	
 	dir_fold_cont.folded = false 
-
-
-
-func init_settings() -> void:
-	for key in settings_dict.keys():
-		var _s: Dictionary = settings_dict[key]
-		var ctrl = settings_dict[key].get("control")
-		var value = config.get_value("settings", _s["name"], _s["default"])
-
-		if ctrl is Button or ctrl is CheckBox or ctrl is CheckButton:
-			ctrl.button_pressed = value
-		
-		elif ctrl is SpinBox:
-			ctrl.value = value
-		
-		elif ctrl is OptionButton:
-			ctrl.selected = value
-
-		elif ctrl is LineEdit:
-			ctrl.text = value
-
-		init_visibility() 
 
 
 
@@ -471,14 +434,6 @@ func _apply_new_base_directory() -> bool:
 		d = DirAccess.open(new_dir)
 
 	data.base_dir = new_dir
-	
-	var save_err = config.save(PATH)
-	if save_err != OK:
-		if data.error_reporting != ErrorReportLevel.NONE:
-			push_warning("GoLogger: Failed to save settings.ini after changing base_directory. Reverting back to previous directory path[", old_dir, "].")
-		base_dir_line.text = old_dir 
-		return false
-
 	base_dir_line.text = new_dir
 	base_dir_revert_btn.tooltip_text = str("Revert to '", new_dir, "'")
  
@@ -798,7 +753,7 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 			# request_save.emit(false, "File Count Spinbox Value Changed")
 			
 		entry_count_spinbox:
-			data.entry_cap = int(value
+			data.entry_cap = int(value)
 			# request_save.emit(false, "Entry Count Spinbox Value Changed")
 
 		session_duration_spinbox:

@@ -45,10 +45,7 @@ var error_rep_ctrl: OptionButton = null
 var browser_sort_ctrl: Button = null
 var browser_view_ctrl: Button = null
 
-var list: Dictionary = {}:
-	get:
-		update_list()
-		return list
+var list: Dictionary = {}
 
 
 func _init() -> void:
@@ -118,6 +115,26 @@ func save() -> void:
 
 		
 
+func apply_values() -> void:
+	update_list()
+
+	for key in list.keys():
+		var ctrl = list[key]["ctrl"] 
+		var val = list[key]["value"]
+
+		if ctrl is Button or ctrl is CheckBox:
+			ctrl.button_pressed = val
+		
+		elif ctrl is SpinBox:
+			ctrl.value = val 
+		
+		elif ctrl is OptionButton:
+			ctrl.selected = val
+
+		elif ctrl is LineEdit:
+			ctrl.text = val
+
+
 
 func reset_to_default() -> bool:
 	if !validate_settings() or list.is_empty():
@@ -153,8 +170,10 @@ func reset_to_default() -> bool:
 
 
 
-# func get_list() -> Dictionary:
-# 	return list
+func get_list() -> Dictionary:
+	update_list()
+	return list
+
 
 func update_list() -> void:
 	list = {
