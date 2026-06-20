@@ -45,11 +45,6 @@ metadata/_custom_type_script = "uid://bm8lbc8d2cd4r"
 [sub_resource type="Resource" id="Resource_xov76"]
 script = ExtResource("7_2ik8n")
 categories = Array[ExtResource("8_jajas")]([SubResource("Resource_qiahn")])
-base_dir = null
-header_format = null
-autostart = null
-utc = null
-id_startup = null
 metadata/_custom_type_script = "uid://dcm4iew3h2l7p"
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4fkd"]

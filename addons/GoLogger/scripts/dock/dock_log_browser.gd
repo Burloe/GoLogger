@@ -23,6 +23,8 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var lv_lbl_sett_btn: Button = %ViewerLblSettButton
 @onready var lv_lbl_sett_popup: PanelContainer = %LblSettInspectorPopup
 @onready var lv_lbl_sett_popup_scroll_cont: ScrollContainer = %LblSettPopupScrollContainer
+
+@export var data: GLData = preload("uid://dj7h7t2v8csck")
 var inspector: EditorInspector
 
 const PATH = "user://gologger_data.ini"
@@ -70,9 +72,7 @@ var cur_sort: SortModes = SortModes.NEW:
 		lv_sort_mode_btn.tooltip_text = str("Sorting by:", modes[value])
 		var icons := [ico_sort_new, ico_sort_old, ico_sort_date_new, ico_sort_date_old]
 		lv_sort_mode_btn.icon = icons[value]
-		config.load(PATH)
-		config.set_value("settings", "browser_sort", value)
-		config.save(PATH)
+		data.browser_sort
 
 var state: BrowserState = BrowserState.FILE_LIST
 enum BrowserState {
@@ -108,8 +108,7 @@ func _input(event: InputEvent) -> void:
 	 
 
 
-func _ready() -> void:
-	config.load(PATH)
+func _ready() -> void: 
 	load_log_browser()
 
 	for mo in [lv_contents_lbl, lv_scroll_container, lv_panel, lv_panel.get_child(0), lv_title_lbl, log_viewer, log_viewer.get_child(0)]:
@@ -142,8 +141,7 @@ func _ready() -> void:
 
 
 
-func set_view(to: BrowserState) -> void:
-	config.load(PATH)
+func set_view(to: BrowserState) -> void: 
 	reload_hider.hide()
 	fb_margin_container.hide()
 	lv_margin_container.hide()
@@ -175,12 +173,9 @@ func set_view(to: BrowserState) -> void:
 func load_log_browser() -> void:
 	_close_log_file()
 	is_reloading = true
-	var e := config.load(PATH)
-	if e != OK and e != Error.ERR_FILE_NOT_FOUND: 
-		printerr("[GoLogger] Failed to load config: ", error_string(e))
-	cur_view = config.get_value("settings", "browser_view", false)
-	base_dir = config.get_value("settings", "base_directory", "")
-	var cats = config.get_value("categories", "category_names", [])
+	cur_view = data.browser_view
+	base_dir = data.base_dir
+	var cats = data.base_dir
 	log_files.clear()
 
 	if base_dir == "":
@@ -198,13 +193,13 @@ func load_log_browser() -> void:
 	await get_tree().process_frame
 	set_view(prev_state)
 
-	for c in cats:
+	for c in data.categories:
 
-		if c == "":
+		if c.category_name == "":
 				continue
 		
 		var sc: ScrollContainer = ScrollContainer.new()
-		sc.set_name(c.capitalize())
+		sc.set_name(c.category_name.capitalize())
 		category_tab_container.add_child(sc)
 		sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -214,9 +209,9 @@ func load_log_browser() -> void:
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
 		gc.add_theme_constant_override("h_separation", 8 if cur_sort < 2 else 24)
 		gc.add_theme_constant_override("v_separation", 8 if cur_sort < 2 else 24)
-		var n: Array = [c, gc]
+		var n: Array = [c.category_name, gc]
 		categories.append(n)
-		_load_logfiles(c, gc)
+		_load_logfiles(c.category_name, gc)
 	
 	set_view(BrowserState.LOG_SPLIT if cur_view else BrowserState.LOG_FULL)
 	_update_columns(true)
@@ -224,8 +219,7 @@ func load_log_browser() -> void:
 
 
 
-func _load_logfiles(category_name: String, base_gc: GridContainer) -> void: 
-	config.load(PATH)
+func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 	var actionable_list: PackedStringArray = []
 	var grouped_list: Dictionary = {}
 	var stray_file_list: PackedStringArray = []
@@ -371,7 +365,6 @@ func _open_log_file(log_file: GLLogFile) -> void:
 	if !log_file.file_name.ends_with(".log"):
 		return
 
-	config.load(PATH)
 	var log_content: String = log_file.file_contents
 	
 	if log_file.is_gl_name(log_file.file_name):

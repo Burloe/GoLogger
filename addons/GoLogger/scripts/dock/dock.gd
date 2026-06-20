@@ -212,17 +212,13 @@ var log_header_value: String = "":
 		if value != log_header_value:
 			log_header_value = value
 			log_header_revert_btn.tooltip_text = str("Revert to '", value, "'")
-			config.load(PATH)
-			config.set_value("settings", "log_header_format", value)
-			config.save(PATH)
+			data.header_format = value
 var entry_format_value: String = "":
 	set(value):
 		if value != entry_format_value:
 			entry_format_value = value
 			entry_format_revert_btn.tooltip_text = str("Revert to '", value, "'")
-			config.load(PATH)
-			config.set_value("settings", "entry_format", value)
-			config.save(PATH) 
+			data.entry_format = value 
 
 var _default_setting_in_progress: bool = false  
 var id_font_settings_min_size: int = 200
@@ -232,28 +228,28 @@ var is_shutting_down: bool = false:
 			is_shutting_down = value
 			category_tab.is_shutting_down = value
 
-var settings_dict := {
-	"category_names": 						{"section": "categories", "name": "category_names", 				"type": TYPE_ARRAY,  	"default": ["game"]},
-	"default_category": 					{"section": "categories", "name": "default_category", 	 		"type": TYPE_STRING,  "default": ""},
-	"base_directory": 						{"section": "settings", 	"name": "base_directory", 				"type": TYPE_STRING, "control": null, "default": "user://gologger/"},
-	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 			"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"section": "settings", 	"name": "entry_format", 					"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 			"type": TYPE_BOOL, 		"control": null, "default": true},
-	"use_utc": 										{"section": "settings", 	"name": "use_utc", 								"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_print": 									{"section": "settings", 	"name": "id_print", 							"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 							"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 			"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_align":										{"section": "settings", 	"name": "id_align", 							"type": TYPE_INT,			"control": null, "default": 0}, 
-	"limit_method": 							{"section": "settings", 	"name": "limit_method", 					"type": TYPE_INT, 		"control": null, "default": 0},
-	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 		"type": TYPE_INT, 		"control": null, "default": 0},
-	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 	"type": TYPE_INT, 		"control": null, "default": 0},
-	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
-	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false},
-	"browser_sort":								{"section": "settings", 	"name": "browser_sort",						"type": TYPE_INT,			"control": null, "default": 0}
-}
+# var settings_dict := {
+# 	"category_names": 						{"section": "categories", "name": "category_names", 				"type": TYPE_ARRAY,  	"default": ["game"]},
+# 	"default_category": 					{"section": "categories", "name": "default_category", 	 		"type": TYPE_STRING,  "default": ""},
+# 	"base_directory": 						{"section": "settings", 	"name": "base_directory", 				"type": TYPE_STRING, "control": null, "default": "user://gologger/"},
+# 	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 			"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
+# 	"entry_format": 							{"section": "settings", 	"name": "entry_format", 					"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
+# 	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 			"type": TYPE_BOOL, 		"control": null, "default": true},
+# 	"use_utc": 										{"section": "settings", 	"name": "use_utc", 								"type": TYPE_BOOL, 		"control": null, "default": false},
+# 	"id_print": 									{"section": "settings", 	"name": "id_print", 							"type": TYPE_BOOL, 		"control": null, "default": false},
+# 	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 							"type": TYPE_BOOL, 		"control": null, "default": false},
+# 	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 			"type": TYPE_BOOL, 		"control": null, "default": false},
+# 	"id_align":										{"section": "settings", 	"name": "id_align", 							"type": TYPE_INT,			"control": null, "default": 0}, 
+# 	"limit_method": 							{"section": "settings", 	"name": "limit_method", 					"type": TYPE_INT, 		"control": null, "default": 0},
+# 	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 		"type": TYPE_INT, 		"control": null, "default": 0},
+# 	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 	"type": TYPE_INT, 		"control": null, "default": 0},
+# 	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
+# 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
+# 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
+# 	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
+# 	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false},
+# 	"browser_sort":								{"section": "settings", 	"name": "browser_sort",						"type": TYPE_INT,			"control": null, "default": 0}
+# }
 
 
 
@@ -336,33 +332,57 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 ## Reassigns all references after they're ready
 func _assign_settings_controls() -> void:
-	var control_map := {
-		"base_directory": base_dir_line,
-		"log_header_format": log_header_line,
-		"entry_format": entry_format_line,
-		"autostart_session": autostart_btn,
-		"use_utc": utc_btn,
-		"id_print": id_print_btn,
-		"id_toggle": id_toggle_btn,
-		"id_startup_state": id_startup_btn,
-		"id_align": id_align_opt_btn, 
-		"limit_method": limit_method_btn,
-		"entry_count_action": entry_count_action_btn,
-		"session_timer_action": session_timer_action_btn,
-		"file_cap": file_count_spinbox,
-		"entry_cap": entry_count_spinbox,
-		"session_duration": session_duration_spinbox,
-		"error_reporting": error_rep_btn,
-		"browser_view": log_browser_view_btn,
-		"browser_sort": log_browser_sort_btn
-	}
+	data.base_dir_ctrl = base_dir_line
+	data.header_format_ctrl = log_header_line
+	data.entry_format_ctrl = entry_format_line
+	data.autostart_ctrl = autostart_btn
+	data.utc_ctrl = utc_btn
+	data.id_print_ctrl = id_print_btn
+	data.id_toggle_ctrl = id_toggle_btn
+	data.id_startup_ctrl = id_startup_btn
+	data.id_align_ctrl = id_align_opt_btn
+	data.limit_method_ctrl = limit_method_btn
+	data.entry_count_action_ctrl = entry_count_action_btn
+	data.session_timer_action_ctrl = session_timer_action_btn
+	data.file_cap_ctrl = file_count_spinbox
+	data.file_cap_ctrl_line = file_count_spinbox.get_line_edit()
+	data.entry_cap_ctrl = entry_count_spinbox
+	data.entry_cap_ctrl_line = entry_count_spinbox.get_line_edit()
+	data.session_duration_ctrl = session_duration_spinbox
+	data.session_duration_ctrl_line = session_duration_spinbox.get_line_edit()
+	data.error_rep_ctrl = error_rep_btn
+	data.browser_sort_ctrl = log_browser_sort_btn
+	data.browser_view_ctrl = log_browser_view_btn
 
-	for key in control_map.keys():
-		if settings_dict.has(key):
-			settings_dict[key]["control"] = control_map[key]
+
+
+	# var control_map := {
+	# 	"base_directory": base_dir_line,
+	# 	"log_header_format": log_header_line,
+	# 	"entry_format": entry_format_line,
+	# 	"autostart_session": autostart_btn,
+	# 	"use_utc": utc_btn,
+	# 	"id_print": id_print_btn,
+	# 	"id_toggle": id_toggle_btn,
+	# 	"id_startup_state": id_startup_btn,
+	# 	"id_align": id_align_opt_btn, 
+	# 	"limit_method": limit_method_btn,
+	# 	"entry_count_action": entry_count_action_btn,
+	# 	"session_timer_action": session_timer_action_btn,
+	# 	"file_cap": file_count_spinbox,
+	# 	"entry_cap": entry_count_spinbox,
+	# 	"session_duration": session_duration_spinbox,
+	# 	"error_reporting": error_rep_btn,
+	# 	"browser_view": log_browser_view_btn,
+	# 	"browser_sort": log_browser_sort_btn
+	# }
+
+	# for key in control_map.keys():
+	# 	if settings_dict.has(key):
+	# 		settings_dict[key]["control"] = control_map[key]
 	
-	category_tab.settings_dict = settings_dict 
-	settings_tab.settings_dict = settings_dict
+	# category_tab.settings_dict = settings_dict 
+	# settings_tab.settings_dict = settings_dict
 
 #endregion
 
@@ -370,38 +390,15 @@ func _assign_settings_controls() -> void:
 
 #region Public
 
-func initialize_dock() -> void: 
-	if config.load(PATH) != OK:
-		printerr("GoLogger error: Failed to load settings.ini file!")
-		return
+func initialize_dock() -> void:
+	if data == null: data = GLData.new()
 
 	_init_visibility()
 
 
 
 func reset_to_default() -> void:
-	data = GLData.new()
-	
-	var dl = data.list
-
-	for setting in data.list.keys():
-		var value = dl[setting]["value"]
-		var ctrl: Control = dl[setting]["ctrl"]
-
-		if   ctrl is Button and ctrl.toggle_mode:
-			ctrl.button_pressed = value
-
-		elif ctrl is CheckBox:
-			ctrl.button_pressed = value
-		
-		elif ctrl is SpinBox:
-			ctrl.value = value
-		
-		elif ctrl is OptionButton:
-			ctrl.selected = value
-
-		elif ctrl is LineEdit:
-			ctrl.text = value
+	data.reset_to_default()
 
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
@@ -412,70 +409,13 @@ func reset_to_default() -> void:
 
 
 ## Saves dock state to file. "external_source" is used to debug what func/signal called this from another tab script.
-func save_data(ignore_errors: bool = false, external_source: String = "") -> int: 
+func save_data(ignore_errors: bool = false, external_source: String = "") -> void: 
 	if is_shutting_down:
-		return OK
-
-	var load_err := config.load(PATH)
-	if load_err != OK:
-		return load_err
-
-	var _c := ConfigFile.new()
-	var _err: int = 0
-	var _offenders: Array[String] = [] 
-	category_tab.ensure_default_category()
-
-	for section in config.get_sections():
-		if section.begins_with("categories."):
-			continue
-			
-		for key in config.get_section_keys(section):
-			_c.set_value(section, key, config.get_value(section, key))
-
+		return
 	
-	# Settings
-	for key in settings_dict.keys():
-		var ctrl = settings_dict[key].get("control")
-		var setting_name: String = settings_dict[key].get("name", key)
-		var section_name: String = settings_dict[key].get("section", "settings")
-		
-		if !ignore_errors and ctrl == null and settings_dict[key]["section"] != "categories":
-			_err += 1
-			_offenders.append(str(setting_name))
-
-		if section_name == "categories":
-			continue
-		
-		if setting_name == "browser_view":
-			_c.set_value("settings", setting_name, log_browser_tab.cur_view)
-		elif   ctrl is LineEdit:
-			_c.set_value("settings", setting_name, ctrl.text)
-		elif ctrl is CheckBox:
-			_c.set_value("settings", setting_name, ctrl.button_pressed)
-		elif ctrl is SpinBox:
-			_c.set_value("settings", setting_name, int(ctrl.value))
-		elif ctrl is OptionButton:
-			_c.set_value("settings", setting_name, ctrl.selected)  
-		elif ctrl is Button and ctrl.toggle_mode:
-			_c.set_value("settings", setting_name, 1 if ctrl.button_pressed else 0)
-
-	var err_rep_lv: int = config.get_value("settings", "error_reporting", 0)
-	if  err_rep_lv <= ErrorReportLevel.ERRORS:
-		if _err > 0:
-			push_error(str("GoLogger error: Failed to save settings. Null Control references found for settings: \n\t", _offenders))
-
-	var _e: int = _c.save(PATH)
-	if _e != OK:
-		printerr(
-			str(
-				"GoLogger error: Failed to save settings.ini file! " if external_source.is_empty() else str("GoLogger error: Failed to save settings.ini file after source <", external_source, "> attempted to save!"), 
-				get_error(_e, "ConfigFile")
-			)
-		)
-		return _e
-	config.load(PATH)
 	save_categories()
-	return _e
+	data.save()
+	return 
 
 
 
@@ -483,102 +423,27 @@ func save_categories() -> void:
 	if is_shutting_down:
 		return
 
-	await get_tree().create_timer(0.01).timeout
+	# await get_tree().create_timer(0.01).timeout
 
-	config.load(PATH)
-	var _c := ConfigFile.new()
-	var _c_names = []
-	var _c_def: String = ""
-
-	# Ensuring [categories] section is on top of list
-	_c.set_value("categories", "category_names", _c_names) 
-	_c.set_value("categories", "default_category", config.get_value("categories", "default_category", _c_def))
-
-	for setting in settings_dict.keys():
-		if settings_dict[setting]["name"] == "category_names" or settings_dict[setting]["name"] == "default_category":
-			continue
-		else:
-			_c.set_value("settings", setting, config.get_value("settings", setting, settings_dict[setting]["default"]))
-			_c.set_value("settings", setting, config.get_value("settings", setting, settings_dict.get(setting, {}).get("default", settings_dict.get("default", {}).get(setting, null))))
-	
-	
+	var cats: Array[GLCategoryData] = []
 
 	for log_c in category_container.get_children():
 		if log_c is LogCategory:
 			if log_c.category_name.is_empty():
 				continue
-			_c_names.append(log_c.category_name)
-			if log_c.default_checkbox.button_pressed:
-				_c_def = log_c.category_name
 
-			var section: String = "categories." + log_c.category_name
+			if log_c.default_checkbox.button_pressed: 
+				data.default_category = log_c.category_name
 
-			_c.set_value(section, "file_name" , config.get_value(section, "file_name", ""))
-			_c.set_value(section, "file_path", config.get_value(section, "file_path", ""))
-			_c.set_value(section, "category_name", log_c.category_name) 
-			_c.set_value(section, "file_count", config.get_value(section, "file_count", config.get_value(section, "file_count", 0)))
-			_c.set_value(section, "is_locked", log_c.is_locked)
-			_c.set_value(section, "entry_count", config.get_value(section, "entry_count", 0))
-
-	_c.set_value("categories", "category_names", _c_names)
-	_c.set_value("categories", "default_category", _c_def)
-
+			var c_data: GLCategoryData = GLCategoryData.new()
+			c_data.category_name = log_c.category_name
+			c_data.file_name = log_c.file_name
+			c_data.file_path = log_c.file_path
+			c_data.is_locked = log_c.is_locked
+			cats.append(c_data)
+	
+	data.categories = cats
 	category_tab.handle_category_mov_button_state()
-	_c.save(PATH)
-	config.load(PATH)
-
-
-
-static func get_error(error: int, object_type: String = "") -> String:
-	match error:
-		1:  return str("Error[1] ",  object_type, " Failed")
-		2:  return str("Error[2] ",  object_type, " Unavailable")
-		3:  return str("Error[3] ",  object_type, " Unconfigured")
-		4:  return str("Error[4] ",  object_type, " Unauthorized")
-		5:  return str("Error[5] ",  object_type, " Parameter range")
-		6:  return str("Error[6] ",  object_type, " Out of memory")
-		7:  return str("Error[7] ",  object_type, " File: Not found")
-		8:  return str("Error[8] ",  object_type, " File: Bad drive")
-		9:  return str("Error[9] ",  object_type, " File: Bad File path")
-		10: return str("Error[10] ", object_type, " No File permission")
-		11: return str("Error[11] ", object_type, " File already in use")
-		12: return str("Error[12] ", object_type, " Can't open File")
-		13: return str("Error[13] ", object_type, " Can't write to File")
-		14: return str("Error[14] ", object_type, " Can't read to File")
-		15: return str("Error[15] ", object_type, " File unrecognized")
-		16: return str("Error[16] ", object_type, " File corrupt")
-		17: return str("Error[17] ", object_type, " File missing dependencies")
-		18: return str("Error[18] ", object_type, " End of File")
-		19: return str("Error[19] ", object_type, " Can't open")
-		20: return str("Error[20] ", object_type, " Can't create")
-		21: return str("Error[21] ", object_type, " Query failed")
-		22: return str("Error[22] ", object_type, " Already in use")
-		23: return str("Error[23] ", object_type, " Locked")
-		24: return str("Error[24] ", object_type, " Timeout")
-		25: return str("Error[25] ", object_type, " Can't connect")
-		26: return str("Error[26] ", object_type, " Can't resolve")
-		27: return str("Error[27] ", object_type, " Connection error")
-		28: return str("Error[28] ", object_type, " Can't acquire resource")
-		29: return str("Error[29] ", object_type, " Can't fork process")
-		30: return str("Error[30] ", object_type, " Invalid data")
-		31: return str("Error[31] ", object_type, " Invalid parameter")
-		32: return str("Error[32] ", object_type, " Already exists")
-		33: return str("Error[33] ", object_type, " Doesn't exist")
-		34: return str("Error[34] ", object_type, " Database: Can't read")
-		35: return str("Error[35] ", object_type, " Database: Can't write")
-		36: return str("Error[36] ", object_type, " Compilation failed")
-		37: return str("Error[37] ", object_type, " Method not found")
-		38: return str("Error[38] ", object_type, " Link failed")
-		39: return str("Error[39] ", object_type, " Script failed")
-		40: return str("Error[40] ", object_type, " Cyclic link")
-		41: return str("Error[41] ", object_type, " Invalid declaration")
-		42: return str("Error[42] ", object_type, " Duplicate symbol")
-		43: return str("Error[43] ", object_type, " Parse error")
-		44: return str("Error[44] ", object_type, " Busy error")
-		46: return str("Error[45] ", object_type, " Skip error")
-		47: return str("Error[46] ", object_type, " Help error")
-		48: return str("Error[47] ", object_type, " Bug error")
-	return "N/A"
 
 #endregion
 
@@ -593,7 +458,7 @@ func _open_user_dir() -> void:
 
 # Opens "user://GoLogger/category_name/"
 func _open_directory() -> void:
-	var abs_path = ProjectSettings.globalize_path(config.get_value("settings", "base_directory"))
+	var abs_path = ProjectSettings.globalize_path(data.base_dir)
 	OS.shell_open(abs_path)
 
 #endregion
