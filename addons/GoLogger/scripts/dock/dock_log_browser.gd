@@ -27,7 +27,7 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @export var data: GLData = preload("uid://dj7h7t2v8csck")
 var inspector: EditorInspector
 
-const PATH = "user://gologger_data.ini"
+# const PATH = "user://gologger_data.ini"
 
 var ico_fullscreen_view := preload("uid://ijiplwclq5pu")
 var ico_splitscreen_view := preload("uid://cp2p55wdq2wuk")
@@ -38,7 +38,7 @@ var ico_sort_date_old = preload("uid://cifx5d8dmjt38")
 var ico_sort_new = preload("uid://dvjgbc6hibv5m")
 var ico_sort_old = preload("uid://bljitewxdnvuh")
 
-var config: ConfigFile = ConfigFile.new()
+# var config: ConfigFile = ConfigFile.new()
 var grid_conts: Array[GridContainer] = []
 var is_content_hovered: bool = false
 var is_reloading: bool = false:

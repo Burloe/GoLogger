@@ -7,19 +7,20 @@ extends HBoxContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
+@export var data: GLData = preload("uid://dj7h7t2v8csck")
 
 signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_categories_save
 signal request_theme_colors 
 
 
-const PATH = "user://gologger_data.ini"
+# const PATH = "user://gologger_data.ini"
 
 @export var min_cell_width: int = 120
 
 var theme_colors: Dictionary = {}
 var category_scene = preload("uid://c3n416c5fajm5")
-var config = ConfigFile.new() 
+# var config = ConfigFile.new() 
 
 var is_shutting_down: bool = false
 var _default_setting_in_progress: bool = false  
@@ -58,8 +59,6 @@ enum ErrorReportLevel {
 #region Initializers
 
 func _ready() -> void:
-
-	config.load(PATH)
 	ensure_default_category()
 
 	visibility_changed.connect(func() -> void: if visible: request_update_columns())
@@ -77,21 +76,16 @@ func _ready() -> void:
 
 
 ## Called by dock.gd after settings_dict is initialized.
-func initialize_tab() -> void:
-	if config.load(PATH) != OK:
-		printerr("GoLogger Error: Failed to load settings.ini file!")
-		return
-	
-	for c_name in config.get_value("categories", "category_names", []):
+func initialize_tab() -> void:	
+	for cat in data.categories:
 		_add_category(
-			c_name, 
-			config.get_value("categories." + c_name, "is_locked", false)
+			cat.category_name,
+			cat.is_locked
 		)
 
-	var def_cat = config.get_value("categories", "default_category", "")
-	if def_cat != "":
+	if data.default_category != "":
 		for cat in category_container.get_children():
-			if cat is LogCategory and cat.category_name == def_cat and cat.default_checkbox != null:
+			if cat is LogCategory and cat.category_name == data.default_category and cat.default_checkbox != null:
 				cat.default_checkbox.button_pressed = true
 				break
 
@@ -112,12 +106,11 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 #region Public Functions
 
 func ensure_default_category() -> void:
-	config.load(PATH)
-	var cat_names: Array = config.get_value("categories", "category_names", [])
-	var def_cat: String = config.get_value("categories", "default_category", "")
-	if cat_names.is_empty() and def_cat != "" or !cat_names.has(def_cat):
-		config.set_value("categories", "default_category", "")
-	config.save(PATH)
+	var c_names := []
+	for c in data.categories:
+		c_names.append(c.category_name)
+	if c_names.is_empty() and data.default_category != "" or !c_names.has(data.default_category):
+		data.default_category = ""
 
 
 
@@ -139,20 +132,18 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 
 #region Private Functions
 
-func _add_category(_name: String = "", _is_locked: bool = false) -> void:
-	config.load(PATH)
-	var _n = category_scene.instantiate() as LogCategory
-	var _def = config.get_value("categories", "default_category", "")
+func _add_category(_name: String = "", _is_locked: bool = false) -> void: 
+	var _n = category_scene.instantiate() as LogCategory 
 	var low_name: String = _name.to_lower()
 	_n.category_name = low_name
-	_n.is_locked = _is_locked 
+	_n.is_locked = _is_locked
 	category_container.add_child(_n)
 
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit())
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested)
 	if !low_name.is_empty():
-		_n.default_checkbox.button_pressed = _def == low_name
+		_n.default_checkbox.button_pressed = data.default_category == low_name
 	_n.tree_entered.connect(request_update_columns)
 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name)) 
 
@@ -199,8 +190,7 @@ func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
 		return
 	
 	_default_setting_in_progress = true
-	config.load(PATH)
-
+	
 	for log_c in category_container.get_children():
 		if log_c is LogCategory and log_c.default_checkbox != null:
 			if log_c != cat:
@@ -209,8 +199,7 @@ func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
 	if set_status and cat.default_checkbox != null:
 		cat.default_checkbox.button_pressed = true
 	
-	config.set_value("categories", "default_category", cat.category_name if set_status else "") 
-	config.save(PATH)
+	data.default_category = cat.category_name if set_status else "" 
 	_default_setting_in_progress = false
 
 
