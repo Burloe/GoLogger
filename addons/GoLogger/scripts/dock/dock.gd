@@ -259,6 +259,7 @@ func _ready() -> void:
 	category_tab.data = data
 	settings_tab.data = data
 	data.update_list()
+	log_browser_tab.load_log_browser()
 
 	for i in [renable_btn1, renable_btn2, renable_btn3]:
 		if i: i.visible = dev_mode
