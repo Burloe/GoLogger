@@ -24,7 +24,7 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var lv_lbl_sett_popup: PanelContainer = %LblSettInspectorPopup
 @onready var lv_lbl_sett_popup_scroll_cont: ScrollContainer = %LblSettPopupScrollContainer
 
-@export var data: GLData = preload("uid://dj7h7t2v8csck")
+@export var data: GLData = null
 var inspector: EditorInspector
 
 # const PATH = "user://gologger_data.ini"
@@ -108,9 +108,7 @@ func _input(event: InputEvent) -> void:
 	 
 
 
-func _ready() -> void: 
-	load_log_browser()
-
+func _ready() -> void:
 	for mo in [lv_contents_lbl, lv_scroll_container, lv_panel, lv_panel.get_child(0), lv_title_lbl, log_viewer, log_viewer.get_child(0)]:
 		if mo != null:
 			mo.mouse_entered.connect(func() -> void: is_content_hovered = true)
@@ -173,9 +171,9 @@ func set_view(to: BrowserState) -> void:
 func load_log_browser() -> void:
 	_close_log_file()
 	is_reloading = true
-	cur_view = data.browser_view
-	base_dir = data.base_dir
-	var cats = data.base_dir
+	if data != null:
+		cur_view = data.browser_view
+		base_dir = data.base_dir
 	log_files.clear()
 
 	if base_dir == "":

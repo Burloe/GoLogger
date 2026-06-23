@@ -18,15 +18,13 @@ extends TabContainer
 
 
 
-signal update_index # The hell is this? Delete?
-signal change_category_name_finished # Deprecated? 
-
 @export var dev_mode: bool = false:
 	set(value):
 		dev_mode = value
 		for btn in [renable_btn1, renable_btn2, renable_btn3]:
 			if btn != null: btn.visible = value
-@export var data: GLData = preload("uid://dj7h7t2v8csck")
+@export var data: GLData = null
+var data_path: String = "uid://dj7h7t2v8csck"
 @onready var renable_btn1: Button = %RENABLEButton1
 @onready var renable_btn2: Button = %RENABLEButton2
 @onready var renable_btn3: Button = %RENABLEButton3
@@ -182,13 +180,13 @@ enum LimitMethod {
 	NONE
 }
 
-enum EntryCountAction { #Delete?
+enum EntryCountAction {
 	OVERWRITE_ENTRIES,
 	RESTART,
 	STOP
 }
 
-enum SessionTimerAction {#Delete?
+enum SessionTimerAction {
 	RESTART,
 	STOP
 }
@@ -199,8 +197,7 @@ enum ErrorReportLevel {
 	NONE
 }
 
-var category_scene = preload("uid://c3n416c5fajm5")
-var config = ConfigFile.new() 
+var category_scene = preload("uid://c3n416c5fajm5") 
 var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
@@ -257,6 +254,12 @@ var is_shutting_down: bool = false:
 #region Inits and signals
 
 func _ready() -> void:
+	data = load(data_path)
+	log_browser_tab.data = data
+	category_tab.data = data
+	settings_tab.data = data
+	data.update_list()
+
 	for i in [renable_btn1, renable_btn2, renable_btn3]:
 		if i: i.visible = dev_mode
 	theme_colors = _get_theme_colors()

@@ -13,7 +13,7 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
-	dock.save_data()
+	# dock.save_data()
 	remove_control_from_bottom_panel(dock)
 
 

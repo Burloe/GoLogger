@@ -7,7 +7,7 @@ extends HBoxContainer
 @onready var open_dir_btn: Button = %OpenDirCatButton
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
-@export var data: GLData = preload("uid://dj7h7t2v8csck")
+@export var data: GLData = null
 
 signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_categories_save
@@ -59,7 +59,6 @@ enum ErrorReportLevel {
 #region Initializers
 
 func _ready() -> void:
-	ensure_default_category()
 
 	visibility_changed.connect(func() -> void: if visible: request_update_columns())
 	resized.connect(_update_columns)
@@ -75,8 +74,9 @@ func _ready() -> void:
 
 
 
-## Called by dock.gd after settings_dict is initialized.
+## Called by dock.gd after data is initialized.
 func initialize_tab() -> void:	
+	ensure_default_category()
 	for cat in data.categories:
 		_add_category(
 			cat.category_name,
@@ -145,8 +145,7 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	if !low_name.is_empty():
 		_n.default_checkbox.button_pressed = data.default_category == low_name
 	_n.tree_entered.connect(request_update_columns)
-	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name)) 
-
+	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
 	if low_name == "":	_n.line_edit.grab_focus()
 	handle_category_mov_button_state()
 	request_update_columns()

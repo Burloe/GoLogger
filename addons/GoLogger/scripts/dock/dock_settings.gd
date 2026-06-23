@@ -87,7 +87,7 @@ var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 
 # const PATH = "user://gologger_data.ini"
 
-@export var data: GLData = preload("uid://dj7h7t2v8csck")
+@export var data: GLData = null
 
 # var config = ConfigFile.new() 
 var plugin_version: String =  "1.4":
@@ -217,16 +217,17 @@ func _ready() -> void:
 		]
 
 		_bind_settings_hover_groups()
-		_handle_limit_method_visibility(data.limit_method)
 
 
 
 
+## Called by dock.gd after data is initialized.
 func initialize_tab() -> void:
 	data.apply_values()
+	_handle_limit_method_visibility()
 	
 
-
+# Called by dock.gd
 func init_visibility() -> void:
 	id_startup_btn.show() if data.id_startup else id_startup_btn.hide()
 	base_dir_line_btn_cont.hide()
@@ -441,15 +442,15 @@ func _apply_new_base_directory() -> bool:
 
 
 
-func _handle_limit_method_visibility(method: int) -> void:
-	var show_entry_limits := method == LimitMethod.ENTRY_COUNT or method == LimitMethod.BOTH
-	var show_time_limits := method == LimitMethod.SESSION_TIMER or method == LimitMethod.BOTH
+func _handle_limit_method_visibility() -> void:
+	var show_entry_limits := data.limit_method == LimitMethod.ENTRY_COUNT or data.limit_method == LimitMethod.BOTH
+	var show_time_limits := data.limit_method == LimitMethod.SESSION_TIMER or data.limit_method == LimitMethod.BOTH
 
 	entry_count_action_container.visible = show_entry_limits 
 	session_timer_action_container.visible = show_time_limits 
 
-	entry_count_action_lbl.text = "Entry Action" if method == LimitMethod.BOTH else "Action"
-	session_timer_action_lbl.text = "Timer Action" if method == LimitMethod.BOTH else "Action"
+	entry_count_action_lbl.text = "Entry Action" if data.limit_method == LimitMethod.BOTH else "Action"
+	session_timer_action_lbl.text = "Timer Action" if data.limit_method == LimitMethod.BOTH else "Action"
 
 
 

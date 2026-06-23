@@ -7,8 +7,7 @@
 [ext_resource type="StyleBox" uid="uid://cy0ifp487jfcg" path="res://addons/gologger/resources/theme/tab_selected.tres" id="5_51fa0"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/gologger/scripts/dock/dock.gd" id="6_0swix"]
 [ext_resource type="Texture2D" uid="uid://3xfnobkyjg8d" path="res://addons/gologger/resources/icons/gologger_dock_icon.png" id="6_w3br5"]
-[ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gologger/scripts/gl_data_resource.gd" id="7_2ik8n"]
-[ext_resource type="Script" uid="uid://bm8lbc8d2cd4r" path="res://addons/gologger/scripts/gl_category_data_resource.gd" id="8_jajas"]
+[ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gologger/data.tres" id="8_equok"]
 [ext_resource type="Script" uid="uid://cn351cc4ofrco" path="res://addons/gologger/scripts/dock/dock_category.gd" id="8_y0aum"]
 [ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/gologger/resources/icons/Add.svg" id="8_ym61x"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/gologger/resources/icons/Folder.svg" id="9_m5iun"]
@@ -37,15 +36,6 @@
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/gologger/resources/icons/gologger_icon_flat.png" id="27_e468n"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4pb5"]
-
-[sub_resource type="Resource" id="Resource_qiahn"]
-script = ExtResource("8_jajas")
-metadata/_custom_type_script = "uid://bm8lbc8d2cd4r"
-
-[sub_resource type="Resource" id="Resource_xov76"]
-script = ExtResource("7_2ik8n")
-categories = Array[ExtResource("8_jajas")]([SubResource("Resource_qiahn")])
-metadata/_custom_type_script = "uid://dcm4iew3h2l7p"
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4fkd"]
 content_margin_left = 8.0
@@ -171,7 +161,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 3
+current_tab = 1
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("6_w3br5")
@@ -182,7 +172,7 @@ tab_3/title = "Settings"
 tab_4/title = "Help"
 script = ExtResource("6_0swix")
 dev_mode = true
-data = SubResource("Resource_xov76")
+data = ExtResource("8_equok")
 metadata/_edit_horizontal_guides_ = [49.0, 294.0, 254.0, 188.0, 223.0]
 metadata/_edit_vertical_guides_ = [15.0, 640.0]
 
@@ -194,7 +184,6 @@ metadata/_tab_name = " "
 
 [node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -236,6 +225,7 @@ theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = ExtResource("12_7cref")
+disabled = true
 icon = ExtResource("13_dg67q")
 icon_alignment = 1
 
@@ -293,6 +283,7 @@ icon_alignment = 1
 
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 14
@@ -339,7 +330,6 @@ theme_override_styles/tabbar_background = ExtResource("2_3wac3")
 theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
-current_tab = 0
 
 [node name="LVMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1830750093]
 unique_name_in_owner = true
@@ -566,6 +556,7 @@ theme_override_constants/v_separation = 8
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
