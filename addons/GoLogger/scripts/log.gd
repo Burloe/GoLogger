@@ -108,8 +108,6 @@ func _ready() -> void:
 
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 
-	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
-
 	var id_alignment = data.id_align
 	if id_alignment in [0,4,8]:
 		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -131,9 +129,6 @@ func _ready() -> void:
 
 
 	instance_id = _get_instance_id()
-
-	validate_settings()
-	load_category_data()
 
 	if data.autostart:
 		start_session()
@@ -374,112 +369,46 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 
 
 func stop_session() -> void:
-	if !session_status:	return
+	if !session_status:	
+		return 
 
-	load_category_data()
+	var _err_lv: int = data.error_reporting
+	var _timestamp : String = str("[", Time.get_time_string_from_system(data.utc), "] Stopped log session.")
 
-	var _err_lv: int = _get_config_value("settings", "error_reporting")
-	var _timestamp : String = str("[", Time.get_time_string_from_system(_get_config_value("settings", "use_utc")), "] Stopped log session.")
-
-	for category in config.get_value("categories", "category_names", []):
-		var _fp = cat_data[category]["file_path"]
-		if _fp == "":
+	for category in data.categories:
+		if category.file_path == "":
 			if _err_lv != 2:
 				push_warning("GoLogger: Failed to stop session properly. No valid file path found for category '", category, "'.")
 			continue
 
 
-		var _f = FileAccess.open(_fp, FileAccess.READ)
+		var _f = FileAccess.open(category.file_path, FileAccess.READ)
 		if !_f:
 			var _err = FileAccess.get_open_error()
 			if _err_lv != 2:
-				if _err != OK: push_warning("GoLogger: Failed to open file ", _fp, " with READ ", get_error(_err))
-			push_warning("GoLogger: Failed to stop session properly. Error opening file!", _fp)
+				if _err != OK: push_warning("GoLogger: Failed to open file ", category.file_path, " with READ ", get_error(_err))
+			push_warning("GoLogger: Failed to stop session properly. Error opening file!", category.file_path)
 			session_status = false
 			return
 		var _content := _f.get_as_text()
 		_f.close()
 
 
-		var _fw = FileAccess.open(_fp, FileAccess.WRITE)
+		var _fw = FileAccess.open(category.file_path, FileAccess.WRITE)
 		if !_fw and _err_lv != 2:
 			var _err = FileAccess.get_open_error()
 			if _err != OK:
-				push_warning("GoLogger: Attempting to stop session by writing to file (", _fp, ") -> Error[", _err, "]")
+				push_warning("GoLogger: Attempting to stop session by writing to file (", category.file_path, ") -> Error[", _err, "]")
 				return
 		var _s := str(_content, str(_timestamp))
 		_fw.store_line(_s)
 		_fw.close()
 
-		config.set_value("categories." + str(category), "file_name", "")
-		config.set_value("categories." + str(category), "file_path", "")
-		config.set_value("categories." + str(category), "entry_count", 0)
-
-	config.save(PATH)
+		category.file_name = ""
+		category.file_path = ""
+		category.entry_count = 0
+		
 	session_status = false
-
-
-
-func create_settings_file() -> void: # Mirror
-	var cf := ConfigFile.new()
-
-	for key in settings_dict.keys():
-		for field in ["section", "default", "type", "control"]:
-			if field == "control" and settings_dict[key]["section"] == "categories":
-				continue
-
-			if not settings_dict[key].has(field):
-				push_error("GoLogger: Error creating a settings file. 'settings_dict' entry '%s' missing '", field, "' field", % key)
-				continue
-
-		var section = settings_dict[key].get("section", "settings")
-		cf.set_value(section, key, settings_dict[key]["default"])
-
-	var _s = cf.save(PATH)
-	if _s != OK:
-		var _e = cf.get_open_error()
-		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
-		return
-
-	config.load(PATH) 
-
-
-
-func validate_settings() -> void: # Mirror
-	config.load(PATH) 
-
-	for key in settings_dict.keys():
-		var setting: Dictionary = settings_dict.get(key, {})
-		var a_fields = ["section", "name", "type", "control", "default"]
-		var b_fields = ["section", "name", "type", "default"]
-
-		# Check missing fields
-		if setting.has("section"):
-			var fs = a_fields.duplicate()
-
-			if setting["section"] == "categories":
-				fs = b_fields.duplicate()
-
-			# Collect + report missing fields
-			if !setting.has_all(fs):
-				var _e: Array[String] = []
-				for field in fs:
-					if !setting.has(field):
-						_e.append(field)
-
-				if not _e.is_empty():
-					push_warning(str("GoLogger error: invalid settings_dict key. Missing field(s) ", _e, " for setting <", key, ">"))
-
-		# Validate Presence
-		if !config.has_section(setting["section"]) or !config.has_section_key(setting["section"], setting["name"]):
-			config.set_value(setting["section"], setting["name"], setting["default"])
-			continue
-
-		# Validate Type
-		if typeof(config.get_value(setting["section"], setting["name"])) != setting["type"]:
-			config.set_value(setting["section"], setting["name"], setting["default"])
-
-	config.save(PATH)
 
 
 
@@ -537,30 +466,9 @@ static func get_error(error : int, object_type : String = "") -> String:
 
 
 
-func _get_default(key: String, custom_default: Variant = null) -> Variant:
-	return settings_dict.get(key, {}).get("default", custom_default)
-
-
-
-func _check_category_name_conflicts() -> Array[String]:
-	var categories = config.get_value("categories", "category_names" , [])
-	if categories.is_empty():
-		return []
-
-	var found_conflicts: Array[String] = []
-	var seen_names : Array[String] = []
-
-	for name in categories:
-		if name in seen_names:
-			found_conflicts.append(name)
-		else: seen_names.append(name)
-	return found_conflicts
-
-
-
-func _get_header(category_name: String = "") -> String:
-	config.load(PATH)
-	var format: String = _get_config_value("settings", "log_header_format")
+func _get_header(category_name: String = "") -> String: 
+	load_data()
+	var format: String = data.header_format
 	var _header: String = ""
 	var _tags: Array[String] = [
 		"{project_name}",
@@ -575,7 +483,7 @@ func _get_header(category_name: String = "") -> String:
 	]
 
 	if format != null and format != "":
-		var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_config_value("settings", "use_utc"))
+		var dict  : Dictionary = Time.get_datetime_dict_from_system(data.utc)
 		var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 		var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
 		var dd  : String = str(dict["day"]    if dict["day"]    > 9 else str("0", dict["day"]))
@@ -620,7 +528,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 		"{entry}"
 	]
 
-	var dt: Dictionary = Time.get_datetime_dict_from_system(_get_config_value("settings", "use_utc", false))
+	var dt: Dictionary = Time.get_datetime_dict_from_system(data.utc)
 
 	var yy: String = str(dt["year"]).substr(2, 2)
 	var mm: String = str(dt["month"]  if dt["month"]  > 9 else str("0", dt["month"]))
@@ -643,7 +551,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 		"{entry}": entry
 	}
 
-	var format: String = _get_config_value("settings", "entry_format", settings_dict.get("entry_format", {}).get("default"))
+	var format: String = data.entry_format
 	var final_entry: String = format
 	for tag in _tags:
 		if tag in replacements:
@@ -653,7 +561,7 @@ func _get_entry_format(entry: String, category_name: String) -> String:
 
 
 func _get_file_name(category_name : String) -> String:
-	var dict  : Dictionary = Time.get_datetime_dict_from_system(_get_config_value("settings", "use_utc"))
+	var dict  : Dictionary = Time.get_datetime_dict_from_system(data.utc)
 	var yy  : String = str(dict["year"]).substr(2, 2) # Removes 20 from 2024
 	var mm  : String = str(dict["month"]  if dict["month"]  > 9 else str("0", dict["month"]))
 	var dd  : String = str(dict["day"]    if dict["day"]    > 9 else str("0", dict["day"]))
@@ -682,10 +590,10 @@ func _get_instance_id() -> String:
 func _on_timer_timeout(_timer: Timer) -> void:
 	match _timer:
 		session_timer:
-			var _wt: float = _get_config_value("settings", "session_duration")
-			match _get_config_value("settings", "limit_method"):
-				LimitMethod.SESSION_TIMER: # Session Timer
-					if _get_config_value("settings", "session_timer_action") == 0: # Stop & Start
+			var _wt: float = data.session_duration
+			match data.limit_method:
+				LimitMethod.SESSION_TIMER:
+					if data.session_timer_action == SessionTimerAction.RESTART: 
 						stop_session()
 						await get_tree().physics_frame
 						session_timer.wait_time = _wt
@@ -693,8 +601,8 @@ func _on_timer_timeout(_timer: Timer) -> void:
 					else: # Stop only
 						stop_session()
 						session_timer.stop()
-				LimitMethod.BOTH: # Both Count limit + Session timer
-					if _get_config_value("settings", "session_timer_action") == 0: # Stop & Start
+				LimitMethod.BOTH: 
+					if data.session_timer_action == SessionTimerAction.RESTART:
 						stop_session()
 						await get_tree().physics_frame
 						session_timer.wait_time = _wt
