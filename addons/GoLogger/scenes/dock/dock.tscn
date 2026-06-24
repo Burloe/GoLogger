@@ -190,6 +190,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 script = ExtResource("10_kapcw")
+data = ExtResource("8_equok")
 metadata/_tab_index = 1
 metadata/_tab_name = "Logs"
 
@@ -225,7 +226,6 @@ theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = ExtResource("12_7cref")
-disabled = true
 icon = ExtResource("13_dg67q")
 icon_alignment = 1
 
@@ -283,7 +283,6 @@ icon_alignment = 1
 
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 14
@@ -330,6 +329,7 @@ theme_override_styles/tabbar_background = ExtResource("2_3wac3")
 theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
+current_tab = 0
 
 [node name="LVMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1830750093]
 unique_name_in_owner = true
@@ -473,6 +473,7 @@ custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("8_y0aum")
+data = ExtResource("8_equok")
 min_cell_width = 350
 metadata/_tab_index = 2
 metadata/_tab_name = "Categories"
@@ -561,6 +562,7 @@ custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("19_luwxg")
+data = ExtResource("8_equok")
 metadata/_tab_index = 3
 metadata/_tab_name = "Settings"
 
@@ -701,6 +703,7 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+button_pressed = true
 text = "UTC time"
 alignment = 2
 icon_alignment = 2

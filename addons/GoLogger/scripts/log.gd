@@ -15,7 +15,7 @@ extends Node
 
 
 signal session_toggled(toggled_on: bool) ## Emitted when a log session is started or stopped.
-signal msg_logged(category: String, msg: String) ## Emitted when a log message is logged.
+signal msg_logged(msg: String, category: String) ## Emitted when a log message is logged.
 
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
@@ -61,14 +61,18 @@ enum ErrorCodes { #NYI - For future use in error/warning messages - On hold
 		ERR_DIR_ACCESS
 }
 
-const PATH = "user://gologger_data.ini" # Mirror in GoLoggerDock.gd
+@export var data: GLData = null
+var data_path: String = "res://addons/gologger/data.tres"
 var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
-var config := ConfigFile.new()
 var copy_name : String = ""
 var session_status: bool = false:
 	set(value):
 		session_status = value
 		session_toggled.emit(session_status)
+var instance_id: String = "":
+	set(value):
+		instance_id = value 
+		instance_id_label.text = str("  ", value, "  ")
 
 var cat_data : Dictionary = {
 	"game": {
@@ -81,80 +85,59 @@ var cat_data : Dictionary = {
 	}
 }
 
-## Instance ID is a unique ID for each runtime instance of GoLogger. Used to differentiate between multiple instances when debugging multiplayer projects.
-var instance_id: String = "":
-	set(value):
-		instance_id = value
-		config.load(PATH) 
-		instance_id_label.text = str("  ", value, "  ")
 
+func load_data() -> void:
+	if !FileAccess.file_exists(data_path):
+		data = GLData.new()
+		var err := ResourceSaver.save(data, data_path)
+		if err == OK and data.error_reporting != 2:
+			print("GoLogger: No data found. Loading default.")
+		else:
+			push_error("GoLogger Error: No data found and unable to restore to defaults. Try to manually create a new GLData resource at '", data_path, "'.")
+	else:
+		data = load(data_path)
 
-var settings_dict := {
-	"category_names": 						{"section": "categories", "name": "category_names", 				"type": TYPE_ARRAY,  	"default": ["game"]},
-	"default_category": 					{"section": "categories", "name": "default_category", 	 		"type": TYPE_STRING,  "default": ""},
-	"base_directory": 						{"section": "settings", 	"name": "base_directory", 				"type": TYPE_STRING, "control": null, "default": "user://gologger/"},
-	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 			"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-	"entry_format": 							{"section": "settings", 	"name": "entry_format", 					"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 			"type": TYPE_BOOL, 		"control": null, "default": true},
-	"use_utc": 										{"section": "settings", 	"name": "use_utc", 								"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_print": 									{"section": "settings", 	"name": "id_print", 							"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 							"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 			"type": TYPE_BOOL, 		"control": null, "default": false},
-	"id_align":										{"section": "settings", 	"name": "id_align", 							"type": TYPE_INT,			"control": null, "default": 0}, 
-	"limit_method": 							{"section": "settings", 	"name": "limit_method", 					"type": TYPE_INT, 		"control": null, "default": 0},
-	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 		"type": TYPE_INT, 		"control": null, "default": 0},
-	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 	"type": TYPE_INT, 		"control": null, "default": 0},
-	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
-	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
-	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
-	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false},
-	"browser_sort":								{"section": "settings", 	"name": "browser_sort",						"type": TYPE_INT,			"control": null, "default": 0}
-}
 
 
 
 func _ready() -> void:
-	if !FileAccess.file_exists(PATH):
-		create_settings_file()
-
-	config.load(PATH)
-
-	var id_toggle = config.get_value("settings", "id_toggle", false)
-	var id_startup = config.get_value("settings", "id_startup_state", false)
-	if id_toggle:
-		instance_id_label.visible = id_startup
+	load_data()
+ 
+	if data.id_toggle:
+		instance_id_label.visible = data.id_startup
 
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
 
 	assert(_check_category_name_conflicts().is_empty(), str("GoLogger: Conflicting category name(s) found: ", _check_category_name_conflicts()))
-	var id_alignment = _get_config_value("settings", "id_align") 
+
+	var id_alignment = data.id_align
 	if id_alignment in [0,4,8]:
 		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	
+
 	if id_alignment in [1,5,9]:
 		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	
+
 	if id_alignment in [2,6,10]:
 		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 	if id_alignment in [0,1,2]:
 		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	
+
 	if id_alignment in [4,5,6]:
 		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	
+
 	if id_alignment in [7,8,9]:
 		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	
+
 
 	instance_id = _get_instance_id()
 
 	validate_settings()
 	load_category_data()
 
-	if _get_config_value("settings", "autostart_session"):
+	if data.autostart:
 		start_session()
+
 
 
 func _input(event: InputEvent) -> void:
@@ -168,17 +151,11 @@ func _input(event: InputEvent) -> void:
 			if gl_hotkeys.stop_session_hotkey.shortcut.matches_event(event) and event.is_released():
 				stop_session()
 
-
-			config.load(PATH)
-			var id_toggle = config.get_value("settings", "id_toggle", false)
-			var id_startup = config.get_value("settings", "id_startup_state", false)
-			var id_print = _get_config_value("settings", "id_print")
-
 			if gl_hotkeys.display_instance_id_hotkey.shortcut.matches_event(event):
-				if id_toggle:
+				if data.id_toggle:
 					if event.is_released():
 						instance_id_label.hide() if instance_id_label.visible else instance_id_label.show()
-						if id_print:
+						if data.id_print:
 							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
 
 				else:
@@ -186,7 +163,7 @@ func _input(event: InputEvent) -> void:
 						instance_id_label.show()
 					if event.is_released():
 						instance_id_label.hide()
-						if id_print:
+						if data.id_print:
 							print_rich("[font_size=12][color=fc4674][GoLogger][color=white] Instance ID: <[color=lightblue]", instance_id, "[/color]>")
 
 		# Test entry logging
@@ -199,101 +176,39 @@ func _input(event: InputEvent) -> void:
 
 
 
-
-## Loads category data from the config file into the cat_data dictionary.[br]
-## Use instead of 'config.load(PATH)' whenever category data is needed.
-func load_category_data(_new_session: bool = false) -> void:
-	config.load(PATH)
-	cat_data.clear()
-
-	var cat_names: Array = config.get_value("categories", "category_names", [])
-
-	cat_data["categories"] = {
-		"category_names": cat_names.duplicate(),
-	}
-
-	for c_name in cat_names:
-
-		cat_data[c_name] = {
-			"category_name": c_name,
-			"file_name": config.get_value("categories." + c_name, "file_name", ""),
-			"file_path": config.get_value("categories." + c_name, "file_path", ""),
-			"file_count": config.get_value("categories." + str(c_name), "file_count", 0),
-			"entry_count": 0,
-			"is_locked": config.get_value("categories." + str(c_name), "is_locked", false)
-		}
-	config.save(PATH)
-
-
-## Saves category data from the cat_data dictionary into the config file.[br]
-## Use instead of 'config.save(PATH)' whenever category data is modified.
-func save_category_data() -> void:
-	if !cat_data.has("categories"):
-		return
-
-	var err = config.load(PATH)
-	if err != OK:
-		if _get_config_value("settings", "error_reporting") != 2:
-			push_warning("gologger: Failed to load existing config file while saving category data.")
-		return
-
-	config.set_value("categories", "category_names", cat_data["categories"]["category_names"])
-
-	for c_name in cat_data["categories"]["category_names"]:
-		if !cat_data.has(c_name):
-			continue
-		var c = cat_data[c_name]
-		var base_section := "categories." + str(c["category_name"])
-
-		config.set_value(base_section, "category_name", c.get("category_name", c_name))
-		config.set_value(base_section, "file_count", c.get("file_count", 0))
-		config.set_value(base_section, "entry_count", c.get("entry_count", 0))
-		config.set_value(base_section, "is_locked", c.get("is_locked", false))
-
-	config.save(PATH)
-
-
-
 func start_session() -> void:
 	if session_status: # ErrCheck -> Session already started
-		if _get_config_value("settings", "error_reporting") != 2:
+		if data.error_reporting != 2:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 
-	load_category_data(true)
+	if data.limit_method == LimitMethod.SESSION_TIMER or data.limit_method == LimitMethod.BOTH:
+		session_timer.start(data.session_duration)
 
-	if _get_config_value("settings", "limit_method") == LimitMethod.SESSION_TIMER or _get_config_value("settings", "limit_method") == LimitMethod.BOTH:
-		session_timer.start(_get_config_value("settings", "session_duration"))
+	# for i in range(cat_data["categories"]["category_names"].size()):
+	for i in data.categories:
+		var c_name: String = i.category_name
+		var f_name: String = _get_file_name(c_name) # game(date-time).log
+		var f_path: String = str(data.base_dir, c_name, "_logs/", f_name)
 
-
-	for i in range(cat_data["categories"]["category_names"].size()):
-		var c_name: String = cat_data["categories"]["category_names"][i]
-		var f_name: String = _get_file_name(c_name) # e.g. "game.log"
-		var f_path: String = str(
-			config.get_value(
-			"settings", "base_directory",	settings_dict.get("base_directory").get("default")
-			), c_name, "_logs/", f_name
-		)
-
-		config.set_value("categories." + str(c_name), "file_name", f_name)
-		config.set_value("categories." + str(c_name), "file_path", f_path)
-		config.save(PATH)
+		i.file_name = f_name
+		i.file_path = f_path
 
 		# Open/create directory
-		var path: String = str(config.get_value("settings", "base_directory", "user://gologger/"), c_name, "_logs/")
+		var path: String = str(data.base_dir, c_name, "_logs/")
 		var dir : DirAccess
 		if !DirAccess.dir_exists_absolute(path):
 			DirAccess.make_dir_recursive_absolute(path)
 
 		dir = DirAccess.open(path)
 
-		if !dir and _get_config_value("settings", "error_reporting") != 2: # ErrCheck
+		if !dir and data.error_reporting != 2: # ErrCheck
 			var _err = DirAccess.get_open_error()
-			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", config.get_value(str("categories.", c_name), "file_path", "EMPTY FILEPATH!"), ").")
+			if _err != OK: push_warning("GoLogger: ", get_error(_err, "DirAccess"), " (", path, ").")
 			continue
 
 		var _f = FileAccess.open(f_path, FileAccess.WRITE)
-		if !_f and _get_config_value("settings", "error_reporting") != 2:
+		if !_f and data.error_reporting != 2:
 			push_warning("GoLogger: Failed to create log file for session(", f_path, ").")
 			continue
 
@@ -306,14 +221,14 @@ func start_session() -> void:
 
 		cat_data[c_name]["file_count"] = _log_files.size()
 		print(_log_files)
-		if _get_config_value("settings", "file_cap") > 0:
-			while _log_files.size() > _get_config_value("settings", "file_cap") -1:
+		if data.file_cap > 0:
+			while _log_files.size() > data.file_cap -1:
 				# _log_files.sort()
 				dir.remove(_log_files[0])
 				_log_files.remove_at(0)
 
 				var _err = DirAccess.get_open_error() # Checks for errors during dir.remove()
-				if _err != OK and _get_config_value("settings", "error_reporting") != 2:
+				if _err != OK and data.error_reporting != 2:
 					push_warning("GoLogger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 
 		var header: String = _get_header(c_name)
@@ -321,72 +236,74 @@ func start_session() -> void:
 			_f.store_line(header)
 		_f.close()
 
-	save_category_data()
 	session_status = true
-	if session_timer.is_stopped() and _get_config_value("settings", "session_timer_action") in [1, 2]:
+	if session_timer.is_stopped() and data.session_timer_action in [1, 2]:
 		if session_timer != null: session_timer.start()
 
 
 func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
-	load_category_data()
-	var data: Dictionary = {
-		"target_category": 			category_name,
-		"category_names": 			_get_config_value("categories", "category_names"),
-		"default_category":	 		_get_config_value("categories", "default_category"),
-		"target_filepath": 			_get_config_value(str("categories." + category_name), "file_path", "Failed to get file path!"),
-		"limit_method": 				_get_config_value("settings", "limit_method"),
-		"entry_action": 				_get_config_value("settings", "entry_count_action"),
-		"entry_cap": 						_get_config_value("settings", "entry_cap"),
-		"session_timer_action": _get_config_value("settings", "session_timer_action"),
-		"session_duration": 		_get_config_value("settings", "session_duration"),
-		"err_lv": 							_get_config_value("settings", "error_reporting"),
-	} 
+	var target_category: String = category_name
+	var target_filepath: String = data.get_category(target_category).file_path
+
+	# var data: Dictionary = {
+	# 	"target_category": 			category_name,
+	# 	"category_names": 			_get_config_value("categories", "category_names"),
+	# 	"default_category":	 		_get_config_value("categories", "default_category"),
+	# 	"target_filepath": 			_get_config_value(str("categories." + category_name), "file_path", "Failed to get file path!"),
+	# 	"limit_method": 				_get_config_value("settings", "limit_method"),
+	# 	"entry_action": 				_get_config_value("settings", "entry_count_action"),
+	# 	"entry_cap": 						_get_config_value("settings", "entry_cap"),
+	# 	"session_timer_action": _get_config_value("settings", "session_timer_action"),
+	# 	"session_duration": 		_get_config_value("settings", "session_duration"),
+	# 	"err_lv": 							_get_config_value("settings", "error_reporting"),
+	# } 
 	print(data)
 
 	if log_msg == "":
-		if data["err_lv"] != 2:
+		if data.error_reporting != 2:
 			printerr("GoLogger: Attempted to log empty entry.")
 		return
 
-	if data["target_category"] == "": # Unspecified category -> Use Default category
-		if data["default_category"] != "" and data["category_names"].has(data["default_category"]):
-			data["target_cat"] = data["default_category"]
-			data["target_filepath"] = config.get_value(str("categories." + data["default_category"]), "file_path", "")
+	if target_category: # Unspecified category -> Use Default category
+		if data.default_category != "" and data.get_category_names().has(data.default_category):
+			target_category = data.default_category
+			target_filepath = data.get_category(target_category).file_path
+
 		else:
-			if data["err_lv"] != 2:
-				if data["default_category"].is_empty():
+			if data.error_reporting != 2:
+				if data.default_category.is_empty():
 					printerr("GoLogger: msg() called without specifying a category name and no default category assigned.\n\t Entry:\n", log_msg)
 				else:
-					if !data["target_category"].has(data["default_category"]):
-						printerr("GoLogger: Entry failed to log into default category[", data["default_category"], "] assigned does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
-					printerr("GoLogger: Attempted to log entry into a default category[", data["default_category"],"] that doesn't exist.")
+					if !data.get_category_names().has(data.default_category):
+						printerr("GoLogger: Entry failed to log into default category[", data.default_category, "] assigned does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
+					printerr("GoLogger: Attempted to log entry into a default category[", data.default_category,"] that doesn't exist.")
 
 			return
 
-	if data["target_category"].is_empty():
-		if data["err_lv"] != 2:
+	if target_category.is_empty():
+		if data.error_reporting != 2:
 			printerr("GoLogger: Attempted to log entry without categories.")
 		return
 
-	if data["target_category"] not in data["category_names"]:
-		if data["err_lv"] != 2:
+	if target_category not in data.get_category_names():
+		if data.error_reporting != 2:
 			printerr("GoLogger: Category '" + data["target_category"] + "' not found. Check correct spelling.")
 		return
 
 	if !session_status:
 		return
 
-	if data["target_filepath"] == "" or !data["target_filepath"]:
-		if data["err_lv"] != 2:
-			printerr("GoLogger: No valid file path found for category '" + data["target_category"] + "[" + instance_id + "]'.")
+	if target_filepath == "" or !target_filepath:
+		if data.error_reporting != 2:
+			printerr("GoLogger: No valid file path found for category '" + target_category + "[" + instance_id + "]'.")
 		return
 
 
 	# Read existing Entries (note that first entry is Log Header)
-	var _f = FileAccess.open(data["target_filepath"], FileAccess.READ)
+	var _f = FileAccess.open(target_filepath, FileAccess.READ)
 	if !_f: # ER
 		var _err = FileAccess.get_open_error()
-		if _err != OK and data["err_lv"] != 2:
+		if _err != OK and data.error_reporting != 2:
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
@@ -397,7 +314,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			lines.append(_l)
 	_f.close()
 	config.load(PATH)
-	config.set_value("categories." + str(data["target_category"]), "entry_count", lines.size())
+	config.set_value("categories." + target_category, "entry_count", lines.size())
 	config.save(PATH)
 
 	# Handle Limit Methods
@@ -452,7 +369,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var _fw = FileAccess.open(data["target_filepath"], FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
-		if err != OK and data["err_lv"] != 2:
+		if err != OK and data.error_reporting != 2:
 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 
 	for line in lines:
@@ -629,35 +546,6 @@ static func get_error(error : int, object_type : String = "") -> String:
 		48: return str("<Error[47] ", object_type, " Bug error>")
 	return "N/A"
 
-
-
-## ConfigFile.get_value() wrapper - Retrieves a value from the config file, validating settings beforehand and getting default value if failed.
-func _get_config_value(section: String, value : String, default_value: Variant = null) -> Variant:
-	var fallback: Variant = null
-	if default_value == null:
-		fallback = settings_dict.get(value, {}).get("default")
-	else:
-		fallback = default_value
-
-	if !FileAccess.file_exists(PATH):
-		push_warning(str("GoLogger: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
-		create_settings_file()
-		if !FileAccess.file_exists(PATH):
-			return fallback
-
-	var _result = config.load(PATH)
-
-	if _result != OK: 
-		# push_error(str("GoLogger: ConfigFile failed to load settings.ini file. <", error_string(_result), ">"))
-		return fallback
-
-	var _val = config.get_value(section, value, fallback)
-	if _val == null:
-		push_error(str("GoLogger: ConfigFile failed to load settings value from file. Returning fallback for <", section, ".", value, ">."))
-		return fallback
-
-	# prints("get_config_value(", section, value, default_value,")")
-	return _val
 
 
 

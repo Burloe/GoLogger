@@ -172,6 +172,19 @@ func reset_to_default() -> bool:
 	return true
 
 
+func get_category_names() -> Array[String]:
+	var result: Array[String] = []
+	for c in categories:
+		result.append(c.category_name)
+	return result
+
+
+func get_category(category_name: String) -> GLCategoryData:
+	for c in categories:
+		if c.category_name == category_name:
+			return c
+	return null
+
 
 func get_list() -> Dictionary:
 	update_list()

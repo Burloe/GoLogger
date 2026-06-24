@@ -225,30 +225,6 @@ var is_shutting_down: bool = false:
 			is_shutting_down = value
 			category_tab.is_shutting_down = value
 
-# var settings_dict := {
-# 	"category_names": 						{"section": "categories", "name": "category_names", 				"type": TYPE_ARRAY,  	"default": ["game"]},
-# 	"default_category": 					{"section": "categories", "name": "default_category", 	 		"type": TYPE_STRING,  "default": ""},
-# 	"base_directory": 						{"section": "settings", 	"name": "base_directory", 				"type": TYPE_STRING, "control": null, "default": "user://gologger/"},
-# 	"log_header_format": 					{"section": "settings", 	"name": "log_header_format", 			"type": TYPE_STRING, "control": null,  "default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"},
-# 	"entry_format": 							{"section": "settings", 	"name": "entry_format", 					"type": TYPE_STRING, "control": null, "default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}"},
-# 	"autostart_session": 					{"section": "settings", 	"name": "autostart_session", 			"type": TYPE_BOOL, 		"control": null, "default": true},
-# 	"use_utc": 										{"section": "settings", 	"name": "use_utc", 								"type": TYPE_BOOL, 		"control": null, "default": false},
-# 	"id_print": 									{"section": "settings", 	"name": "id_print", 							"type": TYPE_BOOL, 		"control": null, "default": false},
-# 	"id_toggle": 									{"section": "settings", 	"name": "id_toggle", 							"type": TYPE_BOOL, 		"control": null, "default": false},
-# 	"id_startup_state": 					{"section": "settings", 	"name": "id_startup_state", 			"type": TYPE_BOOL, 		"control": null, "default": false},
-# 	"id_align":										{"section": "settings", 	"name": "id_align", 							"type": TYPE_INT,			"control": null, "default": 0}, 
-# 	"limit_method": 							{"section": "settings", 	"name": "limit_method", 					"type": TYPE_INT, 		"control": null, "default": 0},
-# 	"entry_count_action": 				{"section": "settings", 	"name": "entry_count_action", 		"type": TYPE_INT, 		"control": null, "default": 0},
-# 	"session_timer_action": 			{"section": "settings", 	"name": "session_timer_action", 	"type": TYPE_INT, 		"control": null, "default": 0},
-# 	"file_cap": 									{"section": "settings", 	"name": "file_cap", 							"type": TYPE_INT, 		"control": null, "default": 10},
-# 	"entry_cap": 									{"section": "settings", 	"name": "entry_cap", 							"type": TYPE_INT, 		"control": null, "default": 2000},
-# 	"session_duration": 					{"section": "settings", 	"name": "session_duration", 			"type": TYPE_INT, 		"control": null, "default": 1200},
-# 	"error_reporting": 						{"section": "settings", 	"name": "error_reporting", 				"type": TYPE_INT, 		"control": null, "default": 0},
-# 	"browser_view": 							{"section": "settings", 	"name": "browser_view", 					"type": TYPE_BOOL, 		"control": null, "default": false},
-# 	"browser_sort":								{"section": "settings", 	"name": "browser_sort",						"type": TYPE_INT,			"control": null, "default": 0}
-# }
-
-
 
 
 #region Inits and signals
@@ -259,7 +235,6 @@ func _ready() -> void:
 	category_tab.data = data
 	settings_tab.data = data
 	data.update_list()
-	log_browser_tab.load_log_browser()
 
 	for i in [renable_btn1, renable_btn2, renable_btn3]:
 		if i: i.visible = dev_mode
@@ -296,6 +271,7 @@ func _ready() -> void:
 	_assign_settings_controls()
 	category_tab.initialize_tab()
 	settings_tab.initialize_tab() 
+	log_browser_tab.load_log_browser()
 
 
 
@@ -357,36 +333,6 @@ func _assign_settings_controls() -> void:
 	data.error_rep_ctrl = error_rep_btn
 	data.browser_sort_ctrl = log_browser_sort_btn
 	data.browser_view_ctrl = log_browser_view_btn
-
-
-
-	# var control_map := {
-	# 	"base_directory": base_dir_line,
-	# 	"log_header_format": log_header_line,
-	# 	"entry_format": entry_format_line,
-	# 	"autostart_session": autostart_btn,
-	# 	"use_utc": utc_btn,
-	# 	"id_print": id_print_btn,
-	# 	"id_toggle": id_toggle_btn,
-	# 	"id_startup_state": id_startup_btn,
-	# 	"id_align": id_align_opt_btn, 
-	# 	"limit_method": limit_method_btn,
-	# 	"entry_count_action": entry_count_action_btn,
-	# 	"session_timer_action": session_timer_action_btn,
-	# 	"file_cap": file_count_spinbox,
-	# 	"entry_cap": entry_count_spinbox,
-	# 	"session_duration": session_duration_spinbox,
-	# 	"error_reporting": error_rep_btn,
-	# 	"browser_view": log_browser_view_btn,
-	# 	"browser_sort": log_browser_sort_btn
-	# }
-
-	# for key in control_map.keys():
-	# 	if settings_dict.has(key):
-	# 		settings_dict[key]["control"] = control_map[key]
-	
-	# category_tab.settings_dict = settings_dict 
-	# settings_tab.settings_dict = settings_dict
 
 #endregion
 

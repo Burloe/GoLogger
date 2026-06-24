@@ -16,5 +16,4 @@ metadata/_custom_type_script = "uid://bm8lbc8d2cd4r"
 [resource]
 script = ExtResource("1_4ggqs")
 categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_lw6n0"), SubResource("Resource_g6dxp")])
-utc = true
 metadata/_custom_type_script = "uid://dcm4iew3h2l7p"
