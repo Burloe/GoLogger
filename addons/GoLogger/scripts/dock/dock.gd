@@ -221,8 +221,8 @@ var _default_setting_in_progress: bool = false
 var id_font_settings_min_size: int = 200
 var is_shutting_down: bool = false:
 	set(value):
-		if is_shutting_down != value:
-			is_shutting_down = value
+		is_shutting_down = value
+		if category_tab != null:
 			category_tab.is_shutting_down = value
 
 
@@ -232,7 +232,9 @@ var is_shutting_down: bool = false:
 func _ready() -> void:
 	data = load(data_path)
 	log_browser_tab.data = data
+	await category_tab.ready
 	category_tab.data = data
+	await settings_tab.ready
 	settings_tab.data = data
 	data.update_list()
 
@@ -374,12 +376,12 @@ func save_categories() -> void:
 		return
 
 	# await get_tree().create_timer(0.01).timeout
-
+	data.categories.clear()
 	var cats: Array[GLCategoryData] = []
 
 	for log_c in category_container.get_children():
 		if log_c is LogCategory:
-			if log_c.category_name.is_empty():
+			if !log_c.is_valid():
 				continue
 
 			if log_c.default_checkbox.button_pressed: 
@@ -390,6 +392,8 @@ func save_categories() -> void:
 			c_data.file_name = log_c.file_name
 			c_data.file_path = log_c.file_path
 			c_data.is_locked = log_c.is_locked
+			log_c.cat_data = c_data
+			log_c._data_ready()
 			cats.append(c_data)
 	
 	data.categories = cats

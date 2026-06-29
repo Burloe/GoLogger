@@ -75,28 +75,28 @@ func is_file_valid() -> bool:
 
 
 func is_gl_name(file_name_to_check: String) -> bool: 
-		if file_name_to_check.is_empty() or category_name.is_empty():
-				return false
+	if file_name_to_check.is_empty() or category_name.is_empty():
+			return false
 
-		var prefix := category_name + "("
-		if !file_name_to_check.begins_with(prefix) or !file_name_to_check.ends_with(").log"):
-				return false
+	var prefix := category_name + "("
+	if !file_name_to_check.begins_with(prefix) or !file_name_to_check.ends_with(").log"):
+			return false
 
-		var stamp_len := file_name_to_check.length() - prefix.length() - 5
-		if stamp_len != 13:
-				return false
+	var stamp_len := file_name_to_check.length() - prefix.length() - 5
+	if stamp_len != 13:
+			return false
 
-		var stamp := file_name_to_check.substr(prefix.length(), stamp_len)
-		if stamp.substr(6, 1) != "_":
-				return false
+	var stamp := file_name_to_check.substr(prefix.length(), stamp_len)
+	if stamp.substr(6, 1) != "_":
+			return false
 
-		var date_part := stamp.substr(0, 6)
-		var time_part := stamp.substr(7, 6)
+	var date_part := stamp.substr(0, 6)
+	var time_part := stamp.substr(7, 6)
 
-		if !date_part.is_valid_int() or !time_part.is_valid_int():
-				return false
+	if !date_part.is_valid_int() or !time_part.is_valid_int():
+			return false
 
-		return true 
+	return true 
 
 
 

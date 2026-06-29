@@ -74,16 +74,6 @@ var instance_id: String = "":
 		instance_id = value 
 		instance_id_label.text = str("  ", value, "  ")
 
-var cat_data : Dictionary = {
-	"game": {
-		"category_name": "game",
-		"file_name": "game(251113_161313).log",
-		"file_path": "user://GoLogger/game_logs/game(251113_161313).log",
-		"file_count": 0,
-		"entry_count": 0,
-		"is_locked": false
-	}
-}
 
 
 func load_data() -> void:
@@ -172,7 +162,7 @@ func _input(event: InputEvent) -> void:
 
 
 func start_session() -> void:
-	if session_status: # ErrCheck -> Session already started
+	if session_status: 
 		if data.error_reporting != 2:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
@@ -180,7 +170,6 @@ func start_session() -> void:
 	if data.limit_method == LimitMethod.SESSION_TIMER or data.limit_method == LimitMethod.BOTH:
 		session_timer.start(data.session_duration)
 
-	# for i in range(cat_data["categories"]["category_names"].size()):
 	for i in data.categories:
 		var c_name: String = i.category_name
 		var f_name: String = _get_file_name(c_name) # game(date-time).log
@@ -214,17 +203,12 @@ func start_session() -> void:
 			if file.begins_with(c_name) and file.ends_with(".log"):
 				_log_files.append(file)
 
-		cat_data[c_name]["file_count"] = _log_files.size()
+		i.file_count = _log_files.size()
 		print(_log_files)
 		if data.file_cap > 0:
 			while _log_files.size() > data.file_cap -1:
-				# _log_files.sort()
 				dir.remove(_log_files[0])
 				_log_files.remove_at(0)
-
-				var _err = DirAccess.get_open_error() # Checks for errors during dir.remove()
-				if _err != OK and data.error_reporting != 2:
-					push_warning("GoLogger Error: Failed to remove old log file -> ", get_error(_err, "DirAccess"))
 
 		var header: String = _get_header(c_name)
 		if header != "":
@@ -258,7 +242,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 				else:
 					if !cats.has(data.default_category):
 						printerr("GoLogger: Entry failed to log into default category[", data.default_category, "] assigned does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
-					printerr("GoLogger: Attempted to log entry into a default category[", data.default_category,"] that doesn't exist.")
+					printerr("GoLogger: Attempted to log entry into non-existant default category[", data.default_category,"]")
 
 			return
 
@@ -270,9 +254,9 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			printerr("GoLogger: Category ", category_name, "' not found.")
 		return
 
-	if target_category not in cats:
+	if target_category.category_name not in cats:
 		if data.error_reporting != 2:
-			printerr("GoLogger: Category '" + data["target_category"] + "' not found. Check correct spelling.")
+			printerr("GoLogger: Category '" + tc_name + "' not found. Check correct spelling.")
 		return
 
 	if !session_status:
@@ -300,11 +284,11 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	_f.close()
 	target_category.file_count = lines.size()
 
-	# Handle Limit Methods
+	
 	match data.limit_method:
 
 		LimitMethod.ENTRY_COUNT:
-			match data.entry_action:
+			match data.entry_count_action:
 				EntryCountAction.OVERWRITE_ENTRIES:
 					while lines.size() >= data.entry_cap:
 						lines.remove_at(1) # Retain header
@@ -334,7 +318,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 					return
 
 		LimitMethod.BOTH:
-			match data.entry_action:
+			match data.entry_count_action:
 				EntryCountAction.RESTART:
 					if lines.size() >= data.entry_cap:
 						stop_session()

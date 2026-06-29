@@ -9,7 +9,8 @@ extends Control
 			for c in c_container.get_children():
 				c.entry_limit = value
 
-const PATH = "user://gologger_data.ini"
+@export var data: GLData = null
+var data_path: String = "res://addons/gologger/data.tres"
 
 const SIM_EVENT_TYPES := {
 	"damage_taken": "damage_taken",
@@ -38,16 +39,29 @@ func _ready() -> void:
 	db_timer.timeout.connect(_on_timer_timeout)
 	Log.msg_logged.connect(_on_msg_logged)
 	Log.session_toggled.connect(_on_session_status_toggled)
-	config.load(PATH)
+	load_data()
 
 	for child in c_container.get_children():
 		child.queue_free()
 
-	for c in config.get_value("categories", "category_names", []):
+	for c in data.categories:
 		var _n = c_module.instantiate() as DBCategoryModule
 		c_container.add_child(_n)
-		_n.category_name = c
+		_n.category_name = c.category_name
 		_n.entry_limit = entry_limit
+
+
+func load_data() -> void:
+	if !FileAccess.file_exists(data_path):
+		data = GLData.new()
+		var err := ResourceSaver.save(data, data_path)
+		if err == OK and data.error_reporting != 2:
+			print("GoLogger: No data found. Loading default.")
+		else:
+			push_error("GoLogger Error: No data found and unable to restore to defaults. Try to manually create a new GLData resource at '", data_path, "'.")
+	else:
+		data = load(data_path)
+
 
 
 func _pick_from(pool: Array) -> String:
@@ -119,21 +133,15 @@ func _on_session_status_toggled(toggled_on: bool) -> void:
 
 
 func _on_timer_timeout() -> void:
-	if !FileAccess.file_exists(PATH):
-		return
+	load_data()
 
-	var _result = config.load(PATH)
+	if data.categories.is_empty() or data.categories == null: return
 
-	if _result != OK:
-		return
+	for cat in data.categories:
+		if cat.category_name.is_empty():
+			continue
+			prints(cat, cat.category_name)
+		Log.msg(_build_simulated_entry(), cat.category_name)
 
-	var cats: Array = config.get_value("categories", "category_names", [])
-	var def_c: String = config.get_value("categories", "default_category", "")
-
-	if cats.is_empty() or cats == null: return
-
-	for c in cats:
-		Log.msg(_build_simulated_entry(), c, false)
-
-	if def_c != "":
-		Log.msg(_build_simulated_entry(), def_c)
+	if !data.default_category.is_empty():
+		Log.msg(_build_simulated_entry(), data.default_category)

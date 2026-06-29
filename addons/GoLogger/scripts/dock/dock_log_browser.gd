@@ -72,7 +72,7 @@ var cur_sort: SortModes = SortModes.NEW:
 		lv_sort_mode_btn.tooltip_text = str("Sorting by:", modes[value])
 		var icons := [ico_sort_new, ico_sort_old, ico_sort_date_new, ico_sort_date_old]
 		lv_sort_mode_btn.icon = icons[value]
-		data.browser_sort
+		data.browser_sort = value
 
 var state: BrowserState = BrowserState.FILE_LIST
 enum BrowserState {

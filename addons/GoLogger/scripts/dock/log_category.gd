@@ -8,6 +8,10 @@ signal move_category_requested(log_category: LogCategory, direction : int)
 
 signal set_default_category(category: LogCategory, toggle_on: bool) 
 
+
+@export var data: GLData = null
+@export var cat_data: GLCategoryData = null
+
 @onready var move_left_btn: Button = 				%MoveLeftButton
 @onready var move_right_btn: Button = 			%MoveRightButton
 @onready var lock_btn:	Button = 						%LockButton
@@ -23,14 +27,18 @@ signal set_default_category(category: LogCategory, toggle_on: bool)
 var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx")
 
-const PATH = "user://gologger_data.ini"
-var config = ConfigFile.new() 
+
 
 ## Lock status (locks the category name and disables the erase button)
 var is_locked : bool = false:
 	set(value):
 		is_locked = value
+
+		if cat_data != null:
+			cat_data.is_locked = value
+
 		log_category_changed.emit() 
+
 		if lock_btn != null: lock_btn.button_pressed = is_locked
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
@@ -38,11 +46,17 @@ var is_locked : bool = false:
 ##  Last applied category name
 var category_name: String = "":
 	set(value):
-		config.load(PATH)
-
 		if category_name != value:
 			category_name = value
+
+			if cat_data != null:
+				cat_data.category_name = value
+
 			if line_edit != null: line_edit.text = category_name 
+
+
+
+
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.keycode == KEY_ESCAPE:
@@ -50,15 +64,11 @@ func _input(event: InputEvent) -> void:
 			line_edit.release_focus()
 
 
+
 func _ready() -> void:
-	config.load(PATH)
-
-
-
+	# pass
 	_on_editor_settings_changed() 
 	revert_btn.hide()
-	if category_name != "":
-		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
 	settings.settings_changed.connect(_on_editor_settings_changed)
 	del_btn.button_up.connect(_on_del_button_up)
@@ -113,27 +123,41 @@ func _ready() -> void:
 			set_default_category.emit(self, pressed) 
 	)
 
-	line_edit.text = category_name
-	lock_btn.button_pressed = is_locked
 	size = Vector2.ZERO
 	if line_edit.text == "": 
 		apply_btn.hide() 
 
 
 
+func _data_ready() -> void:
+	if category_name != "":
+		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
+
+	line_edit.text = category_name
+	lock_btn.button_pressed = is_locked
+
+	if line_edit.text == "": 
+		apply_btn.hide() 
+
+
+
+
+
+
+
 func handle_name_state() -> void:
 	var is_unchanged := line_edit.text == "" or line_edit.text == category_name
-	var has_conflict := check_name_conflict()
 
 	apply_btn.visible = !is_unchanged
-	apply_btn.disabled = is_unchanged or has_conflict
+	apply_btn.disabled = is_unchanged or check_name_conflict()
 	default_checkbox.visible = is_unchanged
 
 
 
 func check_name_conflict() -> bool:
-	config.load(PATH)
-	return config.get_value("categories", "category_names", []).has(line_edit.text)
+	if data != null:
+		return data.check_category_name_conflicts().is_empty()
+	return false
 
 
 
@@ -141,10 +165,9 @@ func apply_name(new_name: String) -> void:
 	if new_name.is_empty():
 		return
 		
-	config.load(PATH)
 	var low_name: String = new_name.to_lower()
-	var cat: Array = config.get_value("categories", "category_names", []).duplicate()
-	var def: String = config.get_value("categories", "default_category", "")
+	var cat: Array = data.categories.duplicate()
+	var def: String = data.default_category
 	var old_name: String = category_name
 
 	# New LogCategory
@@ -159,10 +182,9 @@ func apply_name(new_name: String) -> void:
 				break
 
 	if old_name == def:
-		config.set_value("categories", "default_category", low_name)
+		data.default_category = low_name
 
-	config.set_value("categories", "category_names", cat)
-	config.save(PATH) 
+	data.categories = cat
 
 	category_name = low_name
 	line_edit.text = low_name

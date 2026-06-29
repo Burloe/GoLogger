@@ -7,3 +7,8 @@ class_name GLCategoryData extends Resource
 @export var file_count: int = 0
 @export var entry_count: int = 0
 @export var is_locked: bool = false
+
+
+## Returns true if a category_name has been applied properly to initialize the category.
+func is_valid() -> bool:
+	return !category_name.is_empty()

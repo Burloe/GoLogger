@@ -173,8 +173,6 @@ tab_4/title = "Help"
 script = ExtResource("6_0swix")
 dev_mode = true
 data = ExtResource("8_equok")
-metadata/_edit_horizontal_guides_ = [49.0, 294.0, 254.0, 188.0, 223.0]
-metadata/_edit_vertical_guides_ = [15.0, 640.0]
 
 [node name="IconTabIGNORE" type="Control" parent="." unique_id=1209850644]
 visible = false
@@ -703,7 +701,6 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-button_pressed = true
 text = "UTC time"
 alignment = 2
 icon_alignment = 2

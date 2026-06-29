@@ -189,6 +189,20 @@ func get_category(category_name: String) -> GLCategoryData:
 
 
 
+func check_category_name_conflicts() -> Array[GLCategoryData]:
+	var result: Array[GLCategoryData] = []
+	for category in categories:
+		var c_name = category.category_name
+		for c in categories:
+			if c == category:
+				continue
+			
+			if c.category_name == c_name:
+				result.append_array([category, c])
+	return result
+
+
+
 func get_list() -> Dictionary:
 	update_list()
 	return list
