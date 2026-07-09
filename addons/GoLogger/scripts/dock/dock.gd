@@ -24,7 +24,7 @@ extends TabContainer
 		for btn in [renable_btn1, renable_btn2, renable_btn3]:
 			if btn != null: btn.visible = value
 @export var data: GLData = null
-var data_path: String = "uid://dj7h7t2v8csck"
+const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var renable_btn1: Button = %RENABLEButton1
 @onready var renable_btn2: Button = %RENABLEButton2
 @onready var renable_btn3: Button = %RENABLEButton3
@@ -230,16 +230,16 @@ var is_shutting_down: bool = false:
 #region Inits and signals
 
 func _ready() -> void:
-	data = load(data_path)
+	data = load(DATA_PATH)
 	log_browser_tab.data = data
-	await category_tab.ready
+	# await category_tab.ready
 	category_tab.data = data
-	await settings_tab.ready
+	# await settings_tab.ready
 	settings_tab.data = data
 	data.update_list()
 
-	for i in [renable_btn1, renable_btn2, renable_btn3]:
-		if i: i.visible = dev_mode
+	# for i in [renable_btn1, renable_btn2, renable_btn3]:
+	# 	if i: i.visible = dev_mode
 	theme_colors = _get_theme_colors()
 
 	tab_changed.connect(
@@ -257,7 +257,7 @@ func _ready() -> void:
 	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
 
 
-	# Signal connections 
+	# # Signal connections 
 	_connect_unique(settings.settings_changed, _on_editor_settings_changed)
 	_connect_unique(open_dir_btn.button_up, _open_directory)
 	_connect_unique(log_browser_open_dir_btn.button_up, _open_directory)
@@ -272,8 +272,9 @@ func _ready() -> void:
 
 	_assign_settings_controls()
 	category_tab.initialize_tab()
-	settings_tab.initialize_tab() 
-	log_browser_tab.load_log_browser()
+	# settings_tab.initialize_tab() 
+	# log_browser_tab.load_log_browser()
+	print("123")
 
 
 
@@ -359,6 +360,21 @@ func reset_to_default() -> void:
 
 
 
+func regen_data() -> void:
+	var new := GLData.new()
+	ResourceSaver.save(new, DATA_PATH)
+	log_browser_tab.data = new
+	category_tab.data = new
+	settings_tab.data = new
+	for lc in category_container.get_children():
+		if lc is LogCategory:
+			lc.data = new
+
+
+func check_data_exists() -> bool:
+	return FileAccess.file_exists(DATA_PATH)
+
+
 
 ## Saves dock state to file. "external_source" is used to debug what func/signal called this from another tab script.
 func save_data(ignore_errors: bool = false, external_source: String = "") -> void: 
@@ -380,21 +396,18 @@ func save_categories() -> void:
 	var cats: Array[GLCategoryData] = []
 
 	for log_c in category_container.get_children():
-		if log_c is LogCategory:
-			if !log_c.is_valid():
-				continue
+		if log_c is not LogCategory:
+			continue
 
-			if log_c.default_checkbox.button_pressed: 
-				data.default_category = log_c.category_name
+		if log_c.default_checkbox.button_pressed: 
+			data.default_category = log_c.category_name
 
-			var c_data: GLCategoryData = GLCategoryData.new()
-			c_data.category_name = log_c.category_name
-			c_data.file_name = log_c.file_name
-			c_data.file_path = log_c.file_path
-			c_data.is_locked = log_c.is_locked
-			log_c.cat_data = c_data
-			log_c._data_ready()
-			cats.append(c_data)
+		var c_data: GLCategoryData = GLCategoryData.new()
+		c_data.category_name = log_c.category_name
+		c_data.is_locked = log_c.is_locked
+		log_c.cat_data = c_data
+		log_c._data_ready()
+		cats.append(c_data)
 	
 	data.categories = cats
 	category_tab.handle_category_mov_button_state()

@@ -202,7 +202,7 @@ func load_log_browser() -> void:
 		sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		var gc: GridContainer = GridContainer.new()
-		sc.add_child(gc) 
+		sc.add_child(gc)
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
 		gc.add_theme_constant_override("h_separation", 8 if cur_sort < 2 else 24)

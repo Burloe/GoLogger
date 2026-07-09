@@ -62,7 +62,7 @@ enum ErrorCodes { #NYI - For future use in error/warning messages - On hold
 }
 
 @export var data: GLData = null
-var data_path: String = "res://addons/gologger/data.tres"
+const DATA_PATH: String = "res://addons/gologger/data.tres"
 var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
 var copy_name : String = ""
 var session_status: bool = false:
@@ -77,15 +77,15 @@ var instance_id: String = "":
 
 
 func load_data() -> void:
-	if !FileAccess.file_exists(data_path):
+	if !FileAccess.file_exists(DATA_PATH):
 		data = GLData.new()
-		var err := ResourceSaver.save(data, data_path)
+		var err := ResourceSaver.save(data, DATA_PATH)
 		if err == OK and data.error_reporting != 2:
 			print("GoLogger: No data found. Loading default.")
 		else:
-			push_error("GoLogger Error: No data found and unable to restore to defaults. Try to manually create a new GLData resource at '", data_path, "'.")
+			push_error("GoLogger Error: No data found and unable to restore to defaults. Try to manually create a new GLData resource at '", DATA_PATH, "'.")
 	else:
-		data = load(data_path)
+		data = load(DATA_PATH)
 
 
 

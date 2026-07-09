@@ -9,7 +9,7 @@ signal move_category_requested(log_category: LogCategory, direction : int)
 signal set_default_category(category: LogCategory, toggle_on: bool) 
 
 
-@export var data: GLData = null
+@export var data: GLData = load("res://addons/gologger/data.tres")
 @export var cat_data: GLCategoryData = null
 
 @onready var move_left_btn: Button = 				%MoveLeftButton
@@ -47,7 +47,7 @@ var is_locked : bool = false:
 var category_name: String = "":
 	set(value):
 		if category_name != value:
-			category_name = value
+			category_name = value.to_lower()
 
 			if cat_data != null:
 				cat_data.category_name = value
@@ -66,7 +66,6 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	# pass
 	_on_editor_settings_changed() 
 	revert_btn.hide()
 
@@ -127,9 +126,20 @@ func _ready() -> void:
 	if line_edit.text == "": 
 		apply_btn.hide() 
 
+	await data.data_ready
+	if category_name != "":
+		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
+
+	line_edit.text = category_name
+	lock_btn.button_pressed = is_locked
+
+	if line_edit.text == "": 
+		apply_btn.hide() 
+
 
 
 func _data_ready() -> void:
+	pass
 	if category_name != "":
 		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
@@ -149,45 +159,42 @@ func handle_name_state() -> void:
 	var is_unchanged := line_edit.text == "" or line_edit.text == category_name
 
 	apply_btn.visible = !is_unchanged
-	apply_btn.disabled = is_unchanged or check_name_conflict()
 	default_checkbox.visible = is_unchanged
 
 
 
 func check_name_conflict() -> bool:
-	if data != null:
-		return data.check_category_name_conflicts().is_empty()
-	return false
+	print(data.check_category_name_conflicts())
+	return data.check_category_name_conflicts() if data != null else false
 
 
 
 func apply_name(new_name: String) -> void:
 	if new_name.is_empty():
 		return
-		
-	var low_name: String = new_name.to_lower()
+
 	var cat: Array = data.categories.duplicate()
+	var cat_names = data.get_category_names()
 	var def: String = data.default_category
-	var old_name: String = category_name
 
 	# New LogCategory
-	if old_name == "": 
-		cat.append(low_name)
+	if category_name == "":
+		var new: GLCategoryData = GLCategoryData.new()
+		new.category_name = new_name
+		cat.append(new)
+		cat_data = new
 
 	# Existing LogCategory
-	if cat.has(old_name) and old_name != "": 
-		for c in cat.size():
-			if cat[c] == old_name:
-				cat[c] = low_name 
+	elif cat_names.has(category_name): 
+		for i in range(cat.size()):
+			if cat[i].category_name == category_name:
+				cat[i].category_name = new_name 
 				break
-
-	if old_name == def:
-		data.default_category = low_name
 
 	data.categories = cat
 
-	category_name = low_name
-	line_edit.text = low_name
+	category_name = new_name
+	line_edit.text = category_name
 	log_category_changed.emit()
 	line_edit.release_focus()
 	apply_btn.hide()

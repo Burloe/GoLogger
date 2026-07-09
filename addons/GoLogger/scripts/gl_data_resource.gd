@@ -189,7 +189,21 @@ func get_category(category_name: String) -> GLCategoryData:
 
 
 
-func check_category_name_conflicts() -> Array[GLCategoryData]:
+func check_category_name_conflicts() -> bool:
+	var result: Array[GLCategoryData] = []
+	for category in categories:
+		var c_name = category.category_name
+		for c in categories:
+			if c == category:
+				continue
+			
+			if c.category_name == c_name:
+				return true
+	return false
+
+
+
+func get_category_name_conflicts(delete_conflicts: bool = false) -> Array[GLCategoryData]:
 	var result: Array[GLCategoryData] = []
 	for category in categories:
 		var c_name = category.category_name

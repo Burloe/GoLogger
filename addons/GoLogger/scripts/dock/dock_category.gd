@@ -77,18 +77,19 @@ func _ready() -> void:
 ## Called by dock.gd after data is initialized.
 func initialize_tab() -> void:	
 	ensure_default_category()
-	for cat in data.categories:
-		_add_category(
-			cat.category_name,
-			cat.is_locked
-		)
+	
+	for cat in data.categories.duplicate():
+		if cat.category_name.is_empty():
+			continue
 
-	if data.default_category != "":
+		_add_category(cat.category_name, cat.is_locked)
+
+	if !data.default_category.is_empty():
 		for cat in category_container.get_children():
 			if cat is LogCategory and cat.category_name == data.default_category and cat.default_checkbox != null:
 				cat.default_checkbox.button_pressed = true
 				break
-
+				
 	request_update_columns()
 
 
@@ -132,19 +133,20 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 
 #region Private Functions
 
-func _add_category(_name: String = "", _is_locked: bool = false) -> void: 
+func _add_category(_name: String = "", _is_locked: bool = false) -> void:
+	print("adding category <", _name, ">")
 	var _n = category_scene.instantiate() as LogCategory 
 	var low_name: String = _name.to_lower()
 	_n.category_name = low_name
 	_n.is_locked = _is_locked
 	category_container.add_child(_n)
 	_n.data = data
-
-	var _c_data: GLCategoryData = GLCategoryData.new()
-	_c_data.category_name = low_name
-	_n.cat_data = _c_data
 	_n._data_ready()
-	data.categories.append(_c_data)
+
+	# var _c_data: GLCategoryData = GLCategoryData.new()
+	# _c_data.category_name = low_name
+	# _n.cat_data = _c_data
+	# data.categories.append(_c_data)
 
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit())
 	_n.set_default_category.connect(_on_set_default_category)
