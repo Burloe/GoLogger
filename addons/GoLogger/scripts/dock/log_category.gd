@@ -173,6 +173,9 @@ func apply_name(new_name: String) -> void:
 	if new_name.is_empty():
 		return
 
+	new_name = new_name.replace(" ", "_")
+	new_name.replace(" ", "_")
+
 	var cat: Array = data.categories.duplicate()
 	var cat_names = data.get_category_names()
 	var def: String = data.default_category
@@ -203,6 +206,16 @@ func apply_name(new_name: String) -> void:
 
 
 func _on_text_changed(new_text: String) -> void:
+	# Handle disallowed chars
+	if !new_text.is_valid_filename():
+		var invalid_ch = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+		for c in invalid_ch:
+			new_text = new_text.replace(c, "")
+	new_text = new_text.replace(" ", "_")
+	line_edit.text = new_text
+	line_edit.caret_column = new_text.length()
+
+
 	if new_text != category_name and category_name != "":
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid if check_name_conflict() else sb_line_edit_normal)
 

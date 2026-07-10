@@ -55,7 +55,7 @@ corner_detail = 5
 
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
 custom_minimum_size = Vector2(200, 85)
-offset_right = 256.0
+offset_right = 260.0
 offset_bottom = 89.0
 theme_override_styles/panel = ExtResource("1_dn16j")
 script = ExtResource("2_t2282")
@@ -162,6 +162,7 @@ theme_override_styles/disabled = ExtResource("3_xjf83")
 
 [node name="ApplyButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1330065459]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Apply category name"
@@ -175,7 +176,7 @@ text = "Apply"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Existing folders requires manual deletion"
+tooltip_text = "Folders and .log files are not deleted"
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_override_colors/icon_pressed_color = Color(0.42, 0.029399997, 0.10101001, 1)
