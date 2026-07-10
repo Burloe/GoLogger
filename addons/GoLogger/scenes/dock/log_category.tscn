@@ -2,6 +2,7 @@
 
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="1_dn16j"]
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/gologger/scripts/dock/log_category.gd" id="2_t2282"]
+[ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gologger/data.tres" id="3_x8jw8"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="3_xjf83"]
 [ext_resource type="Texture2D" uid="uid://dt4rwugiiq5qf" path="res://addons/gologger/resources/icons/ArrowLeft.svg" id="4_hs346"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gologger/resources/theme/line_edit_normal.tres" id="5_6lne8"]
@@ -58,6 +59,7 @@ offset_right = 256.0
 offset_bottom = 89.0
 theme_override_styles/panel = ExtResource("1_dn16j")
 script = ExtResource("2_t2282")
+data = ExtResource("3_x8jw8")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=697879439]
 custom_minimum_size = Vector2(225, 0)
@@ -160,7 +162,6 @@ theme_override_styles/disabled = ExtResource("3_xjf83")
 
 [node name="ApplyButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1330065459]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Apply category name"
@@ -168,7 +169,6 @@ mouse_default_cursor_shape = 2
 theme_override_styles/normal = ExtResource("8_kgg4t")
 theme_override_styles/hover = ExtResource("9_4yopv")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_7kr4p")
-disabled = true
 text = "Apply"
 
 [node name="DeleteButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=753401324]

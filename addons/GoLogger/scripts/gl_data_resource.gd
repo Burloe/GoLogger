@@ -3,27 +3,36 @@ class_name GLData extends Resource
 
 signal data_ready
 
+# Categories Tab
 @export var categories: Array[GLCategoryData] = []
 @export var default_category: String = ""
+# Browser Tab
+@export_enum("New", "Old", "Grouped New", "Grouped Old") var browser_sort: int = 0
+@export var browser_view: bool = false
 
+# Directories 6 Formats
 @export var base_dir: String = "user://gologger/"
 @export var header_format: String = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 @export var entry_format: String = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
+
+# General
 @export var autostart: bool = true
 @export var utc: bool = false
+@export_enum("Warnings & Errors", "Warnings only", "None") var error_reporting: int = 0
+
+# Limits
+@export var file_cap: int = 10
+@export var entry_cap: int = 2000
+@export var session_duration: int = 1200
+@export_enum("Entry Count", "Session Timer", "Both", "Separator", "None") var limit_method: int = 0
+@export_enum("Overwrite Entries", "Restart Session", "Stop Session") var entry_count_action: int = 0
+@export_enum("Restart Session", "Stop Session") var session_timer_action: int = 0
+
+# ID Overlay
 @export var id_print: bool = false
 @export var id_toggle: bool = false
 @export var id_startup: bool = false
 @export_enum("Top-Left", "Top-Center", "Top-Right", "Center-Left", "Center-Center", "Center-Right", "Bottom-Left", "Bottom-Center", "Bottom-Right") var id_align: int = 0
-@export_enum("Entry Count", "Session Timer", "Both", "Separator", "None") var limit_method: int = 0
-@export_enum("Overwrite Entries", "Restart Session", "Stop Session") var entry_count_action: int = 0
-@export_enum("Restart Session", "Stop Session") var session_timer_action: int = 0
-@export var file_cap: int = 10
-@export var entry_cap: int = 2000
-@export var session_duration: int = 1200
-@export_enum("Warnings & Errors", "Warnings only", "None") var error_reporting: int = 0
-@export_enum("New", "Old", "Grouped New", "Grouped Old") var browser_sort: int = 0
-@export var browser_view: bool = false
 
 var base_dir_ctrl: LineEdit = null
 var header_format_ctrl: LineEdit = null

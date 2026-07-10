@@ -981,13 +981,13 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 layout_direction = 3
-tooltip_text = "Toggles the ID Overlay instead of while the button is pressed."
+tooltip_text = "Toggles overlay visibility rather than showing hotkey is pressed."
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-text = "Toggle overlay"
+text = "Toggle with hotkey"
 alignment = 2
 icon_alignment = 2
 

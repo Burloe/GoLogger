@@ -75,21 +75,15 @@ var inspector: EditorInspector
 @onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
-
 signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_theme_colors
 # signal open_directory
 
-
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 
-
-# const PATH = "user://gologger_data.ini"
-
 @export var data: GLData = null
 
-# var config = ConfigFile.new() 
 var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
@@ -530,42 +524,36 @@ func _on_button_button_up(node: Button) -> void:
 			_apply_new_base_directory()
 			base_dir_apply_btn.hide()
 			base_dir_line_btn_cont.hide()
-			# request_save.emit(false, "Base Directory Apply Button Button Up")
 		
 		base_dir_revert_btn:
 			base_dir_line.text = data.base_dir
 			base_dir_apply_btn.disabled = true
 			base_dir_revert_btn.disabled = true
 			base_dir_line_btn_cont.hide()
-			# request_save.emit(false, "Base Directory Revert Button Button Up")
 
 		log_header_apply_btn:
 			data.header_format = log_header_line.text
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus() 
 			log_header_line_btn_cont.hide()
-			# request_save.emit(false, "Log Header Apply Button Button Up")
 		
 		log_header_revert_btn:
 			log_header_line.text = data.header_format
 			log_header_apply_btn.disabled = true
 			log_header_revert_btn.disabled = true
 			log_header_line_btn_cont.hide()
-			# request_save.emit(false, "Log Header Revert Button Button Up")
 
 		entry_format_apply_btn:
 			data.entry_format = entry_format_line.text
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus() 
 			entry_format_line_btn_cont.hide()
-			# request_save.emit(false, "Entry Format Apply Button Button Up")
 
 		entry_format_revert_btn:
 			entry_format_line.text = data.entry_format
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true
 			entry_format_line_btn_cont.hide()
-			# request_save.emit(false, "Entry Format Revert Button Button Up")
 
 
 
@@ -580,7 +568,6 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			if new_text != data.base_dir:
 				base_dir_apply_btn.disabled = false 
 				base_dir_revert_btn.disabled = false
-			# request_save.emit(false, "Base Directory LineEdit Text Changed")
 
 		log_header_line:
 			last_applied_value = data.header_format
@@ -589,7 +576,6 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			if new_text != last_applied_value:
 				log_header_revert_btn.disabled = false
 				log_header_apply_btn.disabled = false
-			# request_save.emit(false, "Log Header LineEdit Text Changed")
 
 		entry_format_line: 
 			last_applied_value = data.entry_format
@@ -605,7 +591,6 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			if new_text != last_applied_value and _is_entry_format_valid(new_text):
 				entry_format_apply_btn.disabled = false 
 				entry_format_revert_btn.disabled = false
-			# request_save.emit(false, "Entry Format LineEdit Text Changed")
 			
 
 
@@ -616,19 +601,19 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 				base_dir_line.release_focus()
 				base_dir_apply_btn.disabled = true
 				base_dir_revert_btn.disabled = true
-			# request_save.emit(false, "Base Directory LineEdit Text Submitted")
+				data.base_dir = base_dir_line.text
 
 		log_header_line:
 			log_header_line.release_focus()
 			log_header_apply_btn.disabled = true
 			log_header_revert_btn.disabled = true
-			# request_save.emit(false, "Log Header LineEdit Text Submitted")
+			data.header_format = log_header_line.text
 
 		entry_format_line:
 			entry_format_line.release_focus()
 			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true
-			# request_save.emit(false, "Entry Format LineEdit Text Submitted")
+			data.entry_format = entry_format_line.text
 
 
 
@@ -651,23 +636,19 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 					session_timer_action_container.show() 
 					entry_count_action_lbl.text = "Entry Action"
 					session_timer_action_lbl.text = "Timer Action"
-			# request_save.emit(false, "Limit Method OptionButton Item Selected")
+			data.limit_method = index
 
 		entry_count_action_btn:
 			data.entry_count_action = index
-			# request_save.emit(false, "Entry Count OptionButton Item Selected")
 
 		session_timer_action_btn:
 			data.session_timer_action = index
-			# request_save.emit(false, "Session Timer OptionButton Item Selected")
 
 		error_rep_btn:
 			data.error_reporting = index
-			# request_save.emit(false, "Error Report OptionButton Item Selected")
 
 		id_align_opt_btn:
 			data.id_align = index
-			# request_save.emit(false, "ID Align OptionButton Item Selected")
 
 
 
@@ -675,24 +656,19 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 	match node:
 		autostart_btn:
 			data.autostart = toggled_on
-			# request_save.emit(false, "Autostart Checkbox Toggled")
 
 		utc_btn:
 			data.utc = toggled_on
-			# request_save.emit(false, "UTC Checkbox Toggled")
 
 		id_print_btn:
 			data.id_print = toggled_on
-			# request_save.emit(false, "ID Print Checkbox Toggled")
 
 		id_toggle_btn:
 			data.id_toggle = toggled_on
 			id_startup_btn.show() if toggled_on else id_startup_btn.hide()
-			# request_save.emit(false, "ID Toggle Checkbox Toggled")
 
 		id_startup_btn:
 			data.id_startup = toggled_on
-			# request_save.emit(false, "ID Startup Checkbox Toggled")
 
 
 
@@ -725,19 +701,16 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			data.file_cap = int(new_text)
 			file_count_spinbox_line.release_focus()
 			file_count_spinbox.release_focus() 
-			# request_save.emit(false, "File Count SpinBox LineEdit Text Submitted")
 
 		entry_count_spinbox_line:
 			data.entry_cap = int(new_text)
 			entry_count_spinbox.release_focus()
 			entry_count_spinbox_line.release_focus() 
-			# request_save.emit(false, "Entry Count Spinbox LineEdit Text Submitted")
 
 		session_duration_spinbox_line:
 			data.session_duration = int(new_text)
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus() 
-			# request_save.emit(false, "Session Duration Spinbox LineEdit Text Submitted")
 
 
 
@@ -751,15 +724,12 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 	match node:
 		file_count_spinbox:
 			data.file_cap = int(value)
-			# request_save.emit(false, "File Count Spinbox Value Changed")
 			
 		entry_count_spinbox:
 			data.entry_cap = int(value)
-			# request_save.emit(false, "Entry Count Spinbox Value Changed")
 
 		session_duration_spinbox:
 			data.session_duration = int(value)
-			# request_save.emit(false, "Session Duration Spinbox Value Changed")
 
 #endregion
 

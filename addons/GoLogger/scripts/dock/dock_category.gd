@@ -1,6 +1,9 @@
 @tool
 extends HBoxContainer
 
+signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
+signal request_categories_save
+signal request_theme_colors 
 
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
@@ -8,25 +11,14 @@ extends HBoxContainer
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 @export var data: GLData = null
-
-signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
-signal request_categories_save
-signal request_theme_colors 
-
-
-# const PATH = "user://gologger_data.ini"
-
 @export var min_cell_width: int = 120
 
 var theme_colors: Dictionary = {}
-var category_scene = preload("uid://c3n416c5fajm5")
-# var config = ConfigFile.new() 
+var category_scene = preload("uid://c3n416c5fajm5") 
 
 var is_shutting_down: bool = false
 var _default_setting_in_progress: bool = false  
-var _column_update_pending: bool = false
-
-var settings_dict: Dictionary = {}
+var _column_update_pending: bool = false 
 
 
 
@@ -143,12 +135,7 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	_n.data = data
 	_n._data_ready()
 
-	# var _c_data: GLCategoryData = GLCategoryData.new()
-	# _c_data.category_name = low_name
-	# _n.cat_data = _c_data
-	# data.categories.append(_c_data)
-
-	_n.log_category_changed.connect(func() -> void: request_categories_save.emit())
+	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested)
 	_n.tree_entered.connect(request_update_columns)

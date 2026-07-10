@@ -29,7 +29,7 @@ var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx")
 
 
 
-## Lock status (locks the category name and disables the erase button)
+## Locks category name and erase button
 var is_locked : bool = false:
 	set(value):
 		is_locked = value

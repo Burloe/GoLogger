@@ -3,18 +3,16 @@
 [ext_resource type="Script" uid="uid://bm8lbc8d2cd4r" path="res://addons/gologger/scripts/gl_category_data_resource.gd" id="1_2nbxn"]
 [ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gologger/scripts/gl_data_resource.gd" id="1_4ggqs"]
 
-[sub_resource type="Resource" id="Resource_ka64b"]
+[sub_resource type="Resource" id="Resource_2nbxn"]
 script = ExtResource("1_2nbxn")
 category_name = "game"
-metadata/_custom_type_script = "uid://bm8lbc8d2cd4r"
 
-[sub_resource type="Resource" id="Resource_lfsjx"]
+[sub_resource type="Resource" id="Resource_r3wlc"]
 script = ExtResource("1_2nbxn")
 category_name = "player"
-metadata/_custom_type_script = "uid://bm8lbc8d2cd4r"
 
 [resource]
 script = ExtResource("1_4ggqs")
-categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_ka64b"), SubResource("Resource_lfsjx")])
+categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_2nbxn"), SubResource("Resource_r3wlc")])
 default_category = "game"
 metadata/_custom_type_script = "uid://dcm4iew3h2l7p"

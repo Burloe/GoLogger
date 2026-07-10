@@ -237,9 +237,6 @@ func _ready() -> void:
 	# await settings_tab.ready
 	settings_tab.data = data
 	data.update_list()
-
-	# for i in [renable_btn1, renable_btn2, renable_btn3]:
-	# 	if i: i.visible = dev_mode
 	theme_colors = _get_theme_colors()
 
 	tab_changed.connect(
@@ -272,9 +269,8 @@ func _ready() -> void:
 
 	_assign_settings_controls()
 	category_tab.initialize_tab()
-	# settings_tab.initialize_tab() 
-	# log_browser_tab.load_log_browser()
-	print("123")
+	settings_tab.initialize_tab() 
+	log_browser_tab.load_log_browser() 
 
 
 
@@ -344,7 +340,12 @@ func _assign_settings_controls() -> void:
 #region Public
 
 func initialize_dock() -> void:
-	if data == null: data = GLData.new()
+	if data == null: 
+		if FileAccess.file_exists(DATA_PATH):
+			data = load(DATA_PATH)
+		else:
+			regen_data()
+
 
 	_init_visibility()
 
