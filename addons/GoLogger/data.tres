@@ -11,8 +11,25 @@ category_name = "game"
 script = ExtResource("1_2nbxn")
 category_name = "player"
 
+[sub_resource type="Resource" id="Resource_ka64b"]
+script = ExtResource("1_2nbxn")
+category_name = "quests"
+
+[sub_resource type="Resource" id="Resource_lfsjx"]
+script = ExtResource("1_2nbxn")
+category_name = "network"
+
+[sub_resource type="Resource" id="Resource_macc1"]
+script = ExtResource("1_2nbxn")
+category_name = "inventory"
+
+[sub_resource type="Resource" id="Resource_is5jv"]
+script = ExtResource("1_2nbxn")
+category_name = "network"
+
 [resource]
 script = ExtResource("1_4ggqs")
-categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_2nbxn"), SubResource("Resource_r3wlc")])
+categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_2nbxn"), SubResource("Resource_r3wlc"), SubResource("Resource_ka64b"), SubResource("Resource_lfsjx"), SubResource("Resource_macc1"), SubResource("Resource_is5jv")])
 default_category = "game"
+browser_sort = 2
 metadata/_custom_type_script = "uid://dcm4iew3h2l7p"

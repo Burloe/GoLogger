@@ -11,7 +11,7 @@ signal request_theme_colors
 @onready var reset_settings_btn: Button = %ResetSettingsButton
 
 @export var data: GLData = null
-@export var min_cell_width: int = 120
+var min_cell_width: int = 256
 
 var theme_colors: Dictionary = {}
 var category_scene = preload("uid://c3n416c5fajm5") 
@@ -237,10 +237,12 @@ func _check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
 func _update_columns() -> void:
 	if min_cell_width <= 0:
 		return
-	
+
+	if category_container.get_child_count() > 0:
+		min_cell_width = round(category_container.get_child(0).size.x) + category_container.get_theme_constant("h_separation")
+
 	var cols = max(1, int(category_container.size.x / min_cell_width))
-	category_container.columns = cols
-	# print("Size.x: ", category_container.size.x, "       Cell Width: ", min_cell_width, "       Applied column value: ", cols)
+	category_container.columns = cols 
 
 #endregion
 

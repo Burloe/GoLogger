@@ -236,7 +236,7 @@ func _on_line_edit_focus_exited() -> void:
 
 
 func _on_del_button_up() -> void: 
-	queue_free() # `exit_tree` signal handles saving categories after deletion
+	queue_free()
 
 
 

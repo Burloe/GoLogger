@@ -8,10 +8,10 @@ extends Node
 ## GoLogger to download. For installation, setup and how to use instructions, see the README.md or in the Github
 ## repo.
 
-#TODO:
+# TODO:
 
 
-#BUG:
+# BUG:
 
 
 signal session_toggled(toggled_on: bool) ## Emitted when a log session is started or stopped.
@@ -276,14 +276,18 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
+	var content := _f.get_as_text()
+	print("Content: \n", content)
 	var lines : Array[String] = []
-	while not _f.eof_reached():
-		var _l = _f.get_line().strip_edges(false, true)
-		if _l != "":
-			lines.append(_l)
-	_f.close()
-	target_category.file_count = lines.size()
 
+	if data.limit_method in [LimitMethod.ENTRY_COUNT, LimitMethod.BOTH]:
+		while not _f.eof_reached():
+			var _l = _f.get_line().strip_edges(false, true)
+			if _l != "":
+				lines.append(_l)
+		target_category.file_count = lines.size()
+
+	_f.close()
 	
 	match data.limit_method:
 
@@ -339,8 +343,9 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		if err != OK and data.error_reporting != 2:
 			push_warning("GoLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 
-	for line in lines:
-		_fw.store_line(str(line))
+	# for line in lines:
+	# 	_fw.store_line(str(line))
+	_fw.store_string(content)
 
 	# Write new entry
 	var new_entry: String = _get_entry_format(log_msg, target_category.category_name)

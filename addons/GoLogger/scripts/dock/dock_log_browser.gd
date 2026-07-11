@@ -430,7 +430,7 @@ func _update_columns(is_initializing: bool = false) -> void:
 		for child in category_tab_container.get_children():
 			for grid_cont in child.get_children():
 				if grid_cont is GridContainer:
-					grid_cont.columns = grid_cont.get_child_count()
+					grid_cont.columns = max(grid_cont.get_child_count(), 1)
 		return
 	
 	await get_tree().physics_frame
