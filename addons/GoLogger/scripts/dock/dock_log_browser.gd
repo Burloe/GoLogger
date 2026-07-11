@@ -6,7 +6,7 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var reload_hider: MarginContainer = %ReloadTopper
 @onready var fb_margin_container: MarginContainer = %FBMarginContainer
 @onready var lv_margin_container: MarginContainer = %LVMarginContainer
-@onready var category_tab_container = %CategoryTabContainer
+@onready var category_tab_container = %LBCategoryTabContainer
 @onready var log_viewer: Panel = %LogViewer
 @onready var h_split_cont: HSplitContainer = %HSplitContainer
 @onready var lv_title_lbl: Label = %ViewerTitleLabel
@@ -27,6 +27,8 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @export var data: GLData = null
 var inspector: EditorInspector
 
+const GRID_SEPARATION = 8
+const GRID_GROUP_SORT_SEPARATION = 24
 
 var ico_fullscreen_view := preload("uid://ijiplwclq5pu")
 var ico_splitscreen_view := preload("uid://cp2p55wdq2wuk")
@@ -204,8 +206,8 @@ func load_log_browser() -> void:
 		sc.add_child(gc)
 		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
-		gc.add_theme_constant_override("h_separation", 8 if cur_sort < 2 else 24)
-		gc.add_theme_constant_override("v_separation", 8 if cur_sort < 2 else 24)
+		gc.add_theme_constant_override("h_separation", GRID_SEPARATION if cur_sort < 2 else GRID_GROUP_SORT_SEPARATION)
+		gc.add_theme_constant_override("v_separation", GRID_SEPARATION if cur_sort < 2 else GRID_GROUP_SORT_SEPARATION)
 		var n: Array = [c.category_name, gc]
 		categories.append(n)
 		_load_logfiles(c.category_name, gc)
@@ -292,8 +294,8 @@ func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_na
 	var is_grouped: bool = cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]
 	if is_grouped:
 		gc = GridContainer.new()
-		gc.add_theme_constant_override("h_separation", 8)
-		gc.add_theme_constant_override("v_separation", 8)
+		gc.add_theme_constant_override("h_separation", GRID_SEPARATION)
+		gc.add_theme_constant_override("v_separation", GRID_SEPARATION)
 		if is_grouped: gc.columns = 3
 		base_gc.add_child(gc)
 		gc.size_flags_horizontal = Control.SIZE_FILL
@@ -435,12 +437,20 @@ func _update_columns(is_initializing: bool = false) -> void:
 	
 	await get_tree().physics_frame
 	await get_tree().physics_frame
+	
+	var cell_width: int = 0
+	for category in category_tab_container.get_children():
+		for grid_cont in category.get_children():
+			if grid_cont is GridContainer and log_files.size() > 0:
+				cell_width = log_files[0].size.x + grid_cont.get_theme_constant("h_separation")
+				grid_cont.columns = max(1, int(grid_cont.size.x / cell_width))
+				print(cell_width)
 
-	var width = int(size.x - 55) if is_initializing else category_tab_container.size.x
-	for child in category_tab_container.get_children():
-		for grid_cont in child.get_children():
-			if grid_cont is GridContainer:
-				if grid_cont.size.x > width:
-					width = grid_cont.size.x 
-				# print(child.name, " - ", grid_cont.size.x, "   width: ", width)
-				grid_cont.columns = max(1, int(width / min_cell_width)) 
+	# var width = int(size.x - 55) if is_initializing else category_tab_container.size.x
+	# for child in category_tab_container.get_children():
+	# 	for grid_cont in child.get_children():
+	# 		if grid_cont is GridContainer:
+	# 			if grid_cont.size.x > width:
+	# 				width = grid_cont.size.x 
+	# 			# print(child.name, " - ", grid_cont.size.x, "   width: ", width)
+	# 			grid_cont.columns = max(1, int(width / min_cell_width)) 

@@ -316,7 +316,7 @@ size_flags_horizontal = 3
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_right = 0
 
-[node name="CategoryTabContainer" type="TabContainer" parent="LogBrowserTab/HSplitContainer/FBMarginContainer" unique_id=1149614450]
+[node name="LBCategoryTabContainer" type="TabContainer" parent="LogBrowserTab/HSplitContainer/FBMarginContainer" unique_id=1149614450]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(137, 0)
 clip_contents = true
