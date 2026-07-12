@@ -321,8 +321,12 @@ func _assign_settings_controls() -> void:
 	data.id_startup_ctrl = id_startup_btn
 	data.id_align_ctrl = id_align_opt_btn
 	data.limit_method_ctrl = limit_method_btn
+	data.entry_count_container = entry_count_action_container
 	data.entry_count_action_ctrl = entry_count_action_btn
+	data.entry_count_action_lbl = entry_count_action_lbl
+	data.session_timer_container = session_timer_action_container
 	data.session_timer_action_ctrl = session_timer_action_btn
+	data.session_timer_action_lbl = session_timer_action_lbl
 	data.file_cap_ctrl = file_count_spinbox
 	data.file_cap_ctrl_line = file_count_spinbox.get_line_edit()
 	data.entry_cap_ctrl = entry_count_spinbox
@@ -352,7 +356,7 @@ func initialize_dock() -> void:
 
 
 func reset_to_default() -> void:
-	data.reset_to_default()
+	print("reset_to_default: ", data.reset_to_default())
 
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
@@ -491,6 +495,7 @@ func _get_theme_colors() -> Dictionary:
 			"fold_hover": Color("f2f2f2")
 		}
 	} 
+	log_browser_tab.theme_colors = colors
 	category_tab.theme_colors = colors
 	settings_tab.theme_colors = colors
 	return colors

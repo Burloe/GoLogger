@@ -90,7 +90,7 @@ var plugin_version: String =  "1.4":
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
 
-var _default_setting_in_progress: bool = false 
+var _default_setting_in_progress: bool = false #! DELETE
 var _is_shutting_down: bool = false
 var id_font_settings_min_size: int = 200
 
@@ -218,7 +218,7 @@ func _ready() -> void:
 ## Called by dock.gd after data is initialized.
 func initialize_tab() -> void:
 	data.apply_values()
-	_handle_limit_method_visibility()
+	# _handle_limit_method_visibility()
 	
 
 # Called by dock.gd

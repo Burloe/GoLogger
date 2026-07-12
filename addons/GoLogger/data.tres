@@ -31,4 +31,6 @@ category_name = "enemies"
 script = ExtResource("1_4ggqs")
 categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_2nbxn"), SubResource("Resource_r3wlc"), SubResource("Resource_ka64b"), SubResource("Resource_lfsjx"), SubResource("Resource_macc1"), SubResource("Resource_is5jv")])
 default_category = "game"
+limit_method = 2
+id_startup = true
 metadata/_custom_type_script = "uid://dcm4iew3h2l7p"

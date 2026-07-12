@@ -24,7 +24,20 @@ signal data_ready
 @export var file_cap: int = 10
 @export var entry_cap: int = 2000
 @export var session_duration: int = 1200
-@export_enum("Entry Count", "Session Timer", "Both", "Separator", "None") var limit_method: int = 0
+@export_enum("Entry Count", "Session Timer", "Both", "Separator", "None") var limit_method: int = 0:
+	set(value):
+		limit_method = value
+		for i in [entry_count_container, session_timer_container, entry_count_action_lbl, session_timer_action_lbl]:
+			if i == null: return
+
+		var show_entry_limits := limit_method == 0 or limit_method == 2
+		var show_time_limits := limit_method == 1 or limit_method == 2
+
+		entry_count_container.visible = show_entry_limits 
+		session_timer_container.visible = show_time_limits 
+
+		entry_count_action_lbl.text = "Entry Action" if limit_method == 2 else "Action"
+		session_timer_action_lbl.text = "Timer Action" if limit_method == 2 else "Action"
 @export_enum("Overwrite Entries", "Restart Session", "Stop Session") var entry_count_action: int = 0
 @export_enum("Restart Session", "Stop Session") var session_timer_action: int = 0
 
@@ -44,8 +57,12 @@ var id_toggle_ctrl: CheckBox = null
 var id_startup_ctrl: CheckBox = null
 var id_align_ctrl: OptionButton = null
 var limit_method_ctrl: OptionButton = null
+var entry_count_container: HBoxContainer = null
 var entry_count_action_ctrl: OptionButton = null
+var entry_count_action_lbl: Label = null
+var session_timer_container: HBoxContainer = null
 var session_timer_action_ctrl: OptionButton = null
+var session_timer_action_lbl: Label = null
 var file_cap_ctrl: SpinBox = null
 var file_cap_ctrl_line: LineEdit = null
 var entry_cap_ctrl: SpinBox = null
@@ -94,8 +111,8 @@ func validate_settings() -> bool:
 	if session_duration < 1:
 			session_duration = 1
 			faults += 1
-	
-	return faults > 0
+	print("validate_settings: ", faults)
+	return true if faults == 0 else false
 
 
 
@@ -149,35 +166,27 @@ func apply_values() -> void:
 
 
 func reset_to_default() -> bool:
-	if !validate_settings() or list.is_empty():
+	if list.is_empty(): 
 		return false
 
+	limit_method_ctrl.selected = list["limit_method"]["default"]
+
 	for key in list.keys():
-		var ctrl = list[key]["ctrl"]
 		var def = list[key]["default"]
-
-		list[key]["value"] = def
-		
-		if ctrl == null:
-			prints("GoLogger Error: Failed to reset dock element", key, " - Null reference in Dictionary.", list[key])
-			continue
-
-		if ctrl is Button and ctrl.toggle_mode:
-			ctrl.button_pressed = def
-		
-		elif ctrl is CheckBox:
-			ctrl.button_pressed = def
-		
-		elif ctrl is SpinBox:
-			ctrl.value = def
-		
-		elif ctrl is OptionButton:
-			ctrl.selected = def
-
-		elif ctrl is LineEdit:
-			ctrl.text = def
+		match key:
+			"limit_method":
+				limit_method = def
+			"count_action":
+				entry_count_action = def
+			"timer_action":
+				session_timer_action = def
+			"err_report_lv":
+				error_reporting = def
+			_:
+				set(key, def)
 
 	update_list()
+	apply_values()
 	return true
 
 

@@ -161,7 +161,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 1
+current_tab = 3
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("6_w3br5")
@@ -182,6 +182,7 @@ metadata/_tab_name = " "
 
 [node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -554,7 +555,6 @@ theme_override_constants/v_separation = 8
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -1002,6 +1002,7 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+button_pressed = true
 text = "Show on startup"
 alignment = 2
 icon_alignment = 2

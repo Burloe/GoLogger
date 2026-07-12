@@ -74,6 +74,8 @@ var cur_sort: SortModes = SortModes.NEW:
 		lv_sort_mode_btn.icon = icons[value]
 		data.browser_sort = value
 
+var theme_colors: Dictionary = {}
+
 var state: BrowserState = BrowserState.FILE_LIST
 enum BrowserState {
 	LOG_FULL,
@@ -170,6 +172,9 @@ func set_view(to: BrowserState) -> void:
 
 ## Used to both initialize and reload the file list
 func load_log_browser() -> void:
+	var opened_tab = max(0, category_tab_container.current_tab)
+
+
 	_close_log_file()
 	is_reloading = true
 	if data != null:
@@ -193,7 +198,6 @@ func load_log_browser() -> void:
 	set_view(prev_state)
 
 	for c in data.categories:
-
 		if c.category_name == "":
 				continue
 		
@@ -214,7 +218,9 @@ func load_log_browser() -> void:
 	
 	set_view(BrowserState.LOG_SPLIT if cur_view else BrowserState.LOG_FULL)
 	_update_columns(true)
-	is_reloading = false
+	is_reloading = false 
+	if category_tab_container.get_tab_count() > 0:
+		category_tab_container.current_tab = opened_tab
 
 
 
@@ -444,13 +450,3 @@ func _update_columns(is_initializing: bool = false) -> void:
 			if grid_cont is GridContainer and log_files.size() > 0:
 				cell_width = log_files[0].size.x + grid_cont.get_theme_constant("h_separation")
 				grid_cont.columns = max(1, int(grid_cont.size.x / cell_width))
-				print(cell_width)
-
-	# var width = int(size.x - 55) if is_initializing else category_tab_container.size.x
-	# for child in category_tab_container.get_children():
-	# 	for grid_cont in child.get_children():
-	# 		if grid_cont is GridContainer:
-	# 			if grid_cont.size.x > width:
-	# 				width = grid_cont.size.x 
-	# 			# print(child.name, " - ", grid_cont.size.x, "   width: ", width)
-	# 			grid_cont.columns = max(1, int(width / min_cell_width)) 
