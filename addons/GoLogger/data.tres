@@ -5,23 +5,23 @@
 
 [sub_resource type="Resource" id="Resource_2nbxn"]
 script = ExtResource("1_2nbxn")
-category_name = "game"
+category_name = "player"
 
 [sub_resource type="Resource" id="Resource_r3wlc"]
 script = ExtResource("1_2nbxn")
-category_name = "player"
+category_name = "game"
 
 [sub_resource type="Resource" id="Resource_ka64b"]
 script = ExtResource("1_2nbxn")
-category_name = "quests"
+category_name = "network"
 
 [sub_resource type="Resource" id="Resource_lfsjx"]
 script = ExtResource("1_2nbxn")
-category_name = "network"
+category_name = "inventory"
 
 [sub_resource type="Resource" id="Resource_macc1"]
 script = ExtResource("1_2nbxn")
-category_name = "inventory"
+category_name = "quests"
 
 [sub_resource type="Resource" id="Resource_is5jv"]
 script = ExtResource("1_2nbxn")

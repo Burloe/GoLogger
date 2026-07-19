@@ -109,14 +109,36 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 	var cats: Array = category_container.get_children()
 	var from: int = category.get_index()
 	var to: int = from
+	var opposite_dir = 1 if direction == -1 else -1
+
+	for c in cats:
+		c.move_left_btn.disabled = true
+		c.move_right_btn.disabled = true
+
 	to += direction
-	
+
 	if to < 0 or to >= cats.size():
 		return
+	
+	var tween := create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC).set_parallel()
+	category.offset_transform_enabled = true 
+	cats[to].offset_transform_enabled = true
+	tween.tween_property(category, "offset_transform_position", Vector2(category.size.x * direction, 0), 0.05)
+	tween.tween_property(cats[to], "offset_transform_position", Vector2(category.size.x * opposite_dir, 0), 0.05)
+	await tween.finished
 
 	category_container.move_child(category, to)
+	category.offset_transform_position = Vector2.ZERO
+	category.offset_transform_enabled = false
+	cats[to].offset_transform_position = Vector2.ZERO
+	cats[to].offset_transform_enabled = false
 	request_categories_save.emit()
-
+	for c in cats:
+		c.move_left_btn.disabled = false
+		c.move_right_btn.disabled = false
+	
+	category_container.get_child(0).move_left_btn.disabled = true
+	category_container.get_child(category_container.get_child_count() - 1).move_right_btn.disabled = true
 #endregion
 
 
