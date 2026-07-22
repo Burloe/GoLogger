@@ -146,10 +146,10 @@ var sb_tab_hover 											:= preload("uid://yxpx0pyjme8s")
 
 var panel_round_bg 										:= preload("uid://dqfhm2ywaj4dr")
 var panel_round_base 									:= preload("uid://cywnobmluy31i")
-var panel_round_base_border_highlight := preload("uid://qbiwr8hnwf5n")
+var panel_round_base_border_accent 		:= preload("uid://qbiwr8hnwf5n")
 var panel_round_accent 								:= preload("uid://3r3hhcvqp2au")
 var panel_round_accent_muted 					:= preload("uid://l18dbl63e366")
-var panel_top_round_base 							:= preload("uid://cqnilt2rk14bi")
+var panel_top_round_base 							:= preload("uid://qbiwr8hnwf5n")
 var panel_top_round_accent 						:= preload("uid://dve2ih1gvvua7")
 var panel_top_round_accent_muted 			:= preload("uid://7s65f804p1jc")
 var panel_rounded_no_top_base					:= preload("uid://bqxadvxd6q2yj")
@@ -159,7 +159,7 @@ var content_panel											:= preload("uid://dsitl204qf1y3")
 var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
 var sb_btn_toggled_on									:= preload("uid://bcprdy8psyd0k")
 var sb_btn_apply 											:= preload("uid://bwsfno28una6g")
-var sb_btn_apply_highlight						:= preload("uid://cws5raq1oykdn")
+var sb_btn_apply_accent								:= preload("uid://cws5raq1oykdn")
 
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
@@ -197,7 +197,9 @@ enum ErrorReportLevel {
 	NONE
 }
 
-var category_scene = preload("uid://c3n416c5fajm5") 
+var category_scene = preload("uid://c3n416c5fajm5")
+var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
+var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
 var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
@@ -217,8 +219,6 @@ var entry_format_value: String = "":
 			entry_format_revert_btn.tooltip_text = str("Revert to '", value, "'")
 			data.entry_format = value 
 
-var _default_setting_in_progress: bool = false  
-var id_font_settings_min_size: int = 200
 var is_shutting_down: bool = false:
 	set(value):
 		is_shutting_down = value
@@ -446,10 +446,20 @@ func _on_log_file_added(logfile: Button) -> void:
 
 
 
+	# editor_base_col = settings.get("interface/theme/base_color")
 func _on_editor_settings_changed() -> void:
 	settings = EditorInterface.get_editor_settings()
-	editor_base_col = settings.get("interface/theme/base_color")
-	_apply_theme_colors()
+	var new_base: Color = settings.get_setting("interface/theme/base_color")
+	var new_accent: Color = settings.get_setting("interface/theme/accent_color")
+
+	var base_changed: bool = theme_col_base != new_base
+	var accent_changed: bool = theme_col_accent != new_accent
+	if not base_changed and not accent_changed:
+		return
+
+	theme_col_base = new_base
+	theme_col_accent = new_accent
+	_apply_theme_colors(base_changed, accent_changed)
 
 
 
@@ -474,15 +484,15 @@ func _get_theme_colors() -> Dictionary:
 			"col": base_col,
 			"light": base_light,
 			"dark": base_dark,
-			"light_highlight": base_light_h,
-			"dark_highlight": base_dark_h,
+			"light_accent": base_light_h,
+			"dark_accent": base_dark_h,
 		},
 		"accent": {
 			"col": accent_col,
 			"light": accent_light,
 			"dark": accent_dark,
-			"light_highlight": accent_light_h,
-			"dark_highlight": accent_dark_h,
+			"light_accent": accent_light_h,
+			"dark_accent": accent_dark_h,
 		},
 		"font": {
 			"normal": Color("9d9ea0"),
@@ -502,54 +512,48 @@ func _get_theme_colors() -> Dictionary:
 
 
 
-func _apply_theme_colors():
+func _apply_theme_colors(apply_base: bool = true, apply_accent: bool = true) -> void:
 	theme_colors = _get_theme_colors()
+	if apply_base:
+		_apply_base_theme_colors()
+	if apply_accent:
+		_apply_accent_theme_colors()
+
+
+func _apply_base_theme_colors() -> void:
 	var color_map := {
 		# Transparent elements
 		sb_tab_unselected: {"bg_color": Color.TRANSPARENT},
 		sb_btn_normal: {"bg_color": Color.TRANSPARENT},
 		
 		# Base color elements
-		panel_round_base: {"bg_color": theme_colors["base"]["col"]},
-		panel_round_base_border_highlight: {"bg_color": theme_colors["base"]["col"], "border_color": theme_colors["accent"]["col"]},
-		panel_top_round_base: {"bg_color": theme_colors["base"]["col"]},
-		panel_rounded_no_top_base: {"border_color": theme_colors["base"]["col"]},
-		foldable_container_panel: {"border_color": theme_colors["base"]["col"]},
-		sb_tab_bar_bg: {"bg_color": theme_colors["base"]["col"]},
-		sb_log_file_button_normal: {"bg_color": theme_colors["base"]["col"]},
-		content_panel: {"border_color": theme_colors["base"]["col"]},
-		sb_btn_toggled_on: {"bg_color": theme_colors["base"]["col"]},
+		panel_round_base: 							{"bg_color": theme_colors["base"]["col"]},
+		panel_round_base_border_accent: {"bg_color": theme_colors["base"]["col"], "border_color": theme_colors["accent"]["col"]},
+		panel_top_round_base: 					{"bg_color": theme_colors["base"]["col"]},
+		panel_rounded_no_top_base: 			{"border_color": theme_colors["base"]["col"]},
+		foldable_container_panel: 			{"border_color": theme_colors["base"]["col"]},
+		sb_tab_bar_bg: 									{"bg_color": theme_colors["base"]["col"]},
+		sb_log_file_button_normal: 			{"bg_color": theme_colors["base"]["col"]},
+		content_panel: 									{"border_color": theme_colors["base"]["col"]},
+		sb_btn_toggled_on: 							{"bg_color": theme_colors["base"]["col"]},
 		
 		# Dark base variants
-		sb_tab_panel_bg: {"bg_color": theme_colors["base"]["dark"]},
-		sb_tab_panel_no_side_margins: {"bg_color": theme_colors["base"]["dark"]},
-		panel_round_bg: {"bg_color": theme_colors["base"]["dark"]},
-		lv_popup_panel: {"bg_color": theme_colors["base"]["dark"], "border_color": theme_colors["base"]["col"]},
+		sb_tab_panel_bg: 								{"bg_color": theme_colors["base"]["dark"]},
+		sb_tab_panel_no_side_margins: 	{"bg_color": theme_colors["base"]["dark"]},
+		panel_round_bg: 								{"bg_color": theme_colors["base"]["dark"]},
+		lv_popup_panel: 								{"bg_color": theme_colors["base"]["dark"], "border_color": theme_colors["base"]["col"]},
 		
-		# Dark highlight
-		sb_line_edit_normal: {"bg_color": theme_colors["base"]["dark_highlight"]},
-		
-		# Accent color elements
-		panel_round_accent: {"bg_color": theme_colors["accent"]["col"]},
-		panel_top_round_accent: {"bg_color": theme_colors["accent"]["col"]},
-		sb_btn_toggled_on: {"border_color": theme_colors["accent"]["col"]},
-		sb_tab_hover: {"bg_color": theme_colors["accent"]["light"]},
-		sb_tab_selected: {"bg_color": theme_colors["accent"]["dark"]},
-		
-		# Accent muted variants
-		panel_round_accent_muted: {"bg_color": theme_colors["accent"]["dark_highlight"]},
-		panel_top_round_accent_muted: {"bg_color": theme_colors["accent"]["dark_highlight"]},
-		sb_btn_apply: {"bg_color": theme_colors["accent"]["dark_highlight"]},
+		# Dark accent
+		sb_line_edit_normal: {"bg_color": theme_colors["base"]["dark_accent"]},
 		
 		# Label settings
 		lv_content_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
 		gl_logfile_button_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
 	}
-	
-	for resource: Resource in color_map:
-		var properties: Dictionary = color_map[resource]
-		for prop_name: String in properties:
-			resource[prop_name] = properties[prop_name]
+	for i in color_map.keys():
+		print(i)
+	prints(panel_round_base_border_accent,panel_top_round_base)
+	_apply_resource_properties(color_map)
 	
 
 	for line in [base_dir_line, log_header_line, entry_format_line]:
@@ -558,7 +562,42 @@ func _apply_theme_colors():
 	for cont in [general_fold_cont, limit_fold_cont, id_fold_cont, id_font_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
 		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
-		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_highlight"].v 				< 0.7 else theme_colors["base"]["col"]) 
+		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_accent"].v 				< 0.7 else theme_colors["base"]["col"]) 
+
+	_apply_option_button_font_colors()
+
+
+func _apply_accent_theme_colors() -> void:
+	var color_map := {
+		# Mixed base/accent elements
+		panel_round_base_border_accent: {"border_color": theme_colors["accent"]["col"]},
+		sb_btn_toggled_on: 							{"border_color": theme_colors["accent"]["col"]},
+
+		# Accent color elements
+		panel_round_accent: 						{"bg_color": theme_colors["accent"]["col"]},
+		panel_top_round_accent: 				{"bg_color": theme_colors["accent"]["col"]},
+		sb_tab_hover: 									{"bg_color": theme_colors["accent"]["light"]},
+		sb_tab_selected: 								{"bg_color": theme_colors["accent"]["dark"]},
+
+		# Accent muted variants
+		panel_round_accent_muted: 			{"bg_color": theme_colors["accent"]["dark_accent"]},
+		panel_top_round_accent_muted: 	{"bg_color": theme_colors["accent"]["dark_accent"]},
+		sb_btn_apply: 									{"bg_color": theme_colors["accent"]["dark_accent"]},
+	}
+	prints(panel_round_accent, panel_top_round_accent,sb_tab_hover,sb_tab_selected)
+	_apply_resource_properties(color_map)
+	_apply_option_button_font_colors()
+
+
+func _apply_resource_properties(color_map: Dictionary) -> void:
+	for resource: Resource in color_map:
+		var properties: Dictionary = color_map[resource]
+		for prop_name: String in properties:
+			if resource == null: continue
+			resource[prop_name] = properties[prop_name]
+
+
+func _apply_option_button_font_colors() -> void:
 
 	for btn in [error_rep_btn, limit_method_btn, entry_count_action_btn,	session_timer_action_btn,	id_align_opt_btn]:
 		btn.add_theme_color_override("font_color", 								theme_colors["font"]["normal"] 	if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["accent"]["col"])

@@ -114,6 +114,10 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 	for c in cats:
 		c.move_left_btn.disabled = true
 		c.move_right_btn.disabled = true
+		c.move_left_btn.add_theme_color_override("icon_disabled_color", c.move_left_btn.get_theme_color("icon_normal_color"))
+		c.move_right_btn.add_theme_color_override("icon_disabled_color", c.move_right_btn.get_theme_color("icon_normal_color"))
+	category_container.get_child(0).move_left_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
+	category_container.get_child(category_container.get_child_count() -1).move_right_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
 
 	to += direction
 
@@ -136,6 +140,9 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 	for c in cats:
 		c.move_left_btn.disabled = false
 		c.move_right_btn.disabled = false
+		c.move_left_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
+		c.move_right_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
+
 	
 	category_container.get_child(0).move_left_btn.disabled = true
 	category_container.get_child(category_container.get_child_count() - 1).move_right_btn.disabled = true
