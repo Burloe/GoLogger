@@ -15,7 +15,7 @@ signal set_default_category(category: LogCategory, toggle_on: bool)
 @onready var move_left_btn: Button = 				%MoveLeftButton
 @onready var move_right_btn: Button = 			%MoveRightButton
 @onready var lock_btn:	Button = 						%LockButton
-@onready var default_checkbox: CheckBox = 	%DefaultCheckBox
+@onready var default_btn: Button =	 				%DefaultButton
 @onready var line_edit: LineEdit = 					%CategoryNameLineEdit
 @onready var del_btn:	Button = 							%DeleteButton
 @onready var apply_btn: Button = 						%ApplyButton
@@ -28,6 +28,16 @@ var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx")
 
 
+##  Last applied category name
+var category_name: String = "":
+	set(value):
+		if category_name != value:
+			category_name = value.to_lower()
+
+			if cat_data != null:
+				cat_data.category_name = value
+
+			if line_edit != null: line_edit.text = category_name 
 
 ## Locks category name and erase button
 var is_locked : bool = false:
@@ -43,17 +53,11 @@ var is_locked : bool = false:
 		if line_edit != null: line_edit.editable = !value
 		if del_btn != null: del_btn.disabled = value
 
-##  Last applied category name
-var category_name: String = "":
+## Only used to assign icon -> use default_btn.button_pressed to check if def
+var is_default: bool = false:
 	set(value):
-		if category_name != value:
-			category_name = value.to_lower()
-
-			if cat_data != null:
-				cat_data.category_name = value
-
-			if line_edit != null: line_edit.text = category_name 
-
+		is_default = value
+		default_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
 
 
 
@@ -68,6 +72,7 @@ func _input(event: InputEvent) -> void:
 func _ready() -> void:
 	_on_editor_settings_changed() 
 	revert_btn.hide()
+	is_default = false # loads the icon
 
 	settings.settings_changed.connect(_on_editor_settings_changed)
 	del_btn.button_up.connect(_on_del_button_up)
@@ -83,7 +88,7 @@ func _ready() -> void:
 			line_edit.release_focus()
 			line_edit.text = category_name
 			apply_btn.hide()
-			default_checkbox.show()
+			default_btn.show()
 			revert_btn.hide()
 	)
 
@@ -113,13 +118,14 @@ func _ready() -> void:
 			line_edit.unedit()
 			line_edit.release_focus()
 			apply_btn.hide()
-			default_checkbox.show()
+			default_btn.show()
 			revert_btn.hide()
 	)
 
-	default_checkbox.toggled.connect(
-		func(pressed: bool) -> void:
-			set_default_category.emit(self, pressed) 
+	default_btn.toggled.connect(
+		func(toggled_on: bool) -> void:
+			set_default_category.emit(self, toggled_on)
+			is_default = toggled_on
 	)
 
 	size = Vector2.ZERO
@@ -159,7 +165,7 @@ func handle_name_state() -> void:
 	var is_unchanged := line_edit.text == "" or line_edit.text == category_name
 
 	apply_btn.visible = !is_unchanged
-	default_checkbox.visible = is_unchanged
+	default_btn.visible = is_unchanged
 
 
 
@@ -201,7 +207,7 @@ func apply_name(new_name: String) -> void:
 	log_category_changed.emit()
 	line_edit.release_focus()
 	apply_btn.hide()
-	default_checkbox.show()
+	default_btn.show()
 
 
 
@@ -231,7 +237,7 @@ func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 func _on_line_edit_focus_exited() -> void:
 	if line_edit.text == category_name:
 		apply_btn.hide()
-		default_checkbox.show()
+		default_btn.show()
 
 
 

@@ -257,7 +257,7 @@ func update_list() -> void:
 	"count_action": 				{"value": entry_count_action, 	"default": 0, 			"ctrl": entry_count_action_ctrl},
 	"timer_action": 				{"value": session_timer_action, "default": 0, 			"ctrl": session_timer_action_ctrl},
 	"file_cap": 						{"value": file_cap, 						"default": 10, 			"ctrl": file_cap_ctrl, "line": file_cap_ctrl_line},
-	"entry_cap": 						{"value": entry_cap, 						"default": 2000, 		"ctrl": entry_cap_ctrl, "line": entry_cap_ctrl_line},
+	"entry_cap": 						{"value": entry_cap, 						"default": 1000, 		"ctrl": entry_cap_ctrl, "line": entry_cap_ctrl_line},
 	"session_duration": 		{"value": session_duration, 		"default": 1200, 		"ctrl": session_duration_ctrl, "line": session_duration_ctrl_line},
 	"err_report_lv":	 			{"value": error_reporting, 			"default": 0, 			"ctrl": error_rep_ctrl},
 	"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},

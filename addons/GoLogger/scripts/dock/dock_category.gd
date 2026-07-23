@@ -76,8 +76,8 @@ func initialize_tab() -> void:
 
 	if !data.default_category.is_empty():
 		for cat in category_container.get_children():
-			if cat is LogCategory and cat.category_name == data.default_category and cat.default_checkbox != null:
-				cat.default_checkbox.button_pressed = true
+			if cat is LogCategory and cat.category_name == data.default_category and cat.default_btn != null:
+				cat.default_btn.button_pressed = true
 				break
 				
 	request_update_columns()
@@ -169,7 +169,7 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
 	
 	if !low_name.is_empty():
-		_n.default_checkbox.button_pressed = data.default_category == low_name
+		_n.default_btn.button_pressed = data.default_category == low_name
 	else:	
 		_n.line_edit.grab_focus()
 		
@@ -217,12 +217,12 @@ func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
 	_default_setting_in_progress = true
 	
 	for log_c in category_container.get_children():
-		if log_c is LogCategory and log_c.default_checkbox != null:
+		if log_c is LogCategory and log_c.default_btn != null:
 			if log_c != cat:
-				log_c.default_checkbox.button_pressed = false
+				log_c.default_btn.button_pressed = false
 
-	if set_status and cat.default_checkbox != null:
-		cat.default_checkbox.button_pressed = true
+	if set_status and cat.default_btn != null:
+		cat.default_btn.button_pressed = true
 	
 	data.default_category = cat.category_name if set_status else "" 
 	_default_setting_in_progress = false

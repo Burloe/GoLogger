@@ -30,7 +30,6 @@ func _disable_plugin() -> void:
 
 
 
-func _renable_plugin() -> void:
-	if dock.dev_mode:
-		_exit_tree()
-		_enter_tree()
+func _renable_plugin() -> void: 
+	_exit_tree()
+	_enter_tree()
