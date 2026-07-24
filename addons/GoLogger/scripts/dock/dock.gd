@@ -36,6 +36,7 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var log_browser_view_btn: Button = %ViewModeButton
 @onready var log_browser_sort_btn: Button = %SortModeButton
 @onready var log_browser_open_dir_btn: Button = %ViewerOpenDirButton
+@onready var open_logs_with_os_btn: Button = %OpenWOSButton
 
 # Settings tab
 @onready var settings_tab: HBoxContainer = %SettingsTab
@@ -329,6 +330,7 @@ func _assign_settings_controls() -> void:
 	data.error_rep_ctrl = error_rep_btn
 	data.browser_sort_ctrl = log_browser_sort_btn
 	data.browser_view_ctrl = log_browser_view_btn
+	data.open_logs_with_os_ctrl = open_logs_with_os_btn
 
 #endregion
 
@@ -389,7 +391,6 @@ func save_categories() -> void:
 	if is_shutting_down:
 		return
 
-	# await get_tree().create_timer(0.01).timeout
 	data.categories.clear()
 	var cats: Array[GLCategoryData] = []
 
@@ -397,7 +398,7 @@ func save_categories() -> void:
 		if log_c is not LogCategory:
 			continue
 
-		if log_c.default_checkbox.button_pressed: 
+		if log_c.default_btn.button_pressed: 
 			data.default_category = log_c.category_name
 
 		var c_data: GLCategoryData = GLCategoryData.new()

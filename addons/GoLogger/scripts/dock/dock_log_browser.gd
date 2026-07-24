@@ -54,7 +54,9 @@ var is_reloading: bool = false:
 var open_log_with_os: bool = false:
 	set(value):
 		open_log_with_os = value
-		# open_w_os_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
+		open_w_os_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
+		open_w_os_btn.tooltip_text = "Open logs using OS" if value else "Open logs within Editor"
+		data.open_logs_with_os = value
 var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
@@ -128,8 +130,6 @@ func _ready() -> void:
 	lv_refresh_btn.button_up.connect(load_log_browser)
 
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
-	open_w_os_btn.mouse_entered.connect(_tween_button_on_hover.bind(true, open_w_os_btn))
-	open_w_os_btn.mouse_exited.connect(_tween_button_on_hover.bind(false, open_w_os_btn))
 	lv_view_mode_btn.button_up.connect(func() -> void: cur_view = !cur_view)
 	lv_sort_mode_btn.button_up.connect(
 		func() -> void:
@@ -455,9 +455,9 @@ func _tween_button_on_hover(hover_on: bool, btn: Button) -> void:
 			var old_pos = btn.global_position
 			btn.top_level = hover_on
 			btn.global_position = old_pos
-			btn.text = "Open with OS" if open_log_with_os else "Open in Editor"
+			btn.tooltip_text = "Open with OS" if open_log_with_os else "Open in Editor"
 			btn.icon = null
-			tw.tween_property(btn, "size", Vector2(200 if hover_on else 32, btn.size.y), 0.04)
+			tw.tween_property(btn, "size", Vector2(111 if hover_on else 32, btn.size.y), 0.04)
 			if !hover_on:
 				open_w_os_btn.icon = get_theme_icon("GuiChecked" if open_log_with_os else "GuiUnchecked", "EditorIcons") 
 				btn.text = ""

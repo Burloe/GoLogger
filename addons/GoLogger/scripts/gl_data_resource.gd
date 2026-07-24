@@ -9,6 +9,7 @@ signal data_ready
 # Browser Tab
 @export_enum("New", "Old", "Grouped New", "Grouped Old") var browser_sort: int = 0
 @export var browser_view: bool = false
+@export var open_logs_with_os: bool = false
 
 # Directories 6 Formats
 @export var base_dir: String = "user://gologger/"
@@ -72,6 +73,7 @@ var session_duration_ctrl_line: LineEdit = null
 var error_rep_ctrl: OptionButton = null
 var browser_sort_ctrl: Button = null
 var browser_view_ctrl: Button = null
+var open_logs_with_os_ctrl: Button = null
 
 var list: Dictionary = {}
 
@@ -261,4 +263,6 @@ func update_list() -> void:
 	"session_duration": 		{"value": session_duration, 		"default": 1200, 		"ctrl": session_duration_ctrl, "line": session_duration_ctrl_line},
 	"err_report_lv":	 			{"value": error_reporting, 			"default": 0, 			"ctrl": error_rep_ctrl},
 	"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},
-	"browser_view": 				{"value": browser_view, 				"default": 0, 			"ctrl": browser_view_ctrl},}
+	"browser_view": 				{"value": browser_view, 				"default": 0, 			"ctrl": browser_view_ctrl},
+	"open_logs_with_os":		{"value": open_logs_with_os,		"default": false,		"ctrl": open_logs_with_os_ctrl}
+	}
