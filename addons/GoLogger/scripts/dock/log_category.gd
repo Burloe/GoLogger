@@ -72,7 +72,7 @@ func _input(event: InputEvent) -> void:
 func _ready() -> void:
 	_on_editor_settings_changed() 
 	revert_btn.hide()
-	is_default = false # loads the icon
+	is_default = is_default # loads the icon
 
 	settings.settings_changed.connect(_on_editor_settings_changed)
 	del_btn.button_up.connect(_on_del_button_up)

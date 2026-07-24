@@ -17,9 +17,11 @@
 [ext_resource type="Texture2D" uid="uid://comapb1cs4l7m" path="res://addons/gologger/resources/icons/Debug.svg" id="12_e4pb5"]
 [ext_resource type="Texture2D" uid="uid://clbmanmttjrs4" path="res://addons/gologger/resources/icons/Reload.svg" id="13_dg67q"]
 [ext_resource type="Texture2D" uid="uid://ijiplwclq5pu" path="res://addons/gologger/resources/icons/ControlAlignFullRect.svg" id="14_equok"]
+[ext_resource type="StyleBox" uid="uid://xy4uummjvhgu" path="res://addons/gologger/resources/theme/log_file_button_normal.tres" id="14_ijsi3"]
 [ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
 [ext_resource type="Texture2D" uid="uid://dvjgbc6hibv5m" path="res://addons/gologger/resources/icons/SortNew.svg" id="15_equok"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
+[ext_resource type="StyleBox" uid="uid://bjn2ge66enp2x" path="res://addons/gologger/resources/theme/log_file_button_hover.tres" id="16_pnuvs"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/resources/file_content_label_settings.tres" id="18_03nd1"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
@@ -192,6 +194,7 @@ metadata/_tab_index = 1
 metadata/_tab_name = "Logs"
 
 [node name="SidePanel" type="Panel" parent="LogBrowserTab" unique_id=1192128886]
+z_index = 3
 custom_minimum_size = Vector2(48, 0)
 clip_contents = true
 layout_mode = 2
@@ -245,6 +248,37 @@ icon_alignment = 1
 [node name="Control" type="Control" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1387267252]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Control2" type="Control" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1507595162]
+z_index = 1
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="OpenWOSButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer/Control2" unique_id=941928065]
+unique_name_in_owner = true
+z_index = 5
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_styles/normal = ExtResource("14_ijsi3")
+theme_override_styles/pressed = ExtResource("20_5orq7")
+theme_override_styles/hover = ExtResource("16_pnuvs")
+toggle_mode = true
+text = "Open file with OS"
+clip_text = true
+icon_alignment = 1
+
+[node name="PopupPanel" type="PopupPanel" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer/Control2" unique_id=1081699444]
+oversampling_override = 1.0
+title = "asdf"
+visible = true
 
 [node name="ViewModeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1807274223]
 unique_name_in_owner = true
@@ -317,6 +351,7 @@ theme_override_constants/margin_right = 0
 
 [node name="LBCategoryTabContainer" type="TabContainer" parent="LogBrowserTab/HSplitContainer/FBMarginContainer" unique_id=1149614450]
 unique_name_in_owner = true
+show_behind_parent = true
 custom_minimum_size = Vector2(137, 0)
 clip_contents = true
 layout_mode = 2
@@ -1816,9 +1851,9 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "A new LogBrowser was added in 1.4 which allows you to see your .log files and read their contents, all within the editor. 
 
-It detects files is by the file name and it's file type. Meaning the file has to begin with the category's name and end with \".log\" to be detected. The drawback with this is that it won't detect files that you've renamed. However, you can uncheck the setting \"Log Browser strict file name detection\"  under Settings tab > General. This will ignore the category name restriction, which will read all .log files.
+It detects files by file type. Meaning the file has to begin with the category's name and end with \".log\" to be detected. The drawback with this is that it won't detect files that you've renamed. However, you can uncheck the setting \"Log Browser strict file name detection\"  under Settings tab > General. This will ignore the category name restriction, which will read all .log files.
 
-Currently, the Log Browser will only detect and find files in active category's. It won't look for folders of past/deleted categories. A proper file browser with actual folder navigation may be implemented in a future update if interest is shown.
+[b]Loading large files for viewing may freeze Godot depending on the length of the file contents and your computer's performance.[/b}
 
 Future updates may include:
 	Proper folder navigation

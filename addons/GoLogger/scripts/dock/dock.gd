@@ -226,10 +226,8 @@ var is_shutting_down: bool = false:
 
 func _ready() -> void:
 	data = load(DATA_PATH)
-	log_browser_tab.data = data
-	# await category_tab.ready
-	category_tab.data = data
-	# await settings_tab.ready
+	log_browser_tab.data = data 
+	category_tab.data = data 
 	settings_tab.data = data
 	data.update_list()
 	theme_colors = _get_theme_colors()
@@ -545,9 +543,6 @@ func _apply_base_theme_colors() -> void:
 		lv_content_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
 		gl_logfile_button_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
 	}
-	for i in color_map.keys():
-		print(i)
-	prints(panel_round_base_border_accent,panel_top_round_base)
 	_apply_resource_properties(color_map)
 	
 
@@ -579,7 +574,6 @@ func _apply_accent_theme_colors() -> void:
 		panel_top_round_accent_muted: 	{"bg_color": theme_colors["accent"]["dark_accent"]},
 		sb_btn_apply: 									{"bg_color": theme_colors["accent"]["dark_accent"]},
 	}
-	prints(panel_round_accent, panel_top_round_accent,sb_tab_hover,sb_tab_selected)
 	_apply_resource_properties(color_map)
 	_apply_option_button_font_colors()
 

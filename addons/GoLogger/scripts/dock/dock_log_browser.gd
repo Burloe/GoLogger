@@ -10,9 +10,12 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 @onready var log_viewer: Panel = %LogViewer
 @onready var h_split_cont: HSplitContainer = %HSplitContainer
 @onready var lv_title_lbl: Label = %ViewerTitleLabel
-@onready var lv_refresh_btn: Button = %ViewerRefreshButton
+@onready var lv_refresh_btn: Button = %ViewerRefreshButton 
+
+@onready var open_w_os_btn: Button = %OpenWOSButton 
 @onready var lv_view_mode_btn: Button = %ViewModeButton
 @onready var lv_sort_mode_btn: Button = %SortModeButton
+
 @onready var lv_close_btn: Button = %ViewerCloseButton
 @onready var lv_copy_content_btn: Button =%ViewerCopyContentButton
 @onready var lv_contents_lbl: Label = %ContentLabel
@@ -48,6 +51,10 @@ var is_reloading: bool = false:
 		fb_margin_container.visible = !value
 		reload_hider.visible = value
 		lv_refresh_btn.disabled = value
+var open_log_with_os: bool = false:
+	set(value):
+		open_log_with_os = value
+		# open_w_os_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
 var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
@@ -115,9 +122,14 @@ func _ready() -> void:
 		if mo != null:
 			mo.mouse_entered.connect(func() -> void: is_content_hovered = true)
 			mo.mouse_exited.connect(func() -> void: is_content_hovered = false)
+	
 	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
 	lv_close_btn.button_up.connect(_close_log_file) 
 	lv_refresh_btn.button_up.connect(load_log_browser)
+
+	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
+	open_w_os_btn.mouse_entered.connect(_tween_button_on_hover.bind(true, open_w_os_btn))
+	open_w_os_btn.mouse_exited.connect(_tween_button_on_hover.bind(false, open_w_os_btn))
 	lv_view_mode_btn.button_up.connect(func() -> void: cur_view = !cur_view)
 	lv_sort_mode_btn.button_up.connect(
 		func() -> void:
@@ -138,7 +150,7 @@ func _ready() -> void:
 	lv_title_lbl.text = ""
 	lv_contents_lbl.text = ""
 	lv_lbl_sett_popup.hide()
-
+	open_log_with_os = open_log_with_os # loads the icon
 
 
 
@@ -369,6 +381,11 @@ func _get_category_files(category_name: String) -> PackedStringArray:
 func _open_log_file(log_file: GLLogFile) -> void:
 	if !log_file.file_name.ends_with(".log"):
 		return
+	
+	if open_log_with_os:
+		var abs_path = ProjectSettings.globalize_path(log_file.file_path)
+		OS.shell_open(abs_path)
+		return
 
 	var log_content: String = log_file.file_contents
 	
@@ -428,6 +445,22 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 		lv_lbl_sett_btn:
 			lv_lbl_sett_popup.visible = toggled 
 			lv_margin_container.custom_minimum_size.x = 315 if toggled else 115 
+
+
+
+func _tween_button_on_hover(hover_on: bool, btn: Button) -> void:
+	var tw = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	match btn:
+		open_w_os_btn:
+			var old_pos = btn.global_position
+			btn.top_level = hover_on
+			btn.global_position = old_pos
+			btn.text = "Open with OS" if open_log_with_os else "Open in Editor"
+			btn.icon = null
+			tw.tween_property(btn, "size", Vector2(200 if hover_on else 32, btn.size.y), 0.04)
+			if !hover_on:
+				open_w_os_btn.icon = get_theme_icon("GuiChecked" if open_log_with_os else "GuiUnchecked", "EditorIcons") 
+				btn.text = ""
 
 
 
