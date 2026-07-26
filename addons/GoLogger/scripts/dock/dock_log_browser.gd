@@ -448,38 +448,23 @@ func _on_button_toggled(toggled: bool, btn: Button) -> void:
 
 
 
-func _tween_button_on_hover(hover_on: bool, btn: Button) -> void:
-	var tw = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-	match btn:
-		open_w_os_btn:
-			var old_pos = btn.global_position
-			btn.top_level = hover_on
-			btn.global_position = old_pos
-			btn.tooltip_text = "Open with OS" if open_log_with_os else "Open in Editor"
-			btn.icon = null
-			tw.tween_property(btn, "size", Vector2(111 if hover_on else 32, btn.size.y), 0.04)
-			if !hover_on:
-				open_w_os_btn.icon = get_theme_icon("GuiChecked" if open_log_with_os else "GuiUnchecked", "EditorIcons") 
-				btn.text = ""
-
-
-
 func _update_columns(is_initializing: bool = false) -> void:
 	if min_cell_width <= 0: return
 
 	if cur_sort in [SortModes.GROUP_NEW, SortModes.GROUP_OLD]:
 		for child in category_tab_container.get_children():
-			for grid_cont in child.get_children():
-				if grid_cont is GridContainer:
-					grid_cont.columns = max(grid_cont.get_child_count(), 1)
+			for grid_cont: GridContainer in child.get_children(): 
+				grid_cont.columns = max(grid_cont.get_child_count(), 1)
 		return
 	
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	
-	var cell_width: int = 0
-	for category in category_tab_container.get_children():
-		for grid_cont in category.get_children():
-			if grid_cont is GridContainer and log_files.size() > 0:
-				cell_width = log_files[0].size.x + grid_cont.get_theme_constant("h_separation")
-				grid_cont.columns = max(1, int(grid_cont.size.x / cell_width))
+	var current_tab_ctrl: GridContainer = category_tab_container.get_current_tab_control().get_child(0)
+	var cell_width: int = log_files[0].size.x + current_tab_ctrl.get_theme_constant("h_separation")
+	var col: int = max(1, int(current_tab_ctrl.size.x / cell_width))
+	
+
+	for category: ScrollContainer in category_tab_container.get_children():
+		for grid_cont: GridContainer in category.get_children():
+			grid_cont.columns = col 

@@ -265,7 +265,6 @@ theme_override_colors/icon_hover_pressed_color = Color(0.41568628, 0.41568628, 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_r3wlc")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_r3wlc")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_r3wlc")
-toggle_mode = true
 icon = ExtResource("17_pnuvs")
 clip_text = true
 icon_alignment = 1

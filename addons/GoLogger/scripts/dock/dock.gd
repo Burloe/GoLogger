@@ -344,15 +344,11 @@ func initialize_dock() -> void:
 			data = load(DATA_PATH)
 		else:
 			regen_data()
-
-
 	_init_visibility()
 
 
 
 func reset_to_default() -> void:
-	print("reset_to_default: ", data.reset_to_default())
-
 	base_dir_apply_btn.disabled = true
 	log_header_apply_btn.disabled = true
 	entry_format_apply_btn.disabled = true

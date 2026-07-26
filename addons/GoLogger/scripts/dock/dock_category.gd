@@ -153,7 +153,6 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 #region Private Functions
 
 func _add_category(_name: String = "", _is_locked: bool = false) -> void:
-	print("adding category <", _name, ">")
 	var _n = category_scene.instantiate() as LogCategory 
 	var low_name: String = _name.to_lower()
 	_n.category_name = low_name
