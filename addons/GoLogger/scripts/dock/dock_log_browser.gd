@@ -209,7 +209,7 @@ func load_log_browser() -> void:
 	await get_tree().process_frame
 	set_view(prev_state)
 
-	for c in data.categories:
+	for c: GLCategoryData in data.categories:
 		if c.category_name == "":
 				continue
 		
@@ -420,7 +420,7 @@ func _open_log_file(log_file: GLLogFile) -> void:
 			_m[int(_splits[0].substr(2, 2))],
 			str(20, (_splits[0].substr(0, 2)))
 		)
-	for lf in log_files:
+	for lf: GLLogFile in log_files:
 		if lf != log_file and lf.selected:
 			lf.selected = false 
 	
@@ -461,6 +461,10 @@ func _update_columns(is_initializing: bool = false) -> void:
 	await get_tree().physics_frame
 	
 	var current_tab_ctrl: GridContainer = category_tab_container.get_current_tab_control().get_child(0)
+	# if category_tab_container.current_tab != -1 and category_tab_container.get_current_tab_control().get_child_count() > 0:
+	# 	category_tab_container.get_current_tab_control().get_child(0)
+	prints(current_tab_ctrl, category_tab_container.current_tab, category_tab_container.get_current_tab_control(), category_tab_container.get_current_tab_control().get_child_count())
+
 	var cell_width: int = log_files[0].size.x + current_tab_ctrl.get_theme_constant("h_separation")
 	var col: int = max(1, int(current_tab_ctrl.size.x / cell_width))
 	

@@ -33,6 +33,7 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 
 # Log Browser
 @onready var log_browser_tab: HBoxContainer = %LogBrowserTab
+@onready var lb_reload_btn: Button = %LB
 @onready var log_browser_view_btn: Button = %ViewModeButton
 @onready var log_browser_sort_btn: Button = %SortModeButton
 @onready var log_browser_open_dir_btn: Button = %ViewerOpenDirButton
@@ -408,6 +409,13 @@ func save_categories() -> void:
 	category_tab.handle_category_mov_button_state()
 
 #endregion
+
+
+#region Private
+
+func _assign_editor_icons() -> void:
+	# Log tab
+	refres
 
 
 
