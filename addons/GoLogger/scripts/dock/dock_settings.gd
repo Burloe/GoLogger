@@ -53,7 +53,7 @@ var file_count_spinbox_line: LineEdit
 @onready var error_rep_lbl: Label = %ErrorRepLabel
 @onready var error_rep_container: HBoxContainer = %ErrorRepHBox
 
-@onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
+@onready var plugin_version_sett_lbl: Label = %PluginVersionLabel
 
 @onready var id_fold_cont: FoldableContainer = %IDFoldableContainer
 @onready var id_align_container: HBoxContainer = %IDAlignHBox

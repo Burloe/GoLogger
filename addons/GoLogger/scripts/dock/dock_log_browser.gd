@@ -5,27 +5,27 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
 @onready var reload_hider: MarginContainer = %ReloadTopper
 @onready var fb_margin_container: MarginContainer = %FBMarginContainer
-@onready var lv_margin_container: MarginContainer = %LVMarginContainer
+@onready var margin_container: MarginContainer = %LBMarginContainer
 @onready var category_tab_container = %LBCategoryTabContainer
 @onready var log_viewer: Panel = %LogViewer
 @onready var h_split_cont: HSplitContainer = %HSplitContainer
-@onready var lv_title_lbl: Label = %ViewerTitleLabel
-@onready var lv_refresh_btn: Button = %ViewerRefreshButton 
+@onready var title_lbl: Label = %LBTitleLabel
+@onready var reload_btn: Button = %LBReloadButton 
 
-@onready var open_w_os_btn: Button = %OpenWOSButton 
-@onready var lv_view_mode_btn: Button = %ViewModeButton
-@onready var lv_sort_mode_btn: Button = %SortModeButton
+@onready var open_w_os_btn: Button = %LBOpenWOSButton 
+@onready var view_mode_btn: Button = %LBViewModeButton
+@onready var sort_mode_btn: Button = %LBSortModeButton
 
-@onready var lv_close_btn: Button = %ViewerCloseButton
-@onready var lv_copy_content_btn: Button =%ViewerCopyContentButton
-@onready var lv_contents_lbl: Label = %ContentLabel
+@onready var close_btn: Button = %LBCloseButton
+@onready var copy_content_btn: Button =%LBCopyContentButton
+@onready var contents_lbl: Label = %ContentLabel
 
-@onready var lv_panel: Panel = %LVPanel
-@onready var lv_scroll_container: ScrollContainer = %LVScrollContainer
+@onready var lb_panel: Panel = %LBPanel
+@onready var lb_scroll_container: ScrollContainer = %LBScrollContainer
 
-@onready var lv_lbl_sett_btn: Button = %ViewerLblSettButton
-@onready var lv_lbl_sett_popup: PanelContainer = %LblSettInspectorPopup
-@onready var lv_lbl_sett_popup_scroll_cont: ScrollContainer = %LblSettPopupScrollContainer
+@onready var lbl_sett_btn: Button = %LBLblSettButton
+@onready var lbl_sett_popup: PanelContainer = %LblSettInspectorPopup
+@onready var lbl_sett_popup_scroll_cont: ScrollContainer = %LblSettPopupScrollContainer
 
 @export var data: GLData = null
 var inspector: EditorInspector
@@ -50,7 +50,7 @@ var is_reloading: bool = false:
 		h_split_cont.visible = !value
 		fb_margin_container.visible = !value
 		reload_hider.visible = value
-		lv_refresh_btn.disabled = value
+		reload_btn.disabled = value
 var open_log_with_os: bool = false:
 	set(value):
 		open_log_with_os = value
@@ -65,22 +65,22 @@ var log_files: Array[GLLogFile] = []
 var cur_logfile: GLLogFile = null:
 	set(value):
 		cur_logfile = value
-		lv_contents_lbl.text = cur_logfile.file_contents if value else ""
+		contents_lbl.text = cur_logfile.file_contents if value else ""
 		if value != null:
-			lv_copy_content_btn.visible = !cur_logfile.file_contents.is_empty() 
+			copy_content_btn.visible = !cur_logfile.file_contents.is_empty() 
 var cur_view: bool = false:
 	set(value):
 		cur_view = value
-		lv_view_mode_btn.icon = ico_splitscreen_view if value else ico_fullscreen_view
-		lv_view_mode_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
+		view_mode_btn.set_button_icon(get_theme_icon("ControlAlignFullRect" if value else "ControlAlignVCenterWide", "EditorIcons"))
+		view_mode_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
 		set_view(BrowserState.LOG_SPLIT if value else BrowserState.LOG_FULL)
 var cur_sort: SortModes = SortModes.NEW: 
 	set(value):
 		cur_sort = value
 		var modes := ["\nNew first", "\nOld first", "\nGroup by date - New first", "\nGroup by date - Old first"]
-		lv_sort_mode_btn.tooltip_text = str("Sorting by:", modes[value])
+		sort_mode_btn.tooltip_text = str("Sorting by:", modes[value])
 		var icons := [ico_sort_new, ico_sort_old, ico_sort_date_new, ico_sort_date_old]
-		lv_sort_mode_btn.icon = icons[value]
+		sort_mode_btn.icon = icons[value]
 		data.browser_sort = value
 
 var theme_colors: Dictionary = {}
@@ -120,36 +120,36 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	for mo in [lv_contents_lbl, lv_scroll_container, lv_panel, lv_panel.get_child(0), lv_title_lbl, log_viewer, log_viewer.get_child(0)]:
+	for mo in [contents_lbl, lb_scroll_container, lb_panel, lb_panel.get_child(0), title_lbl, log_viewer, log_viewer.get_child(0)]:
 		if mo != null:
 			mo.mouse_entered.connect(func() -> void: is_content_hovered = true)
 			mo.mouse_exited.connect(func() -> void: is_content_hovered = false)
 	
 	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
-	lv_close_btn.button_up.connect(_close_log_file) 
-	lv_refresh_btn.button_up.connect(load_log_browser)
+	close_btn.button_up.connect(_close_log_file) 
+	reload_btn.button_up.connect(load_log_browser)
 
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
-	lv_view_mode_btn.button_up.connect(func() -> void: cur_view = !cur_view)
-	lv_sort_mode_btn.button_up.connect(
+	view_mode_btn.button_up.connect(func() -> void: cur_view = !cur_view)
+	sort_mode_btn.button_up.connect(
 		func() -> void:
 			cur_sort = (cur_sort + 1) % 4
 			load_log_browser()
 	)
-	lv_lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lv_lbl_sett_btn))
-	lv_copy_content_btn.button_up.connect(func() -> void: if cur_logfile != null: DisplayServer.clipboard_set(cur_logfile.file_contents))
+	lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lbl_sett_btn))
+	copy_content_btn.button_up.connect(func() -> void: if cur_logfile != null: DisplayServer.clipboard_set(cur_logfile.file_contents))
 	resized.connect(_update_columns)
 	
 	inspector = EditorInspector.new()
 	inspector.edit(ResourceLoader.load("uid://cqn5x8cb7vjy3"))
 	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	lv_lbl_sett_popup.get_child(0).add_child(inspector) 
+	lbl_sett_popup.get_child(0).add_child(inspector) 
 	set_view(BrowserState.FILE_LIST)
 
-	lv_title_lbl.text = ""
-	lv_contents_lbl.text = ""
-	lv_lbl_sett_popup.hide()
+	title_lbl.text = ""
+	contents_lbl.text = ""
+	lbl_sett_popup.hide()
 	open_log_with_os = open_log_with_os # loads the icon
 
 
@@ -157,7 +157,7 @@ func _ready() -> void:
 func set_view(to: BrowserState) -> void: 
 	reload_hider.hide()
 	fb_margin_container.hide()
-	lv_margin_container.hide()
+	margin_container.hide()
 	fb_margin_container.add_theme_constant_override("margin_right", 0)
 
 	if to != BrowserState.FILE_LIST and cur_logfile == null:
@@ -167,10 +167,10 @@ func set_view(to: BrowserState) -> void:
 		BrowserState.FILE_LIST:
 			fb_margin_container.show()
 		BrowserState.LOG_FULL:
-			lv_margin_container.show()
+			margin_container.show()
 		BrowserState.LOG_SPLIT:
 			fb_margin_container.show()
-			lv_margin_container.show()
+			margin_container.show()
 			fb_margin_container.add_theme_constant_override("margin_right", 8)
 		BrowserState.RELOAD_HIDE:
 			reload_hider.show()
@@ -425,8 +425,8 @@ func _open_log_file(log_file: GLLogFile) -> void:
 			lf.selected = false 
 	
 	log_file.selected = true 
-	lv_title_lbl.text = str("  ", log_file.file_name)
-	lv_contents_lbl.text = log_content if !log_content.is_empty() else "< File is empty or failed to load properly >"
+	title_lbl.text = str("  ", log_file.file_name)
+	contents_lbl.text = log_content if !log_content.is_empty() else "< File is empty or failed to load properly >"
 	cur_logfile = log_file
 	set_view(BrowserState.LOG_SPLIT if cur_view else BrowserState.LOG_FULL)
 	
@@ -442,9 +442,9 @@ func _close_log_file() -> void:
 
 func _on_button_toggled(toggled: bool, btn: Button) -> void:
 	match btn:
-		lv_lbl_sett_btn:
-			lv_lbl_sett_popup.visible = toggled 
-			lv_margin_container.custom_minimum_size.x = 315 if toggled else 115 
+		lbl_sett_btn:
+			lbl_sett_popup.visible = toggled 
+			margin_container.custom_minimum_size.x = 315 if toggled else 115 
 
 
 
@@ -460,12 +460,12 @@ func _update_columns(is_initializing: bool = false) -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	
-	var current_tab_ctrl: GridContainer = category_tab_container.get_current_tab_control().get_child(0)
-	# if category_tab_container.current_tab != -1 and category_tab_container.get_current_tab_control().get_child_count() > 0:
-	# 	category_tab_container.get_current_tab_control().get_child(0)
-	prints(current_tab_ctrl, category_tab_container.current_tab, category_tab_container.get_current_tab_control(), category_tab_container.get_current_tab_control().get_child_count())
+	var current_tab_ctrl: GridContainer = null
+	if category_tab_container.get_current_tab_control(): 
+		current_tab_ctrl = category_tab_container.get_current_tab_control().get_child(0)
+	else: return
 
-	var cell_width: int = log_files[0].size.x + current_tab_ctrl.get_theme_constant("h_separation")
+	var cell_width: int = log_files[0].size.x + current_tab_ctrl.get_theme_constant("h_separation") 
 	var col: int = max(1, int(current_tab_ctrl.size.x / cell_width))
 	
 

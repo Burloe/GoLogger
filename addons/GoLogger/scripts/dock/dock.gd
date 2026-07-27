@@ -24,89 +24,87 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var renable_btn2: Button = %RENABLEButton2
 @onready var renable_btn3: Button = %RENABLEButton3
 
-# Category tab
-@onready var category_tab: HBoxContainer = %CategoriesTab
-@onready var add_category_btn: Button = %AddCategoryButton
-@onready var category_container: GridContainer = %CategoryGridContainer
-@onready var open_dir_btn: Button = %OpenDirCatButton
-@onready var reset_settings_btn: Button = %ResetSettingsButton
-
 # Log Browser
 @onready var log_browser_tab: HBoxContainer = %LogBrowserTab
-@onready var lb_reload_btn: Button = %LB
-@onready var log_browser_view_btn: Button = %ViewModeButton
-@onready var log_browser_sort_btn: Button = %SortModeButton
-@onready var log_browser_open_dir_btn: Button = %ViewerOpenDirButton
-@onready var open_logs_with_os_btn: Button = %OpenWOSButton
+@onready var lb_reload_btn: Button = %LBReloadButton
+@onready var lb_open_dir_btn: Button = %LBOpenDirButton
+@onready var lb_view_mode_btn: Button = %LBViewModeButton
+@onready var lb_sort_btn: Button = %LBSortModeButton
+@onready var lb_open_with_os_btn: Button = %LBOpenWOSButton
+
+# Category tab
+@onready var category_tab: HBoxContainer = %CategoriesTab
+@onready var cat_add_btn: Button = %AddCategoryButton
+@onready var category_container: GridContainer = %CategoryGridContainer
+@onready var cat_open_dir_btn: Button = %OpenDirCatButton
+@onready var cat_reset_settings_btn: Button = %ResetSettingsButton
 
 # Settings tab
 @onready var settings_tab: HBoxContainer = %SettingsTab
-@onready var base_dir_line: LineEdit = %BaseDirLineEdit
-@onready var base_dir_lbl: Label = %BaseDirLabel
-@onready var base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
-@onready var base_dir_apply_btn: Button = %BaseDirApplyButton
-@onready var base_dir_revert_btn: Button = %BaseDirRevertButton
-@onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
-@onready var base_dir_container: HBoxContainer = %BaseDirHBox
+@onready var sett_base_dir_line: LineEdit = %BaseDirLineEdit
+@onready var sett_base_dir_lbl: Label = %BaseDirLabel
+@onready var sett_base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
+@onready var sett_base_dir_apply_btn: Button = %BaseDirApplyButton
+@onready var sett_base_dir_revert_btn: Button = %BaseDirRevertButton
+@onready var sett_base_dir_opendir_btn: Button = %BaseDirOpenDirButton
+@onready var sett_base_dir_container: HBoxContainer = %BaseDirHBox
 
-@onready var log_header_line: LineEdit = %LogHeaderLineEdit
-@onready var log_header_lbl: Label = %LogHeaderLabel
-@onready var log_header_line_btn_cont: Panel = %LogHeaderLineEditButtons
-@onready var log_header_apply_btn: Button = %LogHeaderApplyButton
-@onready var log_header_revert_btn: Button = %LogHeaderRevertButton
-@onready var log_header_container: HBoxContainer = %LogHeaderHBox
+@onready var sett_log_header_line: LineEdit = %LogHeaderLineEdit
+@onready var sett_log_header_lbl: Label = %LogHeaderLabel
+@onready var sett_log_header_line_btn_cont: Panel = %LogHeaderLineEditButtons
+@onready var sett_log_header_apply_btn: Button = %LogHeaderApplyButton
+@onready var sett_log_header_revert_btn: Button = %LogHeaderRevertButton
+@onready var sett_log_header_container: HBoxContainer = %LogHeaderHBox
 
-@onready var entry_format_line: LineEdit = %EntryFormatLineEdit
-@onready var entry_format_lbl: Label = %EntryFormatLabel
-@onready var entry_format_line_btn_cont: Panel = %EntryFormatLineEditButtons
-@onready var entry_format_apply_btn: Button = %EntryFormatApplyButton
-@onready var entry_format_revert_btn: Button = %EntryFormatRevertButton
-@onready var entry_format_warning: Panel = %EntryFormatWarning
-@onready var entry_format_container: HBoxContainer = %EntryFormatHBox
+@onready var sett_entry_format_line: LineEdit = %EntryFormatLineEdit
+@onready var sett_entry_format_lbl: Label = %EntryFormatLabel
+@onready var sett_entry_format_line_btn_cont: Panel = %EntryFormatLineEditButtons
+@onready var sett_entry_format_apply_btn: Button = %EntryFormatApplyButton
+@onready var sett_entry_format_revert_btn: Button = %EntryFormatRevertButton
+@onready var sett_entry_format_warning: Panel = %EntryFormatWarning
+@onready var sett_entry_format_container: HBoxContainer = %EntryFormatHBox
 
-@onready var autostart_btn: CheckBox = %AutostartCheckBox
-@onready var utc_btn: CheckBox = %UTCCheckBox
+@onready var sett_autostart_btn: CheckBox = %AutostartCheckBox
+@onready var sett_utc_btn: CheckBox = %UTCCheckBox
 
-@onready var limit_method_btn: OptionButton = %LimitMethodOptButton
-@onready var limit_method_lbl: Label = %LimitMethodLabel
-@onready var limit_method_container: HBoxContainer = %LimitMethodHBox
+@onready var sett_limit_method_btn: OptionButton = %LimitMethodOptButton
+@onready var sett_limit_method_lbl: Label = %LimitMethodLabel
+@onready var sett_limit_method_container: HBoxContainer = %LimitMethodHBox
 
-@onready var entry_count_action_btn: OptionButton = %EntryActionOptButton
-@onready var entry_count_action_lbl: Label = %EntryActionLabel
-@onready var entry_count_action_container: HBoxContainer = %EntryCountActionHBox
-var entry_count_spinbox_line: LineEdit
-@onready var entry_count_spinbox: SpinBox = %EntryCountSpinBox
+@onready var sett_entry_count_action_btn: OptionButton = %EntryActionOptButton
+@onready var sett_entry_count_action_lbl: Label = %EntryActionLabel
+@onready var sett_entry_count_action_container: HBoxContainer = %EntryCountActionHBox
+var sett_entry_count_spinbox_line: LineEdit
+@onready var sett_entry_count_spinbox: SpinBox = %EntryCountSpinBox
 
-@onready var session_timer_action_btn: OptionButton = %SessionTimerActionOptButton
-@onready var session_timer_action_lbl: Label = %SessionTimerActionLabel
-@onready var session_timer_action_container: HBoxContainer = %SessionTimerActionHBox
-var session_duration_spinbox_line: LineEdit
-@onready var session_duration_spinbox: SpinBox = %SessionDurationSpinBox
+@onready var sett_session_timer_action_btn: OptionButton = %SessionTimerActionOptButton
+@onready var sett_session_timer_action_lbl: Label = %SessionTimerActionLabel
+@onready var sett_session_timer_action_container: HBoxContainer = %SessionTimerActionHBox
+var sett_session_duration_spinbox_line: LineEdit
+@onready var sett_session_duration_spinbox: SpinBox = %SessionDurationSpinBox
 
-var file_count_spinbox_line: LineEdit
-@onready var file_count_spinbox: SpinBox = %FileCountSpinBox
-@onready var file_count_lbl: Label = %FileCountLabel
-@onready var file_count_container: HBoxContainer = %FileCountHBox 
+var sett_file_count_spinbox_line: LineEdit
+@onready var sett_file_count_spinbox: SpinBox = %FileCountSpinBox
+@onready var sett_file_count_lbl: Label = %FileCountLabel
+@onready var sett_file_count_container: HBoxContainer = %FileCountHBox 
 
-@onready var error_rep_btn: OptionButton = %ErrorRepOptButton
-@onready var error_rep_lbl: Label = %ErrorRepLabel
-@onready var error_rep_container: HBoxContainer = %ErrorRepHBox
+@onready var sett_error_rep_btn: OptionButton = %ErrorRepOptButton
+@onready var sett_error_rep_lbl: Label = %ErrorRepLabel
+@onready var sett_error_rep_container: HBoxContainer = %ErrorRepHBox
 
-@onready var plugin_version_sett_lbl: Label = %PluginVersionSettLabel
+@onready var sett_id_fold_cont: FoldableContainer = %IDFoldableContainer
+@onready var sett_id_align_container: HBoxContainer = %IDAlignHBox
+@onready var sett_id_align_lbl: Label = %IDAlignLabel
+@onready var sett_id_align_opt_btn: OptionButton = %IDAlignOptButton
 
-@onready var id_fold_cont: FoldableContainer = %IDFoldableContainer
-@onready var id_align_container: HBoxContainer = %IDAlignHBox
-@onready var id_align_lbl: Label = %IDAlignLabel
-@onready var id_align_opt_btn: OptionButton = %IDAlignOptButton
+@onready var sett_id_toggle_btn: CheckBox = %IDToggleShowCheckBox
+@onready var sett_id_startup_btn: CheckBox = %IDStartupCheckBox
+@onready var sett_id_print_btn: CheckBox = %IDPrintCheckBox 
 
-@onready var id_toggle_btn: CheckBox = %IDToggleShowCheckBox
-@onready var id_startup_btn: CheckBox = %IDStartupCheckBox
-@onready var id_print_btn: CheckBox = %IDPrintCheckBox 
+@onready var sett_id_font_sett_cont: FoldableContainer = %IDFontFoldableContainer
+var sett_id_inspector: EditorInspector
 
-@onready var id_font_sett_cont: FoldableContainer = %IDFontFoldableContainer
-var id_inspector: EditorInspector
-
-@onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
+@onready var sett_hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
 
 @onready var user_dir_btn: Button = %UserDirButton ## Opens "user://"
@@ -127,6 +125,7 @@ var inspector: EditorInspector
 @onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
 @onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
 @onready var help_formatting: 		FoldableContainer = %FormattingHelp
+@onready var plugin_version_lbl: Label = %PluginVersionLabel
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -200,20 +199,20 @@ var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color
 var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
-		if plugin_version_sett_lbl != null:
-			plugin_version_sett_lbl.text = str("GoLogger v.", value)
+		if plugin_version_lbl != null:
+			plugin_version_lbl.text = str("GoLogger v.", value)
 
 var log_header_value: String = "":
 	set(value):
 		if value != log_header_value:
 			log_header_value = value
-			log_header_revert_btn.tooltip_text = str("Revert to '", value, "'")
+			sett_log_header_revert_btn.tooltip_text = str("Revert to '", value, "'")
 			data.header_format = value
 var entry_format_value: String = "":
 	set(value):
 		if value != entry_format_value:
 			entry_format_value = value
-			entry_format_revert_btn.tooltip_text = str("Revert to '", value, "'")
+			sett_entry_format_revert_btn.tooltip_text = str("Revert to '", value, "'")
 			data.entry_format = value 
 
 var is_shutting_down: bool = false:
@@ -251,11 +250,11 @@ func _ready() -> void:
 
 	# # Signal connections 
 	_connect_unique(settings.settings_changed, _on_editor_settings_changed)
-	_connect_unique(open_dir_btn.button_up, _open_directory)
-	_connect_unique(log_browser_open_dir_btn.button_up, _open_directory)
+	_connect_unique(cat_open_dir_btn.button_up, _open_directory)
+	_connect_unique(lb_open_dir_btn.button_up, _open_directory)
 	_connect_unique(user_dir_btn.button_up, _open_user_dir)
-	_connect_unique(base_dir_opendir_btn.button_up, _open_directory)
-	_connect_unique(reset_settings_btn.button_up, reset_to_default)
+	_connect_unique(sett_base_dir_opendir_btn.button_up, _open_directory)
+	_connect_unique(cat_reset_settings_btn.button_up, reset_to_default)
 
 	initialize_dock()
 	_apply_theme_colors()
@@ -306,32 +305,32 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 ## Reassigns all references after they're ready
 func _assign_settings_controls() -> void:
-	data.base_dir_ctrl = base_dir_line
-	data.header_format_ctrl = log_header_line
-	data.entry_format_ctrl = entry_format_line
-	data.autostart_ctrl = autostart_btn
-	data.utc_ctrl = utc_btn
-	data.id_print_ctrl = id_print_btn
-	data.id_toggle_ctrl = id_toggle_btn
-	data.id_startup_ctrl = id_startup_btn
-	data.id_align_ctrl = id_align_opt_btn
-	data.limit_method_ctrl = limit_method_btn
-	data.entry_count_container = entry_count_action_container
-	data.entry_count_action_ctrl = entry_count_action_btn
-	data.entry_count_action_lbl = entry_count_action_lbl
-	data.session_timer_container = session_timer_action_container
-	data.session_timer_action_ctrl = session_timer_action_btn
-	data.session_timer_action_lbl = session_timer_action_lbl
-	data.file_cap_ctrl = file_count_spinbox
-	data.file_cap_ctrl_line = file_count_spinbox.get_line_edit()
-	data.entry_cap_ctrl = entry_count_spinbox
-	data.entry_cap_ctrl_line = entry_count_spinbox.get_line_edit()
-	data.session_duration_ctrl = session_duration_spinbox
-	data.session_duration_ctrl_line = session_duration_spinbox.get_line_edit()
-	data.error_rep_ctrl = error_rep_btn
-	data.browser_sort_ctrl = log_browser_sort_btn
-	data.browser_view_ctrl = log_browser_view_btn
-	data.open_logs_with_os_ctrl = open_logs_with_os_btn
+	data.base_dir_ctrl = sett_base_dir_line
+	data.header_format_ctrl = sett_log_header_line
+	data.entry_format_ctrl = sett_entry_format_line
+	data.autostart_ctrl = sett_autostart_btn
+	data.utc_ctrl = sett_utc_btn
+	data.id_print_ctrl = sett_id_print_btn
+	data.id_toggle_ctrl = sett_id_toggle_btn
+	data.id_startup_ctrl = sett_id_startup_btn
+	data.id_align_ctrl = sett_id_align_opt_btn
+	data.limit_method_ctrl = sett_limit_method_btn
+	data.entry_count_container = sett_entry_count_action_container
+	data.entry_count_action_ctrl = sett_entry_count_action_btn
+	data.entry_count_action_lbl = sett_entry_count_action_lbl
+	data.session_timer_container = sett_session_timer_action_container
+	data.session_timer_action_ctrl = sett_session_timer_action_btn
+	data.session_timer_action_lbl = sett_session_timer_action_lbl
+	data.file_cap_ctrl = sett_file_count_spinbox
+	data.file_cap_ctrl_line = sett_file_count_spinbox.get_line_edit()
+	data.entry_cap_ctrl = sett_entry_count_spinbox
+	data.entry_cap_ctrl_line = sett_entry_count_spinbox.get_line_edit()
+	data.session_duration_ctrl = sett_session_duration_spinbox
+	data.session_duration_ctrl_line = sett_session_duration_spinbox.get_line_edit()
+	data.error_rep_ctrl = sett_error_rep_btn
+	data.browser_sort_ctrl = lb_sort_btn
+	data.browser_view_ctrl = lb_view_mode_btn
+	data.open_logs_with_os_ctrl = lb_open_with_os_btn
 
 #endregion
 
@@ -350,10 +349,10 @@ func initialize_dock() -> void:
 
 
 func reset_to_default() -> void:
-	base_dir_apply_btn.disabled = true
-	log_header_apply_btn.disabled = true
-	entry_format_apply_btn.disabled = true
-	entry_format_warning.hide()
+	sett_base_dir_apply_btn.disabled = true
+	sett_log_header_apply_btn.disabled = true
+	sett_entry_format_apply_btn.disabled = true
+	sett_entry_format_warning.hide()
 
 
 
@@ -415,7 +414,17 @@ func save_categories() -> void:
 
 func _assign_editor_icons() -> void:
 	# Log tab
-	refres
+	lb_reload_btn.set_icon(get_theme_icon("Reload", "EditorIcons"))
+	lb_open_dir_btn.set_icon(get_theme_icon("Folder", "EditorIcons"))
+	lb_open_with_os_btn.set_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
+	lb_view_mode_btn.set_icon(get_theme_icon("ControlAlignFullRect", "EditorIcons"))
+
+
+	# Category
+	
+
+	# Settings
+
 
 
 
@@ -551,10 +560,10 @@ func _apply_base_theme_colors() -> void:
 	_apply_resource_properties(color_map)
 	
 
-	for line in [base_dir_line, log_header_line, entry_format_line]:
+	for line in [sett_base_dir_line, sett_log_header_line, sett_entry_format_line]:
 		line.add_theme_color_override("font_color", theme_colors["font"]["normal"])
 
-	for cont in [general_fold_cont, limit_fold_cont, id_fold_cont, id_font_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
+	for cont in [general_fold_cont, limit_fold_cont, sett_id_fold_cont, sett_id_font_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
 		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
 		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_accent"].v 				< 0.7 else theme_colors["base"]["col"]) 
@@ -593,7 +602,7 @@ func _apply_resource_properties(color_map: Dictionary) -> void:
 
 func _apply_option_button_font_colors() -> void:
 
-	for btn in [error_rep_btn, limit_method_btn, entry_count_action_btn,	session_timer_action_btn,	id_align_opt_btn]:
+	for btn in [sett_error_rep_btn, sett_limit_method_btn, sett_entry_count_action_btn,	sett_session_timer_action_btn,	sett_id_align_opt_btn]:
 		btn.add_theme_color_override("font_color", 								theme_colors["font"]["normal"] 	if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["accent"]["col"])
 		btn.add_theme_color_override("font_pressed_color", 				theme_colors["font"]["hover"] 	if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["accent"]["col"])
 		btn.add_theme_color_override("font_hover_color", 					Color.WHITE 										if theme_colors["font"]["interact_pressed"].v 			< 0.7 else theme_colors["accent"]["col"])
