@@ -31,13 +31,16 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var lb_view_mode_btn: Button = %LBViewModeButton
 @onready var lb_sort_btn: Button = %LBSortModeButton
 @onready var lb_open_with_os_btn: Button = %LBOpenWOSButton
+@onready var lb_copy_btn: Button = %LBCopyContentButton
+@onready var lb_lbl_sett_btn: Button = %LBLblSettButton
+@onready var lb_close_btn: Button = %LBCloseButton
 
 # Category tab
 @onready var category_tab: HBoxContainer = %CategoriesTab
 @onready var cat_add_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
 @onready var cat_open_dir_btn: Button = %OpenDirCatButton
-@onready var cat_reset_settings_btn: Button = %ResetSettingsButton
+@onready var sett_reset_btn: Button = %ResetSettingsButton
 
 # Settings tab
 @onready var settings_tab: HBoxContainer = %SettingsTab
@@ -46,7 +49,7 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var sett_base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
 @onready var sett_base_dir_apply_btn: Button = %BaseDirApplyButton
 @onready var sett_base_dir_revert_btn: Button = %BaseDirRevertButton
-@onready var sett_base_dir_opendir_btn: Button = %BaseDirOpenDirButton
+@onready var sett_open_dir_btn: Button = %OpenDirButton
 @onready var sett_base_dir_container: HBoxContainer = %BaseDirHBox
 
 @onready var sett_log_header_line: LineEdit = %LogHeaderLineEdit
@@ -253,8 +256,8 @@ func _ready() -> void:
 	_connect_unique(cat_open_dir_btn.button_up, _open_directory)
 	_connect_unique(lb_open_dir_btn.button_up, _open_directory)
 	_connect_unique(user_dir_btn.button_up, _open_user_dir)
-	_connect_unique(sett_base_dir_opendir_btn.button_up, _open_directory)
-	_connect_unique(cat_reset_settings_btn.button_up, reset_to_default)
+	_connect_unique(sett_open_dir_btn.button_up, _open_directory)
+	_connect_unique(sett_reset_btn.button_up, reset_to_default)
 
 	initialize_dock()
 	_apply_theme_colors()
@@ -265,6 +268,7 @@ func _ready() -> void:
 	category_tab.initialize_tab()
 	settings_tab.initialize_tab() 
 	log_browser_tab.load_log_browser() 
+	_assign_editor_icons()
 
 
 
@@ -414,18 +418,28 @@ func save_categories() -> void:
 
 func _assign_editor_icons() -> void:
 	# Log tab
-	lb_reload_btn.set_icon(get_theme_icon("Reload", "EditorIcons"))
-	lb_open_dir_btn.set_icon(get_theme_icon("Folder", "EditorIcons"))
-	lb_open_with_os_btn.set_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
-	lb_view_mode_btn.set_icon(get_theme_icon("ControlAlignFullRect", "EditorIcons"))
+	lb_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
+	lb_view_mode_btn.set_button_icon(get_theme_icon("ControlAlignFullRect", "EditorIcons"))
+	lb_copy_btn.set_button_icon(get_theme_icon("CopyAction", "EditorIcons"))
+	lb_lbl_sett_btn.set_button_icon(get_theme_icon("GDScript", "EditorIcons"))
+	lb_close_btn.set_button_icon(get_theme_icon("Close", "EditorIcons"))
 
 
 	# Category
+	cat_add_btn.set_button_icon(get_theme_icon("Add", "EditorIcons"))
+
+	for btn: Button in [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn]:
+		btn.set_button_icon(get_theme_icon("ImportCheck", "EditorIcons"))
 	
+	for btn: Button in [lb_reload_btn, sett_reset_btn]:
+		btn.set_button_icon(get_theme_icon("Reload", "EditorIcons"))
 
-	# Settings
-
-
+	for btn: Button in [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn]:
+		btn.set_button_icon(get_theme_icon("Redo", "EditorIcons"))
+	
+	for btn: Button in [lb_open_dir_btn, cat_open_dir_btn, sett_open_dir_btn]:
+		btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
+	
 
 
 ## Opens "user://"

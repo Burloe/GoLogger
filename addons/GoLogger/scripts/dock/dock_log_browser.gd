@@ -33,8 +33,8 @@ var inspector: EditorInspector
 const GRID_SEPARATION = 8
 const GRID_GROUP_SORT_SEPARATION = 24
 
-var ico_fullscreen_view := preload("uid://ijiplwclq5pu")
-var ico_splitscreen_view := preload("uid://cp2p55wdq2wuk")
+# var ico_fullscreen_view := preload("uid://ijiplwclq5pu")
+# var ico_splitscreen_view := preload("uid://cp2p55wdq2wuk")
 var log_file_btn := preload("uid://bq7nahsc5aca7")
 var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
 var ico_sort_date_new = preload("uid://b1fn0coq48ktv")
