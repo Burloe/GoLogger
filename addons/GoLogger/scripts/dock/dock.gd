@@ -417,28 +417,24 @@ func save_categories() -> void:
 #region Private
 
 func _assign_editor_icons() -> void:
-	# Log tab
 	lb_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
 	lb_view_mode_btn.set_button_icon(get_theme_icon("ControlAlignFullRect", "EditorIcons"))
 	lb_copy_btn.set_button_icon(get_theme_icon("CopyAction", "EditorIcons"))
 	lb_lbl_sett_btn.set_button_icon(get_theme_icon("GDScript", "EditorIcons"))
 	lb_close_btn.set_button_icon(get_theme_icon("Close", "EditorIcons"))
-
-
-	# Category
 	cat_add_btn.set_button_icon(get_theme_icon("Add", "EditorIcons"))
 
-	for btn: Button in [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn]:
-		btn.set_button_icon(get_theme_icon("ImportCheck", "EditorIcons"))
-	
-	for btn: Button in [lb_reload_btn, sett_reset_btn]:
-		btn.set_button_icon(get_theme_icon("Reload", "EditorIcons"))
+	var _d: Dictionary = {
+		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
+		"Reload": [lb_reload_btn, sett_reset_btn],
+		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
+		"Folder": [lb_open_dir_btn, cat_open_dir_btn, sett_open_dir_btn],
+		"Debug": [renable_btn1, renable_btn2, renable_btn3]
+	}
 
-	for btn: Button in [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn]:
-		btn.set_button_icon(get_theme_icon("Redo", "EditorIcons"))
-	
-	for btn: Button in [lb_open_dir_btn, cat_open_dir_btn, sett_open_dir_btn]:
-		btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
+	for icon_name: String in _d.keys():
+		for btn: Button in _d[icon_name]:
+			btn.set_button_icon(get_theme_icon(icon_name, "EditorIcons")) 
 	
 
 

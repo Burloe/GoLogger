@@ -9,21 +9,15 @@
 [ext_resource type="Texture2D" uid="uid://3xfnobkyjg8d" path="res://addons/gologger/resources/icons/gologger_dock_icon.png" id="6_w3br5"]
 [ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gologger/data.tres" id="8_equok"]
 [ext_resource type="Script" uid="uid://cn351cc4ofrco" path="res://addons/gologger/scripts/dock/dock_category.gd" id="8_y0aum"]
-[ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/gologger/resources/icons/Folder.svg" id="9_m5iun"]
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/gologger/scripts/dock/dock_log_browser.gd" id="10_kapcw"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="11_5jaku"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="12_7cref"]
-[ext_resource type="Texture2D" uid="uid://comapb1cs4l7m" path="res://addons/gologger/resources/icons/Debug.svg" id="12_e4pb5"]
-[ext_resource type="Texture2D" uid="uid://clbmanmttjrs4" path="res://addons/gologger/resources/icons/Reload.svg" id="13_dg67q"]
-[ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/gologger/resources/icons/Close.svg" id="14_y5kv3"]
 [ext_resource type="Texture2D" uid="uid://dvjgbc6hibv5m" path="res://addons/gologger/resources/icons/SortNew.svg" id="15_equok"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/resources/file_content_label_settings.tres" id="18_03nd1"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="StyleBox" uid="uid://do71h5y0uj5j2" path="res://addons/gologger/resources/theme/log_file_button_pressed.tres" id="20_5orq7"]
-[ext_resource type="Texture2D" uid="uid://dwxenwifm3ujy" path="res://addons/gologger/resources/icons/GDScript.svg" id="21_5orq7"]
-[ext_resource type="Texture2D" uid="uid://cf6vrjxr67nqe" path="res://addons/gologger/resources/icons/ActionCopy.svg" id="21_equok"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/gologger/resources/theme/panel_top_rounded_base_col.tres" id="21_vkni8"]
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/gologger/resources/theme/foldable_container_panel.tres" id="22_apa57"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gologger/resources/id_example_panel_tex.png" id="23_qrqlu"]
@@ -165,7 +159,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 3
+current_tab = 1
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("6_w3br5")
@@ -185,7 +179,6 @@ metadata/_tab_name = " "
 
 [node name="LogBrowserTab" type="HBoxContainer" parent="." unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -305,7 +298,7 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-icon = ExtResource("12_e4pb5")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
@@ -419,7 +412,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("20_5orq7")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("20_5orq7")
-icon = ExtResource("21_equok")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="LBLblSettButton" type="Button" parent="LogBrowserTab/HSplitContainer/LBMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=326101769]
@@ -433,7 +426,7 @@ theme_override_styles/pressed = ExtResource("20_5orq7")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("20_5orq7")
 toggle_mode = true
-icon = ExtResource("21_5orq7")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="LBCloseButton" type="Button" parent="LogBrowserTab/HSplitContainer/LBMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1844859999]
@@ -444,7 +437,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = ExtResource("14_y5kv3")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="LBPanel" type="Panel" parent="LogBrowserTab/HSplitContainer/LBMarginContainer/LogViewer/VBoxContainer" unique_id=1513453437]
@@ -566,7 +559,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-icon = ExtResource("12_e4pb5")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CategoriesTab" unique_id=642802176]
@@ -585,6 +578,7 @@ columns = 4
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -626,7 +620,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = ExtResource("13_dg67q")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="OpenDirButton" type="Button" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=918067150]
@@ -642,7 +636,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = ExtResource("9_m5iun")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="Control" type="Control" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=478747324]
@@ -654,7 +648,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-icon = ExtResource("12_e4pb5")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="L_Panel" type="Panel" parent="SettingsTab" unique_id=1757351944]
