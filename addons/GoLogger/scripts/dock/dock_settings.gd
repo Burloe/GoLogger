@@ -179,37 +179,6 @@ func _ready() -> void:
 
 		for node in btn_array:
 			_connect_control_signal(node)
-
-		var	container_array: Array[HBoxContainer] = [
-			base_dir_container,
-			log_header_container,
-			entry_format_container,
-			limit_method_container, 
-			file_count_container, 
-			error_rep_container,
-			id_align_container
-		]
-
-		var btns_array: Array[Control] = [
-			base_dir_line,
-			log_header_line,
-			entry_format_line,
-			limit_method_btn, 
-			file_count_spinbox,
-			error_rep_btn,
-			id_align_opt_btn
-		]
-
-		var corresponding_lbls: Array[Label] = [
-			base_dir_lbl,
-			log_header_lbl,
-			entry_format_lbl,
-			limit_method_lbl, 
-			file_count_lbl, 
-			error_rep_lbl,
-			id_align_lbl,
-		]
-
 		_bind_settings_hover_groups()
 
 
@@ -464,9 +433,6 @@ func _handle_fold_container_min_size(is_folded: bool, fold_container: FoldableCo
 
 
 
-
-
-
 #region Helpers
 
 ## Returns true if {entry} tag is present or is NOT empty.
@@ -475,10 +441,6 @@ func _is_entry_format_valid(format: String) -> bool:
 	return format.contains("{entry}")
 
 #endregion
-
-
-
-
 
 
 

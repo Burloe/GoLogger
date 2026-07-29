@@ -9,7 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://3xfnobkyjg8d" path="res://addons/gologger/resources/icons/gologger_dock_icon.png" id="6_w3br5"]
 [ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gologger/data.tres" id="8_equok"]
 [ext_resource type="Script" uid="uid://cn351cc4ofrco" path="res://addons/gologger/scripts/dock/dock_category.gd" id="8_y0aum"]
-[ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/gologger/resources/icons/Add.svg" id="8_ym61x"]
 [ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/gologger/resources/icons/Folder.svg" id="9_m5iun"]
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/gologger/scripts/dock/dock_log_browser.gd" id="10_kapcw"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="11_5jaku"]
@@ -31,8 +30,8 @@
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/gologger/resources/id_overlay_lbl_settings.tres" id="24_wold0"]
 [ext_resource type="StyleBox" uid="uid://dugr1wllj4x3" path="res://addons/gologger/resources/theme/log_viewer_popup_panel.tres" id="25_equok"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gologger/resources/theme/line_edit_normal.tres" id="25_x27c6"]
-[ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/gologger/resources/icons/GuiChecked.svg" id="26_0eot0"]
 [ext_resource type="Texture2D" uid="uid://ducpkyyco24la" path="res://addons/gologger/resources/icons/gologger_icon_flat.png" id="27_e468n"]
+[ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/gologger/resources/icons/Info.svg" id="32_5orq7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4pb5"]
 
@@ -233,7 +232,7 @@ theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = ExtResource("12_7cref")
-icon = ExtResource("13_dg67q")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="LBOpenDirButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=106065706]
@@ -249,7 +248,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = ExtResource("9_m5iun")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="Control" type="Control" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1387267252]
@@ -267,7 +266,7 @@ theme_override_colors/icon_hover_color = Color(1.25516, 1.25516, 1.25516, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_r3wlc")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_r3wlc")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_r3wlc")
-icon = SubResource("DPITexture_5orq7")
+icon = ExtResource("32_5orq7")
 clip_text = true
 icon_alignment = 1
 
@@ -362,6 +361,7 @@ current_tab = 0
 
 [node name="LBMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1830750093]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(115, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -539,7 +539,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = ExtResource("8_ym61x")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="OpenDirCatButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=594576567]
@@ -555,7 +555,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = ExtResource("9_m5iun")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="Control" type="Control" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1669197090]
@@ -581,6 +581,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
+columns = 4
 
 [node name="SettingsTab" type="HBoxContainer" parent="." unique_id=1178249992]
 unique_name_in_owner = true
@@ -778,13 +779,11 @@ theme_override_styles/title_hover_panel = ExtResource("21_vkni8")
 theme_override_styles/title_collapsed_panel = ExtResource("11_5jaku")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("11_5jaku")
 theme_override_styles/panel = ExtResource("22_apa57")
-folded = true
 title = "Limits"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SettingsTab/L_Panel/ScrollContainer/VBoxContainer/LimitersFoldableContainer" unique_id=348562578]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -849,7 +848,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-button_pressed = true
+action_mode = 1
 selected = 0
 allow_reselect = true
 item_count = 5
@@ -1247,7 +1246,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = ExtResource("26_0eot0")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=193635431]
@@ -1273,7 +1272,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = ExtResource("13_dg67q")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
@@ -1349,7 +1348,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = ExtResource("26_0eot0")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
@@ -1375,7 +1374,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = ExtResource("13_dg67q")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=154378586]
@@ -1484,7 +1483,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = ExtResource("26_0eot0")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=749157682]
@@ -1510,7 +1509,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = ExtResource("13_dg67q")
+icon = ExtResource("32_5orq7")
 icon_alignment = 1
 
 [node name="HotkeyFoldableContainer" type="FoldableContainer" parent="SettingsTab/ScrollContainer/VBoxContainer" unique_id=1889098366]
