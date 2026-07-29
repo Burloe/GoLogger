@@ -123,13 +123,33 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 
 	if to < 0 or to >= cats.size():
 		return
-	
+
+	var cols: int = max(1, category_container.columns)
+	var h_sep: float = float(category_container.get_theme_constant("h_separation"))
+	var v_sep: float = float(category_container.get_theme_constant("v_separation"))
+
+	var step_x: float = category.size.x + h_sep
+	var step_y: float = category.size.y + v_sep 
+
+	var from_row: int = int(from / cols)
+	var from_col: int = from % cols
+	var to_row: int = int(to / cols)
+	var to_col: int = to % cols
+
+	var delta := Vector2(
+		float(to_col - from_col) * step_x,
+		float(to_row - from_row) * step_y
+	)
+
+	var other: LogCategory = cats[to]
+
 	var tween := create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC).set_parallel()
-	category.offset_transform_enabled = true 
-	cats[to].offset_transform_enabled = true
-	tween.tween_property(category, "offset_transform_position", Vector2(category.size.x * direction, 0), 0.05)
-	tween.tween_property(cats[to], "offset_transform_position", Vector2(category.size.x * opposite_dir, 0), 0.05)
-	await tween.finished
+	category.offset_transform_enabled = true
+	other.offset_transform_enabled = true
+
+	tween.tween_property(category, "offset_transform_position", delta, 0.05)
+	tween.tween_property(other, "offset_transform_position", -delta, 0.05)
+	await tween.finished 
 
 	category_container.move_child(category, to)
 	category.offset_transform_position = Vector2.ZERO

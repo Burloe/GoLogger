@@ -71,6 +71,11 @@ func _input(event: InputEvent) -> void:
 
 func _ready() -> void:
 	_on_editor_settings_changed() 
+	move_left_btn.set_button_icon(get_theme_icon("ArrowLeft", "EditorIcons"))
+	move_right_btn.set_button_icon(get_theme_icon("ArrowRight", "EditorIcons"))
+	lock_btn.set_button_icon(get_theme_icon("Lock", "EditorIcons"))
+	revert_btn.set_button_icon(get_theme_icon("Reset", "EditorIcons"))
+	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
 	revert_btn.hide()
 	is_default = is_default # loads the icon
 
@@ -142,13 +147,7 @@ func _ready() -> void:
 	if line_edit.text == "": 
 		apply_btn.hide() 
 
-	move_left_btn.set_button_icon(get_theme_icon("ArrowLeft", "EditorIcons"))
-	move_right_btn.set_button_icon(get_theme_icon("ArrowRight", "EditorIcons"))
-	lock_btn.set_button_icon(get_theme_icon("Lock", "EditorIcons"))
-	revert_btn.set_button_icon(get_theme_icon("Reset", "EditorIcons"))
-	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
-
-
+	
 
 func _data_ready() -> void:
 	pass
