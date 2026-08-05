@@ -28,13 +28,13 @@ enum LimitMethod { ## Index 3 is a SEPERATOR and should not be used.
 	NONE
 }
 
-enum EntryCountAction { #Delete?
+enum EntryCountAction {
 	OVERWRITE_ENTRIES,
 	RESTART,
 	STOP
 }
 
-enum SessionTimerAction {#Delete?
+enum SessionTimerAction {
 	RESTART,
 	STOP
 }

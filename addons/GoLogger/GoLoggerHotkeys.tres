@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="GLShortcut" format=3 uid="uid://dyi2aml73k4g8"]
 
-[ext_resource type="Script" uid="uid://cvahhjknn2nxq" path="res://addons/gologger/scripts/gl_log_shortcut_resource.gd" id="1_tvptr"]
+[ext_resource type="Script" uid="uid://cvahhjknn2nxq" path="res://addons/gologger/scripts/gl_log_shortcut_resource.gd" id="1_17uyl"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_tvptr"]
 device = -1
@@ -39,7 +39,7 @@ events = [SubResource("InputEventKey_k5l23")]
 shortcut = SubResource("Shortcut_fbvch")
 
 [resource]
-script = ExtResource("1_tvptr")
+script = ExtResource("1_17uyl")
 start_session_hotkey = SubResource("InputEventShortcut_n15gp")
 stop_session_hotkey = SubResource("InputEventShortcut_if0i7")
 display_instance_id_hotkey = SubResource("InputEventShortcut_om78g")

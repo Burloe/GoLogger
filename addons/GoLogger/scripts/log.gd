@@ -20,6 +20,7 @@ signal msg_logged(msg: String, category: String) ## Emitted when a log message i
 @onready var elements_canvaslayer: CanvasLayer = %GoLoggerElements
 @onready var session_timer: Timer = %SessionTimer
 @onready var instance_id_label: Label = %InstanceIDLabel
+@onready var polling_timer: Timer = %PollingTimer
 
 enum LimitMethod {
 	ENTRY_COUNT,
@@ -73,6 +74,7 @@ var instance_id: String = "":
 	set(value):
 		instance_id = value 
 		instance_id_label.text = str("  ", value, "  ")
+var cur_id_align: int = 0
 
 
 
@@ -89,39 +91,19 @@ func load_data() -> void:
 
 
 
-
 func _ready() -> void:
-	load_data()
+	load_data() 
  
 	if data.id_toggle:
 		instance_id_label.visible = data.id_startup
 
 	session_timer.timeout.connect(_on_timer_timeout.bind(session_timer))
-
-	var id_alignment = data.id_align
-	if id_alignment in [0,4,8]:
-		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-
-	if id_alignment in [1,5,9]:
-		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
-	if id_alignment in [2,6,10]:
-		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-
-	if id_alignment in [0,1,2]:
-		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-
-	if id_alignment in [4,5,6]:
-		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-
-	if id_alignment in [7,8,9]:
-		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-
-
+	polling_timer.timeout.connect(_on_timer_timeout.bind(polling_timer))
+	_handle_id_align()
 	instance_id = _get_instance_id()
 
 	if data.autostart:
-		start_session()
+		start_session() 
 
 
 
@@ -203,8 +185,7 @@ func start_session() -> void:
 			if file.begins_with(c_name) and file.ends_with(".log"):
 				_log_files.append(file)
 
-		i.file_count = _log_files.size()
-		print(_log_files)
+		i.file_count = _log_files.size() 
 		if data.file_cap > 0:
 			while _log_files.size() > data.file_cap -1:
 				dir.remove(_log_files[0])
@@ -218,6 +199,7 @@ func start_session() -> void:
 	session_status = true
 	if session_timer.is_stopped() and data.session_timer_action in [1, 2]:
 		if session_timer != null: session_timer.start()
+
 
 
 func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
@@ -276,8 +258,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			push_warning("Gologger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
-	var content := _f.get_as_text()
-	print("Content: \n", content)
+	var content := _f.get_as_text() 
 	var lines : Array[String] = []
 
 	if data.limit_method in [LimitMethod.ENTRY_COUNT, LimitMethod.BOTH]:
@@ -562,6 +543,7 @@ func _get_file_name(category_name : String) -> String:
 	return fin
 
 
+
 func _get_instance_id() -> String:
 	var rng := RandomNumberGenerator.new()
 	var letters: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -573,6 +555,30 @@ func _get_instance_id() -> String:
 		id_str += letters[idx]
 	return id_str
 
+
+
+func _handle_id_align() -> void: #NOTWORKING
+	var id_alignment = data.id_align 
+	print(data.id_align)
+	if id_alignment in [0,4,8]:
+		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+
+	elif id_alignment in [1,5,9]:
+		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	elif id_alignment in [2,6,10]:
+		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+	if id_alignment in [0,1,2]:
+		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+
+	elif id_alignment in [4,5,6]:
+		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	elif id_alignment in [8,9,10]:
+		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+
+	# print(instance_id_label.horizontal_alignment, " - ", instance_id_label.vertical_alignment)
 
 
 
@@ -599,3 +605,8 @@ func _on_timer_timeout(_timer: Timer) -> void:
 					else: # Stop only
 						stop_session()
 						session_timer.stop()
+		polling_timer:
+			# if cur_id_align != data.id_align: 
+			_handle_id_align()
+			cur_id_align = data.id_align
+			prints("cur:", cur_id_align, "data:", data.id_align)

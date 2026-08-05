@@ -19,6 +19,7 @@ config/version="1.4"
 config/tags=PackedStringArray("plugin", "tool")
 run/main_scene="res://debug_scene.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="uid://c4jrvdxu1e2q3"
 
 [autoload]
 

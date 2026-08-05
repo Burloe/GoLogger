@@ -46,7 +46,14 @@ signal data_ready
 @export var id_print: bool = false
 @export var id_toggle: bool = false
 @export var id_startup: bool = false
-@export_enum("Top-Left", "Top-Center", "Top-Right", "Center-Left", "Center-Center", "Center-Right", "Bottom-Left", "Bottom-Center", "Bottom-Right") var id_align: int = 0
+@export_enum(
+	"Top-Left", "Top-Center", "Top-Right", "SEPARATOR-A", 
+	"Center-Left", "Center-Center", "Center-Right", "SEPARATOR-B", 
+	"Bottom-Left", "Bottom-Center", "Bottom-Right") var id_align: int = 0:
+	set(value):
+		if value not in [3, 7]:
+			id_align = value
+
 
 var base_dir_ctrl: LineEdit = null
 var header_format_ctrl: LineEdit = null
@@ -82,7 +89,6 @@ func _init() -> void:
 	changed.connect(update_list)
 	update_list()
 	data_ready.emit()
-
 
 
 

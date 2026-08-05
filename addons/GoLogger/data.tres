@@ -33,4 +33,5 @@ categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_2nbxn"), SubRe
 default_category = "game"
 limit_method = 2
 id_startup = true
+id_align = 6
 metadata/_custom_type_script = "uid://dcm4iew3h2l7p"

@@ -167,7 +167,7 @@ var sb_log_file_button_normal					:= preload("uid://xy4uummjvhgu")
 
 var lv_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
 var lv_popup_panel										:= preload("uid://dugr1wllj4x3")
-var gl_logfile_button_lbl_settings		:= preload("uid://c8w51vy1pqjq8")
+# var gl_logfile_button_lbl_settings		:= preload("uid://c8w51vy1pqjq8")
 
 
 ## Index 3 is a SEPERATOR and should not be used.
@@ -221,7 +221,7 @@ var entry_format_value: String = "":
 var is_shutting_down: bool = false:
 	set(value):
 		is_shutting_down = value
-		if category_tab != null:
+		if category_tab != null and _node_has_property(category_tab, "is_shutting_down"):
 			category_tab.is_shutting_down = value
 
 
@@ -306,6 +306,13 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 	signal_obj.connect(callback)
 
 
+func _node_has_property(node: Object, property_name: StringName) -> bool:
+	for prop_data in node.get_property_list():
+		if prop_data.get("name", "") == property_name:
+			return true
+	return false
+
+
 
 ## Reassigns all references after they're ready
 func _assign_settings_controls() -> void:
@@ -335,6 +342,29 @@ func _assign_settings_controls() -> void:
 	data.browser_sort_ctrl = lb_sort_btn
 	data.browser_view_ctrl = lb_view_mode_btn
 	data.open_logs_with_os_ctrl = lb_open_with_os_btn
+
+
+
+
+func _assign_editor_icons() -> void:
+	lb_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
+	lb_view_mode_btn.set_button_icon(get_theme_icon("ControlAlignFullRect", "EditorIcons"))
+	lb_copy_btn.set_button_icon(get_theme_icon("ActionCopy", "EditorIcons"))
+	lb_lbl_sett_btn.set_button_icon(get_theme_icon("GDScript", "EditorIcons"))
+	lb_close_btn.set_button_icon(get_theme_icon("Close", "EditorIcons"))
+	cat_add_btn.set_button_icon(get_theme_icon("Add", "EditorIcons"))
+
+	var _d: Dictionary = {
+		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
+		"Reload": [lb_reload_btn, sett_reset_btn],
+		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
+		"Folder": [lb_open_dir_btn, cat_open_dir_btn, sett_open_dir_btn],
+		"Debug": [renable_btn1, renable_btn2, renable_btn3]
+	}
+
+	for icon_name: String in _d.keys():
+		for btn: Button in _d[icon_name]:
+			btn.set_button_icon(get_theme_icon(icon_name, "EditorIcons")) 
 
 #endregion
 
@@ -415,28 +445,6 @@ func save_categories() -> void:
 
 
 #region Private
-
-func _assign_editor_icons() -> void:
-	lb_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
-	lb_view_mode_btn.set_button_icon(get_theme_icon("ControlAlignFullRect", "EditorIcons"))
-	lb_copy_btn.set_button_icon(get_theme_icon("CopyAction", "EditorIcons"))
-	lb_lbl_sett_btn.set_button_icon(get_theme_icon("GDScript", "EditorIcons"))
-	lb_close_btn.set_button_icon(get_theme_icon("Close", "EditorIcons"))
-	cat_add_btn.set_button_icon(get_theme_icon("Add", "EditorIcons"))
-
-	var _d: Dictionary = {
-		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
-		"Reload": [lb_reload_btn, sett_reset_btn],
-		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
-		"Folder": [lb_open_dir_btn, cat_open_dir_btn, sett_open_dir_btn],
-		"Debug": [renable_btn1, renable_btn2, renable_btn3]
-	}
-
-	for icon_name: String in _d.keys():
-		for btn: Button in _d[icon_name]:
-			btn.set_button_icon(get_theme_icon(icon_name, "EditorIcons")) 
-	
-
 
 ## Opens "user://"
 func _open_user_dir() -> void:
@@ -565,7 +573,7 @@ func _apply_base_theme_colors() -> void:
 		
 		# Label settings
 		lv_content_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
-		gl_logfile_button_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
+		# gl_logfile_button_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
 	}
 	_apply_resource_properties(color_map)
 	

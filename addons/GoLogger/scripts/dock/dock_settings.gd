@@ -90,7 +90,6 @@ var plugin_version: String =  "1.4":
 		if plugin_version_sett_lbl != null:
 			plugin_version_sett_lbl.text = str("GoLogger v.", value)
 
-var _default_setting_in_progress: bool = false #! DELETE
 var _is_shutting_down: bool = false
 var id_font_settings_min_size: int = 200
 
@@ -611,6 +610,7 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 
 		id_align_opt_btn:
 			data.id_align = index
+			print("!",index)
 
 
 
