@@ -75,6 +75,7 @@ var instance_id: String = "":
 		instance_id = value 
 		instance_id_label.text = str("  ", value, "  ")
 var cur_id_align: int = 0
+var data_mtime: int = -1
 
 
 
@@ -88,6 +89,23 @@ func load_data() -> void:
 			push_error("GoLogger Error: No data found and unable to restore to defaults. Try to manually create a new GLData resource at '", DATA_PATH, "'.")
 	else:
 		data = load(DATA_PATH)
+	data_mtime = _get_data_mtime()
+
+
+
+func _get_data_mtime() -> int:
+	if !FileAccess.file_exists(DATA_PATH):
+		return -1
+	return FileAccess.get_modified_time(DATA_PATH)
+
+
+
+func _refresh_data_if_changed() -> bool:
+	var new_mtime: int = _get_data_mtime()
+	if new_mtime == -1 or new_mtime == data_mtime:
+		return false
+	load_data()
+	return true
 
 
 
@@ -606,7 +624,8 @@ func _on_timer_timeout(_timer: Timer) -> void:
 						stop_session()
 						session_timer.stop()
 		polling_timer:
-			# if cur_id_align != data.id_align: 
-			_handle_id_align()
-			cur_id_align = data.id_align
-			prints("cur:", cur_id_align, "data:", data.id_align)
+			_refresh_data_if_changed()
+			if cur_id_align != data.id_align:
+				_handle_id_align()
+				cur_id_align = data.id_align
+				prints("cur:", cur_id_align, "data:", data.id_align)

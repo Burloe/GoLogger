@@ -3,6 +3,8 @@ extends HBoxContainer
 
 signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
+@onready var polling_timer: Timer = %PollingTimer
+
 @onready var reload_hider: MarginContainer = %ReloadTopper
 @onready var fb_margin_container: MarginContainer = %FBMarginContainer
 @onready var margin_container: MarginContainer = %LBMarginContainer
@@ -42,21 +44,26 @@ var ico_sort_date_old = preload("uid://cifx5d8dmjt38")
 var ico_sort_new = preload("uid://dvjgbc6hibv5m")
 var ico_sort_old = preload("uid://bljitewxdnvuh")
 
+var is_active: bool = false
 var grid_conts: Array[GridContainer] = []
 var is_content_hovered: bool = false
 var is_reloading: bool = false:
 	set(value):
 		is_reloading = value
-		h_split_cont.visible = !value
-		fb_margin_container.visible = !value
-		reload_hider.visible = value
-		reload_btn.disabled = value
+		if state in [BrowserState.LOG_SPLIT, BrowserState.FILE_LIST]:
+
+			# h_split_cont.visible = !value
+			fb_margin_container.visible = !value
+			reload_hider.visible = value
+			reload_btn.disabled = value
+
 var open_log_with_os: bool = false:
 	set(value):
 		open_log_with_os = value
 		open_w_os_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
 		open_w_os_btn.tooltip_text = "Open logs using OS" if value else "Open logs within Editor"
 		data.open_logs_with_os = value
+
 var min_cell_width: int = 140
 var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
@@ -128,6 +135,7 @@ func _ready() -> void:
 	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
 	close_btn.button_up.connect(_close_log_file) 
 	reload_btn.button_up.connect(load_log_browser)
+	polling_timer.timeout.connect(load_log_browser)
 
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
 	view_mode_btn.button_up.connect(func() -> void: cur_view = !cur_view)
@@ -160,20 +168,24 @@ func set_view(to: BrowserState) -> void:
 	margin_container.hide()
 	fb_margin_container.add_theme_constant_override("margin_right", 0)
 
-	if to != BrowserState.FILE_LIST and cur_logfile == null:
+	if to not in [BrowserState.FILE_LIST, BrowserState.RELOAD_HIDE] and cur_logfile == null:
 		to = BrowserState.FILE_LIST
 
 	match to:
 		BrowserState.FILE_LIST:
 			fb_margin_container.show()
+			print("State > FileList  ", reload_hider.visible)
 		BrowserState.LOG_FULL:
 			margin_container.show()
+			print("State > LogFull  ", reload_hider.visible)
 		BrowserState.LOG_SPLIT:
 			fb_margin_container.show()
 			margin_container.show()
 			fb_margin_container.add_theme_constant_override("margin_right", 8)
+			print("State > LogSplit  ", reload_hider.visible)
 		BrowserState.RELOAD_HIDE:
 			reload_hider.show()
+			print("State > Reload  ", reload_hider.visible)
 	state = to
 	await get_tree().physics_frame
 	await get_tree().physics_frame
@@ -184,11 +196,15 @@ func set_view(to: BrowserState) -> void:
 
 ## Used to both initialize and reload the file list
 func load_log_browser() -> void:
-	var opened_tab = max(0, category_tab_container.current_tab)
+	if not is_active: return
+	print("[LogBrowser]Reloading files!")
 
+	var opened_tab = max(0, category_tab_container.current_tab)
 
 	_close_log_file()
 	is_reloading = true
+	set_view(BrowserState.RELOAD_HIDE)
+
 	if data != null:
 		cur_view = data.browser_view
 		base_dir = data.base_dir
@@ -204,10 +220,7 @@ func load_log_browser() -> void:
 		category_tab_container.remove_child(child)
 		child.queue_free()
 	
-	var prev_state := state
-	set_view(BrowserState.RELOAD_HIDE)
 	await get_tree().process_frame
-	set_view(prev_state)
 
 	for c: GLCategoryData in data.categories:
 		if c.category_name == "":
@@ -224,11 +237,11 @@ func load_log_browser() -> void:
 		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
 		gc.add_theme_constant_override("h_separation", GRID_SEPARATION if cur_sort < 2 else GRID_GROUP_SORT_SEPARATION)
 		gc.add_theme_constant_override("v_separation", GRID_SEPARATION if cur_sort < 2 else GRID_GROUP_SORT_SEPARATION)
+		gc.columns = 99
 		var n: Array = [c.category_name, gc]
 		categories.append(n)
 		_load_logfiles(c.category_name, gc)
 	
-	set_view(BrowserState.LOG_SPLIT if cur_view else BrowserState.LOG_FULL)
 	_update_columns(true)
 	is_reloading = false 
 	if category_tab_container.get_tab_count() > 0:
@@ -465,7 +478,8 @@ func _update_columns(is_initializing: bool = false) -> void:
 		current_tab_ctrl = category_tab_container.get_current_tab_control().get_child(0)
 	else: return
 
-	var cell_width: int = log_files[0].size.x + current_tab_ctrl.get_theme_constant("h_separation") 
+	var cell_width: int = log_files[0].size.x + current_tab_ctrl.get_theme_constant("h_separation")\
+		if !log_files.is_empty() else 1
 	var col: int = max(1, int(current_tab_ctrl.size.x / cell_width))
 	
 

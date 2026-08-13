@@ -238,11 +238,14 @@ func _ready() -> void:
 
 	tab_changed.connect(
 		func(tab: int) -> void: 
+			log_browser_tab.is_active = false
 			match tab:
-				1: category_tab.request_update_columns()
-				2: 
+				1: 
 					log_browser_tab.load_log_browser()
 					log_browser_tab._update_columns(true)
+					log_browser_tab.is_active = true
+				2: 
+					category_tab.request_update_columns()
 	)
 	category_tab.request_save.connect(save_data)
 	category_tab.request_categories_save.connect(save_categories)
@@ -356,7 +359,7 @@ func _assign_editor_icons() -> void:
 
 	var _d: Dictionary = {
 		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
-		"Reload": [lb_reload_btn, sett_reset_btn],
+		"Reload": [sett_reset_btn],
 		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
 		"Folder": [lb_open_dir_btn, cat_open_dir_btn, sett_open_dir_btn],
 		"Debug": [renable_btn1, renable_btn2, renable_btn3]
@@ -413,6 +416,9 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> voi
 	
 	save_categories()
 	data.save()
+	var save_err: int = ResourceSaver.save(data, DATA_PATH)
+	if save_err != OK and !ignore_errors:
+		push_warning("GoLogger: Failed to save settings resource at '", DATA_PATH, "' [", save_err, "] from ", external_source)
 	return 
 
 

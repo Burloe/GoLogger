@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/gologger/scripts/dock/dock_log_browser.gd" id="10_kapcw"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="11_5jaku"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="12_7cref"]
+[ext_resource type="Texture2D" uid="uid://b40vq6n2r4x8m" path="res://addons/gologger/resources/icons/Relead.svg" id="12_pl6xe"]
 [ext_resource type="Texture2D" uid="uid://dvjgbc6hibv5m" path="res://addons/gologger/resources/icons/SortNew.svg" id="15_equok"]
 [ext_resource type="StyleBox" uid="uid://cv3q5yacoro7d" path="res://addons/gologger/resources/theme/tab_panel_bg_no_side_margins.tres" id="15_y3oat"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="16_udfr3"]
@@ -28,15 +29,15 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4pb5"]
 
-[sub_resource type="DPITexture" id="DPITexture_dcc72"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
-"
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4fkd"]
 content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
+
+[sub_resource type="DPITexture" id="DPITexture_dcc72"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r3wlc"]
 
@@ -219,12 +220,13 @@ tooltip_text = "Refresh files"
 theme_override_colors/icon_pressed_color = Color(0.4149491, 0.4149491, 0.4149491, 1)
 theme_override_colors/icon_hover_color = Color(4.415934, 4.415934, 4.415934, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.41568628, 0.41568628, 0.41568628, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = ExtResource("12_7cref")
-icon = SubResource("DPITexture_dcc72")
+icon = ExtResource("12_pl6xe")
 icon_alignment = 1
 
 [node name="LBOpenDirButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=106065706]
@@ -316,7 +318,6 @@ layout_mode = 2
 theme_override_constants/margin_left = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="LogBrowserTab/HSplitContainer/ReloadTopper" unique_id=2056692232]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -584,6 +585,10 @@ script = ExtResource("19_luwxg")
 data = ExtResource("8_equok")
 metadata/_tab_index = 3
 metadata/_tab_name = "Settings"
+
+[node name="PollingTimer" type="Timer" parent="SettingsTab" unique_id=1836800660]
+unique_name_in_owner = true
+autostart = true
 
 [node name="SidebarPanel" type="Panel" parent="SettingsTab" unique_id=1779116936]
 custom_minimum_size = Vector2(48, 0)
@@ -1066,6 +1071,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
+button_pressed = true
 alignment = 2
 selected = 0
 item_count = 11
@@ -1203,7 +1209,7 @@ Default path is \"user://GoLogger/\". "
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = ExtResource("25_x27c6")
-text = "user://gologger/"
+text = "user://test/draugur/"
 placeholder_text = "user://gologger/"
 expand_to_text_length = true
 emoji_menu_enabled = false
@@ -1229,8 +1235,6 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 tooltip_text = "Applies a new base directory"
-theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.3137255)
@@ -1331,8 +1335,6 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 tooltip_text = "Apply the new log header format"
-theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.3137255)

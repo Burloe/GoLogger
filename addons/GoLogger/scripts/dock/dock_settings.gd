@@ -259,7 +259,6 @@ func _connect_spinbox_line_submitted() -> void:
 func _connect_control_signal(node: Control) -> void:
 	if node is Button:
 		_connect_unique(node.button_up, _on_button_button_up.bind(node))
-
 	if node is CheckBox:
 		_connect_unique(node.toggled, _on_checkbox_toggled.bind(node))
 	elif node is OptionButton:
@@ -480,11 +479,14 @@ func _on_setting_hover(group: Array, is_hovered: bool) -> void:
 
 
 func _on_button_button_up(node: Button) -> void:
+	print(node.get_name())
 	match node:
 		base_dir_apply_btn:
-			_apply_new_base_directory()
-			base_dir_apply_btn.hide()
-			base_dir_line_btn_cont.hide()
+			print("123")
+			if _apply_new_base_directory():
+				base_dir_apply_btn.disabled = true
+				base_dir_revert_btn.disabled = true
+				base_dir_line_btn_cont.hide()
 		
 		base_dir_revert_btn:
 			base_dir_line.text = data.base_dir
@@ -521,6 +523,7 @@ func _on_button_button_up(node: Button) -> void:
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 	var last_applied_value: String = ""
+	print(base_dir_apply_btn.button_up.is_connected(_on_button_button_up))
 	match node:
 		base_dir_line:
 			base_dir_apply_btn.disabled = true 
