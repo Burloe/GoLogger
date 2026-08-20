@@ -35,7 +35,7 @@ content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
 
-[sub_resource type="DPITexture" id="DPITexture_dcc72"]
+[sub_resource type="DPITexture" id="DPITexture_pl6xe"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -242,7 +242,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="Control" type="Control" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1387267252]
@@ -260,7 +260,7 @@ theme_override_colors/icon_hover_color = Color(1.25516, 1.25516, 1.25516, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_r3wlc")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_r3wlc")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_r3wlc")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 clip_text = true
 icon_alignment = 1
 
@@ -276,7 +276,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="LBSortModeButton" type="Button" parent="LogBrowserTab/SidePanel/MarginContainer/VBoxContainer" unique_id=1985609884]
@@ -299,12 +299,11 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 14
@@ -331,7 +330,6 @@ theme_override_styles/tabbar_background = ExtResource("2_3wac3")
 theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
-current_tab = 0
 
 [node name="LBMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1830750093]
 unique_name_in_owner = true
@@ -393,7 +391,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("20_5orq7")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("20_5orq7")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="LBLblSettButton" type="Button" parent="LogBrowserTab/HSplitContainer/LBMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=326101769]
@@ -407,7 +405,7 @@ theme_override_styles/pressed = ExtResource("20_5orq7")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("20_5orq7")
 toggle_mode = true
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="LBCloseButton" type="Button" parent="LogBrowserTab/HSplitContainer/LBMarginContainer/LogViewer/VBoxContainer/TitlePanel/HBoxContainer" unique_id=1844859999]
@@ -418,7 +416,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="LBPanel" type="Panel" parent="LogBrowserTab/HSplitContainer/LBMarginContainer/LogViewer/VBoxContainer" unique_id=1513453437]
@@ -470,6 +468,7 @@ layout_mode = 2
 
 [node name="ReloadTopper" type="MarginContainer" parent="LogBrowserTab" unique_id=1446122225]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 8
@@ -533,7 +532,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="OpenDirCatButton" type="Button" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=594576567]
@@ -549,7 +548,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="Control" type="Control" parent="CategoriesTab/SidebarPanel/MarginContainer/TitleHBoxContainer" unique_id=1669197090]
@@ -560,7 +559,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CategoriesTab" unique_id=642802176]
@@ -589,6 +588,7 @@ metadata/_tab_name = "Settings"
 
 [node name="PollingTimer" type="Timer" parent="SettingsTab" unique_id=1836800660]
 unique_name_in_owner = true
+wait_time = 3.0
 autostart = true
 
 [node name="SidebarPanel" type="Panel" parent="SettingsTab" unique_id=1779116936]
@@ -624,7 +624,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="OpenDirButton" type="Button" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=918067150]
@@ -640,7 +640,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="Control" type="Control" parent="SettingsTab/SidebarPanel/MarginContainer/VBoxContainer" unique_id=478747324]
@@ -652,7 +652,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="L_Panel" type="Panel" parent="SettingsTab" unique_id=1757351944]
@@ -1246,7 +1246,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=193635431]
@@ -1272,7 +1272,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
@@ -1346,7 +1346,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
@@ -1372,7 +1372,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=154378586]
@@ -1481,7 +1481,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="SettingsTab/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=749157682]
@@ -1507,7 +1507,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_dcc72")
+icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
 [node name="HotkeyFoldableContainer" type="FoldableContainer" parent="SettingsTab/ScrollContainer/VBoxContainer" unique_id=1889098366]
