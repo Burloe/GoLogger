@@ -50,12 +50,12 @@ var is_content_hovered: bool = false
 var is_reloading: bool = false:
 	set(value):
 		is_reloading = value
-		if state in [BrowserState.LOG_SPLIT, BrowserState.FILE_LIST]:
+		# if state in [BrowserState.LOG_SPLIT, BrowserState.FILE_LIST]:
 
 			# h_split_cont.visible = !value
-			fb_margin_container.visible = !value
-			reload_hider.visible = value
-			reload_btn.disabled = value
+			# fb_margin_container.visible = !value
+			# reload_hider.visible = value
+			# reload_btn.disabled = value
 
 var open_log_with_os: bool = false:
 	set(value):
@@ -164,6 +164,7 @@ func _ready() -> void:
 
 func set_view(to: BrowserState) -> void: 
 	reload_hider.hide()
+	h_split_cont.show()
 	fb_margin_container.hide()
 	margin_container.hide()
 	fb_margin_container.add_theme_constant_override("margin_right", 0)
@@ -184,6 +185,7 @@ func set_view(to: BrowserState) -> void:
 			fb_margin_container.add_theme_constant_override("margin_right", 8)
 			print("State > LogSplit  ", reload_hider.visible)
 		BrowserState.RELOAD_HIDE:
+			h_split_cont.hide()
 			reload_hider.show()
 			print("State > Reload  ", reload_hider.visible)
 	state = to
@@ -204,6 +206,8 @@ func load_log_browser() -> void:
 	_close_log_file()
 	is_reloading = true
 	set_view(BrowserState.RELOAD_HIDE)
+	h_split_cont.hide()
+	reload_hider.show()
 
 	if data != null:
 		cur_view = data.browser_view
@@ -213,14 +217,21 @@ func load_log_browser() -> void:
 	if base_dir == "":
 		printerr("[GoLogger] Failed to load Base Directory!") 
 
+	#Collect old
+	var old := []
+	for cat in category_tab_container.get_children():
+		var c = []
+		for log in cat.get_children():
+			c.append(log)
+		old.append(cat)
+		cat.hide()
+
 	categories.clear()
 	grid_conts.clear()
 
 	for child in category_tab_container.get_children():
 		category_tab_container.remove_child(child)
-		child.queue_free()
-	
-	await get_tree().process_frame
+		child.queue_free() 
 
 	for c: GLCategoryData in data.categories:
 		if c.category_name == "":

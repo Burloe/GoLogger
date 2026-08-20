@@ -304,32 +304,13 @@ icon_alignment = 1
 
 [node name="HSplitContainer" type="HSplitContainer" parent="LogBrowserTab" unique_id=114317697]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 14
 theme_override_styles/split_bar_background = SubResource("StyleBoxFlat_equok")
 split_offsets = PackedInt32Array(8)
 split_offset = 8
-
-[node name="ReloadTopper" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1446122225]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-theme_override_constants/margin_left = 8
-
-[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowserTab/HSplitContainer/ReloadTopper" unique_id=2056692232]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Topper" type="Panel" parent="LogBrowserTab/HSplitContainer/ReloadTopper/VBoxContainer" unique_id=2141266303]
-custom_minimum_size = Vector2(0, 34)
-layout_mode = 2
-theme_override_styles/panel = ExtResource("2_3wac3")
-
-[node name="Bottom" type="Panel" parent="LogBrowserTab/HSplitContainer/ReloadTopper/VBoxContainer" unique_id=359394392]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("16_udfr3")
 
 [node name="FBMarginContainer" type="MarginContainer" parent="LogBrowserTab/HSplitContainer" unique_id=1407356486]
 unique_name_in_owner = true
@@ -486,6 +467,26 @@ theme_override_styles/panel = ExtResource("25_equok")
 [node name="LblSettPopupScrollContainer" type="ScrollContainer" parent="LogBrowserTab/HSplitContainer/LBMarginContainer/LogViewer/VBoxContainer/LBPanel/HBoxContainer/LblSettInspectorPopup" unique_id=1431394006]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="ReloadTopper" type="MarginContainer" parent="LogBrowserTab" unique_id=1446122225]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LogBrowserTab/ReloadTopper" unique_id=2056692232]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Topper" type="Panel" parent="LogBrowserTab/ReloadTopper/VBoxContainer" unique_id=2141266303]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_3wac3")
+
+[node name="Bottom" type="Panel" parent="LogBrowserTab/ReloadTopper/VBoxContainer" unique_id=359394392]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("16_udfr3")
 
 [node name="CategoriesTab" type="HBoxContainer" parent="." unique_id=35875088]
 unique_name_in_owner = true
