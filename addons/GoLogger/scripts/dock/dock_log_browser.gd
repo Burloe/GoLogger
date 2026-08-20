@@ -174,20 +174,16 @@ func set_view(to: BrowserState) -> void:
 
 	match to:
 		BrowserState.FILE_LIST:
-			fb_margin_container.show()
-			print("State > FileList  ", reload_hider.visible)
+			fb_margin_container.show() 
 		BrowserState.LOG_FULL:
-			margin_container.show()
-			print("State > LogFull  ", reload_hider.visible)
+			margin_container.show() 
 		BrowserState.LOG_SPLIT:
 			fb_margin_container.show()
 			margin_container.show()
-			fb_margin_container.add_theme_constant_override("margin_right", 8)
-			print("State > LogSplit  ", reload_hider.visible)
+			fb_margin_container.add_theme_constant_override("margin_right", 8) 
 		BrowserState.RELOAD_HIDE:
 			h_split_cont.hide()
-			reload_hider.show()
-			print("State > Reload  ", reload_hider.visible)
+			reload_hider.show() 
 	state = to
 	await get_tree().physics_frame
 	await get_tree().physics_frame
@@ -198,8 +194,7 @@ func set_view(to: BrowserState) -> void:
 
 ## Used to both initialize and reload the file list
 func load_log_browser() -> void:
-	if not is_active: return
-	print("[LogBrowser]Reloading files!")
+	if not is_active: return 
 
 	var opened_tab = max(0, category_tab_container.current_tab)
 
