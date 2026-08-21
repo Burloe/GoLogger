@@ -22,8 +22,17 @@ var category_scene = preload("res://addons/GoLogger/Dock/LogCategory.tscn")
 ## [ConfigFile]. All settings are added to this instance and then saves the stored settings to the settings.ini file.
 var config = ConfigFile.new()
 ## Path to settings.ini file. This path is a contant and doesn't change if you set your own [param base_directory]
-const PATH = "user://GoLogger/settings.ini"
-## Emitted whenever an action that changes the display order is potentially made.
+const UDIR_PATH = "user://GoLogger/"
+const PATH = "user://GoLogger/settings.ini" 
+var plugin_path: String = UDIR_PATH
+var data_path: String = PATH
+var using_custom_user_dir: bool = false
+var custom_udir_path: String = PATH:
+	set(value): 
+		var val = value.replace("\\", "/")
+		custom_udir_path = UDIR_PATH if val.is_empty() else val
+		custom_data_path = PATH if val.is_empty() else val + "settings.ini/"
+var custom_data_path: String = PATH
 #endregion
 
 
@@ -108,15 +117,16 @@ var c_font_hover := Color("f2f2f2")
 func _ready() -> void: 
 	if Engine.is_editor_hint():
 		# Ensure or create settings.ini
-		var _d = DirAccess.open("user://GoLogger/")
+		var _d = DirAccess.open(plugin_path)
 		if !_d:
 			_d = DirAccess.open(".")
-			DirAccess.make_dir_absolute("user://GoLogger/")
+			DirAccess.make_dir_absolute(plugin_path)
 		
-		if !FileAccess.file_exists(PATH):
+		if !FileAccess.file_exists(data_path):
 			create_settings_file()
 		else:
-			config.load(PATH)
+			config.load(data_path)
+		ProjectSettings.settings_changed.connect(_on_settings_changed)
 		# Categories
 		add_category_btn.button_up.connect(add_category)
 		open_dir_btn.button_up.connect(open_directory)
@@ -274,7 +284,7 @@ func _ready() -> void:
 func load_categories(deferred : bool = false) -> void:
 	if deferred:
 		await get_tree().physics_frame
-	config.load(PATH)
+	config.load(data_path)
 	var _c = config.get_value("plugin", "categories")
 	for i in range(_c.size()):
 		var _n = category_scene.instantiate()
@@ -313,7 +323,7 @@ func save_categories(deferred : bool = false) -> void:
 		var _n : Array = [children[i].category_name, children[i].index, children[i].file_name, children[i].file_path, children[i].file_count, children[i].entry_count, children[i].is_locked] 
 		main.append(_n)
 	config.set_value("plugin", "categories", main)
-	config.save(PATH)
+	config.save(data_path)
 
 
 func open_directory() -> void:
@@ -415,33 +425,33 @@ func create_settings_file() -> void:
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false)
 	config.set_value("settings", "columns", 6)
-	var _s = config.save(PATH)
+	var _s = config.save(data_path)
 	if _s != OK: 
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_s, "ConfigFile")))
 
 
 
 func load_settings_state() -> void:
-	config.load(PATH)
-	base_dir_line.text = 							config.get_value("plugin", 	 "base_directory", "user://GoLogger/")
-	base_dir_apply_btn.disabled = true
-	log_header_btn.selected = 						config.get_value("settings", "log_header", 0)
-	canvas_layer_spinbox.value = 					config.get_value("settings", "canvaslayer_layer", 5)
+	config.load(data_path)
+	base_dir_line.text = 										config.get_value("plugin", 	 "base_directory", "user://GoLogger/")
+	base_dir_apply_btn.disabled = 					true
+	log_header_btn.selected = 							config.get_value("settings", "log_header", 0)
+	canvas_layer_spinbox.value = 						config.get_value("settings", "canvaslayer_layer", 5)
 	autostart_btn.button_pressed = 					config.get_value("settings", "autostart_session", true)
-	timestamp_entries_btn.button_pressed = 			config.get_value("settings", "timestamp_entries", true)
-	utc_btn.button_pressed = 						config.get_value("settings", "use_utc", false)
-	dash_btn.button_pressed = 						config.get_value("settings", "dash_separator", false)
-	limit_method_btn.selected = 					config.get_value("settings", "limit_method", 0)
-	entry_count_action_btn.selected = 				config.get_value("settings", "entry_count_action", 0)
-	entry_count_action_btn.selected = 				config.get_value("settings", "session_timer_action", 0)
-	file_count_spinbox.value = 						config.get_value("settings", "file_cap", 10)
-	entry_count_spinbox.value = 					config.get_value("settings", "entry_cap", 300)
+	timestamp_entries_btn.button_pressed = 	config.get_value("settings", "timestamp_entries", true)
+	utc_btn.button_pressed = 								config.get_value("settings", "use_utc", false)
+	dash_btn.button_pressed = 							config.get_value("settings", "dash_separator", false)
+	limit_method_btn.selected = 						config.get_value("settings", "limit_method", 0)
+	entry_count_action_btn.selected = 			config.get_value("settings", "entry_count_action", 0)
+	entry_count_action_btn.selected = 			config.get_value("settings", "session_timer_action", 0)
+	file_count_spinbox.value = 							config.get_value("settings", "file_cap", 10)
+	entry_count_spinbox.value = 						config.get_value("settings", "entry_cap", 300)
 	session_duration_spinbox.value = 				config.get_value("settings", "session_duration", 300.0)
-	error_rep_btn.selected = 						config.get_value("settings", "error_reporting", 0) 
-	disable_warn1_btn.button_pressed = 				config.get_value("settings", "disable_warn1", false)
-	disable_warn2_btn.button_pressed = 				config.get_value("settings", "disable_warn2", false)
-	columns_slider.value = 							config.get_value("settings", "columns", 6)
-	config.save(PATH)
+	error_rep_btn.selected = 								config.get_value("settings", "error_reporting", 0) 
+	disable_warn1_btn.button_pressed = 			config.get_value("settings", "disable_warn1", false)
+	disable_warn2_btn.button_pressed = 			config.get_value("settings", "disable_warn2", false)
+	columns_slider.value = 									config.get_value("settings", "columns", 6)
+	config.save(data_path)
 
 
 
@@ -490,7 +500,7 @@ func reset_to_default(tab : int) -> void:
 		await get_tree().create_timer(0.5).timeout
 		config.set_value("plugin", "categories", [
 			])
-		config.save(PATH)
+		config.save(data_path)
 		load_categories()
 		defaults_btn.disabled = false
 		add_category_btn.disabled = false
@@ -506,9 +516,6 @@ func reset_to_default(tab : int) -> void:
 ## Reorders the categories in the [param category_container] to match 
 ## the order of the indices. Used when a category's index is changed. 
 func reorder_categories() -> void:
-	#* If this sorting method fails or causes issues. 
-	#* Instead of re-sorting the entire LogCategory objects to accommodate the new index.
-	#* Simply swap the two LogCategory object's category_name rather than the entire object.
 	var children = category_container.get_children()
 	var temp: Array[LogCategory] = []
 	
@@ -531,7 +538,7 @@ func reorder_categories() -> void:
 	for child in category_container.get_children():
 		new_categories.append(child)
 	config.set_value("plugin", "categories", new_categories)
-	config.save(PATH)
+	config.save(data_path)
 	update_move_buttons()
 
 
@@ -552,7 +559,7 @@ func _on_dock_mouse_exited(node : Label) -> void:
 
 
 func _on_button_button_up(node : Button) -> void:
-	config.load(PATH)
+	config.load(data_path)
 	match node:
 		base_dir_apply_btn:
 			var old_dir = config.get_value("plugin", "base_directory")
@@ -579,7 +586,7 @@ func _on_button_button_up(node : Button) -> void:
 				base_dir_apply_btn.disabled = true
 				return 
 			config.set_value("plugin", "base_directory", new_dir)
-			config.save(PATH) 
+			config.save(data_path) 
 			
 		base_dir_opendir_btn:
 			if config.get_value("plugin", "base_directory") == "":
@@ -588,7 +595,7 @@ func _on_button_button_up(node : Button) -> void:
 
 		base_dir_reset_btn:
 			config.set_value("plugin", "base_directory", "user://GoLogger/")
-			config.save(PATH)
+			config.save(data_path)
 			base_dir_line.text = config.get_value("plugin", "base_directory")
 
 
@@ -610,7 +617,7 @@ func _on_line_edit_text_changed(new_text : String, node : LineEdit) -> void:
 func _on_line_edit_text_submitted(new_text : String, node : LineEdit) -> void:
 	match node:
 		base_dir_line:
-			config.load(PATH)
+			config.load(data_path)
 			if new_text == "":
 				base_dir_apply_btn.disabled = true
 				return
@@ -650,7 +657,7 @@ func _on_optbtn_item_selected(index : int, node : OptionButton) -> void:
 			config.set_value("settings", "session_timer_action", index)
 		error_rep_btn:
 			config.set_value("settings", "error_reporting", index) 
-	var _s = config.save(PATH)
+	var _s = config.save(data_path)
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
@@ -670,7 +677,7 @@ func _on_checkbutton_toggled(toggled_on : bool, node : CheckButton) -> void:
 			config.set_value("settings", "disable_warn1", toggled_on)
 		disable_warn2_btn:
 			config.set_value("settings", "disable_warn2", toggled_on)
-	config.save(PATH)
+	config.save(data_path)
 
 
 func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
@@ -688,7 +695,7 @@ func _on_spinbox_value_changed(value : float, node : SpinBox) -> void:
 			config.set_value("settings", "file_cap", int(value))
 		canvas_layer_spinbox:
 			config.set_value("settings", "canvaslayer_layer", int(value))
-	var _s = config.save(PATH)
+	var _s = config.save(data_path)
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
@@ -720,7 +727,7 @@ func _on_spinbox_lineedit_submitted(new_text : String, node : Control) -> void:
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus()
 	# node.release_focus()
-	var _s = config.save(PATH)
+	var _s = config.save(data_path)
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to save to settings.ini file! ", get_error(_e, "ConfigFile")))
@@ -730,7 +737,7 @@ func _on_columns_slider_value_changed(value: int) -> void:
 	category_container.columns = value
 	columns_slider.tooltip_text = str(value)
 	config.set_value("settings", "columns", value)
-	config.save(PATH)
+	config.save(data_path)
 
 
 func _on_name_warning(toggled_on : bool, type : int) -> void:
@@ -761,10 +768,28 @@ func _on_index_changed(category: LogCategory, new_index: int) -> void:
 
 func _on_category_deleted() -> void:
 	# Force delay to ensure proper deletion
-	await get_tree().create_timer(0.1).timeout  
-	print("Category deleted -> reordering category indices:\n")
+	await get_tree().create_timer(0.1).timeout
 	for i in range(category_container.get_child_count()):
 		var category: LogCategory = category_container.get_child(i)
-		category.index = i
-		print("\t", category.category_name, " Category -> new index: ", category.index)
+		category.index = i 
 	update_move_buttons()
+
+
+func _on_settings_changed() -> void: 
+	_update_custom_udir() 
+	print(custom_data_path, "   ", custom_udir_path)
+
+
+func _is_using_custom_udir() -> bool:
+	using_custom_user_dir = ProjectSettings.get_setting("application/config/use_custom_user_dir", false)
+	return ProjectSettings.get_setting("application/config/use_custom_user_dir", false)
+
+
+func _get_custom_user_dir() -> String:
+	return ProjectSettings.get_setting("application/config/custom_user_dir_name", UDIR_PATH)
+
+
+func _update_custom_udir() -> void: 
+	custom_udir_path = _get_custom_user_dir()
+	plugin_path = custom_udir_path if _is_using_custom_udir() else UDIR_PATH
+	data_path = custom_udir_path if _is_using_custom_udir() else PATH 

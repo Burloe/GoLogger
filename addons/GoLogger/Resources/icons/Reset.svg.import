@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cat3orki4dehk"
-path="res://.godot/imported/Reset.svg-e374d99b3a0126393a20693d2a0e8b2e.ctex"
+path="res://.godot/imported/Reset.svg-c8909c3d144f131dc0f39a5350960cde.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,14 +11,16 @@ metadata={
 
 [deps]
 
-source_file="res://addons/GoLogger/Resources/icons/Reset.svg"
-dest_files=["res://.godot/imported/Reset.svg-e374d99b3a0126393a20693d2a0e8b2e.ctex"]
+source_file="res://addons/GoLogger/resources/icons/Reset.svg"
+dest_files=["res://.godot/imported/Reset.svg-c8909c3d144f131dc0f39a5350960cde.ctex"]
 
 [params]
 
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
@@ -26,6 +28,10 @@ mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false

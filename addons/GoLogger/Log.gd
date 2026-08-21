@@ -16,6 +16,7 @@ signal session_timer_started ## Emitted when the [param session_timer] is starte
 signal session_timer_stopped ## Emitted when the [param session_timer] is stopped.
 
 const PATH = "user://GoLogger/settings.ini" 
+var custom_udir_path: String = ""
 var config := ConfigFile.new()
 var base_directory: String = "user://GoLogger/" 
 var categories: Array = []
@@ -68,10 +69,11 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	config.load(PATH)
+	config.load(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	base_directory = config.get_value("plugin", "base_directory")
 	header_string = get_header()
 	elements_canvaslayer.layer = get_value("canvaslayer_layer")
+	ProjectSettings.settings_changed.connect(_on_settings_changed)
 	session_timer.timeout.connect(_on_session_timer_timeout)
 	inaction_timer.timeout.connect(_on_inaction_timer_timeout)
 	popup_line_edit.text_changed.connect(_on_line_edit_text_changed)
@@ -84,6 +86,17 @@ func _ready() -> void:
 	
 	if get_value("autostart_session"):
 		start_session()
+
+
+func _on_settings_changed() -> void:
+	var use_custom_user_dir: bool = ProjectSettings.get_setting("application/config/use_custom_user_dir", "false")
+	var custom_user_dir_path: String = ProjectSettings.get_setting("application/config/custom_user_dir_name", "")
+	if use_custom_user_dir and custom_user_dir_path not in ["user://", ""]:
+		custom_udir_path = custom_user_dir_path
+	else:
+		custom_udir_path = ""
+
+
 
 
 func _physics_process(_delta: float) -> void:
@@ -114,7 +127,7 @@ func create_settings_file() -> void:
 	config.set_value("settings", "error_reporting", 0) 
 	config.set_value("settings", "disable_warn1", false)
 	config.set_value("settings", "disable_warn2", false) 
-	var _s = config.save(PATH)
+	var _s = config.save(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	if _s != OK:
 		var _e = config.get_open_error()
 		printerr(str("GoLogger error: Failed to create settings.ini file! ", get_error(_e, "ConfigFile")))
@@ -197,11 +210,11 @@ func validate_settings() -> bool:
 ## a default .ini file if one doesn't exist.
 func get_value(value : String) -> Variant:
 	var _config = ConfigFile.new()
-	var _result = _config.load(PATH)
+	var _result = _config.load(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	var section : String = "settings" 
 	
-	if !FileAccess.file_exists(PATH):
-		push_warning(str("GoLogger: No settings.ini file present in ", PATH, ". Generating a new file with default settings."))
+	if !FileAccess.file_exists(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path):
+		push_warning(str("GoLogger: No settings.ini file present in ", PATH if custom_udir_path not in [PATH, ""] else custom_udir_path, ". Generating a new file with default settings."))
 		create_settings_file()
 	
 	if _result != OK:
@@ -225,7 +238,7 @@ func start_session() -> void:
 			push_warning("GoLogger: Failed to start session, a session is already active.")
 		return
 	
-	config.load(PATH)
+	config.load(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	categories = config.get_value("plugin", "categories")
 	if categories.is_empty(): 
 		push_warning(str("GoLogger warning: Unable to start a session. No valid log categories have been added."))
@@ -237,7 +250,7 @@ func start_session() -> void:
 	for i in range(categories.size()): 
 		categories[i][3] = get_file_name(categories[i][0])
 		var _path : String
-		if _path.begins_with("res://") or _path.begins_with("user://"):
+		if _path.begins_with("res://") or _path.begins_with(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path):
 			_path = str(base_directory, categories[i][0], "_Gologs/")
 		else:
 			_path = str(base_directory, categories[i][0], "_Gologs/")
@@ -280,7 +293,7 @@ func start_session() -> void:
 				_f.close()
 
 	config.set_value("plugin", "categories", categories)
-	config.save(PATH) 
+	config.save(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path) 
 	session_status = true
 	if session_timer != null:
 		if session_timer.is_stopped() and get_value("session_timer_action") == 1 or session_timer.is_stopped() and get_value("session_timer_action") == 2:
@@ -292,7 +305,7 @@ func start_session() -> void:
 ## Stores a log entry into the a .log file. [br]Example usage:[codeblock]
 ## Log.entry(str("Player healed for ", item.heal_amount, "HP by consuming", item.item_name, "."), 1)[/codeblock]
 func entry(log_entry : String, category_index : int = 0) -> void:
-	config.load(PATH)
+	config.load(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	categories = config.get_value("plugin", "categories")
 	var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] ")
 	
@@ -398,7 +411,7 @@ func complete_copy() -> void:
 		if get_value("error_reporting") != 2 and !get_value("disable_warn2"): push_warning("GoLogger: Attempt to log entry failed due to inactive session.")
 		return
 
-	config.load(PATH)
+	config.load(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	categories = config.get_value("plugin", "categories")
 	if categories.is_empty():
 		if config.get_value("plugin", "error_reporting"):
@@ -428,7 +441,7 @@ func complete_copy() -> void:
 		_fw.store_line(str(_c, "\nSaved copy of ", categories[i][2], "."))
 		_fw.close()
 	config.set_value("plugin", "categories", categories)
-	config.save(PATH)
+	config.save(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	popup_state = false 
 	
 
@@ -438,7 +451,7 @@ func stop_session() -> void:
 		return
 	
 	else:
-		config.load(PATH)
+		config.load(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 		categories = config.get_value("plugin", "categories")
 		var _timestamp : String = str("[", Time.get_time_string_from_system(get_value("use_utc")), "] Stopped log session.")
 		
@@ -471,7 +484,7 @@ func stop_session() -> void:
 
 		 
 	config.set_value("plugin", "categories", categories)
-	config.save(PATH)
+	config.save(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	session_status = false
 
 
@@ -496,7 +509,7 @@ func toggle_copy_popup(toggle_on : bool) -> void:
 
 #region Helper functions
 func get_header() -> String:
-	config.load(PATH)
+	config.load(PATH if custom_udir_path not in [PATH, ""] else custom_udir_path)
 	match get_value("log_header"):
 		0: # Project name and version
 			var _p_name = str(ProjectSettings.get_setting("application/config/name"))

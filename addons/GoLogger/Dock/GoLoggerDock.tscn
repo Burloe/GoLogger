@@ -1,21 +1,21 @@
-[gd_scene load_steps=12 format=3 uid="uid://0k0tpsfqof2s"]
+[gd_scene format=3 uid="uid://0k0tpsfqof2s"]
 
-[ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/Resources/BaseTheme.tres" id="1_y5prw"]
-[ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/Resources/icons/Folder.svg" id="2_6725a"]
-[ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/Resources/icons/Add.svg" id="2_fkrom"]
+[ext_resource type="Theme" uid="uid://cfawl7b2vkeh" path="res://addons/GoLogger/resources/BaseTheme.tres" id="1_y5prw"]
+[ext_resource type="Texture2D" uid="uid://dmgcuimjr0v26" path="res://addons/GoLogger/resources/icons/Folder.svg" id="2_6725a"]
+[ext_resource type="Texture2D" uid="uid://c3fdmapmfxc62" path="res://addons/GoLogger/resources/icons/Add.svg" id="2_fkrom"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/GoLogger/Dock/GoLoggerDock.gd" id="2_qhfb3"]
-[ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/GoLogger/Resources/icons/Close.svg" id="3_11ofg"]
-[ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/Resources/icons/Reset.svg" id="3_y66hb"]
-[ext_resource type="StyleBox" uid="uid://4f0tjmydxdih" path="res://addons/GoLogger/Resources/framed_flat_stylebox.tres" id="4_7ntic"]
-[ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/Resources/icons/Info.svg" id="4_tw6vk"]
-[ext_resource type="Texture2D" uid="uid://rsgyd2ce2sad" path="res://addons/GoLogger/Resources/icons/VSeparator.svg" id="4_ui2qu"]
-[ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/Resources/icons/GuiChecked.svg" id="8_11ofg"]
+[ext_resource type="Texture2D" uid="uid://bm0ijmi4yxiy" path="res://addons/GoLogger/resources/icons/Close.svg" id="3_11ofg"]
+[ext_resource type="Texture2D" uid="uid://cat3orki4dehk" path="res://addons/GoLogger/resources/icons/Reset.svg" id="3_y66hb"]
+[ext_resource type="StyleBox" uid="uid://4f0tjmydxdih" path="res://addons/GoLogger/resources/framed_flat_stylebox.tres" id="4_7ntic"]
+[ext_resource type="Texture2D" uid="uid://ctx2u45lv5xd4" path="res://addons/GoLogger/resources/icons/Info.svg" id="4_tw6vk"]
+[ext_resource type="Texture2D" uid="uid://rsgyd2ce2sad" path="res://addons/GoLogger/resources/icons/VSeparator.svg" id="4_ui2qu"]
+[ext_resource type="Texture2D" uid="uid://cqmm78hvk5hc3" path="res://addons/GoLogger/resources/icons/GuiChecked.svg" id="8_11ofg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_11ofg"]
 font_size = 12
 font_color = Color(1, 1, 1, 0.352941)
 
-[node name="GoLoggerDock" type="TabContainer"]
+[node name="GoLoggerDock" type="TabContainer" unique_id=35318680]
 anchors_preset = -1
 anchor_right = 0.686
 anchor_bottom = 0.281
@@ -25,13 +25,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/side_margin = 8
 current_tab = 1
-all_tabs_in_front = true
 tab_focus_mode = 0
 script = ExtResource("2_qhfb3")
 metadata/_edit_vertical_guides_ = [1158.0, 1562.0, 1164.0, 1529.0, 1177.0, 761.0, 789.0]
 metadata/_edit_horizontal_guides_ = [180.0, 39.0, 67.0, 81.0]
 
-[node name="Categories" type="MarginContainer" parent="."]
+[node name="Categories" type="MarginContainer" parent="." unique_id=187325636]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -41,15 +40,15 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 8
 metadata/_tab_index = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Categories"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Categories" unique_id=1707069773]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TopButtonPanel" type="Panel" parent="Categories/VBoxContainer"]
+[node name="TopButtonPanel" type="Panel" parent="Categories/VBoxContainer" unique_id=2140346683]
 custom_minimum_size = Vector2(0, 41)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel" unique_id=2049274872]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,41 +60,41 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer"]
+[node name="TitleHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer" unique_id=1266144794]
 layout_mode = 2
 
-[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer"]
+[node name="LeftHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=1509128425]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="OpenDirCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
+[node name="OpenDirCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=1080206368]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Opens the base directory folder using your file browser"
-theme_override_colors/font_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
-theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
 theme_override_colors/font_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
 text = "Open"
 icon = ExtResource("2_6725a")
 
-[node name="DefaultsCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
+[node name="DefaultsCatButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=231020516]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Delete all existing categories"
-theme_override_colors/font_hover_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
-theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
-theme_override_colors/icon_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
 theme_override_colors/font_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
+theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
+theme_override_colors/icon_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.588235, 0.0666667, 0.0666667, 1)
 text = "Clear"
 icon = ExtResource("3_11ofg")
 
-[node name="CategoryWarningLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer"]
+[node name="CategoryWarningLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/LeftHBoxContainer" unique_id=2007775214]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 0.26, 0.26, 1)
@@ -106,13 +105,13 @@ text = "Empty category names are not used. Please enter a unique name."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer"]
+[node name="RightHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer" unique_id=1923390295]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 11
 alignment = 2
 
-[node name="PluginVersionCatLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+[node name="PluginVersionCatLabel" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=493151254]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -122,15 +121,15 @@ label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=955136396]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+[node name="Panel" type="Panel" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=60411611]
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("4_7ntic")
 
-[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel" unique_id=1921083368]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -140,31 +139,31 @@ grow_vertical = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_right = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer" unique_id=2092016214]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Label" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=961143170]
 layout_mode = 2
 text = "Columns:"
 
-[node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer"]
+[node name="ColumnsHSlider" type="HSlider" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=1174604718]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "5"
+tooltip_text = "6"
 min_value = 1.0
 max_value = 10.0
-value = 5.0
+value = 6.0
 
-[node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=1307178972]
 visible = false
 layout_mode = 2
 texture = ExtResource("4_ui2qu")
 
-[node name="MoreInfoButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer"]
+[node name="MoreInfoButton" type="Button" parent="Categories/VBoxContainer/TopButtonPanel/MarginContainer/TitleHBoxContainer/RightHBoxContainer" unique_id=178744105]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
@@ -178,44 +177,44 @@ icon = ExtResource("4_tw6vk")
 icon_alignment = 1
 expand_icon = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Categories/VBoxContainer" unique_id=1865659507]
 custom_minimum_size = Vector2(0, 115)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/ScrollContainer"]
+[node name="CategoriesHBoxContainer" type="HBoxContainer" parent="Categories/VBoxContainer/ScrollContainer" unique_id=230468475]
 layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="AddCategoryButton" type="Button" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer"]
+[node name="AddCategoryButton" type="Button" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer" unique_id=1351406379]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 111)
 layout_mode = 2
 tooltip_text = "Add a new log category"
-theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
-theme_override_colors/font_hover_color = Color(0.2542, 0.76342, 0.82, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
-theme_override_colors/icon_hover_color = Color(0.254902, 0.764706, 0.819608, 1)
-theme_override_colors/icon_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
 theme_override_colors/font_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
+theme_override_colors/font_hover_color = Color(0.2542, 0.76342, 0.82, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
+theme_override_colors/icon_pressed_color = Color(0.113725, 0.309804, 0.521569, 1)
+theme_override_colors/icon_hover_color = Color(0.254902, 0.764706, 0.819608, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.1144, 0.31044, 0.52, 1)
 icon = ExtResource("2_fkrom")
 icon_alignment = 1
 
-[node name="CategoryGridContainer" type="GridContainer" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer"]
+[node name="CategoryGridContainer" type="GridContainer" parent="Categories/VBoxContainer/ScrollContainer/CategoriesHBoxContainer" unique_id=207558108]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 5
-columns = 5
+columns = 6
 
-[node name="Settings" type="ScrollContainer" parent="."]
+[node name="Settings" type="ScrollContainer" parent="." unique_id=1942695423]
 custom_minimum_size = Vector2(0, 272)
 layout_mode = 2
 follow_focus = true
 scroll_horizontal_custom_step = 10.0
 metadata/_tab_index = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings"]
+[node name="MarginContainer" type="MarginContainer" parent="Settings" unique_id=1607586603]
 custom_minimum_size = Vector2(800, 284)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -224,15 +223,15 @@ theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer" unique_id=783939621]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 
-[node name="TopBarPanel" type="Panel" parent="Settings/MarginContainer/VBoxContainer"]
+[node name="TopBarPanel" type="Panel" parent="Settings/MarginContainer/VBoxContainer" unique_id=1743095931]
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel" unique_id=1667814002]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -244,14 +243,14 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 9
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer" unique_id=1607541892]
 layout_mode = 2
 
-[node name="BaseDirHBX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer"]
+[node name="BaseDirHBX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer" unique_id=2022926147]
 layout_mode = 2
 theme_override_constants/separation = 11
 
-[node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX" unique_id=1868606880]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
@@ -264,7 +263,7 @@ text = "Base Directory"
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirLineEdit" type="LineEdit" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX" unique_id=1234343648]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(172, 0)
 layout_mode = 2
@@ -278,50 +277,50 @@ alignment = 1
 expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirApplyButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX" unique_id=1272300203]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Applies a new base directory"
-theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_font_sizes/font_size = 14
 disabled = true
 text = "Apply"
 icon = ExtResource("8_11ofg")
 
-[node name="BaseDirOpenDirButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirOpenDirButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX" unique_id=1725058965]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Open the base directory folder using your external file browser"
-theme_override_colors/font_hover_pressed_color = Color(0.73, 0.352347, 0.0219, 1)
 theme_override_colors/font_hover_color = Color(1, 0.67451, 0.25098, 1)
-theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.73, 0.352347, 0.0219, 1)
 theme_override_colors/icon_pressed_color = Color(0.729412, 0.352941, 0.0235294, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.67451, 0.25098, 1)
 theme_override_font_sizes/font_size = 14
 icon = ExtResource("2_6725a")
 
-[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
+[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX" unique_id=647669736]
 layout_mode = 2
 
-[node name="BaseDirResetButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX"]
+[node name="BaseDirResetButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/BaseDirHBX" unique_id=1240108955]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Reset base directory to default path: user://GoLogger/"
-theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
 theme_override_colors/font_hover_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.59, 0.0649, 0.0649, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 14
 icon = ExtResource("3_y66hb")
 
-[node name="ResetHBX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer"]
+[node name="ResetHBX" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer" unique_id=666824228]
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_constants/separation = 16
 alignment = 2
 
-[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
+[node name="PluginVersionSettLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX" unique_id=1774281710]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -331,30 +330,30 @@ label_settings = SubResource("LabelSettings_11ofg")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
+[node name="VSeparator" type="VSeparator" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX" unique_id=1266781550]
 layout_mode = 2
 
-[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX"]
+[node name="ResetSettingsButton" type="Button" parent="Settings/MarginContainer/VBoxContainer/TopBarPanel/MarginContainer/HBoxContainer/ResetHBX" unique_id=1249951143]
 unique_name_in_owner = true
 modulate = Color(1, 0.24, 0.24, 1)
 layout_mode = 2
 tooltip_text = "Resets all settings."
 text = "Reset to default"
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer" unique_id=769174779]
 layout_mode = 2
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer" unique_id=42011017]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="ColumnA" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="ColumnA" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" unique_id=1666958879]
 custom_minimum_size = Vector2(323, 210)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA"]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA" unique_id=1445169445]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -365,18 +364,18 @@ theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer" unique_id=775399875]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+[node name="LogHeaderHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer" unique_id=1454589377]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Used to set what to include in the log header.
 Retreived from Project Settings > Config > Name / Version."
 alignment = 2
 
-[node name="LogHeaderLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/LogHeaderHBox"]
+[node name="LogHeaderLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1634549527]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
@@ -384,7 +383,7 @@ size_flags_vertical = 1
 text = " Log Header"
 vertical_alignment = 1
 
-[node name="LogHeaderOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/LogHeaderHBox"]
+[node name="LogHeaderOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/LogHeaderHBox" unique_id=1303528611]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -408,16 +407,16 @@ popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
 
-[node name="Spacer" type="Control" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+[node name="Spacer" type="Control" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer" unique_id=353923045]
 layout_mode = 2
 
-[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+[node name="CanvasLayerHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer" unique_id=1954487267]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Canvas layer of the Save Copy popup in case the popup is obstructed."
 alignment = 2
 
-[node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/CanvasLayerHBox"]
+[node name="CanvasLayerLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/CanvasLayerHBox" unique_id=1473387537]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -425,7 +424,7 @@ size_flags_vertical = 1
 text = " Save Copy canvas layer"
 vertical_alignment = 1
 
-[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/CanvasLayerHBox"]
+[node name="CanvasLayerSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer/CanvasLayerHBox" unique_id=2089317896]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -436,7 +435,7 @@ rounded = true
 update_on_text_changed = true
 prefix = "Layer"
 
-[node name="AutostartCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+[node name="AutostartCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer" unique_id=1269192762]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -446,7 +445,7 @@ theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "Autostart session"
 
-[node name="TimestampEntriesButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+[node name="TimestampEntriesButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer" unique_id=488773269]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -456,7 +455,7 @@ theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 button_pressed = true
 text = "Timestamp log entries"
 
-[node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+[node name="UTCCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer" unique_id=1731416872]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -465,7 +464,7 @@ theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "UTC time"
 
-[node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer"]
+[node name="SeparatorCheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnA/MarginContainer/VBoxContainer" unique_id=1866760485]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
@@ -476,11 +475,11 @@ theme = ExtResource("1_y5prw")
 theme_override_colors/font_color = Color(0.615686, 0.619608, 0.627451, 1)
 text = "Use separator in timestamps"
 
-[node name="ColumnB" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="ColumnB" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" unique_id=1333114777]
 custom_minimum_size = Vector2(368, 210)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB"]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB" unique_id=1157139354]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -491,11 +490,11 @@ theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer" unique_id=681030983]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
+[node name="FileCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer" unique_id=199341636]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
@@ -503,14 +502,14 @@ tooltip_text = "Limits the number of files in any log category folder.
 Setting this to 0 will disable this(use with caution)."
 alignment = 2
 
-[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/FileCountHBox"]
+[node name="FileCountLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/FileCountHBox" unique_id=1253241914]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "File count limit"
 vertical_alignment = 1
 
-[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/FileCountHBox"]
+[node name="FileCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/FileCountHBox" unique_id=55715408]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -523,7 +522,7 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
 
-[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
+[node name="LimitMethodHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer" unique_id=1583253680]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Method used to limit file size. 
@@ -531,14 +530,14 @@ Use the selected Actions below to determine what happens once the method conditi
 theme_override_constants/separation = 75
 alignment = 2
 
-[node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/LimitMethodHBox"]
+[node name="LimitMethodLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/LimitMethodHBox" unique_id=515118278]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Limit method"
 vertical_alignment = 1
 
-[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/LimitMethodHBox"]
+[node name="LimitMethodOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/LimitMethodHBox" unique_id=915913839]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -561,7 +560,7 @@ popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
 
-[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
+[node name="EntryCountActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer" unique_id=120817681]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
@@ -570,14 +569,14 @@ Overwrite Entries removes the oldest entry as new ones are logged.
 theme_override_constants/separation = 44
 alignment = 2
 
-[node name="EntryActionLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountActionHBox"]
+[node name="EntryActionLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=1892016445]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Entry Count action"
 vertical_alignment = 1
 
-[node name="EntryActionOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountActionHBox"]
+[node name="EntryActionOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountActionHBox" unique_id=1503251369]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -596,21 +595,21 @@ popup/item_1/id = 1
 popup/item_2/text = "Stop session"
 popup/item_2/id = 1
 
-[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
+[node name="SessionTimerActionHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer" unique_id=916353936]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 theme_override_constants/separation = 28
 alignment = 2
 
-[node name="SessionTimerActionLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionTimerActionHBox"]
+[node name="SessionTimerActionLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1063072438]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Session Timer action"
 vertical_alignment = 1
 
-[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionTimerActionHBox"]
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionTimerActionHBox" unique_id=450050348]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
@@ -625,14 +624,14 @@ popup/item_0/id = 0
 popup/item_1/text = "Stop session"
 popup/item_1/id = 1
 
-[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
+[node name="EntryCountHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer" unique_id=785139826]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Number of entries until the entry count action is triggered."
 theme_override_constants/separation = 119
 alignment = 2
 
-[node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountHBox"]
+[node name="EntryCountLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountHBox" unique_id=266188447]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -640,7 +639,7 @@ size_flags_horizontal = 2
 text = "Entry count limit"
 vertical_alignment = 1
 
-[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountHBox"]
+[node name="EntryCountSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/EntryCountHBox" unique_id=1941140932]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -648,19 +647,19 @@ size_flags_vertical = 4
 tooltip_text = "Number of entries until the entry count action is triggered."
 min_value = 1.0
 max_value = 5000.0
-value = 200.0
+value = 300.0
 alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 10.0
 
-[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer"]
+[node name="SessionDurationHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer" unique_id=110109365]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The duration of a logging session if Limit method is set to Session Timer."
 theme_override_constants/separation = 117
 alignment = 2
 
-[node name="SessionDurationLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionDurationHBox"]
+[node name="SessionDurationLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionDurationHBox" unique_id=937473101]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -668,7 +667,7 @@ size_flags_horizontal = 2
 text = "Session duration"
 vertical_alignment = 1
 
-[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionDurationHBox"]
+[node name="SessionDurationSpinBox" type="SpinBox" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnB/MarginContainer/VBoxContainer/SessionDurationHBox" unique_id=1152505322]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -682,11 +681,11 @@ suffix = "sec"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="ColumnC" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="ColumnC" type="Panel" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" unique_id=2013232331]
 custom_minimum_size = Vector2(323, 210)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC"]
+[node name="MarginContainer" type="MarginContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC" unique_id=1779549396]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -697,23 +696,23 @@ theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
 
-[node name="Column" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer"]
+[node name="Column" type="VBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer" unique_id=248648638]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
+[node name="ErrorRepHBox" type="HBoxContainer" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column" unique_id=1540048767]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
 alignment = 2
 
-[node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox"]
+[node name="ErrorRepLabel" type="Label" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox" unique_id=818799918]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = " Error reporting"
 
-[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox"]
+[node name="ErrorRepOptButton" type="OptionButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column/ErrorRepHBox" unique_id=847975739]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Sets the level of error reporting."
@@ -729,23 +728,21 @@ popup/item_2/separator = true
 popup/item_3/text = "None"
 popup/item_3/id = 3
 
-[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
+[node name="DisableWarn1CheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column" unique_id=925907293]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enables the 'Failed to start log session without stopping the previous session' warning. "
 theme = ExtResource("1_y5prw")
-button_pressed = true
 text = "Failed to start session"
 
-[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column"]
+[node name="DisableWarn2CheckButton" type="CheckButton" parent="Settings/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ColumnC/MarginContainer/Column" unique_id=951365362]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enables the 'Failed to log entry due to no session being active' warning."
 theme = ExtResource("1_y5prw")
-button_pressed = true
 text = "Failed to log entry"
 
-[node name="Help" type="MarginContainer" parent="."]
+[node name="Help" type="MarginContainer" parent="." unique_id=1540784022]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -753,29 +750,29 @@ theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
 metadata/_tab_index = 2
 
-[node name="TabContainer" type="TabContainer" parent="Help"]
+[node name="TabContainer" type="TabContainer" parent="Help" unique_id=1235913499]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 current_tab = 0
 
-[node name="Getting Started" type="MarginContainer" parent="Help/TabContainer"]
+[node name="Getting Started" type="MarginContainer" parent="Help/TabContainer" unique_id=1187631675]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_top = 6
 metadata/_tab_index = 0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Getting Started"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Getting Started" unique_id=1432989385]
 layout_mode = 2
 scroll_vertical_custom_step = 20.0
 
-[node name="Panel" type="Panel" parent="Help/TabContainer/Getting Started/ScrollContainer"]
+[node name="Panel" type="Panel" parent="Help/TabContainer/Getting Started/ScrollContainer" unique_id=1278189943]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/Getting Started/ScrollContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/Getting Started/ScrollContainer/Panel" unique_id=1325645980]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -786,7 +783,7 @@ theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/Getting Started/ScrollContainer/Panel/MarginContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/Getting Started/ScrollContainer/Panel/MarginContainer" unique_id=1746731348]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -810,7 +807,7 @@ Entries are plain strings, offering flexibility and allowing concatenation with 
 In case an event of note occurs, you can use the save copy feature which allows you to save the active session in a separate file, without needing to stop and start a new session. This creates copies of all categories and is stored in each category's saved_logs folder. 
 This feature is helpful when multiple factors or a history of actions is needed to aid in debugging. If for instance, your have a bug that you know the outcome, like the player clips out of bounds in a certain spot. You can set it up so that a copy gets saved when the player's global position is greater/lower than the out of bounds position. "
 
-[node name="Methods & Hotkeys" type="MarginContainer" parent="Help/TabContainer"]
+[node name="Methods & Hotkeys" type="MarginContainer" parent="Help/TabContainer" unique_id=956327031]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -818,15 +815,15 @@ size_flags_vertical = 3
 theme_override_constants/margin_top = 6
 metadata/_tab_index = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Methods & Hotkeys"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/Methods & Hotkeys" unique_id=1819947138]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer"]
+[node name="Panel" type="Panel" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer" unique_id=58564255]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer/Panel" unique_id=944734546]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -838,7 +835,7 @@ theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer/Panel/MarginContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/Methods & Hotkeys/ScrollContainer/Panel/MarginContainer" unique_id=48931000]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -873,21 +870,21 @@ There are four signals available to help you synchronize sessions.[color=palegol
 	session_timer_started
 	session_timer_stopped"
 
-[node name="File Limitations" type="MarginContainer" parent="Help/TabContainer"]
+[node name="File Limitations" type="MarginContainer" parent="Help/TabContainer" unique_id=1199685065]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 metadata/_tab_index = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/File Limitations"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/File Limitations" unique_id=108024792]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="Help/TabContainer/File Limitations/ScrollContainer"]
+[node name="Panel" type="Panel" parent="Help/TabContainer/File Limitations/ScrollContainer" unique_id=438318282]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel" unique_id=1114964978]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 1
 anchors_preset = 15
@@ -900,7 +897,7 @@ theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel/MarginContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Help/TabContainer/File Limitations/ScrollContainer/Panel/MarginContainer" unique_id=2020207318]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -933,25 +930,25 @@ Using [b]Entry Count[/b] and [b]Overwrite Entries[/b] is objectively the best op
 Start session: Ctrl + Shift + O 
 Stop session: Ctrl + Shift + P"
 
-[node name="More Info" type="MarginContainer" parent="Help/TabContainer"]
+[node name="More Info" type="MarginContainer" parent="Help/TabContainer" unique_id=722902369]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_top = 6
 metadata/_tab_index = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/More Info"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Help/TabContainer/More Info" unique_id=770342153]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer" unique_id=274119090]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer" unique_id=1647346559]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -1
 
-[node name="RepoLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="RepoLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer" unique_id=1654887750]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -959,13 +956,13 @@ tooltip_text = "https://github.com/Burloe/GoLogger"
 text = "Github repository"
 uri = "https://github.com/Burloe/GoLogger"
 
-[node name="Label" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer" unique_id=481958419]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 text = "  -  "
 
-[node name="WikiLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="WikiLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer" unique_id=1559155163]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -973,12 +970,12 @@ tooltip_text = "https://github.com/Burloe/GoLogger/wiki"
 text = "Wiki contains more in-depth information and resources"
 uri = "https://github.com/Burloe/GoLogger/wiki"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer" unique_id=1910248575]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -1
 
-[node name="IssuesLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2"]
+[node name="IssuesLinkButton" type="LinkButton" parent="Help/TabContainer/More Info/ScrollContainer/VBoxContainer/HBoxContainer2" unique_id=1320783675]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 4
