@@ -194,7 +194,8 @@ func set_view(to: BrowserState) -> void:
 
 ## Used to both initialize and reload the file list
 func load_log_browser() -> void:
-	if not is_active: return 
+	if not is_active: 
+		return 
 
 	var opened_tab = max(0, category_tab_container.current_tab)
 

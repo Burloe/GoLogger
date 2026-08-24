@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="GLData" format=3 uid="uid://dj7h7t2v8csck"]
 
 [ext_resource type="Script" uid="uid://bm8lbc8d2cd4r" path="res://addons/gologger/scripts/gl_category_data_resource.gd" id="1_2nbxn"]
-[ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gologger/scripts/gl_data_resource.gd" id="1_4ggqs"]
+[ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gologger/scripts/gl_data_resource.gd" id="2_r3wlc"]
 
 [sub_resource type="Resource" id="Resource_2nbxn"]
 script = ExtResource("1_2nbxn")
@@ -28,7 +28,7 @@ script = ExtResource("1_2nbxn")
 category_name = "quests"
 
 [resource]
-script = ExtResource("1_4ggqs")
+script = ExtResource("2_r3wlc")
 categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_2nbxn"), SubResource("Resource_r3wlc"), SubResource("Resource_ka64b"), SubResource("Resource_lfsjx"), SubResource("Resource_macc1"), SubResource("Resource_is5jv")])
 default_category = "game"
 base_dir = "user://test/draugur/"

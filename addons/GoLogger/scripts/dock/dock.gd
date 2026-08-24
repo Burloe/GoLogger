@@ -231,6 +231,7 @@ var is_shutting_down: bool = false:
 func _ready() -> void:
 	data = load(DATA_PATH)
 	log_browser_tab.data = data 
+	log_browser_tab.is_active = true
 	category_tab.data = data 
 	settings_tab.data = data
 	data.update_list()

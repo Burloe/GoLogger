@@ -9,7 +9,7 @@ signal move_category_requested(log_category: LogCategory, direction : int)
 signal set_default_category(category: LogCategory, toggle_on: bool) 
 
 
-@export var data: GLData = load("res://addons/gologger/data.tres")
+@export var data: GLData = preload("res://addons/gologger/data.tres")
 @export var cat_data: GLCategoryData = null
 
 @onready var move_left_btn: Button = 				%MoveLeftButton

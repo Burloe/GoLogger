@@ -119,9 +119,9 @@ func _ready() -> void:
 	polling_timer.timeout.connect(_on_timer_timeout.bind(polling_timer))
 	_handle_id_align()
 	instance_id = _get_instance_id()
-
+	
 	if data.autostart:
-		start_session() 
+		start_session()
 
 
 
