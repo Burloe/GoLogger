@@ -487,6 +487,7 @@ func _on_button_button_up(node: Button) -> void:
 				base_dir_apply_btn.disabled = true
 				base_dir_revert_btn.disabled = true
 				base_dir_line_btn_cont.hide()
+				request_save.emit(false, "dock_settings.gd - base_dir_apply_btn")
 		
 		base_dir_revert_btn:
 			base_dir_line.text = data.base_dir
@@ -499,6 +500,7 @@ func _on_button_button_up(node: Button) -> void:
 			log_header_apply_btn.disabled = true
 			log_header_line.release_focus() 
 			log_header_line_btn_cont.hide()
+			request_save.emit(false, "dock_settings.gd - log_header_apply_btn")
 		
 		log_header_revert_btn:
 			log_header_line.text = data.header_format
@@ -511,6 +513,7 @@ func _on_button_button_up(node: Button) -> void:
 			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus() 
 			entry_format_line_btn_cont.hide()
+			request_save.emit(false, "dock_settings.gd - entry_format_apply_btn")
 
 		entry_format_revert_btn:
 			entry_format_line.text = data.entry_format
@@ -579,6 +582,8 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			entry_format_revert_btn.disabled = true
 			data.entry_format = entry_format_line.text
 
+	request_save.emit(false, "dock_settings.gd - _on_line_edit_text_submitted")
+
 
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
@@ -615,6 +620,8 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 			data.id_align = index
 			print("!",index)
 
+	request_save.emit(false, "dock_settings.gd - _on_optbtn_item_selected")
+
 
 
 func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
@@ -634,6 +641,8 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 
 		id_startup_btn:
 			data.id_startup = toggled_on
+
+	request_save.emit(false, "dock_settings.gd - _on_checkbox_toggled")
 
 
 
@@ -677,6 +686,8 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus() 
 
+	request_save.emit(false, "dock_settings.gd - _on_spinbox_lineedit_submitted")
+
 
 
 func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
@@ -695,6 +706,8 @@ func _on_spinbox_value_changed(value: float, node: SpinBox) -> void:
 
 		session_duration_spinbox:
 			data.session_duration = int(value)
+
+	request_save.emit(false, "dock_settings.gd - _on_spinbox_value_changed")
 
 #endregion
 

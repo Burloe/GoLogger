@@ -9,7 +9,7 @@ signal move_category_requested(log_category: LogCategory, direction : int)
 signal set_default_category(category: LogCategory, toggle_on: bool) 
 
 
-@export var data: GLData = preload("res://addons/gologger/data.tres")
+@export var data: GLData = null
 @export var cat_data: GLCategoryData = null
 
 @onready var move_left_btn: Button = 				%MoveLeftButton
@@ -137,20 +137,12 @@ func _ready() -> void:
 	if line_edit.text == "": 
 		apply_btn.hide() 
 
-	await data.data_ready
-	if category_name != "":
-		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
+	# data/cat_data are already fully loaded synchronously by this point, no need to await anything.
+	_data_ready()
 
-	line_edit.text = category_name
-	lock_btn.button_pressed = is_locked
 
-	if line_edit.text == "": 
-		apply_btn.hide() 
-
-	
 
 func _data_ready() -> void:
-	pass
 	if category_name != "":
 		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
@@ -159,10 +151,6 @@ func _data_ready() -> void:
 
 	if line_edit.text == "": 
 		apply_btn.hide() 
-
-
-
-
 
 
 

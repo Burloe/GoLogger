@@ -1,8 +1,6 @@
 @tool
 class_name GLData extends Resource
 
-signal data_ready
-
 # Categories Tab
 @export var categories: Array[GLCategoryData] = []
 @export var default_category: String = ""
@@ -88,7 +86,6 @@ var list: Dictionary = {}
 func _init() -> void:
 	changed.connect(update_list)
 	update_list()
-	data_ready.emit()
 
 
 
