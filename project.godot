@@ -32,7 +32,7 @@ window/size/viewport_height=1080
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/GoLogger/plugin.cfg", "res://addons/gologger/plugin.cfg")
+enabled=PackedStringArray("res://addons/gologger/plugin.cfg", "res://addons/gologger/plugin.cfg")
 
 [rendering]
 

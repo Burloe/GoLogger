@@ -45,22 +45,7 @@ enum ErrorReportLevel {
 	WARNINGS_ERRORS,
 	ERRORS,
 	NONE
-}
-
-enum ErrorCodes { #NYI - For future use in error/warning messages - On hold
-		ERR_NONE,
-		ERR_LOAD_CATEGORIES_FAILED,
-		ERR_SAVE_CATEGORIES_FAILED,
-		ERR_SESSION_ACTIVE,
-		ERR_NO_CATEGORIES,
-		ERR_INVALID_CATEGORY,
-		ERR_INVALID_ENTRY,
-		ERR_INVALID_FILE_PATH,
-		ERR_SESSION_INACTIVE,
-		ERR_SETTINGS_FILE_CREATION_FAIL,
-		ERR_FILE_ACCESS,
-		ERR_DIR_ACCESS
-}
+} 
 
 @export var data: GLData = null
 const DATA_PATH: String = "res://addons/gologger/data.tres"

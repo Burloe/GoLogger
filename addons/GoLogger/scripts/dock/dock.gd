@@ -460,7 +460,7 @@ func _open_user_dir() -> void:
 
 
 
-## Opens "user://GoLogger/category_name/"
+## Opens "user://gologger/category_name/"
 func _open_directory() -> void:
 	var abs_path = ProjectSettings.globalize_path(data.base_dir)
 	OS.shell_open(abs_path)
