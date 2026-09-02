@@ -72,7 +72,7 @@ func initialize_tab() -> void:
 		if cat.category_name.is_empty():
 			continue
 
-		_add_category(cat.category_name, cat.is_locked)
+		_add_category(cat.category_name)
 
 	if !data.default_category.is_empty():
 		for cat in category_container.get_children():
@@ -176,7 +176,6 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	var _n = category_scene.instantiate() as GLLogCategory 
 	var low_name: String = _name.to_lower()
 	_n.category_name = low_name
-	_n.is_locked = _is_locked
 	category_container.add_child(_n)
 	_n.data = data
 	_n._data_ready()

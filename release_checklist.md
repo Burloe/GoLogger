@@ -84,7 +84,6 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [ ] Ensure `[categories.category_name].file_path` contains the absolute file path of the current file.
   - [ ] Ensure `[categories.category_name].category_name` is updated correctly.
   - [ ] Ensure `[categories.category_name].file_count` matches the number of `.log` files in the directory.
-  - [ ] Ensure `[categories.category_name].is_locked` reflects the `LogCategory` lock state.
   - [ ] Ensure `[categories.category_name].entry_count` matches the number of entries in the current `.log` file.
   - [ ] Ensure a `.log` file is created with the current date and timestamp.
   - [ ] Ensure `log_header` is written into the file.
@@ -118,7 +117,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 - [ ] Ensure `[categories][category_names]` updates whenever any category change is made in the dock.
 - [ ] Ensure `[categories][default_category]` updates whenever any category change is made in the dock.
-- [ ] Ensure each `[categories.category_name]` section updates its `file_name`, `file_path`, `category_name`, `file_count`, `is_locked`, and `entry_count` values correctly.
+- [ ] Ensure each `[categories.category_name]` section updates its `file_name`, `file_path`, `category_name`, `file_count`, and `entry_count` values correctly.
 - [ ] Ensure `[categories][category_names]` matches the dock order.
 - [ ] Ensure `[categories][category_names]` reorders correctly when categories are moved.
 - [ ] Ensure `[categories][category_names]` deletes the correct category when one is removed.

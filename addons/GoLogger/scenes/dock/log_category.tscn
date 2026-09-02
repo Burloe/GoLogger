@@ -53,23 +53,23 @@ corner_radius_bottom_left = 5
 corner_detail = 5
 
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
-custom_minimum_size = Vector2(200, 76)
-offset_right = 256.0
-offset_bottom = 76.0
+custom_minimum_size = Vector2(242, 48)
+custom_maximum_size = Vector2(242, 48)
+offset_right = 242.0
+offset_bottom = 48.0
 offset_transform_enabled = true
 theme_override_styles/panel = ExtResource("1_dn16j")
 script = ExtResource("2_t2282")
 data = ExtResource("3_x8jw8")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=697879439]
-custom_minimum_size = Vector2(225, 0)
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=151857270]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 
-[node name="CategoryNameLineEdit" type="LineEdit" parent="VBoxContainer" unique_id=240651878]
+[node name="CategoryNameLineEdit" type="LineEdit" parent="HBoxContainer" unique_id=240651878]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(200, 32)
+custom_maximum_size = Vector2(200, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_uneditable_color = Color(0.960784, 0.647059, 0.105882, 1)
@@ -81,15 +81,14 @@ placeholder_text = "Enter name"
 alignment = 1
 max_length = 20
 
-[node name="RevertButton" type="Button" parent="VBoxContainer/CategoryNameLineEdit" unique_id=1421057895]
+[node name="RevertButton" type="Button" parent="HBoxContainer/CategoryNameLineEdit" unique_id=1421057895]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 205.0
-offset_right = 1.0
+offset_left = 181.0
+offset_right = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
@@ -109,51 +108,12 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_lnuxt")
 icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=151857270]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="MoveLeftButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1734383337]
+[node name="DefaultButton" type="Button" parent="HBoxContainer" unique_id=750332008]
 unique_name_in_owner = true
-custom_maximum_size = Vector2(-1, 18)
+custom_minimum_size = Vector2(18, 18)
+custom_maximum_size = Vector2(18, 18)
 layout_mode = 2
-tooltip_text = "Move left"
-mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
-theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
-theme_override_colors/icon_disabled_color = Color(0, 0, 0, 0)
-theme_override_styles/normal = ExtResource("3_xjf83")
-theme_override_styles/pressed = ExtResource("3_xjf83")
-theme_override_styles/hover = ExtResource("3_xjf83")
-theme_override_styles/hover_pressed = ExtResource("3_xjf83")
-theme_override_styles/disabled = ExtResource("3_xjf83")
-icon = SubResource("DPITexture_pl6xe")
-
-[node name="LockButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=2094994272]
-unique_name_in_owner = true
-custom_maximum_size = Vector2(-1, 18)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Lock"
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.96, 0.64672, 0.1056, 1)
-theme_override_colors/icon_hover_color = Color(0.96, 0.75584, 0.4032, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.960784, 0.647059, 0.105882, 1)
-theme_override_styles/normal = ExtResource("3_xjf83")
-theme_override_styles/pressed = ExtResource("3_xjf83")
-theme_override_styles/hover = ExtResource("3_xjf83")
-theme_override_styles/hover_pressed = ExtResource("3_xjf83")
-toggle_mode = true
-icon = SubResource("DPITexture_pl6xe")
-icon_alignment = 1
-
-[node name="DefaultButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=750332008]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(60, 15)
-custom_maximum_size = Vector2(60, 18)
-layout_mode = 2
+size_flags_vertical = 4
 tooltip_text = "Mark as Default Category
 
 Default Category is used when Log.msg() is called without defining a category."
@@ -168,25 +128,26 @@ toggle_mode = true
 icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
-[node name="ApplyButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1330065459]
+[node name="ApplyButton" type="Button" parent="HBoxContainer" unique_id=1330065459]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(60, 0)
-custom_maximum_size = Vector2(60, 18)
+custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_vertical = 4
 tooltip_text = "Apply category name"
 mouse_default_cursor_shape = 2
+theme_override_constants/outline_size = 4
 theme_override_styles/normal = ExtResource("8_kgg4t")
 theme_override_styles/hover = ExtResource("9_4yopv")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_7kr4p")
 text = "Apply"
+icon_alignment = 1
 
-[node name="DeleteButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=753401324]
+[node name="DeleteButton" type="Button" parent="HBoxContainer" unique_id=753401324]
 unique_name_in_owner = true
-custom_maximum_size = Vector2(-1, 18)
+visible = false
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_vertical = 4
 tooltip_text = "Folders and .log files are not deleted"
 focus_mode = 0
 mouse_default_cursor_shape = 2
@@ -205,10 +166,34 @@ text = "
 icon = SubResource("DPITexture_pl6xe")
 icon_alignment = 1
 
-[node name="MoveRightButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=659310254]
+[node name="MoveLeftButton" type="Button" parent="HBoxContainer" unique_id=1734383337]
 unique_name_in_owner = true
-custom_maximum_size = Vector2(-1, 18)
+visible = false
+custom_minimum_size = Vector2(18, 18)
+custom_maximum_size = Vector2(18, 18)
 layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Move left"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_disabled_color = Color(0, 0, 0, 0)
+theme_override_styles/normal = ExtResource("3_xjf83")
+theme_override_styles/pressed = ExtResource("3_xjf83")
+theme_override_styles/hover = ExtResource("3_xjf83")
+theme_override_styles/hover_pressed = ExtResource("3_xjf83")
+theme_override_styles/disabled = ExtResource("3_xjf83")
+icon = SubResource("DPITexture_pl6xe")
+icon_alignment = 1
+
+[node name="MoveRightButton" type="Button" parent="HBoxContainer" unique_id=659310254]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(18, 18)
+custom_maximum_size = Vector2(18, 20)
+layout_mode = 2
+size_flags_vertical = 4
 tooltip_text = "Move right"
 mouse_default_cursor_shape = 2
 theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
@@ -221,3 +206,4 @@ theme_override_styles/hover = ExtResource("3_xjf83")
 theme_override_styles/hover_pressed = ExtResource("3_xjf83")
 theme_override_styles/disabled = ExtResource("3_xjf83")
 icon = SubResource("DPITexture_pl6xe")
+icon_alignment = 1

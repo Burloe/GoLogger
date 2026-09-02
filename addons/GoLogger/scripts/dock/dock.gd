@@ -441,8 +441,7 @@ func save_categories() -> void:
 			data.default_category = log_c.category_name
 
 		var c_data: GLCategoryData = GLCategoryData.new()
-		c_data.category_name = log_c.category_name
-		c_data.is_locked = log_c.is_locked
+		c_data.category_name = log_c.category_name 
 		log_c.cat_data = c_data
 		log_c._data_ready()
 		cats.append(c_data) 
