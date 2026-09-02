@@ -11,7 +11,7 @@ extends Node
 # TODO:
 
 
-# BUG:
+# BUG:d
 
 
 signal session_toggled(toggled_on: bool) ## Emitted when a log session is started or stopped.
