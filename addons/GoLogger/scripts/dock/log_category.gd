@@ -1,12 +1,12 @@
 @tool
-class_name LogCategory extends PanelContainer
+class_name GLLogCategory extends PanelContainer
 
 ## Emitted to GoLoggerDock.gd when any change is made in order to save the categories.
 signal log_category_changed 
 ## Emitted to GoLoggerDock.gd to move the categories and save them.
-signal move_category_requested(log_category: LogCategory, direction : int)
+signal move_category_requested(log_category: GLLogCategory, direction : int)
 
-signal set_default_category(category: LogCategory, toggle_on: bool) 
+signal set_default_category(category: GLLogCategory, toggle_on: bool) 
 
 
 @export var data: GLData = null
@@ -179,14 +179,14 @@ func apply_name(new_name: String) -> void:
 	var cat_names = data.get_category_names()
 	var def: String = data.default_category
 
-	# New LogCategory
+	# New GLLogCategory
 	if category_name == "":
 		var new: GLCategoryData = GLCategoryData.new()
 		new.category_name = new_name
 		cat.append(new)
 		cat_data = new
 
-	# Existing LogCategory
+	# Existing GLLogCategory
 	elif cat_names.has(category_name): 
 		for i in range(cat.size()):
 			if cat[i].category_name == category_name:

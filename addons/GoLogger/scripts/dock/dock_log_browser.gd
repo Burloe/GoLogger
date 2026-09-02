@@ -47,15 +47,8 @@ var ico_sort_old = preload("uid://bljitewxdnvuh")
 var is_active: bool = false
 var grid_conts: Array[GridContainer] = []
 var is_content_hovered: bool = false
-var is_reloading: bool = false:
-	set(value):
-		is_reloading = value
-		# if state in [BrowserState.LOG_SPLIT, BrowserState.FILE_LIST]:
-
-			# h_split_cont.visible = !value
-			# fb_margin_container.visible = !value
-			# reload_hider.visible = value
-			# reload_btn.disabled = value
+var is_reloading: bool = false
+var hovered_logfile: GLLogFile
 
 var open_log_with_os: bool = false:
 	set(value):
@@ -135,8 +128,11 @@ func _ready() -> void:
 	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
 	close_btn.button_up.connect(_close_log_file) 
 	reload_btn.button_up.connect(load_log_browser)
-	polling_timer.timeout.connect(load_log_browser)
-
+	polling_timer.timeout.connect(
+		func() -> void:
+			if state not in [BrowserState.LOG_FULL, BrowserState.LOG_SPLIT]:
+				load_log_browser()
+	)
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
 	view_mode_btn.button_up.connect(func() -> void: cur_view = !cur_view)
 	sort_mode_btn.button_up.connect(
@@ -185,8 +181,8 @@ func set_view(to: BrowserState) -> void:
 			h_split_cont.hide()
 			reload_hider.show() 
 	state = to
-	await get_tree().physics_frame
-	await get_tree().physics_frame
+	# await get_tree().physics_frame
+	# await get_tree().physics_frame
 	_update_columns()
 
 
@@ -198,7 +194,6 @@ func load_log_browser() -> void:
 		return 
 
 	var opened_tab = max(0, category_tab_container.current_tab)
-
 	_close_log_file()
 	is_reloading = true
 	set_view(BrowserState.RELOAD_HIDE)
@@ -270,6 +265,65 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 
 
 
+func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_name: String) -> void:
+	var gc : GridContainer
+	var is_grouped: bool = cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]
+	if is_grouped:
+		gc = GridContainer.new()
+		gc.add_theme_constant_override("h_separation", GRID_SEPARATION)
+		gc.add_theme_constant_override("v_separation", GRID_SEPARATION)
+		if is_grouped: gc.columns = 3
+		base_gc.add_child(gc)
+		gc.size_flags_horizontal = Control.SIZE_FILL
+		gc.size_flags_vertical = Control.SIZE_FILL
+	
+	for file in list:
+		if typeof(file) != TYPE_STRING:
+			continue
+
+		var lf: GLLogFile = _create_logfile_obj(category_name, file)
+
+		if lf == null:
+			continue
+
+		if is_grouped:
+			gc.add_child(lf)
+		else:
+			base_gc.add_child(lf)
+		log_files.append(lf)
+		lf.button_up.connect(_open_log_file.bind(lf))
+		log_file_added.emit(lf)
+
+
+
+func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
+	var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file_name), "/")
+	
+	if not FileAccess.file_exists(file_path):
+			return
+
+	var f = FileAccess.open(file_path, FileAccess.READ)
+	var content = f.get_file_as_string(file_path)
+		
+	var lf: GLLogFile = log_file_btn.instantiate() as GLLogFile
+	lf.category_name = category_name
+	lf.file_name = file_name
+	lf.file_path = file_path
+	lf.file_contents = f.get_file_as_string(file_path)
+	lf.assign_icon(true)
+	lf.mouse_entered.connect(func() -> void: hovered_logfile = lf)
+	lf.mouse_entered.connect(func() -> void: hovered_logfile = null)
+	if hovered_logfile != null and hovered_logfile.file_name == file_name and hovered_logfile.category_name == category_name:
+		lf.mouse_entered.emit()
+
+	if !lf.is_file_valid() or f.get_open_error() != OK:
+		lf.assign_icon(false)
+
+	f.close()
+	return lf
+
+
+
 func _sort_file_list(category_name: String) -> Array:
 	var file_list: PackedStringArray = _get_category_files(category_name) 
 	var fin_list: Array = []
@@ -324,61 +378,6 @@ func _sort_file_list(category_name: String) -> Array:
 				fin_list.append(file)
 
 	return fin_list
-
-
-
-func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_name: String) -> void:
-	var gc : GridContainer
-	var is_grouped: bool = cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]
-	if is_grouped:
-		gc = GridContainer.new()
-		gc.add_theme_constant_override("h_separation", GRID_SEPARATION)
-		gc.add_theme_constant_override("v_separation", GRID_SEPARATION)
-		if is_grouped: gc.columns = 3
-		base_gc.add_child(gc)
-		gc.size_flags_horizontal = Control.SIZE_FILL
-		gc.size_flags_vertical = Control.SIZE_FILL
-	
-	for file in list:
-		if typeof(file) != TYPE_STRING:
-			continue
-
-		var lf: GLLogFile = _create_logfile_obj(category_name, file)
-
-		if lf == null:
-			continue
-
-		if is_grouped:
-			gc.add_child(lf)
-		else:
-			base_gc.add_child(lf)
-		log_files.append(lf)
-		lf.button_up.connect(_open_log_file.bind(lf))
-		log_file_added.emit(lf)
-
-
-
-func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
-	var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file_name), "/")
-	
-	if not FileAccess.file_exists(file_path):
-			return
-
-	var f = FileAccess.open(file_path, FileAccess.READ)
-	var content = f.get_file_as_string(file_path)
-		
-	var lf: GLLogFile = log_file_btn.instantiate() as GLLogFile
-	lf.category_name = category_name
-	lf.file_name = file_name
-	lf.file_path = file_path
-	lf.file_contents = f.get_file_as_string(file_path)
-	lf.assign_icon(true)
-
-	if !lf.is_file_valid() or f.get_open_error() != OK:
-		lf.assign_icon(false)
-
-	f.close()
-	return lf
 
 
 

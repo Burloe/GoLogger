@@ -110,7 +110,7 @@ var sett_id_inspector: EditorInspector
 @onready var sett_hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
 
-@onready var user_dir_btn: Button = %UserDirButton ## Opens "user://"
+# @onready var user_dir_btn: Button = %UserDirButton ## Opens "user://"
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
 @onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
@@ -129,6 +129,7 @@ var inspector: EditorInspector
 @onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
 @onready var help_formatting: 		FoldableContainer = %FormattingHelp
 @onready var plugin_version_lbl: Label = %PluginVersionLabel
+@onready var regenerate_btn: Button = %RegenerateButton
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -259,7 +260,8 @@ func _ready() -> void:
 	_connect_unique(settings.settings_changed, _on_editor_settings_changed)
 	_connect_unique(cat_open_dir_btn.button_up, _open_directory)
 	_connect_unique(lb_open_dir_btn.button_up, _open_directory)
-	_connect_unique(user_dir_btn.button_up, _open_user_dir)
+	# _connect_unique(user_dir_btn.button_up, _open_user_dir)
+	_connect_unique(regenerate_btn.button_up, _on_regenerate_button_up)
 	_connect_unique(sett_open_dir_btn.button_up, _open_directory)
 	_connect_unique(sett_reset_btn.button_up, reset_to_default)
 
@@ -401,7 +403,7 @@ func regen_data() -> void:
 	category_tab.data = new
 	settings_tab.data = new
 	for lc in category_container.get_children():
-		if lc is LogCategory:
+		if lc is GLLogCategory:
 			lc.data = new
 
 
@@ -432,7 +434,7 @@ func save_categories() -> void:
 	var cats: Array[GLCategoryData] = []
 
 	for log_c in category_container.get_children():
-		if log_c is not LogCategory:
+		if log_c is not GLLogCategory:
 			continue
 
 		if log_c.default_btn.button_pressed: 
@@ -443,7 +445,7 @@ func save_categories() -> void:
 		c_data.is_locked = log_c.is_locked
 		log_c.cat_data = c_data
 		log_c._data_ready()
-		cats.append(c_data)
+		cats.append(c_data) 
 	
 	data.categories = cats
 	category_tab.handle_category_mov_button_state()
@@ -492,6 +494,14 @@ func _on_editor_settings_changed() -> void:
 	theme_col_base = new_base
 	theme_col_accent = new_accent
 	_apply_theme_colors(base_changed, accent_changed)
+
+
+func _on_regenerate_button_up() -> void:
+	var _new := GLData.new()
+	var _err := ResourceSaver.save(_new, DATA_PATH)
+	if _err != OK:
+		printerr("GoLogger: Failed to regenerate 'data.tres' - Error[", _err, "] ", error_string(_err))
+		print("You can manually create a new GLData resource, name it 'data.tres' and save it to path: ", DATA_PATH, "\nRemember to reload Godot afterwards.")
 
 
 

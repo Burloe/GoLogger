@@ -56,7 +56,7 @@ func _ready() -> void:
 	
 
 	for log_c in category_container.get_children():
-		if log_c is not LogCategory:
+		if log_c is not GLLogCategory:
 			print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
 		log_c.queue_free()
 	
@@ -76,7 +76,7 @@ func initialize_tab() -> void:
 
 	if !data.default_category.is_empty():
 		for cat in category_container.get_children():
-			if cat is LogCategory and cat.category_name == data.default_category and cat.default_btn != null:
+			if cat is GLLogCategory and cat.category_name == data.default_category and cat.default_btn != null:
 				cat.default_btn.button_pressed = true
 				break
 				
@@ -105,7 +105,7 @@ func ensure_default_category() -> void:
 
 
 
-func _on_category_move_requested(category: LogCategory, direction: int) -> void:
+func _on_category_move_requested(category: GLLogCategory, direction: int) -> void:
 	var cats: Array = category_container.get_children()
 	var from: int = category.get_index()
 	var to: int = from
@@ -141,7 +141,7 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 		float(to_row - from_row) * step_y
 	)
 
-	var other: LogCategory = cats[to]
+	var other: GLLogCategory = cats[to]
 
 	var tween := create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC).set_parallel()
 	category.offset_transform_enabled = true
@@ -173,7 +173,7 @@ func _on_category_move_requested(category: LogCategory, direction: int) -> void:
 #region Private Functions
 
 func _add_category(_name: String = "", _is_locked: bool = false) -> void:
-	var _n = category_scene.instantiate() as LogCategory 
+	var _n = category_scene.instantiate() as GLLogCategory 
 	var low_name: String = _name.to_lower()
 	_n.category_name = low_name
 	_n.is_locked = _is_locked
@@ -229,14 +229,14 @@ func _deferred_update_columns() -> void:
 
 	 
 
-func _on_set_default_category(cat: LogCategory, set_status: bool) -> void:
+func _on_set_default_category(cat: GLLogCategory, set_status: bool) -> void:
 	if _default_setting_in_progress:
 		return
 	
 	_default_setting_in_progress = true
 	
 	for log_c in category_container.get_children():
-		if log_c is LogCategory and log_c.default_btn != null:
+		if log_c is GLLogCategory and log_c.default_btn != null:
 			if log_c != cat:
 				log_c.default_btn.button_pressed = false
 
@@ -264,7 +264,7 @@ func handle_category_mov_button_state() -> void:
 
 #region Helpers
 
-func _check_conflict_name(cat_obj: LogCategory, new_name: String) -> bool:
+func _check_conflict_name(cat_obj: GLLogCategory, new_name: String) -> bool:
 	for log_c in category_container.get_children():
 		if log_c == cat_obj:
 			continue

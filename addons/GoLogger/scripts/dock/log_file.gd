@@ -56,7 +56,6 @@ func get_file_content() -> void:
 	var f := FileAccess.open(file_path, FileAccess.READ)
 	var content: String = f.get_file_as_string(file_path)
 	var err := f.get_open_error()
-	tooltip_text = str("Failed to open file! Error[", f.get_open_error(), "]") if err != OK else file_name
 	f.close()
 	file_contents = content
 
@@ -105,7 +104,6 @@ func assign_icon(is_valid: bool) -> void:
 
 
 
-
 func get_date() -> String:
 	if file_name.is_empty():
 		return ""
@@ -142,8 +140,7 @@ func _get_name(_f_name: String) -> String:
 		_get_month(_splits[0].substr(2, 2)), 
 		_splits[0].substr(4, 2), "\n", 
 		_get_year(_splits[0].substr(0, 2))
-	)
-	tooltip_text = _f_name
+	) 
 	return fin_time + fin_date
 
 

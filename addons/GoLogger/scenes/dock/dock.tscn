@@ -2112,7 +2112,7 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="UserDirButton" type="Button" parent="HelpTab/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
+[node name="RegenerateButton" type="Button" parent="HelpTab/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Open 
@@ -2122,8 +2122,7 @@ directory"
 [node name="Label" type="Label" parent="HelpTab/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=27916166]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "If issues with the plugin arise, start by deleting the \"gologger_data.ini\" and run your 
-project once to generate a fresh one(will reset settings and categories).
+text = "If issues with the plugin arise, use button to the left to regenerate a new settings resource. Ensure that  res://addons/gologger/data.tres exists in your directory. This will reset your categories and settings. 
 
 Note that autoloaded scripts/scenes are loaded in the order as shown in ProjectSettings > Globals > Autoload. 
 If an autoload is trying to log an entry before Log.tscn is loaded, it might throw an error or simply not log the entry.

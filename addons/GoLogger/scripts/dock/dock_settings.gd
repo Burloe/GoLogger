@@ -70,7 +70,6 @@ var id_inspector: EditorInspector
 @onready var hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
 
-@onready var user_dir_btn: Button = %UserDirButton 
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
 @onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
