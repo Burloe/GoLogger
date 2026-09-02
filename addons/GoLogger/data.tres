@@ -9,11 +9,11 @@ category_name = "game"
 
 [sub_resource type="Resource" id="Resource_r3wlc"]
 script = ExtResource("1_2nbxn")
-category_name = "inventory"
+category_name = "player"
 
 [sub_resource type="Resource" id="Resource_ka64b"]
 script = ExtResource("1_2nbxn")
-category_name = "player"
+category_name = "inventory"
 
 [sub_resource type="Resource" id="Resource_lfsjx"]
 script = ExtResource("1_2nbxn")

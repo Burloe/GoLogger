@@ -7,7 +7,7 @@ func _enter_tree() -> void:
 	dock = preload("uid://0k0tpsfqof2s").instantiate()
 	add_control_to_bottom_panel(dock, "GoLogger")
 	dock.plugin_version = get_plugin_version()
-	for i in [dock.renable_btn1, dock.renable_btn2, dock.renable_btn3]:
+	for i in [dock.renable_btn1, dock.renable_btn2]:
 		if i: i.button_up.connect(_renable_plugin) 
 
 

@@ -5,7 +5,6 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
 @onready var polling_timer: Timer = %PollingTimer
 
-@onready var reload_hider: MarginContainer = %ReloadTopper
 @onready var fb_margin_container: MarginContainer = %FBMarginContainer
 @onready var margin_container: MarginContainer = %LBMarginContainer
 @onready var category_tab_container = %LBCategoryTabContainer
@@ -89,8 +88,7 @@ var state: BrowserState = BrowserState.FILE_LIST
 enum BrowserState {
 	LOG_FULL,
 	LOG_SPLIT,
-	FILE_LIST,
-	RELOAD_HIDE
+	FILE_LIST, 
 }
 
 enum SortModes {
@@ -111,9 +109,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.keycode == KEY_ESCAPE:
 		_close_log_file()
 	
-	if event is InputEventKey and event.keycode == KEY_O:
-		if event.is_pressed():
-			set_view(BrowserState.RELOAD_HIDE)
+	if event is InputEventKey and event.keycode == KEY_O: 
 		if event.is_released():
 			set_view(BrowserState.FILE_LIST)
 	 
@@ -158,15 +154,11 @@ func _ready() -> void:
 
 
 
-func set_view(to: BrowserState) -> void: 
-	reload_hider.hide()
+func set_view(to: BrowserState) -> void:  
 	h_split_cont.show()
 	fb_margin_container.hide()
 	margin_container.hide()
-	fb_margin_container.add_theme_constant_override("margin_right", 0)
-
-	if to not in [BrowserState.FILE_LIST, BrowserState.RELOAD_HIDE] and cur_logfile == null:
-		to = BrowserState.FILE_LIST
+	fb_margin_container.add_theme_constant_override("margin_right", 0) 
 
 	match to:
 		BrowserState.FILE_LIST:
@@ -176,10 +168,7 @@ func set_view(to: BrowserState) -> void:
 		BrowserState.LOG_SPLIT:
 			fb_margin_container.show()
 			margin_container.show()
-			fb_margin_container.add_theme_constant_override("margin_right", 8) 
-		BrowserState.RELOAD_HIDE:
-			h_split_cont.hide()
-			reload_hider.show() 
+			fb_margin_container.add_theme_constant_override("margin_right", 8)  
 	state = to
 	# await get_tree().physics_frame
 	# await get_tree().physics_frame
@@ -195,10 +184,8 @@ func load_log_browser() -> void:
 
 	var opened_tab = max(0, category_tab_container.current_tab)
 	_close_log_file()
-	is_reloading = true
-	set_view(BrowserState.RELOAD_HIDE)
-	h_split_cont.hide()
-	reload_hider.show()
+	is_reloading = true 
+	h_split_cont.hide() 
 
 	if data != null:
 		cur_view = data.browser_view

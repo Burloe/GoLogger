@@ -20,9 +20,8 @@ extends TabContainer
 
 @export var data: GLData = null
 const DATA_PATH: String = "res://addons/gologger/data.tres"
-@onready var renable_btn1: Button = %RENABLEButton1
-@onready var renable_btn2: Button = %RENABLEButton2
-@onready var renable_btn3: Button = %RENABLEButton3
+@onready var renable_btn1: Button = %RENABLEButton1 
+@onready var renable_btn2: Button = %RENABLEButton3
 
 # Log Browser
 @onready var log_browser_tab: HBoxContainer = %LogBrowserTab
@@ -36,10 +35,9 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var lb_close_btn: Button = %LBCloseButton
 
 # Category tab
-@onready var category_tab: HBoxContainer = %CategoriesTab
+@onready var category_tab: HBoxContainer = %CategoryPanel
 @onready var cat_add_btn: Button = %AddCategoryButton
-@onready var category_container: GridContainer = %CategoryGridContainer
-@onready var cat_open_dir_btn: Button = %OpenDirCatButton
+@onready var category_container: GridContainer = %CategoryGridContainer 
 @onready var sett_reset_btn: Button = %ResetSettingsButton
 
 # Settings tab
@@ -257,8 +255,7 @@ func _ready() -> void:
 
 
 	# # Signal connections 
-	_connect_unique(settings.settings_changed, _on_editor_settings_changed)
-	_connect_unique(cat_open_dir_btn.button_up, _open_directory)
+	_connect_unique(settings.settings_changed, _on_editor_settings_changed) 
 	_connect_unique(lb_open_dir_btn.button_up, _open_directory)
 	# _connect_unique(user_dir_btn.button_up, _open_user_dir)
 	_connect_unique(regenerate_btn.button_up, _on_regenerate_button_up)
@@ -364,8 +361,7 @@ func _assign_editor_icons() -> void:
 		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
 		"Reload": [sett_reset_btn],
 		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
-		"Folder": [lb_open_dir_btn, cat_open_dir_btn, sett_open_dir_btn],
-		"Debug": [renable_btn1, renable_btn2, renable_btn3]
+		"Debug": [renable_btn1, renable_btn2]
 	}
 
 	for icon_name: String in _d.keys():

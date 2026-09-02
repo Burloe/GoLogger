@@ -7,8 +7,6 @@ signal request_theme_colors
 
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
-@onready var open_dir_btn: Button = %OpenDirCatButton
-@onready var reset_settings_btn: Button = %ResetSettingsButton
 
 @export var data: GLData = null
 
