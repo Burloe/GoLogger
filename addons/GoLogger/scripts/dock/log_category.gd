@@ -1,9 +1,9 @@
 @tool
 class_name GLLogCategory extends PanelContainer
 
-## Emitted to GoLoggerDock.gd when any change is made in order to save the categories.
+## Emitted to dock.gd when any change is made in order to save the categories.
 signal log_category_changed 
-## Emitted to GoLoggerDock.gd to move the categories and save them.
+## Emitted to dock.gd to move the categories and save them.
 signal move_category_requested(log_category: GLLogCategory, direction : int)
 
 signal set_default_category(category: GLLogCategory, toggle_on: bool) 
@@ -99,16 +99,8 @@ func _ready() -> void:
 	line_edit.text_submitted.connect(
 		func(new_text: String) -> void:
 			if !check_name_conflict():
-				apply_name(new_text)
-			# else:
-			# 	line_edit.text = category_name
-			# 	handle_name_state()
-	)
-
-	# line_edit.text_changed.connect(
-	# 	func(_new_text: String) -> void:
-	# 		handle_name_state()
-	# )
+				apply_name(new_text) 
+	) 
 
 	apply_btn.button_up.connect(
 		func() -> void:
@@ -120,6 +112,8 @@ func _ready() -> void:
 		func(toggled_on: bool) -> void:
 			set_default_category.emit(self, toggled_on)
 			is_default = toggled_on
+			if cat_data:
+				cat_data.is_default = toggled_on
 	)
 
 	size = Vector2.ZERO
@@ -131,14 +125,7 @@ func _data_ready() -> void:
 	if category_name != "":
 		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
-	line_edit.text = category_name  
-
-
-
-# func handle_name_state() -> void:
-# 	var is_unchanged := line_edit.text == "" or line_edit.text == category_name
-
-# 	apply_btn.visible = !is_unchanged
+	line_edit.text = category_name
 
 
 
@@ -195,86 +182,6 @@ func _on_text_changed(new_text: String) -> void:
 
 	if new_text != category_name and category_name != "":
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid if check_name_conflict() else sb_line_edit_normal)
-
-
-
-# func _handle_state(state_to: STATES) -> void:
-# 	var size_dur: float = 0.06
-# 	var fade_dur: float = 0.03
-# 	state_transition_id += 1
-# 	var transition_id := state_transition_id
-# 	state = state_to
-
-# 	if state_to != STATES.IDLE:
-# 		var fade_out := create_tween().set_parallel(true)
-# 		fade_out.tween_property(move_left_btn, "modulate", Color.TRANSPARENT, size_dur)
-# 		fade_out.tween_property(move_right_btn, "modulate", Color.TRANSPARENT, size_dur)
-# 		fade_out.tween_property(apply_btn, "modulate", Color.TRANSPARENT, size_dur)
-# 		fade_out.tween_property(del_btn, "modulate", Color.TRANSPARENT, size_dur)
-# 		await fade_out.finished
-# 		if transition_id != state_transition_id:
-# 			return
-# 		move_left_btn.hide()
-# 		move_right_btn.hide()
-# 		apply_btn.hide()
-# 		del_btn.hide()
-
-# 	match state_to:
-# 		STATES.IDLE:
-# 			custom_minimum_size = size
-# 			var fade_out := create_tween().set_parallel(true)
-# 			fade_out.tween_property(move_left_btn, "modulate", Color.TRANSPARENT, fade_dur)
-# 			fade_out.tween_property(move_right_btn, "modulate", Color.TRANSPARENT, fade_dur)
-# 			fade_out.tween_property(apply_btn, "modulate", Color.TRANSPARENT, fade_dur)
-# 			fade_out.tween_property(del_btn, "modulate", Color.TRANSPARENT, fade_dur)
-# 			await fade_out.finished
-# 			if transition_id != state_transition_id:
-# 				return
-			
-# 			move_left_btn.hide()
-# 			move_right_btn.hide()
-# 			apply_btn.hide()
-# 			del_btn.hide()
-# 			var resize := create_tween().set_parallel(true)
-# 			resize.tween_property(self, "custom_minimum_size", IDLE_SIZE, size_dur)
-# 			resize.tween_property(self, "custom_maximum_size", IDLE_SIZE, size_dur)
-
-# 		STATES.HOVER:
-# 			var is_edge_ordered: bool = false
-# 			if move_right_btn.disabled or move_left_btn.disabled:
-# 				is_edge_ordered = true
-# 			var resize := create_tween().set_parallel(true)
-# 			resize.tween_property(self, "custom_minimum_size", HOVER_EDGE_SIZE if is_edge_ordered else HOVER_SIZE, size_dur)
-# 			resize.tween_property(self, "custom_maximum_size", HOVER_EDGE_SIZE if is_edge_ordered else HOVER_SIZE, size_dur) 
-# 			await resize.finished
-# 			if transition_id != state_transition_id:
-# 				return
-
-# 			var fade_in := create_tween().set_parallel(true)
-# 			del_btn.modulate = Color.TRANSPARENT
-# 			del_btn.show()
-# 			fade_in.tween_property(del_btn, "modulate", Color.WHITE, fade_dur)
-# 			if !move_left_btn.disabled:
-# 				move_left_btn.modulate = Color.TRANSPARENT
-# 				move_left_btn.show()
-# 				fade_in.tween_property(move_left_btn, "modulate", Color.WHITE, fade_dur) 
-# 			if !move_right_btn.disabled:
-# 				move_right_btn.modulate = Color.TRANSPARENT
-# 				move_right_btn.show()
-# 				fade_in.tween_property(move_right_btn, "modulate", Color.WHITE, fade_dur) 
-
-
-# 		STATES.EDITING:
-# 			var resize := create_tween().set_parallel(true)
-# 			resize.tween_property(self, "custom_minimum_size", EDITING_SIZE, size_dur)
-# 			resize.tween_property(self, "custom_maximum_size", EDITING_SIZE, size_dur)
-# 			await resize.finished
-# 			if transition_id != state_transition_id:
-# 				return
-
-# 			apply_btn.show()
-# 			var fade_in := create_tween()
-# 			fade_in.tween_property(apply_btn, "modulate", Color.WHITE, fade_dur)
 
 
 

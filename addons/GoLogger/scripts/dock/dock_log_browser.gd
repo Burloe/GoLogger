@@ -3,39 +3,24 @@ extends HBoxContainer
 
 signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
+@onready var category_panel: HBoxContainer = %CategoryPanel
 @onready var polling_timer: Timer = %PollingTimer
 @onready var popup: PopupPanel = %LogFilePanelPopup
 
-@onready var margin_container: MarginContainer = %LBMarginContainer
-@onready var category_tab_container = %LBCategoryTabContainer
-# @onready var log_viewer: Panel = %LogViewer
-# @onready var h_split_cont: HSplitContainer = %HSplitContainer
-# @onready var title_lbl: Label = %LBTitleLabel
-@onready var reload_btn: Button = %LBReloadButton 
-
-@onready var open_w_os_btn: Button = %LBOpenWOSButton 
-# @onready var view_mode_btn: Button = %LBViewModeButton
+@onready var open_w_os_btn: Button = %LBOpenWOSButton
 @onready var sort_mode_btn: Button = %LBSortModeButton
 
-# @onready var close_btn: Button = %LBCloseButton
-# @onready var copy_content_btn: Button =%LBCopyContentButton
-# @onready var contents_lbl: Label = %ContentLabel
+@onready var margin_container: MarginContainer = %LBMarginContainer
+@onready var category_grid_container = %LBCategoryGridContainer 
+@onready var reload_btn: Button = %LBReloadButton 
+@onready var current_cat_lbl: Label = %CurrentCategoryLabel
 
-# @onready var lb_panel: Panel = %LBPanel
-# @onready var lb_scroll_container: ScrollContainer = %LBScrollContainer
-
-# @onready var lbl_sett_btn: Button = %LBLblSettButton
-# @onready var lbl_sett_popup: PanelContainer = %LblSettInspectorPopup
-# @onready var lbl_sett_popup_scroll_cont: ScrollContainer = %LblSettPopupScrollContainer
 
 @export var data: GLData = null
 var inspector: EditorInspector
 
 const GRID_SEPARATION = 8
 const GRID_GROUP_SORT_SEPARATION = 24
-
-# var ico_fullscreen_view := preload("uid://ijiplwclq5pu")
-# var ico_splitscreen_view := preload("uid://cp2p55wdq2wuk")
 var log_file_btn := preload("uid://bq7nahsc5aca7")
 var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
 var ico_sort_date_new = preload("uid://b1fn0coq48ktv")
@@ -61,12 +46,13 @@ var base_dir = ""
 var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
 var cat_containers: Array[GridContainer] = []
 var log_files: Array[GLLogFile] = []
+var current_category: String = "":
+	set(value):
+		current_category = value
+		current_cat_lbl.text = value.capitalize()
 var cur_logfile: GLLogFile = null:
 	set(value):
-		cur_logfile = value
-		# contents_lbl.text = cur_logfile.file_contents if value else ""
-		# if value != null:
-		# 	copy_content_btn.visible = !cur_logfile.file_contents.is_empty() 
+		cur_logfile = value 
 var cur_sort: SortModes = SortModes.NEW: 
 	set(value):
 		cur_sort = value
@@ -105,52 +91,39 @@ func _input(event: InputEvent) -> void:
 
 
 
-func _ready() -> void:
-	# for mo in [lb_scroll_container]:
-	# 	if mo != null:
-	# 		mo.mouse_entered.connect(func() -> void: is_content_hovered = true)
-	# 		mo.mouse_exited.connect(func() -> void: is_content_hovered = false)
-	
-	# h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
-	# close_btn.button_up.connect(_close_log_file) 
-	reload_btn.button_up.connect(load_log_browser)
-	polling_timer.timeout.connect(
-		func() -> void:
-			if state not in [BrowserState.LOG_FULL, BrowserState.LOG_SPLIT]:
-				load_log_browser()
-	)
+func _ready() -> void: 
+	reload_btn.button_up.connect(load_log_files)
+	polling_timer.timeout.connect(load_log_files)
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
 	sort_mode_btn.button_up.connect(
 		func() -> void:
 			cur_sort = (cur_sort + 1) % 4
-			load_log_browser()
+			load_log_files()
 	)
-	# lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lbl_sett_btn))
-	# copy_content_btn.button_up.connect(func() -> void: if cur_logfile != null: DisplayServer.clipboard_set(cur_logfile.file_contents))
+	category_panel.category_created.connect(
+		func(cat: GLLogCategory) -> void: 
+			cat.select_btn.button_up.connect(
+				func() -> void:
+					current_category = cat.category_name
+			)
+	)
 	resized.connect(_update_columns)
 	
 	inspector = EditorInspector.new()
 	inspector.edit(ResourceLoader.load("uid://cqn5x8cb7vjy3"))
 	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	# lbl_sett_popup.get_child(0).add_child(inspector)
-
-	# title_lbl.text = ""
-	# contents_lbl.text = ""
-	# lbl_sett_popup.hide()
+	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL 
 	open_log_with_os = open_log_with_os # loads the icon
 
 
 
 ## Used to both initialize and reload the file list
-func load_log_browser() -> void:
+func load_log_files() -> void:
 	if not is_active: 
 		return 
 
-	var opened_tab = max(0, category_tab_container.current_tab)
 	_close_log_file()
-	is_reloading = true 
-	# h_split_cont.hide() 
+	is_reloading = true
 
 	if data != null:
 		base_dir = data.base_dir
@@ -159,9 +132,9 @@ func load_log_browser() -> void:
 	if base_dir == "":
 		printerr("[GoLogger] Failed to load Base Directory!") 
 
-	#Collect old
+	#Collect > hide > deelete old files
 	var old := []
-	for cat in category_tab_container.get_children():
+	for cat in category_grid_container.get_children():
 		var c = []
 		for log in cat.get_children():
 			c.append(log)
@@ -171,38 +144,34 @@ func load_log_browser() -> void:
 	categories.clear()
 	grid_conts.clear()
 
-	for child in category_tab_container.get_children():
-		category_tab_container.remove_child(child)
-		child.queue_free() 
+	# Add fallback
+	if current_category == "" or data.categories.is_empty() or data.categories[0] != null:
+		for cat in data.categories:
+			if cat.category_name == data.default_category:
+				current_category = cat.category_name
+				break
+		
+		if current_category == "":
+			current_category = data.categories[0].category_name
+
+	for child in category_grid_container.get_children():
+		category_grid_container.remove_child(child)
+		child.queue_free()
 
 	for c: GLCategoryData in data.categories:
-		if c.category_name == "":
-				continue
-		
-		var sc: ScrollContainer = ScrollContainer.new()
-		sc.set_name(c.category_name.capitalize())
-		category_tab_container.add_child(sc)
-		sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		var gc: GridContainer = GridContainer.new()
-		sc.add_child(gc)
-		gc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		gc.size_flags_vertical   = Control.SIZE_EXPAND_FILL 
-		gc.add_theme_constant_override("h_separation", GRID_SEPARATION if cur_sort < 2 else GRID_GROUP_SORT_SEPARATION)
-		gc.add_theme_constant_override("v_separation", GRID_SEPARATION if cur_sort < 2 else GRID_GROUP_SORT_SEPARATION)
-		gc.columns = 99
-		var n: Array = [c.category_name, gc]
+		if c.category_name == "" or c.category_name != current_category:
+				continue 
+
+		var n: Array = [c.category_name]
 		categories.append(n)
-		_load_logfiles(c.category_name, gc)
+		_load_logfiles(c.category_name)
 	
-	_update_columns(true)
-	is_reloading = false 
-	if category_tab_container.get_tab_count() > 0:
-		category_tab_container.current_tab = opened_tab
+	_update_columns(true) 
+	is_reloading = false
 
 
 
-func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
+func _load_logfiles(category_name: String) -> void:
 	var actionable_list: PackedStringArray = []
 	var grouped_list: Dictionary = {}
 	var stray_file_list: PackedStringArray = []
@@ -210,13 +179,13 @@ func _load_logfiles(category_name: String, base_gc: GridContainer) -> void:
 
 	if cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]:
 		for group in fin_list: 
-			_add_logfiles_to_container(base_gc, group, category_name)
+			_add_logfiles_to_container(group, category_name)
 	else:
-		_add_logfiles_to_container(base_gc, fin_list, category_name)
+		_add_logfiles_to_container(fin_list, category_name)
 
 
 
-func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_name: String) -> void:
+func _add_logfiles_to_container(list: Array, category_name: String) -> void:
 	var gc : GridContainer
 	var is_grouped: bool = cur_sort in [SortModes.GROUP_OLD, SortModes.GROUP_NEW]
 	if is_grouped:
@@ -224,7 +193,7 @@ func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_na
 		gc.add_theme_constant_override("h_separation", GRID_SEPARATION)
 		gc.add_theme_constant_override("v_separation", GRID_SEPARATION)
 		if is_grouped: gc.columns = 3
-		base_gc.add_child(gc)
+		category_grid_container.add_child(gc)
 		gc.size_flags_horizontal = Control.SIZE_FILL
 		gc.size_flags_vertical = Control.SIZE_FILL
 	
@@ -240,7 +209,7 @@ func _add_logfiles_to_container(base_gc: GridContainer, list: Array, category_na
 		if is_grouped:
 			gc.add_child(lf)
 		else:
-			base_gc.add_child(lf)
+			category_grid_container.add_child(lf)
 		log_files.append(lf)
 		lf.button_up.connect(_open_log_file.bind(lf))
 		log_file_added.emit(lf)
@@ -412,27 +381,18 @@ func _close_log_file() -> void:
 
 
 func _update_columns(is_initializing: bool = false) -> void:
-	if min_cell_width <= 0: return
+	if min_cell_width <= 0 or !category_grid_container: 
+		return
 
 	if cur_sort in [SortModes.GROUP_NEW, SortModes.GROUP_OLD]:
-		for child in category_tab_container.get_children():
-			for grid_cont: GridContainer in child.get_children(): 
-				grid_cont.columns = max(grid_cont.get_child_count(), 1)
+		category_grid_container.columns = max(category_grid_container.get_child_count(), 1)
 		return
 	
 	await get_tree().physics_frame
-	await get_tree().physics_frame
-	
-	var current_tab_ctrl: GridContainer = null
-	if category_tab_container.get_current_tab_control(): 
-		current_tab_ctrl = category_tab_container.get_current_tab_control().get_child(0)
-	else: return
+	await get_tree().physics_frame 
 
-	var cell_width: int = log_files[0].size.x + current_tab_ctrl.get_theme_constant("h_separation")\
+	var cell_width: int = log_files[0].size.x + category_grid_container.get_theme_constant("h_separation")\
 		if !log_files.is_empty() else 1
-	var col: int = max(1, int(current_tab_ctrl.size.x / cell_width))
+	var col: int = max(1, int(category_grid_container.size.x / cell_width))
 	
-
-	for category: ScrollContainer in category_tab_container.get_children():
-		for grid_cont: GridContainer in category.get_children():
-			grid_cont.columns = col 
+	category_grid_container.columns = col 

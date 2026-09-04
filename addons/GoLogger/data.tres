@@ -13,24 +13,21 @@ category_name = "player"
 
 [sub_resource type="Resource" id="Resource_ka64b"]
 script = ExtResource("1_2nbxn")
-category_name = "inventory"
+category_name = "network"
 
 [sub_resource type="Resource" id="Resource_lfsjx"]
 script = ExtResource("1_2nbxn")
-category_name = "network"
 
 [sub_resource type="Resource" id="Resource_macc1"]
 script = ExtResource("1_2nbxn")
-category_name = "combat"
 
 [sub_resource type="Resource" id="Resource_is5jv"]
 script = ExtResource("1_2nbxn")
-category_name = "quests"
+category_name = "inventory"
 
 [resource]
 script = ExtResource("2_r3wlc")
 categories = Array[ExtResource("1_2nbxn")]([SubResource("Resource_2nbxn"), SubResource("Resource_r3wlc"), SubResource("Resource_ka64b"), SubResource("Resource_lfsjx"), SubResource("Resource_macc1"), SubResource("Resource_is5jv")])
-default_category = "game"
 browser_sort = 1
 base_dir = "user://test/draugur/"
 limit_method = 2

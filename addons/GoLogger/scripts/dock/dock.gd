@@ -242,7 +242,7 @@ func _ready() -> void:
 			log_browser_tab.is_active = false
 			match tab:
 				0: 
-					log_browser_tab.load_log_browser()
+					log_browser_tab.load_log_files()
 					log_browser_tab._update_columns(true)
 					log_browser_tab.is_active = true 
 	)
@@ -269,7 +269,7 @@ func _ready() -> void:
 	_assign_settings_controls()
 	category_tab.initialize_tab()
 	settings_tab.initialize_tab() 
-	log_browser_tab.load_log_browser() 
+	log_browser_tab.load_log_files() 
 	_assign_editor_icons()
 
 

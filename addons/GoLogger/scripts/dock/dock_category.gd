@@ -4,6 +4,7 @@ extends HBoxContainer
 signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_categories_save
 signal request_theme_colors 
+signal category_created(category: GLLogCategory)
 
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
@@ -47,18 +48,12 @@ enum ErrorReportLevel {
 #region Initializers
 
 func _ready() -> void:
-
-	# visibility_changed.connect(func() -> void: if visible: request_update_columns())
-	# resized.connect(_update_columns)
 	_connect_unique(add_category_btn.button_up, _add_category) 
-	
 
 	for log_c in category_container.get_children():
 		if log_c is not GLLogCategory:
 			print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
 		log_c.queue_free()
-	
-	# request_update_columns()
 
 
 
@@ -69,7 +64,6 @@ func initialize_tab() -> void:
 	for cat in data.categories.duplicate():
 		if cat.category_name.is_empty():
 			continue
-
 		_add_category(cat.category_name)
 
 	if !data.default_category.is_empty():
@@ -77,8 +71,6 @@ func initialize_tab() -> void:
 			if cat is GLLogCategory and cat.category_name == data.default_category and cat.default_btn != null:
 				cat.default_btn.button_pressed = true
 				break
-				
-	# request_update_columns()
 
 
 
@@ -125,10 +117,8 @@ func _on_category_move_requested(category: GLLogCategory, direction: int) -> voi
 	var cols: int = max(1, category_container.columns)
 	var h_sep: float = float(category_container.get_theme_constant("h_separation"))
 	var v_sep: float = float(category_container.get_theme_constant("v_separation"))
-
 	var step_x: float = category.size.x + h_sep
 	var step_y: float = category.size.y + v_sep 
-
 	var from_row: int = int(from / cols)
 	var from_col: int = from % cols
 	var to_row: int = int(to / cols)
@@ -160,8 +150,6 @@ func _on_category_move_requested(category: GLLogCategory, direction: int) -> voi
 		c.move_right_btn.disabled = false
 		c.move_left_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
 		c.move_right_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
-
-	
 	category_container.get_child(0).move_left_btn.disabled = true
 	category_container.get_child(category_container.get_child_count() - 1).move_right_btn.disabled = true
 #endregion
@@ -170,7 +158,7 @@ func _on_category_move_requested(category: GLLogCategory, direction: int) -> voi
 
 #region Private Functions
 
-func _add_category(_name: String = "", _is_locked: bool = false) -> void:
+func _add_category(_name: String = "", _is_locked: bool = false):
 	var _n = category_scene.instantiate() as GLLogCategory 
 	var low_name: String = _name.to_lower()
 	_n.category_name = low_name
@@ -181,17 +169,14 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested)
-	# _n.tree_entered.connect(request_update_columns)
 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
 	
 	if !low_name.is_empty():
 		_n.default_btn.button_pressed = data.default_category == low_name
 	else:	
 		_n.line_edit.grab_focus()
-		
-	handle_category_mov_button_state()
-	# request_update_columns()
- 
+	category_created.emit(_n)
+	handle_category_mov_button_state() 
 
 
 
@@ -201,30 +186,9 @@ func _on_category_tree_exited(name: String) -> void:
 	
 	handle_category_mov_button_state()
 	request_categories_save.emit()
-	# request_update_columns() 
 
 
-# func request_update_columns() -> void:
-# 	if _column_update_pending or !is_inside_tree():
-# 		return
 
-# 	_column_update_pending = true
-# 	_deferred_update_columns.call_deferred()
-
-
-# func _deferred_update_columns() -> void:
-# 	if !is_inside_tree():
-# 		_column_update_pending = false
-# 		return
-
-# 	await get_tree().process_frame
-# 	await get_tree().process_frame
-
-# 	_column_update_pending = false
-	# if is_inside_tree():
-	# 	_update_columns()
-
-	 
 
 func _on_set_default_category(cat: GLLogCategory, set_status: bool) -> void:
 	if _default_setting_in_progress:
