@@ -14,10 +14,13 @@ signal set_default_category(category: GLLogCategory, toggle_on: bool)
 
 @onready var move_left_btn: Button = 				%MoveLeftButton
 @onready var move_right_btn: Button = 			%MoveRightButton
-# @onready var lock_btn:	Button = 						%LockButton
+@onready var select_btn:	Button = 					%SelectButton
 @onready var default_btn: Button =	 				%DefaultButton
 @onready var line_edit: LineEdit = 					%CategoryNameLineEdit
 @onready var del_btn:	Button = 							%DeleteButton
+
+@onready var line_edit_panel: Panel = 			%LineEditPanel
+@onready var edit_hbox: HBoxContainer = 		%LineEditHBox
 @onready var apply_btn: Button = 						%ApplyButton
 @onready var revert_btn: Button = 					%RevertButton
 
@@ -26,20 +29,6 @@ signal set_default_category(category: GLLogCategory, toggle_on: bool)
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
 var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx")
-
-const IDLE_SIZE = Vector2(242, 48)
-const HOVER_SIZE = Vector2(334, 48)
-const HOVER_EDGE_SIZE = Vector2(308, 48)
-const EDITING_SIZE = Vector2(310, 48)
-
-enum STATES {
-	IDLE,
-	HOVER,
-	EDITING
-}
-var state: STATES = STATES.IDLE
-var is_hovered: bool = false  
-var state_transition_id: int = 0
 
 ##  Last applied category name
 var category_name: String = "":
@@ -72,15 +61,16 @@ func _ready() -> void:
 	_on_editor_settings_changed() 
 	move_left_btn.set_button_icon(get_theme_icon("ArrowLeft", "EditorIcons"))
 	move_right_btn.set_button_icon(get_theme_icon("ArrowRight", "EditorIcons")) 
+	select_btn.set_button_icon(get_theme_icon("CodeFoldDownArrow", "EditorIcons"))
+	apply_btn.set_button_icon(get_theme_icon("ImportCheck", "EditorIcons"))
 	revert_btn.set_button_icon(get_theme_icon("Reload", "EditorIcons"))
 	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
-	revert_btn.hide()
+	edit_hbox.hide()
 	is_default = is_default # loads the icon
 
 	settings.settings_changed.connect(_on_editor_settings_changed)
 	del_btn.button_up.connect(_on_del_button_up)
-	line_edit.text_changed.connect(_on_text_changed) 
-	line_edit.focus_exited.connect(_on_line_edit_focus_exited)
+	line_edit.text_changed.connect(_on_text_changed)
 	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
@@ -89,31 +79,36 @@ func _ready() -> void:
 			line_edit.unedit()
 			line_edit.release_focus()
 			line_edit.text = category_name
-			apply_btn.hide()
-			default_btn.show()
-			revert_btn.hide()
+			line_edit_panel.hide()
 	)
 
 	line_edit.editing_toggled.connect(
 		func(toggled_on: bool) -> void: 
-			revert_btn.tooltip_text = str("Revert to '", category_name, "'")
-			revert_btn.visible = toggled_on
-			_handle_state(STATES.EDITING if toggled_on else STATES.HOVER if is_hovered else STATES.IDLE)
+			revert_btn.tooltip_text = str("Revert to '", category_name, "'") 
+			edit_hbox.visible = toggled_on
+			var tw := create_tween()
+			var padding: int = 66
+			tw.tween_property(self, "size", Vector2(size.x + padding, size.y) if toggled_on else Vector2(size.x - padding, size.y), 0.05)
+			await tw.finished
+			var tween := create_tween()
+			line_edit_panel.visible  = toggled_on
+			line_edit_panel.modulate = Color.TRANSPARENT if toggled_on else Color.WHITE
+			tween.tween_property(line_edit_panel, "modulate", Color.WHITE if toggled_on else Color.TRANSPARENT, 0.05)
 	)
 
 	line_edit.text_submitted.connect(
 		func(new_text: String) -> void:
 			if !check_name_conflict():
 				apply_name(new_text)
-			else:
-				line_edit.text = category_name
-				handle_name_state()
+			# else:
+			# 	line_edit.text = category_name
+			# 	handle_name_state()
 	)
 
-	line_edit.text_changed.connect(
-		func(_new_text: String) -> void:
-			handle_name_state()
-	)
+	# line_edit.text_changed.connect(
+	# 	func(_new_text: String) -> void:
+	# 		handle_name_state()
+	# )
 
 	apply_btn.button_up.connect(
 		func() -> void:
@@ -128,20 +123,7 @@ func _ready() -> void:
 	)
 
 	size = Vector2.ZERO
-	if line_edit.text == "": 
-		apply_btn.hide() 
-
-	# data/cat_data are already fully loaded synchronously by this point, no need to await anything.
 	_data_ready()
-
-
-
-func _process(delta: float) -> void:
-	var hovered_now := get_global_rect().has_point(get_global_mouse_position())
-	if hovered_now != is_hovered:
-		is_hovered = hovered_now
-		if !line_edit.is_editing():
-			_handle_state(STATES.HOVER if is_hovered else STATES.IDLE)
 
 
 
@@ -149,17 +131,14 @@ func _data_ready() -> void:
 	if category_name != "":
 		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
-	line_edit.text = category_name 
-	if line_edit.text == "": 
-		apply_btn.hide() 
+	line_edit.text = category_name  
 
 
 
-func handle_name_state() -> void:
-	var is_unchanged := line_edit.text == "" or line_edit.text == category_name
+# func handle_name_state() -> void:
+# 	var is_unchanged := line_edit.text == "" or line_edit.text == category_name
 
-	apply_btn.visible = !is_unchanged
-	default_btn.visible = is_unchanged
+# 	apply_btn.visible = !is_unchanged
 
 
 
@@ -200,8 +179,7 @@ func apply_name(new_name: String) -> void:
 	line_edit.text = category_name
 	log_category_changed.emit()
 	line_edit.release_focus()
-	apply_btn.hide()
-	default_btn.show()
+	edit_hbox.hide()
 
 
 
@@ -211,9 +189,8 @@ func _on_text_changed(new_text: String) -> void:
 		var invalid_ch = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
 		for c in invalid_ch:
 			new_text = new_text.replace(c, "")
-	new_text = new_text.replace(" ", "_")
-	line_edit.text = new_text
-	line_edit.caret_column = new_text.length()
+	new_text = new_text.replace(" ", "_") 
+	line_edit.caret_column = new_text.length() 
 
 
 	if new_text != category_name and category_name != "":
@@ -221,90 +198,83 @@ func _on_text_changed(new_text: String) -> void:
 
 
 
-func _handle_state(state_to: STATES) -> void:
-	var size_dur: float = 0.06
-	var fade_dur: float = 0.03
-	state_transition_id += 1
-	var transition_id := state_transition_id
-	state = state_to
+# func _handle_state(state_to: STATES) -> void:
+# 	var size_dur: float = 0.06
+# 	var fade_dur: float = 0.03
+# 	state_transition_id += 1
+# 	var transition_id := state_transition_id
+# 	state = state_to
 
-	if state_to != STATES.IDLE:
-		var fade_out := create_tween().set_parallel(true)
-		fade_out.tween_property(move_left_btn, "modulate", Color.TRANSPARENT, size_dur)
-		fade_out.tween_property(move_right_btn, "modulate", Color.TRANSPARENT, size_dur)
-		fade_out.tween_property(apply_btn, "modulate", Color.TRANSPARENT, size_dur)
-		fade_out.tween_property(del_btn, "modulate", Color.TRANSPARENT, size_dur)
-		await fade_out.finished
-		if transition_id != state_transition_id:
-			return
-		move_left_btn.hide()
-		move_right_btn.hide()
-		apply_btn.hide()
-		del_btn.hide()
+# 	if state_to != STATES.IDLE:
+# 		var fade_out := create_tween().set_parallel(true)
+# 		fade_out.tween_property(move_left_btn, "modulate", Color.TRANSPARENT, size_dur)
+# 		fade_out.tween_property(move_right_btn, "modulate", Color.TRANSPARENT, size_dur)
+# 		fade_out.tween_property(apply_btn, "modulate", Color.TRANSPARENT, size_dur)
+# 		fade_out.tween_property(del_btn, "modulate", Color.TRANSPARENT, size_dur)
+# 		await fade_out.finished
+# 		if transition_id != state_transition_id:
+# 			return
+# 		move_left_btn.hide()
+# 		move_right_btn.hide()
+# 		apply_btn.hide()
+# 		del_btn.hide()
 
-	match state_to:
-		STATES.IDLE:
-			custom_minimum_size = size
-			var fade_out := create_tween().set_parallel(true)
-			fade_out.tween_property(move_left_btn, "modulate", Color.TRANSPARENT, fade_dur)
-			fade_out.tween_property(move_right_btn, "modulate", Color.TRANSPARENT, fade_dur)
-			fade_out.tween_property(apply_btn, "modulate", Color.TRANSPARENT, fade_dur)
-			fade_out.tween_property(del_btn, "modulate", Color.TRANSPARENT, fade_dur)
-			await fade_out.finished
-			if transition_id != state_transition_id:
-				return
+# 	match state_to:
+# 		STATES.IDLE:
+# 			custom_minimum_size = size
+# 			var fade_out := create_tween().set_parallel(true)
+# 			fade_out.tween_property(move_left_btn, "modulate", Color.TRANSPARENT, fade_dur)
+# 			fade_out.tween_property(move_right_btn, "modulate", Color.TRANSPARENT, fade_dur)
+# 			fade_out.tween_property(apply_btn, "modulate", Color.TRANSPARENT, fade_dur)
+# 			fade_out.tween_property(del_btn, "modulate", Color.TRANSPARENT, fade_dur)
+# 			await fade_out.finished
+# 			if transition_id != state_transition_id:
+# 				return
 			
-			move_left_btn.hide()
-			move_right_btn.hide()
-			apply_btn.hide()
-			del_btn.hide()
-			var resize := create_tween().set_parallel(true)
-			resize.tween_property(self, "custom_minimum_size", IDLE_SIZE, size_dur)
-			resize.tween_property(self, "custom_maximum_size", IDLE_SIZE, size_dur)
+# 			move_left_btn.hide()
+# 			move_right_btn.hide()
+# 			apply_btn.hide()
+# 			del_btn.hide()
+# 			var resize := create_tween().set_parallel(true)
+# 			resize.tween_property(self, "custom_minimum_size", IDLE_SIZE, size_dur)
+# 			resize.tween_property(self, "custom_maximum_size", IDLE_SIZE, size_dur)
 
-		STATES.HOVER:
-			var is_edge_ordered: bool = false
-			if move_right_btn.disabled or move_left_btn.disabled:
-				is_edge_ordered = true
-			var resize := create_tween().set_parallel(true)
-			resize.tween_property(self, "custom_minimum_size", HOVER_EDGE_SIZE if is_edge_ordered else HOVER_SIZE, size_dur)
-			resize.tween_property(self, "custom_maximum_size", HOVER_EDGE_SIZE if is_edge_ordered else HOVER_SIZE, size_dur) 
-			await resize.finished
-			if transition_id != state_transition_id:
-				return
+# 		STATES.HOVER:
+# 			var is_edge_ordered: bool = false
+# 			if move_right_btn.disabled or move_left_btn.disabled:
+# 				is_edge_ordered = true
+# 			var resize := create_tween().set_parallel(true)
+# 			resize.tween_property(self, "custom_minimum_size", HOVER_EDGE_SIZE if is_edge_ordered else HOVER_SIZE, size_dur)
+# 			resize.tween_property(self, "custom_maximum_size", HOVER_EDGE_SIZE if is_edge_ordered else HOVER_SIZE, size_dur) 
+# 			await resize.finished
+# 			if transition_id != state_transition_id:
+# 				return
 
-			var fade_in := create_tween().set_parallel(true)
-			del_btn.modulate = Color.TRANSPARENT
-			del_btn.show()
-			fade_in.tween_property(del_btn, "modulate", Color.WHITE, fade_dur)
-			if !move_left_btn.disabled:
-				move_left_btn.modulate = Color.TRANSPARENT
-				move_left_btn.show()
-				fade_in.tween_property(move_left_btn, "modulate", Color.WHITE, fade_dur) 
-			if !move_right_btn.disabled:
-				move_right_btn.modulate = Color.TRANSPARENT
-				move_right_btn.show()
-				fade_in.tween_property(move_right_btn, "modulate", Color.WHITE, fade_dur) 
-
-
-		STATES.EDITING:
-			var resize := create_tween().set_parallel(true)
-			resize.tween_property(self, "custom_minimum_size", EDITING_SIZE, size_dur)
-			resize.tween_property(self, "custom_maximum_size", EDITING_SIZE, size_dur)
-			await resize.finished
-			if transition_id != state_transition_id:
-				return
-
-			apply_btn.show()
-			var fade_in := create_tween()
-			fade_in.tween_property(apply_btn, "modulate", Color.WHITE, fade_dur)
+# 			var fade_in := create_tween().set_parallel(true)
+# 			del_btn.modulate = Color.TRANSPARENT
+# 			del_btn.show()
+# 			fade_in.tween_property(del_btn, "modulate", Color.WHITE, fade_dur)
+# 			if !move_left_btn.disabled:
+# 				move_left_btn.modulate = Color.TRANSPARENT
+# 				move_left_btn.show()
+# 				fade_in.tween_property(move_left_btn, "modulate", Color.WHITE, fade_dur) 
+# 			if !move_right_btn.disabled:
+# 				move_right_btn.modulate = Color.TRANSPARENT
+# 				move_right_btn.show()
+# 				fade_in.tween_property(move_right_btn, "modulate", Color.WHITE, fade_dur) 
 
 
+# 		STATES.EDITING:
+# 			var resize := create_tween().set_parallel(true)
+# 			resize.tween_property(self, "custom_minimum_size", EDITING_SIZE, size_dur)
+# 			resize.tween_property(self, "custom_maximum_size", EDITING_SIZE, size_dur)
+# 			await resize.finished
+# 			if transition_id != state_transition_id:
+# 				return
 
-func _on_line_edit_focus_exited() -> void:
-	if line_edit.text == category_name:
-		apply_btn.hide()
-		default_btn.show()
+# 			apply_btn.show()
+# 			var fade_in := create_tween()
+# 			fade_in.tween_property(apply_btn, "modulate", Color.WHITE, fade_dur)
 
 
 

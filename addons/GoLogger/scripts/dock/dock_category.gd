@@ -48,8 +48,8 @@ enum ErrorReportLevel {
 
 func _ready() -> void:
 
-	visibility_changed.connect(func() -> void: if visible: request_update_columns())
-	resized.connect(_update_columns)
+	# visibility_changed.connect(func() -> void: if visible: request_update_columns())
+	# resized.connect(_update_columns)
 	_connect_unique(add_category_btn.button_up, _add_category) 
 	
 
@@ -58,7 +58,7 @@ func _ready() -> void:
 			print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
 		log_c.queue_free()
 	
-	request_update_columns()
+	# request_update_columns()
 
 
 
@@ -78,7 +78,7 @@ func initialize_tab() -> void:
 				cat.default_btn.button_pressed = true
 				break
 				
-	request_update_columns()
+	# request_update_columns()
 
 
 
@@ -181,7 +181,7 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested)
-	_n.tree_entered.connect(request_update_columns)
+	# _n.tree_entered.connect(request_update_columns)
 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
 	
 	if !low_name.is_empty():
@@ -190,7 +190,7 @@ func _add_category(_name: String = "", _is_locked: bool = false) -> void:
 		_n.line_edit.grab_focus()
 		
 	handle_category_mov_button_state()
-	request_update_columns()
+	# request_update_columns()
  
 
 
@@ -201,28 +201,28 @@ func _on_category_tree_exited(name: String) -> void:
 	
 	handle_category_mov_button_state()
 	request_categories_save.emit()
-	request_update_columns() 
+	# request_update_columns() 
 
 
-func request_update_columns() -> void:
-	if _column_update_pending or !is_inside_tree():
-		return
+# func request_update_columns() -> void:
+# 	if _column_update_pending or !is_inside_tree():
+# 		return
 
-	_column_update_pending = true
-	_deferred_update_columns.call_deferred()
+# 	_column_update_pending = true
+# 	_deferred_update_columns.call_deferred()
 
 
-func _deferred_update_columns() -> void:
-	if !is_inside_tree():
-		_column_update_pending = false
-		return
+# func _deferred_update_columns() -> void:
+# 	if !is_inside_tree():
+# 		_column_update_pending = false
+# 		return
 
-	await get_tree().process_frame
-	await get_tree().process_frame
+# 	await get_tree().process_frame
+# 	await get_tree().process_frame
 
-	_column_update_pending = false
-	if is_inside_tree():
-		_update_columns()
+# 	_column_update_pending = false
+	# if is_inside_tree():
+	# 	_update_columns()
 
 	 
 
@@ -277,14 +277,14 @@ func _check_conflict_name(cat_obj: GLLogCategory, new_name: String) -> bool:
 
 #region Signal receivers
 
-func _update_columns() -> void:
-	var cell_width: int = 0
+# func _update_columns() -> void:
+# 	var cell_width: int = 0
 
-	if category_container.get_child_count() > 0:
-		cell_width = round(category_container.get_child(0).size.x) + category_container.get_theme_constant("h_separation")
+# 	if category_container.get_child_count() > 0:
+# 		cell_width = round(category_container.get_child(0).size.x) + category_container.get_theme_constant("h_separation")
 
-	var cols = max(1, int(category_container.size.x / cell_width))
-	category_container.columns = cols 
+# 	var cols = max(1, int(category_container.size.x / cell_width))
+# 	category_container.columns = cols 
 
 #endregion
 

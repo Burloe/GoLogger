@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://dhpqc8gwb77v0"]
+
+[ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="1_7pyyx"]
+[ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gologger/scripts/log_popup.gd" id="2_umimx"]
+[ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="3_rsf33"]
+[ext_resource type="Texture2D" uid="uid://bt0xt83bipjft" path="res://addons/gologger/resources/icons/FileBroken.svg" id="4_rdcte"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hbae5"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="LogFilePanelPopup" type="PopupPanel" unique_id=87534791]
+oversampling_override = 1.0
+size = Vector2i(300, 500)
+visible = true
+theme_override_styles/panel = ExtResource("1_7pyyx")
+script = ExtResource("2_umimx")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=676958606]
+offset_left = 13.0
+offset_top = 13.0
+offset_right = 287.0
+offset_bottom = 487.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=854197305]
+layout_mode = 2
+
+[node name="TopBar" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=490326790]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("3_rsf33")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TopBar" unique_id=448456129]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer" unique_id=773087913]
+layout_mode = 2
+alignment = 2
+
+[node name="CopyButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=316475198]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hbae5")
+icon = ExtResource("4_rdcte")
+
+[node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=500386683]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hbae5")
+icon = ExtResource("4_rdcte")
+
+[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=1687159835]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hbae5")
+icon = ExtResource("4_rdcte")

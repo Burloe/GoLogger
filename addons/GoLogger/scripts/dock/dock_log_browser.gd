@@ -4,29 +4,29 @@ extends HBoxContainer
 signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
 @onready var polling_timer: Timer = %PollingTimer
+@onready var popup: PopupPanel = %LogFilePanelPopup
 
-@onready var fb_margin_container: MarginContainer = %FBMarginContainer
 @onready var margin_container: MarginContainer = %LBMarginContainer
 @onready var category_tab_container = %LBCategoryTabContainer
-@onready var log_viewer: Panel = %LogViewer
-@onready var h_split_cont: HSplitContainer = %HSplitContainer
-@onready var title_lbl: Label = %LBTitleLabel
+# @onready var log_viewer: Panel = %LogViewer
+# @onready var h_split_cont: HSplitContainer = %HSplitContainer
+# @onready var title_lbl: Label = %LBTitleLabel
 @onready var reload_btn: Button = %LBReloadButton 
 
 @onready var open_w_os_btn: Button = %LBOpenWOSButton 
-@onready var view_mode_btn: Button = %LBViewModeButton
+# @onready var view_mode_btn: Button = %LBViewModeButton
 @onready var sort_mode_btn: Button = %LBSortModeButton
 
-@onready var close_btn: Button = %LBCloseButton
-@onready var copy_content_btn: Button =%LBCopyContentButton
-@onready var contents_lbl: Label = %ContentLabel
+# @onready var close_btn: Button = %LBCloseButton
+# @onready var copy_content_btn: Button =%LBCopyContentButton
+# @onready var contents_lbl: Label = %ContentLabel
 
-@onready var lb_panel: Panel = %LBPanel
-@onready var lb_scroll_container: ScrollContainer = %LBScrollContainer
+# @onready var lb_panel: Panel = %LBPanel
+# @onready var lb_scroll_container: ScrollContainer = %LBScrollContainer
 
-@onready var lbl_sett_btn: Button = %LBLblSettButton
-@onready var lbl_sett_popup: PanelContainer = %LblSettInspectorPopup
-@onready var lbl_sett_popup_scroll_cont: ScrollContainer = %LblSettPopupScrollContainer
+# @onready var lbl_sett_btn: Button = %LBLblSettButton
+# @onready var lbl_sett_popup: PanelContainer = %LblSettInspectorPopup
+# @onready var lbl_sett_popup_scroll_cont: ScrollContainer = %LblSettPopupScrollContainer
 
 @export var data: GLData = null
 var inspector: EditorInspector
@@ -41,7 +41,7 @@ var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
 var ico_sort_date_new = preload("uid://b1fn0coq48ktv")
 var ico_sort_date_old = preload("uid://cifx5d8dmjt38")
 var ico_sort_new = preload("uid://dvjgbc6hibv5m")
-var ico_sort_old = preload("uid://bljitewxdnvuh")
+var ico_sort_old = preload("uid://bljitewxdnvuh") 
 
 var is_active: bool = false
 var grid_conts: Array[GridContainer] = []
@@ -64,15 +64,9 @@ var log_files: Array[GLLogFile] = []
 var cur_logfile: GLLogFile = null:
 	set(value):
 		cur_logfile = value
-		contents_lbl.text = cur_logfile.file_contents if value else ""
-		if value != null:
-			copy_content_btn.visible = !cur_logfile.file_contents.is_empty() 
-var cur_view: bool = false:
-	set(value):
-		cur_view = value
-		view_mode_btn.set_button_icon(get_theme_icon("ControlAlignFullRect" if value else "ControlAlignVCenterWide", "EditorIcons"))
-		view_mode_btn.tooltip_text = "Splitscreen View" if value else "Fullscreen View"
-		set_view(BrowserState.LOG_SPLIT if value else BrowserState.LOG_FULL)
+		# contents_lbl.text = cur_logfile.file_contents if value else ""
+		# if value != null:
+		# 	copy_content_btn.visible = !cur_logfile.file_contents.is_empty() 
 var cur_sort: SortModes = SortModes.NEW: 
 	set(value):
 		cur_sort = value
@@ -108,21 +102,17 @@ func _input(event: InputEvent) -> void:
 	
 	if event is InputEventKey and event.keycode == KEY_ESCAPE:
 		_close_log_file()
-	
-	if event is InputEventKey and event.keycode == KEY_O: 
-		if event.is_released():
-			set_view(BrowserState.FILE_LIST)
-	 
+
 
 
 func _ready() -> void:
-	for mo in [contents_lbl, lb_scroll_container, lb_panel, lb_panel.get_child(0), title_lbl, log_viewer, log_viewer.get_child(0)]:
-		if mo != null:
-			mo.mouse_entered.connect(func() -> void: is_content_hovered = true)
-			mo.mouse_exited.connect(func() -> void: is_content_hovered = false)
+	# for mo in [lb_scroll_container]:
+	# 	if mo != null:
+	# 		mo.mouse_entered.connect(func() -> void: is_content_hovered = true)
+	# 		mo.mouse_exited.connect(func() -> void: is_content_hovered = false)
 	
-	h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
-	close_btn.button_up.connect(_close_log_file) 
+	# h_split_cont.dragged.connect(func(offset: int) -> void: _update_columns())
+	# close_btn.button_up.connect(_close_log_file) 
 	reload_btn.button_up.connect(load_log_browser)
 	polling_timer.timeout.connect(
 		func() -> void:
@@ -130,50 +120,25 @@ func _ready() -> void:
 				load_log_browser()
 	)
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
-	view_mode_btn.button_up.connect(func() -> void: cur_view = !cur_view)
 	sort_mode_btn.button_up.connect(
 		func() -> void:
 			cur_sort = (cur_sort + 1) % 4
 			load_log_browser()
 	)
-	lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lbl_sett_btn))
-	copy_content_btn.button_up.connect(func() -> void: if cur_logfile != null: DisplayServer.clipboard_set(cur_logfile.file_contents))
+	# lbl_sett_btn.toggled.connect(_on_button_toggled.bind(lbl_sett_btn))
+	# copy_content_btn.button_up.connect(func() -> void: if cur_logfile != null: DisplayServer.clipboard_set(cur_logfile.file_contents))
 	resized.connect(_update_columns)
 	
 	inspector = EditorInspector.new()
 	inspector.edit(ResourceLoader.load("uid://cqn5x8cb7vjy3"))
 	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	lbl_sett_popup.get_child(0).add_child(inspector) 
-	set_view(BrowserState.FILE_LIST)
+	# lbl_sett_popup.get_child(0).add_child(inspector)
 
-	title_lbl.text = ""
-	contents_lbl.text = ""
-	lbl_sett_popup.hide()
+	# title_lbl.text = ""
+	# contents_lbl.text = ""
+	# lbl_sett_popup.hide()
 	open_log_with_os = open_log_with_os # loads the icon
-
-
-
-func set_view(to: BrowserState) -> void:  
-	h_split_cont.show()
-	fb_margin_container.hide()
-	margin_container.hide()
-	fb_margin_container.add_theme_constant_override("margin_right", 0) 
-
-	match to:
-		BrowserState.FILE_LIST:
-			fb_margin_container.show() 
-		BrowserState.LOG_FULL:
-			margin_container.show() 
-		BrowserState.LOG_SPLIT:
-			fb_margin_container.show()
-			margin_container.show()
-			fb_margin_container.add_theme_constant_override("margin_right", 8)  
-	state = to
-	# await get_tree().physics_frame
-	# await get_tree().physics_frame
-	_update_columns()
-
 
 
 
@@ -185,10 +150,9 @@ func load_log_browser() -> void:
 	var opened_tab = max(0, category_tab_container.current_tab)
 	_close_log_file()
 	is_reloading = true 
-	h_split_cont.hide() 
+	# h_split_cont.hide() 
 
 	if data != null:
-		cur_view = data.browser_view
 		base_dir = data.base_dir
 	log_files.clear()
 
@@ -394,9 +358,11 @@ func _open_log_file(log_file: GLLogFile) -> void:
 		return
 
 	var log_content: String = log_file.file_contents
+
+	popup.contents = log_file.file_contents
+	popup.show()
 	
 	if log_file.is_gl_name(log_file.file_name):
-	
 		var _timestamp: String = log_file.file_name.lstrip(str(log_file.category_name, "(")).rstrip(").log")
 		var _splits: Array = _timestamp.split("_") 
 		var _m: Array[String] = [
@@ -431,10 +397,9 @@ func _open_log_file(log_file: GLLogFile) -> void:
 			lf.selected = false 
 	
 	log_file.selected = true 
-	title_lbl.text = str("  ", log_file.file_name)
-	contents_lbl.text = log_content if !log_content.is_empty() else "< File is empty or failed to load properly >"
+	# title_lbl.text = str("  ", log_file.file_name)
+	# contents_lbl.text = log_content if !log_content.is_empty() else "< File is empty or failed to load properly >"
 	cur_logfile = log_file
-	set_view(BrowserState.LOG_SPLIT if cur_view else BrowserState.LOG_FULL)
 	
 
 
@@ -442,15 +407,7 @@ func _close_log_file() -> void:
 	if cur_logfile:
 		cur_logfile.selected = false
 		cur_logfile = null
-	set_view(BrowserState.FILE_LIST)
-
-
-
-func _on_button_toggled(toggled: bool, btn: Button) -> void:
-	match btn:
-		lbl_sett_btn:
-			lbl_sett_popup.visible = toggled 
-			margin_container.custom_minimum_size.x = 315 if toggled else 115 
+		popup.hide()
 
 
 

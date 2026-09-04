@@ -27,12 +27,13 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var log_browser_tab: HBoxContainer = %LogBrowserTab
 @onready var lb_reload_btn: Button = %LBReloadButton
 @onready var lb_open_dir_btn: Button = %LBOpenDirButton
-@onready var lb_view_mode_btn: Button = %LBViewModeButton
+# @onready var lb_view_mode_btn: Button = %LBViewModeButton
 @onready var lb_sort_btn: Button = %LBSortModeButton
 @onready var lb_open_with_os_btn: Button = %LBOpenWOSButton
-@onready var lb_copy_btn: Button = %LBCopyContentButton
-@onready var lb_lbl_sett_btn: Button = %LBLblSettButton
-@onready var lb_close_btn: Button = %LBCloseButton
+@onready var lb_popup: PopupPanel = %LogFilePanelPopup
+# @onready var lb_copy_btn: Button = %LBCopyContentButton
+# @onready var lb_lbl_sett_btn: Button = %LBLblSettButton
+# @onready var lb_close_btn: Button = %LBCloseButton
 
 # Category tab
 @onready var category_tab: HBoxContainer = %CategoryPanel
@@ -240,12 +241,10 @@ func _ready() -> void:
 		func(tab: int) -> void: 
 			log_browser_tab.is_active = false
 			match tab:
-				1: 
+				0: 
 					log_browser_tab.load_log_browser()
 					log_browser_tab._update_columns(true)
-					log_browser_tab.is_active = true
-				2: 
-					category_tab.request_update_columns()
+					log_browser_tab.is_active = true 
 	)
 	category_tab.request_save.connect(save_data)
 	category_tab.request_categories_save.connect(save_categories)
@@ -281,8 +280,7 @@ func _exit_tree() -> void:
 
 func _init_visibility() -> void:
 	set_current_tab(1)
-	help_tab.set_current_tab(0)
-	log_browser_tab.set_view(log_browser_tab.BrowserState.FILE_LIST)
+	help_tab.set_current_tab(0) 
 	settings_tab.init_visibility()
 
 	var fold_conts: Array[FoldableContainer] = [
@@ -343,19 +341,16 @@ func _assign_settings_controls() -> void:
 	data.session_duration_ctrl_line = sett_session_duration_spinbox.get_line_edit()
 	data.error_rep_ctrl = sett_error_rep_btn
 	data.browser_sort_ctrl = lb_sort_btn
-	data.browser_view_ctrl = lb_view_mode_btn
+	# data.browser_view_ctrl = lb_view_mode_btn
 	data.open_logs_with_os_ctrl = lb_open_with_os_btn
 
 
 
 
 func _assign_editor_icons() -> void:
+	lb_open_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
 	lb_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
-	lb_view_mode_btn.set_button_icon(get_theme_icon("ControlAlignFullRect", "EditorIcons"))
-	lb_copy_btn.set_button_icon(get_theme_icon("ActionCopy", "EditorIcons"))
-	lb_lbl_sett_btn.set_button_icon(get_theme_icon("GDScript", "EditorIcons"))
-	lb_close_btn.set_button_icon(get_theme_icon("Close", "EditorIcons"))
-	cat_add_btn.set_button_icon(get_theme_icon("Add", "EditorIcons"))
+	cat_add_btn.set_button_icon(get_theme_icon("Add", "EditorIcons")) 
 
 	var _d: Dictionary = {
 		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
@@ -489,6 +484,7 @@ func _on_editor_settings_changed() -> void:
 	theme_col_base = new_base
 	theme_col_accent = new_accent
 	_apply_theme_colors(base_changed, accent_changed)
+
 
 
 func _on_regenerate_button_up() -> void:
