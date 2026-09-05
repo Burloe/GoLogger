@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gologger/scripts/log_popup.gd" id="2_umimx"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="3_rsf33"]
 [ext_resource type="Texture2D" uid="uid://bt0xt83bipjft" path="res://addons/gologger/resources/icons/FileBroken.svg" id="4_rdcte"]
+[ext_resource type="Texture2D" uid="uid://b413grm7tl0m6" path="res://addons/gologger/resources/icons/resize.svg" id="5_umimx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hbae5"]
 content_margin_left = 4.0
@@ -119,3 +120,13 @@ text = "func _on_title_bar_gui_input(event: InputEvent) -> void:
     elif event is InputEventMouseMotion and dragging:
         position += event.relative"
 clip_text = true
+
+[node name="ResizeHandle" type="TextureRect" parent="MarginContainer" unique_id=1408853994]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.5882353)
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture = ExtResource("5_umimx")
