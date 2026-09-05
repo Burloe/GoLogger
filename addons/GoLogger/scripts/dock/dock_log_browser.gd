@@ -5,13 +5,13 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 
 @onready var category_panel: HBoxContainer = %CategoryPanel
 @onready var polling_timer: Timer = %PollingTimer
-@onready var popup: PopupPanel = %LogFilePanelPopup
+@onready var popup_panel = %LogFilePanelPopup
 
 @onready var open_w_os_btn: Button = %LBOpenWOSButton
 @onready var sort_mode_btn: Button = %LBSortModeButton
 
 @onready var margin_container: MarginContainer = %LBMarginContainer
-@onready var category_grid_container = %LBCategoryGridContainer 
+@onready var category_grid_container: GridContainer = %LBCategoryGridContainer 
 @onready var reload_btn: Button = %LBReloadButton 
 @onready var current_cat_lbl: Label = %CurrentCategoryLabel
 
@@ -81,16 +81,6 @@ enum SortModes {
 
 
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_released():
-		if state != BrowserState.FILE_LIST and is_content_hovered:
-			_close_log_file()
-	
-	if event is InputEventKey and event.keycode == KEY_ESCAPE:
-		_close_log_file()
-
-
-
 func _ready() -> void: 
 	reload_btn.button_up.connect(load_log_files)
 	polling_timer.timeout.connect(load_log_files)
@@ -105,6 +95,7 @@ func _ready() -> void:
 			cat.select_btn.button_up.connect(
 				func() -> void:
 					current_category = cat.category_name
+					load_log_files()
 			)
 	)
 	resized.connect(_update_columns)
@@ -122,7 +113,6 @@ func load_log_files() -> void:
 	if not is_active: 
 		return 
 
-	_close_log_file()
 	is_reloading = true
 
 	if data != null:
@@ -326,11 +316,11 @@ func _open_log_file(log_file: GLLogFile) -> void:
 		OS.shell_open(abs_path)
 		return
 
-	var log_content: String = log_file.file_contents
-
-	popup.contents = log_file.file_contents
-	popup.show()
+	popup_panel.content = log_file.file_contents
+	popup_panel.popup()
 	
+	var fin_time: String = ""
+	var fin_date: String = ""
 	if log_file.is_gl_name(log_file.file_name):
 		var _timestamp: String = log_file.file_name.lstrip(str(log_file.category_name, "(")).rstrip(").log")
 		var _splits: Array = _timestamp.split("_") 
@@ -350,13 +340,13 @@ func _open_log_file(log_file: GLLogFile) -> void:
 			" Dec "
 		]
 
-		var fin_time: String = str(
+		fin_time = str(
 			_splits[1].substr(0, 2), ":", 
 			_splits[1].substr(2, 2), ":", 
 			_splits[1].substr(4, 2)	
 		)
 		
-		var fin_date: String = str(
+		fin_date = str(
 			_splits[0].substr(4, 2),
 			_m[int(_splits[0].substr(2, 2))],
 			str(20, (_splits[0].substr(0, 2)))
@@ -366,17 +356,18 @@ func _open_log_file(log_file: GLLogFile) -> void:
 			lf.selected = false 
 	
 	log_file.selected = true 
+	popup_panel.title = str(fin_date, " - ", fin_time, " | ", log_file.file_name)
 	# title_lbl.text = str("  ", log_file.file_name)
 	# contents_lbl.text = log_content if !log_content.is_empty() else "< File is empty or failed to load properly >"
 	cur_logfile = log_file
 	
 
 
-func _close_log_file() -> void:
-	if cur_logfile:
-		cur_logfile.selected = false
-		cur_logfile = null
-		popup.hide()
+# func _close_log_file() -> void:
+# 	if cur_logfile:
+# 		cur_logfile.selected = false
+# 		cur_logfile = null
+# 		popup_panel.hide()
 
 
 

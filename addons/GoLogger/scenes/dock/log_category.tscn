@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gologger/data.tres" id="3_x8jw8"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="3_xjf83"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gologger/resources/theme/line_edit_normal.tres" id="5_6lne8"]
-[ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="6_3iv4e"]
+[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gologger/resources/theme/popup_logfile_panel.tres" id="6_3iv4e"]
 
 [sub_resource type="DPITexture" id="DPITexture_3iv4e"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
@@ -34,7 +34,6 @@ offset_transform_enabled = true
 theme_override_styles/panel = ExtResource("1_dn16j")
 script = ExtResource("2_t2282")
 data = ExtResource("3_x8jw8")
-metadata/_edit_horizontal_guides_ = [70.0, 56.0]
 metadata/_edit_vertical_guides_ = [56.0, 148.0]
 
 [node name="Control" type="Control" parent="." unique_id=1004272917]
@@ -46,32 +45,25 @@ size_flags_vertical = 8
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
-offset_left = -46.0
+offset_left = -53.0
 offset_top = 2.0
-offset_right = 46.0
-offset_bottom = 20.0
+offset_right = 53.0
+offset_bottom = 26.0
 grow_horizontal = 2
 theme_override_styles/panel = ExtResource("1_dn16j")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/Panel" unique_id=407695480]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_right = 4
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel/MarginContainer" unique_id=761994653]
-layout_mode = 2
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel" unique_id=761994653]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 105.0
+offset_bottom = 24.0
 theme_override_constants/separation = 4
 alignment = 1
 
-[node name="MoveLeftButton" type="Button" parent="Control/Panel/MarginContainer/HBoxContainer" unique_id=1734383337]
+[node name="MoveLeftButton" type="Button" parent="Control/Panel/HBoxContainer" unique_id=1734383337]
 unique_name_in_owner = true
 modulate = Color(0.8, 0.8, 0.8, 1)
-custom_minimum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Move left"
@@ -88,9 +80,9 @@ theme_override_styles/disabled = ExtResource("3_xjf83")
 icon = SubResource("DPITexture_3iv4e")
 icon_alignment = 1
 
-[node name="SelectButton" type="Button" parent="Control/Panel/MarginContainer/HBoxContainer" unique_id=1355907674]
+[node name="SelectButton" type="Button" parent="Control/Panel/HBoxContainer" unique_id=1355907674]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Load files"
@@ -108,10 +100,10 @@ toggle_mode = true
 icon = SubResource("DPITexture_3iv4e")
 icon_alignment = 1
 
-[node name="MoveRightButton" type="Button" parent="Control/Panel/MarginContainer/HBoxContainer" unique_id=659310254]
+[node name="MoveRightButton" type="Button" parent="Control/Panel/HBoxContainer" unique_id=659310254]
 unique_name_in_owner = true
 modulate = Color(0.8, 0.8, 0.8, 1)
-custom_minimum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Move right"

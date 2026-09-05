@@ -2,6 +2,8 @@
 class_name GLLogFile extends Button
 
 @onready var lbl: Label = null
+@export var placeholder_name: String = str("17:22:53\nApril 27\n2026")
+@export var display_name_char_limit: int = 18
 
 var file_ico := preload("uid://baeavb2jo8lgw")
 var file_broken_ico := preload("uid://bt0xt83bipjft")
@@ -32,12 +34,8 @@ var display_name: String = "":
 		if lbl != null:
 			lbl.text = value
 
-var file_contents: String = "":
-	set(value):
-		file_contents = value
+var file_contents: String = ""
 
-@export var placeholder_name: String = str("17:22:53\nApril 27\n2026")
-@export var display_name_char_limit: int = 18
 
 
 
