@@ -323,6 +323,7 @@ icon_alignment = 1
 
 [node name="RENABLEButton1" type="Button" parent="DockTabContainer/LogBrowserTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1733649966]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(8, 8)
 custom_maximum_size = Vector2(8, 8)
 layout_mode = 2
@@ -414,7 +415,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 14
+columns = 1856
 
 [node name="SettingsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1178249992]
 unique_name_in_owner = true

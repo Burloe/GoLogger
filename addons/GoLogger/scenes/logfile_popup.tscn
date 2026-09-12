@@ -7,7 +7,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3em2g"]
 
-[sub_resource type="DPITexture" id="DPITexture_7pyyx"]
+[sub_resource type="DPITexture" id="DPITexture_ffv0r"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -73,7 +73,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
-icon = SubResource("DPITexture_7pyyx")
+icon = SubResource("DPITexture_ffv0r")
 icon_alignment = 1
 
 [node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=500386683]
@@ -83,7 +83,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
-icon = SubResource("DPITexture_7pyyx")
+icon = SubResource("DPITexture_ffv0r")
 icon_alignment = 1
 
 [node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=1687159835]
@@ -93,7 +93,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
-icon = SubResource("DPITexture_7pyyx")
+icon = SubResource("DPITexture_ffv0r")
 icon_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=90701162]
@@ -124,8 +124,8 @@ clip_text = true
 [node name="ResizeHandle" type="TextureRect" parent="MarginContainer" unique_id=1408853994]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.5882353)
-custom_minimum_size = Vector2(32, 32)
-custom_maximum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(16, 16)
+custom_maximum_size = Vector2(16, 16)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8

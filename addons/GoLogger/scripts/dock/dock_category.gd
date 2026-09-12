@@ -1,7 +1,7 @@
 @tool
 extends HBoxContainer
 
-signal request_save(source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
+signal request_save(source: String) ## Emitted to dock.gd. "source" is purely for debugging to see what emitted.
 signal request_categories_save
 signal request_theme_colors 
 signal category_created(category: GLLogCategory)
