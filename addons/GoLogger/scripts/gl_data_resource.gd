@@ -52,6 +52,8 @@ class_name GLData extends Resource
 		if value not in [3, 7]:
 			id_align = value
 
+# @export_enum()
+
 
 var base_dir_ctrl: LineEdit = null
 var header_format_ctrl: LineEdit = null

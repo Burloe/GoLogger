@@ -1,5 +1,5 @@
 @tool
-extends TabContainer
+class_name GLDock extends EditorDock
 
 # Adding a new setting:
 	# Add the settings to all appropriate dictionaries in "settings_dict"
@@ -22,6 +22,7 @@ extends TabContainer
 const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var renable_btn1: Button = %RENABLEButton1 
 @onready var renable_btn2: Button = %RENABLEButton3
+@onready var docktab_container: TabContainer = %DockTabContainer
 
 # Log Browser
 @onready var log_browser_tab: HBoxContainer = %LogBrowserTab
@@ -240,7 +241,7 @@ func _ready() -> void:
 	data.update_list()
 	theme_colors = _get_theme_colors()
 
-	tab_changed.connect(
+	docktab_container.tab_changed.connect(
 		func(tab: int) -> void: 
 			log_browser_tab.is_active = false
 			match tab:
@@ -252,7 +253,7 @@ func _ready() -> void:
 	)
 	visibility_changed.connect( 
 		func() -> void:
-			if current_tab == 0 and visible:
+			if docktab_container.current_tab == 0 and visible:
 				log_browser_tab.update_columns()
 
 	) 
@@ -289,7 +290,7 @@ func _exit_tree() -> void:
 
 
 func _init_visibility() -> void:
-	set_current_tab(1)
+	docktab_container.set_current_tab(1)
 	help_tab.set_current_tab(0) 
 	settings_tab.init_visibility()
 

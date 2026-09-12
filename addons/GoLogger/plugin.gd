@@ -4,8 +4,10 @@ extends EditorPlugin
 var dock
 
 func _enter_tree() -> void:
-	dock = preload("uid://0k0tpsfqof2s").instantiate()
-	add_control_to_bottom_panel(dock, "GoLogger")
+	dock = preload("uid://0k0tpsfqof2s").instantiate() as EditorDock
+	dock.title = "GDLogger"
+	dock.dock_icon = preload("uid://c4jrvdxu1e2q3")
+	add_dock(dock)
 	dock.plugin_version = get_plugin_version()
 	for i in [dock.renable_btn1, dock.renable_btn2]:
 		if i: i.button_up.connect(_renable_plugin) 
@@ -13,7 +15,9 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void: 
-	remove_control_from_bottom_panel(dock)
+	remove_dock(dock)
+	dock.queue_free()
+	dock = null
 
 
 

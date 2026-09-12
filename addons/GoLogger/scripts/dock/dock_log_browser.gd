@@ -84,13 +84,10 @@ func _ready() -> void:
 			cat.select_btn.toggled.connect(
 				func(toggled_on: bool) -> void:
 					if toggled_on:
-						current_category = cat.category_name
-						print("####### [", current_category, "] #######")
+						current_category = cat.category_name 
 						for c: GLLogCategory in category_panel.category_container.get_children():
 							if c.category_name != current_category:
-								c.select_btn.button_pressed = false
-								print("\tUnselecting <",c.category_name, ">")	
-						print("##################")				
+								c.select_btn.button_pressed = false 
 					else:
 						if cat.category_name == current_category:
 							current_category = ""
