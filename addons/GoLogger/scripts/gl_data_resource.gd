@@ -5,7 +5,7 @@ class_name GLData extends Resource
 @export var categories: Array[GLCategoryData] = []
 @export var default_category: String = ""
 # Browser Tab
-@export_enum("New", "Old", "Grouped New", "Grouped Old") var browser_sort: int = 0
+@export_enum("New", "Old") var browser_sort: int = 0
 @export var browser_view: bool = false
 @export var open_logs_with_os: bool = false
 

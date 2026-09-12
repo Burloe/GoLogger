@@ -14,7 +14,6 @@
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="12_7cref"]
 [ext_resource type="Texture2D" uid="uid://b40vq6n2r4x8m" path="res://addons/gologger/resources/icons/Relead.svg" id="12_pl6xe"]
 [ext_resource type="Texture2D" uid="uid://dvjgbc6hibv5m" path="res://addons/gologger/resources/icons/SortNew.svg" id="15_equok"]
-[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gologger/resources/theme/popup_logfile_panel.tres" id="16_p0mrd"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gologger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/gologger/resources/theme/panel_top_rounded_base_col.tres" id="21_vkni8"]
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/gologger/resources/theme/foldable_container_panel.tres" id="22_apa57"]
@@ -129,10 +128,9 @@ font_color = Color(1, 1, 1, 0.352941)
 [node name="Dock" type="TabContainer" unique_id=1764928138]
 clip_contents = true
 anchors_preset = -1
-anchor_right = 0.686
-anchor_bottom = 0.281
-offset_right = 602.88
-offset_bottom = -0.480011
+anchor_right = 1.0
+anchor_bottom = 0.28100002
+offset_bottom = -0.4800415
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 1)
@@ -155,6 +153,7 @@ tab_2/title = "Settings"
 tab_3/title = "Help"
 script = ExtResource("6_0swix")
 data = ExtResource("8_equok")
+metadata/_edit_horizontal_guides_ = [129.0, 137.0]
 
 [node name="IconTabIGNORE" type="Control" parent="." unique_id=1209850644]
 visible = false
@@ -322,7 +321,7 @@ expand_icon = true
 [node name="VBoxContainerMain" type="VBoxContainer" parent="LogBrowserTab" unique_id=1488523849]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 18
+theme_override_constants/separation = 8
 
 [node name="CategoryPanel" type="HBoxContainer" parent="LogBrowserTab/VBoxContainerMain" unique_id=35875088]
 unique_name_in_owner = true
@@ -338,11 +337,10 @@ size_flags_horizontal = 3
 theme_override_constants/margin_left = 8
 
 [node name="ScrollContainer" type="ScrollContainer" parent="LogBrowserTab/VBoxContainerMain/CategoryPanel/MarginContainer" unique_id=642802176]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-horizontal_scroll_mode = 3
 
 [node name="CategoryGridContainer" type="GridContainer" parent="LogBrowserTab/VBoxContainerMain/CategoryPanel/MarginContainer/ScrollContainer" unique_id=2014106739]
 unique_name_in_owner = true
@@ -396,7 +394,7 @@ theme_override_font_sizes/font_size = 12
 text = "Game"
 vertical_alignment = 1
 
-[node name="LBCategoryGridContainer" type="GridContainer" parent="LogBrowserTab/VBoxContainerMain/ScrollContainer/LBMarginContainer/VBoxContainer" unique_id=462271329]
+[node name="FileGridContainer" type="GridContainer" parent="LogBrowserTab/VBoxContainerMain/ScrollContainer/LBMarginContainer/VBoxContainer" unique_id=462271329]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -488,7 +486,6 @@ icon_alignment = 1
 custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("16_p0mrd")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="SettingsTab/L_Panel" unique_id=2008032766]
 layout_mode = 1

@@ -229,6 +229,9 @@ var is_shutting_down: bool = false:
 #region Inits and signals
 
 func _ready() -> void:
+	draw.connect(log_browser_tab._update_columns.bind(true))
+	hidden.connect(log_browser_tab._update_columns)
+
 	data = load(DATA_PATH)
 	log_browser_tab.data = data 
 	log_browser_tab.is_active = true
@@ -243,9 +246,16 @@ func _ready() -> void:
 			match tab:
 				0: 
 					log_browser_tab.load_log_files()
-					log_browser_tab._update_columns(true)
-					log_browser_tab.is_active = true 
+					log_browser_tab._update_columns()
+					log_browser_tab.is_active = true
+
 	)
+	visibility_changed.connect( 
+		func() -> void:
+			if current_tab == 0 and visible:
+				log_browser_tab.update_columns()
+
+	) 
 	category_tab.request_save.connect(save_data)
 	category_tab.request_categories_save.connect(save_categories)
 	log_browser_tab.log_file_added.connect(_on_log_file_added)
@@ -269,7 +279,7 @@ func _ready() -> void:
 	_assign_settings_controls()
 	category_tab.initialize_tab()
 	settings_tab.initialize_tab() 
-	log_browser_tab.load_log_files() 
+	log_browser_tab.load_log_files(true) 
 	_assign_editor_icons()
 
 
@@ -598,6 +608,9 @@ func _apply_base_theme_colors() -> void:
 
 
 func _apply_accent_theme_colors() -> void:
+
+	# Color.get_luminance() can be used to determine if light or dark theme should be used. If returning >0.5 is light 
+
 	var color_map := {
 		# Mixed base/accent elements
 		panel_round_base_border_accent: {"border_color": theme_colors["accent"]["col"]},

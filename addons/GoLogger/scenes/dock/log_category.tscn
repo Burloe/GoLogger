@@ -4,12 +4,16 @@
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/gologger/scripts/dock/log_category.gd" id="2_t2282"]
 [ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gologger/data.tres" id="3_x8jw8"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="3_xjf83"]
-[ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gologger/resources/theme/line_edit_normal.tres" id="5_6lne8"]
-[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gologger/resources/theme/popup_logfile_panel.tres" id="6_3iv4e"]
+[ext_resource type="StyleBox" uid="uid://diklblkplkogy" path="res://addons/gologger/resources/theme/log_category_selected.tres" id="5_3iv4e"]
+[ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="6_3iv4e"]
 
 [sub_resource type="DPITexture" id="DPITexture_3iv4e"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_glgcc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cm21w"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fx5fv"]
 
@@ -91,10 +95,10 @@ theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
 theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
 theme_override_colors/icon_disabled_color = Color(0, 0, 0, 0)
-theme_override_styles/normal = ExtResource("3_xjf83")
-theme_override_styles/pressed = ExtResource("3_xjf83")
-theme_override_styles/hover = ExtResource("3_xjf83")
-theme_override_styles/hover_pressed = ExtResource("3_xjf83")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_glgcc")
+theme_override_styles/pressed = ExtResource("5_3iv4e")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_cm21w")
+theme_override_styles/hover_pressed = ExtResource("5_3iv4e")
 theme_override_styles/disabled = ExtResource("3_xjf83")
 toggle_mode = true
 icon = SubResource("DPITexture_3iv4e")
@@ -133,7 +137,7 @@ size_flags_horizontal = 3
 theme_override_colors/font_uneditable_color = Color(0.960784, 0.647059, 0.105882, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = ExtResource("5_6lne8")
+theme_override_styles/normal = ExtResource("6_3iv4e")
 placeholder_text = "Enter name"
 expand_to_text_length = true
 

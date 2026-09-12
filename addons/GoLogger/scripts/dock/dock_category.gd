@@ -51,8 +51,6 @@ func _ready() -> void:
 	_connect_unique(add_category_btn.button_up, _add_category) 
 
 	for log_c in category_container.get_children():
-		if log_c is not GLLogCategory:
-			print_rich("[color=fb776a]GoLogger error: Unexpected node in category container ", log_c.get_name(), "{", log_c.get_class(), "} - Please report bug: [url]https://github.com/Burloe/GoLogger/issues[/url][/color]")
 		log_c.queue_free()
 
 
@@ -175,6 +173,7 @@ func _add_category(_name: String = "", _is_locked: bool = false):
 		_n.default_btn.button_pressed = data.default_category == low_name
 	else:	
 		_n.line_edit.grab_focus()
+	
 	category_created.emit(_n)
 	handle_category_mov_button_state() 
 

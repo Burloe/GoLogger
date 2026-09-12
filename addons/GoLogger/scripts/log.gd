@@ -561,8 +561,7 @@ func _get_instance_id() -> String:
 
 
 func _handle_id_align() -> void: #NOTWORKING
-	var id_alignment = data.id_align 
-	print(data.id_align)
+	var id_alignment = data.id_align  
 	if id_alignment in [0,4,8]:
 		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 

@@ -133,51 +133,50 @@ enum ErrorReportLevel {
 
 
 func _ready() -> void:
-	if Engine.is_editor_hint(): 
-		entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
-		inspector = _create_editor_inspector(hotkey_container)
-		inspector.edit(ResourceLoader.load("uid://dyi2aml73k4g8"))
-		id_inspector = _create_editor_inspector(id_font_sett_cont)
-		id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
-		id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
-		hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
+	entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
+	inspector = _create_editor_inspector(hotkey_container)
+	inspector.edit(ResourceLoader.load("uid://dyi2aml73k4g8"))
+	id_inspector = _create_editor_inspector(id_font_sett_cont)
+	id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
+	id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
+	hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
 
-		_connect_line_edit_toggled()
-		_assign_spinbox_line_edits()
-		_connect_spinbox_line_submitted()
+	_connect_line_edit_toggled()
+	_assign_spinbox_line_edits()
+	_connect_spinbox_line_submitted()
 
-		btn_array = [
-			base_dir_line,
-			base_dir_apply_btn,
-			base_dir_revert_btn, 
-			log_header_line,
-			log_header_apply_btn,
-			log_header_revert_btn,
-			entry_format_line,
-			entry_format_apply_btn,
-			entry_format_revert_btn,
-			autostart_btn,
-			utc_btn,
-			id_print_btn,
-			id_toggle_btn,
-			id_align_opt_btn,
-			id_startup_btn,
-			limit_method_btn,
-			entry_count_action_btn,
-			session_timer_action_btn,
-			file_count_spinbox,
-			file_count_spinbox_line,
-			entry_count_spinbox,
-			entry_count_spinbox_line,
-			session_duration_spinbox,
-			session_duration_spinbox_line,
-			error_rep_btn,
-		]
+	btn_array = [
+		base_dir_line,
+		base_dir_apply_btn,
+		base_dir_revert_btn, 
+		log_header_line,
+		log_header_apply_btn,
+		log_header_revert_btn,
+		entry_format_line,
+		entry_format_apply_btn,
+		entry_format_revert_btn,
+		autostart_btn,
+		utc_btn,
+		id_print_btn,
+		id_toggle_btn,
+		id_align_opt_btn,
+		id_startup_btn,
+		limit_method_btn,
+		entry_count_action_btn,
+		session_timer_action_btn,
+		file_count_spinbox,
+		file_count_spinbox_line,
+		entry_count_spinbox,
+		entry_count_spinbox_line,
+		session_duration_spinbox,
+		session_duration_spinbox_line,
+		error_rep_btn,
+	]
 
 
-		for node in btn_array:
-			_connect_control_signal(node)
-		_bind_settings_hover_groups()
+	for node in btn_array:
+		_connect_control_signal(node)
+	_bind_settings_hover_groups()
 
 
 
@@ -478,10 +477,8 @@ func _on_setting_hover(group: Array, is_hovered: bool) -> void:
 
 
 func _on_button_button_up(node: Button) -> void:
-	print(node.get_name())
 	match node:
 		base_dir_apply_btn:
-			print("123")
 			if _apply_new_base_directory():
 				base_dir_apply_btn.disabled = true
 				base_dir_revert_btn.disabled = true
@@ -525,7 +522,6 @@ func _on_button_button_up(node: Button) -> void:
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 	var last_applied_value: String = ""
-	print(base_dir_apply_btn.button_up.is_connected(_on_button_button_up))
 	match node:
 		base_dir_line:
 			base_dir_apply_btn.disabled = true 
@@ -617,7 +613,6 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 
 		id_align_opt_btn:
 			data.id_align = index
-			print("!",index)
 
 	request_save.emit(false, "dock_settings.gd - _on_optbtn_item_selected")
 

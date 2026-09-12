@@ -28,7 +28,7 @@ signal set_default_category(category: GLLogCategory, toggle_on: bool)
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
 var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
-var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx")
+var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx") 
 
 ##  Last applied category name
 var category_name: String = "":
@@ -116,6 +116,11 @@ func _ready() -> void:
 				cat_data.is_default = toggled_on
 	)
 
+	select_btn.toggled.connect(
+		func(toggled_on: bool) -> void:
+			pass
+	)
+
 	size = Vector2.ZERO
 	_data_ready()
 
@@ -130,7 +135,6 @@ func _data_ready() -> void:
 
 
 func check_name_conflict() -> bool:
-	print(data.check_category_name_conflicts())
 	return data.check_category_name_conflicts() if data != null else false
 
 
