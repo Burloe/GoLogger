@@ -24,26 +24,19 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 @onready var renable_btn2: Button = %RENABLEButton3
 @onready var docktab_container: TabContainer = %DockTabContainer
 
-# Log Browser
-@onready var log_browser_tab: HBoxContainer = %LogBrowserTab
-@onready var lb_reload_btn: Button = %LBReloadButton
-@onready var lb_open_dir_btn: Button = %LBOpenDirButton
-# @onready var lb_view_mode_btn: Button = %LBViewModeButton
-@onready var lb_sort_btn: Button = %LBSortModeButton
-@onready var lb_open_with_os_btn: Button = %LBOpenWOSButton
-@onready var lb_popup: PopupPanel = %LogFilePanelPopup
-# @onready var lb_copy_btn: Button = %LBCopyContentButton
-# @onready var lb_lbl_sett_btn: Button = %LBLblSettButton
-# @onready var lb_close_btn: Button = %LBCloseButton
-
-# Category tab
-@onready var category_tab: HBoxContainer = %CategoryPanel
-@onready var cat_add_btn: Button = %AddCategoryButton
+# Logs tab
+@onready var logs_tab: HBoxContainer = %LogsTab
 @onready var category_container: GridContainer = %CategoryGridContainer 
-@onready var sett_reset_btn: Button = %ResetSettingsButton
+@onready var lg_add_cat_btn: Button = %AddCategoryButton
+@onready var lg_open_dir_btn: Button = %LBOpenDirButton 
+@onready var lg_reload_btn: Button = %LBReloadButton
+@onready var lg_sort_btn: Button = %LBSortModeButton
+@onready var lg_open_with_os_btn: Button = %LBOpenWOSButton
+@onready var lg_popup: PopupPanel = %LogFilePanelPopup
 
 # Settings tab
 @onready var settings_tab: HBoxContainer = %SettingsTab
+@onready var sett_reset_btn: Button = %ResetSettingsButton
 @onready var sett_base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var sett_base_dir_lbl: Label = %BaseDirLabel
 @onready var sett_base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
@@ -168,7 +161,6 @@ var sb_log_file_button_normal					:= preload("uid://xy4uummjvhgu")
 
 var lv_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
 var lv_popup_panel										:= preload("uid://dugr1wllj4x3")
-# var gl_logfile_button_lbl_settings		:= preload("uid://c8w51vy1pqjq8")
 
 
 ## Index 3 is a SEPERATOR and should not be used.
@@ -222,51 +214,51 @@ var entry_format_value: String = "":
 var is_shutting_down: bool = false:
 	set(value):
 		is_shutting_down = value
-		if category_tab != null and _node_has_property(category_tab, "is_shutting_down"):
-			category_tab.is_shutting_down = value
+		if logs_tab != null and _node_has_property(logs_tab, "is_shutting_down"):
+			logs_tab.is_shutting_down = value
 
 
 
 #region Inits and signals
 
 func _ready() -> void:
-	draw.connect(log_browser_tab._update_columns.bind(true))
-	hidden.connect(log_browser_tab._update_columns)
+	draw.connect(logs_tab._update_columns.bind(true))
+	hidden.connect(logs_tab._update_columns)
 
 	data = load(DATA_PATH)
-	log_browser_tab.data = data 
-	log_browser_tab.is_active = true
-	category_tab.data = data 
+	logs_tab.data = data 
+	logs_tab.is_active = true
+	logs_tab.data = data 
 	settings_tab.data = data
 	data.update_list()
 	theme_colors = _get_theme_colors()
 
 	docktab_container.tab_changed.connect(
 		func(tab: int) -> void: 
-			log_browser_tab.is_active = false
+			logs_tab.is_active = false
 			match tab:
 				0: 
-					log_browser_tab.load_log_files()
-					log_browser_tab._update_columns()
-					log_browser_tab.is_active = true
+					logs_tab.load_log_files()
+					logs_tab._update_columns()
+					logs_tab.is_active = true
 
 	)
 	visibility_changed.connect( 
 		func() -> void:
 			if docktab_container.current_tab == 0 and visible:
-				log_browser_tab.update_columns()
+				logs_tab.update_columns()
 
 	) 
-	category_tab.request_save.connect(save_data)
-	category_tab.request_categories_save.connect(save_categories)
-	log_browser_tab.log_file_added.connect(_on_log_file_added)
+	logs_tab.request_save.connect(save_data)
+	logs_tab.request_categories_save.connect(save_categories)
+	logs_tab.log_file_added.connect(_on_log_file_added)
 	settings_tab.request_save.connect(save_data)
 	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
 
 
 	# # Signal connections 
 	_connect_unique(settings.settings_changed, _on_editor_settings_changed) 
-	_connect_unique(lb_open_dir_btn.button_up, _open_directory)
+	_connect_unique(lg_open_dir_btn.button_up, _open_directory)
 	# _connect_unique(user_dir_btn.button_up, _open_user_dir)
 	_connect_unique(regenerate_btn.button_up, _on_regenerate_button_up)
 	_connect_unique(sett_open_dir_btn.button_up, _open_directory)
@@ -278,9 +270,9 @@ func _ready() -> void:
 	await get_tree().process_frame
 
 	_assign_settings_controls()
-	category_tab.initialize_tab()
+	logs_tab.initialize_categories()
 	settings_tab.initialize_tab() 
-	log_browser_tab.load_log_files(true) 
+	logs_tab.load_log_files(true) 
 	_assign_editor_icons()
 
 
@@ -351,17 +343,16 @@ func _assign_settings_controls() -> void:
 	data.session_duration_ctrl = sett_session_duration_spinbox
 	data.session_duration_ctrl_line = sett_session_duration_spinbox.get_line_edit()
 	data.error_rep_ctrl = sett_error_rep_btn
-	data.browser_sort_ctrl = lb_sort_btn
-	# data.browser_view_ctrl = lb_view_mode_btn
-	data.open_logs_with_os_ctrl = lb_open_with_os_btn
+	data.browser_sort_ctrl = lg_sort_btn 
+	data.open_logs_with_os_ctrl = lg_open_with_os_btn
 
 
 
 
 func _assign_editor_icons() -> void:
-	lb_open_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
-	lb_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
-	cat_add_btn.set_button_icon(get_theme_icon("Add", "EditorIcons")) 
+	lg_open_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
+	lg_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
+	lg_add_cat_btn.set_button_icon(get_theme_icon("Add", "EditorIcons")) 
 
 	var _d: Dictionary = {
 		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
@@ -401,8 +392,7 @@ func reset_to_default() -> void:
 func regen_data() -> void:
 	var new := GLData.new()
 	ResourceSaver.save(new, DATA_PATH)
-	log_browser_tab.data = new
-	category_tab.data = new
+	logs_tab.data = new
 	settings_tab.data = new
 	for lc in category_container.get_children():
 		if lc is GLLogCategory:
@@ -449,7 +439,7 @@ func save_categories() -> void:
 		cats.append(c_data) 
 	
 	data.categories = cats
-	category_tab.handle_category_mov_button_state()
+	logs_tab.handle_category_mov_button_state()
 
 #endregion
 
@@ -549,8 +539,7 @@ func _get_theme_colors() -> Dictionary:
 			"fold_hover": Color("f2f2f2")
 		}
 	} 
-	log_browser_tab.theme_colors = colors
-	category_tab.theme_colors = colors
+	logs_tab.theme_colors = colors
 	settings_tab.theme_colors = colors
 	return colors
 
