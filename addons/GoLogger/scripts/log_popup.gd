@@ -6,8 +6,13 @@ extends PopupPanel
 @onready var copy_btn: Button = %CopyButton
 @onready var settings_btn: Button = %SettingsButton
 @onready var close_btn: Button = %CloseButton
+@onready var content_margin_container: MarginContainer = %ContentMarginContainer
 @onready var content_lbl: Label = %ContentLabel
+@onready var lbsett_panel: Panel = %LblSettingsPanel
+@onready var lbsett_scroll_container: ScrollContainer = %LblSettingsScrollContainer
 
+var inspector: EditorInspector = null
+var file_contents_lblsett: String = "uid://cqn5x8cb7vjy3"
 var dragging: bool = false
 var first_popup := true
 var saved_position := Vector2i.ZERO
@@ -25,13 +30,30 @@ func _ready() -> void:
 	assign_icons()
 	about_to_popup.connect(_on_about_to_popup)
 	resize_handle.gui_input.connect(_on_resize_handle_gui_input)
+	copy_btn.button_up.connect(
+		func() -> void:
+			DisplayServer.clipboard_set(content_lbl.text)
+	)
+	settings_btn.toggled.connect(
+		func(toggled: bool) -> void:
+			if inspector:
+				lbsett_panel.visible = toggled
+	)
 	close_btn.button_up.connect(func() -> void: hide())
 	top_bar.gui_input.connect(_on_title_bar_gui_input)
+
+	inspector = EditorInspector.new()
+	lbsett_scroll_container.add_child(inspector)
+	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	inspector.edit(ResourceLoader.load(file_contents_lblsett))
+	content_lbl.label_settings = load(file_contents_lblsett) 
+	lbsett_panel.hide()
 
 
 
 func assign_icons() -> void:
-	copy_btn.set_button_icon(get_theme_icon("CopyAction", "EditorIcons"))
+	copy_btn.set_button_icon(get_theme_icon("ActionCopy", "EditorIcons"))
 	settings_btn.set_button_icon(get_theme_icon("GDScript", "EditorIcons"))
 	close_btn.set_button_icon(get_theme_icon("Close", "EditorIcons"))
 
@@ -60,7 +82,7 @@ func _on_title_bar_gui_input(event: InputEvent) -> void:
 
 	elif event is InputEventMouseMotion and dragging:
 		position += Vector2i(event.relative.x, event.relative.y)
-		saved_position = position 
+		saved_position = position
 
 
 

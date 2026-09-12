@@ -1,6 +1,9 @@
 @tool
 extends HBoxContainer
 
+signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
+signal request_theme_colors
+# signal open_directory
 
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
@@ -74,14 +77,10 @@ var inspector: EditorInspector
 @onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
-signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
-signal request_theme_colors
-# signal open_directory
+@export var data: GLData = null
 
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
-
-@export var data: GLData = null
 
 var plugin_version: String =  "1.4":
 	set(value):

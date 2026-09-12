@@ -3,6 +3,7 @@
 [ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gologger/resources/theme/popup_logfile_panel.tres" id="1_7pyyx"]
 [ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gologger/scripts/log_popup.gd" id="2_umimx"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="3_rsf33"]
+[ext_resource type="StyleBox" uid="uid://qbiwr8hnwf5n" path="res://addons/gologger/resources/theme/panel_rounded_base_accent_border.tres" id="4_umimx"]
 [ext_resource type="Texture2D" uid="uid://b413grm7tl0m6" path="res://addons/gologger/resources/icons/resize.svg" id="5_umimx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3em2g"]
@@ -17,25 +18,28 @@ title = "sdgds"
 initial_position = 2
 size = Vector2i(500, 750)
 visible = true
+min_size = Vector2i(300, 338)
 theme_override_styles/panel = ExtResource("1_7pyyx")
 script = ExtResource("2_umimx")
+metadata/_edit_horizontal_guides_ = [226.0, 234.0]
+metadata/_edit_vertical_guides_ = [1197.0]
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=676958606]
-anchors_preset = -1
-anchor_left = 0.074
-anchor_top = 0.049000002
-anchor_right = 0.92600006
-anchor_bottom = 0.95100003
-offset_left = -24.0
-offset_top = -23.75
-offset_right = 23.99997
-offset_bottom = 23.75
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = 13.0
+offset_right = -13.0
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=854197305]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="TopBar" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=490326790]
 unique_name_in_owner = true
@@ -83,6 +87,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
+toggle_mode = true
 icon = SubResource("DPITexture_ffv0r")
 icon_alignment = 1
 
@@ -100,7 +105,8 @@ icon_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=1660698490]
+[node name="ContentMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=1660698490]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -108,7 +114,7 @@ theme_override_constants/margin_left = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="ContentLabel" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer" unique_id=772151595]
+[node name="ContentLabel" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/ContentMarginContainer" unique_id=772151595]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 1
@@ -120,6 +126,29 @@ text = "func _on_title_bar_gui_input(event: InputEvent) -> void:
     elif event is InputEventMouseMotion and dragging:
         position += event.relative"
 clip_text = true
+
+[node name="LblSettingsPanel" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1350539167]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("4_umimx")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/LblSettingsPanel" unique_id=1876103891]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="LblSettingsScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/LblSettingsPanel/MarginContainer" unique_id=1819027904]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="ResizeHandle" type="TextureRect" parent="MarginContainer" unique_id=1408853994]
 unique_name_in_owner = true
