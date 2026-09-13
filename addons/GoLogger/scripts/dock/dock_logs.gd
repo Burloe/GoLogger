@@ -128,8 +128,7 @@ func _ready() -> void:
 
 #region Categories
 
-## Called by dock.gd after data is initialized.
-func initialize_categories() -> void:	
+func initialize_categories() -> void:	## Called by dock.gd after data is initialized.
 	ensure_default_category()
 	
 	for cat in data.categories.duplicate():
@@ -158,6 +157,7 @@ func ensure_default_category() -> void:
 		c_names.append(c.category_name)
 	if c_names.is_empty() and data.default_category != "" or !c_names.has(data.default_category):
 		data.default_category = ""
+
 
 
 
@@ -260,7 +260,6 @@ func _on_category_tree_exited(name: String) -> void:
 
 
 
-
 func _on_set_default_category(cat: GLLogCategory, set_status: bool) -> void:
 	if _default_setting_in_progress:
 		return
@@ -302,9 +301,9 @@ func _check_conflict_name(cat_obj: GLLogCategory, new_name: String) -> bool:
 
 
 #region Log Files
-## Used to both initialize and reload the file list
-func load_log_files(is_initializing: bool = false) -> void:
-	prints("is_active:", is_active, "   is_reloading:", is_reloading, "   data.colorcode_dates:", data.colorcode_dates)
+
+func load_log_files(is_initializing: bool = false) -> void: ## Used to both initialize and reload the file list
+	# prints("is_active:", is_active, "   is_reloading:", is_reloading, "   data.colorcode_dates:", data.colorcode_dates)
 	if not is_active or is_reloading:
 		return 
 	
@@ -349,7 +348,7 @@ func load_log_files(is_initializing: bool = false) -> void:
 
 		var n: Array = [c.category_name]
 		categories.append(n)
-		_load_logfiles(c.category_name)
+		_add_logfiles_to_container(_sort_file_list(c.category_name), c.category_name)
 	
 	await get_tree().physics_frame
 	_update_columns() 
@@ -357,20 +356,11 @@ func load_log_files(is_initializing: bool = false) -> void:
 
 
 
-func _load_logfiles(category_name: String) -> void: 
-	var actionable_list: PackedStringArray = []
-	var stray_file_list: PackedStringArray = []
-	var fin_list: Array = _sort_file_list(category_name)
-	_add_logfiles_to_container(fin_list, category_name)
-
-
-
 func _add_logfiles_to_container(list: Array, category_name: String) -> void:
+
 	var rng := RandomNumberGenerator.new()
 	var colorcode: Color = Color.TRANSPARENT
-	var prev_file: String = ""
-
-	print("Data.colorCode: ", data.colorcode_dates)
+	var prev_file: String = "" 
 
 	for file in list:
 		if typeof(file) != TYPE_STRING:

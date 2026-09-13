@@ -305,8 +305,7 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Sorting: 
-Name Ascending"
+tooltip_text = "Sorting: New first"
 theme_override_colors/icon_pressed_color = Color(0.4149491, 0.4149491, 0.4149491, 1)
 theme_override_colors/icon_hover_color = Color(4.415934, 4.415934, 4.415934, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.41568628, 0.41568628, 0.41568628, 1)
@@ -424,7 +423,6 @@ metadata/_tab_name = "Settings"
 
 [node name="PollingTimer" type="Timer" parent="DockTabContainer/SettingsTab" unique_id=1836800660]
 unique_name_in_owner = true
-wait_time = 3.0
 autostart = true
 
 [node name="SidebarPanel" type="Panel" parent="DockTabContainer/SettingsTab" unique_id=1779116936]
