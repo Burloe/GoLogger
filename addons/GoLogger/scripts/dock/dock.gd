@@ -350,13 +350,14 @@ func _assign_settings_controls() -> void:
 
 
 func _assign_editor_icons() -> void:
-	lg_open_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
+	# lg_open_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
 	lg_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
 	lg_add_cat_btn.set_button_icon(get_theme_icon("Add", "EditorIcons")) 
 
 	var _d: Dictionary = {
 		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
 		"Reload": [sett_reset_btn],
+		"Folder": [lg_open_dir_btn, sett_open_dir_btn],
 		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
 		"Debug": [renable_btn1, renable_btn2]
 	}

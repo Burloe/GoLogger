@@ -3,7 +3,6 @@
 [ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gologger/resources/theme/popup_logfile_panel.tres" id="1_7pyyx"]
 [ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gologger/scripts/log_popup.gd" id="2_umimx"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="3_rsf33"]
-[ext_resource type="StyleBox" uid="uid://qbiwr8hnwf5n" path="res://addons/gologger/resources/theme/panel_rounded_base_accent_border.tres" id="4_umimx"]
 [ext_resource type="Texture2D" uid="uid://b413grm7tl0m6" path="res://addons/gologger/resources/icons/resize.svg" id="5_umimx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3em2g"]
@@ -101,6 +100,29 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
 icon = SubResource("DPITexture_ffv0r")
 icon_alignment = 1
 
+[node name="LblSettingsPanel" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1350539167]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("3_rsf33")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/LblSettingsPanel" unique_id=1876103891]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="LblSettingsScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/LblSettingsPanel/MarginContainer" unique_id=1819027904]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=90701162]
 layout_mode = 2
 size_flags_vertical = 3
@@ -125,30 +147,8 @@ text = "func _on_title_bar_gui_input(event: InputEvent) -> void:
 
     elif event is InputEventMouseMotion and dragging:
         position += event.relative"
+autowrap_mode = 3
 clip_text = true
-
-[node name="LblSettingsPanel" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1350539167]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(256, 256)
-layout_mode = 2
-size_flags_vertical = 0
-theme_override_styles/panel = ExtResource("4_umimx")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/LblSettingsPanel" unique_id=1876103891]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="LblSettingsScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/LblSettingsPanel/MarginContainer" unique_id=1819027904]
-unique_name_in_owner = true
-layout_mode = 2
 
 [node name="ResizeHandle" type="TextureRect" parent="MarginContainer" unique_id=1408853994]
 unique_name_in_owner = true

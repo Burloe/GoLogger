@@ -12,7 +12,7 @@ signal category_created(category: GLLogCategory)
 @onready var category_container: GridContainer = %CategoryGridContainer
 
 @onready var polling_timer: Timer = %PollingTimer
-@onready var popup_panel = %LogFilePanelPopup
+@onready var popup_panel: PopupPanel = %LogFilePanelPopup
 
 @onready var open_w_os_btn: Button = %LBOpenWOSButton
 @onready var sort_mode_btn: Button = %LBSortModeButton
@@ -240,7 +240,7 @@ func _add_category(_name: String = "", _is_locked: bool = false):
 	category_container.add_child(_n)
 	_n.data = data
 	_n._data_ready()
-
+	
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested)
@@ -402,6 +402,8 @@ func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
 	lf.assign_icon(true)
 	lf.mouse_entered.connect(func() -> void: hovered_logfile = lf)
 	lf.mouse_entered.connect(func() -> void: hovered_logfile = null)
+	lf.connect_to_popup(popup_panel)
+	
 
 	if hovered_logfile != null and hovered_logfile.file_name == file_name and hovered_logfile.category_name == category_name:
 		lf.mouse_entered.emit()

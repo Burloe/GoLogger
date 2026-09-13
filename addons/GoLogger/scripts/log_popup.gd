@@ -1,6 +1,8 @@
 @tool
 extends PopupPanel
 
+signal close_logfile
+
 @onready var top_bar: Panel = %TopBar
 @onready var resize_handle: TextureRect = %ResizeHandle
 @onready var copy_btn: Button = %CopyButton

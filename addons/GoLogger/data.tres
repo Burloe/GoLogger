@@ -6,7 +6,6 @@
 [sub_resource type="Resource" id="Resource_2nbxn"]
 script = ExtResource("1_2nbxn")
 category_name = "game"
-is_default = true
 
 [sub_resource type="Resource" id="Resource_r3wlc"]
 script = ExtResource("1_2nbxn")

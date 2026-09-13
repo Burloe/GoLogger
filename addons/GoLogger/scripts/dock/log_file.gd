@@ -46,6 +46,9 @@ func _ready() -> void:
 	add_theme_constant_override("icon_max_width", 32)
 
 
+func connect_to_popup(pop: PopupPanel) -> void:
+	if pop: pop.popup_hide.connect(func() -> void: button_pressed = false)
+
 
 func get_file_content() -> void:
 	if !is_file_valid():
