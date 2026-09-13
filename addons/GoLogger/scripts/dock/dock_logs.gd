@@ -5,7 +5,8 @@ signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
 signal request_save(source: String) ## Emitted to dock.gd. "source" is purely for debugging to see what emitted.
 signal request_categories_save
 signal request_theme_colors 
-signal category_created(category: GLLogCategory)
+# signal category_created(category: GLLogCategory)
+signal selected_category_updated(new_selected: String)
 
 @onready var category_panel: HBoxContainer = %CategoryPanel
 @onready var add_category_btn: Button = %AddCategoryButton
@@ -19,8 +20,7 @@ signal category_created(category: GLLogCategory)
 
 @onready var margin_container: MarginContainer = %LBMarginContainer
 @onready var file_container: GridContainer = %FileGridContainer 
-@onready var reload_btn: Button = %LBReloadButton 
-@onready var current_cat_lbl: Label = %CurrentCategoryLabel
+@onready var reload_btn: Button = %LBReloadButton
 
 
 @export var data: GLData = null
@@ -57,11 +57,15 @@ var cat_containers: Array[GridContainer] = []
 var log_files: Array[GLLogFile] = []
 var current_category: String = "":
 	set(value):
-		current_category = value
-		current_cat_lbl.text = value.capitalize()
+		if value != current_category:
+			current_category = value
+			# selected_category_updated.emit(value)
+			load_log_files()
+		
 var cur_logfile: GLLogFile = null:
 	set(value):
 		cur_logfile = value 
+
 var cur_sort: SortModes = SortModes.NEW: 
 	set(value):
 		cur_sort = value
@@ -99,7 +103,6 @@ enum SortModes {
 
 
 
-
 func _ready() -> void:
 	_connect_unique(add_category_btn.button_up, _add_category) 
 	for log_c in category_container.get_children():
@@ -113,22 +116,7 @@ func _ready() -> void:
 		func() -> void:
 			cur_sort = (cur_sort + 1) % 2
 			load_log_files()
-	)
-	category_created.connect(
-		func(cat: GLLogCategory) -> void: 
-			cat.select_btn.toggled.connect(
-				func(toggled_on: bool) -> void:
-					if toggled_on:
-						current_category = cat.category_name 
-						for c: GLLogCategory in category_container.get_children():
-							if c.category_name != current_category:
-								c.select_btn.button_pressed = false 
-					else:
-						if cat.category_name == current_category:
-							current_category = ""
-					load_log_files()
-			)
-	)
+	) 
 	resized.connect(_update_columns) 
 	
 	inspector = EditorInspector.new()
@@ -244,6 +232,14 @@ func _add_category(_name: String = "", _is_locked: bool = false):
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested)
+	_n.select_btn.toggled.connect(
+		func(toggle_on) -> void: 
+			if toggle_on: 
+				current_category = _n.category_name
+				for c: GLLogCategory in category_container.get_children():
+					if c.category_name != current_category:
+						c.select_btn.button_pressed = false
+	)
 	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
 	
 	if !low_name.is_empty():
@@ -251,7 +247,6 @@ func _add_category(_name: String = "", _is_locked: bool = false):
 	else:	
 		_n.line_edit.grab_focus()
 	
-	category_created.emit(_n)
 	handle_category_mov_button_state() 
 
 
@@ -334,7 +329,8 @@ func load_log_files(is_initializing: bool = false) -> void:
 	grid_conts.clear()
 
 	# Fallback 
-	if current_category == "" or data.categories.is_empty() or data.categories[0] != null:
+	if current_category == "" and !data.categories.is_empty() and data.categories[0] != null:
+		print("aaa", current_category)
 		for cat in data.categories:
 			if cat.category_name == data.default_category:
 				current_category = cat.category_name
