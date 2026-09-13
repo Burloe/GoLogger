@@ -1,7 +1,7 @@
 @tool
 extends HBoxContainer
 
-signal log_file_added(log_file: Button) ## Emitted to Dock to update font colors
+
 signal request_save(source: String) ## Emitted to dock.gd. "source" is purely for debugging to see what emitted.
 signal request_categories_save
 signal request_theme_colors 
@@ -304,9 +304,10 @@ func _check_conflict_name(cat_obj: GLLogCategory, new_name: String) -> bool:
 #region Log Files
 ## Used to both initialize and reload the file list
 func load_log_files(is_initializing: bool = false) -> void:
+	prints("is_active:", is_active, "   is_reloading:", is_reloading, "   data.colorcode_dates:", data.colorcode_dates)
 	if not is_active or is_reloading:
 		return 
-
+	
 	is_reloading = true
 
 	if data != null:
@@ -330,7 +331,6 @@ func load_log_files(is_initializing: bool = false) -> void:
 
 	# Fallback 
 	if current_category == "" and !data.categories.is_empty() and data.categories[0] != null:
-		print("aaa", current_category)
 		for cat in data.categories:
 			if cat.category_name == data.default_category:
 				current_category = cat.category_name
@@ -366,18 +366,38 @@ func _load_logfiles(category_name: String) -> void:
 
 
 func _add_logfiles_to_container(list: Array, category_name: String) -> void:
+	var rng := RandomNumberGenerator.new()
+	var colorcode: Color = Color.TRANSPARENT
+	var prev_file: String = ""
+
+	print("Data.colorCode: ", data.colorcode_dates)
+
 	for file in list:
 		if typeof(file) != TYPE_STRING:
 			continue
 
-		var lf: GLLogFile = _create_logfile_obj(category_name, file) 
-
+		var lf: GLLogFile = _create_logfile_obj(category_name, file)
 		if lf == null:
 			continue
+		
+		if data.colorcode_dates:
+			var new_c := Color(rng.randf_range(0.5, 1.0), rng.randf_range(0.5, 1.0), rng.randf_range(0.5, 1.0), 0.8)
+			var pdate: String = prev_file.lstrip(str(category_name, "(")).rstrip(").log")
+			var cdate: String = file.lstrip(str(category_name, "(")).rstrip(").log")
+			if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
+				colorcode = new_c
+			lf.add_theme_color_override("font_color", colorcode)
+			lf.add_theme_color_override("font_hover_color", colorcode.lightened(0.2))
+			lf.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
+		else: 
+			lf.add_theme_color_override("font_color", theme_colors["font"]["normal"])
+			lf.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
+			lf.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"])
+			print(colorcode)
 		file_container.add_child(lf)
 		log_files.append(lf)
 		lf.button_up.connect(_open_log_file.bind(lf))
-		log_file_added.emit(lf)
+		prev_file = file 
 
 
 

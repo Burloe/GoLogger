@@ -62,6 +62,7 @@ const DATA_PATH: String = "res://addons/gologger/data.tres"
 
 @onready var sett_autostart_btn: CheckBox = %AutostartCheckBox
 @onready var sett_utc_btn: CheckBox = %UTCCheckBox
+@onready var colorcode_btn: CheckBox = %ColorCodeCheckBox
 
 @onready var sett_limit_method_btn: OptionButton = %LimitMethodOptButton
 @onready var sett_limit_method_lbl: Label = %LimitMethodLabel
@@ -192,7 +193,7 @@ enum ErrorReportLevel {
 var category_scene = preload("uid://c3n416c5fajm5")
 var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
 var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
-var plugin_version: String =  "1.4":
+var plugin_version: String =  "2.0":
 	set(value):
 		plugin_version = value
 		if plugin_version_lbl != null:
@@ -235,13 +236,12 @@ func _ready() -> void:
 
 	docktab_container.tab_changed.connect(
 		func(tab: int) -> void: 
-			logs_tab.is_active = false
-			match tab:
-				0: 
-					logs_tab.load_log_files()
-					logs_tab._update_columns()
-					logs_tab.is_active = true
-
+			if tab == 1: # 0 is empty tab for the plugin icon
+				logs_tab.is_active = true
+				logs_tab.load_log_files()
+				logs_tab._update_columns()
+			else:
+				logs_tab.is_active = false
 	)
 	visibility_changed.connect( 
 		func() -> void:
@@ -251,7 +251,6 @@ func _ready() -> void:
 	) 
 	logs_tab.request_save.connect(save_data)
 	logs_tab.request_categories_save.connect(save_categories)
-	logs_tab.log_file_added.connect(_on_log_file_added)
 	settings_tab.request_save.connect(save_data)
 	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
 
@@ -325,6 +324,7 @@ func _assign_settings_controls() -> void:
 	data.entry_format_ctrl = sett_entry_format_line
 	data.autostart_ctrl = sett_autostart_btn
 	data.utc_ctrl = sett_utc_btn
+	data.colorcode_dates_ctrl = colorcode_btn
 	data.id_print_ctrl = sett_id_print_btn
 	data.id_toggle_ctrl = sett_id_toggle_btn
 	data.id_startup_ctrl = sett_id_startup_btn
@@ -464,15 +464,6 @@ func _open_directory() -> void:
 
 #region Signal receivers
 
-func _on_log_file_added(logfile: Button) -> void:
-	var theme_colors = _get_theme_colors() 
-	logfile.add_theme_color_override("font_color", theme_colors["font"]["normal"])
-	logfile.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
-	logfile.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"]) 
-
-
-
-	# editor_base_col = settings.get("interface/theme/base_color")
 func _on_editor_settings_changed() -> void:
 	settings = EditorInterface.get_editor_settings()
 	var new_base: Color = settings.get_setting("interface/theme/base_color")
@@ -601,6 +592,7 @@ func _apply_base_theme_colors() -> void:
 func _apply_accent_theme_colors() -> void:
 
 	# Color.get_luminance() can be used to determine if light or dark theme should be used. If returning >0.5 is light 
+	# See also Color.lightened() and darkened() to get hover/pressed colors
 
 	var color_map := {
 		# Mixed base/accent elements

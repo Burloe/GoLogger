@@ -30,6 +30,7 @@ signal request_theme_colors
 
 @onready var autostart_btn: CheckBox = %AutostartCheckBox
 @onready var utc_btn: CheckBox = %UTCCheckBox
+@onready var colorcode_btn: CheckBox = %ColorCodeCheckBox
 
 @onready var limit_method_btn: OptionButton = %LimitMethodOptButton
 @onready var limit_method_lbl: Label = %LimitMethodLabel
@@ -156,6 +157,7 @@ func _ready() -> void:
 		entry_format_revert_btn,
 		autostart_btn,
 		utc_btn,
+		colorcode_btn,
 		id_print_btn,
 		id_toggle_btn,
 		id_align_opt_btn,
@@ -336,6 +338,7 @@ func _assign_settings_controls() -> void:
 		"entry_format": entry_format_line,
 		"autostart_session": autostart_btn,
 		"use_utc": utc_btn,
+		"colorcode_dates": colorcode_btn,
 		"id_print": id_print_btn,
 		"id_toggle": id_toggle_btn,
 		"id_startup_state": id_startup_btn,
@@ -624,6 +627,9 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 
 		utc_btn:
 			data.utc = toggled_on
+		
+		colorcode_btn:
+			data.colorcode_dates = toggled_on
 
 		id_print_btn:
 			data.id_print = toggled_on

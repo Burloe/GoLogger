@@ -5,8 +5,7 @@ class_name GLData extends Resource
 @export var categories: Array[GLCategoryData] = []
 @export var default_category: String = ""
 # Browser Tab
-@export_enum("New", "Old") var browser_sort: int = 0
-@export var browser_view: bool = false
+@export_enum("New", "Old") var browser_sort: int = 0 
 @export var open_logs_with_os: bool = false
 
 # Directories 6 Formats
@@ -17,6 +16,7 @@ class_name GLData extends Resource
 # General
 @export var autostart: bool = true
 @export var utc: bool = false
+@export var colorcode_dates: bool = false
 @export_enum("Warnings & Errors", "Warnings only", "None") var error_reporting: int = 0
 
 # Limits
@@ -60,6 +60,7 @@ var header_format_ctrl: LineEdit = null
 var entry_format_ctrl: LineEdit = null
 var autostart_ctrl: CheckBox = null
 var utc_ctrl: CheckBox = null
+var colorcode_dates_ctrl: CheckBox = null
 var id_print_ctrl: CheckBox = null
 var id_toggle_ctrl: CheckBox = null
 var id_startup_ctrl: CheckBox = null
@@ -79,7 +80,6 @@ var session_duration_ctrl: SpinBox = null
 var session_duration_ctrl_line: LineEdit = null
 var error_rep_ctrl: OptionButton = null
 var browser_sort_ctrl: Button = null
-var browser_view_ctrl: Button = null
 var open_logs_with_os_ctrl: Button = null
 
 var list: Dictionary = {}
@@ -256,6 +256,7 @@ func update_list() -> void:
 	"entry_format": 				{"value": entry_format, 				"default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", 		"ctrl": entry_format_ctrl},
 	"autostart": 						{"value": autostart, 						"default": true, 		"ctrl": autostart_ctrl},
 	"utc": 									{"value": utc, 									"default": false, 	"ctrl": utc_ctrl},
+	"colorcode_dates":			{"value": colorcode_dates,			"default": false,		"ctrl": colorcode_dates_ctrl},
 	"id_print": 						{"value": id_print, 						"default": false, 	"ctrl": id_print_ctrl},
 	"id_toggle": 						{"value": id_toggle, 						"default": false, 	"ctrl": id_toggle_ctrl},
 	"id_startup": 					{"value": id_startup, 					"default": true, 		"ctrl": id_startup_ctrl},
@@ -268,6 +269,5 @@ func update_list() -> void:
 	"session_duration": 		{"value": session_duration, 		"default": 1200, 		"ctrl": session_duration_ctrl, "line": session_duration_ctrl_line},
 	"err_report_lv":	 			{"value": error_reporting, 			"default": 0, 			"ctrl": error_rep_ctrl},
 	"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},
-	"browser_view": 				{"value": browser_view, 				"default": 0, 			"ctrl": browser_view_ctrl},
 	"open_logs_with_os":		{"value": open_logs_with_os,		"default": false,		"ctrl": open_logs_with_os_ctrl}
 	}
