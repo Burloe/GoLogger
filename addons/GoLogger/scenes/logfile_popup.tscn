@@ -3,11 +3,12 @@
 [ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gologger/resources/theme/popup_logfile_panel.tres" id="1_7pyyx"]
 [ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gologger/scripts/log_popup.gd" id="2_umimx"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gologger/resources/theme/panel_rounded_base_col.tres" id="3_rsf33"]
+[ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gologger/file_content_label_settings.tres" id="4_umimx"]
 [ext_resource type="Texture2D" uid="uid://b413grm7tl0m6" path="res://addons/gologger/resources/icons/resize.svg" id="5_umimx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3em2g"]
 
-[sub_resource type="DPITexture" id="DPITexture_ffv0r"]
+[sub_resource type="DPITexture" id="DPITexture_rsf33"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -73,10 +74,11 @@ text = "May 24 2025 | 19:48:04"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Copy log contents to clipboard."
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
-icon = SubResource("DPITexture_ffv0r")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
 [node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=500386683]
@@ -87,7 +89,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
 toggle_mode = true
-icon = SubResource("DPITexture_ffv0r")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
 [node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=1687159835]
@@ -97,17 +99,24 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
-icon = SubResource("DPITexture_ffv0r")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
-[node name="LblSettingsPanel" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1350539167]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(256, 256)
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VBoxContainer" unique_id=2113302947]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+split_offsets = PackedInt32Array(-112)
+split_offset = -112
+
+[node name="LblSettingsPanel" type="Panel" parent="MarginContainer/VBoxContainer/VSplitContainer" unique_id=1350539167]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 192)
+layout_mode = 2
+size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("3_rsf33")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/LblSettingsPanel" unique_id=1876103891]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/VSplitContainer/LblSettingsPanel" unique_id=1876103891]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -119,15 +128,16 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="LblSettingsScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/LblSettingsPanel/MarginContainer" unique_id=1819027904]
+[node name="LblSettingsScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/VSplitContainer/LblSettingsPanel/MarginContainer" unique_id=1819027904]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=90701162]
+[node name="ContentScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/VSplitContainer" unique_id=90701162]
 layout_mode = 2
 size_flags_vertical = 3
+scroll_hint_mode = 1
 
-[node name="ContentMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=1660698490]
+[node name="ContentMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/VSplitContainer/ContentScrollContainer" unique_id=1660698490]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -136,8 +146,9 @@ theme_override_constants/margin_left = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="ContentLabel" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/ContentMarginContainer" unique_id=772151595]
+[node name="ContentLabel" type="Label" parent="MarginContainer/VBoxContainer/VSplitContainer/ContentScrollContainer/ContentMarginContainer" unique_id=772151595]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 32)
 layout_mode = 2
 size_flags_vertical = 1
 text = "func _on_title_bar_gui_input(event: InputEvent) -> void:
@@ -146,9 +157,30 @@ text = "func _on_title_bar_gui_input(event: InputEvent) -> void:
             dragging = event.pressed
 
     elif event is InputEventMouseMotion and dragging:
+        position += event.relative
+func _on_title_bar_gui_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton:
+        if event.button_index == MOUSE_BUTTON_LEFT:
+            dragging = event.pressed
+
+    elif event is InputEventMouseMotion and dragging:
+        position += event.relative
+func _on_title_bar_gui_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton:
+        if event.button_index == MOUSE_BUTTON_LEFT:
+            dragging = event.pressed
+
+    elif event is InputEventMouseMotion and dragging:
+        position += event.relative
+func _on_title_bar_gui_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton:
+        if event.button_index == MOUSE_BUTTON_LEFT:
+            dragging = event.pressed
+
+    elif event is InputEventMouseMotion and dragging:
         position += event.relative"
+label_settings = ExtResource("4_umimx")
 autowrap_mode = 3
-clip_text = true
 
 [node name="ResizeHandle" type="TextureRect" parent="MarginContainer" unique_id=1408853994]
 unique_name_in_owner = true
