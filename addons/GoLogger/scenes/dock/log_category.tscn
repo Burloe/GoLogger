@@ -7,7 +7,7 @@
 [ext_resource type="StyleBox" uid="uid://diklblkplkogy" path="res://addons/gologger/resources/theme/log_category_selected.tres" id="5_3iv4e"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="6_3iv4e"]
 
-[sub_resource type="DPITexture" id="DPITexture_3iv4e"]
+[sub_resource type="DPITexture" id="DPITexture_rsf33"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -32,7 +32,7 @@ vertical = true
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
 custom_minimum_size = Vector2(0, 48)
 custom_maximum_size = Vector2(-1, 48)
-offset_right = 192.0
+offset_right = 210.0
 offset_bottom = 48.0
 offset_transform_enabled = true
 theme_override_styles/panel = ExtResource("1_dn16j")
@@ -81,7 +81,7 @@ theme_override_styles/pressed = ExtResource("3_xjf83")
 theme_override_styles/hover = ExtResource("3_xjf83")
 theme_override_styles/hover_pressed = ExtResource("3_xjf83")
 theme_override_styles/disabled = ExtResource("3_xjf83")
-icon = SubResource("DPITexture_3iv4e")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
 [node name="SelectButton" type="Button" parent="Control/Panel/HBoxContainer" unique_id=1355907674]
@@ -101,7 +101,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_cm21w")
 theme_override_styles/hover_pressed = ExtResource("5_3iv4e")
 theme_override_styles/disabled = ExtResource("3_xjf83")
 toggle_mode = true
-icon = SubResource("DPITexture_3iv4e")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
 [node name="MoveRightButton" type="Button" parent="Control/Panel/HBoxContainer" unique_id=659310254]
@@ -121,7 +121,7 @@ theme_override_styles/pressed = ExtResource("3_xjf83")
 theme_override_styles/hover = ExtResource("3_xjf83")
 theme_override_styles/hover_pressed = ExtResource("3_xjf83")
 theme_override_styles/disabled = ExtResource("3_xjf83")
-icon = SubResource("DPITexture_3iv4e")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=151857270]
@@ -144,24 +144,21 @@ expand_to_text_length = true
 [node name="LineEditPanel" type="Panel" parent="HBoxContainer" unique_id=950420254]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(48, 36)
+custom_minimum_size = Vector2(52, 36)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("6_3iv4e")
 
 [node name="LineEditHBox" type="HBoxContainer" parent="HBoxContainer/LineEditPanel" unique_id=2091384365]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(48, 36)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -2.0
-offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 2
-alignment = 2
+alignment = 1
 
 [node name="ApplyButton" type="Button" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=2059821709]
 unique_name_in_owner = true
@@ -172,7 +169,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "Applies a new base directory"
 mouse_default_cursor_shape = 2
-theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
+theme_override_colors/icon_hover_color = Color(1.1527054, 2.0128663, 0.61493635, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.3137255)
 theme_override_font_sizes/font_size = 14
@@ -182,11 +179,12 @@ theme_override_styles/hover = ExtResource("3_xjf83")
 theme_override_styles/hover_pressed = ExtResource("3_xjf83")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = SubResource("DPITexture_3iv4e")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=51459182]
 layout_mode = 2
+theme_override_constants/separation = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
 [node name="RevertButton" type="Button" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=79804206]
@@ -210,7 +208,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_3iv4e")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
 [node name="DefaultButton" type="Button" parent="HBoxContainer" unique_id=750332008]
@@ -230,7 +228,7 @@ theme_override_styles/hover = ExtResource("3_xjf83")
 theme_override_styles/hover_pressed = ExtResource("3_xjf83")
 theme_override_styles/disabled = ExtResource("3_xjf83")
 toggle_mode = true
-icon = SubResource("DPITexture_3iv4e")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
 
 [node name="DeleteButton" type="Button" parent="HBoxContainer" unique_id=753401324]
@@ -252,5 +250,5 @@ theme_override_styles/disabled = ExtResource("3_xjf83")
 theme_override_styles/focus = ExtResource("3_xjf83")
 text = "
 "
-icon = SubResource("DPITexture_3iv4e")
+icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1

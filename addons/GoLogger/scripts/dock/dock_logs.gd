@@ -223,7 +223,7 @@ func _on_category_move_requested(category: GLLogCategory, direction: int) -> voi
 
 
 
-func _add_category(_name: String = "", _is_locked: bool = false):
+func _add_category(_name: String = ""):
 	var _n = category_scene.instantiate() as GLLogCategory 
 	var low_name: String = _name.to_lower()
 	_n.category_name = low_name

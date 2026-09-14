@@ -74,6 +74,8 @@ func _ready() -> void:
 	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
+	line_edit.size.x = 110
+
 	revert_btn.button_up.connect(
 		func() -> void:
 			line_edit.unedit()
@@ -87,8 +89,7 @@ func _ready() -> void:
 			revert_btn.tooltip_text = str("Revert to '", category_name, "'") 
 			edit_hbox.visible = toggled_on
 			var tw := create_tween()
-			var padding: int = 66
-			tw.tween_property(self, "size", Vector2(size.x + padding, size.y) if toggled_on else Vector2(size.x - padding, size.y), 0.05)
+			tw.tween_property(self, "size", Vector2(size.x, size.y) if toggled_on else Vector2(size.x, size.y), 0.05)
 			await tw.finished
 			var tween := create_tween()
 			line_edit_panel.visible  = toggled_on
