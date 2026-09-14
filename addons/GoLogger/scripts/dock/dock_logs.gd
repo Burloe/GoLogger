@@ -35,15 +35,13 @@ var ico_sort_new = 	preload("uid://dvjgbc6hibv5m")
 var ico_sort_old = 	preload("uid://bljitewxdnvuh") 
 var category_scene = preload("uid://c3n416c5fajm5") 
 
-var is_drawing: bool = false
+var is_active: bool = true
 var is_shutting_down: bool = false
+var is_reloading: bool = false
+var is_content_hovered: bool = false
 var _default_setting_in_progress: bool = false  
 var _column_update_pending: bool = false 
-var is_active: bool = false
-var grid_conts: Array[GridContainer] = []
-var is_content_hovered: bool = false
-var is_reloading: bool = false
-var hovered_logfile: GLLogFile
+
 
 var open_log_with_os: bool = false:
 	set(value):
@@ -54,8 +52,10 @@ var open_log_with_os: bool = false:
 
 var min_cell_width: int = 140
 var base_dir = ""
+var hovered_logfile: GLLogFile
 var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
 var cat_containers: Array[GridContainer] = []
+var grid_conts: Array[GridContainer] = []
 var log_files: Array[GLLogFile] = []
 var current_category: String = "":
 	set(value):
@@ -109,9 +109,6 @@ func _ready() -> void:
 	_connect_unique(add_category_btn.button_up, _add_category) 
 	for log_c in category_container.get_children():
 		log_c.queue_free()
-
-	draw.connect(func() -> void: is_drawing = true)
-	hidden.connect(func() -> void: is_drawing = false)
 
 	settings_tab.colorcode_changed.connect(_on_colorcode_changed)
 	reload_btn.button_up.connect(load_log_files)
@@ -378,6 +375,7 @@ func _reconcile_log_files(target_files: Array, category_name: String) -> void:
 
 		var updated_log_files: Array[GLLogFile] = []
 		var colorcode: Color = Color.BLACK
+		var used_cols: Array[Color] = []
 		var prev_file: String = ""
 
 		for i in range(target_files.size()):
@@ -397,11 +395,12 @@ func _reconcile_log_files(target_files: Array, category_name: String) -> void:
 						lf.button_up.connect(_open_log_file.bind(lf))
 
 				if data.colorcode_dates:
-						var new_c := _get_logfile_color()
+						var new_c := _get_logfile_color(used_cols)
 						var pdate: String = prev_file.lstrip(str(category_name, "(")).rstrip(").log")
 						var cdate: String = file_name.lstrip(str(category_name, "(")).rstrip(").log")
 						if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
-								colorcode = new_c
+								colorcode = _get_logfile_color(used_cols)
+								used_cols.append(colorcode)
 						lf.add_theme_color_override("font_color", colorcode)
 						lf.add_theme_color_override("font_hover_color", colorcode.lightened(0.2))
 						lf.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
@@ -466,7 +465,9 @@ func _get_category_files(category_name: String) -> PackedStringArray:
 func _on_colorcode_changed() -> void:
 	var files := file_container.get_children() 
 	var colorcode: Color = Color.BLACK
+	var used_cols: Array[Color]= []
 	var prev_file: GLLogFile = null
+	var test = [0, [1, [2, 3]]]
 
 	if files.is_empty():
 		return
@@ -474,11 +475,11 @@ func _on_colorcode_changed() -> void:
 	for cur_file: GLLogFile in files:
 		var file_name = cur_file.file_name
 		if data.colorcode_dates:
-			var new_c := _get_logfile_color()
 			var pdate: String = prev_file.date_stamp if prev_file else ""
 
 			if !prev_file or !cur_file.date_stamp.contains(prev_file.date_stamp):
-					colorcode = new_c
+					colorcode = _get_logfile_color(used_cols)
+					used_cols.append(colorcode)
 			cur_file.add_theme_color_override("font_color", 							colorcode)
 			cur_file.add_theme_color_override("font_hover_color", 				colorcode.lightened(0.2))
 			cur_file.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
@@ -570,23 +571,23 @@ func _open_log_file(log_file: GLLogFile) -> void:
 
 
 
-func _get_logfile_color() -> Color:
+func _get_logfile_color(used_colors: Array[Color]) -> Color:
 	var rng := RandomNumberGenerator.new()
 	var c := Color.BLACK
 	
 	while c == Color.BLACK or c.get_luminance() <= 0.6 and c.get_luminance() >= 0.85:
-		c = Color(rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), 0.8)
+		c = Color(rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), 0.8) 
+		for col in used_colors:
+			while c.is_equal_approx(col):
+				c = Color(rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), 0.8)
 	return c
 
 
 
 func _update_columns(is_initializing: bool = false) -> void:
-	print("Drawing: ",is_drawing)
-	if min_cell_width <= 0 or !file_container or !is_drawing: 
+	if min_cell_width <= 0 or !file_container or !is_active: 
+		file_container.columns = 999
 		return
-	
-	# await get_tree().physics_frame
-	# await get_tree().physics_frame 
 
 	var first_log_file: GLLogFile = null
 	for log_file in log_files:
@@ -598,15 +599,13 @@ func _update_columns(is_initializing: bool = false) -> void:
 		file_container.columns = 999
 		return
 
-
 	var cell_width: int = first_log_file.size.x + file_container.get_theme_constant("h_separation")
 	var col: int = 1
 	if is_initializing:
-		await get_tree().physics_frame 
-		col = max(1, int(margin_container.size.x - 8 / cell_width)) 
+		col = max(1, int(margin_container.size.x / cell_width)) 
 	else:
 		col = max(1, int(file_container.size.x / cell_width)) 
-	prints("Col:", col)
+	# print("[Col: ", col, "]    [Size.X: ", margin_container.size.x if is_initializing else file_container.size.x, "]    [is_init: ", is_initializing, "]")
 	file_container.columns = col
 
 #endregion

@@ -271,7 +271,7 @@ func _ready() -> void:
 	_assign_settings_controls()
 	logs_tab.initialize_categories()
 	settings_tab.initialize_tab() 
-	logs_tab.load_log_files(true) 
+	logs_tab.load_log_files(true)
 	_assign_editor_icons()
 
 
