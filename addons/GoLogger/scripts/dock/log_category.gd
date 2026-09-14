@@ -44,7 +44,10 @@ var category_name: String = "":
 			if cat_data != null:
 				cat_data.category_name = value
 
-			if line_edit != null: line_edit.text = category_name 
+			if line_edit != null: line_edit.text = category_name
+
+			if default_btn:
+				default_btn.disabled = category_name.is_empty() 
 
 ## Only used to assign icon -> use default_btn.button_pressed to check if def
 var is_default: bool = false:
@@ -139,6 +142,7 @@ func _data_ready() -> void:
 		revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 
 	line_edit.text = category_name
+	default_btn.disabled = category_name.is_empty()
 
 
 
@@ -166,10 +170,10 @@ func apply_name(new_name: String) -> void:
 		cat_data = new
 
 	# Existing GLLogCategory
-	elif cat_names.has(category_name): 
-		for i in range(cat.size()):
-			if cat[i].category_name == category_name:
-				cat[i].category_name = new_name 
+	elif cat_names.has(category_name):
+		for c in data.categories:
+			if c.category_name == category_name:
+				c.category_name = new_name
 				break
 
 	data.categories = cat
@@ -185,7 +189,7 @@ func apply_name(new_name: String) -> void:
 func _on_text_changed(new_text: String) -> void:
 	# Handle disallowed chars
 	if !new_text.is_valid_filename():
-		var invalid_ch = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+		var invalid_ch = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*", "^"]
 		for c in invalid_ch:
 			new_text = new_text.replace(c, "")
 	new_text = new_text.replace(" ", "_") 
@@ -194,6 +198,9 @@ func _on_text_changed(new_text: String) -> void:
 
 	if new_text != category_name and category_name != "":
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid if check_name_conflict() else sb_line_edit_normal)
+		apply_btn.disabled = true
+	else:
+		apply_btn.disabled = false
 
 
 

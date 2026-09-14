@@ -153,13 +153,42 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 
 
+func _add_category(_name: String = ""): ## _name only applicable at loading
+	var _n = category_scene.instantiate() as GLLogCategory 
+	var low_name: String = _name.to_lower()
+	_n.category_name = low_name
+	category_container.add_child(_n)
+	_n.data = data
+	_n._data_ready()
+	
+	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
+	_n.set_default_category.connect(_on_set_default_category)
+	_n.move_category_requested.connect(_on_category_move_requested)
+	_n.select_btn.toggled.connect(
+		func(toggle_on) -> void: 
+			if toggle_on: 
+				current_category = _n.category_name
+				for c: GLLogCategory in category_container.get_children():
+					if c.category_name != current_category:
+						c.select_btn.button_pressed = false
+	)
+	_n.tree_exited.connect(_on_category_tree_exited)
+	
+	if !low_name.is_empty():
+		_n.default_btn.button_pressed = data.default_category == low_name
+	else:	
+		_n.line_edit.grab_focus()
+	
+	handle_category_mov_button_state() 
+
+
+
 func ensure_default_category() -> void:
 	var c_names := []
 	for c in data.categories:
 		c_names.append(c.category_name)
 	if c_names.is_empty() and data.default_category != "" or !c_names.has(data.default_category):
 		data.default_category = ""
-
 
 
 
@@ -223,40 +252,10 @@ func _on_category_move_requested(category: GLLogCategory, direction: int) -> voi
 
 
 
-func _add_category(_name: String = ""):
-	var _n = category_scene.instantiate() as GLLogCategory 
-	var low_name: String = _name.to_lower()
-	_n.category_name = low_name
-	category_container.add_child(_n)
-	_n.data = data
-	_n._data_ready()
-	
-	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
-	_n.set_default_category.connect(_on_set_default_category)
-	_n.move_category_requested.connect(_on_category_move_requested)
-	_n.select_btn.toggled.connect(
-		func(toggle_on) -> void: 
-			if toggle_on: 
-				current_category = _n.category_name
-				for c: GLLogCategory in category_container.get_children():
-					if c.category_name != current_category:
-						c.select_btn.button_pressed = false
-	)
-	_n.tree_exited.connect(_on_category_tree_exited.bind(_n.category_name))
-	
-	if !low_name.is_empty():
-		_n.default_btn.button_pressed = data.default_category == low_name
-	else:	
-		_n.line_edit.grab_focus()
-	
-	handle_category_mov_button_state() 
-
-
-
-func _on_category_tree_exited(name: String) -> void: 
+func _on_category_tree_exited() -> void: 
 	if is_shutting_down:
 		return
-	
+
 	handle_category_mov_button_state()
 	request_categories_save.emit()
 
