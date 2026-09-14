@@ -6,6 +6,10 @@
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gologger/resources/theme/btn_normal.tres" id="3_xjf83"]
 [ext_resource type="StyleBox" uid="uid://diklblkplkogy" path="res://addons/gologger/resources/theme/log_category_selected.tres" id="5_3iv4e"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gologger/resources/theme/panel_rounded_bg.tres" id="6_3iv4e"]
+[ext_resource type="Texture2D" uid="uid://cntk5aesu05sa" path="res://addons/gologger/resources/icons/LogFileBroken.svg" id="7_mxky7"]
+[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gologger/resources/theme/popup_logfile_panel.tres" id="7_wk57j"]
+[ext_resource type="StyleBox" uid="uid://dtp30ny2jqw5m" path="res://addons/gologger/resources/theme/panel_rounded_warning1.tres" id="8_wk57j"]
+[ext_resource type="StyleBox" uid="uid://bbmpmyxa557cb" path="res://addons/gologger/resources/theme/panel_rounded_warning0.tres" id="9_legvf"]
 
 [sub_resource type="DPITexture" id="DPITexture_rsf33"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
@@ -29,8 +33,10 @@ vertical = true
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k47fi"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qiahn"]
+
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(210, 48)
 custom_maximum_size = Vector2(-1, 48)
 offset_right = 210.0
 offset_bottom = 48.0
@@ -38,7 +44,8 @@ offset_transform_enabled = true
 theme_override_styles/panel = ExtResource("1_dn16j")
 script = ExtResource("2_t2282")
 data = ExtResource("3_x8jw8")
-metadata/_edit_vertical_guides_ = [56.0, 148.0]
+metadata/_edit_horizontal_guides_ = [69.0, 82.0]
+metadata/_edit_vertical_guides_ = [180.0, 22.0]
 
 [node name="Control" type="Control" parent="." unique_id=1004272917]
 layout_mode = 2
@@ -217,9 +224,7 @@ custom_minimum_size = Vector2(18, 18)
 custom_maximum_size = Vector2(18, 18)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "Mark as Default Category
-
-Default Category is used when Log.msg() is called without defining a category."
+tooltip_text = "Set as default to be used when calling msg(\"My entry\") without defining one."
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 6
 theme_override_styles/normal = ExtResource("3_xjf83")
@@ -252,3 +257,116 @@ text = "
 "
 icon = SubResource("DPITexture_rsf33")
 icon_alignment = 1
+
+[node name="DeletePopupPanel" type="PopupPanel" parent="." unique_id=1757288968]
+unique_name_in_owner = true
+oversampling_override = 1.0
+position = Vector2i(9, 69)
+size = Vector2i(190, 121)
+visible = true
+theme_override_styles/panel = ExtResource("7_wk57j")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DeletePopupPanel" unique_id=1340085079]
+offset_left = 13.0
+offset_top = 13.0
+offset_right = 177.0
+offset_bottom = 108.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="DeletePopupPanel/VBoxContainer" unique_id=215073528]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 2
+
+[node name="CancelButton" type="Button" parent="DeletePopupPanel/VBoxContainer/Control" unique_id=420291694]
+unique_name_in_owner = true
+modulate = Color(0.8, 0.8, 0.8, 1)
+custom_minimum_size = Vector2(20, 20)
+custom_maximum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_bottom = 20.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+size_flags_vertical = 0
+tooltip_text = "Cancel"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.43137255)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qiahn")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_qiahn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_qiahn")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_qiahn")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_qiahn")
+icon = ExtResource("7_mxky7")
+icon_alignment = 1
+
+[node name="Label" type="Label" parent="DeletePopupPanel/VBoxContainer" unique_id=1315104008]
+custom_minimum_size = Vector2(142, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/line_spacing = -5
+text = "Move folder & 
+files to thrash?"
+horizontal_alignment = 1
+vertical_alignment = 2
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DeletePopupPanel/VBoxContainer" unique_id=1124324014]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="DelDirButton" type="Button" parent="DeletePopupPanel/VBoxContainer/HBoxContainer" unique_id=1909276072]
+unique_name_in_owner = true
+modulate = Color(0.8, 0.8, 0.8, 1)
+custom_minimum_size = Vector2(78, 46)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "Move category folder 
+& .log files to trash"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.43137255)
+theme_override_styles/normal = ExtResource("8_wk57j")
+theme_override_styles/pressed = ExtResource("9_legvf")
+theme_override_styles/hover = ExtResource("9_legvf")
+theme_override_styles/hover_pressed = ExtResource("9_legvf")
+theme_override_styles/disabled = ExtResource("9_legvf")
+text = "Yes"
+icon = ExtResource("7_mxky7")
+alignment = 0
+icon_alignment = 2
+
+[node name="DelCatButton" type="Button" parent="DeletePopupPanel/VBoxContainer/HBoxContainer" unique_id=1015406276]
+unique_name_in_owner = true
+modulate = Color(0.8, 0.8, 0.8, 1)
+custom_minimum_size = Vector2(78, 46)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "Move right"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.43137255)
+theme_override_styles/normal = ExtResource("8_wk57j")
+theme_override_styles/pressed = ExtResource("8_wk57j")
+theme_override_styles/hover = ExtResource("8_wk57j")
+theme_override_styles/hover_pressed = ExtResource("8_wk57j")
+theme_override_styles/disabled = ExtResource("8_wk57j")
+text = "No"
+icon = ExtResource("7_mxky7")
+alignment = 0
+icon_alignment = 2

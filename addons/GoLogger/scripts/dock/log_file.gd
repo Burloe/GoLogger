@@ -9,7 +9,7 @@ class_name GLLogFile extends Button
 const DISPLAY_NAME_CHAR_LIMIT: int = 18
 
 var file_ico := 				preload("uid://baeavb2jo8lgw")
-var file_broken_ico := 	preload("uid://bt0xt83bipjft")
+var file_broken_ico := 	preload("uid://cntk5aesu05sa")
 var sb_selected := 			preload("uid://bcprdy8psyd0k")
 var sb_unselected := 		preload("uid://xy4uummjvhgu")
 

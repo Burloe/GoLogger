@@ -24,6 +24,11 @@ signal set_default_category(category: GLLogCategory, toggle_on: bool)
 @onready var apply_btn: Button = 						%ApplyButton
 @onready var revert_btn: Button = 					%RevertButton
 
+@onready var del_popup: PopupPanel = 				%DeletePopupPanel
+@onready var del_cancel: Button = 					%CancelButton
+@onready var del_dir_btn: Button = 					%DelDirButton
+@onready var del_cat_btn: Button = 					%DelCatButton
+
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
@@ -65,11 +70,18 @@ func _ready() -> void:
 	apply_btn.set_button_icon(get_theme_icon("ImportCheck", "EditorIcons"))
 	revert_btn.set_button_icon(get_theme_icon("Reload", "EditorIcons"))
 	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
+	del_cancel.set_button_icon(get_theme_icon("GuiClose", "EditorIcons"))
+	del_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
+	del_cat_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
 	edit_hbox.hide()
 	is_default = is_default # loads the icon
+	del_popup.hide()
 
 	settings.settings_changed.connect(_on_editor_settings_changed)
-	del_btn.button_up.connect(_on_del_button_up)
+	del_btn.button_up.connect(_on_del_button_up.bind(del_btn))
+	del_cancel.button_up.connect(_on_del_button_up.bind(del_cancel))
+	del_dir_btn.button_up.connect(_on_del_button_up.bind(del_dir_btn))
+	del_cat_btn.button_up.connect(_on_del_button_up.bind(del_cat_btn)) 
 	line_edit.text_changed.connect(_on_text_changed)
 	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
@@ -115,11 +127,6 @@ func _ready() -> void:
 			is_default = toggled_on
 			if cat_data:
 				cat_data.is_default = toggled_on
-	)
-
-	select_btn.toggled.connect(
-		func(toggled_on: bool) -> void:
-			pass
 	)
 
 	size = Vector2.ZERO
@@ -190,8 +197,30 @@ func _on_text_changed(new_text: String) -> void:
 
 
 
-func _on_del_button_up() -> void: 
-	queue_free()
+func _on_del_button_up(btn: Button) -> void:
+	match btn:
+		del_btn:
+			if category_name.is_empty():
+				queue_free()
+			else:
+				del_popup.show()
+				del_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE 
+				var screen_pos: Vector2 = get_screen_position()
+				var popup_x: float = screen_pos.x + (size.x - del_popup.size.x) / 2.0
+				var popup_y: float = screen_pos.y + size.y + 26
+				del_popup.position = Vector2i(popup_x, popup_y)
+				del_popup.size = Vector2.ZERO
+		
+		del_dir_btn:
+			OS.move_to_trash(ProjectSettings.globalize_path(cat_data.category_path))
+			queue_free()
+
+		del_cat_btn:
+			queue_free()
+		
+		del_cancel:
+			del_popup.hide()
+
 
 
 
