@@ -3,7 +3,8 @@ extends HBoxContainer
 
 signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_theme_colors
-# signal open_directory
+
+signal colorcode_changed ## Emitted to dock_logs.gd to colod code the log files.
 
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
@@ -630,6 +631,7 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 		
 		colorcode_btn:
 			data.colorcode_dates = toggled_on
+			colorcode_changed.emit()
 
 		id_print_btn:
 			data.id_print = toggled_on

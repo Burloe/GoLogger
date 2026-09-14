@@ -2,8 +2,11 @@
 class_name GLLogFile extends Button
 
 
-@export var placeholder_name: String = str("17:22:53\nApril 27\n2026")
-@export var display_name_char_limit: int = 18
+@export var placeholder_name: String = str("NAME ERROR!")
+@export var date_stamp: String = ""
+@export var time_stamp: String = ""
+
+const DISPLAY_NAME_CHAR_LIMIT: int = 18
 
 var file_ico := 				preload("uid://baeavb2jo8lgw")
 var file_broken_ico := 	preload("uid://bt0xt83bipjft")
@@ -23,11 +26,18 @@ var file_path: String = ""
 var file_name: String = "":
 	set(value):
 		file_name = value
-		if value != "":
-			
+		if value != "" and is_gl_name(value):
 			display_name = _get_name(file_name)
 			get_file_content()
- 
+			if is_gl_name(value):
+				var dt: String = value.lstrip(str(category_name, "(")).rstrip(").log")
+				date_stamp = dt.split("_", false, 2)[0]
+				time_stamp = dt.split("_", false, 2)[1]
+				is_non_gl_log = false
+			else: 
+				is_non_gl_log = true
+
+var is_non_gl_log: bool = false
 var display_name: String = ""
 
 var file_contents: String = ""
@@ -120,7 +130,7 @@ func _get_name(_f_name: String) -> String:
 
 	var _name: String =""
 	if !_f_name.begins_with(category_name):
-		var _n = _f_name.left(display_name_char_limit) + "-.log"
+		var _n = _f_name.left(DISPLAY_NAME_CHAR_LIMIT) + "-.log"
 		return _n
 
 

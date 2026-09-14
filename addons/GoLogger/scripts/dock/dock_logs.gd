@@ -8,6 +8,7 @@ signal request_theme_colors
 # signal category_created(category: GLLogCategory)
 signal selected_category_updated(new_selected: String)
 
+@onready var settings_tab: HBoxContainer = %SettingsTab
 @onready var category_panel: HBoxContainer = %CategoryPanel
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
@@ -34,6 +35,7 @@ var ico_sort_new = 	preload("uid://dvjgbc6hibv5m")
 var ico_sort_old = 	preload("uid://bljitewxdnvuh") 
 var category_scene = preload("uid://c3n416c5fajm5") 
 
+var is_drawing: bool = false
 var is_shutting_down: bool = false
 var _default_setting_in_progress: bool = false  
 var _column_update_pending: bool = false 
@@ -108,7 +110,10 @@ func _ready() -> void:
 	for log_c in category_container.get_children():
 		log_c.queue_free()
 
+	draw.connect(func() -> void: is_drawing = true)
+	hidden.connect(func() -> void: is_drawing = false)
 
+	settings_tab.colorcode_changed.connect(_on_colorcode_changed)
 	reload_btn.button_up.connect(load_log_files)
 	polling_timer.timeout.connect(load_log_files)
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
@@ -303,122 +308,185 @@ func _check_conflict_name(cat_obj: GLLogCategory, new_name: String) -> bool:
 #region Log Files
 
 func load_log_files(is_initializing: bool = false) -> void: ## Used to both initialize and reload the file list
-	# prints("is_active:", is_active, "   is_reloading:", is_reloading, "   data.colorcode_dates:", data.colorcode_dates)
-	if not is_active or is_reloading:
-		return 
-	
-	is_reloading = true
+		if not is_active or is_reloading:
+				return 
 
-	if data != null:
-		base_dir = data.base_dir
-	log_files.clear()
+		if data != null:
+				base_dir = data.base_dir
 
-	if base_dir == "":
-		printerr("[GoLogger] Failed to load Base Directory!") 
+		if base_dir == "":
+				printerr("[GoLogger] Failed to load Base Directory!")
+				return
 
-	# Collect > hide > delete old files
-	var old := []
-	for cat in file_container.get_children():
-		var c = []
-		for log in cat.get_children():
-			c.append(log)
-		old.append(cat)
-		cat.hide()
+		if current_category == "" and !data.categories.is_empty() and data.categories[0] != null:
+				for cat in data.categories:
+						if cat.category_name == data.default_category:
+								current_category = cat.category_name
+								for log_cat in category_container.get_children():
+										if log_cat.category_name == current_category:
+												log_cat.select_btn.button_pressed = true
+								break
 
-	categories.clear()
-	grid_conts.clear()
+		if current_category == "":
+				_clear_all_log_files()
+				return
 
-	# Fallback 
-	if current_category == "" and !data.categories.is_empty() and data.categories[0] != null:
-		for cat in data.categories:
-			if cat.category_name == data.default_category:
-				current_category = cat.category_name
-				for log_cat in category_container.get_children():
-					if log_cat.category_name == current_category:
-						log_cat.select_btn.button_pressed = true
-				break 
+		var target_files: Array = _sort_file_list(current_category)
 
-	for child in file_container.get_children():
-		file_container.remove_child(child)
-		child.queue_free() 
+		var current_file_names: Array = []
+		for lf in log_files:
+				if is_instance_valid(lf):
+						current_file_names.append(lf.file_name)
 
-	for c: GLCategoryData in data.categories:
-		if c.category_name == "" or c.category_name != current_category:
-				continue 
+		if !is_initializing and current_file_names == target_files:
+				return
 
-		var n: Array = [c.category_name]
-		categories.append(n)
-		_add_logfiles_to_container(_sort_file_list(c.category_name), c.category_name)
-	
-	await get_tree().physics_frame
-	_update_columns() 
-	is_reloading = false
+		is_reloading = true
+		_reconcile_log_files(target_files, current_category)
+
+		await get_tree().physics_frame
+		_update_columns(is_initializing) 
+		is_reloading = false
 
 
 
-func _add_logfiles_to_container(list: Array, category_name: String) -> void:
+func _clear_all_log_files() -> void:
+		for child in file_container.get_children():
+				file_container.remove_child(child)
+				child.queue_free()
+		log_files.clear()
 
-	var rng := RandomNumberGenerator.new()
-	var colorcode: Color = Color.TRANSPARENT
-	var prev_file: String = "" 
 
-	for file in list:
-		if typeof(file) != TYPE_STRING:
-			continue
 
-		var lf: GLLogFile = _create_logfile_obj(category_name, file)
-		if lf == null:
-			continue
-		
-		if data.colorcode_dates:
-			var new_c := Color(rng.randf_range(0.5, 1.0), rng.randf_range(0.5, 1.0), rng.randf_range(0.5, 1.0), 0.8)
-			var pdate: String = prev_file.lstrip(str(category_name, "(")).rstrip(").log")
-			var cdate: String = file.lstrip(str(category_name, "(")).rstrip(").log")
-			if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
-				colorcode = new_c
-			lf.add_theme_color_override("font_color", colorcode)
-			lf.add_theme_color_override("font_hover_color", colorcode.lightened(0.2))
-			lf.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
-		else: 
-			lf.add_theme_color_override("font_color", theme_colors["font"]["normal"])
-			lf.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
-			lf.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"])
-			print(colorcode)
-		file_container.add_child(lf)
-		log_files.append(lf)
-		lf.button_up.connect(_open_log_file.bind(lf))
-		prev_file = file 
+func _reconcile_log_files(target_files: Array, category_name: String) -> void:
+		var existing_by_name: Dictionary = {}
+		for lf in log_files:
+				if is_instance_valid(lf):
+						existing_by_name[lf.file_name] = lf
+
+		var target_set: Dictionary = {}
+		for file_name in target_files:
+				target_set[file_name] = true
+
+		for file_name in existing_by_name.keys():
+				if not target_set.has(file_name):
+						var lf: GLLogFile = existing_by_name[file_name]
+						if is_instance_valid(lf):
+								file_container.remove_child(lf)
+								lf.queue_free()
+						existing_by_name.erase(file_name)
+
+		var updated_log_files: Array[GLLogFile] = []
+		var colorcode: Color = Color.BLACK
+		var prev_file: String = ""
+
+		for i in range(target_files.size()):
+				var file_name: String = str(target_files[i])
+				var lf: GLLogFile = null
+
+				if existing_by_name.has(file_name):
+						lf = existing_by_name[file_name]
+						if lf.get_index() != i:
+								file_container.move_child(lf, i)
+				else:
+						lf = _create_logfile_obj(category_name, file_name)
+						if lf == null:
+								continue
+						file_container.add_child(lf)
+						file_container.move_child(lf, i)
+						lf.button_up.connect(_open_log_file.bind(lf))
+
+				if data.colorcode_dates:
+						var new_c := _get_logfile_color()
+						var pdate: String = prev_file.lstrip(str(category_name, "(")).rstrip(").log")
+						var cdate: String = file_name.lstrip(str(category_name, "(")).rstrip(").log")
+						if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
+								colorcode = new_c
+						lf.add_theme_color_override("font_color", colorcode)
+						lf.add_theme_color_override("font_hover_color", colorcode.lightened(0.2))
+						lf.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
+				else:
+						lf.add_theme_color_override("font_color", theme_colors["font"]["normal"])
+						lf.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
+						lf.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"])
+
+				updated_log_files.append(lf)
+				prev_file = file_name
+
+		log_files = updated_log_files
 
 
 
 func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
-	var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file_name), "/")
-	
-	if not FileAccess.file_exists(file_path):
-			return
-
-	var f = FileAccess.open(file_path, FileAccess.READ)
-	var content = f.get_file_as_string(file_path)
+		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file_name), "/")
 		
-	var lf: GLLogFile = log_file_btn.instantiate() as GLLogFile
-	lf.category_name = category_name
-	lf.file_name = file_name
-	lf.file_path = file_path
-	lf.file_contents = f.get_file_as_string(file_path)
-	lf.assign_icon(true)
-	lf.mouse_entered.connect(func() -> void: hovered_logfile = lf)
-	lf.mouse_entered.connect(func() -> void: hovered_logfile = null)
-	lf.connect_to_popup(popup_panel)
-	
+		if not FileAccess.file_exists(file_path):
+				return null
 
-	if hovered_logfile != null and hovered_logfile.file_name == file_name and hovered_logfile.category_name == category_name:
-		lf.mouse_entered.emit()
+		var f := FileAccess.open(file_path, FileAccess.READ)
+		if f == null:
+				return null
+				
+		var content := f.get_file_as_string(file_path)
+		var has_error := f.get_open_error() != OK
+		f.close()
+				
+		var lf: GLLogFile = log_file_btn.instantiate() as GLLogFile
+		lf.category_name = category_name
+		lf.file_name = file_name
+		lf.file_path = file_path
+		lf.file_contents = content
+		lf.assign_icon(true)
+		lf.mouse_entered.connect(func() -> void: hovered_logfile = lf)
+		lf.mouse_exited.connect(func() -> void: hovered_logfile = null)
+		lf.connect_to_popup(popup_panel)
 
-	if !lf.is_file_valid() or f.get_open_error() != OK:
-		lf.assign_icon(false)
+		if hovered_logfile != null and hovered_logfile.file_name == file_name and hovered_logfile.category_name == category_name:
+				lf.mouse_entered.emit()
 
-	f.close()
-	return lf
+		if has_error or !lf.is_file_valid():
+				lf.assign_icon(false)
+
+		return lf
+
+
+func _get_category_files(category_name: String) -> PackedStringArray:
+		if base_dir == "" or category_name.is_empty():
+				return []
+
+		var c_path: String = str(base_dir.path_join(category_name), "_logs/")
+		var d := DirAccess.open(c_path)
+		if d != null:
+				return d.get_files()
+
+		return []
+
+
+
+func _on_colorcode_changed() -> void:
+	var files := file_container.get_children() 
+	var colorcode: Color = Color.BLACK
+	var prev_file: GLLogFile = null
+
+	if files.is_empty():
+		return
+
+	for cur_file: GLLogFile in files:
+		var file_name = cur_file.file_name
+		if data.colorcode_dates:
+			var new_c := _get_logfile_color()
+			var pdate: String = prev_file.date_stamp if prev_file else ""
+
+			if !prev_file or !cur_file.date_stamp.contains(prev_file.date_stamp):
+					colorcode = new_c
+			cur_file.add_theme_color_override("font_color", 							colorcode)
+			cur_file.add_theme_color_override("font_hover_color", 				colorcode.lightened(0.2))
+			cur_file.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
+		else:
+			cur_file.add_theme_color_override("font_color", 				theme_colors["font"]["normal"])
+			cur_file.add_theme_color_override("font_hover_color", 	theme_colors["font"]["hover"])
+			cur_file.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"])
+		prev_file = cur_file
 
 
 
@@ -445,22 +513,6 @@ func _sort_file_list(category_name: String) -> Array:
 				fin_list.append(file)
 
 	return fin_list
-
-
-
-func _get_category_files(category_name: String) -> PackedStringArray:
-	if categories.is_empty():
-		return []	
-	if base_dir == "":
-		return []
-
-	var c_path: String = str(base_dir.path_join(category_name), "_logs/")
-
-	var d := DirAccess.open(c_path)
-	if d != null:
-		return d.get_files()
-
-	return []
 
 
 
@@ -518,8 +570,19 @@ func _open_log_file(log_file: GLLogFile) -> void:
 
 
 
+func _get_logfile_color() -> Color:
+	var rng := RandomNumberGenerator.new()
+	var c := Color.BLACK
+	
+	while c == Color.BLACK or c.get_luminance() <= 0.6 and c.get_luminance() >= 0.85:
+		c = Color(rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), 0.8)
+	return c
+
+
+
 func _update_columns(is_initializing: bool = false) -> void:
-	if min_cell_width <= 0 or !file_container: 
+	print("Drawing: ",is_drawing)
+	if min_cell_width <= 0 or !file_container or !is_drawing: 
 		return
 	
 	# await get_tree().physics_frame
@@ -540,10 +603,10 @@ func _update_columns(is_initializing: bool = false) -> void:
 	var col: int = 1
 	if is_initializing:
 		await get_tree().physics_frame 
-		prints("INIT:", margin_container.size.x - 8, cell_width, visible)
 		col = max(1, int(margin_container.size.x - 8 / cell_width)) 
 	else:
 		col = max(1, int(file_container.size.x / cell_width)) 
+	prints("Col:", col)
 	file_container.columns = col
 
 #endregion
