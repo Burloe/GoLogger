@@ -23,6 +23,7 @@ signal set_default_category(category: GLLogCategory, toggle_on: bool)
 @onready var edit_hbox: HBoxContainer = 		%LineEditHBox
 @onready var apply_btn: Button = 						%ApplyButton
 @onready var revert_btn: Button = 					%RevertButton
+@onready var faky: Control = 								%Faky
 
 @onready var del_popup: PopupPanel = 				%DeletePopupPanel
 @onready var del_cancel: Button = 					%CancelButton
@@ -76,9 +77,6 @@ func _ready() -> void:
 	del_cancel.set_button_icon(get_theme_icon("GuiClose", "EditorIcons"))
 	del_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
 	del_cat_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
-	edit_hbox.hide()
-	is_default = is_default # loads the icon
-	del_popup.hide()
 
 	settings.settings_changed.connect(_on_editor_settings_changed)
 	del_btn.button_up.connect(_on_del_button_up.bind(del_btn))
@@ -89,11 +87,16 @@ func _ready() -> void:
 	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
+	is_default = is_default # loads the icon
+	edit_hbox.hide()
+	del_popup.hide()
+	apply_btn.disabled = true
+	revert_btn.disabled = false
 	line_edit.size.x = 110
 
 	revert_btn.button_up.connect(
 		func() -> void:
-			line_edit.unedit()
+			# line_edit.unedit()
 			line_edit.release_focus()
 			line_edit.text = category_name
 			line_edit_panel.hide()
@@ -103,26 +106,16 @@ func _ready() -> void:
 		func(toggled_on: bool) -> void: 
 			revert_btn.tooltip_text = str("Revert to '", category_name, "'") 
 			edit_hbox.visible = toggled_on
-			var tw := create_tween()
-			tw.tween_property(self, "size", Vector2(size.x, size.y) if toggled_on else Vector2(size.x, size.y), 0.05)
-			await tw.finished
-			var tween := create_tween()
-			line_edit_panel.visible  = toggled_on
-			line_edit_panel.modulate = Color.TRANSPARENT if toggled_on else Color.WHITE
-			tween.tween_property(line_edit_panel, "modulate", Color.WHITE if toggled_on else Color.TRANSPARENT, 0.05)
+			_tween_line_edit_module(toggled_on)
 	)
 
 	line_edit.text_submitted.connect(
 		func(new_text: String) -> void:
-			if !check_name_conflict():
-				apply_name(new_text) 
+			apply_name(new_text)
+
 	) 
 
-	apply_btn.button_up.connect(
-		func() -> void:
-			if !check_name_conflict():
-				apply_name(line_edit.text)
-	)
+	apply_btn.button_up.connect(apply_name.bind(line_edit.text))
 
 	default_btn.toggled.connect(
 		func(toggled_on: bool) -> void:
@@ -136,6 +129,20 @@ func _ready() -> void:
 	_data_ready()
 
 
+func _tween_line_edit_module(show: bool = false) -> void:
+	var tw := create_tween().set_parallel(true)
+	faky.visible = show
+	faky.size.x = 0 if show else 42
+	tw.tween_property(self, "size", Vector2(size.x + 42, size.y) if show else Vector2(size.x, size.y), 0.03)
+	tw.tween_property(faky, "size", Vector2(42 if show else 0, faky.size.y), 0.03)
+	await tw.finished
+	var tween := create_tween()
+	faky.visible = !show
+	faky.size.x = 0
+	line_edit_panel.visible  = show
+	line_edit_panel.modulate = Color.TRANSPARENT if show else Color.WHITE
+	tween.tween_property(line_edit_panel, "modulate", Color.WHITE if show else Color.TRANSPARENT, 0.03)
+
 
 func _data_ready() -> void:
 	if category_name != "":
@@ -146,13 +153,26 @@ func _data_ready() -> void:
 
 
 
-func check_name_conflict() -> bool:
-	return data.check_category_name_conflicts() if data != null else false
+func is_name_available(_name: String) -> bool:
+	# return data.check_category_name_conflicts() if data != null else false
+	return !_name in data.get_category_names()
 
 
 
 func apply_name(new_name: String) -> void:
-	if new_name.is_empty():
+	# doesn't revert when blank or an existing category
+
+	if !is_name_available(new_name) or new_name.is_empty():
+		line_edit.text = category_name
+		line_edit.unedit()
+		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+		_tween_line_edit_module(false)
+		return 
+	
+	elif new_name != category_name:
+		line_edit.release_focus()
+		line_edit.unedit()
+		_tween_line_edit_module(false)
 		return
 
 	new_name = new_name.replace(" ", "_")
@@ -170,19 +190,24 @@ func apply_name(new_name: String) -> void:
 		cat_data = new
 
 	# Existing GLLogCategory
-	elif cat_names.has(category_name):
+	elif cat_data:
 		for c in data.categories:
 			if c.category_name == category_name:
 				c.category_name = new_name
 				break
+	
+	else: 
+		printerr("GDLogger: Stray GLLogCategory bug, try again with a new category object. Queue Freeing...")
+		queue_free()
 
 	data.categories = cat
+	cat_data.category_path = str(data.base_dir, new_name, "/")
 
 	category_name = new_name
 	line_edit.text = category_name
 	log_category_changed.emit()
 	line_edit.release_focus()
-	edit_hbox.hide()
+	line_edit.unedit()
 
 
 
@@ -196,11 +221,17 @@ func _on_text_changed(new_text: String) -> void:
 	line_edit.caret_column = new_text.length() 
 
 
-	if new_text != category_name and category_name != "":
-		line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid if check_name_conflict() else sb_line_edit_normal)
+	if new_text.is_empty() or !is_name_available(new_text) and category_name != new_text: 
 		apply_btn.disabled = true
+		line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid)
+	
+	elif new_text == category_name:
+		apply_btn.disabled = true
+		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+
 	else:
 		apply_btn.disabled = false
+		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
 
 
 

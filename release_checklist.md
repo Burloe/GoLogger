@@ -25,6 +25,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [x] Rename is applied to it's existing array entry.
   - [x] Moving categories in Dock moves the array order.
   - [x] Array entry is removed when LogCategory is queue freed.
+  - [ ] Directory is deleted properly.
 - [x] `default_category`:
   - [x] Category name is saved to file appropriately.
   - [x] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
@@ -34,16 +35,16 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [ ] New directory is created when change.
   - [ ] Directories for all the categories are created when running the game if,
   - [ ] Checks directory is valid before applying and reverting if not.
-- [x] `log_header_format`:
+- [ ] `log_header_format`:
   - [x] New log header is used when starting a session.
   - [x] Check all tags work properly.
-- [x] `entry_format`:
-  - [x] Proper format is applied to entries.
-  - [x] Check all tags work properly.
-- [x] `autostart_session`:
-  - [x] Session is started automatically or not.
-- [x] `use_utc`:
-	- [x] UTC time used for .log file name, log header and entry format.
+- [ ] `entry_format`:
+  - [ ] Proper format is applied to entries.
+  - [ ] Check all tags work properly.
+- [ ] `autostart_session`:
+  - [ ] Session is started automatically or not.
+- [ ] `use_utc`:
+	- [ ] UTC time used for .log file name, log header and entry format.
 - [ ] `id_toggle`:
   - [ ] ID visibility is toggled.
 - [ ] `id_startup_state`:
