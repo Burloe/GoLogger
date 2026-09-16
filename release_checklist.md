@@ -25,7 +25,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [x] Rename is applied to it's existing array entry.
   - [x] Moving categories in Dock moves the array order.
   - [x] Array entry is removed when LogCategory is queue freed.
-  - [ ] Directory is deleted properly.
+  - [ ] Directory is deleted properly (ensure default category is cleared when def cat is deleted).
 - [x] `default_category`:
   - [x] Category name is saved to file appropriately.
   - [x] (In Dock) Existing default category's CheckBox is unchecked when another is checked.

@@ -56,6 +56,22 @@ var is_default: bool = false:
 		is_default = value
 		default_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
 
+var has_unapplied_name: bool = false:
+	set(value):
+		has_unapplied_name = value
+		if !is_editing_name and value:
+			_tween_line_edit_module(true)
+		elif !is_editing_name and !value:
+			_tween_line_edit_module(false)
+
+var is_editing_name: bool = false:
+	set(value):
+		is_editing_name = value
+		if value and !has_unapplied_name:
+			_tween_line_edit_module(true)
+		elif !value and !has_unapplied_name:
+			_tween_line_edit_module(false)
+
 
 
 
@@ -75,7 +91,7 @@ func _ready() -> void:
 	revert_btn.set_button_icon(get_theme_icon("Reload", "EditorIcons"))
 	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
 	del_cancel.set_button_icon(get_theme_icon("GuiClose", "EditorIcons"))
-	del_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
+	del_dir_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
 	del_cat_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
 
 	settings.settings_changed.connect(_on_editor_settings_changed)
@@ -87,8 +103,11 @@ func _ready() -> void:
 	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
+	line_edit.text_submitted.connect(apply_name) 
+	apply_btn.button_up.connect(apply_name.bind(line_edit.text))
+	print("gago - ", line_edit.text_submitted.is_connected(apply_name))
+
 	is_default = is_default # loads the icon
-	edit_hbox.hide()
 	del_popup.hide()
 	apply_btn.disabled = true
 	revert_btn.disabled = false
@@ -104,18 +123,11 @@ func _ready() -> void:
 
 	line_edit.editing_toggled.connect(
 		func(toggled_on: bool) -> void: 
-			revert_btn.tooltip_text = str("Revert to '", category_name, "'") 
-			edit_hbox.visible = toggled_on
-			_tween_line_edit_module(toggled_on)
+			revert_btn.tooltip_text = str("Revert to '", category_name, "'")
+			is_editing_name = toggled_on
+			# edit_hbox.visible = toggled_on
+			# _tween_line_edit_module(toggled_on)
 	)
-
-	line_edit.text_submitted.connect(
-		func(new_text: String) -> void:
-			apply_name(new_text)
-
-	) 
-
-	apply_btn.button_up.connect(apply_name.bind(line_edit.text))
 
 	default_btn.toggled.connect(
 		func(toggled_on: bool) -> void:
@@ -125,8 +137,7 @@ func _ready() -> void:
 				cat_data.is_default = toggled_on
 	)
 
-	size = Vector2.ZERO
-	_data_ready()
+	size = Vector2.ZERO 
 
 
 func _tween_line_edit_module(show: bool = false) -> void:
@@ -150,6 +161,7 @@ func _data_ready() -> void:
 
 	line_edit.text = category_name
 	default_btn.disabled = category_name.is_empty()
+	print("Loaded Category[", category_name, "] - ", cat_data)
 
 
 
@@ -160,47 +172,43 @@ func is_name_available(_name: String) -> bool:
 
 
 func apply_name(new_name: String) -> void:
-	# doesn't revert when blank or an existing category
-
+	print(new_name)
 	if !is_name_available(new_name) or new_name.is_empty():
 		line_edit.text = category_name
 		line_edit.unedit()
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+		print("1")
 		_tween_line_edit_module(false)
+		has_unapplied_name = false
 		return 
 	
-	elif new_name != category_name:
+	elif new_name == category_name:
 		line_edit.release_focus()
 		line_edit.unedit()
+		print("2")
 		_tween_line_edit_module(false)
+		has_unapplied_name = false
 		return
 
-	new_name = new_name.replace(" ", "_")
-	new_name.replace(" ", "_")
 
-	var cat: Array = data.categories.duplicate()
+	new_name = new_name.replace(" ", "_")
 	var cat_names = data.get_category_names()
 	var def: String = data.default_category
-
-	# New GLLogCategory
-	if category_name == "":
+	
+	if category_name == "": # Naming new category
+		print("3")
 		var new: GLCategoryData = GLCategoryData.new()
 		new.category_name = new_name
-		cat.append(new)
+		data.categories.append(new)
 		cat_data = new
 
-	# Existing GLLogCategory
-	elif cat_data:
-		for c in data.categories:
-			if c.category_name == category_name:
-				c.category_name = new_name
-				break
+	else: # Renaming existing category
+		print("4")
+		if !cat_data:
+			print("4.1")
+			cat_data = GLCategoryData.new()
+		cat_data.category_name = new_name
 	
-	else: 
-		printerr("GDLogger: Stray GLLogCategory bug, try again with a new category object. Queue Freeing...")
-		queue_free()
-
-	data.categories = cat
 	cat_data.category_path = str(data.base_dir, new_name, "/")
 
 	category_name = new_name
@@ -208,18 +216,16 @@ func apply_name(new_name: String) -> void:
 	log_category_changed.emit()
 	line_edit.release_focus()
 	line_edit.unedit()
+	has_unapplied_name = false
 
 
 
 func _on_text_changed(new_text: String) -> void:
-	# Handle disallowed chars
-	if !new_text.is_valid_filename():
-		var invalid_ch = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*", "^"]
-		for c in invalid_ch:
-			new_text = new_text.replace(c, "")
-	new_text = new_text.replace(" ", "_") 
-	line_edit.caret_column = new_text.length() 
+	line_edit.text = line_edit.text.validate_filename()
+	new_text = new_text.replace(" ", "_")
+	line_edit.caret_column = new_text.length() + 1
 
+	has_unapplied_name = new_text not in [category_name, ""]
 
 	if new_text.is_empty() or !is_name_available(new_text) and category_name != new_text: 
 		apply_btn.disabled = true

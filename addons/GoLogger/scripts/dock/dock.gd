@@ -348,7 +348,6 @@ func _assign_settings_controls() -> void:
 
 
 
-
 func _assign_editor_icons() -> void:
 	# lg_open_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
 	lg_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
@@ -436,7 +435,6 @@ func save_categories() -> void:
 		var c_data: GLCategoryData = GLCategoryData.new()
 		c_data.category_name = log_c.category_name 
 		log_c.cat_data = c_data
-		log_c._data_ready()
 		cats.append(c_data) 
 	
 	data.categories = cats

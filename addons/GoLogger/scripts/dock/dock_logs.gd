@@ -159,6 +159,10 @@ func _add_category(_name: String = ""): ## _name only applicable at loading
 	_n.category_name = low_name
 	category_container.add_child(_n)
 	_n.data = data
+	for c: GLCategoryData in data.categories:
+		if c.category_name == _name:
+			_n.cat_data = c
+			break
 	_n._data_ready()
 	
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
