@@ -1,5 +1,5 @@
 @tool
-extends HBoxContainer
+extends Control
 
 signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_theme_colors
@@ -209,8 +209,6 @@ func init_visibility() -> void:
 
 	for container in fold_conts:
 		container.folded = true 
-	
-	dir_fold_cont.folded = false 
 
 
 

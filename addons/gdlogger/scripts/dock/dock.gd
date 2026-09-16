@@ -35,7 +35,7 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var lg_popup: PopupPanel = %LogFilePanelPopup
 
 # Settings tab
-@onready var settings_tab: HBoxContainer = %SettingsTab
+@onready var settings_tab: Control = %SettingsTab
 @onready var sett_reset_btn: Button = %ResetSettingsButton
 @onready var sett_base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var sett_base_dir_lbl: Label = %BaseDirLabel
@@ -103,6 +103,8 @@ var sett_id_inspector: EditorInspector
 
 @onready var sett_hotkey_container: FoldableContainer = %HotkeyFoldableContainer
 var inspector: EditorInspector
+
+@onready var settings_version_lbl: Label = %SettingsVersionLabel
 
 # @onready var user_dir_btn: Button = %UserDirButton ## Opens "user://"
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
@@ -196,8 +198,10 @@ var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color
 var plugin_version: String =  "2.0":
 	set(value):
 		plugin_version = value
-		if plugin_version_lbl != null:
+		if plugin_version_lbl:
 			plugin_version_lbl.text = str("GDLogger v.", value)
+		if settings_version_lbl:
+			settings_version_lbl.text = str("GDLogger v.", value)
 
 var log_header_value: String = "":
 	set(value):

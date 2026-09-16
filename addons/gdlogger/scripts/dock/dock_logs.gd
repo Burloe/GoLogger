@@ -8,7 +8,7 @@ signal request_theme_colors
 # signal category_created(category: GLLogCategory)
 signal selected_category_updated(new_selected: String)
 
-@onready var settings_tab: HBoxContainer = %SettingsTab
+@onready var settings_tab: Control = %SettingsTab
 @onready var category_panel: HBoxContainer = %CategoryPanel
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_container: GridContainer = %CategoryGridContainer
