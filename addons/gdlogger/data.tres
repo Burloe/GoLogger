@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="GLData" format=3 uid="uid://dj7h7t2v8csck"]
+
+[ext_resource type="Script" uid="uid://bm8lbc8d2cd4r" path="res://addons/gdlogger/scripts/gl_category_data_resource.gd" id="1_u03vm"]
+[ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gdlogger/scripts/gl_data_resource.gd" id="2_ru745"]
+
+[sub_resource type="Resource" id="Resource_u03vm"]
+script = ExtResource("1_u03vm")
+category_name = "game"
+
+[sub_resource type="Resource" id="Resource_ru745"]
+script = ExtResource("1_u03vm")
+category_name = "player"
+
+[sub_resource type="Resource" id="Resource_rvoc7"]
+script = ExtResource("1_u03vm")
+category_name = "inventory"
+
+[sub_resource type="Resource" id="Resource_aqfri"]
+script = ExtResource("1_u03vm")
+category_name = "network"
+
+[sub_resource type="Resource" id="Resource_o1vy8"]
+script = ExtResource("1_u03vm")
+category_name = "npc"
+
+[sub_resource type="Resource" id="Resource_s8ook"]
+script = ExtResource("1_u03vm")
+category_name = "combat"
+
+[resource]
+script = ExtResource("2_ru745")
+categories = Array[ExtResource("1_u03vm")]([SubResource("Resource_u03vm"), SubResource("Resource_ru745"), SubResource("Resource_rvoc7"), SubResource("Resource_aqfri"), SubResource("Resource_o1vy8"), SubResource("Resource_s8ook")])
+default_category = "game"
+limit_method = 2
+id_startup = true
+id_align = 10

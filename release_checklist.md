@@ -1,6 +1,6 @@
-# GoLogger Release Checklist
+# GDLogger Release Checklist
 
-This file should be deleted if it was installed with the plugin. Please only install the `addons\GoLogger\`
+This file should be deleted if it was installed with the plugin. Please only install the `addons\GDLogger\`
 
 
 ## BUGS
@@ -10,7 +10,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 - [x] Ensure the `Logs` tab is active on startup.
 - [x] Ensure all `FoldableContainer`s are collapsed properly in both the `Settings` and `Help` tabs on startup.
-- [x] Ensure `gologger_data.ini` is created if it is not present when loading the plugin.
+- [x] Ensure `gdlogger_data.ini` is created if it is not present when loading the plugin.
 - [x] Ensure hotkeys all work as intended (and after rebinding).
 
 ## Code
@@ -79,8 +79,8 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 - [ ] Start Session:
   - [ ] Verify a session starts when it should.
-  - [ ] Ensure `gologger_data.ini` is created if missing.
-  - [ ] Ensure `[categories.category_name]` exists in `gologger_data.ini`.
+  - [ ] Ensure `gdlogger_data.ini` is created if missing.
+  - [ ] Ensure `[categories.category_name]` exists in `gdlogger_data.ini`.
   - [ ] Ensure `[categories.category_name].file_name` contains the current file name, for example `game(260417_020435).log`.
   - [ ] Ensure `[categories.category_name].file_path` contains the absolute file path of the current file.
   - [ ] Ensure `[categories.category_name].category_name` is updated correctly.
@@ -105,7 +105,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [ ] Verify entries are not logged when a session has not started.
 
 - [ ] End of Session:
-  - [ ] Ensure `file_name`, `file_path`, and `entry_count` are reset to blank values in `gologger_data.ini`.
+  - [ ] Ensure `file_name`, `file_path`, and `entry_count` are reset to blank values in `gdlogger_data.ini`.
 
 ### Hotkeys
 
@@ -114,7 +114,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Check `display_instance_id` hotkey
 - [ ] R-click INSIDE log content closes log file in Log Browser
 
-### `gologger_data.ini`
+### `gdlogger_data.ini`
 
 - [ ] Ensure `[categories][category_names]` updates whenever any category change is made in the dock.
 - [ ] Ensure `[categories][default_category]` updates whenever any category change is made in the dock.

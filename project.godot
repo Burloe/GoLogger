@@ -17,7 +17,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="GDLogger"
 config/version="2.0"
 config/tags=PackedStringArray("plugin", "tool")
-run/main_scene="res://debug_scene.tscn"
+run/main_scene="res://test_scene/debug_scene.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="uid://c4jrvdxu1e2q3"
 
@@ -32,7 +32,7 @@ window/size/viewport_height=1080
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gologger/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdlogger/plugin.cfg")
 
 [rendering]
 
