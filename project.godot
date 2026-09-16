@@ -14,7 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="GoLogger"
+config/name="GDLogger"
 config/version="2.0"
 config/tags=PackedStringArray("plugin", "tool")
 run/main_scene="res://debug_scene.tscn"

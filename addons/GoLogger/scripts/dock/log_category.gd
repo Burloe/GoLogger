@@ -59,9 +59,9 @@ var is_default: bool = false:
 var has_unapplied_name: bool = false:
 	set(value):
 		has_unapplied_name = value
-		if !is_editing_name and value:
+		if value and !is_editing_name:
 			_tween_line_edit_module(true)
-		elif !is_editing_name and !value:
+		elif !value and !is_editing_name:
 			_tween_line_edit_module(false)
 
 var is_editing_name: bool = false:
@@ -104,8 +104,7 @@ func _ready() -> void:
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
 	line_edit.text_submitted.connect(apply_name) 
-	apply_btn.button_up.connect(apply_name.bind(line_edit.text))
-	print("gago - ", line_edit.text_submitted.is_connected(apply_name))
+	apply_btn.button_up.connect(apply_name.bind(line_edit.text)) 
 
 	is_default = is_default # loads the icon
 	del_popup.hide()
@@ -161,7 +160,6 @@ func _data_ready() -> void:
 
 	line_edit.text = category_name
 	default_btn.disabled = category_name.is_empty()
-	print("Loaded Category[", category_name, "] - ", cat_data)
 
 
 
@@ -177,7 +175,6 @@ func apply_name(new_name: String) -> void:
 		line_edit.text = category_name
 		line_edit.unedit()
 		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
-		print("1")
 		_tween_line_edit_module(false)
 		has_unapplied_name = false
 		return 
@@ -185,7 +182,6 @@ func apply_name(new_name: String) -> void:
 	elif new_name == category_name:
 		line_edit.release_focus()
 		line_edit.unedit()
-		print("2")
 		_tween_line_edit_module(false)
 		has_unapplied_name = false
 		return
@@ -196,21 +192,17 @@ func apply_name(new_name: String) -> void:
 	var def: String = data.default_category
 	
 	if category_name == "": # Naming new category
-		print("3")
 		var new: GLCategoryData = GLCategoryData.new()
 		new.category_name = new_name
 		data.categories.append(new)
 		cat_data = new
 
 	else: # Renaming existing category
-		print("4")
 		if !cat_data:
-			print("4.1")
 			cat_data = GLCategoryData.new()
 		cat_data.category_name = new_name
 	
 	cat_data.category_path = str(data.base_dir, new_name, "/")
-
 	category_name = new_name
 	line_edit.text = category_name
 	log_category_changed.emit()
