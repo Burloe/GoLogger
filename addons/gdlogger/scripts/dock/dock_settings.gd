@@ -31,7 +31,7 @@ signal colorcode_changed ## Emitted to dock_logs.gd to colod code the log files.
 
 @onready var autostart_btn: CheckBox = %AutostartCheckBox
 @onready var utc_btn: CheckBox = %UTCCheckBox
-@onready var colorcode_btn: CheckBox = %ColorCodeCheckBox
+@onready var colorcode_btn: Button = %ColorCodeButton
 
 @onready var limit_method_btn: OptionButton = %LimitMethodOptButton
 @onready var limit_method_lbl: Label = %LimitMethodLabel

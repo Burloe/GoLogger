@@ -13,10 +13,13 @@
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gdlogger/resources/theme/panel_rounded_base_col.tres" id="11_5jaku"]
 [ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gdlogger/resources/theme/btn_normal.tres" id="12_7cref"]
 [ext_resource type="Texture2D" uid="uid://b40vq6n2r4x8m" path="res://addons/gdlogger/resources/icons/Relead.svg" id="12_pl6xe"]
+[ext_resource type="Texture2D" uid="uid://cntk5aesu05sa" path="res://addons/gdlogger/resources/icons/LogFileBroken.svg" id="14_1j2f0"]
+[ext_resource type="Texture2D" uid="uid://l2nybxno72cb" path="res://addons/gdlogger/resources/icons/ColorCode.png" id="14_lnu3o"]
 [ext_resource type="Texture2D" uid="uid://dvjgbc6hibv5m" path="res://addons/gdlogger/resources/icons/SortNew.svg" id="15_equok"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gdlogger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/gdlogger/resources/theme/panel_top_rounded_base_col.tres" id="21_vkni8"]
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/gdlogger/resources/theme/foldable_container_panel.tres" id="22_apa57"]
+[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_logfile_panel.tres" id="23_n5dsd"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gdlogger/resources/id_example_panel_tex.png" id="23_qrqlu"]
 [ext_resource type="PackedScene" uid="uid://dhpqc8gwb77v0" path="res://addons/gdlogger/scenes/logfile_popup.tscn" id="24_ffv0r"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/gdlogger/id_overlay_lbl_settings.tres" id="24_wold0"]
@@ -31,11 +34,9 @@ content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
 
-[sub_resource type="DPITexture" id="DPITexture_8r8ny"]
+[sub_resource type="DPITexture" id="DPITexture_lnu3o"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r3wlc"]
 
 [sub_resource type="FoldableGroup" id="FoldableGroup_k47fi"]
 allow_folding_all = true
@@ -122,9 +123,11 @@ font_size = 12
 font_color = Color(1, 1, 1, 0.352941)
 
 [node name="EditorDock" type="EditorDock" unique_id=1366196318]
+custom_minimum_size = Vector2(0, 312)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = -768.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
@@ -154,7 +157,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 2
+current_tab = 1
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("6_w3br5")
@@ -172,7 +175,6 @@ metadata/_tab_name = " "
 
 [node name="LogsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -222,7 +224,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="LBOpenDirButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/CategorySidebar/MarginContainer/VBoxContainer" unique_id=106065706]
@@ -238,12 +240,12 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_f4fkd")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_f4fkd")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="LogSidebar" type="Panel" parent="DockTabContainer/LogsTab/VBoxContainerSidebar" unique_id=1192128886]
 z_index = 3
-custom_minimum_size = Vector2(48, 136)
+custom_minimum_size = Vector2(48, 167)
 clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -281,40 +283,29 @@ theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = ExtResource("12_7cref")
 icon = ExtResource("12_pl6xe")
 icon_alignment = 1
+expand_icon = true
 
 [node name="Control" type="Control" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1387267252]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LBOpenWOSButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=941928065]
-unique_name_in_owner = true
-z_index = 5
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-tooltip_text = "Open logs within Editor"
-focus_mode = 0
-theme_override_colors/icon_hover_color = Color(1.25516, 1.25516, 1.25516, 1)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_r3wlc")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_r3wlc")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_r3wlc")
-icon = SubResource("DPITexture_8r8ny")
-clip_text = true
-icon_alignment = 1
-
-[node name="LBSortModeButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1985609884]
+[node name="LogSettingsButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=602914294]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Sorting: New first"
+tooltip_text = "Refresh files"
 theme_override_colors/icon_pressed_color = Color(0.4149491, 0.4149491, 0.4149491, 1)
 theme_override_colors/icon_hover_color = Color(4.415934, 4.415934, 4.415934, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.41568628, 0.41568628, 0.41568628, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = ExtResource("15_equok")
+theme_override_styles/disabled = ExtResource("12_7cref")
+icon = ExtResource("14_1j2f0")
 icon_alignment = 1
+expand_icon = true
 
 [node name="RENABLEButton1" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1733649966]
 unique_name_in_owner = true
@@ -324,7 +315,7 @@ custom_maximum_size = Vector2(8, 8)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 expand_icon = true
 
@@ -409,10 +400,11 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 999
+columns = 14
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 script = ExtResource("19_luwxg")
 data = ExtResource("8_equok")
@@ -445,6 +437,7 @@ theme_override_constants/separation = 8
 [node name="PollingTimer" type="Timer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=1836800660]
 unique_name_in_owner = true
 autostart = true
+ignore_time_scale = true
 
 [node name="SidebarPanel" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=1779116936]
 custom_minimum_size = Vector2(48, 0)
@@ -479,7 +472,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="OpenDirButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/SidebarPanel/MarginContainer/VBoxContainer" unique_id=918067150]
@@ -495,7 +488,7 @@ theme_override_styles/normal = ExtResource("12_7cref")
 theme_override_styles/pressed = ExtResource("12_7cref")
 theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/SidebarPanel/MarginContainer/VBoxContainer" unique_id=478747324]
@@ -507,7 +500,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="LPanel" type="ScrollContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=2008032766]
@@ -523,7 +516,7 @@ scroll_hint_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 15
+theme_override_constants/separation = 8
 
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
@@ -557,7 +550,6 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-button_pressed = true
 text = "Autostart session"
 alignment = 2
 icon_alignment = 2
@@ -574,21 +566,6 @@ theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 text = "UTC time"
-alignment = 2
-icon_alignment = 2
-
-[node name="ColorCodeCheckBox" type="CheckBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=92259866]
-unique_name_in_owner = true
-layout_mode = 2
-layout_direction = 3
-tooltip_text = "Color codes the labels of log files in the Logs tab"
-theme = SubResource("Theme_fcs7p")
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-text = "Colorcode log files by date"
 alignment = 2
 icon_alignment = 2
 
@@ -1110,7 +1087,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=193635431]
@@ -1136,7 +1113,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
@@ -1172,7 +1149,7 @@ tooltip_text = "Any text and symbol formatting can be used.
 Supported format tags:
     {project_name}  {version}  {category}
     {yy}   {mm}   {dd} - year, month, day 
-    {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
+    {hh}   {mi}   {ss} - hour, minute, second"
 theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
 theme_override_styles/normal = ExtResource("25_x27c6")
 text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
@@ -1210,7 +1187,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
@@ -1236,7 +1213,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=154378586]
@@ -1345,7 +1322,7 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_fx5fv")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/ScrollContainer/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=749157682]
@@ -1371,7 +1348,7 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_k47fi")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 
 [node name="HotkeyFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/ScrollContainer/VBoxContainer" unique_id=1889098366]
@@ -1413,7 +1390,6 @@ metadata/_tab_name = "Help"
 [node name="GettingStarted" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=1377872369]
 unique_name_in_owner = true
 layout_mode = 2
-scroll_vertical = 42
 scroll_vertical_custom_step = 20.0
 scroll_hint_mode = 1
 tile_scroll_hint = true
@@ -1442,16 +1418,8 @@ folded = true
 title = "Setup"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp" unique_id=469117461]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp" unique_id=1514331880]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp/MarginContainer" unique_id=1514331880]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1461,12 +1429,9 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "GDLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: 
     [i][color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"This is my first log entry.\"[/color], [color=#ce9178]\"game\"[/color])[/i]
-Use the Category tab to add, remove, or rename categories. 
+Use the Logs tab to add, remove, or rename categories and even read log files. 
 
 GDLogger uses an [b]Log[/b] singleton, making its functions accessible from all scenes and scripts.
-
-A session defines when logging is active. Sessions can be started or stopped at any time using hotkeys or through code.
-By default, a session starts automatically when the project runs (this can be disabled in the Settings tab).
 	"
 fit_content = true
 
@@ -1486,16 +1451,8 @@ folded = true
 title = "Sessions"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SessionsHelp" unique_id=1664582270]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SessionsHelp" unique_id=1393820525]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SessionsHelp/MarginContainer" unique_id=1393820525]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1524,16 +1481,8 @@ folded = true
 title = "Categories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/CategoriesHelp" unique_id=390089741]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/CategoriesHelp" unique_id=165372222]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/CategoriesHelp/MarginContainer" unique_id=165372222]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1541,9 +1490,50 @@ size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "Each category in the Category tab corresponds to a folder in the base directory. When a session starts, a .log file is created inside that folder, named with the date, timestamp, and category.
+text = "Every category creates it's own logs at the start of each session in their respective directory within your base directory. This allows you to sort your log entries into separate files to make them more manageable and legible. But you can still use one singular category if that's what your project needs of course.
 
-Additionally, you can mark one of your categories as 'Default'. Logging entries without specifying a category will log it to the marked default category. This is especially useful if you only use a single category to log and don't necessitates you to specify the category constantly."
+Additionally, within the dock, you can mark one of your categories as 'Default'. Logging entries without specifying a category will log it to the marked default category. This is especially useful if you have one overarching category for general entries. Or in case you only use a single category to log and don't necessitates you to specify the category constantly.
+
+The Left/Right arrows allows you to sort the order of the categories in the dock but this has no effect on your logs and is purely visual.  
+
+The Down arrow will load that category's log files for you to open and read."
+fit_content = true
+
+[node name="LogBrowserHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=76721491]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
+theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
+theme_override_styles/title_panel = ExtResource("21_vkni8")
+theme_override_styles/title_hover_panel = ExtResource("21_vkni8")
+theme_override_styles/title_collapsed_panel = ExtResource("21_vkni8")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("11_5jaku")
+theme_override_styles/panel = ExtResource("22_apa57")
+folded = true
+title = "Log Browser"
+foldable_group = SubResource("FoldableGroup_tvbkj")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/LogBrowserHelp" unique_id=1476901840]
+visible = false
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "A new feature in 2.0 allows you to browse and read .log files all within the editor. You can select a log file to read your file and in the top right, using the settings button, you're able to customize the look of the font, size, color etc. Alternatively, you can also use the CheckBox in the side bar of the dock to open log files with your OS default program, such as Notepad or Notepad++
+
+Loading large files for viewing may freeze Godot depending on the file size and your computer's performance. If this is affecting you, lower your Entry Count or Session Timer parameters. You can also enable the option to open with OS.
+
+Future updates may include:
+	Proper folder navigation
+	File renaming
+	File deletion
+
+A discussion is open on the Github page where you can vote on what features you'd like or comment if you have any ideas."
 fit_content = true
 
 [node name="MessagesHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=487613138]
@@ -1562,16 +1552,8 @@ folded = true
 title = "Messages"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp" unique_id=496326699]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp" unique_id=1166564036]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp/MarginContainer" unique_id=1166564036]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1581,9 +1563,9 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "Messages(msg) or entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging. 
 
-[i]Log.msg(log_msg : String, category_name: String = \"\", print_msg: bool = false)[i]
+[i][color=#57b3ff]Log[/color].[color=#63c5da]msg[/color]([color=#b8b8b8]log_msg[/color] [color=#ff7085]:[/color] [color=#42ffc2]String[/color], [color=#b8b8b8]category_name[/color][color=#ff7085]:[/color] [color=#42ffc2]String[/color] [color=#ff7085]=[/color] [color=#ffeca1]\"\"[/color], [color=#b8b8b8]print_msg[/color][color=#ff7085]:[/color] [color=#42ffc2]bool[/color] [color=#ff7085]=[/color] [color=#ff7085]false[/color])[/i]
 
-The [b]Log.msg()[/b] function requires only a string or message/entry to be passed in but has additional arguments you can pass in, such as the category you want the entry to be logged into(is required if you haven't marked one of your categories as [i]default[/i]. 
+The [b][color=#57b3ff]Log[/color].[color=#63c5da]msg[/color]()[/b] function requires only a string or message/entry to be passed in but has additional arguments you can pass in, such as the category you want the entry to be logged into(is required if you haven't marked one of your categories as [i]default[/i]. 
 
 You can also use [i]print_msg[/i] to print individual entries if desired. 
 
@@ -1611,16 +1593,8 @@ folded = true
 title = "Directories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/DirectoryHelp" unique_id=1495629813]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/DirectoryHelp" unique_id=1565100639]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/DirectoryHelp/MarginContainer" unique_id=1565100639]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1628,12 +1602,11 @@ size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "The default directory where your .log files are stored is \"user://gdlogger/\". Since this directory is outside of the \"res://\" (project folder), it isn't packaged with your project when you export it, meaning your users/players have access to the files and can share them with the developer. It is recommended that you use \"user://\" but change the \"gdlogger\" part. 
+text = "The default directory where your [color=#ffeca1].log[/color] files are stored is [color=#ffeca1]\"user://gdlogger/\"[/color]. Since this directory is outside of the [color=#ffeca1]\"res://\"[/color] (project folder), it isn't packaged with your project when you export it, meaning your users/players have access to the files and can share them with the developer. It is recommended that you use [color=#ffeca1]\"user://\"[/color] but change the [color=#ffeca1]\"gdlogger\"[/color] part.
 
-[color=lightred][b]Warning![/b][color=pink] Do [b]NOT[/b] use \"user://logs/\". Godot stores it's own logs in that folder and you risk that GDLogger might delete said logs in it's operations. There are safeguard to prevent this directory from being used but still, never use it. 
+[color=lightred][b]Warning![/b][/color] [color=pink]Do [b]NOT[/b] use [color=#ffeca1]\"user://logs/\"[/color]. Godot stores its own logs in that folder and you risk that GDLogger might delete said logs in its operations. There are safeguards to prevent this directory from being used but still, never use it.[/color]
 
-Remember that there are buttons to open the directory using or operating system's file browser. You can also use the normal Project > \"Open User Data Folder\" in Godot.
-
+Remember that there are buttons to open the directory using your operating system's file browser. You can also use the normal Project > [color=#ffeca1]\"Open User Data Folder\"[/color] in Godot.
 "
 fit_content = true
 
@@ -1653,16 +1626,8 @@ folded = true
 title = "Multiple Instances"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrenciesHelp" unique_id=1561208560]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrenciesHelp" unique_id=1890232147]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrenciesHelp/MarginContainer" unique_id=1890232147]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1673,53 +1638,6 @@ bbcode_enabled = true
 text = "When running multiple instances of your project, as is the case with multiplayer games where two or more instances is run for debugging. The two instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instance logged what entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[/color] setting.
 
 To see the ID of an instance, use the [color=fc4674]Print Instance ID[/color] hotkey([i]Ctrl + Shift + I[/i] by default). This will display the instance ID on your screen in your game. Within the Settings tab of the dock, under ID Overlay, you'll find settings to customize it's behavior and how it's displayed. Including the font used, size, outline and color to suit your game's resolution and ensure it is clearly visible. "
-fit_content = true
-
-[node name="LogBrowserHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=76721491]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = ExtResource("21_vkni8")
-theme_override_styles/title_hover_panel = ExtResource("21_vkni8")
-theme_override_styles/title_collapsed_panel = ExtResource("21_vkni8")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("11_5jaku")
-theme_override_styles/panel = ExtResource("22_apa57")
-folded = true
-title = "Log Browser"
-foldable_group = SubResource("FoldableGroup_tvbkj")
-
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/LogBrowserHelp" unique_id=767619408]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/LogBrowserHelp/MarginContainer" unique_id=1476901840]
-custom_minimum_size = Vector2(560, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "A new LogBrowser was added in 1.4 which allows you to see your .log files and read their contents, all within the editor. 
-
-It detects files by file type. Meaning the file has to begin with the category's name and end with \".log\" to be detected. The drawback with this is that it won't detect files that you've renamed. However, you can uncheck the setting \"Log Browser strict file name detection\"  under Settings tab > General. This will ignore the category name restriction, which will read all .log files.
-
-[b]Loading large files for viewing may freeze Godot depending on the length of the file contents and your computer's performance.[/b}
-
-Future updates may include:
-	Proper folder navigation
-	File renaming
-	File deletion
-
-A discussion is open on the Github page where you can vote on what features you'd like or comment if you have any ideas."
 fit_content = true
 
 [node name="Methods&Hotkeys" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=830461916]
@@ -1751,16 +1669,8 @@ folded = true
 title = "Functions"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FunctionsHelp" unique_id=377210306]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FunctionsHelp" unique_id=208538217]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FunctionsHelp/MarginContainer" unique_id=208538217]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1775,8 +1685,8 @@ Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GDLog
     Starts a logging session, creating new .log files and enabling entry logging.
     [color=#6a9955][i]Hotkey: Ctrl + Shift + O[/i][/color]
 
-[color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#c586c0]log_msg[/color]: [color=#4ec9b0]String[/color], [color=#c586c0]category_index[/color]: [color=#4ec9b0]int[/color] = [color=#b5cea8]0[/color], [color=#c586c0]print_entry_to_output[/color]: [color=#4ec9b0]bool[/color] = [color=#569cd6]false[/color])
-    Logs an entry into the specified [i]category_index[/i]. You can optionally print any entry to the output as well using [i]print_entry_to_output[/i].
+[color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#c586c0]log_msg[/color]: [color=#4ec9b0]String[/color], [color=#c586c0]category_name[/color]: [color=#c586c0]int[/color] = [color=#b5cea8]0[/color], [color=#c586c0]print_msg[/color]: [color=#4ec9b0]bool[/color] = [color=#569cd6]false[/color])
+    Logs an entry into the specified [i]category_index[/i]. You can optionally print any entry to the output as well using [i]print_msg[/i].
     Example:
         [color=#dcdcaa]Log[/color].[color=#6dc2ff]entry[/color]([color=#ce9178]\"Player's current health: \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]current_health[/color]) + [color=#ce9178]\" / \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]max_health[/color]), [color=#b5cea8]1[/color])
 
@@ -1806,16 +1716,8 @@ folded = true
 title = "Hotkeys"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/HotkeysHelp" unique_id=1889005823]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/HotkeysHelp" unique_id=1418471264]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/HotkeysHelp/MarginContainer" unique_id=1418471264]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1845,32 +1747,21 @@ folded = true
 title = "File Limits"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FileLimitsHelp" unique_id=616628171]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FileLimitsHelp" unique_id=1956207480]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FileLimitsHelp/MarginContainer" unique_id=1956207480]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GDLogger includes several features to control logging behavior. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
-
-The default settings are intentionally conservative to minimize potential issues after installation. You can safely increase them within reasonable bounds.
-
+text = "[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GDLogger features limitations to control log file lengths. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
 
 [font_size=14]File Count:[font_size=14]
 This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one. Only [i].log[/i] files that haven't been renamed are subject to the file count handling,
 
 [color=darkgray][i]Recommended:[/i][/color]
-[i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported.[/i]
+[i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported. Setting it to 0 will disable the limitation but it's not recommended.[/i]
 
 
 [font_size=14][b]Entry count[/b][font_size=14]
@@ -1890,7 +1781,7 @@ This option defines the maximum number of .log files allowed in each category fo
 
 
 
-[b]Recommended:[/b]
+[b]Recommended overall settings:[/b]
 Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed."
 fit_content = true
 
@@ -1910,16 +1801,8 @@ folded = true
 title = "Formatting"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FormattingHelp" unique_id=1525469681]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FormattingHelp" unique_id=838472294]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FormattingHelp/MarginContainer" unique_id=838472294]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1975,23 +1858,23 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 16
 
+[node name="Label" type="Label" parent="DockTabContainer/HelpTab/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=27916166]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "If issues with the plugin arise, use button to the left to regenerate a new settings resource. Ensure that  res://addons/gdlogger/data.tres exists. Try creating a new one to place it, just make sure it's named \"data.tres\" and it's path is identical. This will reset categories and settings. 
+
+Note that autoloaded scripts/scenes are loaded in the order as shown in ProjectSettings > Globals > Autoload. 
+If another autoload is trying to log an entry before Log.tscn is loaded, it might throw an error or simply not log the entry.
+Either move Log.tscn higher in the list.
+
+If issues persists afterwards, please open an issue on Github with the link below."
+
 [node name="RegenerateButton" type="Button" parent="DockTabContainer/HelpTab/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1443993294]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Open 
-\"user://\" 
-directory"
-
-[node name="Label" type="Label" parent="DockTabContainer/HelpTab/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=27916166]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "If issues with the plugin arise, use button to the left to regenerate a new settings resource. Ensure that  res://addons/gdlogger/data.tres exists in your directory. This will reset your categories and settings. 
-
-Note that autoloaded scripts/scenes are loaded in the order as shown in ProjectSettings > Globals > Autoload. 
-If an autoload is trying to log an entry before Log.tscn is loaded, it might throw an error or simply not log the entry.
-Please move Log.tscn higher in the list in that case.
-
-If issues persists afterwards, please open an issue on Github with the link below."
+Save 
+Resource"
 
 [node name="HSeparator" type="HSeparator" parent="DockTabContainer/HelpTab/MoreInfo/MarginContainer/HBoxContainer/VBoxContainer" unique_id=506011858]
 layout_mode = 2
@@ -2052,3 +1935,97 @@ flip_h = true
 [node name="LogFilePanelPopup" parent="DockTabContainer" unique_id=87534791 instance=ExtResource("24_ffv0r")]
 unique_name_in_owner = true
 visible = false
+
+[node name="LogsSettingsPanelPopup" type="PopupPanel" parent="DockTabContainer" unique_id=1420748330]
+unique_name_in_owner = true
+oversampling_override = 1.0
+size = Vector2i(130, 58)
+visible = true
+theme_override_styles/panel = ExtResource("23_n5dsd")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/LogsSettingsPanelPopup" unique_id=1931820345]
+offset_left = 13.0
+offset_top = 13.0
+offset_right = 117.0
+offset_bottom = 45.0
+
+[node name="LBOpenWOSButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/HBoxContainer" unique_id=941928065]
+unique_name_in_owner = true
+z_index = 5
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Open logs within Editor"
+focus_mode = 0
+theme_override_colors/icon_hover_color = Color(1.25516, 1.25516, 1.25516, 1)
+theme_override_styles/normal = ExtResource("11_5jaku")
+theme_override_styles/normal_mirrored = ExtResource("11_5jaku")
+theme_override_styles/pressed = ExtResource("11_5jaku")
+theme_override_styles/pressed_mirrored = ExtResource("11_5jaku")
+theme_override_styles/hover = ExtResource("11_5jaku")
+theme_override_styles/hover_mirrored = ExtResource("11_5jaku")
+theme_override_styles/hover_pressed = ExtResource("11_5jaku")
+theme_override_styles/hover_pressed_mirrored = ExtResource("11_5jaku")
+theme_override_styles/disabled = ExtResource("11_5jaku")
+theme_override_styles/disabled_mirrored = ExtResource("11_5jaku")
+theme_override_styles/focus = ExtResource("11_5jaku")
+icon = SubResource("DPITexture_lnu3o")
+clip_text = true
+icon_alignment = 1
+
+[node name="ColorCodeButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/HBoxContainer" unique_id=439533416]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(32, 32)
+layout_mode = 2
+layout_direction = 3
+tooltip_text = "Color codes the labels of log files in the Logs tab"
+theme = SubResource("Theme_fcs7p")
+theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6156863, 0.61960787, 0.627451, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_icons/icon = ExtResource("14_lnu3o")
+theme_override_styles/normal = ExtResource("11_5jaku")
+theme_override_styles/normal_mirrored = ExtResource("11_5jaku")
+theme_override_styles/pressed = ExtResource("11_5jaku")
+theme_override_styles/pressed_mirrored = ExtResource("11_5jaku")
+theme_override_styles/hover = ExtResource("11_5jaku")
+theme_override_styles/hover_mirrored = ExtResource("11_5jaku")
+theme_override_styles/hover_pressed = ExtResource("11_5jaku")
+theme_override_styles/hover_pressed_mirrored = ExtResource("11_5jaku")
+theme_override_styles/disabled = ExtResource("11_5jaku")
+theme_override_styles/disabled_mirrored = ExtResource("11_5jaku")
+theme_override_styles/focus = ExtResource("11_5jaku")
+icon = ExtResource("14_lnu3o")
+icon_alignment = 1
+expand_icon = true
+
+[node name="LBSortModeButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/HBoxContainer" unique_id=1985609884]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Sorting: New first"
+theme_override_colors/icon_pressed_color = Color(0.4149491, 0.4149491, 0.4149491, 1)
+theme_override_colors/icon_hover_color = Color(4.415934, 4.415934, 4.415934, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.41568628, 0.41568628, 0.41568628, 1)
+theme_override_styles/normal = ExtResource("11_5jaku")
+theme_override_styles/normal_mirrored = ExtResource("11_5jaku")
+theme_override_styles/pressed = ExtResource("11_5jaku")
+theme_override_styles/pressed_mirrored = ExtResource("11_5jaku")
+theme_override_styles/hover = ExtResource("11_5jaku")
+theme_override_styles/hover_mirrored = ExtResource("11_5jaku")
+theme_override_styles/hover_pressed = ExtResource("11_5jaku")
+theme_override_styles/hover_pressed_mirrored = ExtResource("11_5jaku")
+theme_override_styles/disabled = ExtResource("11_5jaku")
+theme_override_styles/disabled_mirrored = ExtResource("11_5jaku")
+theme_override_styles/focus = ExtResource("11_5jaku")
+icon = ExtResource("15_equok")
+icon_alignment = 1

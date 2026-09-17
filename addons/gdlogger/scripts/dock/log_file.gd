@@ -47,7 +47,7 @@ var file_contents: String = ""
 
 func _ready() -> void:
 	text = display_name if display_name != "" else placeholder_name
-	mouse_entered.connect(get_file_content)
+	# mouse_entered.connect(get_file_content)
 	expand_icon = true
 	add_theme_constant_override("icon_max_width", 32)
 

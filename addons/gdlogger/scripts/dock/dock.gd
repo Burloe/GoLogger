@@ -30,8 +30,11 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var lg_add_cat_btn: Button = %AddCategoryButton
 @onready var lg_open_dir_btn: Button = %LBOpenDirButton 
 @onready var lg_reload_btn: Button = %LBReloadButton
-@onready var lg_sort_btn: Button = %LBSortModeButton
 @onready var lg_open_with_os_btn: Button = %LBOpenWOSButton
+@onready var lg_colorcode_btn: Button = %ColorCodeButton
+@onready var lg_sort_btn: Button = %LBSortModeButton
+@onready var lg_settings_btn: Button = %LogSettingsButton
+@onready var lg_settings_popup: PopupPanel = %LogsSettingsPanelPopup
 @onready var lg_popup: PopupPanel = %LogFilePanelPopup
 
 # Settings tab
@@ -62,7 +65,6 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 
 @onready var sett_autostart_btn: CheckBox = %AutostartCheckBox
 @onready var sett_utc_btn: CheckBox = %UTCCheckBox
-@onready var colorcode_btn: CheckBox = %ColorCodeCheckBox
 
 @onready var sett_limit_method_btn: OptionButton = %LimitMethodOptButton
 @onready var sett_limit_method_lbl: Label = %LimitMethodLabel
@@ -328,7 +330,7 @@ func _assign_settings_controls() -> void:
 	data.entry_format_ctrl = sett_entry_format_line
 	data.autostart_ctrl = sett_autostart_btn
 	data.utc_ctrl = sett_utc_btn
-	data.colorcode_dates_ctrl = colorcode_btn
+	data.colorcode_dates_ctrl = lg_colorcode_btn
 	data.id_print_ctrl = sett_id_print_btn
 	data.id_toggle_ctrl = sett_id_toggle_btn
 	data.id_startup_ctrl = sett_id_startup_btn
@@ -355,13 +357,14 @@ func _assign_settings_controls() -> void:
 func _assign_editor_icons() -> void:
 	# lg_open_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
 	lg_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
-	lg_add_cat_btn.set_button_icon(get_theme_icon("Add", "EditorIcons")) 
+	lg_add_cat_btn.set_button_icon(get_theme_icon("Add", "EditorIcons"))
 
 	var _d: Dictionary = {
 		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
 		"Reload": [sett_reset_btn],
 		"Folder": [lg_open_dir_btn, sett_open_dir_btn],
 		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
+		"GDScript": [lg_settings_btn],
 		"Debug": [renable_btn1, renable_btn2]
 	}
 

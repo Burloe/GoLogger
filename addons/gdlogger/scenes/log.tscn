@@ -8,17 +8,18 @@ script = ExtResource("1_qpie0")
 
 [node name="SessionTimer" type="Timer" parent="." unique_id=374606073]
 unique_name_in_owner = true
+ignore_time_scale = true
 
 [node name="PollingTimer" type="Timer" parent="." unique_id=651485708]
 unique_name_in_owner = true
 autostart = true
 ignore_time_scale = true
 
-[node name="GoLoggerElements" type="CanvasLayer" parent="." unique_id=797774881]
+[node name="GDLoggerElements" type="CanvasLayer" parent="." unique_id=797774881]
 unique_name_in_owner = true
 layer = 50
 
-[node name="MarginContainer" type="MarginContainer" parent="GoLoggerElements" unique_id=639877328]
+[node name="MarginContainer" type="MarginContainer" parent="GDLoggerElements" unique_id=639877328]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,7 +31,7 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="InstanceIDLabel" type="Label" parent="GoLoggerElements/MarginContainer" unique_id=1512920177]
+[node name="InstanceIDLabel" type="Label" parent="GDLoggerElements/MarginContainer" unique_id=1512920177]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2

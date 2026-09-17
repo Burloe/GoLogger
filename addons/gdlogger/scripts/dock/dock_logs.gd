@@ -16,7 +16,10 @@ signal selected_category_updated(new_selected: String)
 @onready var polling_timer: Timer = %PollingTimer
 @onready var popup_panel: PopupPanel = %LogFilePanelPopup
 
+@onready var log_settings_btn: Button = %LogSettingsButton
+@onready var log_settings_popup: PopupPanel = %LogsSettingsPanelPopup
 @onready var open_w_os_btn: Button = %LBOpenWOSButton
+@onready var colorcode_btn: Button = %ColorCodeButton
 @onready var sort_mode_btn: Button = %LBSortModeButton
 
 @onready var margin_container: MarginContainer = %LBMarginContainer
@@ -31,6 +34,8 @@ const GRID_SEPARATION = 8
 const GRID_GROUP_SORT_SEPARATION = 24
 var log_file_btn := preload("uid://bq7nahsc5aca7")
 var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
+var ico_colorcode_on := preload("uid://blyvrbbwfn67h")
+var ico_colorcode_off := preload("uid://buxaemplfttdx")
 var ico_sort_new = 	preload("uid://dvjgbc6hibv5m")
 var ico_sort_old = 	preload("uid://bljitewxdnvuh") 
 var category_scene = preload("uid://c3n416c5fajm5") 
@@ -41,14 +46,6 @@ var is_reloading: bool = false
 var is_content_hovered: bool = false
 var _default_setting_in_progress: bool = false  
 var _column_update_pending: bool = false 
-
-
-var open_log_with_os: bool = false:
-	set(value):
-		open_log_with_os = value
-		open_w_os_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
-		open_w_os_btn.tooltip_text = "Open logs using OS" if value else "Open logs within Editor"
-		data.open_logs_with_os = value
 
 var min_cell_width: int = 140
 var base_dir = ""
@@ -68,6 +65,13 @@ var cur_logfile: GLLogFile = null:
 	set(value):
 		cur_logfile = value 
 
+var open_log_with_os: bool = false:
+	set(value):
+		open_log_with_os = value
+		open_w_os_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
+		open_w_os_btn.tooltip_text = "Open logs using OS" if value else "Open logs within Editor"
+		data.open_logs_with_os = value
+
 var cur_sort: SortModes = SortModes.NEW: 
 	set(value):
 		cur_sort = value
@@ -86,18 +90,15 @@ enum LimitMethod { ## Index 3 is a SEPERATOR and should not be used.
 	SEPERATOR,
 	NONE
 }
-
 enum EntryCountAction {
 	OVERWRITE_ENTRIES,
 	RESTART,
 	STOP
 }
-
 enum SessionTimerAction {
 	RESTART,
 	STOP
 }
-
 enum SortModes {
 	NEW,
 	OLD
@@ -113,13 +114,27 @@ func _ready() -> void:
 	settings_tab.colorcode_changed.connect(_on_colorcode_changed)
 	reload_btn.button_up.connect(load_log_files)
 	polling_timer.timeout.connect(load_log_files)
+
+	log_settings_btn.button_up.connect(
+		func() -> void:
+			log_settings_popup.visible = !log_settings_btn.visible
+			if log_settings_btn.visible:
+				log_settings_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE 
+				log_settings_popup.position = get_screen_position() + get_screen_transform().basis_xform(get_local_mouse_position())
+				log_settings_popup.popup()
+	)
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
+	colorcode_btn.button_up.connect(
+		func() -> void: 
+			data.colorcode_dates = !data.colorcode_dates
+			colorcode_btn.set_button_icon(ico_colorcode_on if data.colorcode_dates else ico_colorcode_off)
+	)
 	sort_mode_btn.button_up.connect(
 		func() -> void:
 			cur_sort = (cur_sort + 1) % 2
 			load_log_files()
 	) 
-	resized.connect(_update_columns) 
+	resized.connect(_update_columns)
 	
 	inspector = EditorInspector.new()
 	inspector.edit(ResourceLoader.load("uid://cqn5x8cb7vjy3"))

@@ -2,27 +2,70 @@
 class_name GLData extends Resource
 
 # Categories Tab
-@export var categories: Array[GLCategoryData] = []
-@export var default_category: String = ""
+@export var categories: Array[GLCategoryData] = []:
+	set(value):
+		categories = value
+		emit_changed()
+@export var default_category: String = "":
+	set(value):
+		default_category = value
+		emit_changed()
 # Browser Tab
-@export_enum("New", "Old") var browser_sort: int = 0 
-@export var open_logs_with_os: bool = false
+@export_enum("New", "Old") var browser_sort: int = 0:
+	set(value):
+		browser_sort = value
+		emit_changed()
+@export var open_logs_with_os: bool = false:
+	set(value):
+		open_logs_with_os = value
+		emit_changed()
+
 
 # Directories 6 Formats
-@export var base_dir: String = "user://gdlogger/"
-@export var header_format: String = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
-@export var entry_format: String = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
+@export var base_dir: String = "user://gdlogger/":
+	set(value):
+		base_dir = value
+		emit_changed()
+@export var header_format: String = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:":
+	set(value):
+		header_format = value
+		emit_changed()
+@export var entry_format: String = "[{hh}:{mi}:{ss}] {instance_id}: {entry}":
+	set(value):
+		entry_format = value
+		emit_changed()
 
 # General
-@export var autostart: bool = true
-@export var utc: bool = false
-@export var colorcode_dates: bool = false
-@export_enum("Warnings & Errors", "Warnings only", "None") var error_reporting: int = 0
+@export var autostart: bool = true:
+	set(value):
+		autostart = value
+		emit_changed()
+@export var utc: bool = false:
+	set(value):
+		utc = value
+		emit_changed()
+@export var colorcode_dates: bool = false:
+	set(value):
+		colorcode_dates = value
+		emit_changed()
+@export_enum("Warnings & Errors", "Warnings only", "None") var error_reporting: int = 0:
+	set(value):
+		error_reporting = value
+		emit_changed()
 
 # Limits
-@export var file_cap: int = 10
-@export var entry_cap: int = 2000
-@export var session_duration: int = 1200
+@export var file_cap: int = 10:
+	set(value):
+		file_cap = value
+		emit_changed()
+@export var entry_cap: int = 2000:
+	set(value):
+		entry_cap = value
+		emit_changed()
+@export var session_duration: int = 1200:
+	set(value):
+		session_duration = value
+		emit_changed()
 @export_enum("Entry Count", "Session Timer", "Both", "Separator", "None") var limit_method: int = 0:
 	set(value):
 		limit_method = value
@@ -37,13 +80,29 @@ class_name GLData extends Resource
 
 		entry_count_action_lbl.text = "Entry Action" if limit_method == 2 else "Action"
 		session_timer_action_lbl.text = "Timer Action" if limit_method == 2 else "Action"
-@export_enum("Overwrite Entries", "Restart Session", "Stop Session") var entry_count_action: int = 0
-@export_enum("Restart Session", "Stop Session") var session_timer_action: int = 0
+		emit_changed()
+@export_enum("Overwrite Entries", "Restart Session", "Stop Session") var entry_count_action: int = 0:
+	set(value):
+		entry_count_action = value
+		emit_changed()
+@export_enum("Restart Session", "Stop Session") var session_timer_action: int = 0:
+	set(value):
+		session_timer_action = value
+		emit_changed()
 
 # ID Overlay
-@export var id_print: bool = false
-@export var id_toggle: bool = false
-@export var id_startup: bool = false
+@export var id_print: bool = false:
+	set(value):
+		id_print = value
+		emit_changed()
+@export var id_toggle: bool = false:
+	set(value):
+		id_toggle = value
+		emit_changed()
+@export var id_startup: bool = false:
+	set(value):
+		id_startup = value
+		emit_changed()
 @export_enum(
 	"Top-Left", "Top-Center", "Top-Right", "SEPARATOR-A", 
 	"Center-Left", "Center-Center", "Center-Right", "SEPARATOR-B", 
@@ -51,8 +110,7 @@ class_name GLData extends Resource
 	set(value):
 		if value not in [3, 7]:
 			id_align = value
-
-# @export_enum()
+			emit_changed()
 
 
 var base_dir_ctrl: LineEdit = null
@@ -60,7 +118,7 @@ var header_format_ctrl: LineEdit = null
 var entry_format_ctrl: LineEdit = null
 var autostart_ctrl: CheckBox = null
 var utc_ctrl: CheckBox = null
-var colorcode_dates_ctrl: CheckBox = null
+var colorcode_dates_ctrl: Button = null
 var id_print_ctrl: CheckBox = null
 var id_toggle_ctrl: CheckBox = null
 var id_startup_ctrl: CheckBox = null
