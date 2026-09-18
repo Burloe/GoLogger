@@ -2,13 +2,15 @@
 extends EditorPlugin
 
 var dock
+var gdl_ico = preload("uid://bch3ujgyd4vth")
 
 func _enter_tree() -> void:
 	dock = preload("uid://0k0tpsfqof2s").instantiate() as EditorDock
 	dock.title = "GDLogger"
-	dock.dock_icon = preload("uid://c4jrvdxu1e2q3")
+	dock.dock_icon = preload("uid://bch3ujgyd4vth")
 	add_dock(dock)
 	dock.plugin_version = get_plugin_version()
+	dock.docktab_container.set_tab_icon(0, gdl_ico)
 	for i in [dock.renable_btn1, dock.renable_btn2]:
 		if i: i.button_up.connect(_renable_plugin) 
 

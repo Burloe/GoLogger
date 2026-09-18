@@ -13,14 +13,10 @@ theme_override_styles/normal = ExtResource("1_iertm")
 theme_override_styles/pressed = ExtResource("1_iertm")
 theme_override_styles/hover = ExtResource("1_iertm")
 theme_override_styles/hover_pressed = ExtResource("1_iertm")
-text = "17:22:53
-April 27
-2026"
+text = "<NA>"
 icon = ExtResource("2_7hkrn")
 alignment = 0
 autowrap_mode = 2
 expand_icon = true
 script = ExtResource("3_u25kw")
-placeholder_name = "17:22:53
-April 27
-2026"
+fallback_name = "<NA>"

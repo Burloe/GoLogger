@@ -13,6 +13,8 @@ signal close_logfile
 @onready var lbsett_panel: Panel = %LblSettingsPanel
 @onready var lbsett_scroll_container: ScrollContainer = %LblSettingsScrollContainer
 
+@onready var settings = EditorInterface.get_editor_settings()
+
 var inspector: EditorInspector = null
 var file_contents_lblsett: String = "uid://cqn5x8cb7vjy3"
 var dragging: bool = false
@@ -30,6 +32,7 @@ var content: String = "":
 
 func _ready() -> void:
 	assign_icons()
+	
 	about_to_popup.connect(_on_about_to_popup)
 	resize_handle.gui_input.connect(_on_resize_handle_gui_input)
 	copy_btn.button_up.connect(
@@ -103,3 +106,7 @@ func _on_resize_handle_gui_input(event: InputEvent) -> void:
 		new_size.y = max(int(new_size.y), 200)
 
 		size = new_size
+
+
+func _on_editor_settings_changed() -> void:
+	pass

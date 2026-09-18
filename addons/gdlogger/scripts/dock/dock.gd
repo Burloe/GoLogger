@@ -135,6 +135,7 @@ var theme_colors: Dictionary = {}
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
 @onready var editor_contrast = settings.get("interface/theme/contrast")
 
+var gdl_ico = preload("uid://bch3ujgyd4vth")
 var sb_tab_bar_bg 										:= preload("uid://beo2bu5ofsw0u")
 var sb_tab_panel_bg										:= preload("uid://br4lwoor8v8mi")
 var sb_tab_panel_no_side_margins 			:= preload("uid://cv3q5yacoro7d")
@@ -233,6 +234,8 @@ func _ready() -> void:
 	hidden.connect(logs_tab._update_columns)
 
 	data = load(DATA_PATH)
+	docktab_container.set_tab_icon(0, gdl_ico)
+	print(docktab_container.get_tab_icon(0))
 	logs_tab.data = data 
 	logs_tab.is_active = true
 	logs_tab.data = data 

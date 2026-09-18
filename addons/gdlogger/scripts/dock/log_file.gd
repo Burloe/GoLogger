@@ -2,7 +2,7 @@
 class_name GLLogFile extends Button
 
 
-@export var placeholder_name: String = str("NAME ERROR!")
+@export var fallback_name: String = str("<NA>")
 @export var date_stamp: String = ""
 @export var time_stamp: String = ""
 
@@ -26,16 +26,15 @@ var file_path: String = ""
 var file_name: String = "":
 	set(value):
 		file_name = value
+		fallback_name = value
 		if value != "" and is_gl_name(value):
 			display_name = _get_name(file_name)
 			get_file_content()
-			if is_gl_name(value):
-				var dt: String = value.lstrip(str(category_name, "(")).rstrip(").log")
-				date_stamp = dt.split("_", false, 2)[0]
-				time_stamp = dt.split("_", false, 2)[1]
-				is_non_gl_log = false
-			else: 
-				is_non_gl_log = true
+			var dt: String = value.lstrip(str(category_name, "(")).rstrip(").log")
+			date_stamp = dt.split("_", false, 2)[0]
+			time_stamp = dt.split("_", false, 2)[1]
+			is_non_gl_log = is_gl_name(value) 
+
 
 var is_non_gl_log: bool = false
 var display_name: String = ""
@@ -46,7 +45,7 @@ var file_contents: String = ""
 
 
 func _ready() -> void:
-	text = display_name if display_name != "" else placeholder_name
+	text = display_name if display_name != "" else fallback_name
 	# mouse_entered.connect(get_file_content)
 	expand_icon = true
 	add_theme_constant_override("icon_max_width", 32)
