@@ -27,8 +27,8 @@ signal set_default_category(category: GLLogCategory, toggle_on: bool)
 
 @onready var del_popup: PopupPanel = 				%DeletePopupPanel
 @onready var del_cancel: Button = 					%CancelButton
-@onready var del_dir_btn: Button = 					%DelDirButton
-@onready var del_cat_btn: Button = 					%DelCatButton
+@onready var keep_dir_no_btn: Button = 			%KeepDirYesButton
+@onready var keep_dir_yes_btn: Button = 		%KeepDirNoButton
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
@@ -91,14 +91,14 @@ func _ready() -> void:
 	revert_btn.set_button_icon(get_theme_icon("Reload", "EditorIcons"))
 	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
 	del_cancel.set_button_icon(get_theme_icon("GuiClose", "EditorIcons"))
-	del_dir_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
-	del_cat_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
+	keep_dir_no_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
+	keep_dir_yes_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
 
 	settings.settings_changed.connect(_on_editor_settings_changed)
 	del_btn.button_up.connect(_on_del_button_up.bind(del_btn))
 	del_cancel.button_up.connect(_on_del_button_up.bind(del_cancel))
-	del_dir_btn.button_up.connect(_on_del_button_up.bind(del_dir_btn))
-	del_cat_btn.button_up.connect(_on_del_button_up.bind(del_cat_btn)) 
+	keep_dir_no_btn.button_up.connect(_on_del_button_up.bind(keep_dir_no_btn))
+	keep_dir_yes_btn.button_up.connect(_on_del_button_up.bind(keep_dir_yes_btn)) 
 	line_edit.text_changed.connect(_on_text_changed)
 	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
@@ -247,11 +247,12 @@ func _on_del_button_up(btn: Button) -> void:
 				del_popup.position = Vector2i(popup_x, popup_y)
 				del_popup.size = Vector2.ZERO
 		
-		del_dir_btn:
-			OS.move_to_trash(ProjectSettings.globalize_path(cat_data.category_path))
+		keep_dir_no_btn:
+			if OS.move_to_trash(ProjectSettings.globalize_path(cat_data.category_path)) == FAILED:
+				printerr("GDLogger: Failed to delete directories & files upon request. Please delete manually if desired.")
 			queue_free()
 
-		del_cat_btn:
+		keep_dir_yes_btn:
 			queue_free()
 		
 		del_cancel:

@@ -136,37 +136,16 @@ var theme_colors: Dictionary = {}
 @onready var editor_contrast = settings.get("interface/theme/contrast")
 
 var gdl_ico = preload("uid://bch3ujgyd4vth")
-var sb_tab_bar_bg 										:= preload("uid://beo2bu5ofsw0u")
-var sb_tab_panel_bg										:= preload("uid://br4lwoor8v8mi")
-var sb_tab_panel_no_side_margins 			:= preload("uid://cv3q5yacoro7d")
-var sb_tab_unselected 								:= preload("uid://427jdnrjcbba")
-var sb_tab_selected 									:= preload("uid://cy0ifp487jfcg")
-var sb_tab_hover 											:= preload("uid://yxpx0pyjme8s")
 
-var panel_round_bg 										:= preload("uid://dqfhm2ywaj4dr")
-var panel_round_base 									:= preload("uid://cywnobmluy31i")
-var panel_round_base_border_accent 		:= preload("uid://qbiwr8hnwf5n")
-var panel_round_accent 								:= preload("uid://3r3hhcvqp2au")
-var panel_round_accent_muted 					:= preload("uid://l18dbl63e366")
-var panel_top_round_base 							:= preload("uid://qbiwr8hnwf5n")
-var panel_top_round_accent 						:= preload("uid://dve2ih1gvvua7")
-var panel_top_round_accent_muted 			:= preload("uid://7s65f804p1jc")
-var panel_rounded_no_top_base					:= preload("uid://bqxadvxd6q2yj")
-var foldable_container_panel					:= preload("uid://bkl7j8mna8rwb")
-var content_panel											:= preload("uid://dsitl204qf1y3")
-
-var sb_btn_normal 										:= preload("uid://di36bptu4b3n")
-var sb_btn_toggled_on									:= preload("uid://bcprdy8psyd0k")
-var sb_btn_apply 											:= preload("uid://bwsfno28una6g")
-var sb_btn_apply_accent								:= preload("uid://cws5raq1oykdn")
+var sb_path: String = "res://addons/gdlogger/resources/ntheme/"
 
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 
-var sb_log_file_button_normal					:= preload("uid://xy4uummjvhgu")
+# var sb_log_file_button_normal					:= preload("uid://xy4uummjvhgu")
 
 var lv_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
-var lv_popup_panel										:= preload("uid://dugr1wllj4x3")
+# var lv_popup_panel										:= preload("uid://dugr1wllj4x3")
 
 
 ## Index 3 is a SEPERATOR and should not be used.
@@ -502,43 +481,20 @@ func _get_theme_colors() -> Dictionary:
 	var base_col: 	Color = settings.get("interface/theme/base_color")
 	var accent_col: Color = settings.get("interface/theme/accent_color")
 
-	var base_light 			= base_col.lerp(Color.WHITE, contrast)
-	var base_dark 			= base_col.lerp(Color.BLACK, contrast)
-	var base_light_h 		= base_col.lerp(Color.WHITE, contrast * 0.5)
-	var base_dark_h 		= base_col.lerp(Color.BLACK, contrast * 0.5)
-
-	var accent_light 		= accent_col.lerp(Color.WHITE, contrast)
-	var accent_dark 		= accent_col.lerp(Color.BLACK, contrast)
-	var accent_light_h 	= accent_col.lerp(Color.WHITE, contrast * 0.5)
-	var accent_dark_h 	= accent_col.lerp(Color.BLACK, contrast * 0.5)
 	# print("base_col: " base_col, "    setting base col: ", base_col)
 	var colors := {
-		"contrast": contrast,
-		"base": {
-			"col": base_col,
-			"light": base_light,
-			"dark": base_dark,
-			"light_accent": base_light_h,
-			"dark_accent": base_dark_h,
-		},
-		"accent": {
-			"col": accent_col,
-			"light": accent_light,
-			"dark": accent_dark,
-			"light_accent": accent_light_h,
-			"dark_accent": accent_dark_h,
-		},
-		"font": {
-			"normal": Color("9d9ea0"),
-			"hover": Color("ffffff"),
-			"interact_normal": base_col,
-			"interact_hover": base_light,
-			"interact_pressed": base_col,
-			"interact_hover_pressed": base_light,
-			"fold_normal": Color("b3b3b3"),
-			"fold_hover": Color("f2f2f2")
-		}
-	} 
+		"bgClr(base-2)": 		base_col.darkened(0.2),
+		"bgClr(base-1)": 		base_col.darkened(0.1),
+		"bgClr(base)":  		base_col,
+		"bgClr(base1)": 		base_col.lightened(0.1),
+		"bgClr(base2)": 		base_col.lightened(0.2),
+		"brdClr(base-2)": 	accent_col.darkened(0.2),
+		"brdClr(base-1)": 	accent_col.darkened(0.2),
+		"brdClr(base)": 		accent_col,
+		"brdClr(base1)":	 	accent_col.lightened(0.2),
+		"brdClr(base2)": 		accent_col.lightened(0.2),
+		"contrast_value": 	contrast
+	}
 	logs_tab.theme_colors = colors
 	settings_tab.theme_colors = colors
 	return colors
@@ -546,96 +502,34 @@ func _get_theme_colors() -> Dictionary:
 
 
 func _apply_theme_colors(apply_base: bool = true, apply_accent: bool = true) -> void:
-	theme_colors = _get_theme_colors()
-	if apply_base:
-		_apply_base_theme_colors()
-	if apply_accent:
-		_apply_accent_theme_colors()
-
-
-func _apply_base_theme_colors() -> void:
-	var color_map := {
-		# Transparent elements
-		sb_tab_unselected: {"bg_color": Color.TRANSPARENT},
-		sb_btn_normal: {"bg_color": Color.TRANSPARENT},
-		
-		# Base color elements
-		panel_round_base: 							{"bg_color": theme_colors["base"]["col"]},
-		panel_round_base_border_accent: {"bg_color": theme_colors["base"]["col"], "border_color": theme_colors["accent"]["col"]},
-		panel_top_round_base: 					{"bg_color": theme_colors["base"]["col"]},
-		panel_rounded_no_top_base: 			{"border_color": theme_colors["base"]["col"]},
-		foldable_container_panel: 			{"border_color": theme_colors["base"]["col"]},
-		sb_tab_bar_bg: 									{"bg_color": theme_colors["base"]["col"]},
-		sb_log_file_button_normal: 			{"bg_color": theme_colors["base"]["col"]},
-		content_panel: 									{"border_color": theme_colors["base"]["col"]},
-		sb_btn_toggled_on: 							{"bg_color": theme_colors["base"]["col"]},
-		
-		# Dark base variants
-		sb_tab_panel_bg: 								{"bg_color": theme_colors["base"]["dark"]},
-		sb_tab_panel_no_side_margins: 	{"bg_color": theme_colors["base"]["dark"]},
-		panel_round_bg: 								{"bg_color": theme_colors["base"]["dark"]},
-		lv_popup_panel: 								{"bg_color": theme_colors["base"]["dark"], "border_color": theme_colors["base"]["col"]},
-		
-		# Dark accent
-		sb_line_edit_normal: {"bg_color": theme_colors["base"]["dark_accent"]},
-		
-		# Label settings
-		lv_content_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
-		# gl_logfile_button_lbl_settings: {"font_color": theme_colors["font"]["normal"]},
+	var contrast: 	float = settings.get("interface/theme/contrast")
+	var base_col: 	Color = settings.get("interface/theme/base_color")
+	var accent_col: Color = settings.get("interface/theme/accent_color")
+	var files := DirAccess.get_files_at(sb_path)
+	var sb: Array = []
+	var tags: Dictionary = {
+		"bgClr(base-2)": 		base_col.darkened(0.2),
+		"bgClr(base-1)": 		base_col.darkened(0.1),
+		"bgClr(base)":  		base_col,
+		"bgClr(base1)": 		base_col.lightened(0.1),
+		"bgClr(base2)": 		base_col.lightened(0.2),
+		"brdClr(base-2)": 	accent_col.darkened(0.2),
+		"brdClr(base-1)": 	accent_col.darkened(0.2),
+		"brdClr(base)": 		accent_col,
+		"brdClr(base1)":	 	accent_col.lightened(0.2),
+		"brdClr(base2)": 		accent_col.lightened(0.2),
+		"contrast_value": 	contrast
 	}
-	_apply_resource_properties(color_map)
-	
 
-	for line in [sett_base_dir_line, sett_log_header_line, sett_entry_format_line]:
-		line.add_theme_color_override("font_color", theme_colors["font"]["normal"])
-
-	for cont in [general_fold_cont, limit_fold_cont, sett_id_fold_cont, sett_id_font_sett_cont, help_setup, help_sessions, help_categories, help_messages, help_concurrencies, help_functions, help_hotkeys, help_file_limits, help_formatting]:
-		cont.add_theme_color_override("font_color", 						theme_colors["font"]["normal"] 		if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["base"]["col"])
-		cont.add_theme_color_override("hover_font_color", 			theme_colors["font"]["hover"] 		if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["base"]["col"])
-		cont.add_theme_color_override("collapsed_font_color", 	theme_colors["font"]["fold_normal"] 											if theme_colors["base"]["light_accent"].v 				< 0.7 else theme_colors["base"]["col"]) 
-
-	_apply_option_button_font_colors()
-
-
-func _apply_accent_theme_colors() -> void:
-
-	# Color.get_luminance() can be used to determine if light or dark theme should be used. If returning >0.5 is light 
-	# See also Color.lightened() and darkened() to get hover/pressed colors
-
-	var color_map := {
-		# Mixed base/accent elements
-		panel_round_base_border_accent: {"border_color": theme_colors["accent"]["col"]},
-		sb_btn_toggled_on: 							{"border_color": theme_colors["accent"]["col"]},
-
-		# Accent color elements
-		panel_round_accent: 						{"bg_color": theme_colors["accent"]["col"]},
-		panel_top_round_accent: 				{"bg_color": theme_colors["accent"]["col"]},
-		sb_tab_hover: 									{"bg_color": theme_colors["accent"]["light"]},
-		sb_tab_selected: 								{"bg_color": theme_colors["accent"]["dark"]},
-
-		# Accent muted variants
-		panel_round_accent_muted: 			{"bg_color": theme_colors["accent"]["dark_accent"]},
-		panel_top_round_accent_muted: 	{"bg_color": theme_colors["accent"]["dark_accent"]},
-		sb_btn_apply: 									{"bg_color": theme_colors["accent"]["dark_accent"]},
-	}
-	_apply_resource_properties(color_map)
-	_apply_option_button_font_colors()
-
-
-func _apply_resource_properties(color_map: Dictionary) -> void:
-	for resource: Resource in color_map:
-		var properties: Dictionary = color_map[resource]
-		for prop_name: String in properties:
-			if resource == null: continue
-			resource[prop_name] = properties[prop_name]
-
-
-func _apply_option_button_font_colors() -> void:
-
-	for btn in [sett_error_rep_btn, sett_limit_method_btn, sett_entry_count_action_btn,	sett_session_timer_action_btn,	sett_id_align_opt_btn]:
-		btn.add_theme_color_override("font_color", 								theme_colors["font"]["normal"] 	if theme_colors["font"]["interact_normal"].v 				< 0.7 else theme_colors["accent"]["col"])
-		btn.add_theme_color_override("font_pressed_color", 				theme_colors["font"]["hover"] 	if theme_colors["font"]["interact_hover"].v 				< 0.7 else theme_colors["accent"]["col"])
-		btn.add_theme_color_override("font_hover_color", 					Color.WHITE 										if theme_colors["font"]["interact_pressed"].v 			< 0.7 else theme_colors["accent"]["col"])
-		btn.add_theme_color_override("font_hover_pressed_color", 	Color.WHITE											if theme_colors["font"]["interact_hover_pressed"].v < 0.7 else theme_colors["accent"]["col"])
+	for i in range(files.size()):
+		sb.append(ResourceLoader.load(str(sb_path + files[i])))
+		
+	for i in range(files.size()):
+		# print(sb)
+		for key in tags.keys():
+			if files[i].contains("bgClr") and sb[i] is not StyleBoxEmpty and files[i].contains(key):
+				sb[i].bg_color = tags[key]
+			elif files[i].contains("brdClr") and sb[i] is not StyleBoxEmpty and files[i].contains(key) and sb[i] is not StyleBoxEmpty:
+				sb[i].border_color = tags[key]
 
 #endregion

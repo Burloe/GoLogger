@@ -422,13 +422,13 @@ func _reconcile_log_files(target_files: Array, category_name: String) -> void:
 						if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
 								colorcode = _get_logfile_color(used_cols)
 								used_cols.append(colorcode)
-						lf.add_theme_color_override("font_color", colorcode)
-						lf.add_theme_color_override("font_hover_color", colorcode.lightened(0.2))
-						lf.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
-				else:
-						lf.add_theme_color_override("font_color", theme_colors["font"]["normal"])
-						lf.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
-						lf.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"])
+						# lf.add_theme_color_override("font_color", colorcode)
+						# lf.add_theme_color_override("font_hover_color", colorcode.lightened(0.2))
+						# lf.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
+				# else:
+						# lf.add_theme_color_override("font_color", theme_colors["font"]["normal"])
+						# lf.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
+						# lf.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"])
 
 				updated_log_files.append(lf)
 				prev_file = file_name

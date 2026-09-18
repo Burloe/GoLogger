@@ -1,12 +1,11 @@
 [gd_scene format=3 uid="uid://dhpqc8gwb77v0"]
 
-[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_panel.tres" id="1_7pyyx"]
+[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/ntheme/popup_panel.tres" id="1_7pyyx"]
 [ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gdlogger/scripts/log_popup.gd" id="2_umimx"]
-[ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gdlogger/resources/theme/panel_rounded_base_col.tres" id="3_rsf33"]
+[ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/ntheme/round(4444)_cmarg(8484)_bgClr(base).tres" id="3_p4n3b"]
+[ext_resource type="StyleBox" uid="uid://bkwqg1yaw842f" path="res://addons/gdlogger/resources/ntheme/blankbtns-empty_cmarg(8484).tres" id="4_bte71"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gdlogger/file_content_label_settings.tres" id="4_umimx"]
 [ext_resource type="Texture2D" uid="uid://b413grm7tl0m6" path="res://addons/gdlogger/resources/icons/resize.svg" id="5_umimx"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3em2g"]
 
 [sub_resource type="DPITexture" id="DPITexture_8r8ny"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
@@ -30,8 +29,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 13.0
 offset_top = 13.0
-offset_right = 487.0
-offset_bottom = 737.0
+offset_right = -13.0
+offset_bottom = -13.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
@@ -45,7 +44,7 @@ theme_override_constants/separation = 4
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("3_rsf33")
+theme_override_styles/panel = ExtResource("3_p4n3b")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TopBar" unique_id=448456129]
 layout_mode = 1
@@ -75,9 +74,10 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Copy log contents to clipboard."
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
+theme_override_styles/normal = ExtResource("4_bte71")
+theme_override_styles/pressed = ExtResource("4_bte71")
+theme_override_styles/hover = ExtResource("4_bte71")
+theme_override_styles/hover_pressed = ExtResource("4_bte71")
 icon = SubResource("DPITexture_8r8ny")
 icon_alignment = 1
 
@@ -85,9 +85,10 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
+theme_override_styles/normal = ExtResource("4_bte71")
+theme_override_styles/pressed = ExtResource("4_bte71")
+theme_override_styles/hover = ExtResource("4_bte71")
+theme_override_styles/hover_pressed = ExtResource("4_bte71")
 toggle_mode = true
 icon = SubResource("DPITexture_8r8ny")
 icon_alignment = 1
@@ -96,9 +97,10 @@ icon_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
+theme_override_styles/normal = ExtResource("4_bte71")
+theme_override_styles/pressed = ExtResource("4_bte71")
+theme_override_styles/hover = ExtResource("4_bte71")
+theme_override_styles/hover_pressed = ExtResource("4_bte71")
 icon = SubResource("DPITexture_8r8ny")
 icon_alignment = 1
 
@@ -115,7 +117,7 @@ visible = false
 custom_minimum_size = Vector2(256, 192)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("3_rsf33")
+theme_override_styles/panel = ExtResource("3_p4n3b")
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/VSplitContainer/LblSettingsPanel" unique_id=1876103891]
 layout_mode = 1
