@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dhpqc8gwb77v0"]
 
-[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_logfile_panel.tres" id="1_7pyyx"]
+[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_panel.tres" id="1_7pyyx"]
 [ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gdlogger/scripts/log_popup.gd" id="2_umimx"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gdlogger/resources/theme/panel_rounded_base_col.tres" id="3_rsf33"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gdlogger/file_content_label_settings.tres" id="4_umimx"]
@@ -8,7 +8,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3em2g"]
 
-[sub_resource type="DPITexture" id="DPITexture_rsf33"]
+[sub_resource type="DPITexture" id="DPITexture_8r8ny"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -30,8 +30,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 13.0
 offset_top = 13.0
-offset_right = -13.0
-offset_bottom = -13.0
+offset_right = 487.0
+offset_bottom = 737.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
@@ -78,7 +78,7 @@ tooltip_text = "Copy log contents to clipboard."
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
-icon = SubResource("DPITexture_rsf33")
+icon = SubResource("DPITexture_8r8ny")
 icon_alignment = 1
 
 [node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=500386683]
@@ -89,7 +89,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
 toggle_mode = true
-icon = SubResource("DPITexture_rsf33")
+icon = SubResource("DPITexture_8r8ny")
 icon_alignment = 1
 
 [node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=1687159835]
@@ -99,7 +99,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_3em2g")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_3em2g")
-icon = SubResource("DPITexture_rsf33")
+icon = SubResource("DPITexture_8r8ny")
 icon_alignment = 1
 
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VBoxContainer" unique_id=2113302947]
@@ -111,6 +111,7 @@ split_offset = -112
 
 [node name="LblSettingsPanel" type="Panel" parent="MarginContainer/VBoxContainer/VSplitContainer" unique_id=1350539167]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(256, 192)
 layout_mode = 2
 size_flags_vertical = 3

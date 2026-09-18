@@ -32,7 +32,6 @@ var content: String = "":
 
 func _ready() -> void:
 	assign_icons()
-	
 	about_to_popup.connect(_on_about_to_popup)
 	resize_handle.gui_input.connect(_on_resize_handle_gui_input)
 	copy_btn.button_up.connect(
@@ -108,5 +107,3 @@ func _on_resize_handle_gui_input(event: InputEvent) -> void:
 		size = new_size
 
 
-func _on_editor_settings_changed() -> void:
-	pass

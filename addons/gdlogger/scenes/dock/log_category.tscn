@@ -3,11 +3,11 @@
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gdlogger/resources/theme/panel_rounded_base_col.tres" id="1_dn16j"]
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/gdlogger/scripts/dock/log_category.gd" id="2_t2282"]
 [ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gdlogger/data.tres" id="3_x8jw8"]
-[ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gdlogger/resources/theme/btn_normal.tres" id="3_xjf83"]
+[ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gdlogger/resources/theme/btn_normal_na.tres" id="3_xjf83"]
 [ext_resource type="StyleBox" uid="uid://diklblkplkogy" path="res://addons/gdlogger/resources/theme/log_category_selected.tres" id="5_3iv4e"]
 [ext_resource type="StyleBox" uid="uid://dqfhm2ywaj4dr" path="res://addons/gdlogger/resources/theme/panel_rounded_bg.tres" id="6_3iv4e"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gdlogger/resources/theme/line_edit_normal.tres" id="6_wk57j"]
-[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_logfile_panel.tres" id="7_wk57j"]
+[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_panel.tres" id="7_wk57j"]
 [ext_resource type="StyleBox" uid="uid://dtp30ny2jqw5m" path="res://addons/gdlogger/resources/theme/panel_rounded_warning1.tres" id="8_wk57j"]
 [ext_resource type="StyleBox" uid="uid://bbmpmyxa557cb" path="res://addons/gdlogger/resources/theme/panel_rounded_warning0.tres" id="9_legvf"]
 

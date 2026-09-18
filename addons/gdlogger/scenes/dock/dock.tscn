@@ -10,13 +10,13 @@
 [ext_resource type="Texture2D" uid="uid://bch3ujgyd4vth" path="res://gdl_editor_icon.svg" id="9_d5ffo"]
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/gdlogger/scripts/dock/dock_logs.gd" id="10_kapcw"]
 [ext_resource type="StyleBox" uid="uid://cywnobmluy31i" path="res://addons/gdlogger/resources/theme/panel_rounded_base_col.tres" id="11_5jaku"]
-[ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gdlogger/resources/theme/btn_normal.tres" id="12_7cref"]
+[ext_resource type="StyleBox" uid="uid://di36bptu4b3n" path="res://addons/gdlogger/resources/theme/btn_normal_na.tres" id="12_7cref"]
 [ext_resource type="Texture2D" uid="uid://b40vq6n2r4x8m" path="res://addons/gdlogger/resources/icons/Relead.svg" id="12_pl6xe"]
 [ext_resource type="Texture2D" uid="uid://l2nybxno72cb" path="res://addons/gdlogger/resources/icons/ColorCode.png" id="14_lnu3o"]
 [ext_resource type="Texture2D" uid="uid://dvjgbc6hibv5m" path="res://addons/gdlogger/resources/icons/SortNew.svg" id="15_equok"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gdlogger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/gdlogger/resources/theme/panel_top_rounded_base_col.tres" id="21_vkni8"]
-[ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/gdlogger/resources/theme/foldable_container_panel.tres" id="22_apa57"]
+[ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/gdlogger/resources/theme/foldable_container_panel(bg-base).tres" id="22_apa57"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gdlogger/resources/id_example_panel_tex.png" id="23_qrqlu"]
 [ext_resource type="PackedScene" uid="uid://dhpqc8gwb77v0" path="res://addons/gdlogger/scenes/logfile_popup.tscn" id="24_ffv0r"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/gdlogger/id_overlay_lbl_settings.tres" id="24_wold0"]
@@ -121,7 +121,6 @@ font_color = Color(1, 1, 1, 0.352941)
 
 [node name="EditorDock" type="EditorDock" unique_id=1366196318]
 custom_minimum_size = Vector2(0, 312)
-anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_bottom = -768.0
@@ -155,7 +154,7 @@ theme_override_styles/tab_unselected = ExtResource("3_ctrbv")
 theme_override_styles/tab_hovered = ExtResource("4_34fc4")
 theme_override_styles/tab_selected = ExtResource("5_51fa0")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 1
+current_tab = 0
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("9_d5ffo")
@@ -166,13 +165,13 @@ tab_3/title = "Help"
 metadata/_edit_horizontal_guides_ = [129.0, 137.0]
 
 [node name="IconTabIGNORE" type="Control" parent="DockTabContainer" unique_id=1209850644]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 metadata/_tab_name = " "
 
 [node name="LogsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1085194574]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
