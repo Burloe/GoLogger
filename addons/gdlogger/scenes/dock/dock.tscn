@@ -19,7 +19,6 @@
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gdlogger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="StyleBox" uid="uid://cqnilt2rk14bi" path="res://addons/gdlogger/resources/theme/panel_top_rounded_base_col.tres" id="21_vkni8"]
 [ext_resource type="StyleBox" uid="uid://bkl7j8mna8rwb" path="res://addons/gdlogger/resources/theme/foldable_container_panel.tres" id="22_apa57"]
-[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_logfile_panel.tres" id="23_n5dsd"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gdlogger/resources/id_example_panel_tex.png" id="23_qrqlu"]
 [ext_resource type="PackedScene" uid="uid://dhpqc8gwb77v0" path="res://addons/gdlogger/scenes/logfile_popup.tscn" id="24_ffv0r"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/gdlogger/id_overlay_lbl_settings.tres" id="24_wold0"]
@@ -140,6 +139,7 @@ default_slot = 8
 available_layouts = 7
 script = ExtResource("6_0swix")
 data = ExtResource("8_equok")
+metadata/_edit_vertical_guides_ = [64.0]
 
 [node name="DockTabContainer" type="TabContainer" parent="." unique_id=1764928138]
 unique_name_in_owner = true
@@ -289,6 +289,17 @@ expand_icon = true
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="RENABLEButton1" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1733649966]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+custom_maximum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+icon = SubResource("DPITexture_lnu3o")
+icon_alignment = 1
+expand_icon = true
+
 [node name="LogSettingsButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=602914294]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
@@ -304,18 +315,6 @@ theme_override_styles/hover = ExtResource("12_7cref")
 theme_override_styles/hover_pressed = ExtResource("12_7cref")
 theme_override_styles/disabled = ExtResource("12_7cref")
 icon = ExtResource("14_1j2f0")
-icon_alignment = 1
-expand_icon = true
-
-[node name="RENABLEButton1" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1733649966]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(8, 8)
-custom_maximum_size = Vector2(8, 8)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-icon = SubResource("DPITexture_lnu3o")
 icon_alignment = 1
 expand_icon = true
 
@@ -1939,17 +1938,20 @@ visible = false
 [node name="LogsSettingsPanelPopup" type="PopupPanel" parent="DockTabContainer" unique_id=1420748330]
 unique_name_in_owner = true
 oversampling_override = 1.0
-size = Vector2i(130, 58)
+size = Vector2i(120, 48)
 visible = true
-theme_override_styles/panel = ExtResource("23_n5dsd")
+min_size = Vector2i(120, 48)
+max_size = Vector2i(120, 48)
+theme_override_styles/panel = ExtResource("11_5jaku")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/LogsSettingsPanelPopup" unique_id=1931820345]
-offset_left = 13.0
-offset_top = 13.0
-offset_right = 117.0
-offset_bottom = 45.0
+[node name="LogSettingsContentHBox" type="HBoxContainer" parent="DockTabContainer/LogsSettingsPanelPopup" unique_id=1931820345]
+unique_name_in_owner = true
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 112.0
+offset_bottom = 40.0
 
-[node name="LBOpenWOSButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/HBoxContainer" unique_id=941928065]
+[node name="LBOpenWOSButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentHBox" unique_id=941928065]
 unique_name_in_owner = true
 z_index = 5
 custom_minimum_size = Vector2(32, 32)
@@ -1973,7 +1975,7 @@ icon = SubResource("DPITexture_lnu3o")
 clip_text = true
 icon_alignment = 1
 
-[node name="ColorCodeButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/HBoxContainer" unique_id=439533416]
+[node name="ColorCodeButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentHBox" unique_id=439533416]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)
@@ -2007,7 +2009,7 @@ icon = ExtResource("14_lnu3o")
 icon_alignment = 1
 expand_icon = true
 
-[node name="LBSortModeButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/HBoxContainer" unique_id=1985609884]
+[node name="LBSortModeButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentHBox" unique_id=1985609884]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)

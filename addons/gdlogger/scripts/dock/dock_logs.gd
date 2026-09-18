@@ -18,6 +18,7 @@ signal selected_category_updated(new_selected: String)
 
 @onready var log_settings_btn: Button = %LogSettingsButton
 @onready var log_settings_popup: PopupPanel = %LogsSettingsPanelPopup
+@onready var log_settings_content: HBoxContainer = %LogSettingsContentHBox
 @onready var open_w_os_btn: Button = %LBOpenWOSButton
 @onready var colorcode_btn: Button = %ColorCodeButton
 @onready var sort_mode_btn: Button = %LBSortModeButton
@@ -105,6 +106,15 @@ enum SortModes {
 }
 
 
+func _on_log_settings_button_up() -> void:
+	log_settings_popup.visible = !log_settings_popup.visible
+	log_settings_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE
+	log_settings_popup.position = Vector2i(log_settings_btn.get_screen_position() + Vector2(48, -8))
+
+	if log_settings_popup.visible:
+		log_settings_popup.popup()
+
+
 
 func _ready() -> void:
 	_connect_unique(add_category_btn.button_up, _add_category) 
@@ -115,14 +125,7 @@ func _ready() -> void:
 	reload_btn.button_up.connect(load_log_files)
 	polling_timer.timeout.connect(load_log_files)
 
-	log_settings_btn.button_up.connect(
-		func() -> void:
-			log_settings_popup.visible = !log_settings_btn.visible
-			if log_settings_btn.visible:
-				log_settings_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE 
-				log_settings_popup.position = get_screen_position() + get_screen_transform().basis_xform(get_local_mouse_position())
-				log_settings_popup.popup()
-	)
+	log_settings_btn.button_up.connect(_on_log_settings_button_up)
 	open_w_os_btn.button_up.connect(func() -> void: open_log_with_os = !open_log_with_os)
 	colorcode_btn.button_up.connect(
 		func() -> void: 
