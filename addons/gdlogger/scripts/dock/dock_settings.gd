@@ -29,9 +29,10 @@ signal colorcode_changed ## Emitted to dock_logs.gd to colod code the log files.
 @onready var entry_format_warning: Panel = %EntryFormatWarning
 @onready var entry_format_container: HBoxContainer = %EntryFormatHBox
 
-@onready var autostart_btn: CheckBox = %AutostartCheckBox
-@onready var utc_btn: CheckBox = %UTCCheckBox
-@onready var colorcode_btn: Button = %ColorCodeButton
+@onready var autostart_btn: CheckButton = %AutostartCheckButton
+@onready var utc_btn: CheckButton = %UTCCheckButton
+@onready var colorcode_btn: CheckButton = %LGColorCodeCheckButton
+@onready var auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
 
 @onready var limit_method_btn: OptionButton = %LimitMethodOptButton
 @onready var limit_method_lbl: Label = %LimitMethodLabel
@@ -52,11 +53,7 @@ var session_duration_spinbox_line: LineEdit
 var file_count_spinbox_line: LineEdit
 @onready var file_count_spinbox: SpinBox = %FileCountSpinBox
 @onready var file_count_lbl: Label = %FileCountLabel
-@onready var file_count_container: HBoxContainer = %FileCountHBox 
-
-@onready var error_rep_btn: OptionButton = %ErrorRepOptButton
-@onready var error_rep_lbl: Label = %ErrorRepLabel
-@onready var error_rep_container: HBoxContainer = %ErrorRepHBox
+@onready var file_count_container: HBoxContainer = %FileCountHBox
 
 @onready var plugin_version_sett_lbl: Label = %PluginVersionLabel
 
@@ -65,9 +62,9 @@ var file_count_spinbox_line: LineEdit
 @onready var id_align_lbl: Label = %IDAlignLabel
 @onready var id_align_opt_btn: OptionButton = %IDAlignOptButton
 
-@onready var id_toggle_btn: CheckBox = %IDToggleShowCheckBox
-@onready var id_startup_btn: CheckBox = %IDStartupCheckBox
-@onready var id_print_btn: CheckBox = %IDPrintCheckBox 
+@onready var id_toggle_btn: CheckButton = %IDToggleShowCheckButton
+@onready var id_startup_btn: CheckButton = %IDStartupCheckButton
+@onready var id_print_btn: CheckButton = %IDPrintCheckButton
 
 @onready var id_font_sett_cont: FoldableContainer = %IDFontFoldableContainer
 var id_inspector: EditorInspector
@@ -76,7 +73,6 @@ var id_inspector: EditorInspector
 var inspector: EditorInspector
 
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
-@onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
 @export var data: GLData = null
@@ -125,12 +121,6 @@ enum SessionTimerAction {
 	STOP
 }
 
-enum ErrorReportLevel {
-	WARNINGS_ERRORS,
-	ERRORS,
-	NONE
-}
-
 
 
 func _ready() -> void:
@@ -158,7 +148,6 @@ func _ready() -> void:
 		entry_format_revert_btn,
 		autostart_btn,
 		utc_btn,
-		colorcode_btn,
 		id_print_btn,
 		id_toggle_btn,
 		id_align_opt_btn,
@@ -171,14 +160,13 @@ func _ready() -> void:
 		entry_count_spinbox,
 		entry_count_spinbox_line,
 		session_duration_spinbox,
-		session_duration_spinbox_line,
-		error_rep_btn,
+		session_duration_spinbox_line
 	]
 
 
 	for node in btn_array:
 		_connect_control_signal(node)
-	_bind_settings_hover_groups()
+	# _bind_settings_hover_groups()
 
 
 
@@ -201,7 +189,6 @@ func init_visibility() -> void:
 	
 	var fold_conts: Array[FoldableContainer] = [
 		general_fold_cont,
-		limit_fold_cont,
 		id_fold_cont,
 		dir_fold_cont,
 		hotkey_container
@@ -257,7 +244,7 @@ func _connect_spinbox_line_submitted() -> void:
 func _connect_control_signal(node: Control) -> void:
 	if node is Button:
 		_connect_unique(node.button_up, _on_button_button_up.bind(node))
-	if node is CheckBox:
+	if node is CheckBox or node is CheckButton:
 		_connect_unique(node.toggled, _on_checkbox_toggled.bind(node))
 	elif node is OptionButton:
 		_connect_unique(node.item_selected, _on_optbtn_item_selected.bind(node))
@@ -270,96 +257,6 @@ func _connect_control_signal(node: Control) -> void:
 
 
 
-func _bind_settings_hover_groups() -> void:
-	var _groups = [
-		[
-			base_dir_container,
-			base_dir_line,
-			base_dir_lbl
-		],
-		[
-			log_header_container,
-			log_header_line,
-			log_header_lbl
-		],
-		[
-			entry_format_container,
-			entry_format_line,
-			entry_format_lbl
-		],
-		[
-			error_rep_container,
-			error_rep_btn,
-			error_rep_lbl
-		],
-		[
-			file_count_container,
-			file_count_spinbox,
-			file_count_lbl
-		],
-		[
-			limit_method_container,
-			limit_method_btn,
-			limit_method_lbl
-		],
-		[
-			entry_count_action_container, 
-			entry_count_action_btn, 
-			entry_count_spinbox,
-			entry_count_action_lbl
-		],
-		[
-			session_timer_action_container, 
-			session_timer_action_btn, 
-			session_duration_spinbox,
-			session_timer_action_lbl
-		],
-		[
-			id_align_container,
-			id_align_opt_btn,
-			id_align_lbl
-		]
-	]
-
-	for group in _groups:
-		for ctrl in group:
-			if ctrl is Label: continue
-
-			_connect_unique(ctrl.mouse_entered, _on_setting_hover.bind(group, true))
-			_connect_unique(ctrl.mouse_exited, _on_setting_hover.bind(group, false))
-
-
-
-func _assign_settings_controls() -> void:
-	var control_map := {
-		"base_directory": base_dir_line,
-		"log_header_format": log_header_line,
-		"entry_format": entry_format_line,
-		"autostart_session": autostart_btn,
-		"use_utc": utc_btn,
-		"colorcode_dates": colorcode_btn,
-		"id_print": id_print_btn,
-		"id_toggle": id_toggle_btn,
-		"id_startup_state": id_startup_btn,
-		"id_align": id_align_opt_btn, 
-		"limit_method": limit_method_btn,
-		"entry_count_action": entry_count_action_btn,
-		"session_timer_action": session_timer_action_btn,
-		"file_cap": file_count_spinbox,
-		"entry_cap": entry_count_spinbox,
-		"session_duration": session_duration_spinbox,
-		"error_reporting": error_rep_btn,
-	}
-
-	for key in control_map.keys():
-		if settings_dict.has(key):
-			settings_dict[key]["control"] = control_map[key]
-
-
-
-
-
-
 #region Local Functions
 
 func _apply_new_base_directory() -> bool: 
@@ -367,8 +264,7 @@ func _apply_new_base_directory() -> bool:
 	var new_dir = base_dir_line.text.strip_edges()
  
 	if new_dir == "":
-		if data.error_reporting != ErrorReportLevel.NONE:
-			push_warning("GDLogger: Base directory cannot be empty. Reverting to previous path[", old_dir, "].")
+		push_warning("GDLogger: Base directory cannot be empty. Reverting to previous path[", old_dir, "].")
 		base_dir_line.text = old_dir
 		return false
 
@@ -387,8 +283,7 @@ func _apply_new_base_directory() -> bool:
 
 		res = DirAccess.make_dir_absolute(create_path)
 		if res != OK:
-			if data.error_reporting != ErrorReportLevel.NONE:
-				push_warning("GDLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
+			push_warning("GDLogger: Failed to create directory using path[", new_dir, "]. Reverting back to previous directory path[", old_dir, "].")
 			base_dir_line.text = old_dir 
 			return false
 
@@ -444,36 +339,36 @@ func _is_entry_format_valid(format: String) -> bool:
 
 #region Signal receivers
 
-func _on_setting_hover(group: Array, is_hovered: bool) -> void:
-	request_theme_colors.emit()
-	var c_norm:  Color = theme_colors["font"]["normal"] 
-	var c_hover: Color = theme_colors["font"]["hover"] 
+# func _on_setting_hover(group: Array, is_hovered: bool) -> void:
+# 	request_theme_colors.emit()
+# 	var c_norm:  Color = theme_colors["font"]["normal"] 
+# 	var c_hover: Color = theme_colors["font"]["hover"] 
 
-	for ctrl in group:
-		if ctrl is HBoxContainer:
-			continue
+# 	for ctrl in group:
+# 		if ctrl is HBoxContainer:
+# 			continue
 
-		if ctrl is LineEdit:
-			var key: String = ""
-			match ctrl:
-				base_dir_line: key = "base_dir"
-				log_header_line: key = "log_header"
-				entry_format_line: key = "entry_format"
+# 		if ctrl is LineEdit:
+# 			var key: String = ""
+# 			match ctrl:
+# 				base_dir_line: key = "base_dir"
+# 				log_header_line: key = "log_header"
+# 				entry_format_line: key = "entry_format"
 
-			line_edit_states[key]["mouse"] = is_hovered
-			if not line_edit_states[key]["edit"]:
-				ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
+# 			line_edit_states[key]["mouse"] = is_hovered
+# 			if not line_edit_states[key]["edit"]:
+# 				ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
 
-		if ctrl is OptionButton:
-			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-			continue
+# 		if ctrl is OptionButton:
+# 			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
+# 			continue
 
-		if ctrl is SpinBox:
-			ctrl.get_line_edit().add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-			continue
+# 		if ctrl is SpinBox:
+# 			ctrl.get_line_edit().add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
+# 			continue
 		
-		if ctrl is Label:
-			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
+# 		if ctrl is Label:
+# 			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
 
 
 
@@ -609,9 +504,6 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 		session_timer_action_btn:
 			data.session_timer_action = index
 
-		error_rep_btn:
-			data.error_reporting = index
-
 		id_align_opt_btn:
 			data.id_align = index
 
@@ -626,10 +518,6 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 
 		utc_btn:
 			data.utc = toggled_on
-		
-		colorcode_btn:
-			data.colorcode_dates = toggled_on
-			colorcode_changed.emit()
 
 		id_print_btn:
 			data.id_print = toggled_on
@@ -647,8 +535,6 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
 
 func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:
 	request_theme_colors.emit()
-	var c_norm:  Color = theme_colors["font"]["normal"] 
-	var c_hover: Color = theme_colors["font"]["hover"] 
 	var key: String
 	
 	match node:
@@ -663,8 +549,6 @@ func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:
 			key = "entry_format"
 	
 	line_edit_states[key]["edit"] = toggled_on
-	if not line_edit_states[key]["mouse"]:
-		node.add_theme_color_override("font_color", c_hover if toggled_on else c_norm) 
 
 
 

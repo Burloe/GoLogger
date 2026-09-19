@@ -29,10 +29,11 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var category_container: GridContainer = %CategoryGridContainer 
 @onready var lg_add_cat_btn: Button = %AddCategoryButton
 @onready var lg_open_dir_btn: Button = %LBOpenDirButton 
-@onready var lg_reload_btn: Button = %LBReloadButton
-@onready var lg_open_with_os_btn: Button = %LBOpenWOSButton
-@onready var lg_colorcode_btn: Button = %ColorCodeButton
-@onready var lg_sort_btn: Button = %LBSortModeButton
+@onready var lg_reload_btn: Button = %LGReloadButton
+@onready var lg_sort_btn: Button = %LGSortCheckButton
+@onready var lg_colorcode_btn: Button = %LGColorCodeCheckButton
+@onready var lg_open_with_os_btn: Button = %LGOpenLogsCheckButton
+@onready var lg_auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
 @onready var lg_settings_btn: Button = %LogSettingsButton
 @onready var lg_settings_popup: PopupPanel = %LogsSettingsPanelPopup
 @onready var lg_popup: PopupPanel = %LogFilePanelPopup
@@ -63,8 +64,8 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var sett_entry_format_warning: Panel = %EntryFormatWarning
 @onready var sett_entry_format_container: HBoxContainer = %EntryFormatHBox
 
-@onready var sett_autostart_btn: CheckBox = %AutostartCheckBox
-@onready var sett_utc_btn: CheckBox = %UTCCheckBox
+@onready var sett_autostart_btn: CheckButton = %AutostartCheckButton
+@onready var sett_utc_btn: CheckButton = %UTCCheckButton
 
 @onready var sett_limit_method_btn: OptionButton = %LimitMethodOptButton
 @onready var sett_limit_method_lbl: Label = %LimitMethodLabel
@@ -85,20 +86,16 @@ var sett_session_duration_spinbox_line: LineEdit
 var sett_file_count_spinbox_line: LineEdit
 @onready var sett_file_count_spinbox: SpinBox = %FileCountSpinBox
 @onready var sett_file_count_lbl: Label = %FileCountLabel
-@onready var sett_file_count_container: HBoxContainer = %FileCountHBox 
-
-@onready var sett_error_rep_btn: OptionButton = %ErrorRepOptButton
-@onready var sett_error_rep_lbl: Label = %ErrorRepLabel
-@onready var sett_error_rep_container: HBoxContainer = %ErrorRepHBox
+@onready var sett_file_count_container: HBoxContainer = %FileCountHBox
 
 @onready var sett_id_fold_cont: FoldableContainer = %IDFoldableContainer
 @onready var sett_id_align_container: HBoxContainer = %IDAlignHBox
 @onready var sett_id_align_lbl: Label = %IDAlignLabel
 @onready var sett_id_align_opt_btn: OptionButton = %IDAlignOptButton
 
-@onready var sett_id_toggle_btn: CheckBox = %IDToggleShowCheckBox
-@onready var sett_id_startup_btn: CheckBox = %IDStartupCheckBox
-@onready var sett_id_print_btn: CheckBox = %IDPrintCheckBox 
+@onready var sett_id_toggle_btn: CheckButton = %IDToggleShowCheckButton
+@onready var sett_id_startup_btn: CheckButton = %IDStartupCheckButton
+@onready var sett_id_print_btn: CheckButton = %IDPrintCheckButton 
 
 @onready var sett_id_font_sett_cont: FoldableContainer = %IDFontFoldableContainer
 var sett_id_inspector: EditorInspector
@@ -108,9 +105,7 @@ var inspector: EditorInspector
 
 @onready var settings_version_lbl: Label = %SettingsVersionLabel
 
-# @onready var user_dir_btn: Button = %UserDirButton ## Opens "user://"
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
-@onready var limit_fold_cont: FoldableContainer = %LimitersFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
 # Help tab
@@ -131,13 +126,20 @@ var inspector: EditorInspector
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
-@onready var editor_base_col: Color = settings.get("interface/theme/base_color")
-@onready var editor_accent_col: Color = settings.get("interface/theme/accent_color")
-@onready var editor_contrast = settings.get("interface/theme/contrast")
+@onready var editor_base_col: Color = settings.get_setting("interface/theme/base_color")
+@onready var editor_accent_col: Color = settings.get_setting("interface/theme/accent_color")
+@onready var editor_contrast = settings.get_setting("interface/theme/contrast")
+@onready var editor_col_settings: Array = [
+	settings.get_setting("interface/theme/follow_system_theme"), 
+	settings.get_setting("interface(theme/color_preset)"), 
+	settings.get_setting("interface/theme/icon_and_font_color"),
+	settings.get_setting("interface/theme/base_color"),
+	settings.get_setting("interface/theme/accent_color")
+]
 
 var gdl_ico = preload("uid://bch3ujgyd4vth")
 
-var sb_path: String = "res://addons/gdlogger/resources/ntheme/"
+var sb_path: String = "res://addons/gdlogger/resources/theme/"
 
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
@@ -168,15 +170,11 @@ enum SessionTimerAction {
 	STOP
 }
 
-enum ErrorReportLevel {
-	WARNINGS_ERRORS,
-	ERRORS,
-	NONE
-}
 
 var category_scene = preload("uid://c3n416c5fajm5")
 var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
 var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
+var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast")
 var plugin_version: String =  "2.0":
 	set(value):
 		plugin_version = value
@@ -214,7 +212,6 @@ func _ready() -> void:
 
 	data = load(DATA_PATH)
 	docktab_container.set_tab_icon(0, gdl_ico)
-	print(docktab_container.get_tab_icon(0))
 	logs_tab.data = data 
 	logs_tab.is_active = true
 	logs_tab.data = data 
@@ -310,6 +307,10 @@ func _assign_settings_controls() -> void:
 	data.base_dir_ctrl = sett_base_dir_line
 	data.header_format_ctrl = sett_log_header_line
 	data.entry_format_ctrl = sett_entry_format_line
+	data.browser_sort_ctrl = lg_sort_btn 
+	data.color_code_ctrl = lg_colorcode_btn
+	data.open_logs_with_os_ctrl = lg_open_with_os_btn
+	data.auto_reload_ctrl = lg_auto_reload_btn
 	data.autostart_ctrl = sett_autostart_btn
 	data.utc_ctrl = sett_utc_btn
 	data.colorcode_dates_ctrl = lg_colorcode_btn
@@ -330,20 +331,16 @@ func _assign_settings_controls() -> void:
 	data.entry_cap_ctrl_line = sett_entry_count_spinbox.get_line_edit()
 	data.session_duration_ctrl = sett_session_duration_spinbox
 	data.session_duration_ctrl_line = sett_session_duration_spinbox.get_line_edit()
-	data.error_rep_ctrl = sett_error_rep_btn
-	data.browser_sort_ctrl = lg_sort_btn 
-	data.open_logs_with_os_ctrl = lg_open_with_os_btn
+	
 
 
 
 func _assign_editor_icons() -> void:
-	# lg_open_dir_btn.set_button_icon(get_theme_icon("Folder", "EditorIcons"))
-	lg_open_with_os_btn.set_button_icon(get_theme_icon("GuiUnchecked", "EditorIcons"))
 	lg_add_cat_btn.set_button_icon(get_theme_icon("Add", "EditorIcons"))
 
 	var _d: Dictionary = {
 		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
-		"Reload": [sett_reset_btn],
+		"Reload": [lg_reload_btn, sett_reset_btn],
 		"Folder": [lg_open_dir_btn, sett_open_dir_btn],
 		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
 		"GDScript": [lg_settings_btn],
@@ -451,22 +448,6 @@ func _open_directory() -> void:
 
 #region Signal receivers
 
-func _on_editor_settings_changed() -> void:
-	settings = EditorInterface.get_editor_settings()
-	var new_base: Color = settings.get_setting("interface/theme/base_color")
-	var new_accent: Color = settings.get_setting("interface/theme/accent_color")
-
-	var base_changed: bool = theme_col_base != new_base
-	var accent_changed: bool = theme_col_accent != new_accent
-	if not base_changed and not accent_changed:
-		return
-
-	theme_col_base = new_base
-	theme_col_accent = new_accent
-	_apply_theme_colors(base_changed, accent_changed)
-
-
-
 func _on_regenerate_button_up() -> void:
 	var _new := GLData.new()
 	var _err := ResourceSaver.save(_new, DATA_PATH)
@@ -476,60 +457,120 @@ func _on_regenerate_button_up() -> void:
 
 
 
+func _on_editor_settings_changed() -> void:
+	var col_settings: Array = [
+		settings.get_setting("interface/theme/follow_system_theme"), 
+		settings.get_setting("interface(theme/color_preset)"), 
+		settings.get_setting("interface/theme/icon_and_font_color"),
+		settings.get_setting("interface/theme/base_color"),
+		settings.get_setting("interface/theme/accent_color")
+	]
+	var new_base: Color = settings.get_setting("interface/theme/base_color")
+	var new_accent: Color = settings.get_setting("interface/theme/accent_color")
+	var new_contrast: float = settings.get_setting("interface/theme/contrast")
+
+	# for i in range(col_settings.size()):
+	# 	if col_settings[i] != editor_col_settings[i]:
+	# 		return
+
+	# var base_changed: bool = theme_col_base != new_base
+	# var accent_changed: bool = theme_col_accent != new_accent
+	# var contrast_changed: bool = theme_contrast != new_contrast
+	# if not base_changed and not accent_changed and not contrast_changed:
+	# 	return
+
+	theme_col_base = new_base
+	theme_col_accent = new_accent
+	theme_contrast = new_contrast
+	editor_col_settings = col_settings.duplicate()
+	_apply_theme_colors()
+
+
+
 func _get_theme_colors() -> Dictionary:
-	var contrast: 	float = settings.get("interface/theme/contrast")
-	var base_col: 	Color = settings.get("interface/theme/base_color")
-	var accent_col: Color = settings.get("interface/theme/accent_color")
+	var contrast: 	float = settings.get_setting("interface/theme/contrast")
+	var base_col: 	Color = settings.get_setting("interface/theme/base_color")
+	var accent_col: Color = settings.get_setting("interface/theme/accent_color")
 
 	# print("base_col: " base_col, "    setting base col: ", base_col)
 	var colors := {
-		"bgClr(base-2)": 		base_col.darkened(0.2),
-		"bgClr(base-1)": 		base_col.darkened(0.1),
+		"bgClr(base-2)": 		base_col.darkened(  contrast * 2),
+		"bgClr(base-1)": 		base_col.darkened(  contrast),
 		"bgClr(base)":  		base_col,
-		"bgClr(base1)": 		base_col.lightened(0.1),
-		"bgClr(base2)": 		base_col.lightened(0.2),
-		"brdClr(base-2)": 	accent_col.darkened(0.2),
-		"brdClr(base-1)": 	accent_col.darkened(0.2),
-		"brdClr(base)": 		accent_col,
-		"brdClr(base1)":	 	accent_col.lightened(0.2),
-		"brdClr(base2)": 		accent_col.lightened(0.2),
+		"bgClr(base+1)": 		base_col.lightened( contrast),
+		"bgClr(base+2)": 		base_col.lightened( contrast * 2),
+		"brdClr(base-2)": 	base_col.darkened(  contrast * 2),
+		"brdClr(base-1)": 	base_col.darkened(  contrast * 2),
+		"brdClr(base)": 		base_col,
+		"brdClr(base+1)":	 	base_col.lightened( contrast * 2),
+		"brdClr(base+2)": 	base_col.lightened( contrast * 2),
+		"bgClr(acc-2)":			accent_col.darkened( contrast * 2),
+		"bgClr(acc-1)":			accent_col.darkened( contrast * 2),
+		"bgClr(acc)":				accent_col.darkened( contrast * 2),
+		"bgClr(acc+1)":			accent_col.lightened(contrast * 2),
+		"bgClr(acc+2)":			accent_col.lightened(contrast * 2),
+		"brdClr(acc-2)":		accent_col.darkened( contrast * 2),
+		"brdClr(acc-1)":		accent_col.darkened( contrast * 2),
+		"brdClr(acc)":			accent_col.darkened( contrast * 2),
+		"brdClr(acc+1)":		accent_col.lightened(contrast * 2),
+		"brdClr(acc+2)":		accent_col.lightened(contrast * 2),
+		"brdClr(red)":			Color("c64040"),
 		"contrast_value": 	contrast
 	}
-	logs_tab.theme_colors = colors
-	settings_tab.theme_colors = colors
 	return colors
 
 
 
-func _apply_theme_colors(apply_base: bool = true, apply_accent: bool = true) -> void:
-	var contrast: 	float = settings.get("interface/theme/contrast")
-	var base_col: 	Color = settings.get("interface/theme/base_color")
-	var accent_col: Color = settings.get("interface/theme/accent_color")
+func _apply_theme_colors() -> void:
+	# var col_settings: Array = [
+	# 	settings.get_setting("interface/theme/follow_system_theme"), 
+	# 	settings.get_setting("interface(theme/color_preset)"), 
+	# 	settings.get_setting("interface/theme/icon_and_font_color"),
+	# 	settings.get_setting("interface/theme/base_color"),
+	# 	settings.get_setting("interface/theme/accent_color")
+	# ]
+	var contrast: 	float = settings.get_setting("interface/theme/contrast")
+	var base_col: 	Color = settings.get_setting("interface/theme/base_color")
+	var accent_col: Color = settings.get_setting("interface/theme/accent_color")
+
 	var files := DirAccess.get_files_at(sb_path)
 	var sb: Array = []
 	var tags: Dictionary = {
-		"bgClr(base-2)": 		base_col.darkened(0.2),
-		"bgClr(base-1)": 		base_col.darkened(0.1),
+		"bgClr(base-2)": 		base_col.darkened(   contrast * 2),
+		"bgClr(base-1)": 		base_col.darkened(   contrast),
 		"bgClr(base)":  		base_col,
-		"bgClr(base1)": 		base_col.lightened(0.1),
-		"bgClr(base2)": 		base_col.lightened(0.2),
-		"brdClr(base-2)": 	accent_col.darkened(0.2),
-		"brdClr(base-1)": 	accent_col.darkened(0.2),
-		"brdClr(base)": 		accent_col,
-		"brdClr(base1)":	 	accent_col.lightened(0.2),
-		"brdClr(base2)": 		accent_col.lightened(0.2),
+		"bgClr(base+1)": 		base_col.lightened(  contrast),
+		"bgClr(base+2)": 		base_col.lightened(  contrast * 2),
+		"brdClr(base-2)": 	base_col.darkened(   contrast * 2),
+		"brdClr(base-1)": 	base_col.darkened(   contrast * 2),
+		"brdClr(base)": 		base_col,
+		"brdClr(base+1)":	 	base_col.lightened(  contrast * 2),
+		"brdClr(base+2)": 	base_col.lightened(  contrast * 2),
+		"bgClr(acc-2)":			accent_col.darkened( contrast * 2),
+		"bgClr(acc-1)":			accent_col.darkened( contrast * 2),
+		"bgClr(acc)":				accent_col,
+		"bgClr(acc+1)":			accent_col.lightened(contrast * 2),
+		"bgClr(acc+2)":			accent_col.lightened(contrast * 2),
+		"brdClr(acc-2)":		accent_col.darkened( contrast * 2),
+		"brdClr(acc-1)":		accent_col.darkened( contrast * 2),
+		"brdClr(acc)":			accent_col,
+		"brdClr(acc+1)":		accent_col.lightened(contrast * 2),
+		"brdClr(acc+2)":		accent_col.lightened(contrast * 2),
+		"brdClr(red)":			Color("c64040"),
 		"contrast_value": 	contrast
 	}
 
 	for i in range(files.size()):
-		sb.append(ResourceLoader.load(str(sb_path + files[i])))
-		
-	for i in range(files.size()):
-		# print(sb)
+		var rsrc := ResourceLoader.load(str(sb_path + files[i]))
 		for key in tags.keys():
-			if files[i].contains("bgClr") and sb[i] is not StyleBoxEmpty and files[i].contains(key):
-				sb[i].bg_color = tags[key]
-			elif files[i].contains("brdClr") and sb[i] is not StyleBoxEmpty and files[i].contains(key) and sb[i] is not StyleBoxEmpty:
-				sb[i].border_color = tags[key]
+			if key.begins_with("bgClr") and rsrc is not StyleBoxEmpty and files[i].contains(key):
+				rsrc.bg_color = tags[key]
+				# print("BGColor Identified: ", rsrc)
+			elif key.begins_with("brdClr") and rsrc is not StyleBoxEmpty and files[i].contains(key):
+				rsrc.border_color = tags[key]
+				print("BorderColor Identified: ", rsrc)
+	
+	logs_tab.theme_colors = tags
+	settings_tab.theme_colors = tags
 
 #endregion

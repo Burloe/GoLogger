@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://dhpqc8gwb77v0"]
 
-[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/ntheme/popup_panel.tres" id="1_7pyyx"]
+[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_panel_bgClr(base)_brdClr(base+1).tres" id="1_7pyyx"]
 [ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gdlogger/scripts/log_popup.gd" id="2_umimx"]
-[ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/ntheme/round(4444)_cmarg(8484)_bgClr(base).tres" id="3_p4n3b"]
-[ext_resource type="StyleBox" uid="uid://bkwqg1yaw842f" path="res://addons/gdlogger/resources/ntheme/blankbtns-empty_cmarg(8484).tres" id="4_bte71"]
+[ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(base).tres" id="3_p4n3b"]
+[ext_resource type="StyleBox" uid="uid://bkwqg1yaw842f" path="res://addons/gdlogger/resources/theme/blankbtns-empty_cmarg(8484).tres" id="4_bte71"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gdlogger/file_content_label_settings.tres" id="4_umimx"]
 [ext_resource type="Texture2D" uid="uid://b413grm7tl0m6" path="res://addons/gdlogger/resources/icons/resize.svg" id="5_umimx"]
 
-[sub_resource type="DPITexture" id="DPITexture_8r8ny"]
+[sub_resource type="DPITexture" id="DPITexture_ewgjr"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -78,7 +78,7 @@ theme_override_styles/normal = ExtResource("4_bte71")
 theme_override_styles/pressed = ExtResource("4_bte71")
 theme_override_styles/hover = ExtResource("4_bte71")
 theme_override_styles/hover_pressed = ExtResource("4_bte71")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_ewgjr")
 icon_alignment = 1
 
 [node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=500386683]
@@ -90,7 +90,7 @@ theme_override_styles/pressed = ExtResource("4_bte71")
 theme_override_styles/hover = ExtResource("4_bte71")
 theme_override_styles/hover_pressed = ExtResource("4_bte71")
 toggle_mode = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_ewgjr")
 icon_alignment = 1
 
 [node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=1687159835]
@@ -101,7 +101,7 @@ theme_override_styles/normal = ExtResource("4_bte71")
 theme_override_styles/pressed = ExtResource("4_bte71")
 theme_override_styles/hover = ExtResource("4_bte71")
 theme_override_styles/hover_pressed = ExtResource("4_bte71")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_ewgjr")
 icon_alignment = 1
 
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VBoxContainer" unique_id=2113302947]

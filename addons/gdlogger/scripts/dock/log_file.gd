@@ -8,10 +8,8 @@ class_name GLLogFile extends Button
 
 const DISPLAY_NAME_CHAR_LIMIT: int = 18
 
-var file_ico := 				preload("uid://baeavb2jo8lgw")
-var file_broken_ico := 	preload("uid://cntk5aesu05sa")
-var sb_selected := 			preload("uid://bcprdy8psyd0k")
-var sb_unselected := 		preload("uid://xy4uummjvhgu")
+var sb_selected := 			preload("uid://bo0ob3gd3g7a")
+var sb_unselected := 		preload("uid://cobusnqe7lb31")
 
 var selected: bool = false:
 	set(value):
@@ -72,8 +70,7 @@ func is_file_valid() -> bool:
 
 	if file_name.is_empty() or !file_name.ends_with(".log"):
 		is_valid = false
-	
-	assign_icon(is_valid)	
+		
 	disabled = !is_valid
 	return is_valid
 
@@ -102,11 +99,6 @@ func is_gl_name(file_name_to_check: String) -> bool:
 			return false
 
 	return true 
-
-
-
-func assign_icon(is_valid: bool) -> void:
-	icon = file_ico if is_valid else file_broken_ico
 
 
 

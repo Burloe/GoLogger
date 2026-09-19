@@ -385,7 +385,7 @@ func stop_session() -> void:
 
 
 
-static func get_error(error : int, object_type : String = "") -> String:
+static func get_error(error : int, object_type : String = "") -> String: #DELETE
 	match error:
 		1:  return str("<Error[1] ",  object_type, " Failed>")
 		2:  return str("<Error[2] ",  object_type, " Unavailable>")

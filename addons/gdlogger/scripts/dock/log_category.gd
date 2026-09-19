@@ -86,7 +86,7 @@ func _ready() -> void:
 	_on_editor_settings_changed() 
 	move_left_btn.set_button_icon(get_theme_icon("ArrowLeft", "EditorIcons"))
 	move_right_btn.set_button_icon(get_theme_icon("ArrowRight", "EditorIcons")) 
-	select_btn.set_button_icon(get_theme_icon("CodeFoldDownArrow", "EditorIcons"))
+	select_btn.set_button_icon(get_theme_icon("MoveDown", "EditorIcons"))
 	apply_btn.set_button_icon(get_theme_icon("ImportCheck", "EditorIcons"))
 	revert_btn.set_button_icon(get_theme_icon("Reload", "EditorIcons"))
 	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
@@ -170,7 +170,6 @@ func is_name_available(_name: String) -> bool:
 
 
 func apply_name(new_name: String) -> void:
-	print(new_name)
 	if !is_name_available(new_name) or new_name.is_empty():
 		line_edit.text = category_name
 		line_edit.unedit()

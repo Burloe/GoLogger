@@ -1,7 +1,7 @@
 @tool
 class_name GLData extends Resource
 
-# Categories Tab
+# Logs tab
 @export var categories: Array[GLCategoryData] = []:
 	set(value):
 		categories = value
@@ -10,16 +10,20 @@ class_name GLData extends Resource
 	set(value):
 		default_category = value
 		emit_changed()
-# Browser Tab
+
 @export_enum("New", "Old") var browser_sort: int = 0:
 	set(value):
 		browser_sort = value
+		emit_changed()
+@export var colorcode_dates: bool = false:
+	set(value):
+		colorcode_dates = value
 		emit_changed()
 @export var open_logs_with_os: bool = false:
 	set(value):
 		open_logs_with_os = value
 		emit_changed()
-
+@export var auto_reload: bool = true
 
 # Directories 6 Formats
 @export var base_dir: String = "user://gdlogger/":
@@ -44,14 +48,7 @@ class_name GLData extends Resource
 	set(value):
 		utc = value
 		emit_changed()
-@export var colorcode_dates: bool = false:
-	set(value):
-		colorcode_dates = value
-		emit_changed()
-@export_enum("Warnings & Errors", "Warnings only", "None") var error_reporting: int = 0:
-	set(value):
-		error_reporting = value
-		emit_changed()
+
 
 # Limits
 @export var file_cap: int = 10:
@@ -112,16 +109,21 @@ class_name GLData extends Resource
 			id_align = value
 			emit_changed()
 
-
 var base_dir_ctrl: LineEdit = null
 var header_format_ctrl: LineEdit = null
 var entry_format_ctrl: LineEdit = null
-var autostart_ctrl: CheckBox = null
-var utc_ctrl: CheckBox = null
-var colorcode_dates_ctrl: Button = null
-var id_print_ctrl: CheckBox = null
-var id_toggle_ctrl: CheckBox = null
-var id_startup_ctrl: CheckBox = null
+
+var browser_sort_ctrl: CheckButton = null
+var color_code_ctrl: CheckButton = null
+var open_logs_with_os_ctrl: Button = null
+var auto_reload_ctrl: CheckButton = null
+
+var autostart_ctrl: CheckButton = null
+var utc_ctrl: CheckButton = null
+var colorcode_dates_ctrl: CheckButton = null
+var id_print_ctrl: CheckButton = null
+var id_toggle_ctrl: CheckButton = null
+var id_startup_ctrl: CheckButton = null
 var id_align_ctrl: OptionButton = null
 var limit_method_ctrl: OptionButton = null
 var entry_count_container: HBoxContainer = null
@@ -136,9 +138,7 @@ var entry_cap_ctrl: SpinBox = null
 var entry_cap_ctrl_line: LineEdit = null
 var session_duration_ctrl: SpinBox = null
 var session_duration_ctrl_line: LineEdit = null
-var error_rep_ctrl: OptionButton = null
-var browser_sort_ctrl: Button = null
-var open_logs_with_os_ctrl: Button = null
+
 
 var list: Dictionary = {}
 
@@ -160,8 +160,6 @@ func validate_settings() -> bool:
 	if entry_count_action not in range(3):
 			faults += 1
 	if session_timer_action not in range(2):
-			faults += 1
-	if error_reporting not in range(3):
 			faults += 1
 	if browser_sort not in range(4):
 			faults += 1
@@ -195,7 +193,7 @@ func save() -> void:
 		if ctrl is Button and ctrl.toggle_mode:
 			list[key]["value"] = ctrl.button_pressed
 		
-		elif ctrl is CheckBox:
+		elif ctrl is CheckButton or ctrl is CheckBox:
 			list[key]["value"] = ctrl.button_pressed
 		
 		elif ctrl is SpinBox:
@@ -246,8 +244,6 @@ func reset_to_default() -> bool:
 				entry_count_action = def
 			"timer_action":
 				session_timer_action = def
-			"err_report_lv":
-				error_reporting = def
 			_:
 				set(key, def)
 
@@ -311,7 +307,10 @@ func update_list() -> void:
 	list = {
 	"base_dir": 						{"value": base_dir, 						"default": "user://gdlogger/", 		"ctrl": base_dir_ctrl},
 	"header_format": 				{"value": header_format, 				"default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", 		"ctrl": header_format_ctrl},
+	"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},
+	"open_logs_with_os":		{"value": open_logs_with_os,		"default": false,		"ctrl": open_logs_with_os_ctrl},
 	"entry_format": 				{"value": entry_format, 				"default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", 		"ctrl": entry_format_ctrl},
+	"auto_reload": 					{"value": auto_reload, 					"default": true, 		"ctrl": auto_reload_ctrl},
 	"autostart": 						{"value": autostart, 						"default": true, 		"ctrl": autostart_ctrl},
 	"utc": 									{"value": utc, 									"default": false, 	"ctrl": utc_ctrl},
 	"colorcode_dates":			{"value": colorcode_dates,			"default": false,		"ctrl": colorcode_dates_ctrl},
@@ -324,8 +323,5 @@ func update_list() -> void:
 	"timer_action": 				{"value": session_timer_action, "default": 0, 			"ctrl": session_timer_action_ctrl},
 	"file_cap": 						{"value": file_cap, 						"default": 10, 			"ctrl": file_cap_ctrl, "line": file_cap_ctrl_line},
 	"entry_cap": 						{"value": entry_cap, 						"default": 1000, 		"ctrl": entry_cap_ctrl, "line": entry_cap_ctrl_line},
-	"session_duration": 		{"value": session_duration, 		"default": 1200, 		"ctrl": session_duration_ctrl, "line": session_duration_ctrl_line},
-	"err_report_lv":	 			{"value": error_reporting, 			"default": 0, 			"ctrl": error_rep_ctrl},
-	"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},
-	"open_logs_with_os":		{"value": open_logs_with_os,		"default": false,		"ctrl": open_logs_with_os_ctrl}
+	"session_duration": 		{"value": session_duration, 		"default": 1200, 		"ctrl": session_duration_ctrl, "line": session_duration_ctrl_line}
 	}
