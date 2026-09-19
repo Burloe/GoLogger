@@ -9,6 +9,7 @@
 [ext_resource type="StyleBox" uid="uid://cobusnqe7lb31" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(acc).tres" id="8_lnu3o"]
 [ext_resource type="StyleBox" uid="uid://bkwqg1yaw842f" path="res://addons/gdlogger/resources/theme/blankbtns-empty_cmarg(8484).tres" id="9_1rd6x"]
 [ext_resource type="Texture2D" uid="uid://bch3ujgyd4vth" path="res://gdl_editor_icon.svg" id="9_d5ffo"]
+[ext_resource type="Texture2D" uid="uid://y5qqy0bpw6eg" path="res://gologger_icon_outline.svg" id="9_lnu3o"]
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/gdlogger/scripts/dock/dock_logs.gd" id="10_kapcw"]
 [ext_resource type="StyleBox" uid="uid://ud0qa0rr0y62" path="res://addons/gdlogger/resources/theme/round(4400)_cmarg(8888)_bgClr(base).tres" id="13_1rd6x"]
 [ext_resource type="StyleBox" uid="uid://2r3x0lnjbq0v" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8888)_bgClr(base).tres" id="14_g08q5"]
@@ -89,83 +90,6 @@ corner_detail = 5
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a5g7p"]
 content_margin_top = 8.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o07th"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q4v5k"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0)
-draw_center = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_76nog"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(0.524, 0.86, 0.776, 1)
-draw_center = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1rd6x"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(0.22399999, 0.56, 0.476, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d5ffo"]
-content_margin_left = 8.0
-content_margin_top = 8.0
-content_margin_right = 8.0
-content_margin_bottom = 8.0
-bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1j2f0"]
-content_margin_left = 8.0
-content_margin_top = 8.0
-content_margin_right = 8.0
-content_margin_bottom = 8.0
-bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n5dsd"]
-content_margin_left = 13.0
-content_margin_top = 13.0
-content_margin_right = 13.0
-content_margin_bottom = 13.0
-draw_center = false
-border_width_left = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 4
-
 [sub_resource type="FoldableGroup" id="FoldableGroup_tvbkj"]
 allow_folding_all = true
 
@@ -218,10 +142,10 @@ theme_override_styles/tab_unselected = ExtResource("6_g08q5")
 theme_override_styles/tab_hovered = ExtResource("7_76nog")
 theme_override_styles/tab_selected = ExtResource("8_lnu3o")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 2
+current_tab = 3
 tab_focus_mode = 0
 tab_0/title = " "
-tab_0/icon = ExtResource("9_d5ffo")
+tab_0/icon = ExtResource("9_lnu3o")
 tab_0/disabled = true
 tab_1/title = "Logs"
 tab_2/title = "Settings"
@@ -251,13 +175,13 @@ metadata/_tab_name = "Logs"
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="CategorySidebar" type="Panel" parent="DockTabContainer/LogsTab/VBoxContainerSidebar" unique_id=1547891829]
+[node name="LogSidebar2" type="Panel" parent="DockTabContainer/LogsTab/VBoxContainerSidebar" unique_id=1547891829]
 custom_minimum_size = Vector2(48, 80)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = ExtResource("5_o07th")
+theme_override_styles/panel = ExtResource("14_g08q5")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/CategorySidebar" unique_id=1878771389]
+[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar2" unique_id=1878771389]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -269,11 +193,11 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/CategorySidebar/MarginContainer" unique_id=1306483708]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar2/MarginContainer" unique_id=1306483708]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="AddCategoryButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/CategorySidebar/MarginContainer/VBoxContainer" unique_id=1822746076]
+[node name="AddCategoryButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar2/MarginContainer/VBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)
@@ -288,7 +212,7 @@ theme_override_styles/focus = ExtResource("9_1rd6x")
 icon = SubResource("DPITexture_ewgjr")
 icon_alignment = 1
 
-[node name="LBOpenDirButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/CategorySidebar/MarginContainer/VBoxContainer" unique_id=106065706]
+[node name="LBOpenDirButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar2/MarginContainer/VBoxContainer" unique_id=106065706]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)
@@ -303,15 +227,15 @@ theme_override_styles/focus = ExtResource("9_1rd6x")
 icon = SubResource("DPITexture_ewgjr")
 icon_alignment = 1
 
-[node name="LogSidebar" type="Panel" parent="DockTabContainer/LogsTab/VBoxContainerSidebar" unique_id=1192128886]
+[node name="LogSidebar3" type="Panel" parent="DockTabContainer/LogsTab/VBoxContainerSidebar" unique_id=1192128886]
 z_index = 3
 custom_minimum_size = Vector2(48, 167)
 clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("5_o07th")
+theme_override_styles/panel = ExtResource("14_g08q5")
 
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar" unique_id=509636274]
+[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3" unique_id=509636274]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -324,10 +248,10 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer" unique_id=1755458212]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3/MarginContainer" unique_id=1755458212]
 layout_mode = 2
 
-[node name="LGReloadButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1160699755]
+[node name="LGReloadButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3/MarginContainer/VBoxContainer" unique_id=1160699755]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)
@@ -343,11 +267,11 @@ icon = SubResource("DPITexture_ewgjr")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Control" type="Control" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1387267252]
+[node name="Control" type="Control" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3/MarginContainer/VBoxContainer" unique_id=1387267252]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RENABLEButton1" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=1733649966]
+[node name="RENABLEButton1" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3/MarginContainer/VBoxContainer" unique_id=1733649966]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)
@@ -364,7 +288,7 @@ icon = SubResource("DPITexture_ewgjr")
 icon_alignment = 1
 expand_icon = true
 
-[node name="LogSettingsButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar/MarginContainer/VBoxContainer" unique_id=602914294]
+[node name="LogSettingsButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3/MarginContainer/VBoxContainer" unique_id=602914294]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)
@@ -437,6 +361,7 @@ columns = 999
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 script = ExtResource("19_luwxg")
 data = ExtResource("8_equok")
@@ -474,7 +399,7 @@ ignore_time_scale = true
 [node name="SidebarPanel" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=1779116936]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("5_o07th")
+theme_override_styles/panel = ExtResource("14_g08q5")
 
 [node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/SidebarPanel" unique_id=1901335982]
 layout_mode = 1
@@ -784,11 +709,13 @@ theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
 theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("13_1rd6x")
 theme_override_styles/panel = ExtResource("15_7xlqe")
+folded = true
 title = "ID Overlay"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer" unique_id=570791839]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 
@@ -1282,17 +1209,16 @@ foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="HelpTab" type="TabContainer" parent="DockTabContainer" unique_id=1603064086]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/tab_separation = 6
 theme_override_styles/panel = SubResource("StyleBoxEmpty_a5g7p")
-theme_override_styles/tabbar_background = SubResource("StyleBoxFlat_o07th")
-theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_q4v5k")
-theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_76nog")
-theme_override_styles/tab_selected = SubResource("StyleBoxFlat_1rd6x")
+theme_override_styles/tabbar_background = ExtResource("5_o07th")
+theme_override_styles/tab_unselected = ExtResource("6_g08q5")
+theme_override_styles/tab_hovered = ExtResource("7_76nog")
+theme_override_styles/tab_selected = ExtResource("8_lnu3o")
 current_tab = 0
 tab_0/title = "Getting Started"
 tab_1/title = "Methods & Hotkeys"
@@ -1319,14 +1245,11 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Setup"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1352,14 +1275,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Sessions"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1382,14 +1302,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Categories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1416,14 +1333,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Log Browser"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1453,14 +1367,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Messages"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1494,14 +1405,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Directories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1527,14 +1435,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Multiple Instances"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1570,14 +1475,11 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Functions"
 foldable_group = SubResource("FoldableGroup_fx5fv")
@@ -1617,14 +1519,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Hotkeys"
 foldable_group = SubResource("FoldableGroup_fx5fv")
@@ -1648,14 +1547,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "File Limits"
 foldable_group = SubResource("FoldableGroup_fx5fv")
@@ -1702,14 +1598,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.6156863, 0.61960787, 0.627451, 1)
-theme_override_colors/hover_font_color = Color(1, 1, 1, 1)
-theme_override_colors/collapsed_font_color = Color(0.7019608, 0.7019608, 0.7019608, 1)
-theme_override_styles/title_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_d5ffo")
-theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_1j2f0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_n5dsd")
+theme_override_styles/title_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
+theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
+theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Formatting"
 foldable_group = SubResource("FoldableGroup_fx5fv")

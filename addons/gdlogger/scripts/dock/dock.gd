@@ -211,7 +211,7 @@ func _ready() -> void:
 	hidden.connect(logs_tab._update_columns)
 
 	data = load(DATA_PATH)
-	docktab_container.set_tab_icon(0, gdl_ico)
+	# docktab_container.set_tab_icon(0, gdl_ico)
 	logs_tab.data = data 
 	logs_tab.is_active = true
 	logs_tab.data = data 

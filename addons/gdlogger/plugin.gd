@@ -10,7 +10,7 @@ func _enter_tree() -> void:
 	dock.dock_icon = preload("uid://bch3ujgyd4vth")
 	add_dock(dock)
 	dock.plugin_version = get_plugin_version()
-	dock.docktab_container.set_tab_icon(0, gdl_ico)
+	# dock.docktab_container.set_tab_icon(0, gdl_ico)
 	for i in [dock.renable_btn1, dock.renable_btn2]:
 		if i: i.button_up.connect(_renable_plugin) 
 
