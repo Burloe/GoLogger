@@ -2,16 +2,17 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcq042x4u0ljm"
-path="res://.godot/imported/gdlogger_icon_title.svg-c1d4d5b5cb54cc893b38dbaa9b5828fc.ctex"
+uid="uid://deprvm6cw177j"
+path="res://.godot/imported/gologger_icon.svg-ee246819bc2fba34e06b15bede616686.ctex"
 metadata={
+"has_editor_variant": true,
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdlogger/resources/icons/gdlogger_icon_title.svg"
-dest_files=["res://.godot/imported/gdlogger_icon_title.svg-c1d4d5b5cb54cc893b38dbaa9b5828fc.ctex"]
+source_file="res://addons/gdlogger/resources/icons/gologger_icon.svg"
+dest_files=["res://.godot/imported/gologger_icon.svg-ee246819bc2fba34e06b15bede616686.ctex"]
 
 [params]
 
@@ -23,7 +24,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -39,5 +40,5 @@ process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
 svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
+editor/scale_with_editor_scale=true
+editor/convert_colors_with_editor_theme=true

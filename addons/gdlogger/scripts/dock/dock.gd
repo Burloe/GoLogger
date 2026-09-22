@@ -121,8 +121,8 @@ var inspector: EditorInspector
 @onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
 @onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
 @onready var help_formatting: 		FoldableContainer = %FormattingHelp
-@onready var plugin_version_lbl: Label = %PluginVersionLabel
-@onready var regenerate_btn: Button = %RegenerateButton
+# @onready var plugin_version_lbl: 	Label = %PluginVersionLabel
+@onready var regenerate_btn: 			Button = %RegenerateButton
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -178,8 +178,8 @@ var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast")
 var plugin_version: String =  "2.0":
 	set(value):
 		plugin_version = value
-		if plugin_version_lbl:
-			plugin_version_lbl.text = str("GDLogger v.", value)
+		# if plugin_version_lbl:
+		# 	plugin_version_lbl.text = str("GDLogger v.", value)
 		if settings_version_lbl:
 			settings_version_lbl.text = str("GDLogger v.", value)
 
@@ -565,10 +565,9 @@ func _apply_theme_colors() -> void:
 		for key in tags.keys():
 			if key.begins_with("bgClr") and rsrc is not StyleBoxEmpty and files[i].contains(key):
 				rsrc.bg_color = tags[key]
-				# print("BGColor Identified: ", rsrc)
+				
 			elif key.begins_with("brdClr") and rsrc is not StyleBoxEmpty and files[i].contains(key):
 				rsrc.border_color = tags[key]
-				print("BorderColor Identified: ", rsrc)
 	
 	logs_tab.theme_colors = tags
 	settings_tab.theme_colors = tags

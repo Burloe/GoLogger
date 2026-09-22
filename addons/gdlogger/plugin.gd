@@ -7,7 +7,7 @@ var gdl_ico = preload("uid://bch3ujgyd4vth")
 func _enter_tree() -> void:
 	dock = preload("uid://0k0tpsfqof2s").instantiate() as EditorDock
 	dock.title = "GDLogger"
-	dock.dock_icon = preload("uid://bch3ujgyd4vth")
+	# dock.dock_icon = preload("uid://bch3ujgyd4vth")
 	add_dock(dock)
 	dock.plugin_version = get_plugin_version()
 	# dock.docktab_container.set_tab_icon(0, gdl_ico)

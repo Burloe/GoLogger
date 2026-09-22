@@ -55,7 +55,7 @@ var file_count_spinbox_line: LineEdit
 @onready var file_count_lbl: Label = %FileCountLabel
 @onready var file_count_container: HBoxContainer = %FileCountHBox
 
-@onready var plugin_version_sett_lbl: Label = %PluginVersionLabel
+# @onready var plugin_version_sett_lbl: Label = %PluginVersionLabel
 
 @onready var id_fold_cont: FoldableContainer = %IDFoldableContainer
 @onready var id_align_container: HBoxContainer = %IDAlignHBox
@@ -83,8 +83,8 @@ var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 var plugin_version: String =  "1.4":
 	set(value):
 		plugin_version = value
-		if plugin_version_sett_lbl != null:
-			plugin_version_sett_lbl.text = str("GDLogger v.", value)
+		# if plugin_version_sett_lbl != null:
+			# plugin_version_sett_lbl.text = str("GDLogger v.", value)
 
 var _is_shutting_down: bool = false
 var id_font_settings_min_size: int = 200
