@@ -10,7 +10,7 @@
 [ext_resource type="StyleBox" uid="uid://cni08crnmj033" path="res://addons/gdlogger/resources/theme/blankbtns-empty_cmarg(8 -1 8 -1).tres" id="8_g4hj7"]
 [ext_resource type="StyleBox" uid="uid://2r3x0lnjbq0v" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8888)_bgClr(base).tres" id="10_tk5rb"]
 
-[sub_resource type="DPITexture" id="DPITexture_8r8ny"]
+[sub_resource type="DPITexture" id="DPITexture_0d86e"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -26,8 +26,8 @@ vertical = true
 
 [node name="LogCategory" type="PanelContainer" unique_id=1946457170]
 custom_minimum_size = Vector2(210, 48)
-custom_maximum_size = Vector2(-1, 48)
-offset_right = 252.0
+custom_maximum_size = Vector2(262, 48)
+offset_right = 262.0
 offset_bottom = 48.0
 offset_transform_enabled = true
 theme_override_styles/panel = ExtResource("10_tk5rb")
@@ -71,9 +71,9 @@ layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Move left"
 mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.2572549, 0.64, 0.5427451, 1)
-theme_override_colors/icon_hover_color = Color(0.45725492, 0.84000003, 0.7427451, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.2572549, 0.64, 0.5427451, 1)
+theme_override_colors/icon_pressed_color = Color(0.120000005, 0.48000002, 0.39000002, 1)
+theme_override_colors/icon_hover_color = Color(0.32, 0.68, 0.59000003, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.120000005, 0.48000002, 0.39000002, 1)
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.43137255)
 theme_override_styles/normal = ExtResource("8_g4hj7")
 theme_override_styles/pressed = ExtResource("8_g4hj7")
@@ -81,7 +81,7 @@ theme_override_styles/hover = ExtResource("8_g4hj7")
 theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
 theme_override_styles/disabled = ExtResource("8_g4hj7")
 theme_override_styles/focus = ExtResource("8_g4hj7")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="SelectButton" type="Button" parent="Control/Panel/HBoxContainer" unique_id=1355907674]
@@ -98,7 +98,7 @@ theme_override_styles/hover = ExtResource("6_g4hj7")
 theme_override_styles/hover_pressed = ExtResource("6_g4hj7")
 theme_override_styles/focus = ExtResource("6_g4hj7")
 toggle_mode = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="MoveRightButton" type="Button" parent="Control/Panel/HBoxContainer" unique_id=659310254]
@@ -109,9 +109,9 @@ layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Move right"
 mouse_default_cursor_shape = 2
-theme_override_colors/icon_pressed_color = Color(0.2572549, 0.64, 0.5427451, 1)
-theme_override_colors/icon_hover_color = Color(0.45725492, 0.84000003, 0.7427451, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.2572549, 0.64, 0.5427451, 1)
+theme_override_colors/icon_pressed_color = Color(0.120000005, 0.48000002, 0.39000002, 1)
+theme_override_colors/icon_hover_color = Color(0.32, 0.68, 0.59000003, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.120000005, 0.48000002, 0.39000002, 1)
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.43137255)
 theme_override_styles/normal = ExtResource("8_g4hj7")
 theme_override_styles/pressed = ExtResource("8_g4hj7")
@@ -119,7 +119,7 @@ theme_override_styles/hover = ExtResource("8_g4hj7")
 theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
 theme_override_styles/disabled = ExtResource("8_g4hj7")
 theme_override_styles/focus = ExtResource("8_g4hj7")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=151857270]
@@ -179,8 +179,7 @@ theme_override_styles/hover = ExtResource("8_g4hj7")
 theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
 theme_override_styles/disabled = ExtResource("8_g4hj7")
 theme_override_styles/focus = ExtResource("8_g4hj7")
-disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=51459182]
@@ -205,7 +204,7 @@ theme_override_styles/hover = ExtResource("8_g4hj7")
 theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
 theme_override_styles/disabled = ExtResource("8_g4hj7")
 theme_override_styles/focus = ExtResource("8_g4hj7")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="DefaultButton" type="Button" parent="HBoxContainer" unique_id=750332008]
@@ -225,7 +224,7 @@ theme_override_styles/disabled = ExtResource("8_g4hj7")
 theme_override_styles/focus = ExtResource("8_g4hj7")
 disabled = true
 toggle_mode = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="DeleteButton" type="Button" parent="HBoxContainer" unique_id=753401324]
@@ -247,7 +246,7 @@ theme_override_styles/disabled = ExtResource("8_g4hj7")
 theme_override_styles/focus = ExtResource("8_g4hj7")
 text = "
 "
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="DeletePopupPanel" type="PopupPanel" parent="." unique_id=1757288968]
@@ -296,7 +295,7 @@ theme_override_styles/hover = ExtResource("8_g4hj7")
 theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
 theme_override_styles/disabled = ExtResource("8_g4hj7")
 theme_override_styles/focus = ExtResource("8_g4hj7")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="Label" type="Label" parent="DeletePopupPanel/VBoxContainer" unique_id=1315104008]
@@ -336,7 +335,7 @@ theme_override_styles/hover = ExtResource("10_tk5rb")
 theme_override_styles/hover_pressed = ExtResource("10_tk5rb")
 theme_override_styles/disabled = ExtResource("10_tk5rb")
 text = "Yes"
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 alignment = 0
 icon_alignment = 2
 
@@ -359,6 +358,6 @@ theme_override_styles/hover = ExtResource("10_tk5rb")
 theme_override_styles/hover_pressed = ExtResource("10_tk5rb")
 theme_override_styles/disabled = ExtResource("10_tk5rb")
 text = "No"
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 alignment = 0
 icon_alignment = 2

@@ -6,7 +6,6 @@
 [sub_resource type="Resource" id="Resource_u03vm"]
 script = ExtResource("1_u03vm")
 category_name = "game"
-is_default = true
 
 [sub_resource type="Resource" id="Resource_ru745"]
 script = ExtResource("1_u03vm")
@@ -34,5 +33,6 @@ categories = Array[ExtResource("1_u03vm")]([SubResource("Resource_u03vm"), SubRe
 default_category = "game"
 colorcode_dates = true
 autostart = false
+limit_method = 1
 id_startup = true
 id_align = 10

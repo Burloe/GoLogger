@@ -33,9 +33,10 @@ signal set_default_category(category: GLLogCategory, toggle_on: bool)
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
+const SIZE_UNEDITED = Vector2(210, 48)
+const SIZE_EDITED = Vector2(262, 48)
 var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx") 
-
 ##  Last applied category name
 var category_name: String = "":
 	set(value):
@@ -71,6 +72,12 @@ var is_editing_name: bool = false:
 			_tween_line_edit_module(true)
 		elif !value and !has_unapplied_name:
 			_tween_line_edit_module(false)
+
+var is_new: bool = false:
+	set(value):
+		is_new = value
+		if value:
+			size = SIZE_EDITED
 
 
 
@@ -108,7 +115,7 @@ func _ready() -> void:
 
 	is_default = is_default # loads the icon
 	del_popup.hide()
-	apply_btn.disabled = true
+	apply_btn.disabled = line_edit.text.is_empty()
 	revert_btn.disabled = false
 	line_edit.size.x = 110
 
@@ -124,6 +131,10 @@ func _ready() -> void:
 		func(toggled_on: bool) -> void: 
 			revert_btn.tooltip_text = str("Revert to '", category_name, "'")
 			is_editing_name = toggled_on
+			if category_name == line_edit.text or line_edit.text.is_empty(): 
+				apply_btn.disabled =  true
+			else: 
+				apply_btn.disabled = false
 			# edit_hbox.visible = toggled_on
 			# _tween_line_edit_module(toggled_on)
 	)
@@ -140,10 +151,17 @@ func _ready() -> void:
 
 
 func _tween_line_edit_module(show: bool = false) -> void:
+	if is_new:
+		size = SIZE_EDITED
+		is_new = false
+		line_edit_panel.show()
+		line_edit_panel.modulate = Color.WHITE
+		return
+	
 	var tw := create_tween().set_parallel(true)
 	faky.visible = show
 	faky.size.x = 0 if show else 42
-	tw.tween_property(self, "size", Vector2(size.x + 42, size.y) if show else Vector2(size.x, size.y), 0.03)
+	tw.tween_property(self, "size", SIZE_EDITED if show else SIZE_UNEDITED, 0.03)
 	tw.tween_property(faky, "size", Vector2(42 if show else 0, faky.size.y), 0.03)
 	await tw.finished
 	var tween := create_tween()
@@ -152,6 +170,7 @@ func _tween_line_edit_module(show: bool = false) -> void:
 	line_edit_panel.visible  = show
 	line_edit_panel.modulate = Color.TRANSPARENT if show else Color.WHITE
 	tween.tween_property(line_edit_panel, "modulate", Color.WHITE if show else Color.TRANSPARENT, 0.03)
+
 
 
 func _data_ready() -> void:
@@ -163,8 +182,7 @@ func _data_ready() -> void:
 
 
 
-func is_name_available(_name: String) -> bool:
-	# return data.check_category_name_conflicts() if data != null else false
+func is_name_available(_name: String) -> bool: 
 	return !_name in data.get_category_names()
 
 

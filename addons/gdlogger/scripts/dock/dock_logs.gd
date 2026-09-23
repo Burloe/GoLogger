@@ -9,6 +9,7 @@ signal request_theme_colors
 @onready var settings_tab: Control = %SettingsTab
 @onready var category_panel: HBoxContainer = %CategoryPanel
 @onready var add_category_btn: Button = %AddCategoryButton
+@onready var category_scroll_container: ScrollContainer = %CategoryScrollContainer
 @onready var category_container: GridContainer = %CategoryGridContainer
 
 @onready var polling_timer: Timer = %PollingTimer
@@ -159,7 +160,7 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 func _add_category(_name: String = ""): ## _name only applicable at loading
 	var _n = category_scene.instantiate() as GLLogCategory 
-	var low_name: String = _name.to_lower()
+	var low_name: String = _name.to_lower() 
 	_n.category_name = low_name
 	category_container.add_child(_n)
 	_n.data = data
@@ -181,13 +182,17 @@ func _add_category(_name: String = ""): ## _name only applicable at loading
 						c.select_btn.button_pressed = false
 	)
 	_n.tree_exited.connect(_on_category_tree_exited)
+	handle_category_mov_button_state()
 	
 	if !low_name.is_empty():
 		_n.default_btn.button_pressed = data.default_category == low_name
-	else:	
+	else:
+		_n.is_new = true
 		_n.line_edit.grab_focus()
+		await get_tree().physics_frame
+		await get_tree().physics_frame
+		category_scroll_container.get_h_scroll_bar().value = category_scroll_container.	get_h_scroll_bar().max_value
 	
-	handle_category_mov_button_state() 
 
 
 
