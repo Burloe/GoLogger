@@ -135,8 +135,6 @@ func _ready() -> void:
 				apply_btn.disabled =  true
 			else: 
 				apply_btn.disabled = false
-			# edit_hbox.visible = toggled_on
-			# _tween_line_edit_module(toggled_on)
 	)
 
 	default_btn.toggled.connect(

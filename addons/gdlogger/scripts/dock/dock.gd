@@ -9,7 +9,7 @@ class_name GLDock extends EditorDock
 
 # TODO:
 	# GENERAL:
-		# Make a function that hides and shows everything properly that's called at the end of the _ready() function so you don't have to rely on manually showing and hiding all the proper elements constantly.
+		# Add EditorInspector for SaveData in MoreInfo panel
 	# Bugs: 
 		# 
 	# DOCK CATEGORY TAB:
@@ -97,15 +97,16 @@ var sett_file_count_spinbox_line: LineEdit
 @onready var sett_id_print_btn: CheckButton = %IDPrintCheckButton 
 
 @onready var sett_id_font_sett_cont: FoldableContainer = %IDFontFoldableContainer
-var sett_id_inspector: EditorInspector
-
 @onready var sett_hotkey_container: FoldableContainer = %HotkeyFoldableContainer
-var inspector: EditorInspector
+
+# var sett_id_inspector: EditorInspector
+# var inspector: EditorInspector
+@onready var data_inspector: EditorInspector = %SaveDataEditorInspector
 
 @onready var settings_version_lbl: Label = %SettingsVersionLabel
 
-@onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
-@onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
+@onready var general_fold_cont: 	FoldableContainer = %GeneralFoldableContainer
+@onready var dir_fold_cont: 			FoldableContainer = %DirectoryFoldableContainer
 
 # Help tab
 @onready var help_tab: 						TabContainer = %HelpTab
@@ -120,8 +121,6 @@ var inspector: EditorInspector
 @onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
 @onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
 @onready var help_formatting: 		FoldableContainer = %FormattingHelp
-# @onready var plugin_version_lbl: 	Label = %PluginVersionLabel
-@onready var regenerate_btn: 			Button = %RegenerateButton
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -137,16 +136,9 @@ var theme_colors: Dictionary = {}
 ]
 
 var gdl_ico = preload("uid://bch3ujgyd4vth")
-
-var sb_path: String = "res://addons/gdlogger/resources/theme/"
-
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
-
-# var sb_log_file_button_normal					:= preload("uid://xy4uummjvhgu")
-
 var lv_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
-# var lv_popup_panel										:= preload("uid://dugr1wllj4x3")
 
 
 ## Index 3 is a SEPERATOR and should not be used.
@@ -170,6 +162,7 @@ enum SessionTimerAction {
 }
 
 
+var theme_res_path: String = "res://addons/gdlogger/resources/theme/" # Path to theme resources to edit on EditorSettings changed
 var category_scene = preload("uid://c3n416c5fajm5")
 var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
 var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
@@ -206,6 +199,8 @@ var is_shutting_down: bool = false:
 #region Inits and signals
 
 func _ready() -> void:
+	data_inspector.edit(ResourceLoader.load(DATA_PATH))
+
 	draw.connect(logs_tab._update_columns.bind(true))
 	hidden.connect(logs_tab._update_columns)
 
@@ -243,7 +238,6 @@ func _ready() -> void:
 	_connect_unique(settings.settings_changed, _on_editor_settings_changed) 
 	_connect_unique(lg_open_dir_btn.button_up, _open_directory)
 	# _connect_unique(user_dir_btn.button_up, _open_user_dir)
-	_connect_unique(regenerate_btn.button_up, _on_regenerate_button_up)
 	_connect_unique(sett_open_dir_btn.button_up, _open_directory)
 	_connect_unique(sett_reset_btn.button_up, reset_to_default)
 
@@ -532,7 +526,7 @@ func _apply_theme_colors() -> void:
 	var base_col: 	Color = settings.get_setting("interface/theme/base_color")
 	var accent_col: Color = settings.get_setting("interface/theme/accent_color")
 
-	var files := DirAccess.get_files_at(sb_path)
+	var files := DirAccess.get_files_at(theme_res_path)
 	var sb: Array = []
 	var tags: Dictionary = {
 		"bgClr(base-2)": 		base_col.darkened(   contrast * 2),
@@ -560,7 +554,7 @@ func _apply_theme_colors() -> void:
 	}
 
 	for i in range(files.size()):
-		var rsrc := ResourceLoader.load(str(sb_path + files[i]))
+		var rsrc := ResourceLoader.load(str(theme_res_path + files[i]))
 		for key in tags.keys():
 			if key.begins_with("bgClr") and rsrc is not StyleBoxEmpty and files[i].contains(key):
 				rsrc.bg_color = tags[key]
