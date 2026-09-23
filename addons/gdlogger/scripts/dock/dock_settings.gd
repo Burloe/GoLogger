@@ -339,39 +339,6 @@ func _is_entry_format_valid(format: String) -> bool:
 
 #region Signal receivers
 
-# func _on_setting_hover(group: Array, is_hovered: bool) -> void:
-# 	request_theme_colors.emit()
-# 	var c_norm:  Color = theme_colors["font"]["normal"] 
-# 	var c_hover: Color = theme_colors["font"]["hover"] 
-
-# 	for ctrl in group:
-# 		if ctrl is HBoxContainer:
-# 			continue
-
-# 		if ctrl is LineEdit:
-# 			var key: String = ""
-# 			match ctrl:
-# 				base_dir_line: key = "base_dir"
-# 				log_header_line: key = "log_header"
-# 				entry_format_line: key = "entry_format"
-
-# 			line_edit_states[key]["mouse"] = is_hovered
-# 			if not line_edit_states[key]["edit"]:
-# 				ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-
-# 		if ctrl is OptionButton:
-# 			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-# 			continue
-
-# 		if ctrl is SpinBox:
-# 			ctrl.get_line_edit().add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-# 			continue
-		
-# 		if ctrl is Label:
-# 			ctrl.add_theme_color_override("font_color", c_hover if is_hovered else c_norm)
-
-
-
 func _on_button_button_up(node: Button) -> void:
 	match node:
 		base_dir_apply_btn:

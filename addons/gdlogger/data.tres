@@ -32,7 +32,6 @@ category_name = "combat"
 script = ExtResource("2_ru745")
 categories = Array[ExtResource("1_u03vm")]([SubResource("Resource_u03vm"), SubResource("Resource_ru745"), SubResource("Resource_rvoc7"), SubResource("Resource_aqfri"), SubResource("Resource_o1vy8"), SubResource("Resource_s8ook")])
 default_category = "game"
-browser_sort = 1
 colorcode_dates = true
 autostart = false
 id_startup = true

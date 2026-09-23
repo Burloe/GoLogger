@@ -24,7 +24,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4pb5"]
 
-[sub_resource type="DPITexture" id="DPITexture_8r8ny"]
+[sub_resource type="DPITexture" id="DPITexture_0d86e"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -200,7 +200,7 @@ theme_override_styles/pressed = ExtResource("9_1rd6x")
 theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="LBOpenDirButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar2/MarginContainer/VBoxContainer" unique_id=106065706]
@@ -215,7 +215,7 @@ theme_override_styles/pressed = ExtResource("9_1rd6x")
 theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="LogSidebar3" type="Panel" parent="DockTabContainer/LogsTab/VBoxContainerSidebar" unique_id=1192128886]
@@ -254,30 +254,13 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 expand_icon = true
 
 [node name="Control" type="Control" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3/MarginContainer/VBoxContainer" unique_id=1387267252]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="RENABLEButton1" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3/MarginContainer/VBoxContainer" unique_id=1733649966]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
-custom_maximum_size = Vector2(32, 32)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/normal = ExtResource("9_1rd6x")
-theme_override_styles/pressed = ExtResource("9_1rd6x")
-theme_override_styles/hover = ExtResource("9_1rd6x")
-theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
-theme_override_styles/disabled = ExtResource("9_1rd6x")
-theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_8r8ny")
-icon_alignment = 1
-expand_icon = true
 
 [node name="LogSettingsButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebar3/MarginContainer/VBoxContainer" unique_id=602914294]
 unique_name_in_owner = true
@@ -291,7 +274,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 expand_icon = true
 
@@ -359,19 +342,6 @@ data = ExtResource("8_equok")
 metadata/_tab_index = 2
 metadata/_tab_name = "Settings"
 
-[node name="SettingsVersionLabel" type="Label" parent="DockTabContainer/SettingsTab" unique_id=1832159526]
-unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0.25)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "GDLogger v.2.0"
-horizontal_alignment = 2
-vertical_alignment = 2
-
 [node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab" unique_id=1178249992]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 1
@@ -417,7 +387,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_7xlqe")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="OpenDirButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/SidebarPanel/MarginContainer/VBoxContainer" unique_id=918067150]
@@ -430,26 +400,13 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_7xlqe")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/SidebarPanel/MarginContainer/VBoxContainer" unique_id=478747324]
 custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="RENABLEButton3" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/SidebarPanel/MarginContainer/VBoxContainer" unique_id=80779388]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-theme_override_styles/normal = ExtResource("9_1rd6x")
-theme_override_styles/pressed = ExtResource("9_1rd6x")
-theme_override_styles/hover = ExtResource("9_1rd6x")
-theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
-theme_override_styles/disabled = ExtResource("9_1rd6x")
-theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_8r8ny")
-icon_alignment = 1
 
 [node name="LPanel" type="ScrollContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=2008032766]
 custom_minimum_size = Vector2(394, 0)
@@ -924,7 +881,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=193635431]
@@ -950,7 +907,7 @@ theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
@@ -1022,7 +979,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
@@ -1048,7 +1005,7 @@ theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=154378586]
@@ -1155,7 +1112,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=749157682]
@@ -1181,7 +1138,7 @@ theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_0d86e")
 icon_alignment = 1
 
 [node name="HotkeyFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer" unique_id=1889098366]
@@ -1667,7 +1624,6 @@ unique_name_in_owner = true
 oversampling_override = 1.0
 position = Vector2i(65, 140)
 size = Vector2i(296, 156)
-visible = true
 min_size = Vector2i(296, 156)
 max_size = Vector2i(296, 156)
 theme_override_styles/panel = ExtResource("30_7xlqe")
@@ -1740,3 +1696,38 @@ layout_mode = 2
 tooltip_text = "Automatically reload log files in Logs tab"
 button_pressed = true
 text = "Automatic file reload"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=699322649]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-8, 8)
+mouse_filter = 2
+alignment = 2
+
+[node name="RENABLEButton" type="Button" parent="HBoxContainer" unique_id=1733649966]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+offset_transform_enabled = true
+offset_transform_position = Vector2(8, -4)
+theme_override_styles/normal = ExtResource("9_1rd6x")
+theme_override_styles/pressed = ExtResource("9_1rd6x")
+theme_override_styles/hover = ExtResource("9_1rd6x")
+theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
+theme_override_styles/disabled = ExtResource("9_1rd6x")
+theme_override_styles/focus = ExtResource("9_1rd6x")
+icon = SubResource("DPITexture_0d86e")
+icon_alignment = 1
+expand_icon = true
+
+[node name="SettingsVersionLabel" type="Label" parent="HBoxContainer" unique_id=1832159526]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.25)
+layout_mode = 2
+size_flags_vertical = 1
+offset_transform_enabled = true
+text = "GDLogger v.2.0"
+horizontal_alignment = 2

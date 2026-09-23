@@ -8,16 +8,14 @@ class_name GLLogFile extends Button
 
 const DISPLAY_NAME_CHAR_LIMIT: int = 18
 
-var sb_selected := 			preload("uid://bo0ob3gd3g7a")
-var sb_unselected := 		preload("uid://cobusnqe7lb31")
+var sb_unselected := 		preload("uid://kbj6uorhqcy1")
+var sb_selected := 			preload("uid://c7kb4koj3rx5n")
 
 var selected: bool = false:
 	set(value):
 		selected = value
 		add_theme_stylebox_override("normal", 				sb_selected if value else sb_unselected)
 		add_theme_stylebox_override("pressed", 				sb_selected if value else sb_unselected)
-		add_theme_stylebox_override("hover", 					sb_selected if value else sb_unselected)
-		add_theme_stylebox_override("hover_pressed", 	sb_selected if value else sb_unselected)
 var base_dir
 var category_name: String = ""
 var file_path: String = ""
@@ -43,14 +41,16 @@ var file_contents: String = ""
 
 
 func _ready() -> void:
+	button_up.connect(func() -> void: selected = !true)
 	text = display_name if display_name != "" else fallback_name
-	# mouse_entered.connect(get_file_content)
 	expand_icon = true
 	add_theme_constant_override("icon_max_width", 32)
 
 
+
 func connect_to_popup(pop: PopupPanel) -> void:
-	if pop: pop.popup_hide.connect(func() -> void: button_pressed = false)
+	if pop: pop.popup_hide.connect(func() -> void: selected = false)
+
 
 
 func get_file_content() -> void:

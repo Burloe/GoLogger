@@ -20,8 +20,7 @@ class_name GLDock extends EditorDock
 
 @export var data: GLData = null
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
-@onready var renable_btn1: Button = %RENABLEButton1 
-@onready var renable_btn2: Button = %RENABLEButton3
+@onready var renable_btn: Button = %RENABLEButton
 @onready var docktab_container: TabContainer = %DockTabContainer
 
 # Logs tab
@@ -344,7 +343,7 @@ func _assign_editor_icons() -> void:
 		"Folder": [lg_open_dir_btn, sett_open_dir_btn],
 		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
 		"GDScript": [lg_settings_btn],
-		"Debug": [renable_btn1, renable_btn2]
+		"Debug": [renable_btn]
 	}
 
 	for icon_name: String in _d.keys():

@@ -4,9 +4,7 @@ extends HBoxContainer
 
 signal request_save(source: String) ## Emitted to dock.gd. "source" is purely for debugging to see what emitted.
 signal request_categories_save
-signal request_theme_colors 
-# signal category_created(category: GLLogCategory)
-signal selected_category_updated(new_selected: String)
+signal request_theme_colors
 
 @onready var settings_tab: Control = %SettingsTab
 @onready var category_panel: HBoxContainer = %CategoryPanel
@@ -55,8 +53,7 @@ var log_files: Array[GLLogFile] = []
 var current_category: String = "":
 	set(value):
 		if value != current_category:
-			current_category = value
-			# selected_category_updated.emit(value)
+			current_category = value 
 			load_log_files()
 		
 var cur_logfile: GLLogFile = null:
@@ -80,6 +77,7 @@ var reload_automatically: bool = true:
 	set(value):
 		reload_automatically = value
 		data.auto_reload = value
+		reload_btn.visible = !value
 
 var theme_colors: Dictionary = {}
 
@@ -101,15 +99,7 @@ enum SessionTimerAction {
 } 
 
 
-func _on_log_settings_button_up() -> void:
-	log_settings_popup.visible = !log_settings_popup.visible
-	log_settings_popup.size = Vector2.ZERO
-	print(log_settings_popup.size)
-	log_settings_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE
-	log_settings_popup.position = Vector2i(log_settings_btn.get_screen_position() + Vector2(48, -116))
 
-	if log_settings_popup.visible:
-		log_settings_popup.popup()
 
 
 
@@ -139,6 +129,7 @@ func _ready() -> void:
 	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL 
 	open_log_with_os = open_log_with_os # loads the icon
+	reload_btn.visible = !data.auto_reload
 
 
 #region Categories
@@ -417,13 +408,6 @@ func _reconcile_log_files(target_files: Array, category_name: String) -> void:
 						if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
 								colorcode = _get_logfile_color(used_cols)
 								used_cols.append(colorcode)
-						# lf.add_theme_color_override("font_color", colorcode)
-						# lf.add_theme_color_override("font_hover_color", colorcode.lightened(0.2))
-						# lf.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
-				# else:
-						# lf.add_theme_color_override("font_color", theme_colors["font"]["normal"])
-						# lf.add_theme_color_override("font_hover_color", theme_colors["font"]["hover"])
-						# lf.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"])
 
 				updated_log_files.append(lf)
 				prev_file = file_name
@@ -482,7 +466,6 @@ func _on_colorcode_changed() -> void:
 	var colorcode: Color = Color.BLACK
 	var used_cols: Array[Color]= []
 	var prev_file: GLLogFile = null
-	var test = [0, [1, [2, 3]]]
 
 	if files.is_empty():
 		return
@@ -596,6 +579,18 @@ func _get_logfile_color(used_colors: Array[Color]) -> Color:
 			while c.is_equal_approx(col):
 				c = Color(rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), 0.8)
 	return c
+
+
+
+func _on_log_settings_button_up() -> void:
+	log_settings_popup.visible = !log_settings_popup.visible
+	log_settings_popup.size = Vector2.ZERO
+	print(log_settings_popup.size)
+	log_settings_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE
+	log_settings_popup.position = Vector2i(log_settings_btn.get_screen_position() + Vector2(48, -116))
+
+	if log_settings_popup.visible:
+		log_settings_popup.popup()
 
 
 
