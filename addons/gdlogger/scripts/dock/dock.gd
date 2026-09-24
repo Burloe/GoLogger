@@ -515,43 +515,13 @@ func _get_theme_colors() -> Dictionary:
 
 
 func _apply_theme_colors() -> void:
-	# var col_settings: Array = [
-	# 	settings.get_setting("interface/theme/follow_system_theme"), 
-	# 	settings.get_setting("interface(theme/color_preset)"), 
-	# 	settings.get_setting("interface/theme/icon_and_font_color"),
-	# 	settings.get_setting("interface/theme/base_color"),
-	# 	settings.get_setting("interface/theme/accent_color")
-	# ]
 	var contrast: 	float = settings.get_setting("interface/theme/contrast")
 	var base_col: 	Color = settings.get_setting("interface/theme/base_color")
 	var accent_col: Color = settings.get_setting("interface/theme/accent_color")
 
 	var files := DirAccess.get_files_at(theme_res_path)
 	var sb: Array = []
-	var tags: Dictionary = {
-		"bgClr(base-2)": 		base_col.darkened(   contrast * 2),
-		"bgClr(base-1)": 		base_col.darkened(   contrast),
-		"bgClr(base)":  		base_col,
-		"bgClr(base+1)": 		base_col.lightened(  contrast),
-		"bgClr(base+2)": 		base_col.lightened(  contrast * 2),
-		"brdClr(base-2)": 	base_col.darkened(   contrast * 2),
-		"brdClr(base-1)": 	base_col.darkened(   contrast * 2),
-		"brdClr(base)": 		base_col,
-		"brdClr(base+1)":	 	base_col.lightened(  contrast * 2),
-		"brdClr(base+2)": 	base_col.lightened(  contrast * 2),
-		"bgClr(acc-2)":			accent_col.darkened( contrast * 2),
-		"bgClr(acc-1)":			accent_col.darkened( contrast * 2),
-		"bgClr(acc)":				accent_col,
-		"bgClr(acc+1)":			accent_col.lightened(contrast * 2),
-		"bgClr(acc+2)":			accent_col.lightened(contrast * 2),
-		"brdClr(acc-2)":		accent_col.darkened( contrast * 2),
-		"brdClr(acc-1)":		accent_col.darkened( contrast * 2),
-		"brdClr(acc)":			accent_col,
-		"brdClr(acc+1)":		accent_col.lightened(contrast * 2),
-		"brdClr(acc+2)":		accent_col.lightened(contrast * 2),
-		"brdClr(red)":			Color("c64040"),
-		"contrast_value": 	contrast
-	}
+	var tags: Dictionary = _get_theme_colors()
 
 	for i in range(files.size()):
 		var rsrc := ResourceLoader.load(str(theme_res_path + files[i]))

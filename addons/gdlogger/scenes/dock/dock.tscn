@@ -14,6 +14,7 @@
 [ext_resource type="StyleBox" uid="uid://2r3x0lnjbq0v" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8888)_bgClr(base).tres" id="14_g08q5"]
 [ext_resource type="StyleBox" uid="uid://5m8m174643ur" path="res://addons/gdlogger/resources/theme/bordw(4404)_round(0044)_cmarg(13 13 13 13)_bgClr(base)_brdClr(base).tres" id="15_7xlqe"]
 [ext_resource type="StyleBox" uid="uid://banh6fdfxhrtb" path="res://addons/gdlogger/resources/theme/round(4444)_cmark(4444)_bgClr(base-1).tres" id="15_8r8ny"]
+[ext_resource type="StyleBox" uid="uid://d0ctcgxtji43k" path="res://addons/gdlogger/resources/theme/round(4444)_exp(8888)_cmarg(8888)_bgClr(base-1).tres" id="15_lnu3o"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gdlogger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="Texture2D" uid="uid://c74n2f1j4wew5" path="res://addons/gdlogger/resources/icons/GitHub_Invertocat_White.svg" id="21_8r8ny"]
 [ext_resource type="StyleBox" uid="uid://b5xnafw5yk1tg" path="res://addons/gdlogger/resources/theme/round(4444)_exp(8888)_cmarg(8888)_bgClr(base-2).tres" id="23_g08q5"]
@@ -141,7 +142,7 @@ theme_override_styles/tab_unselected = ExtResource("6_g08q5")
 theme_override_styles/tab_hovered = ExtResource("7_76nog")
 theme_override_styles/tab_selected = ExtResource("8_lnu3o")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 3
+current_tab = 2
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("9_8r8ny")
@@ -344,7 +345,6 @@ columns = 999
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 script = ExtResource("19_luwxg")
 data = ExtResource("8_equok")
@@ -440,13 +440,11 @@ theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
 theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("13_1rd6x")
 theme_override_styles/panel = ExtResource("15_7xlqe")
-folded = true
 title = "General"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 
@@ -522,10 +520,12 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Method used to limit file size. 
 Use the selected Actions below to determine what happens once the method condition is fullfilled."
-theme_override_styles/normal = ExtResource("15_8r8ny")
+theme_override_styles/normal = ExtResource("15_lnu3o")
 theme_override_styles/pressed = ExtResource("23_g08q5")
 theme_override_styles/hover = ExtResource("23_g08q5")
 theme_override_styles/hover_pressed = ExtResource("23_g08q5")
+theme_override_styles/focus = ExtResource("23_g08q5")
+toggle_mode = false
 action_mode = 1
 selected = 0
 allow_reselect = true
@@ -587,10 +587,13 @@ tooltip_text = "What action is taken when the Limit condition is met.
 Overwrite - Overwrites the oldest entry
 Restart - Restarts the logging session
 Stop - Stops the logging session"
-theme_override_styles/normal = ExtResource("15_8r8ny")
+theme_override_styles/normal = ExtResource("15_lnu3o")
 theme_override_styles/pressed = ExtResource("23_g08q5")
 theme_override_styles/hover = ExtResource("23_g08q5")
 theme_override_styles/hover_pressed = ExtResource("23_g08q5")
+theme_override_styles/focus = ExtResource("23_g08q5")
+toggle_mode = false
+action_mode = 1
 selected = 0
 allow_reselect = true
 item_count = 3
@@ -644,10 +647,13 @@ tooltip_text = "What action is taken when the Limit condition is met.
 
 Restart - Restarts the logging session
 Stop - Stops the logging session"
-theme_override_styles/normal = ExtResource("15_8r8ny")
+theme_override_styles/normal = ExtResource("15_lnu3o")
 theme_override_styles/pressed = ExtResource("23_g08q5")
 theme_override_styles/hover = ExtResource("23_g08q5")
 theme_override_styles/hover_pressed = ExtResource("23_g08q5")
+theme_override_styles/focus = ExtResource("23_g08q5")
+toggle_mode = false
+action_mode = 1
 selected = 0
 allow_reselect = true
 item_count = 2
@@ -716,11 +722,13 @@ vertical_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-theme_override_styles/normal = ExtResource("15_8r8ny")
+theme_override_styles/normal = ExtResource("15_lnu3o")
 theme_override_styles/pressed = ExtResource("23_g08q5")
 theme_override_styles/hover = ExtResource("23_g08q5")
 theme_override_styles/hover_pressed = ExtResource("23_g08q5")
-button_pressed = true
+theme_override_styles/focus = ExtResource("23_g08q5")
+toggle_mode = false
+action_mode = 1
 alignment = 2
 selected = 0
 item_count = 11
@@ -1165,6 +1173,7 @@ foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="HelpTab" type="TabContainer" parent="DockTabContainer" unique_id=1603064086]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3

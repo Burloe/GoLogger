@@ -131,7 +131,7 @@ func _ready() -> void:
 	id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
 	id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
 	hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
-
+	printerr(limit_method_btn.get_theme_stylebox("normal"), "\n", entry_count_action_btn.get_theme_stylebox("normal"), limit_method_btn.button_pressed)
 	_connect_line_edit_toggled()
 	_assign_spinbox_line_edits()
 	_connect_spinbox_line_submitted()
@@ -169,6 +169,8 @@ func _ready() -> void:
 	# _bind_settings_hover_groups()
 
 
+# func _physics_process(delta: float) -> void:
+# 	printerr(limit_method_btn.get_theme_stylebox("normal"), "\n", entry_count_action_btn.get_theme_stylebox("normal"), limit_method_btn.button_pressed)
 
 
 ## Called by dock.gd after data is initialized.
