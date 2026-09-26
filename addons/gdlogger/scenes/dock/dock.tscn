@@ -142,7 +142,7 @@ theme_override_styles/tab_unselected = ExtResource("6_g08q5")
 theme_override_styles/tab_hovered = ExtResource("7_76nog")
 theme_override_styles/tab_selected = ExtResource("8_lnu3o")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 2
+current_tab = 3
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("9_8r8ny")
@@ -345,6 +345,7 @@ columns = 999
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 script = ExtResource("19_luwxg")
 data = ExtResource("8_equok")
@@ -1173,7 +1174,6 @@ foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="HelpTab" type="TabContainer" parent="DockTabContainer" unique_id=1603064086]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1184,7 +1184,7 @@ theme_override_styles/tabbar_background = ExtResource("5_o07th")
 theme_override_styles/tab_unselected = ExtResource("6_g08q5")
 theme_override_styles/tab_hovered = ExtResource("7_76nog")
 theme_override_styles/tab_selected = ExtResource("8_lnu3o")
-current_tab = 2
+current_tab = 0
 tab_0/title = "Getting Started"
 tab_1/title = "Methods & Hotkeys"
 tab_2/title = "More Info"
@@ -1193,7 +1193,6 @@ metadata/_tab_name = "Help"
 
 [node name="GettingStarted" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=1377872369]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 scroll_vertical_custom_step = 20.0
 scroll_hint_mode = 1
@@ -1211,11 +1210,11 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "Setup"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1229,50 +1228,26 @@ size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "GDLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries such as: 
+text = "GDLogger works immediately with the default configuration and comes with a single \"general\" category. Meaning you can instantly start creating entries such as: 
     [i][color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"This is my first log entry.\"[/color], [color=#ce9178]\"game\"[/color])[/i]
-Use the Logs tab to add, remove, or rename categories and even read log files. 
+
+Use the Logs tab to add, remove, or rename categories and even read log files. Sessions dictate when the plugin logs entries or not, which automatically starts at runtime by default. But this can be turned off in the settings.
 
 GDLogger uses an [b]Log[/b] singleton, making its functions accessible from all scenes and scripts.
+
+[b]Note[/b] that autloaded scenes and scripts are loaded in the order of the list in your ProjectSettings. If another autoload is trying to log an entry before Log, the entry may bot be logged. Move Log higher in the list to fix this.
 	"
-fit_content = true
-
-[node name="SessionsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=478545896]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
-folded = true
-title = "Sessions"
-foldable_group = SubResource("FoldableGroup_tvbkj")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SessionsHelp" unique_id=1393820525]
-visible = false
-custom_minimum_size = Vector2(560, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "A session defines when the plugin is actively logging. Each session creates a new .log file ands sessions can be started or stopped at any time using hotkeys or through code.
-
-By default, a session starts automatically when the project runs (this can be disabled in the Settings tab)."
 fit_content = true
 
 [node name="CategoriesHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=1969559512]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "Categories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1286,7 +1261,7 @@ size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "Every category creates it's own logs at the start of each session in their respective directory within your base directory. This allows you to sort your log entries into separate files to make them more manageable and legible. But you can still use one singular category if that's what your project needs of course.
+text = "Every category creates it's own logs at the start of each session in their respective directory within your base directory. This allows you to sort your log entries into separate files to make them more manageable and legible. But you can still use one singular category if that's preferred.
 
 Additionally, within the dock, you can mark one of your categories as 'Default'. Logging entries without specifying a category will log it to the marked default category. This is especially useful if you have one overarching category for general entries. Or in case you only use a single category to log and don't necessitates you to specify the category constantly.
 
@@ -1299,11 +1274,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "Log Browser"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1317,29 +1292,29 @@ size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "A new feature in 2.0 allows you to browse and read .log files all within the editor. You can select a log file to read your file and in the top right, using the settings button, you're able to customize the look of the font, size, color etc. Alternatively, you can also use the CheckBox in the side bar of the dock to open log files with your OS default program, such as Notepad or Notepad++
+text = "A new feature in 2.0 allows you to browse and read .log files all within the editor. You can select a log file to read your file and in the top right of the popup, the settings button allows you to customize the look of the font, size, color etc. 
+Alternatively, you can also use the settings button in the Logs tag affords you additional customization.
 
-Loading large files for viewing may freeze Godot depending on the file size and your computer's performance. If this is affecting you, lower your Entry Count or Session Timer parameters. You can also enable the option to open with OS.
+Loading large files for viewing may freeze Godot depending on the file size and your computer's performance. If this is affecting you, lower your Entry Count or Session Timer settings. You can also enable the option to open with OS which will be faster.
 
 Future updates may include:
 	Proper folder navigation
 	File renaming
 	File deletion
-
-A discussion is open on the Github page where you can vote on what features you'd like or comment if you have any ideas."
+"
 fit_content = true
 
 [node name="MessagesHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=487613138]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
-title = "Messages"
+title = "Messages / Entries"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp" unique_id=1166564036]
@@ -1371,11 +1346,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "Directories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1401,11 +1376,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "Multiple Instances"
 foldable_group = SubResource("FoldableGroup_tvbkj")
@@ -1421,7 +1396,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "When running multiple instances of your project, as is the case with multiplayer games where two or more instances is run for debugging. The two instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instance logged what entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[/color] setting.
 
-To see the ID of an instance, use the [color=fc4674]Print Instance ID[/color] hotkey([i]Ctrl + Shift + I[/i] by default). This will display the instance ID on your screen in your game. Within the Settings tab of the dock, under ID Overlay, you'll find settings to customize it's behavior and how it's displayed. Including the font used, size, outline and color to suit your game's resolution and ensure it is clearly visible. "
+To see the ID of an instance, use the [color=fc4674]Display Instance ID[/color] hotkey([i]Ctrl + Shift + I[/i] by default). This will display the instance ID on your screen in your game. Within the Settings tab of the dock, under ID Overlay, you'll find settings to customize it's behavior and how it's displayed. Including the font used, size, outline and color to suit your game's resolution and ensure it is clearly visible. "
 fit_content = true
 
 [node name="Methods&Hotkeys" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=830461916]
@@ -1441,11 +1416,11 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "Functions"
 foldable_group = SubResource("FoldableGroup_fx5fv")
@@ -1485,11 +1460,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "Hotkeys"
 foldable_group = SubResource("FoldableGroup_fx5fv")
@@ -1513,11 +1488,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "File Limits"
 foldable_group = SubResource("FoldableGroup_fx5fv")
@@ -1564,11 +1539,11 @@ fit_content = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/title_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_hover_panel = ExtResource("13_1rd6x")
-theme_override_styles/title_collapsed_panel = ExtResource("30_7xlqe")
-theme_override_styles/title_collapsed_hover_panel = ExtResource("30_7xlqe")
-theme_override_styles/panel = ExtResource("15_7xlqe")
+theme_override_styles/title_panel = ExtResource("14_g08q5")
+theme_override_styles/title_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_panel = ExtResource("14_g08q5")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("14_g08q5")
+theme_override_styles/panel = ExtResource("14_g08q5")
 folded = true
 title = "Formatting"
 foldable_group = SubResource("FoldableGroup_fx5fv")
@@ -1600,6 +1575,7 @@ Any tag and custom string formatting can be used.
 fit_content = true
 
 [node name="MoreInfo" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=656868993]
+visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 tile_scroll_hint = true
@@ -1614,6 +1590,7 @@ size_flags_vertical = 3
 [node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/HelpTab/MoreInfo/BoxContainer" unique_id=973467980]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 8
 vertical = true
 
 [node name="Label" type="Label" parent="DockTabContainer/HelpTab/MoreInfo/BoxContainer/BoxContainer" unique_id=27916166]
@@ -1621,9 +1598,9 @@ custom_minimum_size = Vector2(356, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "If issues with the plugin arise, use button to the left to regenerate a new settings resource. Ensure that  res://addons/gdlogger/data.tres exists. Try creating a new one to place it, just make sure it's named \"data.tres\" and it's path is identical. This will reset categories and settings. 
+text = "If issues with the plugin arise, navigate to  \"res://addons/gdlogger/data.tres\", ensure it exists and secondly. Try replacing it with a new one by deleting it and right-click in the FileSystem folder > Create new > Resource > Find custom resource \"GLData\", just make sure it's named \"data.tres\" and it's path is identical. This will reset categories and settings. 
 
-There's an issue with the icons not properly updating their colors in the dock whenever you switch between light and dark base colors/themes. It's fixed by reloading the editor which can be done via Project > Reload Current Project or restarting Godot
+There's an issue with the icons not properly updating their colors in the dock whenever you switch between light and dark themes and base colors. It's fixed by simply reloading the editor which can be done via Project > Reload Current Project or restarting Godot
 
 Note that autoloaded scripts/scenes are loaded in the order as shown in ProjectSettings > Globals > Autoload. 
 If another autoload is trying to log an entry before Log.tscn has loaded, it might throw an error or simply not log the entry.
@@ -1670,7 +1647,7 @@ title = "PluginData"
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Label2" type="Label" parent="DockTabContainer/HelpTab/MoreInfo/BoxContainer/BoxContainer1/FoldableContainer/VBoxContainer" unique_id=1416033012]
+[node name="Label" type="Label" parent="DockTabContainer/HelpTab/MoreInfo/BoxContainer/BoxContainer1/FoldableContainer/VBoxContainer" unique_id=1416033012]
 modulate = Color(1, 0.26, 0.26, 1)
 layout_mode = 2
 theme_override_constants/outline_size = 8

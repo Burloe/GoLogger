@@ -28,6 +28,7 @@ signal request_theme_colors
 @onready var file_container: GridContainer = %FileGridContainer 
 @onready var reload_btn: Button = %LGReloadButton
 
+@onready var settings = EditorInterface.get_editor_settings()
 @export var data: GLData = null
 var inspector: EditorInspector
 
@@ -105,19 +106,19 @@ enum SessionTimerAction {
 
 
 func _ready() -> void:
+	reload_automatically = data.auto_reload
 	_connect_unique(add_category_btn.button_up, _add_category) 
 	for log_c in category_container.get_children():
 		log_c.queue_free()
 
 	log_settings_popup.hide()
-	settings_tab.colorcode_changed.connect(_on_colorcode_changed)
 	reload_btn.button_up.connect(load_log_files)
-	polling_timer.timeout.connect(func() -> void: if reload_automatically: load_log_files)
+	polling_timer.timeout.connect(func() -> void: if reload_automatically: load_log_files())
 
 	log_settings_btn.button_up.connect(_on_log_settings_button_up)
 	auto_reload_btn.toggled.connect(func(toggled_on: bool) -> void: reload_automatically = toggled_on)
 	open_w_os_btn.toggled.connect(func(toggled_on: bool) -> void: open_log_with_os = toggled_on)
-	colorcode_btn.toggled.connect(func(toggled_on: bool) -> void: data.colorcode_dates = toggled_on)
+	colorcode_btn.toggled.connect(_on_colorcode_changed)
 	sort_mode_btn.button_up.connect(
 		func() -> void:
 			cur_sort = (cur_sort + 1) % 2
@@ -352,6 +353,7 @@ func load_log_files(is_initializing: bool = false) -> void: ## Used to both init
 
 		is_reloading = true
 		_reconcile_log_files(target_files, current_category)
+		_on_colorcode_changed(data.colorcode_dates)
 
 		await get_tree().physics_frame
 		_update_columns(is_initializing) 
@@ -466,33 +468,6 @@ func _get_category_files(category_name: String) -> PackedStringArray:
 
 
 
-func _on_colorcode_changed() -> void:
-	var files := file_container.get_children() 
-	var colorcode: Color = Color.BLACK
-	var used_cols: Array[Color]= []
-	var prev_file: GLLogFile = null
-
-	if files.is_empty():
-		return
-
-	for cur_file: GLLogFile in files:
-		var file_name = cur_file.file_name
-		if data.colorcode_dates:
-			var pdate: String = prev_file.date_stamp if prev_file else ""
-
-			if !prev_file or !cur_file.date_stamp.contains(prev_file.date_stamp):
-					colorcode = _get_logfile_color(used_cols)
-					used_cols.append(colorcode)
-			cur_file.add_theme_color_override("font_color", 							colorcode)
-			cur_file.add_theme_color_override("font_hover_color", 				colorcode.lightened(0.2))
-			cur_file.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
-		else:
-			cur_file.add_theme_color_override("font_color", 				theme_colors["font"]["normal"])
-			cur_file.add_theme_color_override("font_hover_color", 	theme_colors["font"]["hover"])
-			cur_file.add_theme_color_override("font_pressed_color", theme_colors["font"]["normal"])
-		prev_file = cur_file
-
-
 
 func _sort_file_list(category_name: String) -> Array:
 	var file_list: PackedStringArray = _get_category_files(category_name) 
@@ -574,16 +549,54 @@ func _open_log_file(log_file: GLLogFile) -> void:
 
 
 
+func _on_colorcode_changed(toggled_on: bool) -> void:
+	var files := file_container.get_children() 
+	var colorcode: Color = Color.BLACK
+	var used_cols: Array[Color]= []
+	var prev_file: GLLogFile = null
+	data.colorcode_dates = toggled_on
+
+	if files.is_empty():
+		return
+
+	for cur_file: GLLogFile in files:
+		var file_name = cur_file.file_name
+		if data.colorcode_dates:
+			var pdate: String = prev_file.date_stamp if prev_file else ""
+
+			if !prev_file or !cur_file.date_stamp.contains(prev_file.date_stamp):
+					colorcode = _get_logfile_color(used_cols)
+					used_cols.append(colorcode)
+			cur_file.add_theme_color_override("font_color", 							colorcode)
+			cur_file.add_theme_color_override("font_hover_color", 				colorcode.lightened(0.2))
+			cur_file.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
+		else:
+			cur_file.remove_theme_color_override("font_color")
+			cur_file.remove_theme_color_override("font_hover_color")
+			cur_file.remove_theme_color_override("font_hover_pressed_color")
+		prev_file = cur_file
+
+
+
 func _get_logfile_color(used_colors: Array[Color]) -> Color:
 	var rng := RandomNumberGenerator.new()
-	var c := Color.BLACK
-	
-	while c == Color.BLACK or c.get_luminance() <= 0.6 and c.get_luminance() >= 0.85:
-		c = Color(rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), 0.8) 
-		for col in used_colors:
-			while c.is_equal_approx(col):
-				c = Color(rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), rng.randf_range(0.6, 1.0), 0.8)
-	return c
+	var luminance: float = settings.get_setting("interface/theme/base_color").get_luminance()
+	var min_luminance := 0.85 if luminance <= 0.5 else 0.05
+	var max_luminance := 1.0 if luminance <= 0.5 else 0.20
+
+	while true:
+		var color := Color(rng.randf(), rng.randf(), rng.randf(), 0.8)
+		if color == Color.BLACK or color.get_luminance() < min_luminance or color.get_luminance() > max_luminance:
+			continue
+
+		var is_used := false
+		for used_color: Color in used_colors:
+			if color.is_equal_approx(used_color):
+				is_used = true
+				break
+		if not is_used:
+			return color
+	return Color.BLACK
 
 
 

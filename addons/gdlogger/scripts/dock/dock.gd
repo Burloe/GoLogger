@@ -112,7 +112,6 @@ var sett_file_count_spinbox_line: LineEdit
 @onready var help_tab: 						TabContainer = %HelpTab
 @onready var getting_started_tab: ScrollContainer = %GettingStarted
 @onready var help_setup: 					FoldableContainer = %SetupHelp
-@onready var help_sessions: 			FoldableContainer = %SessionsHelp
 @onready var help_categories: 		FoldableContainer = %CategoriesHelp
 @onready var help_messages: 			FoldableContainer = %MessagesHelp
 @onready var help_concurrencies: 	FoldableContainer = %ConcurrenciesHelp
@@ -265,7 +264,6 @@ func _init_visibility() -> void:
 
 	var fold_conts: Array[FoldableContainer] = [
 		help_setup,
-		help_sessions,
 		help_categories,
 		help_messages,
 		help_concurrencies,

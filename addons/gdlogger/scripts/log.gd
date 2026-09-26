@@ -49,16 +49,18 @@ enum ErrorReportLevel {
 
 @export var data: GLData = null
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
+# const id_overlay_lbl_sett = preload("")
 var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
 var copy_name : String = ""
 var session_status: bool = false:
 	set(value):
 		session_status = value
 		session_toggled.emit(session_status)
+		instance_id_label.text = str("[color=limegreen][font_size=8]Session Active[/font_size][/color]\n" if value else "[color=red][font_size=8]Session Inactive[/color]\n", "  ", instance_id, "  ")
 var instance_id: String = "":
 	set(value):
 		instance_id = value 
-		instance_id_label.text = str("  ", value, "  ")
+		instance_id_label.text = str("[color=limegreen]Session Active[/color]\n" if session_status else "[color=red]Session Inactive[/color]\n", "  ", value, "  ")
 var cur_id_align: int = 0
 var data_mtime: int = -1
 
@@ -67,11 +69,7 @@ var data_mtime: int = -1
 func load_data() -> void:
 	if !FileAccess.file_exists(DATA_PATH):
 		data = GLData.new()
-		var err := ResourceSaver.save(data, DATA_PATH)
-		if err == OK and data.error_reporting != 2:
-			print("GDLogger: No data found. Loading default.")
-		else:
-			push_error("GDLogger Error: No data found and unable to restore to defaults. Try to manually create a new GLData resource at '", DATA_PATH, "'.")
+		ResourceSaver.save(data, DATA_PATH)
 	else:
 		data = load(DATA_PATH)
 	data_mtime = _get_data_mtime()
@@ -147,9 +145,7 @@ func _input(event: InputEvent) -> void:
 
 
 func start_session() -> void:
-	if session_status: 
-		if data.error_reporting != 2:
-			push_warning("GDLogger: Failed to start session, a session is already active.")
+	if session_status:
 		return
 
 	if data.limit_method == LimitMethod.SESSION_TIMER or data.limit_method == LimitMethod.BOTH:
@@ -159,7 +155,7 @@ func start_session() -> void:
 		var c_name: String = i.category_name
 		var f_name: String = _get_file_name(c_name) # game(date-time).log
 		var f_path: String = str(data.base_dir, c_name, "_logs/", f_name)
-
+		print(f_name, "  ", f_path)
 		i.file_name = f_name
 		i.file_path = f_path
 
@@ -171,13 +167,13 @@ func start_session() -> void:
 
 		dir = DirAccess.open(path)
 
-		if !dir and data.error_reporting != 2: # ErrCheck
+		if !dir: # ErrCheck
 			var _err = DirAccess.get_open_error()
 			if _err != OK: push_warning("GDLogger: ", get_error(_err, "DirAccess"), " (", path, ").")
 			continue
 
 		var _f = FileAccess.open(f_path, FileAccess.WRITE)
-		if !_f and data.error_reporting != 2:
+		if !_f:
 			push_warning("GDLogger: Failed to create log file for session(", f_path, ").")
 			continue
 
@@ -211,8 +207,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var tc_name: String = ""
 
 	if log_msg == "":
-		if data.error_reporting != 2:
-			printerr("GDLogger: Attempted to log empty entry.")
+		printerr("GDLogger: Attempted to log empty entry.")
 		return
 
 	if category_name == "": # Unspecified category -> Use Default category
@@ -221,13 +216,12 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			tc_name = data.default_category
 
 		else:
-			if data.error_reporting != 2:
-				if data.default_category.is_empty():
-					printerr("GDLogger: msg() called without specifying a category name and no default category assigned.\n\t Entry:\n", log_msg)
-				else:
-					if !cats.has(data.default_category):
-						printerr("GDLogger: Entry failed to log into default category[", data.default_category, "] assigned does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
-					printerr("GDLogger: Attempted to log entry into non-existant default category[", data.default_category,"]")
+			if data.default_category.is_empty():
+				printerr("GDLogger: msg() called without specifying a category name and no default category assigned.\n\t Entry:\n", log_msg)
+			else:
+				if !cats.has(data.default_category):
+					printerr("GDLogger: Entry failed to log into default category[", data.default_category, "] assigned does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
+				printerr("GDLogger: Attempted to log entry into non-existant default category[", data.default_category,"]")
 
 			return
 
@@ -235,21 +229,18 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		target_category = data.get_category(category_name)
 
 	if !target_category:
-		if data.error_reporting != 2:
-			printerr("GDLogger: Category ", category_name, "' not found.")
+		printerr("GDLogger: Category ", category_name, "' not found.")
 		return
 
 	if target_category.category_name not in cats:
-		if data.error_reporting != 2:
-			printerr("GDLogger: Category '" + tc_name + "' not found. Check correct spelling.")
+		printerr("GDLogger: Category '" + tc_name + "' not found. Check correct spelling.")
 		return
 
 	if !session_status:
 		return
 
 	if target_category.file_path == "":
-		if data.error_reporting != 2:
-			printerr("GDLogger: No valid file path found for category '" + target_category.category_name + "[" + instance_id + "]'.")
+		printerr("GDLogger: No valid file path found for category '" + target_category.category_name + "[" + instance_id + "]'.")
 		return
 
 
@@ -257,7 +248,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var _f = FileAccess.open(target_category.file_path, FileAccess.READ)
 	if !_f: # ER
 		var _err = FileAccess.get_open_error()
-		if _err != OK and data.error_reporting != 2:
+		if _err != OK:
 			push_warning("GDlogger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
@@ -324,7 +315,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 	var _fw = FileAccess.open(target_category.file_path, FileAccess.WRITE)
 	if !_fw: # ErrCheck
 		var err = FileAccess.get_open_error()
-		if err != OK and data.error_reporting != 2:
+		if err != OK:
 			push_warning("GDLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 
 	# for line in lines:
@@ -345,21 +336,18 @@ func stop_session() -> void:
 	if !session_status:	
 		return 
 
-	var _err_lv: int = data.error_reporting
 	var _timestamp : String = str("[", Time.get_time_string_from_system(data.utc), "] Stopped log session.")
 
 	for category in data.categories:
 		if category.file_path == "":
-			if _err_lv != 2:
-				push_warning("GDLogger: Failed to stop session properly. No valid file path found for category '", category, "'.")
+			session_status = false
+			printerr("GDLogger: Failed to stop session properly. No valid file path found for category '", category, "'.")
 			continue
 
 
 		var _f = FileAccess.open(category.file_path, FileAccess.READ)
 		if !_f:
 			var _err = FileAccess.get_open_error()
-			if _err_lv != 2:
-				if _err != OK: push_warning("GDLogger: Failed to open file ", category.file_path, " with READ ", get_error(_err))
 			push_warning("GDLogger: Failed to stop session properly. Error opening file!", category.file_path)
 			session_status = false
 			return
@@ -368,7 +356,7 @@ func stop_session() -> void:
 
 
 		var _fw = FileAccess.open(category.file_path, FileAccess.WRITE)
-		if !_fw and _err_lv != 2:
+		if !_fw:
 			var _err = FileAccess.get_open_error()
 			if _err != OK:
 				push_warning("GDLogger: Attempting to stop session by writing to file (", category.file_path, ") -> Error[", _err, "]")

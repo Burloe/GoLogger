@@ -4,8 +4,6 @@ extends Control
 signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_theme_colors
 
-signal colorcode_changed ## Emitted to dock_logs.gd to colod code the log files.
-
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var base_dir_lbl: Label = %BaseDirLabel
 @onready var base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
@@ -131,7 +129,6 @@ func _ready() -> void:
 	id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
 	id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
 	hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
-	printerr(limit_method_btn.get_theme_stylebox("normal"), "\n", entry_count_action_btn.get_theme_stylebox("normal"), limit_method_btn.button_pressed)
 	_connect_line_edit_toggled()
 	_assign_spinbox_line_edits()
 	_connect_spinbox_line_submitted()
@@ -166,11 +163,7 @@ func _ready() -> void:
 
 	for node in btn_array:
 		_connect_control_signal(node)
-	# _bind_settings_hover_groups()
 
-
-# func _physics_process(delta: float) -> void:
-# 	printerr(limit_method_btn.get_theme_stylebox("normal"), "\n", entry_count_action_btn.get_theme_stylebox("normal"), limit_method_btn.button_pressed)
 
 
 ## Called by dock.gd after data is initialized.
