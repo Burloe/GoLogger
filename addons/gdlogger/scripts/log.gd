@@ -19,7 +19,7 @@ signal msg_logged(msg: String, category: String) ## Emitted when a log message i
 
 @onready var elements_canvaslayer: CanvasLayer = %GDLoggerElements
 @onready var session_timer: Timer = %SessionTimer
-@onready var instance_id_label: Label = %InstanceIDLabel
+@onready var instance_id_label: Label = %InstanceIDLabel 
 @onready var polling_timer: Timer = %PollingTimer
 
 enum LimitMethod {
@@ -41,12 +41,6 @@ enum SessionTimerAction {
 	STOP
 }
 
-enum ErrorReportLevel {
-	WARNINGS_ERRORS,
-	ERRORS,
-	NONE
-} 
-
 @export var data: GLData = null
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 # const id_overlay_lbl_sett = preload("")
@@ -56,11 +50,10 @@ var session_status: bool = false:
 	set(value):
 		session_status = value
 		session_toggled.emit(session_status)
-		instance_id_label.text = str("[color=limegreen][font_size=8]Session Active[/font_size][/color]\n" if value else "[color=red][font_size=8]Session Inactive[/color]\n", "  ", instance_id, "  ")
 var instance_id: String = "":
 	set(value):
 		instance_id = value 
-		instance_id_label.text = str("[color=limegreen]Session Active[/color]\n" if session_status else "[color=red]Session Inactive[/color]\n", "  ", value, "  ")
+		instance_id_label.text = str(value)
 var cur_id_align: int = 0
 var data_mtime: int = -1
 

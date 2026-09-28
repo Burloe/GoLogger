@@ -9,44 +9,56 @@ class_name GLData extends Resource
 @export var default_category: String = "":
 	set(value):
 		default_category = value
+		update_list()
 		emit_changed()
 
 @export_enum("New", "Old") var browser_sort: int = 0:
 	set(value):
 		browser_sort = value
+		update_list()
 		emit_changed()
 @export var colorcode_dates: bool = false:
 	set(value):
 		colorcode_dates = value
+		update_list()
 		emit_changed()
 @export var open_logs_with_os: bool = false:
 	set(value):
 		open_logs_with_os = value
+		update_list()
 		emit_changed()
-@export var auto_reload: bool = true
+@export var auto_reload: bool = true:
+	set(value):
+		auto_reload = value
+		update_list()
 
 # Directories 6 Formats
 @export var base_dir: String = "user://gdlogger/":
 	set(value):
 		base_dir = value
+		update_list()
 		emit_changed()
 @export var header_format: String = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:":
 	set(value):
 		header_format = value
+		update_list()
 		emit_changed()
 @export var entry_format: String = "[{hh}:{mi}:{ss}] {instance_id}: {entry}":
 	set(value):
 		entry_format = value
+		update_list()
 		emit_changed()
 
 # General
 @export var autostart: bool = true:
 	set(value):
 		autostart = value
+		update_list()
 		emit_changed()
 @export var utc: bool = false:
 	set(value):
 		utc = value
+		update_list()
 		emit_changed()
 
 
@@ -54,18 +66,22 @@ class_name GLData extends Resource
 @export var file_cap: int = 10:
 	set(value):
 		file_cap = value
+		update_list()
 		emit_changed()
-@export var entry_cap: int = 2000:
+@export var entry_cap: int = 1000:
 	set(value):
 		entry_cap = value
+		update_list()
 		emit_changed()
 @export var session_duration: int = 1200:
 	set(value):
 		session_duration = value
+		update_list()
 		emit_changed()
 @export_enum("Entry Count", "Session Timer", "Both", "Separator", "None") var limit_method: int = 0:
 	set(value):
 		limit_method = value
+		update_list()
 		for i in [entry_count_container, session_timer_container, entry_count_action_lbl, session_timer_action_lbl]:
 			if i == null: return
 
@@ -81,24 +97,29 @@ class_name GLData extends Resource
 @export_enum("Overwrite Entries", "Restart Session", "Stop Session") var entry_count_action: int = 0:
 	set(value):
 		entry_count_action = value
+		update_list()
 		emit_changed()
 @export_enum("Restart Session", "Stop Session") var session_timer_action: int = 0:
 	set(value):
 		session_timer_action = value
+		update_list()
 		emit_changed()
 
 # ID Overlay
 @export var id_print: bool = false:
 	set(value):
 		id_print = value
+		update_list()
 		emit_changed()
 @export var id_toggle: bool = false:
 	set(value):
 		id_toggle = value
+		update_list()
 		emit_changed()
 @export var id_startup: bool = false:
 	set(value):
 		id_startup = value
+		update_list()
 		emit_changed()
 @export_enum(
 	"Top-Left", "Top-Center", "Top-Right", "SEPARATOR-A", 
@@ -107,6 +128,7 @@ class_name GLData extends Resource
 	set(value):
 		if value not in [3, 7]:
 			id_align = value
+			update_list()
 			emit_changed()
 
 var base_dir_ctrl: LineEdit = null
@@ -179,33 +201,6 @@ func validate_settings() -> bool:
 
 
 
-func save() -> void:
-	update_list()
-	for key in list.keys():
-		var val = list[key]["value"]
-		var ctrl = list[key]["ctrl"]
-		
-		if ctrl == null:
-			printerr("GDLogger Error: Null reference in save data list [", key, "]")
-			continue
-		
-		
-		if ctrl is Button and ctrl.toggle_mode:
-			list[key]["value"] = ctrl.button_pressed
-		
-		elif ctrl is CheckButton or ctrl is CheckBox:
-			list[key]["value"] = ctrl.button_pressed
-		
-		elif ctrl is SpinBox:
-			list[key]["value"] = ctrl.value
-		
-		elif ctrl is OptionButton:
-			list[key]["value"] = ctrl.selected
-
-		elif ctrl is LineEdit:
-			list[key]["value"] = ctrl.text
-
-		
 
 func apply_values() -> void:
 	update_list()
@@ -213,8 +208,10 @@ func apply_values() -> void:
 	for key in list.keys():
 		var ctrl = list[key]["ctrl"] 
 		var val = list[key]["value"]
-
-		if ctrl is Button or ctrl is CheckBox:
+		# prints(key, ":", ctrl, " - List Value:", val, "\n")
+		# prints(key, ":", " - List Value:", val, "\n")
+		# print(key, " ", ctrl[key], " - ", val[key])
+		if ctrl is CheckButton:
 			ctrl.button_pressed = val
 		
 		elif ctrl is SpinBox:
@@ -225,6 +222,7 @@ func apply_values() -> void:
 
 		elif ctrl is LineEdit:
 			ctrl.text = val
+		# prints(ctrl, " - ", val, utc, utc_ctrl.button_pressed, )
 
 
 
@@ -235,17 +233,39 @@ func reset_to_default() -> bool:
 
 	limit_method_ctrl.selected = list["limit_method"]["default"]
 
-	for key in list.keys():
-		var def = list[key]["default"]
-		match key:
-			"limit_method":
-				limit_method = def
-			"count_action":
-				entry_count_action = def
-			"timer_action":
-				session_timer_action = def
-			_:
-				set(key, def)
+	browser_sort = 					list["browser_sort"]["default"]
+	colorcode_dates = 			list["browser_sort"]["default"]
+	open_logs_with_os = 		list["browser_sort"]["default"]
+	auto_reload = 					list["auto_reload"]["default"]
+	base_dir = 							list["base_dir"]["default"]
+	header_format = 				list["header_format"]["default"]
+	entry_format = 					list["entry_format"]["default"]
+	autostart = 						list["autostart"]["default"]
+	utc = 									list["utc"]["default"]
+	file_cap = 							list["file_cap"]["default"]
+	entry_cap = 						list["entry_cap"]["default"]
+	session_duration = 			list["session_duration"]["default"]
+	limit_method = 					list["limit_method"]["default"]
+	entry_count_action = 		list["count_action"]["default"]
+	session_timer_action = 	list["timer_action"]["default"]
+	id_print = 							list["id_print"]["default"]
+	id_toggle = 						list["id_toggle"]["default"]
+	id_startup = 						list["id_startup"]["default"]
+	id_align = 							list["id_align"]["default"]
+
+	# for key in list.keys():
+	# 	var def = list[key]["default"]
+	# 	match key:
+	# 		"limit_method":
+	# 			limit_method = def
+	# 		"count_action":
+	# 			entry_count_action = def
+	# 		"timer_action":
+	# 			session_timer_action = def
+	# 		_:
+	# 			list[key]["value"] = def
+	# 			prints(key, def)
+				# list[key]["ctrl"].set(key, def)
 
 	update_list()
 	apply_values()
@@ -305,23 +325,23 @@ func get_list() -> Dictionary:
 
 func update_list() -> void:
 	list = {
-	"base_dir": 						{"value": base_dir, 						"default": "user://gdlogger/", 		"ctrl": base_dir_ctrl},
-	"header_format": 				{"value": header_format, 				"default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", 		"ctrl": header_format_ctrl},
-	"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},
-	"open_logs_with_os":		{"value": open_logs_with_os,		"default": false,		"ctrl": open_logs_with_os_ctrl},
-	"entry_format": 				{"value": entry_format, 				"default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", 		"ctrl": entry_format_ctrl},
-	"auto_reload": 					{"value": auto_reload, 					"default": true, 		"ctrl": auto_reload_ctrl},
-	"autostart": 						{"value": autostart, 						"default": true, 		"ctrl": autostart_ctrl},
-	"utc": 									{"value": utc, 									"default": false, 	"ctrl": utc_ctrl},
-	"colorcode_dates":			{"value": colorcode_dates,			"default": false,		"ctrl": colorcode_dates_ctrl},
-	"id_print": 						{"value": id_print, 						"default": false, 	"ctrl": id_print_ctrl},
-	"id_toggle": 						{"value": id_toggle, 						"default": false, 	"ctrl": id_toggle_ctrl},
-	"id_startup": 					{"value": id_startup, 					"default": true, 		"ctrl": id_startup_ctrl},
-	"id_align": 						{"value": id_align, 						"default": 0, 			"ctrl": id_align_ctrl},
-	"limit_method": 				{"value": limit_method, 				"default": 0, 			"ctrl": limit_method_ctrl},
-	"count_action": 				{"value": entry_count_action, 	"default": 0, 			"ctrl": entry_count_action_ctrl},
-	"timer_action": 				{"value": session_timer_action, "default": 0, 			"ctrl": session_timer_action_ctrl},
-	"file_cap": 						{"value": file_cap, 						"default": 10, 			"ctrl": file_cap_ctrl, "line": file_cap_ctrl_line},
-	"entry_cap": 						{"value": entry_cap, 						"default": 1000, 		"ctrl": entry_cap_ctrl, "line": entry_cap_ctrl_line},
-	"session_duration": 		{"value": session_duration, 		"default": 1200, 		"ctrl": session_duration_ctrl, "line": session_duration_ctrl_line}
+		"base_dir": 						{"value": base_dir, 						"default": "user://gdlogger/", 		"ctrl": base_dir_ctrl},
+		"header_format": 				{"value": header_format, 				"default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", 		"ctrl": header_format_ctrl},
+		"entry_format": 				{"value": entry_format, 				"default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", 		"ctrl": entry_format_ctrl},
+		"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},
+		"open_logs_with_os":		{"value": open_logs_with_os,		"default": false,		"ctrl": open_logs_with_os_ctrl},
+		"auto_reload": 					{"value": auto_reload, 					"default": true, 		"ctrl": auto_reload_ctrl},
+		"autostart": 						{"value": autostart, 						"default": true, 		"ctrl": autostart_ctrl},
+		"utc": 									{"value": utc, 									"default": false, 	"ctrl": utc_ctrl},
+		"colorcode_dates":			{"value": colorcode_dates,			"default": false,		"ctrl": colorcode_dates_ctrl},
+		"id_print": 						{"value": id_print, 						"default": false, 	"ctrl": id_print_ctrl},
+		"id_toggle": 						{"value": id_toggle, 						"default": false, 	"ctrl": id_toggle_ctrl},
+		"id_startup": 					{"value": id_startup, 					"default": false, 	"ctrl": id_startup_ctrl},
+		"id_align": 						{"value": id_align, 						"default": 0, 			"ctrl": id_align_ctrl},
+		"limit_method": 				{"value": limit_method, 				"default": 0, 			"ctrl": limit_method_ctrl},
+		"count_action": 				{"value": entry_count_action, 	"default": 0, 			"ctrl": entry_count_action_ctrl},
+		"timer_action": 				{"value": session_timer_action, "default": 0, 			"ctrl": session_timer_action_ctrl},
+		"file_cap": 						{"value": file_cap, 						"default": 10, 			"ctrl": file_cap_ctrl, "line": file_cap_ctrl_line},
+		"entry_cap": 						{"value": entry_cap, 						"default": 1000, 		"ctrl": entry_cap_ctrl, "line": entry_cap_ctrl_line},
+		"session_duration": 		{"value": session_duration, 		"default": 1200, 		"ctrl": session_duration_ctrl, "line": session_duration_ctrl_line}
 	}

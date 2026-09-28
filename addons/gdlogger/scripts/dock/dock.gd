@@ -17,7 +17,10 @@ class_name GLDock extends EditorDock
 	# DOCK SETTINGS TAB:
 
 
-
+const gdl_ico_darkmode = preload("uid://vlt2sbet5kyx")
+const gdl_ico_lightmode = preload("uid://defy21wg6ksuo")
+const gh_ico_darkmode = preload("uid://c74n2f1j4wew5")
+const gh_ico_lightmode = preload("uid://c0fie23lxf1be")
 @export var data: GLData = null
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var renable_btn: Button = %RENABLEButton
@@ -120,6 +123,7 @@ var sett_file_count_spinbox_line: LineEdit
 @onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
 @onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
 @onready var help_formatting: 		FoldableContainer = %FormattingHelp
+@onready var github_tex_rect: 		TextureRect = %GithubTextureRect
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -134,7 +138,7 @@ var theme_colors: Dictionary = {}
 	settings.get_setting("interface/theme/accent_color")
 ]
 
-var gdl_ico = preload("uid://bch3ujgyd4vth")
+# var gdl_ico = preload("uid://bch3ujgyd4vth")
 var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
 var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 var lv_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
@@ -198,19 +202,20 @@ var is_shutting_down: bool = false:
 #region Inits and signals
 
 func _ready() -> void:
+
 	data_inspector.edit(ResourceLoader.load(DATA_PATH))
 
 	draw.connect(logs_tab._update_columns.bind(true))
 	hidden.connect(logs_tab._update_columns)
 
 	data = load(DATA_PATH)
-	# docktab_container.set_tab_icon(0, gdl_ico)
 	logs_tab.data = data 
 	logs_tab.is_active = true
 	logs_tab.data = data 
 	settings_tab.data = data
 	data.update_list()
 	theme_colors = _get_theme_colors()
+	_apply_theme_colors()
 
 	docktab_container.tab_changed.connect(
 		func(tab: int) -> void: 
@@ -363,6 +368,7 @@ func reset_to_default() -> void:
 	sett_log_header_apply_btn.disabled = true
 	sett_entry_format_apply_btn.disabled = true
 	sett_entry_format_warning.hide()
+	data.reset_to_default()
 
 
 
@@ -387,7 +393,7 @@ func save_data(ignore_errors: bool = false, external_source: String = "") -> voi
 		return
 	
 	save_categories()
-	data.save()
+	data.update_list()
 	var save_err: int = ResourceSaver.save(data, DATA_PATH)
 	if save_err != OK and !ignore_errors:
 		push_warning("GDLogger: Failed to save settings resource at '", DATA_PATH, "' [", save_err, "] from ", external_source)
@@ -456,19 +462,10 @@ func _on_editor_settings_changed() -> void:
 		settings.get_setting("interface/theme/base_color"),
 		settings.get_setting("interface/theme/accent_color")
 	]
+
 	var new_base: Color = settings.get_setting("interface/theme/base_color")
 	var new_accent: Color = settings.get_setting("interface/theme/accent_color")
 	var new_contrast: float = settings.get_setting("interface/theme/contrast")
-
-	# for i in range(col_settings.size()):
-	# 	if col_settings[i] != editor_col_settings[i]:
-	# 		return
-
-	# var base_changed: bool = theme_col_base != new_base
-	# var accent_changed: bool = theme_col_accent != new_accent
-	# var contrast_changed: bool = theme_contrast != new_contrast
-	# if not base_changed and not accent_changed and not contrast_changed:
-	# 	return
 
 	theme_col_base = new_base
 	theme_col_accent = new_accent
@@ -530,6 +527,15 @@ func _apply_theme_colors() -> void:
 			elif key.begins_with("brdClr") and rsrc is not StyleBoxEmpty and files[i].contains(key):
 				rsrc.border_color = tags[key]
 	
+	if base_col.get_luminance() >= 0.5:
+		dock_icon = gdl_ico_lightmode
+		docktab_container.set_tab_icon(0, gdl_ico_lightmode)
+		github_tex_rect.texture = gh_ico_lightmode
+	else:
+		dock_icon = gdl_ico_darkmode
+		docktab_container.set_tab_icon(0, gdl_ico_darkmode)
+		github_tex_rect.texture = gh_ico_darkmode
+
 	logs_tab.theme_colors = tags
 	settings_tab.theme_colors = tags
 

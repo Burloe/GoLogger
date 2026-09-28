@@ -2,7 +2,8 @@
 extends EditorPlugin
 
 var dock
-var gdl_ico = preload("uid://bch3ujgyd4vth")
+var gdl_ico_darkmode = preload("uid://vlt2sbet5kyx")
+var gdl_ico_lightmode = preload("uid://defy21wg6ksuo")
 
 func _enter_tree() -> void:
 	dock = preload("uid://0k0tpsfqof2s").instantiate() as EditorDock

@@ -169,7 +169,7 @@ func _ready() -> void:
 ## Called by dock.gd after data is initialized.
 func initialize_tab() -> void:
 	data.apply_values()
-	# _handle_limit_method_visibility()
+	_handle_limit_method_visibility()
 	
 
 # Called by dock.gd
@@ -239,7 +239,7 @@ func _connect_spinbox_line_submitted() -> void:
 func _connect_control_signal(node: Control) -> void:
 	if node is Button:
 		_connect_unique(node.button_up, _on_button_button_up.bind(node))
-	if node is CheckBox or node is CheckButton:
+	if node is CheckButton:
 		_connect_unique(node.toggled, _on_checkbox_toggled.bind(node))
 	elif node is OptionButton:
 		_connect_unique(node.item_selected, _on_optbtn_item_selected.bind(node))
@@ -473,7 +473,7 @@ func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 
 
 
-func _on_checkbox_toggled(toggled_on: bool, node: CheckBox) -> void:
+func _on_checkbox_toggled(toggled_on: bool, node: CheckButton) -> void:
 	match node:
 		autostart_btn:
 			data.autostart = toggled_on
