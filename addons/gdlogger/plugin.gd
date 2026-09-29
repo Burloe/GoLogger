@@ -13,6 +13,8 @@ func _enter_tree() -> void:
 	dock.plugin_version = get_plugin_version()
 	# dock.docktab_container.set_tab_icon(0, gdl_ico)
 	dock.renable_btn.button_up.connect(_renable_plugin) 
+	dock.dock_reload_btn.button_up.connect(_renable_plugin)
+	# dock.dock_reload_btn.is_connected(_renable_plugin)
 
 
 
@@ -36,5 +38,6 @@ func _disable_plugin() -> void:
 
 
 func _renable_plugin() -> void: 
+	print("GDLogger: Reload complete.")
 	_exit_tree()
 	_enter_tree()

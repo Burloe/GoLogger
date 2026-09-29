@@ -66,7 +66,7 @@ var open_log_with_os: bool = false:
 	set(value):
 		open_log_with_os = value
 		open_w_os_btn.text = "Open files externally" if value else "Open files in Editor"
-		data.open_logs_with_os = value
+		data.open_logs_enternally = value
 
 var cur_sort: int = 0: 
 	set(value):
@@ -106,15 +106,12 @@ enum SessionTimerAction {
 
 
 func _ready() -> void:
-	reload_automatically = data.auto_reload
-	_connect_unique(add_category_btn.button_up, _add_category) 
-	for log_c in category_container.get_children():
-		log_c.queue_free()
-
+	resized.connect(_update_columns) #REPLACE WITH FLOWCONTAINER? 
 	log_settings_popup.hide()
+
+	_connect_unique(add_category_btn.button_up, _add_category)  
 	reload_btn.button_up.connect(load_log_files)
 	polling_timer.timeout.connect(func() -> void: if reload_automatically: load_log_files())
-
 	log_settings_btn.button_up.connect(_on_log_settings_button_up)
 	auto_reload_btn.toggled.connect(func(toggled_on: bool) -> void: reload_automatically = toggled_on)
 	open_w_os_btn.toggled.connect(func(toggled_on: bool) -> void: open_log_with_os = toggled_on)
@@ -124,19 +121,24 @@ func _ready() -> void:
 			cur_sort = (cur_sort + 1) % 2
 			load_log_files()
 	) 
-	resized.connect(_update_columns)
-	
+
 	inspector = EditorInspector.new()
 	inspector.edit(ResourceLoader.load("uid://cqn5x8cb7vjy3"))
 	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL 
-	open_log_with_os = open_log_with_os # loads the icon
-	reload_btn.visible = !data.auto_reload
+	open_log_with_os = open_log_with_os # Loads the icon from setter
+
 
 
 #region Categories
 
-func initialize_categories() -> void:	## Called by dock.gd after data is initialized.
+func initialize_tab() -> void:
+	reload_automatically = data.auto_reload
+	reload_btn.visible = !data.auto_reload
+	
+	for log_c in category_container.get_children():
+		log_c.queue_free()
+
 	ensure_default_category()
 	
 	for cat in data.categories.duplicate():

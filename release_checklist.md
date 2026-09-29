@@ -10,7 +10,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 - [x] Ensure the `Logs` tab is active on startup.
 - [x] Ensure all `FoldableContainer`s are collapsed properly in both the `Settings` and `Help` tabs on startup.
-- [x] Ensure `gdlogger_data.ini` is created if it is not present when loading the plugin.
+- [ ] Ensure `res://addons/data.tres` is created if it is not present when loading the plugin.
 - [x] Ensure hotkeys all work as intended (and after rebinding).
 
 ## Code

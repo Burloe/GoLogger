@@ -16,15 +16,19 @@ class_name GLDock extends EditorDock
 		# 
 	# DOCK SETTINGS TAB:
 
+signal reload_dock
 
 const gdl_ico_darkmode = preload("uid://vlt2sbet5kyx")
 const gdl_ico_lightmode = preload("uid://defy21wg6ksuo")
 const gh_ico_darkmode = preload("uid://c74n2f1j4wew5")
 const gh_ico_lightmode = preload("uid://c0fie23lxf1be")
-@export var data: GLData = null
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
+
+@export var data: GLData = null
 @onready var renable_btn: Button = %RENABLEButton
 @onready var docktab_container: TabContainer = %DockTabContainer
+@onready var reload_prompt: PanelContainer = %ReloadPromptPanelContainer
+@onready var dock_reload_btn: Button = %ReloadDockButton
 
 # Logs tab
 @onready var logs_tab: HBoxContainer = %LogsTab
@@ -202,16 +206,26 @@ var is_shutting_down: bool = false:
 #region Inits and signals
 
 func _ready() -> void:
+	reload_prompt.hide()
 
+	if FileAccess.file_exists(DATA_PATH):
+		data = load(DATA_PATH)
+	else:
+		regen_data()
+		
+	# dock_reload_btn.button_up.connect(
+	# 	func():
+	# 		if FileAccess.file_exists(DATA_PATH):
+	# 			var resource_filesystem := EditorInterface.get_resource_filesystem()
+	# 			resource_filesystem.filesystem_changed.connect(_on_data_filesystem_scan_completed, CONNECT_ONE_SHOT)
+	# 			resource_filesystem.scan()
+	# )
 	data_inspector.edit(ResourceLoader.load(DATA_PATH))
 
 	draw.connect(logs_tab._update_columns.bind(true))
 	hidden.connect(logs_tab._update_columns)
-
-	data = load(DATA_PATH)
 	logs_tab.data = data 
 	logs_tab.is_active = true
-	logs_tab.data = data 
 	settings_tab.data = data
 	data.update_list()
 	theme_colors = _get_theme_colors()
@@ -230,13 +244,11 @@ func _ready() -> void:
 		func() -> void:
 			if docktab_container.current_tab == 0 and visible:
 				logs_tab.update_columns()
-
 	) 
 	logs_tab.request_save.connect(save_data)
 	logs_tab.request_categories_save.connect(save_categories)
 	settings_tab.request_save.connect(save_data)
 	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
-
 
 	# # Signal connections 
 	_connect_unique(settings.settings_changed, _on_editor_settings_changed) 
@@ -245,16 +257,17 @@ func _ready() -> void:
 	_connect_unique(sett_open_dir_btn.button_up, _open_directory)
 	_connect_unique(sett_reset_btn.button_up, reset_to_default)
 
-	initialize_dock()
 	_apply_theme_colors()
 
 	await get_tree().process_frame
 
 	_assign_settings_controls()
-	logs_tab.initialize_categories()
+	logs_tab.initialize_tab()
 	settings_tab.initialize_tab() 
 	logs_tab.load_log_files(true)
 	_assign_editor_icons()
+	_init_visibility()
+
 
 
 
@@ -305,7 +318,7 @@ func _assign_settings_controls() -> void:
 	data.entry_format_ctrl = sett_entry_format_line
 	data.browser_sort_ctrl = lg_sort_btn 
 	data.color_code_ctrl = lg_colorcode_btn
-	data.open_logs_with_os_ctrl = lg_open_with_os_btn
+	data.open_logs_enternally_ctrl = lg_open_with_os_btn
 	data.auto_reload_ctrl = lg_auto_reload_btn
 	data.autostart_ctrl = sett_autostart_btn
 	data.utc_ctrl = sett_utc_btn
@@ -353,16 +366,6 @@ func _assign_editor_icons() -> void:
 
 #region Public
 
-func initialize_dock() -> void:
-	if data == null: 
-		if FileAccess.file_exists(DATA_PATH):
-			data = load(DATA_PATH)
-		else:
-			regen_data()
-	_init_visibility()
-
-
-
 func reset_to_default() -> void:
 	sett_base_dir_apply_btn.disabled = true
 	sett_log_header_apply_btn.disabled = true
@@ -374,16 +377,15 @@ func reset_to_default() -> void:
 
 func regen_data() -> void:
 	var new := GLData.new()
-	ResourceSaver.save(new, DATA_PATH)
+	if ResourceSaver.save(new, DATA_PATH) == OK:
+		printerr("GDLogger: No plugin data found at path. Successfully generated a new, please reload dock/plugin.")
+		reload_prompt.show()
+	else:
+		printerr("GDLogger: No plugin data found at path '", DATA_PATH, "' and GDLogger wasn't able to generate a new one. Please manually R-Click in directory, Create new > Resource > GLData > Name 'data.tres' > Restart Godot.")
+	
 	logs_tab.data = new
 	settings_tab.data = new
-	for lc in category_container.get_children():
-		if lc is GLLogCategory:
-			lc.data = new
-
-
-func check_data_exists() -> bool:
-	return FileAccess.file_exists(DATA_PATH)
+	data = new
 
 
 

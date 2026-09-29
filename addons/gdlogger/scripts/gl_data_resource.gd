@@ -1,7 +1,7 @@
 @tool
 class_name GLData extends Resource
 
-# Logs tab
+@export_group("Logs Tab")
 @export var categories: Array[GLCategoryData] = []:
 	set(value):
 		categories = value
@@ -11,7 +11,7 @@ class_name GLData extends Resource
 		default_category = value
 		update_list()
 		emit_changed()
-
+@export_subgroup("Settings")
 @export_enum("New", "Old") var browser_sort: int = 0:
 	set(value):
 		browser_sort = value
@@ -22,9 +22,9 @@ class_name GLData extends Resource
 		colorcode_dates = value
 		update_list()
 		emit_changed()
-@export var open_logs_with_os: bool = false:
+@export var open_logs_enternally: bool = false:
 	set(value):
-		open_logs_with_os = value
+		open_logs_enternally = value
 		update_list()
 		emit_changed()
 @export var auto_reload: bool = true:
@@ -32,7 +32,8 @@ class_name GLData extends Resource
 		auto_reload = value
 		update_list()
 
-# Directories 6 Formats
+@export_group("Settings")
+@export_subgroup("Directory & Formats")
 @export var base_dir: String = "user://gdlogger/":
 	set(value):
 		base_dir = value
@@ -49,7 +50,7 @@ class_name GLData extends Resource
 		update_list()
 		emit_changed()
 
-# General
+@export_subgroup("General")
 @export var autostart: bool = true:
 	set(value):
 		autostart = value
@@ -61,8 +62,6 @@ class_name GLData extends Resource
 		update_list()
 		emit_changed()
 
-
-# Limits
 @export var file_cap: int = 10:
 	set(value):
 		file_cap = value
@@ -105,7 +104,7 @@ class_name GLData extends Resource
 		update_list()
 		emit_changed()
 
-# ID Overlay
+@export_subgroup("ID Overlay")
 @export var id_print: bool = false:
 	set(value):
 		id_print = value
@@ -137,7 +136,7 @@ var entry_format_ctrl: LineEdit = null
 
 var browser_sort_ctrl: CheckButton = null
 var color_code_ctrl: CheckButton = null
-var open_logs_with_os_ctrl: Button = null
+var open_logs_enternally_ctrl: Button = null
 var auto_reload_ctrl: CheckButton = null
 
 var autostart_ctrl: CheckButton = null
@@ -234,8 +233,8 @@ func reset_to_default() -> bool:
 	limit_method_ctrl.selected = list["limit_method"]["default"]
 
 	browser_sort = 					list["browser_sort"]["default"]
-	colorcode_dates = 			list["browser_sort"]["default"]
-	open_logs_with_os = 		list["browser_sort"]["default"]
+	colorcode_dates = 			list["colorcode_dates"]["default"]
+	open_logs_enternally = 	list["open_logs_enternally"]["default"]
 	auto_reload = 					list["auto_reload"]["default"]
 	base_dir = 							list["base_dir"]["default"]
 	header_format = 				list["header_format"]["default"]
@@ -251,21 +250,7 @@ func reset_to_default() -> bool:
 	id_print = 							list["id_print"]["default"]
 	id_toggle = 						list["id_toggle"]["default"]
 	id_startup = 						list["id_startup"]["default"]
-	id_align = 							list["id_align"]["default"]
-
-	# for key in list.keys():
-	# 	var def = list[key]["default"]
-	# 	match key:
-	# 		"limit_method":
-	# 			limit_method = def
-	# 		"count_action":
-	# 			entry_count_action = def
-	# 		"timer_action":
-	# 			session_timer_action = def
-	# 		_:
-	# 			list[key]["value"] = def
-	# 			prints(key, def)
-				# list[key]["ctrl"].set(key, def)
+	id_align = 							list["id_align"]["default"] 
 
 	update_list()
 	apply_values()
@@ -329,7 +314,7 @@ func update_list() -> void:
 		"header_format": 				{"value": header_format, 				"default": "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:", 		"ctrl": header_format_ctrl},
 		"entry_format": 				{"value": entry_format, 				"default": "[{hh}:{mi}:{ss}] {instance_id}: {entry}", 		"ctrl": entry_format_ctrl},
 		"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},
-		"open_logs_with_os":		{"value": open_logs_with_os,		"default": false,		"ctrl": open_logs_with_os_ctrl},
+		"open_logs_enternally":	{"value": open_logs_enternally,	"default": false,		"ctrl": open_logs_enternally_ctrl},
 		"auto_reload": 					{"value": auto_reload, 					"default": true, 		"ctrl": auto_reload_ctrl},
 		"autostart": 						{"value": autostart, 						"default": true, 		"ctrl": autostart_ctrl},
 		"utc": 									{"value": utc, 									"default": false, 	"ctrl": utc_ctrl},

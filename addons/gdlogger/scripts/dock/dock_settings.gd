@@ -122,7 +122,6 @@ enum SessionTimerAction {
 
 
 func _ready() -> void:
-	entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
 	inspector = _create_editor_inspector(hotkey_container)
 	inspector.edit(ResourceLoader.load("uid://dyi2aml73k4g8"))
 	id_inspector = _create_editor_inspector(id_font_sett_cont)
@@ -168,6 +167,7 @@ func _ready() -> void:
 
 ## Called by dock.gd after data is initialized.
 func initialize_tab() -> void:
+	entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
 	data.apply_values()
 	_handle_limit_method_visibility()
 	

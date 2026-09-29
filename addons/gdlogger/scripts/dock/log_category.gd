@@ -95,7 +95,7 @@ func _ready() -> void:
 	move_right_btn.set_button_icon(get_theme_icon("ArrowRight", "EditorIcons")) 
 	select_btn.set_button_icon(get_theme_icon("Load", "EditorIcons"))
 	apply_btn.set_button_icon(get_theme_icon("ImportCheck", "EditorIcons"))
-	revert_btn.set_button_icon(get_theme_icon("Reload", "EditorIcons"))
+	revert_btn.set_button_icon(get_theme_icon("Redo", "EditorIcons"))
 	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
 	del_cancel.set_button_icon(get_theme_icon("GuiClose", "EditorIcons"))
 	keep_dir_no_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
