@@ -10,7 +10,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 - [x] Ensure the `Logs` tab is active on startup.
 - [x] Ensure all `FoldableContainer`s are collapsed properly in both the `Settings` and `Help` tabs on startup.
-- [ ] Ensure `res://addons/data.tres` is created if it is not present when loading the plugin.
+- [x] Ensure `res://addons/data.tres` is created if it is not present when loading the plugin.
 - [x] Ensure hotkeys all work as intended (and after rebinding).
 
 ## Code
@@ -21,10 +21,11 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 ## Settings task list
 - [x] `category_names`:
-  - [x] New category names are appended to array at end.
+  - [x] New categories are appended to array at end.
   - [x] Rename is applied to it's existing array entry.
   - [x] Moving categories in Dock moves the array order.
   - [x] Array entry is removed when LogCategory is queue freed.
+  - [ ] Add a new category > Don't name it > Move or change another category and ensure the empty category isn't saved
   - [ ] Directory is deleted properly (ensure default category is cleared when def cat is deleted).
 - [x] `default_category`:
   - [x] Category name is saved to file appropriately.

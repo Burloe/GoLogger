@@ -265,10 +265,14 @@ func _on_del_button_up(btn: Button) -> void:
 		keep_dir_no_btn:
 			if OS.move_to_trash(ProjectSettings.globalize_path(cat_data.category_path)) == FAILED:
 				printerr("GDLogger: Failed to delete directories & files upon request. Please delete manually if desired.")
+			if data.default_category == category_name: 
+				data.default_category = ""
 			queue_free()
 
 		keep_dir_yes_btn:
 			queue_free()
+			if data.default_category == category_name: 
+				data.default_category = ""
 		
 		del_cancel:
 			del_popup.hide()

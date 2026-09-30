@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://0k0tpsfqof2s"]
 
 [ext_resource type="Texture2D" uid="uid://vlt2sbet5kyx" path="res://addons/gdlogger/resources/icons/gdlogger_icon_darkmode.svg" id="1_lnu3o"]
+[ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gdlogger/data.tres" id="3_d5ffo"]
 [ext_resource type="StyleBox" uid="uid://ca7dswxixwju7" path="res://addons/gdlogger/resources/theme/TAB_PANELBG--cmarg(8888)_bgClr(base-1).tres" id="4_n5dsd"]
 [ext_resource type="StyleBox" uid="uid://dxfybobo6h2i7" path="res://addons/gdlogger/resources/theme/TABBARBG--round(4444)_cmarg(4444)_bgClr(base).tres" id="5_o07th"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/gdlogger/scripts/dock/dock.gd" id="6_0swix"]
@@ -26,6 +27,8 @@
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gdlogger/resources/theme/line_edit_norm_round(4444)_exp(2222)_cmarg(4444)_bgClr(base-1).tres" id="25_x27c6"]
 [ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(base).tres" id="30_7xlqe"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4pb5"]
+
 [sub_resource type="Resource" id="Resource_u03vm"]
 script = ExtResource("9_d5ffo")
 category_name = "qwersfd"
@@ -33,8 +36,6 @@ category_name = "qwersfd"
 [sub_resource type="Resource" id="Resource_1j2f0"]
 script = ExtResource("10_1j2f0")
 categories = Array[ExtResource("9_d5ffo")]([SubResource("Resource_u03vm")])
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4pb5"]
 
 [sub_resource type="DPITexture" id="DPITexture_n5dsd"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
@@ -134,7 +135,7 @@ dock_icon = ExtResource("1_lnu3o")
 default_slot = 8
 available_layouts = 7
 script = ExtResource("6_0swix")
-data = SubResource("Resource_1j2f0")
+data = ExtResource("3_d5ffo")
 metadata/_edit_vertical_guides_ = [64.0, 16.0, 960.0]
 metadata/_edit_horizontal_guides_ = [264.0, 296.0, 140.0, 304.0, 544.0]
 
@@ -155,7 +156,7 @@ theme_override_styles/tab_unselected = ExtResource("6_g08q5")
 theme_override_styles/tab_hovered = ExtResource("7_76nog")
 theme_override_styles/tab_selected = ExtResource("8_lnu3o")
 theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_e4pb5")
-current_tab = 1
+current_tab = 2
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("1_lnu3o")
@@ -173,6 +174,7 @@ metadata/_tab_name = " "
 
 [node name="LogsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1085194574]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -331,11 +333,12 @@ theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 7
 
-[node name="ScrollContainer" type="ScrollContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain" unique_id=2030360276]
+[node name="LogFileScrollContainer" type="ScrollContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain" unique_id=2030360276]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LBMarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/ScrollContainer" unique_id=1407356486]
+[node name="LBMarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer" unique_id=1407356486]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -343,11 +346,11 @@ size_flags_vertical = 3
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_right = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/ScrollContainer/LBMarginContainer" unique_id=850618476]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer/LBMarginContainer" unique_id=850618476]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="FileGridContainer" type="GridContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/ScrollContainer/LBMarginContainer/VBoxContainer" unique_id=462271329]
+[node name="FileGridContainer" type="GridContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer/LBMarginContainer/VBoxContainer" unique_id=462271329]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -357,7 +360,6 @@ columns = 999
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 script = ExtResource("19_luwxg")
 data = SubResource("Resource_1j2f0")
@@ -430,7 +432,8 @@ custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LPanel" type="ScrollContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=2008032766]
+[node name="LSettingsPanel" type="ScrollContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=2008032766]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 theme_override_constants/scrollbar_h_separation = 8
@@ -439,13 +442,13 @@ follow_focus = true
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel" unique_id=2008791594]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel" unique_id=2008791594]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="GeneralFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer" unique_id=1807564640]
+[node name="GeneralFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/title_panel = ExtResource("13_1rd6x")
@@ -458,12 +461,12 @@ title = "General"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AutostartCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1302278265]
+[node name="AutostartCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1302278265]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -471,7 +474,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_qiahn")
 button_pressed = true
 text = "Autostart sessions"
 
-[node name="UTCCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=660967489]
+[node name="UTCCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=660967489]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -480,7 +483,7 @@ instead of system/local time for date and timestamps"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qiahn")
 text = "UTC time"
 
-[node name="FileCountHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=781434512]
+[node name="FileCountHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=781434512]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -489,7 +492,7 @@ tooltip_text = "Limits the number of files in any log category folder.
 0 value will disable this feature *USE WITH CAUTION*"
 alignment = 2
 
-[node name="FileCountLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/FileCountHBox" unique_id=977368642]
+[node name="FileCountLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/FileCountHBox" unique_id=977368642]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -497,7 +500,7 @@ size_flags_horizontal = 2
 text = "File count limit"
 vertical_alignment = 1
 
-[node name="FileCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/FileCountHBox" unique_id=753276573]
+[node name="FileCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/FileCountHBox" unique_id=753276573]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -511,7 +514,7 @@ alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
 
-[node name="LimitMethodHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1087907753]
+[node name="LimitMethodHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1087907753]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -520,7 +523,7 @@ Use the selected Actions below to determine what happens once the method conditi
 theme_override_constants/separation = 75
 alignment = 2
 
-[node name="LimitMethodLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=816554777]
+[node name="LimitMethodLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=816554777]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -528,7 +531,7 @@ size_flags_horizontal = 2
 text = "Method"
 vertical_alignment = 1
 
-[node name="LimitMethodOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
+[node name="LimitMethodOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 32)
 layout_mode = 2
@@ -558,7 +561,7 @@ popup/item_3/separator = true
 popup/item_4/text = "None"
 popup/item_4/id = 3
 
-[node name="EntryCountActionHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=320960729]
+[node name="EntryCountActionHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=320960729]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -567,7 +570,7 @@ Overwrite Entries removes the oldest entry as new ones are logged.
 "
 alignment = 2
 
-[node name="EntryActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
+[node name="EntryActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -575,7 +578,7 @@ size_flags_horizontal = 2
 text = "Action"
 vertical_alignment = 1
 
-[node name="EntryCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1695558902]
+[node name="EntryCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1695558902]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
@@ -592,7 +595,7 @@ update_on_text_changed = true
 suffix = "cap"
 custom_arrow_step = 10.0
 
-[node name="EntryActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
+[node name="EntryActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 32)
 layout_mode = 2
@@ -620,7 +623,7 @@ popup/item_1/id = 1
 popup/item_2/text = "Stop"
 popup/item_2/id = 1
 
-[node name="SessionTimerActionHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=53869427]
+[node name="SessionTimerActionHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=53869427]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(0, 32)
@@ -628,7 +631,7 @@ layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 alignment = 2
 
-[node name="SessionTimerActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
+[node name="SessionTimerActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -636,7 +639,7 @@ size_flags_horizontal = 2
 text = "Action"
 vertical_alignment = 1
 
-[node name="SessionDurationSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=956442988]
+[node name="SessionDurationSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=956442988]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
@@ -653,7 +656,7 @@ suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
 
-[node name="SessionTimerActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 32)
 layout_mode = 2
@@ -678,7 +681,7 @@ popup/item_0/id = 0
 popup/item_1/text = "Stop"
 popup/item_1/id = 1
 
-[node name="IDFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer" unique_id=1336991210]
+[node name="IDFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
@@ -692,12 +695,12 @@ title = "ID Overlay"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer" unique_id=570791839]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer" unique_id=570791839]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="IDToggleShowCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1203264481]
+[node name="IDToggleShowCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1203264481]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -705,7 +708,7 @@ tooltip_text = "Toggles overlay visibility rather than showing hotkey is pressed
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qiahn")
 text = "Toggle with hotkey"
 
-[node name="IDStartupCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1292135092]
+[node name="IDStartupCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1292135092]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(0, 32)
@@ -714,7 +717,7 @@ tooltip_text = "Shows ID on startup IF 'Toggle Overlay' is enabled"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qiahn")
 text = "Show on startup"
 
-[node name="IDPrintCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1333754547]
+[node name="IDPrintCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1333754547]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -722,11 +725,11 @@ tooltip_text = "Print instance ID to output when Display Instance ID hotkey is p
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qiahn")
 text = "Print on hotkey press"
 
-[node name="IDAlignHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=33450767]
+[node name="IDAlignHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=33450767]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IDAlignLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer/IDAlignHBox" unique_id=799453164]
+[node name="IDAlignLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer/IDAlignHBox" unique_id=799453164]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -734,7 +737,7 @@ size_flags_horizontal = 3
 text = "Overlay Position"
 vertical_alignment = 1
 
-[node name="IDAlignOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer/IDAlignHBox" unique_id=1922500613]
+[node name="IDAlignOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer/IDAlignHBox" unique_id=1922500613]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -771,13 +774,13 @@ popup/item_9/id = 8
 popup/item_10/text = "Bottom - Right"
 popup/item_10/id = 9
 
-[node name="IDExample" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1156760820]
+[node name="IDExample" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1156760820]
 clip_children = 2
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_tayiv")
 
-[node name="IDExampleLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer/IDExample" unique_id=1725815860]
+[node name="IDExampleLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer/IDExample" unique_id=1725815860]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -792,7 +795,7 @@ label_settings = ExtResource("24_wold0")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Label" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer/IDExample" unique_id=1651403943]
+[node name="Label" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer/IDExample" unique_id=1651403943]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -802,7 +805,7 @@ grow_vertical = 2
 text = "Preview:"
 label_settings = SubResource("LabelSettings_cp33x")
 
-[node name="IDFontFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=2082572762]
+[node name="IDFontFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=2082572762]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 2
@@ -814,20 +817,21 @@ theme_override_styles/panel = ExtResource("15_7xlqe")
 folded = true
 title = "Overlay Appearance "
 
-[node name="RPanel" type="ScrollContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=101034697]
+[node name="RSettingsPanel" type="ScrollContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=101034697]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/scrollbar_h_separation = 8
 follow_focus = true
 scroll_hint_mode = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel" unique_id=245325224]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel" unique_id=245325224]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="DirectoryFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer" unique_id=934129937]
+[node name="DirectoryFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer" unique_id=934129937]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/title_panel = ExtResource("13_1rd6x")
@@ -839,17 +843,17 @@ folded = true
 title = "Directory and Formats"
 foldable_group = SubResource("FoldableGroup_fcs7p")
 
-[node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1869616791]
+[node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1869616791]
 visible = false
 layout_mode = 2
 mouse_filter = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1504669251]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1504669251]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="BaseDirHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=669120101]
+[node name="BaseDirHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=669120101]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
@@ -858,7 +862,7 @@ Recommended to use either a directory within \"user://\" or \"res://\"
 Default path is \"user://GDLogger/\". "
 theme_override_constants/separation = 8
 
-[node name="BaseDirLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
+[node name="BaseDirLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -867,7 +871,7 @@ theme_override_font_sizes/font_size = 14
 text = "Base Directory:"
 vertical_alignment = 1
 
-[node name="BaseDirLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
+[node name="BaseDirLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -883,14 +887,14 @@ placeholder_text = "user://gdlogger/"
 expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="BaseDirLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=1809329385]
+[node name="BaseDirLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=1809329385]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(66, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("23_g08q5")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons" unique_id=1847850916]
+[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons" unique_id=1847850916]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -899,7 +903,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="BaseDirApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=1831127922]
+[node name="BaseDirApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=1831127922]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
@@ -917,11 +921,11 @@ disabled = true
 icon = SubResource("DPITexture_n5dsd")
 icon_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=193635431]
+[node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=193635431]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
-[node name="BaseDirRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=1237133605]
+[node name="BaseDirRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=1237133605]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
@@ -943,7 +947,7 @@ disabled = true
 icon = SubResource("DPITexture_n5dsd")
 icon_alignment = 1
 
-[node name="LogHeaderHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
+[node name="LogHeaderHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
@@ -955,7 +959,7 @@ Supported format tags:
     {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
 theme_override_constants/separation = 8
 
-[node name="LogHeaderLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
+[node name="LogHeaderLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -963,7 +967,7 @@ size_flags_vertical = 1
 text = "Log Header Format:"
 vertical_alignment = 1
 
-[node name="LogHeaderLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
+[node name="LogHeaderLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -981,14 +985,14 @@ text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 emoji_menu_enabled = false
 
-[node name="LogHeaderLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=1877077072]
+[node name="LogHeaderLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=1877077072]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(66, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("23_g08q5")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons" unique_id=1510289973]
+[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons" unique_id=1510289973]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -997,7 +1001,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="LogHeaderApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1394228566]
+[node name="LogHeaderApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1394228566]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
@@ -1015,11 +1019,11 @@ disabled = true
 icon = SubResource("DPITexture_n5dsd")
 icon_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
+[node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
-[node name="LogHeaderRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1011354875]
+[node name="LogHeaderRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1011354875]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
@@ -1041,7 +1045,7 @@ disabled = true
 icon = SubResource("DPITexture_n5dsd")
 icon_alignment = 1
 
-[node name="EntryFormatHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=154378586]
+[node name="EntryFormatHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=154378586]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1055,7 +1059,7 @@ Supported tags:
     {hh}   {mi}   {ss} - hour, minute, second "
 theme_override_constants/separation = 8
 
-[node name="EntryFormatLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
+[node name="EntryFormatLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -1064,7 +1068,7 @@ size_flags_vertical = 1
 text = "Entry Format:"
 vertical_alignment = 1
 
-[node name="EntryFormatLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
+[node name="EntryFormatLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -1084,7 +1088,7 @@ placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="EntryFormatWarning" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
+[node name="EntryFormatWarning" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -1101,7 +1105,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
 
-[node name="Label" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1412207838]
+[node name="Label" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1412207838]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1112,14 +1116,14 @@ text = "{entry} required"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EntryFormatLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=1167054414]
+[node name="EntryFormatLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=1167054414]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(66, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("23_g08q5")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons" unique_id=1190529420]
+[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons" unique_id=1190529420]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1128,7 +1132,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="EntryFormatApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=1933647225]
+[node name="EntryFormatApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=1933647225]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
@@ -1148,11 +1152,11 @@ disabled = true
 icon = SubResource("DPITexture_n5dsd")
 icon_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=749157682]
+[node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=749157682]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
-[node name="EntryFormatRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=1707328286]
+[node name="EntryFormatRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=1707328286]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
@@ -1174,7 +1178,7 @@ disabled = true
 icon = SubResource("DPITexture_n5dsd")
 icon_alignment = 1
 
-[node name="HotkeyFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RPanel/VBoxContainer" unique_id=1889098366]
+[node name="HotkeyFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer" unique_id=1889098366]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -1415,20 +1419,21 @@ text = "When running multiple instances of your project, as is the case with mul
 To see the ID of an instance, use the [color=fc4674]Display Instance ID[/color] hotkey([i]Ctrl + Shift + I[/i] by default). This will display the instance ID on your screen in your game. Within the Settings tab of the dock, under ID Overlay, you'll find settings to customize it's behavior and how it's displayed. Including the font used, size, outline and color to suit your game's resolution and ensure it is clearly visible. "
 fit_content = true
 
-[node name="Methods&Hotkeys" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=830461916]
+[node name="Methods" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=830461916]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 scroll_hint_mode = 1
 metadata/_tab_index = 1
 metadata/_tab_name = "Methods & Hotkeys"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys" unique_id=839083938]
+[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/HelpTab/Methods" unique_id=839083938]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="FunctionsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer" unique_id=347626334]
+[node name="FunctionsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=347626334]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1441,7 +1446,7 @@ folded = true
 title = "Functions"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FunctionsHelp" unique_id=208538217]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FunctionsHelp" unique_id=208538217]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1472,7 +1477,7 @@ There are two signals available to help you synchronize the plugin with game log
 	msg_logged([i]category_name: String, msg: String[/i])"
 fit_content = true
 
-[node name="HotkeysHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer" unique_id=664124483]
+[node name="HotkeysHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=664124483]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1485,7 +1490,7 @@ folded = true
 title = "Hotkeys"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/HotkeysHelp" unique_id=1418471264]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/HotkeysHelp" unique_id=1418471264]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1500,7 +1505,7 @@ text = "There are four hotkeys available to interact with GDLogger during runtim
 Hotkeys can be changed using InputEventShortcut resources. As such, they're excluded and doesn't crowd your InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector."
 fit_content = true
 
-[node name="FileLimitsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer" unique_id=1580460435]
+[node name="FileLimitsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=1580460435]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1513,7 +1518,7 @@ folded = true
 title = "File Limits"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FileLimitsHelp" unique_id=1956207480]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FileLimitsHelp" unique_id=1956207480]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1551,7 +1556,7 @@ This option defines the maximum number of .log files allowed in each category fo
 Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed."
 fit_content = true
 
-[node name="FormattingHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer" unique_id=1185594613]
+[node name="FormattingHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=1185594613]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1564,7 +1569,7 @@ folded = true
 title = "Formatting"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods&Hotkeys/VBoxContainer/FormattingHelp" unique_id=838472294]
+[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FormattingHelp" unique_id=838472294]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1591,6 +1596,7 @@ Any tag and custom string formatting can be used.
 fit_content = true
 
 [node name="MoreInfo" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=656868993]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 scroll_hint_mode = 1
@@ -1758,14 +1764,16 @@ tooltip_text = "Automatically reload log files in Logs tab"
 button_pressed = true
 text = "Automatic file reload"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=699322649]
+[node name="VersionHBoxContainer" type="HBoxContainer" parent="." unique_id=699322649]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(-8, 8)
 mouse_filter = 2
 alignment = 2
 
-[node name="RENABLEButton" type="Button" parent="HBoxContainer" unique_id=1733649966]
+[node name="RENABLEButton" type="Button" parent="VersionHBoxContainer" unique_id=1733649966]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)
@@ -1784,7 +1792,7 @@ icon = SubResource("DPITexture_n5dsd")
 icon_alignment = 1
 expand_icon = true
 
-[node name="SettingsVersionLabel" type="Label" parent="HBoxContainer" unique_id=1832159526]
+[node name="VersionLabel" type="Label" parent="VersionHBoxContainer" unique_id=1832159526]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.25)
 layout_mode = 2
@@ -1795,6 +1803,7 @@ horizontal_alignment = 2
 
 [node name="ReloadPromptPanelContainer" type="PanelContainer" parent="." unique_id=715219784]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_qiahn")
 

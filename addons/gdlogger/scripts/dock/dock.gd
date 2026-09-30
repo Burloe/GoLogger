@@ -32,7 +32,9 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 
 # Logs tab
 @onready var logs_tab: HBoxContainer = %LogsTab
+@onready var category_scroll_container: ScrollContainer = %CategoryScrollContainer
 @onready var category_container: GridContainer = %CategoryGridContainer 
+@onready var lg_scroll_container: ScrollContainer = %LogFileScrollContainer
 @onready var lg_add_cat_btn: Button = %AddCategoryButton
 @onready var lg_open_dir_btn: Button = %LBOpenDirButton 
 @onready var lg_reload_btn: Button = %LGReloadButton
@@ -46,6 +48,8 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 
 # Settings tab
 @onready var settings_tab: Control = %SettingsTab
+@onready var l_settings_scroll_container: ScrollContainer = %LSettingsPanel
+@onready var r_settings_scroll_container: ScrollContainer = %RSettingsPanel
 @onready var sett_reset_btn: Button = %ResetSettingsButton
 @onready var sett_base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var sett_base_dir_lbl: Label = %BaseDirLabel
@@ -110,14 +114,17 @@ var sett_file_count_spinbox_line: LineEdit
 # var inspector: EditorInspector
 @onready var data_inspector: EditorInspector = %SaveDataEditorInspector
 
-@onready var settings_version_lbl: Label = %SettingsVersionLabel
+@onready var version_container: HBoxContainer = %VersionHBoxContainer
+@onready var version_lbl: Label = %VersionLabel
 
 @onready var general_fold_cont: 	FoldableContainer = %GeneralFoldableContainer
 @onready var dir_fold_cont: 			FoldableContainer = %DirectoryFoldableContainer
 
 # Help tab
-@onready var help_tab: 						TabContainer = %HelpTab
-@onready var getting_started_tab: ScrollContainer = %GettingStarted
+@onready var help_tab: 						TabContainer = 			%HelpTab
+@onready var getting_started_tab: ScrollContainer = 	%GettingStarted
+@onready var methods_hotkeys_tab: ScrollContainer = 	%Methods
+@onready var more_info_tab: 			ScrollContainer = 	%MoreInfo
 @onready var help_setup: 					FoldableContainer = %SetupHelp
 @onready var help_categories: 		FoldableContainer = %CategoriesHelp
 @onready var help_messages: 			FoldableContainer = %MessagesHelp
@@ -127,7 +134,7 @@ var sett_file_count_spinbox_line: LineEdit
 @onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
 @onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
 @onready var help_formatting: 		FoldableContainer = %FormattingHelp
-@onready var github_tex_rect: 		TextureRect = %GithubTextureRect
+@onready var github_tex_rect: 		TextureRect = 			%GithubTextureRect
 
 var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
@@ -179,8 +186,8 @@ var plugin_version: String =  "2.0":
 		plugin_version = value
 		# if plugin_version_lbl:
 		# 	plugin_version_lbl.text = str("GDLogger v.", value)
-		if settings_version_lbl:
-			settings_version_lbl.text = str("GDLogger v.", value)
+		if version_lbl:
+			version_lbl.text = str("GDLogger v.", value)
 
 var log_header_value: String = "":
 	set(value):
@@ -404,7 +411,7 @@ func save_categories() -> void:
 	var cats: Array[GLCategoryData] = []
 
 	for log_c in category_container.get_children():
-		if log_c is not GLLogCategory:
+		if log_c is not GLLogCategory or log_c.category_name.is_empty():
 			continue
 
 		if log_c.default_btn.button_pressed: 
@@ -512,6 +519,18 @@ func _apply_theme_colors() -> void:
 	var files := DirAccess.get_files_at(theme_res_path)
 	var sb: Array = []
 	var tags: Dictionary = _get_theme_colors()
+
+	var scroll_conts: Array[ScrollContainer] = [category_scroll_container, lg_scroll_container, l_settings_scroll_container, r_settings_scroll_container, getting_started_tab, methods_hotkeys_tab, more_info_tab]
+
+	for sc: ScrollContainer in scroll_conts:
+		var vert = sc.get_v_scroll_bar()
+		var hori = sc.get_h_scroll_bar()
+		vert.add_theme_stylebox_override("grabber", load("uid://2r3x0lnjbq0v"))
+		vert.add_theme_stylebox_override("grabber_highlight", load("uid://bi05su26rs3d4"))
+		vert.add_theme_stylebox_override("grabber_pressed", load("uid://bi05su26rs3d4"))
+		hori.add_theme_stylebox_override("grabber", load("uid://2r3x0lnjbq0v"))
+		hori.add_theme_stylebox_override("grabber_highlight", load("uid://bi05su26rs3d4"))
+		hori.add_theme_stylebox_override("grabber_pressed", load("uid://bi05su26rs3d4"))
 
 	for i in range(files.size()):
 		var rsrc := ResourceLoader.load(str(theme_res_path + files[i]))
