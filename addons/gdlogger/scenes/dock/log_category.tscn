@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c3n416c5fajm5"]
 
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/gdlogger/scripts/dock/log_category.gd" id="2_t2282"]
-[ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gdlogger/dataasdf.tres" id="3_x8jw8"]
+[ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gdlogger/data.tres" id="3_x8jw8"]
 [ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(base).tres" id="5_juqhc"]
 [ext_resource type="StyleBox" uid="uid://cobusnqe7lb31" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(acc).tres" id="6_g4hj7"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gdlogger/resources/theme/line_edit_norm_round(4444)_exp(2222)_cmarg(4444)_bgClr(base-1).tres" id="6_wk57j"]

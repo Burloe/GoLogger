@@ -211,15 +211,8 @@ func _ready() -> void:
 	if FileAccess.file_exists(DATA_PATH):
 		data = load(DATA_PATH)
 	else:
-		regen_data()
-		
-	# dock_reload_btn.button_up.connect(
-	# 	func():
-	# 		if FileAccess.file_exists(DATA_PATH):
-	# 			var resource_filesystem := EditorInterface.get_resource_filesystem()
-	# 			resource_filesystem.filesystem_changed.connect(_on_data_filesystem_scan_completed, CONNECT_ONE_SHOT)
-	# 			resource_filesystem.scan()
-	# )
+		regen_data() 
+	
 	data_inspector.edit(ResourceLoader.load(DATA_PATH))
 
 	draw.connect(logs_tab._update_columns.bind(true))
