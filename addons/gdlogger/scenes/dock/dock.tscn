@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://vlt2sbet5kyx" path="res://addons/gdlogger/resources/icons/gdlogger_icon_darkmode.svg" id="1_lnu3o"]
 [ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gdlogger/data.tres" id="3_d5ffo"]
 [ext_resource type="StyleBox" uid="uid://ca7dswxixwju7" path="res://addons/gdlogger/resources/theme/TAB_PANELBG--cmarg(8888)_bgClr(base-1).tres" id="4_n5dsd"]
+[ext_resource type="Theme" uid="uid://gjcp57h03j4p" path="res://addons/gdlogger/resources/theme/new_theme.tres" id="4_o07th"]
 [ext_resource type="StyleBox" uid="uid://dxfybobo6h2i7" path="res://addons/gdlogger/resources/theme/TABBARBG--round(4444)_cmarg(4444)_bgClr(base).tres" id="5_o07th"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/gdlogger/scripts/dock/dock.gd" id="6_0swix"]
 [ext_resource type="StyleBox" uid="uid://do4bt3e6yoiab" path="res://addons/gdlogger/resources/theme/TABUNSELECTED--cmarg(8484).tres" id="6_g08q5"]
@@ -145,6 +146,7 @@ clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 1)
 theme_override_constants/side_margin = 15
 theme_override_constants/tab_separation = 10
