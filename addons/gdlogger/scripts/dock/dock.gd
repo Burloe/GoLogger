@@ -115,7 +115,7 @@ var sett_file_count_spinbox_line: LineEdit
 @onready var data_inspector: EditorInspector = %SaveDataEditorInspector
 
 @onready var version_container: HBoxContainer = %VersionHBoxContainer
-@onready var version_lbl: Label = %VersionLabel
+@onready var version_linkbtn: LinkButton = %VersionLinkButton
 
 @onready var general_fold_cont: 	FoldableContainer = %GeneralFoldableContainer
 @onready var dir_fold_cont: 			FoldableContainer = %DirectoryFoldableContainer
@@ -184,10 +184,8 @@ var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast")
 var plugin_version: String =  "2.0":
 	set(value):
 		plugin_version = value
-		# if plugin_version_lbl:
-		# 	plugin_version_lbl.text = str("GDLogger v.", value)
-		if version_lbl:
-			version_lbl.text = str("GDLogger v.", value)
+		if version_linkbtn:
+			version_linkbtn.text = str("GDLogger v.", value)
 
 var log_header_value: String = "":
 	set(value):
@@ -214,6 +212,7 @@ var is_shutting_down: bool = false:
 
 func _ready() -> void:
 	reload_prompt.hide()
+	version_container.show()
 
 	if FileAccess.file_exists(DATA_PATH):
 		data = load(DATA_PATH)

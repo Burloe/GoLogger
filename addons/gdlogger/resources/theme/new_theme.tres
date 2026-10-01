@@ -128,8 +128,66 @@ content_margin_top = 4.0
 content_margin_right = 4.0
 content_margin_bottom = 4.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uc1cd"]
+bg_color = Color(0.19215687, 0.28235295, 0.2901961, 0.60784316)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghham"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.28235295, 0.39215687, 0.4, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_50380"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_75gpn"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_45d4n"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.15294118, 0.21960784, 0.22352941, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fwrcu"]
 bg_color = Color(0.14901961, 0.22352941, 0.22745098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_so5gp"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7tp7y"]
 content_margin_left = 8.0
@@ -192,10 +250,10 @@ content_margin_right = 8.0
 content_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c1grr"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
+content_margin_left = 8.0
+content_margin_top = 9.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
 bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
 border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 4
@@ -212,6 +270,11 @@ Button/styles/hover = SubResource("StyleBoxFlat_o07th")
 Button/styles/hover_pressed = SubResource("StyleBoxFlat_76nog")
 Button/styles/normal = SubResource("StyleBoxFlat_lpubp")
 Button/styles/pressed = SubResource("StyleBoxFlat_myp86")
+CheckButton/styles/disabled = SubResource("StyleBoxFlat_q4v5k")
+CheckButton/styles/hover = SubResource("StyleBoxFlat_o07th")
+CheckButton/styles/hover_pressed = SubResource("StyleBoxFlat_76nog")
+CheckButton/styles/normal = SubResource("StyleBoxFlat_lpubp")
+CheckButton/styles/pressed = SubResource("StyleBoxFlat_myp86")
 FoldableContainer/styles/panel = SubResource("StyleBoxFlat_2wb5s")
 FoldableContainer/styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_hll17")
 FoldableContainer/styles/title_collapsed_panel = SubResource("StyleBoxFlat_vghxg")
@@ -223,7 +286,13 @@ HScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_v5nyb")
 HScrollBar/styles/scroll = SubResource("StyleBoxEmpty_vghxg")
 HScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_vghxg")
 LineEdit/styles/normal = ExtResource("1_v0l1u")
+OptionButton/styles/disabled = SubResource("StyleBoxFlat_uc1cd")
+OptionButton/styles/hover = SubResource("StyleBoxFlat_ghham")
+OptionButton/styles/hover_pressed = SubResource("StyleBoxFlat_50380")
+OptionButton/styles/normal = SubResource("StyleBoxFlat_75gpn")
+OptionButton/styles/pressed = SubResource("StyleBoxFlat_45d4n")
 Panel/styles/panel = SubResource("StyleBoxFlat_fwrcu")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_so5gp")
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_7tp7y")
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_hc3el")
 PopupMenu/styles/separator = SubResource("StyleBoxLine_neaii")
@@ -238,4 +307,5 @@ VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_q6pdd")
 VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_v5nyb")
 VScrollBar/styles/scroll = SubResource("StyleBoxEmpty_vghxg")
 VScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_vghxg")
+VSeparator/constants/separation = 4
 VSeparator/styles/separator = SubResource("StyleBoxLine_6ukpl")

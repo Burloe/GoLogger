@@ -11,3 +11,5 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 corner_detail = 4
+expand_margin_top = 2.0
+expand_margin_bottom = 2.0
