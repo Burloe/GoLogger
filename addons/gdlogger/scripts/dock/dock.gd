@@ -468,10 +468,9 @@ func _on_editor_settings_changed() -> void:
 	theme_col_accent = new_accent
 	theme_contrast = new_contrast
 	editor_col_settings = col_settings.duplicate()
-
-	# Dragging a color picker fires settings_changed continuously; debounce so
-	# the (expensive) theme rebuild only runs once after changes settle.
-	if debounce_timer: debounce_timer.start()
+	
+	if debounce_timer: 
+		debounce_timer.start()
 
 
 
@@ -484,12 +483,22 @@ func _get_theme_colors() -> Dictionary:
 	var colors := {}
 	if base_col.get_luminance() <= 0.5: # Dark
 		colors = {
+			"base_col":											base_col,
+			"accent_col":										accent_col,
 			# Button
 			"normal": 											base_col,
 			"pressed": 											base_col.darkened(contrast * 2),
 			"hover": 												base_col.lightened(contrast * 2),
 			"hover_pressed":								base_col.lightened(contrast),
 			
+			# LogFile
+			"logfile_hover": 								base_col,
+			"logfile_hover_border": 				accent_col,
+			"logfile_hover_pressed": 				base_col.darkened(contrast * 1.25),
+			"logfile_hover_pressed_border":	accent_col.darkened(contrast * 1.25),
+			"logfile_pressed":							base_col.darkened(contrast * 1.25),
+			"logfile_pressed_border":				accent_col.darkened(contrast * 1.25),
+
 			# FoldableContainer - All base_col
 			
 			# Scrollbar
@@ -576,8 +585,8 @@ func _get_theme_colors() -> Dictionary:
 func _apply_theme_colors() -> void:
 	var tags: Dictionary = _get_theme_colors()
 
-	# Block the theme's "changed" signal while mutating so every control using
-	# it doesn't recompute its theme cache once per stylebox/color write.
+	#TODO Tyoe variations needs to be added? 
+	
 	gdl_theme.set_block_signals(true)
 
 	for control_type in gdl_theme.get_stylebox_type_list():
@@ -593,6 +602,15 @@ func _apply_theme_colors() -> void:
 				sb.color = tags["normal"]
 
 			match control_type:
+				"LogFile":
+					match stylebox_name:
+						"hover": 							
+							sb.bg_color = tags["base_col"]
+							sb.border_color["accent_col"]
+						"hover_pressed":
+							sb.bg_color = tags["base_col"]
+							sb.border_color = tags["accent_col"]
+						
 				"LineEdit":
 					sb.bg_color = tags["line_edit_normal"]
 				"HScrollBar", "VScrollBar":
@@ -601,6 +619,8 @@ func _apply_theme_colors() -> void:
 						"grabber_pressed": 		sb.bg_color = tags[stylebox_name]
 				"Panel":
 					sb.bg_color = tags["panel_normal"]
+				"Panel_BaseCol_NoCMarg":
+					sb.bg_color = tags["normal"]				
 				"PopupMenu":
 					match stylebox_name:
 						"hover": 							sb.bg_color = tags["popup_menu_hover"]

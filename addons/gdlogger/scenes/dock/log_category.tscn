@@ -3,9 +3,6 @@
 [ext_resource type="Theme" uid="uid://gjcp57h03j4p" path="res://addons/gdlogger/resources/theme/gdl_theme.tres" id="1_g4hj7"]
 [ext_resource type="Script" uid="uid://bns67apcu30kb" path="res://addons/gdlogger/scripts/dock/log_category.gd" id="2_t2282"]
 [ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gdlogger/data.tres" id="3_x8jw8"]
-[ext_resource type="StyleBox" uid="uid://banh6fdfxhrtb" path="res://addons/gdlogger/resources/theme/round(4444)_cmark(4444)_bgClr(base-1).tres" id="8_ewgjr"]
-[ext_resource type="StyleBox" uid="uid://cni08crnmj033" path="res://addons/gdlogger/resources/theme/blankbtns-empty_cmarg(8 -1 8 -1).tres" id="8_g4hj7"]
-[ext_resource type="StyleBox" uid="uid://2r3x0lnjbq0v" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8888)_bgClr(base).tres" id="10_tk5rb"]
 
 [sub_resource type="DPITexture" id="DPITexture_cqvv8"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"none\" stroke=\"#e0e0e0\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11 8H4l4 4M4 8l4-4\"/></svg>
@@ -71,6 +68,10 @@ Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
 Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
 }
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_64mv3"]
+content_margin_left = 8.0
+content_margin_right = 8.0
+
 [sub_resource type="DPITexture" id="DPITexture_yathj"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"none\" stroke=\"#e0e0e0\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 8h7L8 4m4 4-4 4\"/></svg>
 "
@@ -80,6 +81,20 @@ Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
 Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cern1"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.15058824, 0.2227451, 0.22901963, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+expand_margin_top = 2.0
+expand_margin_bottom = 2.0
+
 [sub_resource type="DPITexture" id="DPITexture_lxkmp"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"none\" stroke=\"#5fff97\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m2 8 4 4 8-8\"/></svg>
 "
@@ -88,16 +103,6 @@ Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
 Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
 Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
 }
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_fcs7p"]
-content_margin_left = 0.0
-content_margin_top = 4.0
-content_margin_right = 0.0
-content_margin_bottom = 4.0
-color = Color(0.5, 0.5, 0.5, 1)
-grow_begin = -4.0
-grow_end = -4.0
-vertical = true
 
 [sub_resource type="DPITexture" id="DPITexture_l2oj6"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M8 9h7V2l-2 2a6.927 8.938-30 0 0-9 11 4.364 6.234-10 0 1 6-8z\"/></svg>
@@ -146,20 +151,17 @@ layout_mode = 1
 anchors_preset = -1
 offset_left = -53.0
 offset_top = 2.0
-offset_right = 53.0
+offset_right = 63.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_styles/panel = ExtResource("10_tk5rb")
+theme = ExtResource("1_g4hj7")
+theme_type_variation = &"Panel_BaseCol_NoCMarg"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel" unique_id=761994653]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -53.0
-offset_right = 53.0
+layout_mode = 0
+offset_left = 8.0
+offset_right = 108.0
 offset_bottom = 24.0
-grow_horizontal = 2
 theme_override_constants/separation = 2
 alignment = 1
 
@@ -212,12 +214,10 @@ theme = ExtResource("1_g4hj7")
 theme_override_colors/icon_pressed_color = Color(0.136, 0.544, 0.442, 1)
 theme_override_colors/icon_hover_color = Color(0.336, 0.744, 0.642, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.136, 0.544, 0.442, 1)
-theme_override_styles/normal = ExtResource("8_g4hj7")
-theme_override_styles/pressed = ExtResource("8_g4hj7")
-theme_override_styles/hover = ExtResource("8_g4hj7")
-theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
-theme_override_styles/disabled = ExtResource("8_g4hj7")
-theme_override_styles/focus = ExtResource("8_g4hj7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_64mv3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_64mv3")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_64mv3")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_64mv3")
 icon = SubResource("DPITexture_yathj")
 flat = true
 icon_alignment = 1
@@ -249,7 +249,7 @@ visible = false
 custom_minimum_size = Vector2(52, 36)
 layout_mode = 2
 theme = ExtResource("1_g4hj7")
-theme_override_styles/panel = ExtResource("8_ewgjr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_cern1")
 
 [node name="LineEditHBox" type="HBoxContainer" parent="HBoxContainer/LineEditPanel" unique_id=2091384365]
 unique_name_in_owner = true
@@ -274,12 +274,6 @@ tooltip_text = "Applies name"
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
 theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("8_g4hj7")
-theme_override_styles/pressed = ExtResource("8_g4hj7")
-theme_override_styles/hover = ExtResource("8_g4hj7")
-theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
-theme_override_styles/disabled = ExtResource("8_g4hj7")
-theme_override_styles/focus = ExtResource("8_g4hj7")
 disabled = true
 icon = SubResource("DPITexture_lxkmp")
 flat = true
@@ -289,7 +283,6 @@ icon_alignment = 1
 layout_mode = 2
 theme = ExtResource("1_g4hj7")
 theme_override_constants/separation = 3
-theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
 [node name="RevertButton" type="Button" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=79804206]
 unique_name_in_owner = true
@@ -303,12 +296,6 @@ focus_mode = 0
 mouse_default_cursor_shape = 1
 theme = ExtResource("1_g4hj7")
 theme_override_constants/outline_size = 8
-theme_override_styles/normal = ExtResource("8_g4hj7")
-theme_override_styles/pressed = ExtResource("8_g4hj7")
-theme_override_styles/hover = ExtResource("8_g4hj7")
-theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
-theme_override_styles/disabled = ExtResource("8_g4hj7")
-theme_override_styles/focus = ExtResource("8_g4hj7")
 icon = SubResource("DPITexture_l2oj6")
 flat = true
 icon_alignment = 1
@@ -323,12 +310,6 @@ tooltip_text = "Set as default to be used when calling msg(\"My entry\") without
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
 theme_override_font_sizes/font_size = 6
-theme_override_styles/normal = ExtResource("8_g4hj7")
-theme_override_styles/pressed = ExtResource("8_g4hj7")
-theme_override_styles/hover = ExtResource("8_g4hj7")
-theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
-theme_override_styles/disabled = ExtResource("8_g4hj7")
-theme_override_styles/focus = ExtResource("8_g4hj7")
 disabled = true
 toggle_mode = true
 icon = SubResource("DPITexture_5uwds")
@@ -348,12 +329,6 @@ theme_override_colors/icon_pressed_color = Color(0.42, 0.029399997, 0.10101001, 
 theme_override_colors/icon_hover_color = Color(0.90234375, 0.34895325, 0.45409718, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.4, 0.028, 0.0962, 1)
 theme_override_colors/icon_disabled_color = Color(0.48, 0.48, 0.48, 0.4)
-theme_override_styles/normal = ExtResource("8_g4hj7")
-theme_override_styles/pressed = ExtResource("8_g4hj7")
-theme_override_styles/hover = ExtResource("8_g4hj7")
-theme_override_styles/hover_pressed = ExtResource("8_g4hj7")
-theme_override_styles/disabled = ExtResource("8_g4hj7")
-theme_override_styles/focus = ExtResource("8_g4hj7")
 text = "
 "
 icon = SubResource("DPITexture_abu1v")
