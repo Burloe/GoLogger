@@ -155,7 +155,7 @@ offset_right = 63.0
 offset_bottom = 24.0
 grow_horizontal = 2
 theme = ExtResource("1_g4hj7")
-theme_type_variation = &"Panel_BaseCol_NoCMarg"
+theme_type_variation = &"Panel_base_col_no_cmarg"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel" unique_id=761994653]
 layout_mode = 0
@@ -224,7 +224,6 @@ icon_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=151857270]
 layout_mode = 2
-theme_override_constants/separation = 8
 
 [node name="CategoryNameLineEdit" type="LineEdit" parent="HBoxContainer" unique_id=240651878]
 unique_name_in_owner = true
@@ -233,7 +232,7 @@ custom_maximum_size = Vector2(-1, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_g4hj7")
-theme_override_constants/outline_size = 5
+theme_type_variation = &"LineEdit_category_field_valid"
 theme_override_font_sizes/font_size = 18
 placeholder_text = "Enter name"
 expand_to_text_length = true
@@ -273,7 +272,6 @@ size_flags_vertical = 4
 tooltip_text = "Applies name"
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
-theme_override_font_sizes/font_size = 14
 disabled = true
 icon = SubResource("DPITexture_lxkmp")
 flat = true
@@ -281,6 +279,7 @@ icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=51459182]
 layout_mode = 2
+offset_transform_enabled = true
 theme = ExtResource("1_g4hj7")
 theme_override_constants/separation = 3
 

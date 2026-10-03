@@ -32,8 +32,6 @@ signal show_delete_category_prompt(category: GLLogCategory)
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
 const SIZE_UNEDITED = Vector2(210, 48)
 const SIZE_EDITED = Vector2(262, 48)
-var sb_line_edit_normal: StyleBoxFlat = preload("uid://pue22dsifmfd")
-var sb_line_edit_invalid: StyleBoxFlat = preload("uid://cdij27b0tovx") 
 ##  Last applied category name
 var category_name: String = "":
 	set(value):
@@ -172,7 +170,7 @@ func apply_name(new_name: String) -> void:
 	if !is_name_available(new_name) or new_name.is_empty():
 		line_edit.text = category_name
 		line_edit.unedit()
-		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+		line_edit.set_theme_type_variation("LineEdit_category_field_valid")
 		_tween_line_edit_module(false)
 		has_unapplied_name = false
 		return 
@@ -211,27 +209,28 @@ func apply_name(new_name: String) -> void:
 
 
 func _on_text_changed(new_text: String) -> void:
+	var c_column = line_edit.caret_column
 	line_edit.text = line_edit.text.validate_filename()
 	new_text = new_text.replace(" ", "_")
-	line_edit.caret_column = new_text.length() + 1
+	line_edit.caret_column = c_column
 
 	has_unapplied_name = new_text not in [category_name, ""]
 
 	if new_text.is_empty() or !is_name_available(new_text) and category_name != new_text: 
 		apply_btn.disabled = true
-		line_edit.add_theme_stylebox_override("normal", sb_line_edit_invalid)
+		line_edit.set_theme_type_variation("LineEdit_category_field_invalid")
 	
 	elif new_text == category_name:
 		apply_btn.disabled = true
-		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+		line_edit.set_theme_type_variation("LineEdit_category_field_valid")
 
 	else:
 		apply_btn.disabled = false
-		line_edit.add_theme_stylebox_override("normal", sb_line_edit_normal)
+		line_edit.set_theme_type_variation("LineEdit_category_field_valid")
 
 
 
-#DELETE - Moved to dock_logs.gd
+
 func _on_del_button_up() -> void:
 	if category_name.is_empty():
 		queue_free()

@@ -4,10 +4,8 @@ extends HBoxContainer
 
 signal request_save(source: String) ## Emitted to dock.gd. "source" is purely for debugging to see what emitted.
 signal request_categories_save
-signal request_theme_colors
 
 @onready var settings_tab: Control = %SettingsTab
-@onready var category_panel: HBoxContainer = %CategoryPanel
 @onready var add_category_btn: Button = %AddCategoryButton
 @onready var category_scroll_container: ScrollContainer = %CategoryScrollContainer
 @onready var category_container: GridContainer = %CategoryGridContainer
@@ -31,33 +29,23 @@ signal request_theme_colors
 @onready var cur_sort_lbl: Label = %CurSortLabel
 @onready var auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
 
-@onready var margin_container: MarginContainer = %LBMarginContainer
-@onready var file_container: GridContainer = %FileGridContainer 
+@onready var file_container: FlowContainer = %FileFlowContainer 
 @onready var reload_btn: Button = %LGReloadButton
 
 @onready var settings = EditorInterface.get_editor_settings()
 @export var data: GLData = null
 var inspector: EditorInspector
 
-const GRID_SEPARATION = 8
-const GRID_GROUP_SORT_SEPARATION = 24
-var log_file_btn := preload("uid://bq7nahsc5aca7")
-var cont_lbl_sett = preload("uid://cqn5x8cb7vjy3")
-var category_scene = preload("uid://c3n416c5fajm5") 
+const LOG_FILE_BUTTON := preload("uid://bq7nahsc5aca7")
+const CATEGORY_SCENE = preload("uid://c3n416c5fajm5") 
 
 var is_active: bool = true
 var is_shutting_down: bool = false
 var is_reloading: bool = false
-var is_content_hovered: bool = false
-var _default_setting_in_progress: bool = false  
-var _column_update_pending: bool = false 
+var _default_setting_in_progress: bool = false
 
-var min_cell_width: int = 140
 var base_dir = ""
 var hovered_logfile: GLLogFile
-var categories: Array = [] # [["game", gameGridContainer], ["player", playerGridContainer]]
-var cat_containers: Array[GridContainer] = []
-var grid_conts: Array[GridContainer] = []
 var log_files: Array[GLLogFile] = []
 var category_to_delete: GLLogCategory = null
 var current_category: String = "":
@@ -110,43 +98,16 @@ enum SessionTimerAction {
 
 
 
-func _on_del_prompt_button_up(btn: Button) -> void:
-	var cat_name: String = category_to_delete.cat_data.category_name if category_to_delete else ""
-	var cat_path: String = category_to_delete.cat_data.category_path if category_to_delete else ""
-	
-	match btn:
-		
-		cancel_del_cat_btn:
-			category_to_delete = null
-		
-		keep_dir_yes_btn:
-			category_to_delete.queue_free()
-		
-		keep_dir_no_btn:
-			if category_to_delete and cat_path == "" and OS.move_to_trash(ProjectSettings.globalize_path(cat_path)) != OK:
-				printerr("GDLogger: Failed to delete directories & files upon request. Please delete manually if desired.")
-			
-			if data.default_category == category_to_delete.category_name: 
-				data.default_category = ""
-			
-			category_to_delete.queue_free()
-			
-	prompt_popup.hide()
-	del_cat_popup.hide()
-	reload_dock_btn.hide()
+
 
 
 
 func _ready() -> void:
-	resized.connect(_update_columns) #REPLACE WITH FLOWCONTAINER? 
 	log_settings_popup.hide()
-
 	_connect_unique(add_category_btn.button_up, _add_category)  
-	
 	cancel_del_cat_btn.button_up.connect(_on_del_prompt_button_up.bind(cancel_del_cat_btn))
 	keep_dir_yes_btn.button_up.connect(_on_del_prompt_button_up.bind(keep_dir_yes_btn))
 	keep_dir_no_btn.button_up.connect(_on_del_prompt_button_up.bind(keep_dir_no_btn))
-
 	reload_btn.button_up.connect(load_log_files)
 	polling_timer.timeout.connect(func() -> void: if reload_automatically: load_log_files())
 	log_settings_btn.button_up.connect(_on_log_settings_button_up)
@@ -199,7 +160,7 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 
 func _add_category(_name: String = ""): ## _name only applicable at loading
-	var _n = category_scene.instantiate() as GLLogCategory 
+	var _n = CATEGORY_SCENE.instantiate() as GLLogCategory 
 	var low_name: String = _name.to_lower() 
 	_n.category_name = low_name
 	category_container.add_child(_n)
@@ -395,8 +356,8 @@ func load_log_files(is_initializing: bool = false) -> void: ## Used to both init
 		_reconcile_log_files(target_files, current_category)
 		_on_colorcode_changed(data.colorcode_dates)
 
-		await get_tree().physics_frame
-		_update_columns(is_initializing) 
+		# await get_tree().physics_frame
+		# _update_columns(is_initializing) 
 		is_reloading = false
 
 
@@ -477,7 +438,7 @@ func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
 		var has_error := f.get_open_error() != OK
 		f.close()
 				
-		var lf: GLLogFile = log_file_btn.instantiate() as GLLogFile
+		var lf: GLLogFile = LOG_FILE_BUTTON.instantiate() as GLLogFile
 		lf.category_name = category_name
 		lf.file_name = file_name
 		lf.file_path = file_path
@@ -660,28 +621,29 @@ func _on_log_settings_button_up() -> void:
 
 
 
-func _update_columns(is_initializing: bool = false) -> void:
-	if min_cell_width <= 0 or !file_container or !is_active: 
-		file_container.columns = 999
-		return
-
-	var first_log_file: GLLogFile = null
-	for log_file in log_files:
-		if is_instance_valid(log_file) and not log_file.is_queued_for_deletion():
-			first_log_file = log_file
-			break
-
-	if !first_log_file:
-		file_container.columns = 999
-		return
-
-	var cell_width: int = first_log_file.size.x + file_container.get_theme_constant("h_separation")
-	var col: int = 1
-	if is_initializing:
-		col = max(1, int(margin_container.size.x / cell_width)) 
-	else:
-		col = max(1, int(file_container.size.x / cell_width)) 
-	# print("[Col: ", col, "]    [Size.X: ", margin_container.size.x if is_initializing else file_container.size.x, "]    [is_init: ", is_initializing, "]")
-	file_container.columns = col
+func _on_del_prompt_button_up(btn: Button) -> void:
+	var cat_name: String = category_to_delete.cat_data.category_name if category_to_delete else ""
+	var cat_path: String = category_to_delete.cat_data.category_path if category_to_delete else ""
+	
+	match btn:
+		
+		cancel_del_cat_btn:
+			category_to_delete = null
+		
+		keep_dir_yes_btn:
+			category_to_delete.queue_free()
+		
+		keep_dir_no_btn:
+			if category_to_delete and cat_path == "" and OS.move_to_trash(ProjectSettings.globalize_path(cat_path)) != OK:
+				printerr("GDLogger: Failed to delete directories & files upon request. Please delete manually if desired.")
+			
+			if data.default_category == category_to_delete.category_name: 
+				data.default_category = ""
+			
+			category_to_delete.queue_free()
+			
+	prompt_popup.hide()
+	del_cat_popup.hide()
+	reload_dock_btn.hide()
 
 #endregion

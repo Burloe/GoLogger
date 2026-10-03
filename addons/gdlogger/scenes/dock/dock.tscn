@@ -10,10 +10,9 @@
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gdlogger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="Texture2D" uid="uid://c74n2f1j4wew5" path="res://addons/gdlogger/resources/icons/GitHub_Invertocat_White.svg" id="21_8r8ny"]
 [ext_resource type="StyleBox" uid="uid://b5xnafw5yk1tg" path="res://addons/gdlogger/resources/theme/round(4444)_exp(8888)_cmarg(8888)_bgClr(base-2).tres" id="23_g08q5"]
-[ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gdlogger/resources/id_example_panel_tex.png" id="23_qrqlu"]
+[ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gdlogger/resources/icons/id_example_panel_tex.png" id="23_qrqlu"]
 [ext_resource type="PackedScene" uid="uid://dhpqc8gwb77v0" path="res://addons/gdlogger/scenes/logfile_popup.tscn" id="24_ffv0r"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/gdlogger/id_overlay_lbl_settings.tres" id="24_wold0"]
-[ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gdlogger/resources/theme/line_edit_norm_round(4444)_exp(2222)_cmarg(4444)_bgClr(base-1).tres" id="25_x27c6"]
 [ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(base).tres" id="30_7xlqe"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_boc7e"]
@@ -363,28 +362,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="CategoryPanel" type="HBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain" unique_id=35875088]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 48)
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/CategoryPanel" unique_id=1903130669]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 8
-
-[node name="CategoryScrollContainer" type="ScrollContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/CategoryPanel/MarginContainer" unique_id=642802176]
+[node name="CategoryScrollContainer" type="ScrollContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain" unique_id=642802176]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 88)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
 theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_NoCMargins"
+theme_type_variation = &"ScrollContainer_h_cmargs_only"
 follow_focus = true
 
-[node name="CategoryGridContainer" type="GridContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/CategoryPanel/MarginContainer/CategoryScrollContainer" unique_id=2014106739]
+[node name="CategoryGridContainer" type="GridContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/CategoryScrollContainer" unique_id=2014106739]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -397,27 +384,13 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_NoCMargins"
+theme_type_variation = &"ScrollContainer_h_cmargs_only"
 
-[node name="LBMarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer" unique_id=1407356486]
+[node name="FileFlowContainer" type="FlowContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer" unique_id=1474572224]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_right = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer/LBMarginContainer" unique_id=850618476]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="FileGridContainer" type="GridContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer/LBMarginContainer/VBoxContainer" unique_id=462271329]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 14
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
@@ -483,9 +456,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_NoCMargins"
-theme_override_constants/scrollbar_h_separation = 8
-theme_override_constants/scrollbar_v_separation = 8
+theme_type_variation = &"ScrollContainer_no_cmargins"
 follow_focus = true
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
@@ -866,8 +837,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_NoCMargins"
-theme_override_constants/scrollbar_h_separation = 8
+theme_type_variation = &"ScrollContainer_no_cmargins"
 follow_focus = true
 scroll_hint_mode = 1
 
@@ -881,17 +851,14 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_o07th")
-folded = true
 title = "Directory and Formats"
 foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1869616791]
-visible = false
 layout_mode = 2
 mouse_filter = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1504669251]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -922,8 +889,8 @@ tooltip_text = "The directory where logs are stored in.
 Recommended to use either a directory within \"user://\" or \"res://\"
 
 Default path is \"user://GDLogger/\". "
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("25_x27c6")
+theme = ExtResource("4_o07th")
+theme_type_variation = &"LineEdit_format_fields"
 text = "user://gdlogger/"
 placeholder_text = "user://gdlogger/"
 expand_to_text_length = true
@@ -1023,7 +990,8 @@ Supported format tags:
     {project_name}  {version}  {category}
     {yy}   {mm}   {dd} - year, month, day 
     {hh}   {mi}   {ss} - hour, minute, second"
-theme_override_styles/normal = ExtResource("25_x27c6")
+theme = ExtResource("4_o07th")
+theme_type_variation = &"LineEdit_format_fields"
 text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 emoji_menu_enabled = false
@@ -1126,7 +1094,8 @@ Supported tags:
     {project_name}  {version}  {instance_id} 
     {yy}   {mm}   {dd} - year, month, day 
     {hh}   {mi}   {ss} - hour, minute, second "
-theme_override_styles/normal = ExtResource("25_x27c6")
+theme = ExtResource("4_o07th")
+theme_type_variation = &"LineEdit_format_fields"
 text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 expand_to_text_length = true

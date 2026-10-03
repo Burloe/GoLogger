@@ -207,8 +207,7 @@ var entry_format_value: String = "":
 var is_shutting_down: bool = false:
 	set(value):
 		is_shutting_down = value
-		if logs_tab != null and _node_has_property(logs_tab, "is_shutting_down"):
-			logs_tab.is_shutting_down = value
+		logs_tab.is_shutting_down = value
 
 
 
@@ -222,8 +221,6 @@ func _ready() -> void:
 	
 	data_inspector.edit(ResourceLoader.load(DATA_PATH))
 
-	draw.connect(logs_tab._update_columns.bind(true))
-	hidden.connect(logs_tab._update_columns)
 	logs_tab.data = data 
 	logs_tab.is_active = true
 	settings_tab.data = data
@@ -240,15 +237,10 @@ func _ready() -> void:
 			if tab == 1: # 0 is empty tab for the plugin icon
 				logs_tab.is_active = true
 				logs_tab.load_log_files()
-				logs_tab._update_columns()
 			else:
 				logs_tab.is_active = false
 	)
-	visibility_changed.connect( 
-		func() -> void:
-			if docktab_container.current_tab == 0 and visible:
-				logs_tab.update_columns()
-	) 
+	
 	logs_tab.request_save.connect(save_data)
 	logs_tab.request_categories_save.connect(save_categories)
 	settings_tab.request_save.connect(save_data)
@@ -309,13 +301,6 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 	if signal_obj.is_connected(callback):
 		signal_obj.disconnect(callback)
 	signal_obj.connect(callback)
-
-
-func _node_has_property(node: Object, property_name: StringName) -> bool:
-	for prop_data in node.get_property_list():
-		if prop_data.get("name", "") == property_name:
-			return true
-	return false
 
 
 
@@ -606,12 +591,18 @@ func _apply_theme_colors() -> void:
 					match stylebox_name:
 						"hover": 							
 							sb.bg_color = tags["base_col"]
-							sb.border_color["accent_col"]
+							sb.border_color = tags["accent_col"]
 						"hover_pressed":
 							sb.bg_color = tags["base_col"]
 							sb.border_color = tags["accent_col"]
 						
 				"LineEdit":
+					sb.bg_color = tags["line_edit_normal"]
+				"LineEdit_format_fields":
+					sb.bg_color = tags["line_edit_normal"]
+				"LineEdit_category_field_valid":
+					sb.bg_color = tags["line_edit_normal"]
+				"LineEdit_category_field_invalid":
 					sb.bg_color = tags["line_edit_normal"]
 				"HScrollBar", "VScrollBar":
 					match stylebox_name:
@@ -619,7 +610,7 @@ func _apply_theme_colors() -> void:
 						"grabber_pressed": 		sb.bg_color = tags[stylebox_name]
 				"Panel":
 					sb.bg_color = tags["panel_normal"]
-				"Panel_BaseCol_NoCMarg":
+				"Panel_base_col_no_cmarg":
 					sb.bg_color = tags["normal"]				
 				"PopupMenu":
 					match stylebox_name:
