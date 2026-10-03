@@ -3,12 +3,11 @@ extends PopupPanel
 
 signal close_logfile
 
-@onready var top_bar: Panel = %TopBar
+@onready var top_bar: PanelContainer = %TopBar
 @onready var resize_handle: TextureRect = %ResizeHandle
 @onready var copy_btn: Button = %CopyButton
 @onready var settings_btn: Button = %SettingsButton
 @onready var close_btn: Button = %CloseButton
-@onready var content_margin_container: MarginContainer = %ContentMarginContainer
 @onready var content_lbl: Label = %ContentLabel
 @onready var lbsett_panel: Panel = %LblSettingsPanel
 @onready var lbsett_scroll_container: ScrollContainer = %LblSettingsScrollContainer
@@ -31,7 +30,6 @@ var content: String = "":
 
 
 func _ready() -> void:
-	assign_icons()
 	about_to_popup.connect(_on_about_to_popup)
 	resize_handle.gui_input.connect(_on_resize_handle_gui_input)
 	copy_btn.button_up.connect(
@@ -53,13 +51,6 @@ func _ready() -> void:
 	inspector.edit(ResourceLoader.load(file_contents_lblsett))
 	content_lbl.label_settings = load(file_contents_lblsett) 
 	lbsett_panel.hide()
-
-
-
-func assign_icons() -> void:
-	copy_btn.set_button_icon(get_theme_icon("ActionCopy", "EditorIcons"))
-	settings_btn.set_button_icon(get_theme_icon("GDScript", "EditorIcons"))
-	close_btn.set_button_icon(get_theme_icon("Close", "EditorIcons"))
 
 
 

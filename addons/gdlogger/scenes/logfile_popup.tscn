@@ -1,15 +1,38 @@
 [gd_scene format=3 uid="uid://dhpqc8gwb77v0"]
 
-[ext_resource type="StyleBox" uid="uid://cx7kjdf3l3xtm" path="res://addons/gdlogger/resources/theme/popup_panel_bgClr(base)_brdClr(base+1).tres" id="1_7pyyx"]
 [ext_resource type="Script" uid="uid://evoiwudnaiqc" path="res://addons/gdlogger/scripts/log_popup.gd" id="2_umimx"]
+[ext_resource type="Theme" uid="uid://gjcp57h03j4p" path="res://addons/gdlogger/resources/theme/gdl_theme.tres" id="3_bte71"]
 [ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(base).tres" id="3_p4n3b"]
 [ext_resource type="StyleBox" uid="uid://bkwqg1yaw842f" path="res://addons/gdlogger/resources/theme/blankbtns-empty_cmarg(8484).tres" id="4_bte71"]
 [ext_resource type="LabelSettings" uid="uid://cqn5x8cb7vjy3" path="res://addons/gdlogger/file_content_label_settings.tres" id="4_umimx"]
 [ext_resource type="Texture2D" uid="uid://b413grm7tl0m6" path="res://addons/gdlogger/resources/icons/resize.svg" id="5_umimx"]
 
-[sub_resource type="DPITexture" id="DPITexture_8r8ny"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+[sub_resource type="DPITexture" id="DPITexture_jp7po"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M2 1a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h1V3h9V2a1 1 0 0 0-1-1zm3 3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm1 2h7v7H6z\"/></svg>
 "
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
+[sub_resource type="DPITexture" id="DPITexture_ytbm3"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"m7 1-.565 2.258a5 5 0 0 0-.689.28L3.758 2.343 2.344 3.758l1.195 1.994a5 5 0 0 0-.285.685L1 7v2l2.258.564a5 5 0 0 0 .279.688l-1.193 1.99 1.414 1.414 1.994-1.195a5 5 0 0 0 .685.285L7 15h2l.564-2.258a5 5 0 0 0 .688-.28l1.99 1.194 1.414-1.414-1.195-1.994a5 5 0 0 0 .285-.685L15 9V7l-2.258-.564a5 5 0 0 0-.28-.688l1.194-1.99-1.414-1.414-1.994 1.195a5 5 0 0 0-.686-.285L9 1H7zm1 5a2 2 0 0 1 0 4 2 2 0 0 1 0-4z\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
+[sub_resource type="DPITexture" id="DPITexture_ds2yy"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"none\" stroke=\"#e0e0e0\" stroke-width=\"2\" d=\"m3 3 10 10M3 13 13 3\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
 
 [node name="LogFilePanelPopup" type="PopupPanel" unique_id=87534791]
 oversampling_override = 1.0
@@ -18,103 +41,101 @@ initial_position = 2
 size = Vector2i(500, 750)
 visible = true
 min_size = Vector2i(300, 338)
-theme_override_styles/panel = ExtResource("1_7pyyx")
+theme = ExtResource("3_bte71")
 script = ExtResource("2_umimx")
-metadata/_edit_horizontal_guides_ = [226.0, 234.0]
-metadata/_edit_vertical_guides_ = [1197.0]
+metadata/_edit_horizontal_guides_ = [213.0, 221.0]
+metadata/_edit_vertical_guides_ = [1186.0, 718.0]
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=676958606]
+[node name="Control" type="Control" parent="." unique_id=647863304]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 13.0
-offset_top = 13.0
-offset_right = -13.0
-offset_bottom = -13.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=854197305]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="TopBar" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=490326790]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 48)
-layout_mode = 2
-mouse_default_cursor_shape = 6
-theme_override_styles/panel = ExtResource("3_p4n3b")
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TopBar" unique_id=448456129]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control" unique_id=854197305]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/separation = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer" unique_id=773087913]
+[node name="TopBar" type="PanelContainer" parent="Control/VBoxContainer" unique_id=1382569830]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 6
+theme = ExtResource("3_bte71")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer/TopBar" unique_id=773087913]
 layout_mode = 2
 mouse_filter = 2
 alignment = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=50349477]
+[node name="Label" type="Label" parent="Control/VBoxContainer/TopBar/HBoxContainer" unique_id=50349477]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 22
 text = "May 24 2025 | 19:48:04"
+clip_text = true
 
-[node name="CopyButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=316475198]
+[node name="CopyButton" type="Button" parent="Control/VBoxContainer/TopBar/HBoxContainer" unique_id=316475198]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Copy log contents to clipboard."
+theme = ExtResource("3_bte71")
 theme_override_styles/normal = ExtResource("4_bte71")
 theme_override_styles/pressed = ExtResource("4_bte71")
 theme_override_styles/hover = ExtResource("4_bte71")
 theme_override_styles/hover_pressed = ExtResource("4_bte71")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_jp7po")
+flat = true
 icon_alignment = 1
 
-[node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=500386683]
+[node name="SettingsButton" type="Button" parent="Control/VBoxContainer/TopBar/HBoxContainer" unique_id=500386683]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Content Settings"
+theme = ExtResource("3_bte71")
 theme_override_styles/normal = ExtResource("4_bte71")
 theme_override_styles/pressed = ExtResource("4_bte71")
 theme_override_styles/hover = ExtResource("4_bte71")
 theme_override_styles/hover_pressed = ExtResource("4_bte71")
 toggle_mode = true
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_ytbm3")
+flat = true
 icon_alignment = 1
 
-[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=1687159835]
+[node name="CloseButton" type="Button" parent="Control/VBoxContainer/TopBar/HBoxContainer" unique_id=1687159835]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Close"
+theme = ExtResource("3_bte71")
 theme_override_styles/normal = ExtResource("4_bte71")
 theme_override_styles/pressed = ExtResource("4_bte71")
 theme_override_styles/hover = ExtResource("4_bte71")
 theme_override_styles/hover_pressed = ExtResource("4_bte71")
-icon = SubResource("DPITexture_8r8ny")
+icon = SubResource("DPITexture_ds2yy")
+flat = true
 icon_alignment = 1
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VBoxContainer" unique_id=2113302947]
+[node name="VSplitContainer" type="VSplitContainer" parent="Control/VBoxContainer" unique_id=2113302947]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 16
 split_offsets = PackedInt32Array(-112)
 split_offset = -112
 
-[node name="LblSettingsPanel" type="Panel" parent="MarginContainer/VBoxContainer/VSplitContainer" unique_id=1350539167]
+[node name="LblSettingsPanel" type="Panel" parent="Control/VBoxContainer/VSplitContainer" unique_id=1350539167]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(256, 192)
@@ -122,7 +143,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("3_p4n3b")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/VSplitContainer/LblSettingsPanel" unique_id=1876103891]
+[node name="MarginContainer" type="MarginContainer" parent="Control/VBoxContainer/VSplitContainer/LblSettingsPanel" unique_id=1876103891]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -134,31 +155,24 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="LblSettingsScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/VSplitContainer/LblSettingsPanel/MarginContainer" unique_id=1819027904]
+[node name="LblSettingsScrollContainer" type="ScrollContainer" parent="Control/VBoxContainer/VSplitContainer/LblSettingsPanel/MarginContainer" unique_id=1819027904]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ContentScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/VSplitContainer" unique_id=90701162]
+[node name="ContentScrollContainer" type="ScrollContainer" parent="Control/VBoxContainer/VSplitContainer" unique_id=90701162]
 layout_mode = 2
 size_flags_vertical = 3
+theme = ExtResource("3_bte71")
 scroll_hint_mode = 1
 
-[node name="ContentMarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/VSplitContainer/ContentScrollContainer" unique_id=1660698490]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="ContentLabel" type="Label" parent="MarginContainer/VBoxContainer/VSplitContainer/ContentScrollContainer/ContentMarginContainer" unique_id=772151595]
+[node name="ContentLabel" type="Label" parent="Control/VBoxContainer/VSplitContainer/ContentScrollContainer" unique_id=772151595]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(256, 32)
 layout_mode = 2
-size_flags_vertical = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "func _on_title_bar_gui_input(event: InputEvent) -> void:
-    if event is InputEventMouseButton:
+    if event is InputEventMouseButton:rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
         if event.button_index == MOUSE_BUTTON_LEFT:
             dragging = event.pressed
 
@@ -188,12 +202,22 @@ func _on_title_bar_gui_input(event: InputEvent) -> void:
 label_settings = ExtResource("4_umimx")
 autowrap_mode = 3
 
-[node name="ResizeHandle" type="TextureRect" parent="MarginContainer" unique_id=1408853994]
+[node name="ResizeHandle" type="TextureRect" parent="Control" unique_id=1408853994]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.5882353)
 custom_minimum_size = Vector2(16, 16)
 custom_maximum_size = Vector2(16, 16)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+pivot_offset = Vector2(16, 16)
 size_flags_horizontal = 8
 size_flags_vertical = 8
 mouse_default_cursor_shape = 12

@@ -7,6 +7,8 @@ signal log_category_changed
 signal move_category_requested(log_category: GLLogCategory, direction : int)
 
 signal set_default_category(category: GLLogCategory, toggle_on: bool) 
+## Emitted to dock_logs.gd to display the prompt and await user input before executing deletion and directory cleanup
+signal show_delete_category_prompt(category: GLLogCategory)
 
 
 @export var data: GLData = null
@@ -24,11 +26,6 @@ signal set_default_category(category: GLLogCategory, toggle_on: bool)
 @onready var apply_btn: Button = 						%ApplyButton
 @onready var revert_btn: Button = 					%RevertButton
 @onready var faky: Control = 								%Faky
-
-@onready var del_popup: PopupPanel = 				%DeletePopupPanel
-@onready var del_cancel: Button = 					%CancelButton
-@onready var keep_dir_no_btn: Button = 			%KeepDirYesButton
-@onready var keep_dir_yes_btn: Button = 		%KeepDirNoButton
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
@@ -91,22 +88,9 @@ func _input(event: InputEvent) -> void:
 
 func _ready() -> void:
 	_on_editor_settings_changed() 
-	move_left_btn.set_button_icon(get_theme_icon("ArrowLeft", "EditorIcons"))
-	move_right_btn.set_button_icon(get_theme_icon("ArrowRight", "EditorIcons")) 
-	select_btn.set_button_icon(get_theme_icon("Load", "EditorIcons"))
-	apply_btn.set_button_icon(get_theme_icon("ImportCheck", "EditorIcons"))
-	revert_btn.set_button_icon(get_theme_icon("Redo", "EditorIcons"))
-	del_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
-	del_cancel.set_button_icon(get_theme_icon("GuiClose", "EditorIcons"))
-	keep_dir_no_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
-	keep_dir_yes_btn.set_button_icon(get_theme_icon("Remove", "EditorIcons"))
-
 	settings.settings_changed.connect(_on_editor_settings_changed)
-	del_btn.button_up.connect(_on_del_button_up.bind(del_btn))
-	del_cancel.button_up.connect(_on_del_button_up.bind(del_cancel))
-	keep_dir_no_btn.button_up.connect(_on_del_button_up.bind(keep_dir_no_btn))
-	keep_dir_yes_btn.button_up.connect(_on_del_button_up.bind(keep_dir_yes_btn)) 
 	line_edit.text_changed.connect(_on_text_changed)
+	del_btn.button_up.connect(_on_del_button_up)
 	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
@@ -114,7 +98,6 @@ func _ready() -> void:
 	apply_btn.button_up.connect(apply_name.bind(line_edit.text)) 
 
 	is_default = is_default # loads the icon
-	del_popup.hide()
 	apply_btn.disabled = line_edit.text.is_empty()
 	revert_btn.disabled = false
 	line_edit.size.x = 110
@@ -248,35 +231,12 @@ func _on_text_changed(new_text: String) -> void:
 
 
 
-func _on_del_button_up(btn: Button) -> void:
-	match btn:
-		del_btn:
-			if category_name.is_empty():
-				queue_free()
-			else:
-				del_popup.show()
-				del_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE 
-				var screen_pos: Vector2 = get_screen_position()
-				var popup_x: float = screen_pos.x + (size.x - del_popup.size.x) / 2.0
-				var popup_y: float = screen_pos.y + size.y + 26
-				del_popup.position = Vector2i(popup_x, popup_y)
-				del_popup.size = Vector2.ZERO
-		
-		keep_dir_no_btn:
-			if OS.move_to_trash(ProjectSettings.globalize_path(cat_data.category_path)) == FAILED:
-				printerr("GDLogger: Failed to delete directories & files upon request. Please delete manually if desired.")
-			if data.default_category == category_name: 
-				data.default_category = ""
-			queue_free()
-
-		keep_dir_yes_btn:
-			queue_free()
-			if data.default_category == category_name: 
-				data.default_category = ""
-		
-		del_cancel:
-			del_popup.hide()
-
+#DELETE - Moved to dock_logs.gd
+func _on_del_button_up() -> void:
+	if category_name.is_empty():
+		queue_free()
+	else:
+		show_delete_category_prompt.emit(self)
 
 
 

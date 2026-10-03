@@ -2,12 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://vlt2sbet5kyx" path="res://addons/gdlogger/resources/icons/gdlogger_icon_darkmode.svg" id="1_lnu3o"]
 [ext_resource type="Resource" uid="uid://dj7h7t2v8csck" path="res://addons/gdlogger/data.tres" id="3_d5ffo"]
-[ext_resource type="Theme" uid="uid://gjcp57h03j4p" path="res://addons/gdlogger/resources/theme/new_theme.tres" id="4_o07th"]
+[ext_resource type="Theme" uid="uid://gjcp57h03j4p" path="res://addons/gdlogger/resources/theme/gdl_theme.tres" id="4_o07th"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/gdlogger/scripts/dock/dock.gd" id="6_0swix"]
-[ext_resource type="StyleBox" uid="uid://cobusnqe7lb31" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(acc).tres" id="8_lnu3o"]
 [ext_resource type="StyleBox" uid="uid://bkwqg1yaw842f" path="res://addons/gdlogger/resources/theme/blankbtns-empty_cmarg(8484).tres" id="9_1rd6x"]
-[ext_resource type="Script" uid="uid://bm8lbc8d2cd4r" path="res://addons/gdlogger/scripts/gl_category_data_resource.gd" id="9_d5ffo"]
-[ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gdlogger/scripts/gl_data_resource.gd" id="10_1j2f0"]
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/gdlogger/scripts/dock/dock_logs.gd" id="10_kapcw"]
 [ext_resource type="StyleBox" uid="uid://banh6fdfxhrtb" path="res://addons/gdlogger/resources/theme/round(4444)_cmark(4444)_bgClr(base-1).tres" id="15_8r8ny"]
 [ext_resource type="StyleBox" uid="uid://d0ctcgxtji43k" path="res://addons/gdlogger/resources/theme/round(4444)_exp(8888)_cmarg(8888)_bgClr(base-1).tres" id="15_lnu3o"]
@@ -15,23 +12,46 @@
 [ext_resource type="Texture2D" uid="uid://c74n2f1j4wew5" path="res://addons/gdlogger/resources/icons/GitHub_Invertocat_White.svg" id="21_8r8ny"]
 [ext_resource type="StyleBox" uid="uid://b5xnafw5yk1tg" path="res://addons/gdlogger/resources/theme/round(4444)_exp(8888)_cmarg(8888)_bgClr(base-2).tres" id="23_g08q5"]
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gdlogger/resources/id_example_panel_tex.png" id="23_qrqlu"]
-[ext_resource type="StyleBox" uid="uid://chltrp5l2tox6" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(acc+1).tres" id="24_1j2f0"]
 [ext_resource type="PackedScene" uid="uid://dhpqc8gwb77v0" path="res://addons/gdlogger/scenes/logfile_popup.tscn" id="24_ffv0r"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/gdlogger/id_overlay_lbl_settings.tres" id="24_wold0"]
 [ext_resource type="StyleBox" uid="uid://pue22dsifmfd" path="res://addons/gdlogger/resources/theme/line_edit_norm_round(4444)_exp(2222)_cmarg(4444)_bgClr(base-1).tres" id="25_x27c6"]
 [ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(base).tres" id="30_7xlqe"]
 
-[sub_resource type="Resource" id="Resource_u03vm"]
-script = ExtResource("9_d5ffo")
-category_name = "qwersfd"
-
-[sub_resource type="Resource" id="Resource_1j2f0"]
-script = ExtResource("10_1j2f0")
-categories = Array[ExtResource("9_d5ffo")]([SubResource("Resource_u03vm")])
-
-[sub_resource type="DPITexture" id="DPITexture_n5dsd"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+[sub_resource type="DPITexture" id="DPITexture_aav5c"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"m7 1v6h-6v2h6v6h2v-6h6v-2h-6v-6z\"/></svg>
 "
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
+[sub_resource type="DPITexture" id="DPITexture_s7hq0"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M2 2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-4a1 1 0 0 1-1-1V3a1 1 0 0 0-1-1z\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
+[sub_resource type="DPITexture" id="DPITexture_bfha8"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M5 8a4 4 0 1 1 4 4v2a6 6 0 1 0-6-6H1l3 4 3-4z\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
+[sub_resource type="DPITexture" id="DPITexture_ytbm3"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"m7 1-.565 2.258a5 5 0 0 0-.689.28L3.758 2.343 2.344 3.758l1.195 1.994a5 5 0 0 0-.285.685L1 7v2l2.258.564a5 5 0 0 0 .279.688l-1.193 1.99 1.414 1.414 1.994-1.195a5 5 0 0 0 .685.285L7 15h2l.564-2.258a5 5 0 0 0 .688-.28l1.99 1.194 1.414-1.414-1.195-1.994a5 5 0 0 0 .285-.685L15 9V7l-2.258-.564a5 5 0 0 0-.28-.688l1.194-1.99-1.414-1.414-1.994 1.195a5 5 0 0 0-.686-.285L9 1H7zm1 5a2 2 0 0 1 0 4 2 2 0 0 1 0-4z\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7xlqe"]
 content_margin_left = 8.0
@@ -60,6 +80,10 @@ outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="FoldableGroup" id="FoldableGroup_fcs7p"]
 allow_folding_all = true
+
+[sub_resource type="DPITexture" id="DPITexture_smt2j"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_fcs7p"]
 content_margin_left = 0.0
@@ -121,8 +145,44 @@ shadow_offset = Vector2(0, 0)
 
 [sub_resource type="ImageTexture" id="ImageTexture_eqqsv"]
 
+[sub_resource type="DPITexture" id="DPITexture_e5b3s"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M8 1a5 5 0 0 0-3.535 1.465 1 1 0 0 0 1.414 1.414 3 3 0 0 1 4.242 0 1 1 0 0 0 1.414-1.414A5 5 0 0 0 8 1zM3 4.996a1 1 0 0 0-1 1c0 .833.327 1.697.969 2.5.33.413.77.796 1.3 1.072a4 4 0 0 0-.136.432H2a1 1 0 0 0 0 2h2.131a4 4 0 0 0 .18.537c-.142.09-.279.185-.41.283-.586.44-1.108.97-1.608 1.47a1 1 0 0 0 1.414 1.413c.5-.5.978-.972 1.393-1.283.17-.127.31-.203.443-.27a4 4 0 0 0 4.914 0c.133.067.273.142.442.268.414.311.892.783 1.392 1.283a1 1 0 0 0 1.414-1.414c-.5-.5-1.022-1.03-1.607-1.469a6.236 6.236 0 0 0-.408-.28 4 4 0 0 0 .175-.54h2.133a1 1 0 0 0 0-2h-2.13a4 4 0 0 0-.135-.434 4.117 4.117 0 0 0 1.296-1.07c.643-.803.97-1.666.97-2.5a1 1 0 0 0-2 0c0 .167-.174.803-.532 1.25-.25.314-.549.55-.932.666a4 4 0 0 0-.603-.412 2 2 0 1 0-3.867 0 4 4 0 0 0-.604.408c-.383-.117-.68-.352-.931-.666-.358-.447-.532-1.083-.532-1.25a1 1 0 0 0-1-1z\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qiahn"]
 bg_color = Color(0, 0, 0, 0.39215687)
+
+[sub_resource type="DPITexture" id="DPITexture_cqteu"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"none\" stroke=\"#fff\" stroke-opacity=\".898\" stroke-width=\"2\" d=\"m3 3 10 10M3 13 13 3\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
+[sub_resource type="DPITexture" id="DPITexture_lxkmp"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"none\" stroke=\"#5fff97\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m2 8 4 4 8-8\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
+[sub_resource type="DPITexture" id="DPITexture_abu1v"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"m5 1v1h-4v2h14v-2h-4v-1zm-3 4v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8zm1 2h2v6h-2zm4 0h2v6h-2zm4 0h2v6h-2z\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
 
 [node name="EditorDock" type="EditorDock" unique_id=1366196318]
 anchors_preset = 15
@@ -141,7 +201,18 @@ available_layouts = 7
 script = ExtResource("6_0swix")
 data = ExtResource("3_d5ffo")
 metadata/_edit_vertical_guides_ = [64.0, 16.0, 960.0, 8.0, 56.0, 0.0, 48.0, 72.0]
-metadata/_edit_horizontal_guides_ = [144.0, 152.0, 56.0, 48.0, 160.0, 136.0, 64.0]
+metadata/_edit_horizontal_guides_ = [144.0, 152.0, 56.0, 48.0, 128.0, 136.0, 40.0]
+
+[node name="PollingTimer" type="Timer" parent="." unique_id=1836800660]
+unique_name_in_owner = true
+autostart = true
+ignore_time_scale = true
+
+[node name="DebounceTimer" type="Timer" parent="." unique_id=240096999]
+unique_name_in_owner = true
+wait_time = 0.08
+one_shot = true
+ignore_time_scale = true
 
 [node name="DockTabContainer" type="TabContainer" parent="." unique_id=1764928138]
 unique_name_in_owner = true
@@ -155,7 +226,7 @@ theme_override_constants/side_margin = 15
 theme_override_constants/tab_separation = 10
 theme_override_constants/icon_separation = 8
 theme_override_constants/icon_max_width = 23
-current_tab = 2
+current_tab = 1
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("1_lnu3o")
@@ -173,14 +244,13 @@ metadata/_tab_name = " "
 
 [node name="LogsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 script = ExtResource("10_kapcw")
-data = SubResource("Resource_1j2f0")
+data = ExtResource("3_d5ffo")
 metadata/_tab_index = 1
 metadata/_tab_name = "Logs"
 
@@ -211,7 +281,7 @@ theme_override_styles/pressed = ExtResource("9_1rd6x")
 theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_aav5c")
 flat = true
 icon_alignment = 1
 
@@ -228,7 +298,7 @@ theme_override_styles/pressed = ExtResource("9_1rd6x")
 theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_s7hq0")
 flat = true
 icon_alignment = 1
 
@@ -245,7 +315,6 @@ theme_override_constants/separation = 8
 
 [node name="LGReloadButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebarBottom/VBoxContainer" unique_id=1160699755]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(32, 32)
 custom_maximum_size = Vector2(32, 32)
 layout_mode = 2
@@ -257,7 +326,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_bfha8")
 flat = true
 icon_alignment = 1
 expand_icon = true
@@ -279,7 +348,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_ytbm3")
 flat = true
 icon_alignment = 1
 expand_icon = true
@@ -306,6 +375,8 @@ custom_minimum_size = Vector2(0, 88)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
+theme_type_variation = &"ScrollContainer_NoCMargins"
 follow_focus = true
 
 [node name="CategoryGridContainer" type="GridContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/CategoryPanel/MarginContainer/CategoryScrollContainer" unique_id=2014106739]
@@ -320,6 +391,8 @@ columns = 7
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
+theme_type_variation = &"ScrollContainer_NoCMargins"
 
 [node name="LBMarginContainer" type="MarginContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer" unique_id=1407356486]
 unique_name_in_owner = true
@@ -339,14 +412,15 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 999
+columns = 14
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 script = ExtResource("19_luwxg")
-data = SubResource("Resource_1j2f0")
+data = ExtResource("3_d5ffo")
 metadata/_tab_index = 2
 metadata/_tab_name = "Settings"
 
@@ -359,11 +433,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 8
-
-[node name="PollingTimer" type="Timer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=1836800660]
-unique_name_in_owner = true
-autostart = true
-ignore_time_scale = true
 
 [node name="SidebarPanel" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=1744305237]
 custom_minimum_size = Vector2(48, 0)
@@ -385,7 +454,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_7xlqe")
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_aav5c")
 flat = true
 icon_alignment = 1
 
@@ -400,7 +469,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_7xlqe")
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_s7hq0")
 flat = true
 icon_alignment = 1
 
@@ -424,11 +493,13 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_o07th")
+folded = true
 title = "General"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 
@@ -475,7 +546,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
-0 value will disable this feature *USE WITH CAUTION*"
+0l disables this feature"
 theme = ExtResource("4_o07th")
 max_value = 50.0
 value = 10.0
@@ -801,14 +872,17 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_o07th")
+folded = true
 title = "Directory and Formats"
 foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1869616791]
+visible = false
 layout_mode = 2
 mouse_filter = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1504669251]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -878,7 +952,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 disabled = true
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_smt2j")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=193635431]
@@ -904,7 +978,7 @@ theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_smt2j")
 icon_alignment = 1
 
 [node name="LogHeaderHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
@@ -977,7 +1051,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 disabled = true
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_smt2j")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
@@ -1003,7 +1077,7 @@ theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_smt2j")
 icon_alignment = 1
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=154378586]
@@ -1110,7 +1184,7 @@ theme_override_styles/hover = ExtResource("9_1rd6x")
 theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 disabled = true
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_smt2j")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=749157682]
@@ -1136,7 +1210,7 @@ theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
 theme_override_styles/disabled = ExtResource("9_1rd6x")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 disabled = true
-icon = SubResource("DPITexture_n5dsd")
+icon = SubResource("DPITexture_smt2j")
 icon_alignment = 1
 
 [node name="HotkeyFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer" unique_id=1889098366]
@@ -1612,7 +1686,7 @@ theme_override_styles/panel = ExtResource("30_7xlqe")
 offset_left = 8.0
 offset_top = 4.0
 offset_right = 288.0
-offset_bottom = 168.0
+offset_bottom = 154.0
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
@@ -1669,7 +1743,6 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Automatically reload log files in Logs tab"
 theme = ExtResource("4_o07th")
-text = "Open files in Editor"
 
 [node name="LGAutoReloadCheckButton" type="CheckButton" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox" unique_id=592944399]
 unique_name_in_owner = true
@@ -1677,64 +1750,160 @@ layout_mode = 2
 tooltip_text = "Automatically reload log files in Logs tab"
 theme = ExtResource("4_o07th")
 button_pressed = true
-text = "Automatic file reload"
 
 [node name="VersionHBoxContainer" type="HBoxContainer" parent="." unique_id=699322649]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+custom_maximum_size = Vector2(-1, 40)
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
 offset_transform_enabled = true
 offset_transform_position = Vector2(-8, 8)
 mouse_filter = 2
+theme_override_constants/separation = 0
 alignment = 2
 
 [node name="RENABLEButton" type="Button" parent="VersionHBoxContainer" unique_id=1733649966]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
-custom_maximum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(40, 40)
+custom_maximum_size = Vector2(40, 40)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
 offset_transform_enabled = true
-offset_transform_position = Vector2(6, -1)
-theme_override_styles/normal = ExtResource("9_1rd6x")
-theme_override_styles/pressed = ExtResource("9_1rd6x")
-theme_override_styles/hover = ExtResource("9_1rd6x")
-theme_override_styles/hover_pressed = ExtResource("9_1rd6x")
-theme_override_styles/disabled = ExtResource("9_1rd6x")
-theme_override_styles/focus = ExtResource("9_1rd6x")
-icon = SubResource("DPITexture_n5dsd")
+offset_transform_position = Vector2(8, -8)
+theme = ExtResource("4_o07th")
+button_mask = 4
+icon = SubResource("DPITexture_e5b3s")
 icon_alignment = 1
-expand_icon = true
 
 [node name="VersionLinkButton" type="LinkButton" parent="VersionHBoxContainer" unique_id=2086881914]
 unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0.25)
+modulate = Color(1, 1, 1, 0.29411766)
+custom_minimum_size = Vector2(128, 40)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 offset_transform_enabled = true
-offset_transform_position = Vector2(0, 4)
+tooltip_text = "MMB to open repo:
+https://github.com/Burloe/GoLogger"
+theme_override_font_sizes/font_size = 14
+button_mask = 4
 text = "GDLogger v.2.0"
 underline = 1
 uri = "https://github.com/Burloe/GoLogger"
 
-[node name="ReloadPromptPanelContainer" type="PanelContainer" parent="." unique_id=715219784]
+[node name="PromptPopupPanelContainer" type="PanelContainer" parent="." unique_id=715219784]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_qiahn")
 
-[node name="ReloadDockButton" type="Button" parent="ReloadPromptPanelContainer" unique_id=1090522967]
+[node name="ReloadDockButton" type="Button" parent="PromptPopupPanelContainer" unique_id=1090522967]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = ExtResource("4_o07th")
 theme_override_font_sizes/font_size = 64
-theme_override_styles/normal = ExtResource("8_lnu3o")
-theme_override_styles/normal_mirrored = ExtResource("8_lnu3o")
-theme_override_styles/pressed = ExtResource("30_7xlqe")
-theme_override_styles/pressed_mirrored = ExtResource("30_7xlqe")
-theme_override_styles/hover = ExtResource("24_1j2f0")
-theme_override_styles/hover_mirrored = ExtResource("24_1j2f0")
-theme_override_styles/hover_pressed = ExtResource("30_7xlqe")
-theme_override_styles/hover_pressed_mirrored = ExtResource("30_7xlqe")
 text = "Reload Dock"
+
+[node name="DeleteCategoryPopup" type="MarginContainer" parent="PromptPopupPanelContainer" unique_id=2091313988]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 48
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="PanelContainer" type="PanelContainer" parent="PromptPopupPanelContainer/DeleteCategoryPopup" unique_id=1681501979]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme = ExtResource("4_o07th")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer" unique_id=432949049]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 2
+
+[node name="Control" type="Control" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer" unique_id=642737652]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer/Control" unique_id=1196360150]
+unique_name_in_owner = true
+modulate = Color(0.8, 0.8, 0.8, 1)
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.037
+anchor_right = 1.0370001
+offset_left = 138.068
+offset_right = -8.068008
+offset_bottom = 30.0
+tooltip_text = "Cancel"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.43137255)
+theme_override_constants/h_separation = 0
+icon = SubResource("DPITexture_cqteu")
+flat = true
+icon_alignment = 1
+
+[node name="Label" type="Label" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer" unique_id=1917353289]
+custom_minimum_size = Vector2(142, 0)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/line_spacing = -5
+theme_override_font_sizes/font_size = 22
+text = "Retain directory 
+& files?"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer" unique_id=1765618995]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="KeepDirYesButton" type="Button" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1798434669]
+unique_name_in_owner = true
+modulate = Color(0.8, 0.8, 0.8, 1)
+custom_minimum_size = Vector2(78, 35)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "Move category folder 
+& .log files to trash"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_hover_color = Color(0.524, 0.86, 0.776, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.22399999, 0.56, 0.476, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.43137255)
+text = "Yes"
+icon = SubResource("DPITexture_lxkmp")
+alignment = 0
+icon_alignment = 2
+
+[node name="KeepDirNoButton" type="Button" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1205490905]
+unique_name_in_owner = true
+modulate = Color(0.8, 0.8, 0.8, 1)
+custom_minimum_size = Vector2(78, 35)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "Move right"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_normal_color = Color(1, 0.34901962, 0.34901962, 1)
+theme_override_colors/icon_pressed_color = Color(0.7019608, 0.14117648, 0.14117648, 1)
+theme_override_colors/icon_hover_color = Color(0.9, 0.40499997, 0.40499997, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.7019608, 0.14117648, 0.14117648, 1)
+text = "No"
+icon = SubResource("DPITexture_abu1v")
+alignment = 0
+icon_alignment = 2

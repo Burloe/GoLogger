@@ -12,6 +12,13 @@ signal request_theme_colors
 @onready var category_scroll_container: ScrollContainer = %CategoryScrollContainer
 @onready var category_container: GridContainer = %CategoryGridContainer
 
+@onready var prompt_popup: PanelContainer = %PromptPopupPanelContainer
+@onready var reload_dock_btn: Button = %ReloadDockButton
+@onready var del_cat_popup: MarginContainer = %DeleteCategoryPopup
+@onready var cancel_del_cat_btn: Button = %CancelButton
+@onready var keep_dir_yes_btn: Button = %KeepDirYesButton
+@onready var keep_dir_no_btn: Button = %KeepDirNoButton
+
 @onready var polling_timer: Timer = %PollingTimer
 @onready var popup_panel: PopupPanel = %LogFilePanelPopup
 
@@ -52,6 +59,7 @@ var categories: Array = [] # [["game", gameGridContainer], ["player", playerGrid
 var cat_containers: Array[GridContainer] = []
 var grid_conts: Array[GridContainer] = []
 var log_files: Array[GLLogFile] = []
+var category_to_delete: GLLogCategory = null
 var current_category: String = "":
 	set(value):
 		if value != current_category:
@@ -102,6 +110,30 @@ enum SessionTimerAction {
 
 
 
+func _on_del_prompt_button_up(btn: Button) -> void:
+	var cat_name: String = category_to_delete.cat_data.category_name if category_to_delete else ""
+	var cat_path: String = category_to_delete.cat_data.category_path if category_to_delete else ""
+	
+	match btn:
+		
+		cancel_del_cat_btn:
+			category_to_delete = null
+		
+		keep_dir_yes_btn:
+			category_to_delete.queue_free()
+		
+		keep_dir_no_btn:
+			if category_to_delete and cat_path == "" and OS.move_to_trash(ProjectSettings.globalize_path(cat_path)) != OK:
+				printerr("GDLogger: Failed to delete directories & files upon request. Please delete manually if desired.")
+			
+			if data.default_category == category_to_delete.category_name: 
+				data.default_category = ""
+			
+			category_to_delete.queue_free()
+			
+	prompt_popup.hide()
+	del_cat_popup.hide()
+	reload_dock_btn.hide()
 
 
 
@@ -110,6 +142,11 @@ func _ready() -> void:
 	log_settings_popup.hide()
 
 	_connect_unique(add_category_btn.button_up, _add_category)  
+	
+	cancel_del_cat_btn.button_up.connect(_on_del_prompt_button_up.bind(cancel_del_cat_btn))
+	keep_dir_yes_btn.button_up.connect(_on_del_prompt_button_up.bind(keep_dir_yes_btn))
+	keep_dir_no_btn.button_up.connect(_on_del_prompt_button_up.bind(keep_dir_no_btn))
+
 	reload_btn.button_up.connect(load_log_files)
 	polling_timer.timeout.connect(func() -> void: if reload_automatically: load_log_files())
 	log_settings_btn.button_up.connect(_on_log_settings_button_up)
@@ -176,6 +213,7 @@ func _add_category(_name: String = ""): ## _name only applicable at loading
 	_n.log_category_changed.connect(func() -> void: request_categories_save.emit()) 
 	_n.set_default_category.connect(_on_set_default_category)
 	_n.move_category_requested.connect(_on_category_move_requested)
+	_n.show_delete_category_prompt.connect(_on_show_delete_category_prompt)
 	_n.select_btn.toggled.connect(
 		func(toggle_on) -> void: 
 			if toggle_on: 
@@ -548,6 +586,14 @@ func _open_log_file(log_file: GLLogFile) -> void:
 	log_file.selected = true 
 	popup_panel.title = str(log_file.category_name.capitalize(), fin_date, " - ", fin_time, " | ", log_file.file_name)
 	cur_logfile = log_file 
+
+
+
+func _on_show_delete_category_prompt(category: GLLogCategory) -> void:
+	prompt_popup.show()
+	reload_dock_btn.hide()
+	del_cat_popup.show()
+	category_to_delete = category
 
 
 

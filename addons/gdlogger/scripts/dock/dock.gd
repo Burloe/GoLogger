@@ -18,6 +18,8 @@ class_name GLDock extends EditorDock
 
 signal reload_dock
 
+const THEME_DEBOUNCE_SEC: float = 0.08
+const gdl_theme = preload("uid://gjcp57h03j4p")
 const gdl_ico_darkmode = preload("uid://vlt2sbet5kyx")
 const gdl_ico_lightmode = preload("uid://defy21wg6ksuo")
 const gh_ico_darkmode = preload("uid://c74n2f1j4wew5")
@@ -27,8 +29,10 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @export var data: GLData = null
 @onready var renable_btn: Button = %RENABLEButton
 @onready var docktab_container: TabContainer = %DockTabContainer
-@onready var reload_prompt: PanelContainer = %ReloadPromptPanelContainer
+@onready var prompt_popup: PanelContainer = %PromptPopupPanelContainer
+@onready var delete_category_popup: MarginContainer = %DeleteCategoryPopup
 @onready var dock_reload_btn: Button = %ReloadDockButton
+@onready var debounce_timer: Timer = %DebounceTimer
 
 # Logs tab
 @onready var logs_tab: HBoxContainer = %LogsTab
@@ -180,7 +184,7 @@ var theme_res_path: String = "res://addons/gdlogger/resources/theme/" # Path to 
 var category_scene = preload("uid://c3n416c5fajm5")
 var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
 var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
-var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast")
+var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast") 
 var plugin_version: String =  "2.0":
 	set(value):
 		plugin_version = value
@@ -211,9 +215,6 @@ var is_shutting_down: bool = false:
 #region Inits and signals
 
 func _ready() -> void:
-	reload_prompt.hide()
-	version_container.show()
-
 	if FileAccess.file_exists(DATA_PATH):
 		data = load(DATA_PATH)
 	else:
@@ -228,6 +229,10 @@ func _ready() -> void:
 	settings_tab.data = data
 	data.update_list()
 	theme_colors = _get_theme_colors()
+
+	debounce_timer.wait_time = THEME_DEBOUNCE_SEC
+	debounce_timer.timeout.connect(_apply_theme_colors)
+
 	_apply_theme_colors()
 
 	docktab_container.tab_changed.connect(
@@ -264,7 +269,6 @@ func _ready() -> void:
 	logs_tab.initialize_tab()
 	settings_tab.initialize_tab() 
 	logs_tab.load_log_files(true)
-	_assign_editor_icons()
 	_init_visibility()
 
 
@@ -278,6 +282,11 @@ func _init_visibility() -> void:
 	docktab_container.set_current_tab(1)
 	help_tab.set_current_tab(0) 
 	settings_tab.init_visibility()
+
+	prompt_popup.hide()
+	dock_reload_btn.hide()
+	delete_category_popup.hide()
+	version_container.show()
 
 	var fold_conts: Array[FoldableContainer] = [
 		help_setup,
@@ -340,25 +349,6 @@ func _assign_settings_controls() -> void:
 	data.session_duration_ctrl = sett_session_duration_spinbox
 	data.session_duration_ctrl_line = sett_session_duration_spinbox.get_line_edit()
 	
-
-
-
-func _assign_editor_icons() -> void:
-	lg_add_cat_btn.set_button_icon(get_theme_icon("Add", "EditorIcons"))
-
-	var _d: Dictionary = {
-		"ImportCheck": [sett_base_dir_apply_btn, sett_entry_format_apply_btn, sett_log_header_apply_btn],
-		"Reload": [lg_reload_btn, sett_reset_btn],
-		"Folder": [lg_open_dir_btn, sett_open_dir_btn],
-		"Redo": [sett_base_dir_revert_btn, sett_entry_format_revert_btn, sett_log_header_revert_btn],
-		"GDScript": [lg_settings_btn],
-		"Debug": [renable_btn]
-	}
-
-	for icon_name: String in _d.keys():
-		for btn: Button in _d[icon_name]:
-			btn.set_button_icon(get_theme_icon(icon_name, "EditorIcons")) 
-
 #endregion
 
 
@@ -378,7 +368,9 @@ func regen_data() -> void:
 	var new := GLData.new()
 	if ResourceSaver.save(new, DATA_PATH) == OK:
 		printerr("GDLogger: No plugin data found at path. Successfully generated a new, please reload dock/plugin.")
-		reload_prompt.show()
+		prompt_popup.show()
+		dock_reload_btn.show()
+		delete_category_popup.hide()
 	else:
 		printerr("GDLogger: No plugin data found at path '", DATA_PATH, "' and GDLogger wasn't able to generate a new one. Please manually R-Click in directory, Create new > Resource > GLData > Name 'data.tres' > Restart Godot.")
 	
@@ -468,11 +460,18 @@ func _on_editor_settings_changed() -> void:
 	var new_accent: Color = settings.get_setting("interface/theme/accent_color")
 	var new_contrast: float = settings.get_setting("interface/theme/contrast")
 
+	# Ignore unrelated editor settings changes and skip no-op reapplies
+	if new_base == theme_col_base and new_accent == theme_col_accent and new_contrast == theme_contrast:
+		return
+
 	theme_col_base = new_base
 	theme_col_accent = new_accent
 	theme_contrast = new_contrast
 	editor_col_settings = col_settings.duplicate()
-	_apply_theme_colors()
+
+	# Dragging a color picker fires settings_changed continuously; debounce so
+	# the (expensive) theme rebuild only runs once after changes settle.
+	if debounce_timer: debounce_timer.start()
 
 
 
@@ -481,75 +480,152 @@ func _get_theme_colors() -> Dictionary:
 	var base_col: 	Color = settings.get_setting("interface/theme/base_color")
 	var accent_col: Color = settings.get_setting("interface/theme/accent_color")
 
-	# print("base_col: " base_col, "    setting base col: ", base_col)
-	var colors := {
-		"bgClr(base-2)": 		base_col.darkened(  contrast * 2),
-		"bgClr(base-1)": 		base_col.darkened(  contrast),
-		"bgClr(base)":  		base_col,
-		"bgClr(base+1)": 		base_col.lightened( contrast),
-		"bgClr(base+2)": 		base_col.lightened( contrast * 2),
-		"brdClr(base-2)": 	base_col.darkened(  contrast * 2),
-		"brdClr(base-1)": 	base_col.darkened(  contrast * 2),
-		"brdClr(base)": 		base_col,
-		"brdClr(base+1)":	 	base_col.lightened( contrast * 2),
-		"brdClr(base+2)": 	base_col.lightened( contrast * 2),
-		"bgClr(acc-2)":			accent_col.darkened( contrast * 2),
-		"bgClr(acc-1)":			accent_col.darkened( contrast * 2),
-		"bgClr(acc)":				accent_col.darkened( contrast * 2),
-		"bgClr(acc+1)":			accent_col.lightened(contrast * 2),
-		"bgClr(acc+2)":			accent_col.lightened(contrast * 2),
-		"brdClr(acc-2)":		accent_col.darkened( contrast * 2),
-		"brdClr(acc-1)":		accent_col.darkened( contrast * 2),
-		"brdClr(acc)":			accent_col.darkened( contrast * 2),
-		"brdClr(acc+1)":		accent_col.lightened(contrast * 2),
-		"brdClr(acc+2)":		accent_col.lightened(contrast * 2),
-		"brdClr(red)":			Color("c64040"),
-		"contrast_value": 	contrast
-	}
+	# print("base_col: ", base_col, "    setting base col: ", base_col)
+	var colors := {}
+	if base_col.get_luminance() <= 0.5: # Dark
+		colors = {
+			# Button
+			"normal": 											base_col,
+			"pressed": 											base_col.darkened(contrast * 2),
+			"hover": 												base_col.lightened(contrast * 2),
+			"hover_pressed":								base_col.lightened(contrast),
+			
+			# FoldableContainer - All base_col
+			
+			# Scrollbar
+			"grabber_highlight":						base_col.lightened(contrast * 2),
+			"grabber_pressed":							base_col.darkened(contrast * 2),
+			
+			# LineEdit
+			"line_edit_normal":							base_col.darkened(contrast * 1.25),
+			
+			# Panel
+			"panel_normal":									base_col.darkened(contrast * 2),
+			
+			# PopupMenu
+			"popup_menu_hover":							base_col.lightened(contrast * 2.5),
+			"popup_menu_panel":							base_col.darkened(contrast * 2),
+			"popup_menu_separator":					base_col.lightened(contrast * 2),
+			
+			# TabContainer
+			"tab_container_panel":					base_col.darkened(contrast * 1.25),
+			"tab_container_tab_selected": 	accent_col,
+			"tab_container_tab_bar_bg": 		base_col,
+			
+			# ScrolContainer
+			"scroll_container_panel":				base_col.darkened(contrast * 1.25),
+
+			# Separator
+			"separator":										base_col.darkened(contrast * 4),
+			"colors": {
+				"icon_hover":									accent_col,
+				"icon_pressed":								accent_col.darkened(contrast * 2),
+				"icon_hover_pressed":					accent_col.darkened(contrast * 2),
+				"up_icon_hover_modulate": 		accent_col,
+				"up_icon_pressed_modulate":		accent_col.darkened(contrast * 2),
+				"down_icon_hover_modulate":		accent_col,
+				"down_icon_pressed_mdulate":	accent_col.darkened(contrast * 2),
+				"font_hovered_color":					Color("1a1a1a"),
+				"font_selected_color":				base_col,
+				"font_pressed_color":					Color("1a1a1a"),
+				"font_hover_pressed_color":		Color("1a1a1a")
+			}
+		}
+	else: # Light
+		colors = {
+			# Button
+			"normal": 											base_col,
+			"pressed": 											base_col.lightened(contrast * 2),
+			"hover": 												base_col.darkened(contrast * 2),
+			"hover_pressed":								base_col.darkened(contrast),
+			
+			# FoldableContainer - All base_col
+			
+			# Scrollbar
+			"grabber_highlight":						base_col.darkened(contrast * 2),
+			"grabber_pressed":							base_col.lightened(contrast * 2),
+			
+			# LineEdit
+			"line_edit_normal":							base_col.lightened(contrast * 2),
+			
+			# Panel
+			"panel_normal":									base_col.lightened(contrast * 2),
+			
+			# PopupMenu
+			"popup_menu_hover":							base_col.darkened(contrast * 2.5),
+			"popup_menu_panel":							base_col.lightened(contrast * 2),
+			"popup_menu_separator":					base_col.darkened(contrast * 2),
+			
+			# TabContainer
+			"tab_container_panel":					base_col.lightened(contrast * 1.2),
+			"tab_container_tab_selected": 	accent_col,
+			"tab_container_tab_bar_bg": 		base_col,
+			
+			# Separator
+			"separator":										base_col.lightened(contrast * 4),
+			# Colors
+			"colors": {
+				"icon_pressed":								accent_col,
+				"icon_hover":									accent_col.darkened(contrast * 2),
+			}
+		}
 	return colors
 
 
 
 func _apply_theme_colors() -> void:
-	var contrast: 	float = settings.get_setting("interface/theme/contrast")
-	var base_col: 	Color = settings.get_setting("interface/theme/base_color")
-	var accent_col: Color = settings.get_setting("interface/theme/accent_color")
-
-	var files := DirAccess.get_files_at(theme_res_path)
-	var sb: Array = []
 	var tags: Dictionary = _get_theme_colors()
 
-	var scroll_conts: Array[ScrollContainer] = [category_scroll_container, lg_scroll_container, l_settings_scroll_container, r_settings_scroll_container, getting_started_tab, methods_hotkeys_tab, more_info_tab]
+	# Block the theme's "changed" signal while mutating so every control using
+	# it doesn't recompute its theme cache once per stylebox/color write.
+	gdl_theme.set_block_signals(true)
 
-	for sc: ScrollContainer in scroll_conts:
-		var vert = sc.get_v_scroll_bar()
-		var hori = sc.get_h_scroll_bar()
-		vert.add_theme_stylebox_override("grabber", load("uid://2r3x0lnjbq0v"))
-		vert.add_theme_stylebox_override("grabber_highlight", load("uid://bi05su26rs3d4"))
-		vert.add_theme_stylebox_override("grabber_pressed", load("uid://bi05su26rs3d4"))
-		hori.add_theme_stylebox_override("grabber", load("uid://2r3x0lnjbq0v"))
-		hori.add_theme_stylebox_override("grabber_highlight", load("uid://bi05su26rs3d4"))
-		hori.add_theme_stylebox_override("grabber_pressed", load("uid://bi05su26rs3d4"))
+	for control_type in gdl_theme.get_stylebox_type_list():
+		for stylebox_name in gdl_theme.get_stylebox_list(control_type):
+			var sb: StyleBox = gdl_theme.get_stylebox(stylebox_name, control_type)
+			
+			if sb is not StyleBoxFlat and sb is not StyleBoxLine:
+				continue
 
-	for i in range(files.size()):
-		var rsrc := ResourceLoader.load(str(theme_res_path + files[i]))
-		for key in tags.keys():
-			if key.begins_with("bgClr") and rsrc is not StyleBoxEmpty and files[i].contains(key):
-				rsrc.bg_color = tags[key]
+			if sb is StyleBoxFlat:
+				sb.bg_color = tags["normal"]
+			else:
+				sb.color = tags["normal"]
+
+			match control_type:
+				"LineEdit":
+					sb.bg_color = tags["line_edit_normal"]
+				"HScrollBar", "VScrollBar":
+					match stylebox_name:
+						"grabber_highlight": 	sb.bg_color = tags[stylebox_name]
+						"grabber_pressed": 		sb.bg_color = tags[stylebox_name]
+				"Panel":
+					sb.bg_color = tags["panel_normal"]
+				"PopupMenu":
+					match stylebox_name:
+						"hover": 							sb.bg_color = tags["popup_menu_hover"]
+						"panel": 							sb.bg_color = tags["popup_menu_panel"]
+						"separator": 					sb.color 		= tags["popup_menu_separator"]
+				"TabContainer":
+					match stylebox_name:
+						"panel": 							sb.bg_color = tags["tab_container_panel"]
+						"tab_selected":				sb.bg_color = tags["tab_container_tab_selected"]
+						"tab_bar_background": sb.bg_color = tags["tab_container_tab_bar_bg"]
+				"ScrollContainer":
+					match stylebox_name:
+						"panel": 							sb.bg_color = tags["scroll_container_panel"]
 				
-			elif key.begins_with("brdClr") and rsrc is not StyleBoxEmpty and files[i].contains(key):
-				rsrc.border_color = tags[key]
-	
-	if base_col.get_luminance() >= 0.5:
-		dock_icon = gdl_ico_lightmode
-		docktab_container.set_tab_icon(0, gdl_ico_lightmode)
-		github_tex_rect.texture = gh_ico_lightmode
-	else:
-		dock_icon = gdl_ico_darkmode
-		docktab_container.set_tab_icon(0, gdl_ico_darkmode)
-		github_tex_rect.texture = gh_ico_darkmode
+				"HSeparator", "VSeparator":
+					match stylebox_name:
+						"separator": sb.color = tags["separator"]
+		
+	for control_type in gdl_theme.get_color_type_list():
+		for color_name in gdl_theme.get_color_list(control_type):
+			for key in tags["colors"].keys():
+				if color_name.contains(key):
+					gdl_theme.set_color(color_name, control_type, tags["colors"][key])
 
-	logs_tab.theme_colors = tags
-	settings_tab.theme_colors = tags
+	gdl_theme.set_block_signals(false)
+	gdl_theme.emit_changed()
 
 #endregion
