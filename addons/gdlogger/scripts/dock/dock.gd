@@ -42,7 +42,6 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var lg_add_cat_btn: Button = %AddCategoryButton
 @onready var lg_open_dir_btn: Button = %LBOpenDirButton 
 @onready var lg_reload_btn: Button = %LGReloadButton
-@onready var lg_sort_btn: Button = %LGSortCheckButton
 @onready var lg_colorcode_btn: Button = %LGColorCodeCheckButton
 @onready var lg_open_with_os_btn: Button = %LGOpenLogsCheckButton
 @onready var lg_auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
@@ -456,13 +455,24 @@ func _get_theme_colors() -> Dictionary:
 	var contrast: 	float = settings.get_setting("interface/theme/contrast")
 	var base_col: 	Color = settings.get_setting("interface/theme/base_color")
 	var accent_col: Color = settings.get_setting("interface/theme/accent_color")
+	var factor: float = 1.25 # Maybe 1.5 or even 2
 
 	# print("base_col: ", base_col, "    setting base col: ", base_col)
 	var colors := {}
 	if base_col.get_luminance() <= 0.5: # Dark
 		colors = {
+			"base_col+2":										base_col.lightened(contrast * 1.25),
+			"base_col+1":										base_col.lightened(contrast),
 			"base_col":											base_col,
+			"base_col-1":										base_col.darkened(contrast),
+			"base_col-2":										base_col.darkened(contrast * 1.25),
+
+			"accent_col+2":									accent_col.lightened(contrast * 1.25),
+			"accent_col+1":									accent_col.lightened(contrast),
 			"accent_col":										accent_col,
+			"accent_col-1":									accent_col.darkened(contrast),
+			"accent_col-2":									accent_col.darkened(contrast * 1.25),
+
 			# Button
 			"normal": 											base_col,
 			"pressed": 											base_col.darkened(contrast * 2),
@@ -616,63 +626,61 @@ func _apply_theme_colors() -> void:
 			match control_type:
 				"ButtonCategoryLoad":
 					match stylebox_name:
-						"normal": 						sb.bg_color = tags["base_col"]
-						"hover":							sb.bg_color = tags["accent_col"]
-						"pressed":						sb.bg_color = tags["accent_col"]
-						"hover_pressed":			sb.bg_color = tags["accent_col"]
-						"disabled":						sb.bg_color = tags["accent_col"]
+						"normal": 											sb.bg_color = tags["base_col"]
+						"hover":												sb.bg_color = tags["accent_col"]
+						"pressed":											sb.bg_color = tags["accent_col"]
+						"hover_pressed":								sb.bg_color = tags["accent_col"]
+						"disabled":											sb.bg_color = tags["accent_col"]
 				"LogFile":
 					match stylebox_name:
 						"hover": 							
-							sb.bg_color = tags["logfile_hover"]
-							sb.border_color = tags["logfile_hover_border"]
+							sb.bg_color = tags["base_col+1"]
+							sb.border_color = tags["accent_col"]
 						"pressed":
-							sb.bg_color = tags["logfile_pressed"]
-							sb.border_color = tags["logfile_pressed_border"]
+							sb.bg_color = tags["base_col-1"]
+							sb.border_color = tags["accent_col-1"]
 						"hover_pressed":
-							sb.bg_color = tags["logfile_hover_pressed"]
-							sb.border_color = tags["logfile_hover_pressed_border"]
+							sb.bg_color = tags["base_col-1"]
+							sb.border_color = tags["accent_col-1"]
 						
-				"LineEdit":
-					sb.bg_color = tags["line_edit_normal"]
-				"LineEdit_format_fields":
-					sb.bg_color = tags["line_edit_normal"]
-				"LineEdit_category_field_valid":
-					sb.bg_color = tags["line_edit_normal"]
-				"LineEdit_category_field_invalid":
-					sb.bg_color = tags["line_edit_normal"]
+				"LineEdit":													sb.bg_color = tags["base_col-1"]
+				"LineEdit_format_fields":						sb.bg_color = tags["base_col-1"]
+				"LineEdit_category_field_valid":		sb.bg_color = tags["base_col-1"]
+				"LineEdit_category_field_invalid":	sb.bg_color = tags["base_col-1"]
+				
 				"HScrollBar", "VScrollBar":
 					match stylebox_name:
-						"grabber_highlight": 	sb.bg_color = tags[stylebox_name]
-						"grabber_pressed": 		sb.bg_color = tags[stylebox_name]
+						"grabber_highlight": 						sb.bg_color = tags["base_col+1"]
+						"grabber_pressed": 							sb.bg_color = tags["base_col-1"]
+				
 				"OptionButton":
 					match stylebox_name:
-						"normal":							sb.bg_color = tags["option_button_normal"]
-						"hover": 							sb.bg_color = tags["option_button_normal"]
-						"pressed":						sb.bg_color = tags["option_button_pressed"]
-						"hover_pressed":			sb.bg_color = tags["option_button_pressed"]
+						"normal":												sb.bg_color = tags["base_col-1"]
+						"hover": 												sb.bg_color = tags["base_col-1"]
+						"pressed":											sb.bg_color = tags["base_col-2"]
+						"hover_pressed":								sb.bg_color = tags["base_col-2"]
 				
-				"Panel":
-					sb.bg_color = tags["panel_normal"]
-				"Panel_base_col_no_cmarg":
-					sb.bg_color = tags["normal"]				
+				"Panel":														sb.bg_color = tags["base_col-2"]
+				"Panel_base_col_no_cmarg":					sb.bg_color = tags["base_col-2"]				
 				"PopupMenu":
 					match stylebox_name:
-						"hover": 							sb.bg_color = tags["popup_menu_hover"]
-						"panel": 							sb.bg_color = tags["popup_menu_panel"]
-						"separator": 					sb.color 		= tags["popup_menu_separator"]
+						"hover": 												sb.bg_color = tags["base_col+2"]
+						"panel": 												sb.bg_color = tags["base_col-2"]
+						"separator": 										sb.color 		= tags["base_col+2"]
+				
 				"TabContainer":
 					match stylebox_name:
-						"panel": 							sb.bg_color = tags["tab_container_panel"]
-						"tab_selected":				sb.bg_color = tags["tab_container_tab_selected"]
-						"tab_bar_background": sb.bg_color = tags["tab_container_tab_bar_bg"]
-				"ScrollContainer":
-					match stylebox_name:
-						"panel": 							sb.bg_color = tags["scroll_container_panel"]
+						"panel": 												sb.bg_color = tags["base_col-1"]
+						"tab_selected":									sb.bg_color = tags["accent_col"]
+						"tab_bar_background": 					sb.bg_color = tags["base_col"]
+				
+				"ScrollContainer":									sb.bg_color = tags["base_col-1"]
+				"ScrollContainer_h_cmargs_only": 		sb.bg_color = tags["base_col-1"]
+				"ScrollContainer_no_cmargs":		 		sb.bg_color = tags["base_col-1"]
 				
 				"HSeparator", "VSeparator":
 					match stylebox_name:
-						"separator": sb.color = tags["separator"]
+						"separator": sb.color = tags["base_col+2"]
 		
 	for control_type in gdl_theme.get_color_type_list():
 		for color_name in gdl_theme.get_color_list(control_type):

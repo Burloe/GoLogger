@@ -5,7 +5,6 @@
 [ext_resource type="Theme" uid="uid://gjcp57h03j4p" path="res://addons/gdlogger/resources/theme/gdl_theme.tres" id="4_o07th"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/gdlogger/scripts/dock/dock.gd" id="6_0swix"]
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/gdlogger/scripts/dock/dock_logs.gd" id="10_kapcw"]
-[ext_resource type="StyleBox" uid="uid://banh6fdfxhrtb" path="res://addons/gdlogger/resources/theme/round(4444)_cmark(4444)_bgClr(base-1).tres" id="15_8r8ny"]
 [ext_resource type="StyleBox" uid="uid://d0ctcgxtji43k" path="res://addons/gdlogger/resources/theme/round(4444)_exp(8888)_cmarg(8888)_bgClr(base-1).tres" id="15_lnu3o"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gdlogger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="Texture2D" uid="uid://c74n2f1j4wew5" path="res://addons/gdlogger/resources/icons/GitHub_Invertocat_White.svg" id="21_8r8ny"]
@@ -13,7 +12,6 @@
 [ext_resource type="Texture2D" uid="uid://dpxjo7fserq3q" path="res://addons/gdlogger/resources/icons/id_example_panel_tex.png" id="23_qrqlu"]
 [ext_resource type="PackedScene" uid="uid://dhpqc8gwb77v0" path="res://addons/gdlogger/scenes/logfile_popup.tscn" id="24_ffv0r"]
 [ext_resource type="LabelSettings" uid="uid://dskegm87ypj8f" path="res://addons/gdlogger/id_overlay_lbl_settings.tres" id="24_wold0"]
-[ext_resource type="StyleBox" uid="uid://kbj6uorhqcy1" path="res://addons/gdlogger/resources/theme/round(4444)_cmarg(8484)_bgClr(base).tres" id="30_7xlqe"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_boc7e"]
 content_margin_left = 8.0
@@ -160,8 +158,6 @@ outline_size = 4
 shadow_size = 8
 shadow_color = Color(0, 0, 0, 0.29411766)
 shadow_offset = Vector2(0, 0)
-
-[sub_resource type="ImageTexture" id="ImageTexture_eqqsv"]
 
 [sub_resource type="DPITexture" id="DPITexture_e5b3s"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M8 1a5 5 0 0 0-3.535 1.465 1 1 0 0 0 1.414 1.414 3 3 0 0 1 4.242 0 1 1 0 0 0 1.414-1.414A5 5 0 0 0 8 1zM3 4.996a1 1 0 0 0-1 1c0 .833.327 1.697.969 2.5.33.413.77.796 1.3 1.072a4 4 0 0 0-.136.432H2a1 1 0 0 0 0 2h2.131a4 4 0 0 0 .18.537c-.142.09-.279.185-.41.283-.586.44-1.108.97-1.608 1.47a1 1 0 0 0 1.414 1.413c.5-.5.978-.972 1.393-1.283.17-.127.31-.203.443-.27a4 4 0 0 0 4.914 0c.133.067.273.142.442.268.414.311.892.783 1.392 1.283a1 1 0 0 0 1.414-1.414c-.5-.5-1.022-1.03-1.607-1.469a6.236 6.236 0 0 0-.408-.28 4 4 0 0 0 .175-.54h2.133a1 1 0 0 0 0-2h-2.13a4 4 0 0 0-.135-.434 4.117 4.117 0 0 0 1.296-1.07c.643-.803.97-1.666.97-2.5a1 1 0 0 0-2 0c0 .167-.174.803-.532 1.25-.25.314-.549.55-.932.666a4 4 0 0 0-.603-.412 2 2 0 1 0-3.867 0 4 4 0 0 0-.604.408c-.383-.117-.68-.352-.931-.666-.358-.447-.532-1.083-.532-1.25a1 1 0 0 0-1-1z\"/></svg>
@@ -1646,16 +1642,15 @@ visible = false
 unique_name_in_owner = true
 oversampling_override = 1.0
 position = Vector2i(65, 140)
-size = Vector2i(296, 156)
-min_size = Vector2i(296, 156)
-max_size = Vector2i(296, 156)
-theme_override_styles/panel = ExtResource("30_7xlqe")
+size = Vector2i(296, 164)
+visible = true
+min_size = Vector2i(296, 164)
+max_size = Vector2i(296, 164)
+theme = ExtResource("4_o07th")
 
 [node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/LogsSettingsPanelPopup" unique_id=1292106550]
-offset_left = 8.0
-offset_top = 4.0
-offset_right = 288.0
-offset_bottom = 161.0
+offset_right = 296.0
+offset_bottom = 164.0
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
@@ -1667,38 +1662,23 @@ layout_mode = 2
 theme_override_constants/separation = 8
 vertical = true
 
-[node name="LGSortCheckButton" type="CheckButton" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox" unique_id=1299280807]
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox" unique_id=1844915742]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox/BoxContainer" unique_id=1289453834]
+layout_mode = 2
+text = "Sort files by: "
+
+[node name="Control" type="Control" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox/BoxContainer" unique_id=1529756979]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LGSortButton" type="Button" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox/BoxContainer" unique_id=537708322]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Automatically reload log files in Logs tab"
 theme = ExtResource("4_o07th")
-theme_override_styles/normal = ExtResource("15_8r8ny")
-theme_override_styles/pressed = ExtResource("15_8r8ny")
-theme_override_styles/hover = ExtResource("15_8r8ny")
-theme_override_styles/hover_pressed = ExtResource("15_8r8ny")
-theme_override_icons/checked = SubResource("ImageTexture_eqqsv")
-theme_override_icons/unchecked = SubResource("ImageTexture_eqqsv")
-theme_override_icons/checked_disabled = SubResource("ImageTexture_eqqsv")
-theme_override_icons/unchecked_disabled = SubResource("ImageTexture_eqqsv")
-theme_override_icons/checked_mirrored = SubResource("ImageTexture_eqqsv")
-theme_override_icons/unchecked_mirrored = SubResource("ImageTexture_eqqsv")
-theme_override_icons/checked_disabled_mirrored = SubResource("ImageTexture_eqqsv")
-theme_override_icons/unchecked_disabled_mirrored = SubResource("ImageTexture_eqqsv")
-text = "Sort files"
-
-[node name="CurSortLabel" type="Label" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox/LGSortCheckButton" unique_id=1606725431]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 9.0
-offset_right = -9.0
-grow_horizontal = 2
-grow_vertical = 2
 text = "New first"
-horizontal_alignment = 2
-vertical_alignment = 1
 
 [node name="LGColorCodeCheckButton" type="CheckButton" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox" unique_id=498202583]
 unique_name_in_owner = true
@@ -1717,9 +1697,10 @@ text = "Open files in Editor"
 [node name="LGAutoReloadCheckButton" type="CheckButton" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox" unique_id=592944399]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Automatically reload log files in Logs tab"
+tooltip_text = "Automatically or manual reloading of log files"
 theme = ExtResource("4_o07th")
 button_pressed = true
+text = "Automatic file reloading"
 
 [node name="VersionHBoxContainer" type="HBoxContainer" parent="." unique_id=699322649]
 unique_name_in_owner = true

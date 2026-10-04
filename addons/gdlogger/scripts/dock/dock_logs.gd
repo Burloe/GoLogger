@@ -25,8 +25,7 @@ signal request_categories_save
 @onready var log_settings_content: BoxContainer = %LogSettingsContentBox
 @onready var open_w_os_btn: CheckButton = %LGOpenLogsCheckButton
 @onready var colorcode_btn: CheckButton = %LGColorCodeCheckButton
-@onready var sort_mode_btn: CheckButton = %LGSortCheckButton
-@onready var cur_sort_lbl: Label = %CurSortLabel
+@onready var sort_mode_btn: Button = %LGSortButton
 @onready var auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
 
 @onready var file_container: FlowContainer = %FileFlowContainer 
@@ -69,7 +68,7 @@ var cur_sort: int = 0:
 		cur_sort = value
 		var modes := ["New first", "Old first"]
 		data.browser_sort = value
-		cur_sort_lbl.text = modes[value]
+		sort_mode_btn.text = modes[value]
 
 var reload_automatically: bool = true:
 	set(value):
@@ -134,6 +133,12 @@ func initialize_tab() -> void:
 	reload_automatically = data.auto_reload
 	reload_btn.visible = !data.auto_reload
 	
+	# TODO Add LGSettings initializers here
+	cur_sort = data.browser_sort
+	colorcode_btn.button_pressed = data.colorcode_dates
+	reload_automatically = data.auto_reload
+	auto_reload_btn.button_pressed = data.auto_reload
+
 	for log_c in category_container.get_children():
 		log_c.queue_free()
 
