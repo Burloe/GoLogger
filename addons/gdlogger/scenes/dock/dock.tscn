@@ -231,11 +231,11 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("4_o07th")
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 1)
-theme_override_constants/side_margin = 15
+theme_override_constants/side_margin = 16
 theme_override_constants/tab_separation = 10
 theme_override_constants/icon_separation = 8
 theme_override_constants/icon_max_width = 23
-current_tab = 1
+current_tab = 2
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("1_lnu3o")
@@ -253,6 +253,7 @@ metadata/_tab_name = " "
 
 [node name="LogsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1085194574]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -394,7 +395,6 @@ size_flags_vertical = 3
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 script = ExtResource("19_luwxg")
@@ -471,13 +471,11 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_o07th")
-folded = true
 title = "General"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 
@@ -557,11 +555,6 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Method used to limit file size. 
 Use the selected Actions below to determine what happens once the method condition is fullfilled."
-theme_override_styles/normal = ExtResource("15_lnu3o")
-theme_override_styles/pressed = ExtResource("23_g08q5")
-theme_override_styles/hover = ExtResource("23_g08q5")
-theme_override_styles/hover_pressed = ExtResource("23_g08q5")
-theme_override_styles/focus = ExtResource("23_g08q5")
 toggle_mode = false
 action_mode = 1
 selected = 0
@@ -625,11 +618,6 @@ tooltip_text = "What action is taken when the Limit condition is met.
 Overwrite - Overwrites the oldest entry
 Restart - Restarts the logging session
 Stop - Stops the logging session"
-theme_override_styles/normal = ExtResource("15_lnu3o")
-theme_override_styles/pressed = ExtResource("23_g08q5")
-theme_override_styles/hover = ExtResource("23_g08q5")
-theme_override_styles/hover_pressed = ExtResource("23_g08q5")
-theme_override_styles/focus = ExtResource("23_g08q5")
 toggle_mode = false
 action_mode = 1
 selected = 0
@@ -851,14 +839,17 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_o07th")
+folded = true
 title = "Directory and Formats"
 foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1869616791]
+visible = false
 layout_mode = 2
 mouse_filter = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1504669251]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -1587,7 +1578,7 @@ custom_minimum_size = Vector2(356, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "If issues with the plugin arise, navigate to  \"res://addons/gdlogger/data.tres\", ensure it exists and secondly. Try replacing it with a new one by deleting it and right-click in the FileSystem folder > Create new > Resource > Find custom resource \"GLData\", just make sure it's named \"data.tres\" and it's path is identical. This will reset categories and settings. 
+text = "If issues with the plugin arise, navigate to  \"res://addons/gdlogger/data.tres\", ensure it exists and secondly. Try replacing it with a new one by deleting it and right-click in the FileSystem folder > Create new > Resource > Find custom resource \"GDLData\", just make sure it's named \"data.tres\" and it's path is identical. This will reset categories and settings. 
 
 There's an issue with the icons not properly updating their colors in the dock whenever you switch between light and dark themes and base colors. It's fixed by simply reloading the editor which can be done via Project > Reload Current Project or restarting Godot
 
@@ -1735,13 +1726,34 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 custom_maximum_size = Vector2(-1, 40)
 layout_mode = 2
-size_flags_horizontal = 8
 size_flags_vertical = 0
 offset_transform_enabled = true
 offset_transform_position = Vector2(-8, 8)
 mouse_filter = 2
 theme_override_constants/separation = 0
 alignment = 2
+
+[node name="VersionLinkButton2" type="LinkButton" parent="VersionHBoxContainer" unique_id=1249339521]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(64, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+offset_transform_enabled = true
+offset_transform_position = Vector2(27.06, 2)
+tooltip_text = "MMB to open repo:
+https://github.com/Burloe/GoLogger"
+theme_override_font_sizes/font_size = 14
+button_mask = 4
+text = "GDL"
+underline = 1
+uri = "https://github.com/Burloe/GoLogger"
+
+[node name="Control" type="Control" parent="VersionHBoxContainer" unique_id=907219906]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
 
 [node name="RENABLEButton" type="Button" parent="VersionHBoxContainer" unique_id=1733649966]
 unique_name_in_owner = true

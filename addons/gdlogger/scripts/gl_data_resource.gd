@@ -1,8 +1,8 @@
 @tool
-class_name GLData extends Resource
+class_name GDLData extends Resource
 
 @export_group("Logs Tab")
-@export var categories: Array[GLCategoryData] = []:
+@export var categories: Array[GDLCategoryData] = []:
 	set(value):
 		categories = value
 		emit_changed()
@@ -266,7 +266,7 @@ func get_category_names() -> Array[String]:
 
 
 
-func get_category(category_name: String) -> GLCategoryData:
+func get_category(category_name: String) -> GDLCategoryData:
 	for c in categories:
 		if c.category_name == category_name:
 			return c
@@ -275,7 +275,7 @@ func get_category(category_name: String) -> GLCategoryData:
 
 
 func check_category_name_conflicts() -> bool:
-	var result: Array[GLCategoryData] = []
+	var result: Array[GDLCategoryData] = []
 	for category in categories:
 		var c_name = category.category_name
 		for c in categories:
@@ -288,8 +288,8 @@ func check_category_name_conflicts() -> bool:
 
 
 
-func get_category_name_conflicts(delete_conflicts: bool = false) -> Array[GLCategoryData]:
-	var result: Array[GLCategoryData] = []
+func get_category_name_conflicts(delete_conflicts: bool = false) -> Array[GDLCategoryData]:
+	var result: Array[GDLCategoryData] = []
 	for category in categories:
 		var c_name = category.category_name
 		for c in categories:

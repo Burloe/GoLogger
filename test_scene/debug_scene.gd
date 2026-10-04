@@ -9,7 +9,7 @@ extends Control
 			for c in c_container.get_children():
 				c.entry_limit = value
 
-@export var data: GLData = null
+@export var data: GDLData = null
 var DATA_PATH: String = "res://addons/gdlogger/data.tres"
 
 const SIM_EVENT_TYPES := {
@@ -53,12 +53,12 @@ func _ready() -> void:
 
 func load_data() -> void:
 	if !FileAccess.file_exists(DATA_PATH):
-		data = GLData.new()
+		data = GDLData.new()
 		var err := ResourceSaver.save(data, DATA_PATH)
 		if err == OK and data.error_reporting != 2:
 			print("GDLogger: No data found. Loading default.")
 		else:
-			push_error("GDLogger Error: No data found and unable to restore to defaults. Try to manually create a new GLData resource at '", DATA_PATH, "'.")
+			push_error("GDLogger Error: No data found and unable to restore to defaults. Try to manually create a new GDLData resource at '", DATA_PATH, "'.")
 	else:
 		data = load(DATA_PATH)
 

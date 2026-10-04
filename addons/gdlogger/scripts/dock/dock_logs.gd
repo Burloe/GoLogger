@@ -33,7 +33,7 @@ signal request_categories_save
 @onready var reload_btn: Button = %LGReloadButton
 
 @onready var settings = EditorInterface.get_editor_settings()
-@export var data: GLData = null
+@export var data: GDLData = null
 var inspector: EditorInspector
 
 const LOG_FILE_BUTTON := preload("uid://bq7nahsc5aca7")
@@ -45,16 +45,16 @@ var is_reloading: bool = false
 var _default_setting_in_progress: bool = false
 
 var base_dir = ""
-var hovered_logfile: GLLogFile
-var log_files: Array[GLLogFile] = []
-var category_to_delete: GLLogCategory = null
+var hovered_logfile: GDLLogFile
+var log_files: Array[GDLLogFile] = []
+var category_to_delete: GDLLogCategory = null
 var current_category: String = "":
 	set(value):
 		if value != current_category:
 			current_category = value 
 			load_log_files()
 		
-var cur_logfile: GLLogFile = null:
+var cur_logfile: GDLLogFile = null:
 	set(value):
 		cur_logfile = value 
 
@@ -146,7 +146,7 @@ func initialize_tab() -> void:
 
 	if !data.default_category.is_empty():
 		for cat in category_container.get_children():
-			if cat is GLLogCategory and cat.category_name == data.default_category and cat.default_btn != null:
+			if cat is GDLLogCategory and cat.category_name == data.default_category and cat.default_btn != null:
 				cat.default_btn.button_pressed = true
 				break
 
@@ -160,12 +160,12 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 
 func _add_category(_name: String = ""): ## _name only applicable at loading
-	var _n = CATEGORY_SCENE.instantiate() as GLLogCategory 
+	var _n = CATEGORY_SCENE.instantiate() as GDLLogCategory 
 	var low_name: String = _name.to_lower() 
 	_n.category_name = low_name
 	category_container.add_child(_n)
 	_n.data = data
-	for c: GLCategoryData in data.categories:
+	for c: GDLCategoryData in data.categories:
 		if c.category_name == _name:
 			_n.cat_data = c
 			break
@@ -179,7 +179,7 @@ func _add_category(_name: String = ""): ## _name only applicable at loading
 		func(toggle_on) -> void: 
 			if toggle_on: 
 				current_category = _n.category_name
-				for c: GLLogCategory in category_container.get_children():
+				for c: GDLLogCategory in category_container.get_children():
 					if c.category_name != current_category:
 						c.select_btn.button_pressed = false
 	)
@@ -207,7 +207,7 @@ func ensure_default_category() -> void:
 
 
 
-func _on_category_move_requested(category: GLLogCategory, direction: int) -> void:
+func _on_category_move_requested(category: GDLLogCategory, direction: int) -> void:
 	var cats: Array = category_container.get_children()
 	var from: int = category.get_index()
 	var to: int = from
@@ -241,7 +241,7 @@ func _on_category_move_requested(category: GLLogCategory, direction: int) -> voi
 		float(to_row - from_row) * step_y
 	)
 
-	var other: GLLogCategory = cats[to]
+	var other: GDLLogCategory = cats[to]
 
 	var tween := create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC).set_parallel()
 	category.offset_transform_enabled = true
@@ -276,14 +276,14 @@ func _on_category_tree_exited() -> void:
 
 
 
-func _on_set_default_category(cat: GLLogCategory, set_status: bool) -> void:
+func _on_set_default_category(cat: GDLLogCategory, set_status: bool) -> void:
 	if _default_setting_in_progress:
 		return
 	
 	_default_setting_in_progress = true
 	
 	for log_c in category_container.get_children():
-		if log_c is GLLogCategory and log_c.default_btn != null:
+		if log_c is GDLLogCategory and log_c.default_btn != null:
 			if log_c != cat:
 				log_c.default_btn.button_pressed = false
 
@@ -303,7 +303,7 @@ func handle_category_mov_button_state() -> void:
 
 
 
-func _check_conflict_name(cat_obj: GLLogCategory, new_name: String) -> bool:
+func _check_conflict_name(cat_obj: GDLLogCategory, new_name: String) -> bool:
 	for log_c in category_container.get_children():
 		if log_c == cat_obj:
 			continue
@@ -382,20 +382,20 @@ func _reconcile_log_files(target_files: Array, category_name: String) -> void:
 
 		for file_name in existing_by_name.keys():
 				if not target_set.has(file_name):
-						var lf: GLLogFile = existing_by_name[file_name]
+						var lf: GDLLogFile = existing_by_name[file_name]
 						if is_instance_valid(lf):
 								file_container.remove_child(lf)
 								lf.queue_free()
 						existing_by_name.erase(file_name)
 
-		var updated_log_files: Array[GLLogFile] = []
+		var updated_log_files: Array[GDLLogFile] = []
 		var colorcode: Color = Color.BLACK
 		var used_cols: Array[Color] = []
 		var prev_file: String = ""
 
 		for i in range(target_files.size()):
 				var file_name: String = str(target_files[i])
-				var lf: GLLogFile = null
+				var lf: GDLLogFile = null
 
 				if existing_by_name.has(file_name):
 						lf = existing_by_name[file_name]
@@ -424,7 +424,7 @@ func _reconcile_log_files(target_files: Array, category_name: String) -> void:
 
 
 
-func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
+func _create_logfile_obj(category_name: String, file_name: String) -> GDLLogFile:
 		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file_name), "/")
 		
 		if not FileAccess.file_exists(file_path):
@@ -438,7 +438,7 @@ func _create_logfile_obj(category_name: String, file_name: String) -> GLLogFile:
 		var has_error := f.get_open_error() != OK
 		f.close()
 				
-		var lf: GLLogFile = LOG_FILE_BUTTON.instantiate() as GLLogFile
+		var lf: GDLLogFile = LOG_FILE_BUTTON.instantiate() as GDLLogFile
 		lf.category_name = category_name
 		lf.file_name = file_name
 		lf.file_path = file_path
@@ -496,7 +496,7 @@ func _sort_file_list(category_name: String) -> Array:
 
 
 
-func _open_log_file(log_file: GLLogFile) -> void:
+func _open_log_file(log_file: GDLLogFile) -> void:
 	if !log_file.file_name.ends_with(".log"):
 		return
 	
@@ -540,17 +540,13 @@ func _open_log_file(log_file: GLLogFile) -> void:
 			_m[int(_splits[0].substr(2, 2))],
 			str(20, (_splits[0].substr(0, 2)))
 		)
-	for lf: GLLogFile in log_files:
-		if lf != log_file and lf.selected:
-			lf.selected = false 
 	
-	log_file.selected = true 
-	popup_panel.title = str(log_file.category_name.capitalize(), fin_date, " - ", fin_time, " | ", log_file.file_name)
+	popup_panel.file_name = str(fin_date, " | ", fin_time)
 	cur_logfile = log_file 
 
 
 
-func _on_show_delete_category_prompt(category: GLLogCategory) -> void:
+func _on_show_delete_category_prompt(category: GDLLogCategory) -> void:
 	prompt_popup.show()
 	reload_dock_btn.hide()
 	del_cat_popup.show()
@@ -562,13 +558,13 @@ func _on_colorcode_changed(toggled_on: bool) -> void:
 	var files := file_container.get_children() 
 	var colorcode: Color = Color.BLACK
 	var used_cols: Array[Color]= []
-	var prev_file: GLLogFile = null
+	var prev_file: GDLLogFile = null
 	data.colorcode_dates = toggled_on
 
 	if files.is_empty():
 		return
 
-	for cur_file: GLLogFile in files:
+	for cur_file: GDLLogFile in files:
 		var file_name = cur_file.file_name
 		if data.colorcode_dates:
 			var pdate: String = prev_file.date_stamp if prev_file else ""

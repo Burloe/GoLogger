@@ -1,5 +1,5 @@
 @tool
-class_name GLCategoryData extends Resource
+class_name GDLCategoryData extends Resource
 
 @export var category_name: String = "":
 	set(value):

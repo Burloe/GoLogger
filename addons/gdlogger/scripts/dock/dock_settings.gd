@@ -73,10 +73,8 @@ var inspector: EditorInspector
 @onready var general_fold_cont: FoldableContainer = %GeneralFoldableContainer
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
-@export var data: GLData = null
+@export var data: GDLData = null
 
-var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
-var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
 
 var plugin_version: String =  "1.4":
 	set(value):
@@ -403,10 +401,7 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			entry_format_revert_btn.disabled = true 
 			
 			entry_format_warning.visible = !_is_entry_format_valid(new_text)
-			entry_format_line.add_theme_stylebox_override(
-				"normal", 
-				sb_line_edit_normal if _is_entry_format_valid(new_text) else sb_line_edit_invalid
-			)
+			entry_format_line.set_theme_type_variation("LineEdit_category_field_valid" if _is_entry_format_valid(new_text) else "LineEdit_category_field_invalid")
 
 			if new_text != last_applied_value and _is_entry_format_valid(new_text):
 				entry_format_apply_btn.disabled = false 

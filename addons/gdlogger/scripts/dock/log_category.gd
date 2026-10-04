@@ -1,18 +1,18 @@
 @tool
-class_name GLLogCategory extends PanelContainer
+class_name GDLLogCategory extends PanelContainer
 
 ## Emitted to dock.gd when any change is made in order to save the categories.
 signal log_category_changed 
 ## Emitted to dock.gd to move the categories and save them.
-signal move_category_requested(log_category: GLLogCategory, direction : int)
+signal move_category_requested(log_category: GDLLogCategory, direction : int)
 
-signal set_default_category(category: GLLogCategory, toggle_on: bool) 
+signal set_default_category(category: GDLLogCategory, toggle_on: bool) 
 ## Emitted to dock_logs.gd to display the prompt and await user input before executing deletion and directory cleanup
-signal show_delete_category_prompt(category: GLLogCategory)
+signal show_delete_category_prompt(category: GDLLogCategory)
 
 
-@export var data: GLData = null
-@export var cat_data: GLCategoryData = null
+@export var data: GDLData = null
+@export var cat_data: GDLCategoryData = null
 
 @onready var move_left_btn: Button = 				%MoveLeftButton
 @onready var move_right_btn: Button = 			%MoveRightButton
@@ -30,6 +30,7 @@ signal show_delete_category_prompt(category: GLLogCategory)
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
+
 const SIZE_UNEDITED = Vector2(210, 48)
 const SIZE_EDITED = Vector2(262, 48)
 ##  Last applied category name
@@ -74,6 +75,10 @@ var is_new: bool = false:
 		if value:
 			size = SIZE_EDITED
 
+var is_selected: bool = false:
+	set(value):
+		is_selected = value
+		select_btn.disabled = value
 
 
 
@@ -89,6 +94,7 @@ func _ready() -> void:
 	settings.settings_changed.connect(_on_editor_settings_changed)
 	line_edit.text_changed.connect(_on_text_changed)
 	del_btn.button_up.connect(_on_del_button_up)
+	select_btn.toggled.connect(func(toggle_on) -> void: is_selected = toggle_on)
 	move_left_btn.button_up.connect(func() -> void: move_category_requested.emit(self, -1))
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
@@ -188,14 +194,14 @@ func apply_name(new_name: String) -> void:
 	var def: String = data.default_category
 	
 	if category_name == "": # Naming new category
-		var new: GLCategoryData = GLCategoryData.new()
+		var new: GDLCategoryData = GDLCategoryData.new()
 		new.category_name = new_name
 		data.categories.append(new)
 		cat_data = new
 
 	else: # Renaming existing category
 		if !cat_data:
-			cat_data = GLCategoryData.new()
+			cat_data = GDLCategoryData.new()
 		cat_data.category_name = new_name
 	
 	cat_data.category_path = str(data.base_dir, new_name, "/")

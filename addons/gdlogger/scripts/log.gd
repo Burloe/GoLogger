@@ -41,10 +41,10 @@ enum SessionTimerAction {
 	STOP
 }
 
-@export var data: GLData = null
+@export var data: GDLData = null
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 # const id_overlay_lbl_sett = preload("")
-var gl_hotkeys: GLShortcut = preload("uid://dyi2aml73k4g8")
+var gl_hotkeys: GDLShortcut = preload("uid://dyi2aml73k4g8")
 var copy_name : String = ""
 var session_status: bool = false:
 	set(value):
@@ -61,7 +61,7 @@ var data_mtime: int = -1
 
 func load_data() -> void:
 	if !FileAccess.file_exists(DATA_PATH):
-		data = GLData.new()
+		data = GDLData.new()
 		ResourceSaver.save(data, DATA_PATH)
 	else:
 		data = load(DATA_PATH)
@@ -196,7 +196,7 @@ func start_session() -> void:
 
 func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
 	var cats: Array[String] = data.get_category_names()
-	var target_category: GLCategoryData = null
+	var target_category: GDLCategoryData = null
 	var tc_name: String = ""
 
 	if log_msg == "":

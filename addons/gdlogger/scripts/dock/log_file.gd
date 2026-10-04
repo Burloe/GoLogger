@@ -1,5 +1,5 @@
 @tool
-class_name GLLogFile extends Button
+class_name GDLLogFile extends Button
 
 
 @export var fallback_name: String = str("<NA>")
@@ -8,14 +8,11 @@ class_name GLLogFile extends Button
 
 const DISPLAY_NAME_CHAR_LIMIT: int = 18
 
-var sb_unselected := 		preload("uid://kbj6uorhqcy1")
-var sb_selected := 			preload("uid://c7kb4koj3rx5n")
-
-var selected: bool = false:
-	set(value):
-		selected = value
-		add_theme_stylebox_override("normal", 				sb_selected if value else sb_unselected)
-		add_theme_stylebox_override("pressed", 				sb_selected if value else sb_unselected)
+# var selected: bool = false:
+# 	set(value):
+# 		selected = value
+		# add_theme_stylebox_override("normal", 				sb_selected if value else sb_unselected)
+		# add_theme_stylebox_override("pressed", 				sb_selected if value else sb_unselected)
 var base_dir
 var category_name: String = ""
 var file_path: String = ""
@@ -41,7 +38,7 @@ var file_contents: String = ""
 
 
 func _ready() -> void:
-	button_up.connect(func() -> void: selected = !true)
+	# toggled.connect(func(toggle_on: bool) -> void: selected = toggle_on)
 	text = display_name if display_name != "" else fallback_name
 	expand_icon = true
 	add_theme_constant_override("icon_max_width", 32)
@@ -49,7 +46,7 @@ func _ready() -> void:
 
 
 func connect_to_popup(pop: PopupPanel) -> void:
-	if pop: pop.popup_hide.connect(func() -> void: selected = false)
+	if pop: pop.popup_hide.connect(func() -> void: button_pressed = false)
 
 
 

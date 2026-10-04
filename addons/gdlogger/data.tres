@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GLData" format=3 uid="uid://dj7h7t2v8csck"]
+[gd_resource type="Resource" script_class="GDLData" format=3 uid="uid://dj7h7t2v8csck"]
 
 [ext_resource type="Script" uid="uid://bm8lbc8d2cd4r" path="res://addons/gdlogger/scripts/gl_category_data_resource.gd" id="1_u03vm"]
 [ext_resource type="Script" uid="uid://dcm4iew3h2l7p" path="res://addons/gdlogger/scripts/gl_data_resource.gd" id="2_ru745"]

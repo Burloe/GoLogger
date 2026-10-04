@@ -78,7 +78,8 @@ layout_mode = 2
 mouse_filter = 2
 alignment = 2
 
-[node name="Label" type="Label" parent="Control/VBoxContainer/TopBar/HBoxContainer" unique_id=50349477]
+[node name="FileNameLabel" type="Label" parent="Control/VBoxContainer/TopBar/HBoxContainer" unique_id=50349477]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/outline_size = 4
@@ -121,23 +122,15 @@ icon_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 16
-split_offsets = PackedInt32Array(-112)
-split_offset = -112
+split_offsets = PackedInt32Array(72)
+split_offset = 72
 
-[node name="LblSettingsPanel" type="Panel" parent="Control/VBoxContainer/VSplitContainer" unique_id=1350539167]
+[node name="LblSettingsEditorInspector" type="EditorInspector" parent="Control/VBoxContainer/VSplitContainer" unique_id=250908653]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(256, 192)
+custom_minimum_size = Vector2(256, 148)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = ExtResource("3_bte71")
-
-[node name="LblSettingsScrollContainer" type="ScrollContainer" parent="Control/VBoxContainer/VSplitContainer/LblSettingsPanel" unique_id=1819027904]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 492.0
-offset_bottom = 223.0
 theme = ExtResource("3_bte71")
 
 [node name="ContentScrollContainer" type="ScrollContainer" parent="Control/VBoxContainer/VSplitContainer" unique_id=90701162]

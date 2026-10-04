@@ -1,5 +1,5 @@
 @tool
-class_name GLDock extends EditorDock
+class_name GDLDock extends EditorDock
 
 # Adding a new setting:
 	# Add the settings to all appropriate dictionaries in "settings_dict"
@@ -26,7 +26,7 @@ const gh_ico_darkmode = preload("uid://c74n2f1j4wew5")
 const gh_ico_lightmode = preload("uid://c0fie23lxf1be")
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 
-@export var data: GLData = null
+@export var data: GDLData = null
 @onready var renable_btn: Button = %RENABLEButton
 @onready var docktab_container: TabContainer = %DockTabContainer
 @onready var prompt_popup: PanelContainer = %PromptPopupPanelContainer
@@ -153,13 +153,36 @@ var theme_colors: Dictionary = {}
 	settings.get_setting("interface/theme/accent_color")
 ]
 
-# var gdl_ico = preload("uid://bch3ujgyd4vth")
-var sb_line_edit_normal 							:= preload("uid://pue22dsifmfd")
-var sb_line_edit_invalid							:= preload("uid://cdij27b0tovx")
-var lv_content_lbl_settings 					:= preload("uid://cqn5x8cb7vjy3")
+var theme_res_path: String = "res://addons/gdlogger/resources/theme/" # Path to theme resources to edit on EditorSettings changed
+var category_scene = preload("uid://c3n416c5fajm5")
+var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
+var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
+var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast") 
+var plugin_version: String =  "2.0":
+	set(value):
+		plugin_version = value
+		if version_linkbtn:
+			version_linkbtn.text = str("GDLogger v.", value)
 
+var log_header_value: String = "":
+	set(value):
+		if value != log_header_value:
+			log_header_value = value
+			sett_log_header_revert_btn.tooltip_text = str("Revert to '", value, "'")
+			data.header_format = value
 
-## Index 3 is a SEPERATOR and should not be used.
+var entry_format_value: String = "":
+	set(value):
+		if value != entry_format_value:
+			entry_format_value = value
+			sett_entry_format_revert_btn.tooltip_text = str("Revert to '", value, "'")
+			data.entry_format = value 
+
+var is_shutting_down: bool = false:
+	set(value):
+		is_shutting_down = value
+		logs_tab.is_shutting_down = value
+
 enum LimitMethod {
 	ENTRY_COUNT,
 	SESSION_TIMER,
@@ -178,36 +201,6 @@ enum SessionTimerAction {
 	RESTART,
 	STOP
 }
-
-
-var theme_res_path: String = "res://addons/gdlogger/resources/theme/" # Path to theme resources to edit on EditorSettings changed
-var category_scene = preload("uid://c3n416c5fajm5")
-var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
-var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
-var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast") 
-var plugin_version: String =  "2.0":
-	set(value):
-		plugin_version = value
-		if version_linkbtn:
-			version_linkbtn.text = str("GDLogger v.", value)
-
-var log_header_value: String = "":
-	set(value):
-		if value != log_header_value:
-			log_header_value = value
-			sett_log_header_revert_btn.tooltip_text = str("Revert to '", value, "'")
-			data.header_format = value
-var entry_format_value: String = "":
-	set(value):
-		if value != entry_format_value:
-			entry_format_value = value
-			sett_entry_format_revert_btn.tooltip_text = str("Revert to '", value, "'")
-			data.entry_format = value 
-
-var is_shutting_down: bool = false:
-	set(value):
-		is_shutting_down = value
-		logs_tab.is_shutting_down = value
 
 
 
@@ -350,14 +343,14 @@ func reset_to_default() -> void:
 
 
 func regen_data() -> void:
-	var new := GLData.new()
+	var new := GDLData.new()
 	if ResourceSaver.save(new, DATA_PATH) == OK:
 		printerr("GDLogger: No plugin data found at path. Successfully generated a new, please reload dock/plugin.")
 		prompt_popup.show()
 		dock_reload_btn.show()
 		delete_category_popup.hide()
 	else:
-		printerr("GDLogger: No plugin data found at path '", DATA_PATH, "' and GDLogger wasn't able to generate a new one. Please manually R-Click in directory, Create new > Resource > GLData > Name 'data.tres' > Restart Godot.")
+		printerr("GDLogger: No plugin data found at path '", DATA_PATH, "' and GDLogger wasn't able to generate a new one. Please manually R-Click in directory, Create new > Resource > GDLData > Name 'data.tres' > Restart Godot.")
 	
 	logs_tab.data = new
 	settings_tab.data = new
@@ -384,16 +377,16 @@ func save_categories() -> void:
 		return
 
 	data.categories.clear()
-	var cats: Array[GLCategoryData] = []
+	var cats: Array[GDLCategoryData] = []
 
 	for log_c in category_container.get_children():
-		if log_c is not GLLogCategory or log_c.category_name.is_empty():
+		if log_c is not GDLLogCategory or log_c.category_name.is_empty():
 			continue
 
 		if log_c.default_btn.button_pressed: 
 			data.default_category = log_c.category_name
 
-		var c_data: GLCategoryData = GLCategoryData.new()
+		var c_data: GDLCategoryData = GDLCategoryData.new()
 		c_data.category_name = log_c.category_name 
 		log_c.cat_data = c_data
 		cats.append(c_data) 
@@ -424,11 +417,11 @@ func _open_directory() -> void:
 #region Signal receivers
 
 func _on_regenerate_button_up() -> void:
-	var _new := GLData.new()
+	var _new := GDLData.new()
 	var _err := ResourceSaver.save(_new, DATA_PATH)
 	if _err != OK:
 		printerr("GDLogger: Failed to regenerate 'data.tres' - Error[", _err, "] ", error_string(_err))
-		print("You can manually create a new GLData resource, name it 'data.tres' and save it to path: ", DATA_PATH, "\nRemember to reload Godot afterwards.")
+		print("You can manually create a new GDLData resource, name it 'data.tres' and save it to path: ", DATA_PATH, "\nRemember to reload Godot afterwards.")
 
 
 
@@ -479,10 +472,10 @@ func _get_theme_colors() -> Dictionary:
 			# LogFile
 			"logfile_hover": 								base_col,
 			"logfile_hover_border": 				accent_col,
-			"logfile_hover_pressed": 				base_col.darkened(contrast * 1.25),
-			"logfile_hover_pressed_border":	accent_col.darkened(contrast * 1.25),
 			"logfile_pressed":							base_col.darkened(contrast * 1.25),
 			"logfile_pressed_border":				accent_col.darkened(contrast * 1.25),
+			"logfile_hover_pressed": 				base_col.darkened(contrast * 1.25),
+			"logfile_hover_pressed_border":	accent_col.darkened(contrast * 1.25),
 
 			# FoldableContainer - All base_col
 			
@@ -493,6 +486,10 @@ func _get_theme_colors() -> Dictionary:
 			# LineEdit
 			"line_edit_normal":							base_col.darkened(contrast * 1.25),
 			
+			# OptionButton
+			"option_button_normal":					base_col.darkened(contrast),
+			"option_button_pressed":				base_col.darkened(contrast * 1.25),
+
 			# Panel
 			"panel_normal":									base_col.darkened(contrast * 2),
 			
@@ -515,6 +512,7 @@ func _get_theme_colors() -> Dictionary:
 				"icon_hover":									accent_col,
 				"icon_pressed":								accent_col.darkened(contrast * 2),
 				"icon_hover_pressed":					accent_col.darkened(contrast * 2),
+				"accent_type_icon_color": 		Color("333333"),
 				"up_icon_hover_modulate": 		accent_col,
 				"up_icon_pressed_modulate":		accent_col.darkened(contrast * 2),
 				"down_icon_hover_modulate":		accent_col,
@@ -527,40 +525,66 @@ func _get_theme_colors() -> Dictionary:
 		}
 	else: # Light
 		colors = {
+			"base_col":											base_col,
+			"accent_col":										accent_col,
 			# Button
 			"normal": 											base_col,
-			"pressed": 											base_col.lightened(contrast * 2),
-			"hover": 												base_col.darkened(contrast * 2),
-			"hover_pressed":								base_col.darkened(contrast),
+			"pressed": 											base_col.darkened(contrast * 2),
+			"hover": 												base_col.lightened(contrast * 2),
+			"hover_pressed":								base_col.lightened(contrast),
 			
+			# LogFile
+			"logfile_hover": 								base_col,
+			"logfile_hover_border": 				accent_col,
+			"logfile_pressed":							base_col.darkened(contrast * 1.25),
+			"logfile_pressed_border":				accent_col.darkened(contrast * 1.25),
+			"logfile_hover_pressed": 				base_col.darkened(contrast * 1.25),
+			"logfile_hover_pressed_border":	accent_col.darkened(contrast * 1.25),
+
 			# FoldableContainer - All base_col
 			
 			# Scrollbar
-			"grabber_highlight":						base_col.darkened(contrast * 2),
-			"grabber_pressed":							base_col.lightened(contrast * 2),
+			"grabber_highlight":						base_col.lightened(contrast * 2),
+			"grabber_pressed":							base_col.darkened(contrast * 2),
 			
 			# LineEdit
-			"line_edit_normal":							base_col.lightened(contrast * 2),
+			"line_edit_normal":							base_col.darkened(contrast * 1.25),
 			
+			# OptionButton
+			"option_button_normal":					base_col.darkened(contrast * 1.25),
+			"option_button_pressed":				base_col.darkened(contrast * 2),
+
 			# Panel
-			"panel_normal":									base_col.lightened(contrast * 2),
+			"panel_normal":									base_col.darkened(contrast * 2),
 			
 			# PopupMenu
-			"popup_menu_hover":							base_col.darkened(contrast * 2.5),
-			"popup_menu_panel":							base_col.lightened(contrast * 2),
-			"popup_menu_separator":					base_col.darkened(contrast * 2),
+			"popup_menu_hover":							base_col.lightened(contrast * 2.5),
+			"popup_menu_panel":							base_col.darkened(contrast * 2),
+			"popup_menu_separator":					base_col.lightened(contrast * 2),
 			
 			# TabContainer
-			"tab_container_panel":					base_col.lightened(contrast * 1.2),
+			"tab_container_panel":					base_col.darkened(contrast * 1.25),
 			"tab_container_tab_selected": 	accent_col,
 			"tab_container_tab_bar_bg": 		base_col,
 			
+			# ScrolContainer
+			"scroll_container_panel":				base_col.darkened(contrast * 1.25),
+
 			# Separator
-			"separator":										base_col.lightened(contrast * 4),
-			# Colors
+			"separator":										base_col.darkened(contrast * 4),
 			"colors": {
-				"icon_pressed":								accent_col,
-				"icon_hover":									accent_col.darkened(contrast * 2),
+				"icon_hover":									accent_col,
+				"icon_pressed":								accent_col.darkened(contrast * 2),
+				"icon_hover_pressed":					accent_col.darkened(contrast * 2),
+				"accent_type_icon_color":		 	Color.WHITE,
+				"up_icon_hover_modulate": 		accent_col,
+				"up_icon_pressed_modulate":		accent_col.darkened(contrast * 2),
+				"down_icon_hover_modulate":		accent_col,
+				"down_icon_pressed_mdulate":	accent_col.darkened(contrast * 2),
+				"font_hovered_color":					Color("1a1a1a"),
+				"font_selected_color":				base_col,
+				"font_pressed_color":					Color("1a1a1a"),
+				"font_hover_pressed_color":		Color("1a1a1a")
 			}
 		}
 	return colors
@@ -577,6 +601,9 @@ func _apply_theme_colors() -> void:
 	for control_type in gdl_theme.get_stylebox_type_list():
 		for stylebox_name in gdl_theme.get_stylebox_list(control_type):
 			var sb: StyleBox = gdl_theme.get_stylebox(stylebox_name, control_type)
+					
+			if control_type == "EditorIcons":
+				continue
 			
 			if sb is not StyleBoxFlat and sb is not StyleBoxLine:
 				continue
@@ -587,14 +614,24 @@ func _apply_theme_colors() -> void:
 				sb.color = tags["normal"]
 
 			match control_type:
+				"ButtonCategoryLoad":
+					match stylebox_name:
+						"normal": 						sb.bg_color = tags["base_col"]
+						"hover":							sb.bg_color = tags["accent_col"]
+						"pressed":						sb.bg_color = tags["accent_col"]
+						"hover_pressed":			sb.bg_color = tags["accent_col"]
+						"disabled":						sb.bg_color = tags["accent_col"]
 				"LogFile":
 					match stylebox_name:
 						"hover": 							
-							sb.bg_color = tags["base_col"]
-							sb.border_color = tags["accent_col"]
+							sb.bg_color = tags["logfile_hover"]
+							sb.border_color = tags["logfile_hover_border"]
+						"pressed":
+							sb.bg_color = tags["logfile_pressed"]
+							sb.border_color = tags["logfile_pressed_border"]
 						"hover_pressed":
-							sb.bg_color = tags["base_col"]
-							sb.border_color = tags["accent_col"]
+							sb.bg_color = tags["logfile_hover_pressed"]
+							sb.border_color = tags["logfile_hover_pressed_border"]
 						
 				"LineEdit":
 					sb.bg_color = tags["line_edit_normal"]
@@ -608,6 +645,13 @@ func _apply_theme_colors() -> void:
 					match stylebox_name:
 						"grabber_highlight": 	sb.bg_color = tags[stylebox_name]
 						"grabber_pressed": 		sb.bg_color = tags[stylebox_name]
+				"OptionButton":
+					match stylebox_name:
+						"normal":							sb.bg_color = tags["option_button_normal"]
+						"hover": 							sb.bg_color = tags["option_button_normal"]
+						"pressed":						sb.bg_color = tags["option_button_pressed"]
+						"hover_pressed":			sb.bg_color = tags["option_button_pressed"]
+				
 				"Panel":
 					sb.bg_color = tags["panel_normal"]
 				"Panel_base_col_no_cmarg":
@@ -633,6 +677,15 @@ func _apply_theme_colors() -> void:
 	for control_type in gdl_theme.get_color_type_list():
 		for color_name in gdl_theme.get_color_list(control_type):
 			for key in tags["colors"].keys():
+				if control_type == "EditorIcons":
+					continue
+
+				if control_type == "ButtonBategoryLoad":
+					gdl_theme.set_color("icon_hover_color", control_type, tags["accent_type_icon_color"])
+					gdl_theme.set_color("icon_hover_pressed_color", control_type, tags["accent_type_icon_color"])
+					gdl_theme.set_color("icon_pressed_color", control_type, tags["accent_type_icon_color"])
+					gdl_theme.set_color("icon_disabled_color", control_type, tags["accent_type_icon_color"])
+
 				if color_name.contains(key):
 					gdl_theme.set_color(color_name, control_type, tags["colors"][key])
 

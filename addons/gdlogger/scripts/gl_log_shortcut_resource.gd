@@ -1,4 +1,4 @@
-class_name GLShortcut extends Resource
+class_name GDLShortcut extends Resource
 
 @export var start_session_hotkey: InputEventShortcut ## Default: Ctrl + Shift + O 
 @export var stop_session_hotkey: InputEventShortcut ## Default: Ctrl + Shift + P

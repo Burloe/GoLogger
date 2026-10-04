@@ -11,6 +11,7 @@ mouse_default_cursor_shape = 2
 theme = ExtResource("1_etmb7")
 theme_type_variation = &"LogFile"
 theme_override_constants/icon_max_width = 32
+toggle_mode = true
 text = "<NA>"
 alignment = 0
 autowrap_mode = 2

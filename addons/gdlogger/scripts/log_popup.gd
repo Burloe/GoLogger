@@ -8,19 +8,22 @@ signal close_logfile
 @onready var copy_btn: Button = %CopyButton
 @onready var settings_btn: Button = %SettingsButton
 @onready var close_btn: Button = %CloseButton
+@onready var filename_lbl: Label = %FileNameLabel
 @onready var content_lbl: Label = %ContentLabel
-@onready var lbsett_panel: Panel = %LblSettingsPanel
-@onready var lbsett_scroll_container: ScrollContainer = %LblSettingsScrollContainer
-
+@onready var lbsett_inspector: EditorInspector = %LblSettingsEditorInspector
 @onready var settings = EditorInterface.get_editor_settings()
 
-var inspector: EditorInspector = null
 var file_contents_lblsett: String = "uid://cqn5x8cb7vjy3"
 var dragging: bool = false
 var first_popup := true
 var saved_position := Vector2i.ZERO
 
 var resizing := false
+
+var file_name: String = "":
+	set(value):
+		file_name = value
+		filename_lbl.text  = value
 
 var content: String = "":
 	set(value):
@@ -38,19 +41,14 @@ func _ready() -> void:
 	)
 	settings_btn.toggled.connect(
 		func(toggled: bool) -> void:
-			if inspector:
-				lbsett_panel.visible = toggled
+				lbsett_inspector.visible = toggled
 	)
 	close_btn.button_up.connect(func() -> void: hide())
 	top_bar.gui_input.connect(_on_title_bar_gui_input)
 
-	inspector = EditorInspector.new()
-	lbsett_scroll_container.add_child(inspector)
-	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	inspector.edit(ResourceLoader.load(file_contents_lblsett))
+	lbsett_inspector.edit(ResourceLoader.load(file_contents_lblsett))
 	content_lbl.label_settings = load(file_contents_lblsett) 
-	lbsett_panel.hide()
+	lbsett_inspector.hide()
 
 
 
