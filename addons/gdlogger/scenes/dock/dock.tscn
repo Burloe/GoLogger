@@ -63,6 +63,15 @@ content_margin_bottom = 4.0
 bg_color = Color(1, 1, 1, 0)
 corner_detail = 5
 
+[sub_resource type="DPITexture" id="DPITexture_fkxka"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M5 8a4 4 0 1 1 4 4v2a6 6 0 1 0-6-6H1l3 4 3-4z\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
 [sub_resource type="FoldableGroup" id="FoldableGroup_k47fi"]
 allow_folding_all = true
 
@@ -129,21 +138,6 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a5g7p"]
-content_margin_top = 8.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0d86e"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(0.135, 0.54, 0.43875, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 4
 
 [sub_resource type="FoldableGroup" id="FoldableGroup_tvbkj"]
 allow_folding_all = true
@@ -428,7 +422,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_7xlqe")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_7xlqe")
-icon = SubResource("DPITexture_aav5c")
+icon = SubResource("DPITexture_fkxka")
 flat = true
 icon_alignment = 1
 
@@ -452,7 +446,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_no_cmargins"
+theme_type_variation = &"ScrollContainer_NoCMargins"
 follow_focus = true
 vertical_scroll_mode = 2
 scroll_hint_mode = 1
@@ -744,11 +738,7 @@ vertical_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-theme_override_styles/normal = ExtResource("15_lnu3o")
-theme_override_styles/pressed = ExtResource("23_g08q5")
-theme_override_styles/hover = ExtResource("23_g08q5")
-theme_override_styles/hover_pressed = ExtResource("23_g08q5")
-theme_override_styles/focus = ExtResource("23_g08q5")
+theme = ExtResource("4_o07th")
 toggle_mode = false
 action_mode = 1
 alignment = 2
@@ -821,7 +811,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_no_cmargins"
+theme_type_variation = &"ScrollContainer_NoCMargins"
 follow_focus = true
 scroll_hint_mode = 1
 
@@ -1195,10 +1185,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("4_o07th")
+theme_type_variation = &"TabContainer_NoHCMargs"
 theme_override_constants/tab_separation = 6
-theme_override_styles/panel = SubResource("StyleBoxEmpty_a5g7p")
-theme_override_styles/tab_selected = SubResource("StyleBoxFlat_0d86e")
-current_tab = 0
+current_tab = 2
 tab_0/title = "Getting Started"
 tab_1/title = "Methods & Hotkeys"
 tab_2/title = "More Info"
@@ -1207,7 +1196,10 @@ metadata/_tab_name = "Help"
 
 [node name="GettingStarted" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=1377872369]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
+theme = ExtResource("4_o07th")
+theme_type_variation = &"ScrollContainer_NoCMargins"
 scroll_vertical_custom_step = 20.0
 scroll_hint_mode = 1
 tile_scroll_hint = true
@@ -1393,6 +1385,8 @@ fit_content = true
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+theme = ExtResource("4_o07th")
+theme_type_variation = &"ScrollContainer_NoCMargins"
 scroll_hint_mode = 1
 metadata/_tab_index = 1
 metadata/_tab_name = "Methods & Hotkeys"
@@ -1551,8 +1545,9 @@ fit_content = true
 
 [node name="MoreInfo" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=656868993]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
+theme = ExtResource("4_o07th")
+theme_type_variation = &"ScrollContainer_NoCMargins"
 scroll_hint_mode = 1
 tile_scroll_hint = true
 metadata/_tab_index = 2
@@ -1678,6 +1673,7 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Automatically reload log files in Logs tab"
 theme = ExtResource("4_o07th")
+theme_type_variation = &"Button_Accented"
 text = "New first"
 
 [node name="LGColorCodeCheckButton" type="CheckButton" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox" unique_id=498202583]

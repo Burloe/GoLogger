@@ -42,6 +42,7 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var lg_add_cat_btn: Button = %AddCategoryButton
 @onready var lg_open_dir_btn: Button = %LBOpenDirButton 
 @onready var lg_reload_btn: Button = %LGReloadButton
+@onready var lg_sort_btn: Button = %LGSortButton
 @onready var lg_colorcode_btn: Button = %LGColorCodeCheckButton
 @onready var lg_open_with_os_btn: Button = %LGOpenLogsCheckButton
 @onready var lg_auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
@@ -473,128 +474,56 @@ func _get_theme_colors() -> Dictionary:
 			"accent_col-1":									accent_col.darkened(contrast),
 			"accent_col-2":									accent_col.darkened(contrast * 1.25),
 
-			# Button
-			"normal": 											base_col,
-			"pressed": 											base_col.darkened(contrast * 2),
-			"hover": 												base_col.lightened(contrast * 2),
-			"hover_pressed":								base_col.lightened(contrast),
-			
-			# LogFile
-			"logfile_hover": 								base_col,
-			"logfile_hover_border": 				accent_col,
-			"logfile_pressed":							base_col.darkened(contrast * 1.25),
-			"logfile_pressed_border":				accent_col.darkened(contrast * 1.25),
-			"logfile_hover_pressed": 				base_col.darkened(contrast * 1.25),
-			"logfile_hover_pressed_border":	accent_col.darkened(contrast * 1.25),
-
-			# FoldableContainer - All base_col
-			
-			# Scrollbar
-			"grabber_highlight":						base_col.lightened(contrast * 2),
-			"grabber_pressed":							base_col.darkened(contrast * 2),
-			
-			# LineEdit
-			"line_edit_normal":							base_col.darkened(contrast * 1.25),
-			
-			# OptionButton
-			"option_button_normal":					base_col.darkened(contrast),
-			"option_button_pressed":				base_col.darkened(contrast * 1.25),
-
-			# Panel
-			"panel_normal":									base_col.darkened(contrast * 2),
-			
-			# PopupMenu
-			"popup_menu_hover":							base_col.lightened(contrast * 2.5),
-			"popup_menu_panel":							base_col.darkened(contrast * 2),
-			"popup_menu_separator":					base_col.lightened(contrast * 2),
-			
-			# TabContainer
-			"tab_container_panel":					base_col.darkened(contrast * 1.25),
-			"tab_container_tab_selected": 	accent_col,
-			"tab_container_tab_bar_bg": 		base_col,
-			
-			# ScrolContainer
-			"scroll_container_panel":				base_col.darkened(contrast * 1.25),
-
 			# Separator
 			"separator":										base_col.darkened(contrast * 4),
 			"colors": {
 				"icon_hover":									accent_col,
 				"icon_pressed":								accent_col.darkened(contrast * 2),
 				"icon_hover_pressed":					accent_col.darkened(contrast * 2),
-				"accent_type_icon_color": 		Color("333333"),
+				"accent_type_icon_color": 		Color.WHITE,
 				"up_icon_hover_modulate": 		accent_col,
 				"up_icon_pressed_modulate":		accent_col.darkened(contrast * 2),
 				"down_icon_hover_modulate":		accent_col,
 				"down_icon_pressed_mdulate":	accent_col.darkened(contrast * 2),
-				"font_hovered_color":					Color("1a1a1a"),
+				"accented_font_color":				Color.WHITE,
+				"font_hovered_color":					Color.WHITE,
 				"font_selected_color":				base_col,
-				"font_pressed_color":					Color("1a1a1a"),
-				"font_hover_pressed_color":		Color("1a1a1a")
+				"font_pressed_color":					Color.WHITE,
+				"font_hover_pressed_color":		Color.WHITE,
+				"fond_icon_color":						Color.WHITE
 			}
 		}
 	else: # Light
 		colors = {
+			"base_col+2":										base_col.darkened(contrast * 1.25),
+			"base_col+1":										base_col.darkened(contrast),
 			"base_col":											base_col,
+			"base_col-1":										base_col.lightened(contrast),
+			"base_col-2":										base_col.lightened(contrast * 1.25),
+
+			"accent_col+2":									accent_col.darkened(contrast * 1.25),
+			"accent_col+1":									accent_col.darkened(contrast),
 			"accent_col":										accent_col,
-			# Button
-			"normal": 											base_col,
-			"pressed": 											base_col.darkened(contrast * 2),
-			"hover": 												base_col.lightened(contrast * 2),
-			"hover_pressed":								base_col.lightened(contrast),
-			
-			# LogFile
-			"logfile_hover": 								base_col,
-			"logfile_hover_border": 				accent_col,
-			"logfile_pressed":							base_col.darkened(contrast * 1.25),
-			"logfile_pressed_border":				accent_col.darkened(contrast * 1.25),
-			"logfile_hover_pressed": 				base_col.darkened(contrast * 1.25),
-			"logfile_hover_pressed_border":	accent_col.darkened(contrast * 1.25),
-
-			# FoldableContainer - All base_col
-			
-			# Scrollbar
-			"grabber_highlight":						base_col.lightened(contrast * 2),
-			"grabber_pressed":							base_col.darkened(contrast * 2),
-			
-			# LineEdit
-			"line_edit_normal":							base_col.darkened(contrast * 1.25),
-			
-			# OptionButton
-			"option_button_normal":					base_col.darkened(contrast * 1.25),
-			"option_button_pressed":				base_col.darkened(contrast * 2),
-
-			# Panel
-			"panel_normal":									base_col.darkened(contrast * 2),
-			
-			# PopupMenu
-			"popup_menu_hover":							base_col.lightened(contrast * 2.5),
-			"popup_menu_panel":							base_col.darkened(contrast * 2),
-			"popup_menu_separator":					base_col.lightened(contrast * 2),
-			
-			# TabContainer
-			"tab_container_panel":					base_col.darkened(contrast * 1.25),
-			"tab_container_tab_selected": 	accent_col,
-			"tab_container_tab_bar_bg": 		base_col,
-			
-			# ScrolContainer
-			"scroll_container_panel":				base_col.darkened(contrast * 1.25),
+			"accent_col-1":									accent_col.lightened(contrast),
+			"accent_col-2":									accent_col.lightened(contrast * 1.25),
 
 			# Separator
-			"separator":										base_col.darkened(contrast * 4),
+			"separator":										base_col.lightened(contrast * 4),
 			"colors": {
 				"icon_hover":									accent_col,
-				"icon_pressed":								accent_col.darkened(contrast * 2),
-				"icon_hover_pressed":					accent_col.darkened(contrast * 2),
-				"accent_type_icon_color":		 	Color.WHITE,
+				"icon_pressed":								accent_col.lightened(contrast * 2),
+				"icon_hover_pressed":					accent_col.lightened(contrast * 2),
+				"accent_type_icon_color": 		Color("0a0d09"),
 				"up_icon_hover_modulate": 		accent_col,
-				"up_icon_pressed_modulate":		accent_col.darkened(contrast * 2),
+				"up_icon_pressed_modulate":		accent_col.lightened(contrast * 2),
 				"down_icon_hover_modulate":		accent_col,
-				"down_icon_pressed_mdulate":	accent_col.darkened(contrast * 2),
-				"font_hovered_color":					Color("1a1a1a"),
+				"down_icon_pressed_mdulate":	accent_col.lightened(contrast * 2),
+				"accented_font_color":				Color("0a0d09"),
+				"font_hovered_color":					Color("0a0d09"),
 				"font_selected_color":				base_col,
-				"font_pressed_color":					Color("1a1a1a"),
-				"font_hover_pressed_color":		Color("1a1a1a")
+				"font_pressed_color":					Color("0a0d09"),
+				"font_hover_pressed_color":		Color("0a0d09"),
+				"font_icon_color":						Color("0a0d09")
 			}
 		}
 	return colors
@@ -602,10 +531,7 @@ func _get_theme_colors() -> Dictionary:
 
 
 func _apply_theme_colors() -> void:
-	var tags: Dictionary = _get_theme_colors()
-
-	#TODO Tyoe variations needs to be added? 
-	
+	var tags: Dictionary = _get_theme_colors()	
 	gdl_theme.set_block_signals(true)
 
 	for control_type in gdl_theme.get_stylebox_type_list():
@@ -619,12 +545,18 @@ func _apply_theme_colors() -> void:
 				continue
 
 			if sb is StyleBoxFlat:
-				sb.bg_color = tags["normal"]
+				sb.bg_color = tags["base_col"]
 			else:
-				sb.color = tags["normal"]
+				sb.color = tags["base_col"]
 
 			match control_type:
-				"ButtonCategoryLoad":
+				"Button_Accented":
+					match stylebox_name:
+						"normal": 											sb.bg_color = tags["accent_col"]
+						"hover":												sb.bg_color = tags["accent_col+1"]
+						"pressed":											sb.bg_color = tags["accent_col-1"]
+						"hover_pressed":								sb.bg_color = tags["accent_col-1"]
+				"Button_CategoryLoad":
 					match stylebox_name:
 						"normal": 											sb.bg_color = tags["base_col"]
 						"hover":												sb.bg_color = tags["accent_col"]
@@ -644,9 +576,9 @@ func _apply_theme_colors() -> void:
 							sb.border_color = tags["accent_col-1"]
 						
 				"LineEdit":													sb.bg_color = tags["base_col-1"]
-				"LineEdit_format_fields":						sb.bg_color = tags["base_col-1"]
-				"LineEdit_category_field_valid":		sb.bg_color = tags["base_col-1"]
-				"LineEdit_category_field_invalid":	sb.bg_color = tags["base_col-1"]
+				"LineEdit_FormatFields":						sb.bg_color = tags["base_col-1"]
+				"LineEdit_CategoryFieldValid":			sb.bg_color = tags["base_col-1"]
+				"LineEdit_CategoryFieldInvalid":		sb.bg_color = tags["base_col-1"]
 				
 				"HScrollBar", "VScrollBar":
 					match stylebox_name:
@@ -661,7 +593,7 @@ func _apply_theme_colors() -> void:
 						"hover_pressed":								sb.bg_color = tags["base_col-2"]
 				
 				"Panel":														sb.bg_color = tags["base_col-2"]
-				"Panel_base_col_no_cmarg":					sb.bg_color = tags["base_col-2"]				
+				"Panel_BaseCol_NoCMarg":						sb.bg_color = tags["base_col-2"]				
 				"PopupMenu":
 					match stylebox_name:
 						"hover": 												sb.bg_color = tags["base_col+2"]
@@ -673,10 +605,16 @@ func _apply_theme_colors() -> void:
 						"panel": 												sb.bg_color = tags["base_col-1"]
 						"tab_selected":									sb.bg_color = tags["accent_col"]
 						"tab_bar_background": 					sb.bg_color = tags["base_col"]
+				"TabContainer_NoHCMargs":
+					match stylebox_name:
+						"panel": 												sb.bg_color = tags["base_col-1"]
+						"tab_selected":									sb.bg_color = tags["accent_col"]
+						"tab_bar_background": 					sb.bg_color = tags["base_col"]
+
 				
 				"ScrollContainer":									sb.bg_color = tags["base_col-1"]
-				"ScrollContainer_h_cmargs_only": 		sb.bg_color = tags["base_col-1"]
-				"ScrollContainer_no_cmargs":		 		sb.bg_color = tags["base_col-1"]
+				"ScrollContainer_HCMargsOnly": 			sb.bg_color = tags["base_col-1"]
+				"ScrollContainer_NoCMargs":		 			sb.bg_color = tags["base_col-1"]
 				
 				"HSeparator", "VSeparator":
 					match stylebox_name:
@@ -684,18 +622,18 @@ func _apply_theme_colors() -> void:
 		
 	for control_type in gdl_theme.get_color_type_list():
 		for color_name in gdl_theme.get_color_list(control_type):
-			for key in tags["colors"].keys():
-				if control_type == "EditorIcons":
-					continue
+			if control_type == "EditorIcons":
+				continue
 
-				if control_type == "ButtonBategoryLoad":
-					gdl_theme.set_color("icon_hover_color", control_type, tags["accent_type_icon_color"])
-					gdl_theme.set_color("icon_hover_pressed_color", control_type, tags["accent_type_icon_color"])
-					gdl_theme.set_color("icon_pressed_color", control_type, tags["accent_type_icon_color"])
-					gdl_theme.set_color("icon_disabled_color", control_type, tags["accent_type_icon_color"])
+			gdl_theme.set_color(color_name, control_type, tags["colors"]["font_icon_color"])
+			prints("Setting", control_type, color_name, "to", tags["font_icon_color"])
 
-				if color_name.contains(key):
-					gdl_theme.set_color(color_name, control_type, tags["colors"][key])
+			match control_type:
+				"CheckButton":
+					gdl_theme.set_color("icon_hover_color", control_type, tags["accent_col"])
+					gdl_theme.set_color("icon_pressed_color", control_type, tags["accent_col"])
+					gdl_theme.set_color("icon_disabled_color", control_type, tags["accent_col"])
+					gdl_theme.set_color("icon_hover_pressed_color", control_type, tags["accent_col"])
 
 	gdl_theme.set_block_signals(false)
 	gdl_theme.emit_changed()

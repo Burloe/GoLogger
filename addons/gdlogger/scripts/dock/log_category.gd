@@ -51,7 +51,7 @@ var category_name: String = "":
 var is_default: bool = false:
 	set(value):
 		is_default = value
-		default_btn.icon = get_theme_icon("GuiChecked" if value else "GuiUnchecked", "EditorIcons")
+		default_btn.icon = get_theme_icon("GuiRadioUncheckedDisabled" if category_name.is_empty() else "GuiRadioChecked" if value else "GuiRadioUnchecked", "EditorIcons")
 
 var has_unapplied_name: bool = false:
 	set(value):
@@ -132,6 +132,7 @@ func _ready() -> void:
 				cat_data.is_default = toggled_on
 	)
 
+	default_btn.disabled = category_name.is_empty()
 	size = Vector2.ZERO 
 
 

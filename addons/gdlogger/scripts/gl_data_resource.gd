@@ -134,7 +134,7 @@ var base_dir_ctrl: LineEdit = null
 var header_format_ctrl: LineEdit = null
 var entry_format_ctrl: LineEdit = null
 
-var browser_sort_ctrl: CheckButton = null
+var browser_sort_ctrl: Button = null
 var color_code_ctrl: CheckButton = null
 var open_logs_enternally_ctrl: Button = null
 var auto_reload_ctrl: CheckButton = null

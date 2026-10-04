@@ -58,8 +58,8 @@ Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
 Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
 }
 
-[sub_resource type="DPITexture" id="DPITexture_5uwds"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect width=\"14\" height=\"14\" x=\"1\" y=\"1\" fill=\"#e0e0e0\" fill-opacity=\".2\" rx=\"2.333\"/></svg>
+[sub_resource type="DPITexture" id="DPITexture_5dkra"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#e0e0e0\" fill-opacity=\".2\"/></svg>
 "
 color_map = {
 Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
@@ -100,7 +100,7 @@ offset_right = 63.0
 offset_bottom = 24.0
 grow_horizontal = 2
 theme = ExtResource("1_g4hj7")
-theme_type_variation = &"Panel_base_col_no_cmarg"
+theme_type_variation = &"Panel_BaseCol_NoCmarg"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/Panel" unique_id=761994653]
 layout_mode = 0
@@ -129,15 +129,15 @@ icon_alignment = 1
 
 [node name="SelectButton" type="Button" parent="Control/Panel/HBoxContainer" unique_id=1355907674]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(28, 20)
+custom_minimum_size = Vector2(28, 25)
 layout_mode = 2
 size_flags_vertical = 4
 offset_transform_visual_only = false
 tooltip_text = "Load files"
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
-theme_type_variation = &"ButtonCategoryLoad"
-theme_override_colors/icon_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_type_variation = &"Button_CategoryLoad"
+theme_override_colors/icon_pressed_color = Color(0.05, 0.05, 0.05, 1)
 theme_override_colors/icon_hover_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_disabled_color = Color(0.2, 0.2, 0.2, 1)
@@ -252,7 +252,7 @@ mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
 disabled = true
 toggle_mode = true
-icon = SubResource("DPITexture_5uwds")
+icon = SubResource("DPITexture_5dkra")
 flat = true
 icon_alignment = 1
 
@@ -268,7 +268,6 @@ theme = ExtResource("1_g4hj7")
 theme_override_colors/icon_pressed_color = Color(0.42, 0.029399997, 0.10101001, 1)
 theme_override_colors/icon_hover_color = Color(0.90234375, 0.34895325, 0.45409718, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.4, 0.028, 0.0962, 1)
-theme_override_colors/icon_disabled_color = Color(0.48, 0.48, 0.48, 0.4)
 text = "
 "
 icon = SubResource("DPITexture_abu1v")
