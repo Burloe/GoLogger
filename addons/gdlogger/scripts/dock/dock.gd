@@ -16,12 +16,9 @@ class_name GDLDock extends EditorDock
 		# 
 	# DOCK SETTINGS TAB:
 
-signal reload_dock
 
 const THEME_DEBOUNCE_SEC: float = 0.08
 const gdl_theme = preload("uid://gjcp57h03j4p")
-const gdl_ico_darkmode = preload("uid://vlt2sbet5kyx")
-const gdl_ico_lightmode = preload("uid://defy21wg6ksuo")
 const gh_ico_darkmode = preload("uid://c74n2f1j4wew5")
 const gh_ico_lightmode = preload("uid://c0fie23lxf1be")
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
@@ -36,86 +33,52 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 
 # Logs tab
 @onready var logs_tab: HBoxContainer = %LogsTab
-@onready var category_scroll_container: ScrollContainer = %CategoryScrollContainer
 @onready var category_container: GridContainer = %CategoryGridContainer 
-@onready var lg_scroll_container: ScrollContainer = %LogFileScrollContainer
-@onready var lg_add_cat_btn: Button = %AddCategoryButton
-@onready var lg_open_dir_btn: Button = %LBOpenDirButton 
-@onready var lg_reload_btn: Button = %LGReloadButton
+@onready var lg_open_dir_btn: Button = %LBOpenDirButton
 @onready var lg_sort_btn: Button = %LGSortButton
 @onready var lg_colorcode_btn: Button = %LGColorCodeCheckButton
 @onready var lg_open_with_os_btn: Button = %LGOpenLogsCheckButton
 @onready var lg_auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
-@onready var lg_settings_btn: Button = %LogSettingsButton
-@onready var lg_settings_popup: PopupPanel = %LogsSettingsPanelPopup
-@onready var lg_popup: PopupPanel = %LogFilePanelPopup
 
 # Settings tab
 @onready var settings_tab: Control = %SettingsTab
-@onready var l_settings_scroll_container: ScrollContainer = %LSettingsPanel
-@onready var r_settings_scroll_container: ScrollContainer = %RSettingsPanel
 @onready var sett_reset_btn: Button = %ResetSettingsButton
 @onready var sett_base_dir_line: LineEdit = %BaseDirLineEdit
-@onready var sett_base_dir_lbl: Label = %BaseDirLabel
-@onready var sett_base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
 @onready var sett_base_dir_apply_btn: Button = %BaseDirApplyButton
-@onready var sett_base_dir_revert_btn: Button = %BaseDirRevertButton
 @onready var sett_open_dir_btn: Button = %OpenDirButton
-@onready var sett_base_dir_container: HBoxContainer = %BaseDirHBox
 
 @onready var sett_log_header_line: LineEdit = %LogHeaderLineEdit
-@onready var sett_log_header_lbl: Label = %LogHeaderLabel
-@onready var sett_log_header_line_btn_cont: Panel = %LogHeaderLineEditButtons
 @onready var sett_log_header_apply_btn: Button = %LogHeaderApplyButton
 @onready var sett_log_header_revert_btn: Button = %LogHeaderRevertButton
-@onready var sett_log_header_container: HBoxContainer = %LogHeaderHBox
 
 @onready var sett_entry_format_line: LineEdit = %EntryFormatLineEdit
-@onready var sett_entry_format_lbl: Label = %EntryFormatLabel
-@onready var sett_entry_format_line_btn_cont: Panel = %EntryFormatLineEditButtons
 @onready var sett_entry_format_apply_btn: Button = %EntryFormatApplyButton
 @onready var sett_entry_format_revert_btn: Button = %EntryFormatRevertButton
 @onready var sett_entry_format_warning: Panel = %EntryFormatWarning
-@onready var sett_entry_format_container: HBoxContainer = %EntryFormatHBox
 
 @onready var sett_autostart_btn: CheckButton = %AutostartCheckButton
 @onready var sett_utc_btn: CheckButton = %UTCCheckButton
 
 @onready var sett_limit_method_btn: OptionButton = %LimitMethodOptButton
-@onready var sett_limit_method_lbl: Label = %LimitMethodLabel
 @onready var sett_limit_method_container: HBoxContainer = %LimitMethodHBox
 
 @onready var sett_entry_count_action_btn: OptionButton = %EntryActionOptButton
 @onready var sett_entry_count_action_lbl: Label = %EntryActionLabel
 @onready var sett_entry_count_action_container: HBoxContainer = %EntryCountActionHBox
-var sett_entry_count_spinbox_line: LineEdit
 @onready var sett_entry_count_spinbox: SpinBox = %EntryCountSpinBox
 
 @onready var sett_session_timer_action_btn: OptionButton = %SessionTimerActionOptButton
 @onready var sett_session_timer_action_lbl: Label = %SessionTimerActionLabel
 @onready var sett_session_timer_action_container: HBoxContainer = %SessionTimerActionHBox
-var sett_session_duration_spinbox_line: LineEdit
 @onready var sett_session_duration_spinbox: SpinBox = %SessionDurationSpinBox
 
-var sett_file_count_spinbox_line: LineEdit
 @onready var sett_file_count_spinbox: SpinBox = %FileCountSpinBox
-@onready var sett_file_count_lbl: Label = %FileCountLabel
-@onready var sett_file_count_container: HBoxContainer = %FileCountHBox
-
-@onready var sett_id_fold_cont: FoldableContainer = %IDFoldableContainer
-@onready var sett_id_align_container: HBoxContainer = %IDAlignHBox
-@onready var sett_id_align_lbl: Label = %IDAlignLabel
 @onready var sett_id_align_opt_btn: OptionButton = %IDAlignOptButton
 
 @onready var sett_id_toggle_btn: CheckButton = %IDToggleShowCheckButton
 @onready var sett_id_startup_btn: CheckButton = %IDStartupCheckButton
-@onready var sett_id_print_btn: CheckButton = %IDPrintCheckButton 
+@onready var sett_id_print_btn: CheckButton = %IDPrintCheckButton
 
-@onready var sett_id_font_sett_cont: FoldableContainer = %IDFontFoldableContainer
-@onready var sett_hotkey_container: FoldableContainer = %HotkeyFoldableContainer
-
-# var sett_id_inspector: EditorInspector
-# var inspector: EditorInspector
 @onready var data_inspector: EditorInspector = %SaveDataEditorInspector
 
 @onready var version_container: HBoxContainer = %VersionHBoxContainer
@@ -126,9 +89,6 @@ var sett_file_count_spinbox_line: LineEdit
 
 # Help tab
 @onready var help_tab: 						TabContainer = 			%HelpTab
-@onready var getting_started_tab: ScrollContainer = 	%GettingStarted
-@onready var methods_hotkeys_tab: ScrollContainer = 	%Methods
-@onready var more_info_tab: 			ScrollContainer = 	%MoreInfo
 @onready var help_setup: 					FoldableContainer = %SetupHelp
 @onready var help_categories: 		FoldableContainer = %CategoriesHelp
 @onready var help_messages: 			FoldableContainer = %MessagesHelp
@@ -138,23 +98,8 @@ var sett_file_count_spinbox_line: LineEdit
 @onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
 @onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
 @onready var help_formatting: 		FoldableContainer = %FormattingHelp
-@onready var github_tex_rect: 		TextureRect = 			%GithubTextureRect
 
-var theme_colors: Dictionary = {}
 @onready var settings = EditorInterface.get_editor_settings()
-@onready var editor_base_col: Color = settings.get_setting("interface/theme/base_color")
-@onready var editor_accent_col: Color = settings.get_setting("interface/theme/accent_color")
-@onready var editor_contrast = settings.get_setting("interface/theme/contrast")
-@onready var editor_col_settings: Array = [
-	settings.get_setting("interface/theme/follow_system_theme"), 
-	settings.get_setting("interface(theme/color_preset)"), 
-	settings.get_setting("interface/theme/icon_and_font_color"),
-	settings.get_setting("interface/theme/base_color"),
-	settings.get_setting("interface/theme/accent_color")
-]
-
-var theme_res_path: String = "res://addons/gdlogger/resources/theme/" # Path to theme resources to edit on EditorSettings changed
-var category_scene = preload("uid://c3n416c5fajm5")
 var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
 var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
 var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast") 
@@ -218,7 +163,6 @@ func _ready() -> void:
 	logs_tab.is_active = true
 	settings_tab.data = data
 	data.update_list()
-	theme_colors = _get_theme_colors()
 
 	debounce_timer.wait_time = THEME_DEBOUNCE_SEC
 	debounce_timer.timeout.connect(_apply_theme_colors)
@@ -237,12 +181,10 @@ func _ready() -> void:
 	logs_tab.request_save.connect(save_data)
 	logs_tab.request_categories_save.connect(save_categories)
 	settings_tab.request_save.connect(save_data)
-	settings_tab.request_theme_colors.connect(func() -> void: theme_colors = _get_theme_colors())
 
 	# # Signal connections 
 	_connect_unique(settings.settings_changed, _on_editor_settings_changed) 
 	_connect_unique(lg_open_dir_btn.button_up, _open_directory)
-	# _connect_unique(user_dir_btn.button_up, _open_user_dir)
 	_connect_unique(sett_open_dir_btn.button_up, _open_directory)
 	_connect_unique(sett_reset_btn.button_up, reset_to_default)
 
@@ -399,13 +341,6 @@ func save_categories() -> void:
 
 #region Private
 
-## Opens "user://"
-func _open_user_dir() -> void:
-	var abs_path = ProjectSettings.globalize_path("user://")
-	OS.shell_open(abs_path)
-
-
-
 ## Opens "user://gdlogger/category_name/"
 func _open_directory() -> void:
 	var abs_path = ProjectSettings.globalize_path(data.base_dir)
@@ -415,15 +350,6 @@ func _open_directory() -> void:
 
 
 #region Signal receivers
-
-func _on_regenerate_button_up() -> void:
-	var _new := GDLData.new()
-	var _err := ResourceSaver.save(_new, DATA_PATH)
-	if _err != OK:
-		printerr("GDLogger: Failed to regenerate 'data.tres' - Error[", _err, "] ", error_string(_err))
-		print("You can manually create a new GDLData resource, name it 'data.tres' and save it to path: ", DATA_PATH, "\nRemember to reload Godot afterwards.")
-
-
 
 func _on_editor_settings_changed() -> void:
 	var col_settings: Array = [
@@ -445,7 +371,6 @@ func _on_editor_settings_changed() -> void:
 	theme_col_base = new_base
 	theme_col_accent = new_accent
 	theme_contrast = new_contrast
-	editor_col_settings = col_settings.duplicate()
 	
 	if debounce_timer: 
 		debounce_timer.start()
@@ -462,17 +387,17 @@ func _get_theme_colors() -> Dictionary:
 	var colors := {}
 	if base_col.get_luminance() <= 0.5: # Dark
 		colors = {
-			"base_col+2":										base_col.lightened(contrast * 1.25),
+			"base_col+2":										base_col.lightened(contrast * factor),
 			"base_col+1":										base_col.lightened(contrast),
 			"base_col":											base_col,
 			"base_col-1":										base_col.darkened(contrast),
-			"base_col-2":										base_col.darkened(contrast * 1.25),
+			"base_col-2":										base_col.darkened(contrast * factor),
 
-			"accent_col+2":									accent_col.lightened(contrast * 1.25),
+			"accent_col+2":									accent_col.lightened(contrast * factor),
 			"accent_col+1":									accent_col.lightened(contrast),
 			"accent_col":										accent_col,
 			"accent_col-1":									accent_col.darkened(contrast),
-			"accent_col-2":									accent_col.darkened(contrast * 1.25),
+			"accent_col-2":									accent_col.darkened(contrast * factor),
 
 			# Separator
 			"separator":										base_col.darkened(contrast * 4),
@@ -495,17 +420,17 @@ func _get_theme_colors() -> Dictionary:
 		}
 	else: # Light
 		colors = {
-			"base_col+2":										base_col.darkened(contrast * 1.25),
+			"base_col+2":										base_col.darkened(contrast * factor),
 			"base_col+1":										base_col.darkened(contrast),
 			"base_col":											base_col,
 			"base_col-1":										base_col.lightened(contrast),
-			"base_col-2":										base_col.lightened(contrast * 1.25),
+			"base_col-2":										base_col.lightened(contrast * factor),
 
-			"accent_col+2":									accent_col.darkened(contrast * 1.25),
+			"accent_col+2":									accent_col.darkened(contrast * factor),
 			"accent_col+1":									accent_col.darkened(contrast),
 			"accent_col":										accent_col,
 			"accent_col-1":									accent_col.lightened(contrast),
-			"accent_col-2":									accent_col.lightened(contrast * 1.25),
+			"accent_col-2":									accent_col.lightened(contrast * factor),
 
 			# Separator
 			"separator":										base_col.lightened(contrast * 4),
@@ -522,8 +447,15 @@ func _get_theme_colors() -> Dictionary:
 				"font_hovered_color":					Color("0a0d09"),
 				"font_selected_color":				base_col,
 				"font_pressed_color":					Color("0a0d09"),
-				"font_hover_pressed_color":		Color("0a0d09"),
-				"font_icon_color":						Color("0a0d09")
+				"font_hover_pressed_col":			Color("0a0d09"),
+				"base_col":										Color("0a0d09"),
+				"base_hover_col":							Color("0a0d09").lightened(contrast),
+				"base_pressed_col":						Color("0a0d09").lightened(contrast * factor),
+				"base_hover_pressed_col":			Color("0a0d09").lightened(contrast * factor),
+				"accent_col":									Color.WHITE,
+				"accent_hover_col":						Color.WHITE.darkened(contrast),
+				"accent_pressed_col":					Color.WHITE.darkened(contrast * factor),
+				"accent_hover_pressed_col":		Color.WHITE.darkened(contrast * factor),
 			}
 		}
 	return colors
@@ -626,8 +558,18 @@ func _apply_theme_colors() -> void:
 				continue
 
 			gdl_theme.set_color(color_name, control_type, tags["colors"]["font_icon_color"])
-			prints("Setting", control_type, color_name, "to", tags["font_icon_color"])
-
+			# prints("Setting", control_type, color_name, "to", tags["font_icon_color"])
+			
+			# Handle types with accent color
+			if   color_name.contains("hover_pressed") and gdl_theme.get_color(color_name, control_type) == tags["colors"]["accent_col"]: 
+				gdl_theme.set_color(color_name, control_type, tags["accent_hover_pressed_col"])
+			elif color_name.contains("hover") and gdl_theme.get_color(color_name, control_type) == tags["colors"]["accent_col"]: 
+				gdl_theme.set_color(color_name, control_type, tags["accent_hover_col"])
+			elif color_name.contains("pressed") and gdl_theme.get_color(color_name, control_type) == tags["colors"]["accent_col"]: 
+				gdl_theme.set_color(color_name, control_type, tags["accent_pressed_col"])
+			elif color_name.contains("hover_pressed") and gdl_theme.get_color(color_name, control_type) == tags["colors"]["accent_col"]: 
+				gdl_theme.set_color(color_name, control_type, tags["accent_hover_pressed_col"])
+			
 			match control_type:
 				"CheckButton":
 					gdl_theme.set_color("icon_hover_color", control_type, tags["accent_col"])
