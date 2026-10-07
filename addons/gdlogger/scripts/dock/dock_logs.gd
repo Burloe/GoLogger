@@ -284,7 +284,11 @@ func _on_category_tree_exited() -> void:
 func _on_set_default_category(cat: GDLLogCategory, set_status: bool) -> void:
 	if _default_setting_in_progress:
 		return
-	
+		
+	var new_default: String = cat.category_name if set_status else ""
+	var changed: bool = data.default_category != new_default
+	data.default_category = new_default
+	_default_setting_in_progress = false
 	_default_setting_in_progress = true
 	
 	for log_c in category_container.get_children():
@@ -297,6 +301,10 @@ func _on_set_default_category(cat: GDLLogCategory, set_status: bool) -> void:
 	
 	data.default_category = cat.category_name if set_status else "" 
 	_default_setting_in_progress = false
+
+	if changed:
+		request_categories_save.emit()
+	
 
 
 
@@ -551,14 +559,6 @@ func _open_log_file(log_file: GDLLogFile) -> void:
 
 
 
-func _on_show_delete_category_prompt(category: GDLLogCategory) -> void:
-	prompt_popup.show()
-	reload_dock_btn.hide()
-	del_cat_popup.show()
-	category_to_delete = category
-
-
-
 func _on_colorcode_changed(toggled_on: bool) -> void:
 	var files := file_container.get_children() 
 	var colorcode: Color = Color.BLACK
@@ -622,10 +622,18 @@ func _on_log_settings_button_up() -> void:
 
 
 
+func _on_show_delete_category_prompt(category: GDLLogCategory) -> void:
+	prompt_popup.show()
+	reload_dock_btn.hide()
+	del_cat_popup.show()
+	category_to_delete = category
+
+
+
 func _on_del_prompt_button_up(btn: Button) -> void:
-	var cat_name: String = category_to_delete.cat_data.category_name if category_to_delete else ""
-	var cat_path: String = category_to_delete.cat_data.category_path if category_to_delete else ""
-	
+	# Derived from the name; the stored category_path may lack the "_logs" suffix.
+	var cat_path: String = str(data.base_dir, category_to_delete.category_name, "_logs") if category_to_delete else ""
+
 	match btn:
 		
 		cancel_del_cat_btn:
@@ -635,9 +643,9 @@ func _on_del_prompt_button_up(btn: Button) -> void:
 			category_to_delete.queue_free()
 		
 		keep_dir_no_btn:
-			if category_to_delete and cat_path == "" and OS.move_to_trash(ProjectSettings.globalize_path(cat_path)) != OK:
+			var abs_path: String = ProjectSettings.globalize_path(cat_path)
+			if DirAccess.dir_exists_absolute(abs_path) and OS.move_to_trash(abs_path) != OK:
 				printerr("GDLogger: Failed to delete directories & files upon request. Please delete manually if desired.")
-			
 			if data.default_category == category_to_delete.category_name: 
 				data.default_category = ""
 			

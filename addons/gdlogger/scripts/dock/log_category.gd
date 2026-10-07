@@ -205,7 +205,7 @@ func apply_name(new_name: String) -> void:
 			cat_data = GDLCategoryData.new()
 		cat_data.category_name = new_name
 	
-	cat_data.category_path = str(data.base_dir, new_name, "/")
+	cat_data.category_path = str(data.base_dir, new_name, "_logs/")
 	category_name = new_name
 	line_edit.text = category_name
 	log_category_changed.emit()
@@ -224,16 +224,10 @@ func _on_text_changed(new_text: String) -> void:
 
 	if new_text.is_empty() or !is_name_available(new_text) and category_name != new_text: 
 		apply_btn.disabled = true
-		line_edit.set_theme_type_variation("LineEdit_category_field_invalid")
-	
-	elif new_text == category_name:
-		apply_btn.disabled = true
-		line_edit.set_theme_type_variation("LineEdit_category_field_valid")
-
+		line_edit.set_theme_type_variation("LineEdit_CategoryFieldInvalid")
 	else:
-		apply_btn.disabled = false
-		line_edit.set_theme_type_variation("LineEdit_category_field_valid")
-
+		apply_btn.disabled = new_text == category_name
+		line_edit.set_theme_type_variation("LineEdit_CategoryFieldValid")
 
 
 

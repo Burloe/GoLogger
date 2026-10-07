@@ -45,6 +45,8 @@ enum SessionTimerAction {
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 # const id_overlay_lbl_sett = preload("")
 var gl_hotkeys: GDLShortcut = preload("uid://dyi2aml73k4g8")
+var session_categories: Array[GDLCategoryData] = []
+var session_default_category: String = ""
 var copy_name : String = ""
 var session_status: bool = false:
 	set(value):
@@ -57,33 +59,16 @@ var instance_id: String = "":
 var cur_id_align: int = 0
 var data_mtime: int = -1
 
-func _physics_process(delta: float) -> void:
-	msg("test", "garo")
+
 
 func load_data() -> void:
 	if !FileAccess.file_exists(DATA_PATH):
 		data = GDLData.new()
 		ResourceSaver.save(data, DATA_PATH)
 	else:
-		var old: GDLData = data
 		data = ResourceLoader.load(DATA_PATH, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP)
-		if old and session_status:
-			_carry_over_session_state(old)
 	data_mtime = _get_data_mtime()
 
-
-
-func _carry_over_session_state(old: GDLData) -> void:
-	for cat in data.categories:
-		var prev: GDLCategoryData = old.get_category(cat.category_name)
-		if prev and prev.file_path != "":
-			cat.file_name = prev.file_name
-			cat.file_path = prev.file_path
-			cat.file_count = prev.file_count
-			cat.entry_count = prev.entry_count
-		else:
-			_start_category(cat) # New or renamed category mid-session
-		print(cat.category_name, " -> ", cat.file_path)
 
 
 
@@ -159,10 +144,17 @@ func start_session() -> void:
 	if session_status:
 		return
 
-	if data.limit_method == LimitMethod.SESSION_TIMER or data.limit_method == LimitMethod.BOTH:
+	if data.limit_method in [LimitMethod.SESSION_TIMER, LimitMethod.BOTH]:
 		session_timer.start(data.session_duration)
 
-	for i in data.categories:
+	session_categories.clear()
+	for c in data.categories:
+		session_categories.append(c.duplicate() as GDLCategoryData)
+	session_default_category = data.default_category
+	print(data.default_category, session_default_category)
+
+
+	for i in session_categories:
 		_start_category(i)
 
 	session_status = true
@@ -212,45 +204,28 @@ func _start_category(i: GDLCategoryData) -> void:
 
 
 func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
-	var cats: Array[String] = data.get_category_names()
-	var target_category: GDLCategoryData = null
-	var tc_name: String = ""
-	# print(category_name)
 	if log_msg == "":
-		printerr("GDLogger: Attempted to log empty entry.")
-		return
-
-	if category_name == "": # Unspecified category -> Use Default category
-		if data.default_category != "" and cats.has(data.default_category):
-			target_category = data.get_category(data.default_category)
-			tc_name = data.default_category
-
-		else:
-			if data.default_category.is_empty():
-				printerr("GDLogger: msg() called without specifying a category name and no default category assigned.\n\t Entry:\n", log_msg)
-			else:
-				if !cats.has(data.default_category):
-					printerr("GDLogger: Entry failed to log into default category[", data.default_category, "] assigned does not exist(the default category was likely deleted). Please assign a new default category, or specify a category when logging entries.")
-				printerr("GDLogger: Attempted to log entry into non-existant default category[", data.default_category,"]")
-
+			printerr("GDLogger: Attempted to log empty entry.")
 			return
 
+	if !session_status:
+			return
+
+	var target_category: GDLCategoryData = null
+
+	if category_name == "": # Unspecified category -> Use Default category
+		if session_default_category.is_empty():
+			printerr("GDLogger: msg() called without specifying a category name and no default category assigned.\n\t Entry:\n", log_msg)
+		else:
+			target_category = _get_session_category(session_default_category)
+			if !target_category:
+				printerr("GDLogger: Failed to log entry into default category <", session_default_category, "> Please assign a new default category, or specify a category when logging entries.")
 	else:
-		target_category = data.get_category(category_name)
+		target_category = _get_session_category(category_name)
+		if !target_category:
+			printerr("GDLogger: Category '", category_name, "' not found.")
 
 	if !target_category:
-		printerr("GDLogger: Category ", category_name, "' not found.")
-		return
-
-	if target_category.category_name not in cats:
-		printerr("GDLogger: Category '" + tc_name + "' not found. Check correct spelling.")
-		return
-
-	if !session_status:
-		return
-
-	if target_category.file_path == "":
-		printerr("GDLogger: No valid file path found for category '" + target_category.category_name + "[" + instance_id + "]'.")
 		return
 
 
@@ -328,8 +303,6 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		if err != OK:
 			push_warning("GDLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
 
-	# for line in lines:
-	# 	_fw.store_line(str(line))
 	_fw.store_string(content)
 
 	# Write new entry
@@ -348,7 +321,7 @@ func stop_session() -> void:
 
 	var _timestamp : String = str("[", Time.get_time_string_from_system(data.utc), "] Stopped log session.")
 
-	for category in data.categories:
+	for category in session_categories:
 		if category.file_path == "":
 			session_status = false
 			printerr("GDLogger: Failed to stop session properly. No valid file path found for category '", category, "'.")
@@ -378,8 +351,17 @@ func stop_session() -> void:
 		category.file_name = ""
 		category.file_path = ""
 		category.entry_count = 0
-
+	
+	session_categories.clear()
 	session_status = false
+
+
+
+func _get_session_category(c_name: String) -> GDLCategoryData:
+	for c in session_categories:
+		if c.category_name == c_name:
+				return c
+	return null
 
 
 

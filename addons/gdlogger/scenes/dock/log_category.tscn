@@ -58,10 +58,9 @@ Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
 Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
 }
 
-[sub_resource type="DPITexture" id="DPITexture_5dkra"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#e0e0e0\" fill-opacity=\".2\"/></svg>
+[sub_resource type="DPITexture" id="DPITexture_cf0rl"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"gray\" fill-opacity=\".2\"/></svg>
 "
-fix_alpha_border = true
 color_map = {
 Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
 Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
@@ -164,27 +163,28 @@ icon = SubResource("DPITexture_yathj")
 flat = true
 icon_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=151857270]
+[node name="BoxContainer" type="BoxContainer" parent="." unique_id=1505531573]
 layout_mode = 2
+theme_override_constants/separation = 0
 
-[node name="CategoryNameLineEdit" type="LineEdit" parent="HBoxContainer" unique_id=240651878]
+[node name="CategoryNameLineEdit" type="LineEdit" parent="BoxContainer" unique_id=240651878]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 32)
 custom_maximum_size = Vector2(-1, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_g4hj7")
-theme_type_variation = &"LineEdit_category_field_valid"
+theme_type_variation = &"LineEdit_CategoryFieldValid"
 theme_override_font_sizes/font_size = 18
 placeholder_text = "Enter name"
 expand_to_text_length = true
 
-[node name="Faky" type="Control" parent="HBoxContainer" unique_id=978547945]
+[node name="Faky" type="Control" parent="BoxContainer" unique_id=978547945]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="LineEditPanel" type="Panel" parent="HBoxContainer" unique_id=950420254]
+[node name="LineEditPanel" type="Panel" parent="BoxContainer" unique_id=950420254]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(52, 36)
@@ -192,7 +192,7 @@ layout_mode = 2
 theme = ExtResource("1_g4hj7")
 theme_override_styles/panel = SubResource("StyleBoxFlat_cern1")
 
-[node name="LineEditHBox" type="HBoxContainer" parent="HBoxContainer/LineEditPanel" unique_id=2091384365]
+[node name="LineEditHBox" type="HBoxContainer" parent="BoxContainer/LineEditPanel" unique_id=2091384365]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 36)
 layout_mode = 1
@@ -204,7 +204,7 @@ grow_vertical = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="ApplyButton" type="Button" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=2059821709]
+[node name="ApplyButton" type="Button" parent="BoxContainer/LineEditPanel/LineEditHBox" unique_id=2059821709]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(20, 36)
 custom_maximum_size = Vector2(20, 36)
@@ -219,13 +219,13 @@ icon = SubResource("DPITexture_lxkmp")
 flat = true
 icon_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=51459182]
+[node name="VSeparator" type="VSeparator" parent="BoxContainer/LineEditPanel/LineEditHBox" unique_id=51459182]
 layout_mode = 2
 offset_transform_enabled = true
 theme = ExtResource("1_g4hj7")
 theme_override_constants/separation = 3
 
-[node name="RevertButton" type="Button" parent="HBoxContainer/LineEditPanel/LineEditHBox" unique_id=79804206]
+[node name="RevertButton" type="Button" parent="BoxContainer/LineEditPanel/LineEditHBox" unique_id=79804206]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(20, 36)
 custom_maximum_size = Vector2(20, 36)
@@ -241,11 +241,11 @@ icon = SubResource("DPITexture_l2oj6")
 flat = true
 icon_alignment = 1
 
-[node name="BoxContainer" type="BoxContainer" parent="HBoxContainer" unique_id=1505531573]
+[node name="Spacer" type="Control" parent="BoxContainer" unique_id=507150848]
+custom_minimum_size = Vector2(4, 0)
 layout_mode = 2
-theme_override_constants/separation = 0
 
-[node name="DefaultButton" type="Button" parent="HBoxContainer/BoxContainer" unique_id=750332008]
+[node name="DefaultButton" type="Button" parent="BoxContainer" unique_id=750332008]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(24, 32)
 custom_maximum_size = Vector2(24, 32)
@@ -256,11 +256,11 @@ mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
 disabled = true
 toggle_mode = true
-icon = SubResource("DPITexture_5dkra")
+icon = SubResource("DPITexture_cf0rl")
 flat = true
 icon_alignment = 1
 
-[node name="DeleteButton" type="Button" parent="HBoxContainer/BoxContainer" unique_id=753401324]
+[node name="DeleteButton" type="Button" parent="BoxContainer" unique_id=753401324]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(24, 32)
 custom_maximum_size = Vector2(24, 32)
