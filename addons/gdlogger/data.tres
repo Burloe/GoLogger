@@ -14,7 +14,8 @@ category_name = "player"
 
 [sub_resource type="Resource" id="Resource_rvoc7"]
 script = ExtResource("1_u03vm")
-category_name = "inventory"
+category_name = "garo"
+category_path = "user://gdlogger/garo/"
 
 [sub_resource type="Resource" id="Resource_aqfri"]
 script = ExtResource("1_u03vm")
@@ -28,7 +29,12 @@ category_name = "npc"
 script = ExtResource("1_u03vm")
 category_name = "combat"
 
+[sub_resource type="Resource" id="Resource_oev4r"]
+script = ExtResource("1_u03vm")
+category_name = "rewards"
+category_path = "user://gdlogger/rewards/"
+
 [resource]
 script = ExtResource("2_ru745")
-categories = Array[ExtResource("1_u03vm")]([SubResource("Resource_u03vm"), SubResource("Resource_ru745"), SubResource("Resource_rvoc7"), SubResource("Resource_aqfri"), SubResource("Resource_o1vy8"), SubResource("Resource_s8ook")])
+categories = Array[ExtResource("1_u03vm")]([SubResource("Resource_u03vm"), SubResource("Resource_ru745"), SubResource("Resource_rvoc7"), SubResource("Resource_aqfri"), SubResource("Resource_o1vy8"), SubResource("Resource_s8ook"), SubResource("Resource_oev4r")])
 default_category = "general"

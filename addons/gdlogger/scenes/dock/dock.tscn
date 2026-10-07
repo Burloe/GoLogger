@@ -374,7 +374,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_h_cmargs_only"
+theme_type_variation = &"ScrollContainer_HCMargsOnly"
 
 [node name="FileFlowContainer" type="FlowContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/LogFileScrollContainer" unique_id=1474572224]
 unique_name_in_owner = true

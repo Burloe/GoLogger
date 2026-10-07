@@ -19,7 +19,7 @@ signal msg_logged(msg: String, category: String) ## Emitted when a log message i
 
 @onready var elements_canvaslayer: CanvasLayer = %GDLoggerElements
 @onready var session_timer: Timer = %SessionTimer
-@onready var instance_id_label: Label = %InstanceIDLabel 
+@onready var instance_id_label: Label = %InstanceIDLabel
 @onready var polling_timer: Timer = %PollingTimer
 
 enum LimitMethod {
@@ -52,20 +52,38 @@ var session_status: bool = false:
 		session_toggled.emit(session_status)
 var instance_id: String = "":
 	set(value):
-		instance_id = value 
+		instance_id = value
 		instance_id_label.text = str(value)
 var cur_id_align: int = 0
 var data_mtime: int = -1
 
-
+func _physics_process(delta: float) -> void:
+	msg("test", "garo")
 
 func load_data() -> void:
 	if !FileAccess.file_exists(DATA_PATH):
 		data = GDLData.new()
 		ResourceSaver.save(data, DATA_PATH)
 	else:
-		data = load(DATA_PATH)
+		var old: GDLData = data
+		data = ResourceLoader.load(DATA_PATH, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP)
+		if old and session_status:
+			_carry_over_session_state(old)
 	data_mtime = _get_data_mtime()
+
+
+
+func _carry_over_session_state(old: GDLData) -> void:
+	for cat in data.categories:
+		var prev: GDLCategoryData = old.get_category(cat.category_name)
+		if prev and prev.file_path != "":
+			cat.file_name = prev.file_name
+			cat.file_path = prev.file_path
+			cat.file_count = prev.file_count
+			cat.entry_count = prev.entry_count
+		else:
+			_start_category(cat) # New or renamed category mid-session
+		print(cat.category_name, " -> ", cat.file_path)
 
 
 
@@ -86,8 +104,8 @@ func _refresh_data_if_changed() -> bool:
 
 
 func _ready() -> void:
-	load_data() 
- 
+	load_data()
+
 	if data.id_toggle:
 		instance_id_label.visible = data.id_startup
 
@@ -95,7 +113,7 @@ func _ready() -> void:
 	polling_timer.timeout.connect(_on_timer_timeout.bind(polling_timer))
 	_handle_id_align()
 	instance_id = _get_instance_id()
-	
+
 	if data.autostart:
 		start_session()
 
@@ -129,7 +147,7 @@ func _input(event: InputEvent) -> void:
 
 		# Test entry logging
 		# if event is InputEventKey and event.keycode == KEY_COMMA and event.is_released():
-		# 	msg("Test entry ", "game", true)
+		# 	msg("Test entry ", "general", true)
 		# if event is InputEventKey and event.keycode == KEY_PERIOD and event.is_released():
 		# 	msg("Test entry without category name.")
 		# if event is InputEventKey and event.keycode == KEY_MINUS and event.is_released():
@@ -145,41 +163,44 @@ func start_session() -> void:
 		session_timer.start(data.session_duration)
 
 	for i in data.categories:
+		_start_category(i)
+
+	session_status = true
+	if session_timer.is_stopped() and data.session_timer_action in [1, 2]:
+		if session_timer != null: session_timer.start()
+
+
+
+func _start_category(i: GDLCategoryData) -> void:
 		var c_name: String = i.category_name
-		var f_name: String = _get_file_name(c_name) # game(date-time).log
+		var f_name: String = _get_file_name(c_name)
 		var f_path: String = str(data.base_dir, c_name, "_logs/", f_name)
-		print(f_name, "  ", f_path)
 		i.file_name = f_name
 		i.file_path = f_path
 
-		# Open/create directory
 		var path: String = str(data.base_dir, c_name, "_logs/")
-		var dir : DirAccess
 		if !DirAccess.dir_exists_absolute(path):
 			DirAccess.make_dir_recursive_absolute(path)
 
-		dir = DirAccess.open(path)
-
-		if !dir: # ErrCheck
+		var dir: DirAccess = DirAccess.open(path)
+		if !dir:
 			var _err = DirAccess.get_open_error()
 			if _err != OK: push_warning("GDLogger: ", get_error(_err, "DirAccess"), " (", path, ").")
-			continue
+			return
 
 		var _f = FileAccess.open(f_path, FileAccess.WRITE)
 		if !_f:
 			push_warning("GDLogger: Failed to create log file for session(", f_path, ").")
-			continue
+			return
 
-		var _file_list = dir.get_files()
 		var _log_files: PackedStringArray = []
-
-		for file in _file_list:
+		for file in dir.get_files():
 			if file.begins_with(c_name) and file.ends_with(".log"):
 				_log_files.append(file)
 
-		i.file_count = _log_files.size() 
+		i.file_count = _log_files.size()
 		if data.file_cap > 0:
-			while _log_files.size() > data.file_cap -1:
+			while _log_files.size() > data.file_cap - 1:
 				dir.remove(_log_files[0])
 				_log_files.remove_at(0)
 
@@ -188,17 +209,13 @@ func start_session() -> void:
 			_f.store_line(header)
 		_f.close()
 
-	session_status = true
-	if session_timer.is_stopped() and data.session_timer_action in [1, 2]:
-		if session_timer != null: session_timer.start()
-
 
 
 func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
 	var cats: Array[String] = data.get_category_names()
 	var target_category: GDLCategoryData = null
 	var tc_name: String = ""
-
+	# print(category_name)
 	if log_msg == "":
 		printerr("GDLogger: Attempted to log empty entry.")
 		return
@@ -245,7 +262,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 			push_warning("GDlogger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
 		return
 
-	var content := _f.get_as_text() 
+	var content := _f.get_as_text()
 	var lines : Array[String] = []
 
 	if data.limit_method in [LimitMethod.ENTRY_COUNT, LimitMethod.BOTH]:
@@ -256,7 +273,7 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 		target_category.file_count = lines.size()
 
 	_f.close()
-	
+
 	match data.limit_method:
 
 		LimitMethod.ENTRY_COUNT:
@@ -326,8 +343,8 @@ func msg(log_msg : String, category_name: String = "", print_msg: bool = false) 
 
 
 func stop_session() -> void:
-	if !session_status:	
-		return 
+	if !session_status:
+		return
 
 	var _timestamp : String = str("[", Time.get_time_string_from_system(data.utc), "] Stopped log session.")
 
@@ -361,7 +378,7 @@ func stop_session() -> void:
 		category.file_name = ""
 		category.file_path = ""
 		category.entry_count = 0
-		
+
 	session_status = false
 
 
@@ -420,8 +437,8 @@ static func get_error(error : int, object_type : String = "") -> String: #DELETE
 
 
 
-func _get_header(category_name: String = "") -> String: 
-	load_data()
+func _get_header(category_name: String = "") -> String:
+	# load_data()
 	var format: String = data.header_format
 	var _header: String = ""
 	var _tags: Array[String] = [
@@ -542,7 +559,7 @@ func _get_instance_id() -> String:
 
 
 func _handle_id_align() -> void: #NOTWORKING
-	var id_alignment = data.id_align  
+	var id_alignment = data.id_align
 	if id_alignment in [0,4,8]:
 		instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 
@@ -571,7 +588,7 @@ func _on_timer_timeout(_timer: Timer) -> void:
 			var _wt: float = data.session_duration
 			match data.limit_method:
 				LimitMethod.SESSION_TIMER:
-					if data.session_timer_action == SessionTimerAction.RESTART: 
+					if data.session_timer_action == SessionTimerAction.RESTART:
 						stop_session()
 						await get_tree().physics_frame
 						session_timer.wait_time = _wt
@@ -579,7 +596,7 @@ func _on_timer_timeout(_timer: Timer) -> void:
 					else: # Stop only
 						stop_session()
 						session_timer.stop()
-				LimitMethod.BOTH: 
+				LimitMethod.BOTH:
 					if data.session_timer_action == SessionTimerAction.RESTART:
 						stop_session()
 						await get_tree().physics_frame
