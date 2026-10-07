@@ -31,8 +31,8 @@ signal show_delete_category_prompt(category: GDLLogCategory)
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
 
-const SIZE_UNEDITED = Vector2(210, 48)
-const SIZE_EDITED = Vector2(262, 48)
+var size_unedited: Vector2 = size # 210, 48)
+var size_edited = Vector2(size_unedited.x + 52, 48)# var size_edited = Vector2(262, 48)
 ##  Last applied category name
 var category_name: String = "":
 	set(value):
@@ -73,7 +73,7 @@ var is_new: bool = false:
 	set(value):
 		is_new = value
 		if value:
-			size = SIZE_EDITED
+			size = size_edited
 
 var is_selected: bool = false:
 	set(value):
@@ -138,7 +138,7 @@ func _ready() -> void:
 
 func _tween_line_edit_module(show: bool = false) -> void:
 	if is_new:
-		size = SIZE_EDITED
+		size = size_edited
 		is_new = false
 		line_edit_panel.show()
 		line_edit_panel.modulate = Color.WHITE
@@ -147,7 +147,7 @@ func _tween_line_edit_module(show: bool = false) -> void:
 	var tw := create_tween().set_parallel(true)
 	faky.visible = show
 	faky.size.x = 0 if show else 42
-	tw.tween_property(self, "size", SIZE_EDITED if show else SIZE_UNEDITED, 0.03)
+	tw.tween_property(self, "size", size_edited if show else size_unedited, 0.03)
 	tw.tween_property(faky, "size", Vector2(42 if show else 0, faky.size.y), 0.03)
 	await tw.finished
 	var tween := create_tween()

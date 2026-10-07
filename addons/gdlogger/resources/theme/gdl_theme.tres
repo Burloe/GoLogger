@@ -255,6 +255,7 @@ Color(0.4117647, 0.6117647, 0.9098039, 1): Color(0.6784314, 0.5509804, 0.1686274
 [sub_resource type="DPITexture" id="DPITexture_5dkra"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#e0e0e0\" fill-opacity=\".2\"/></svg>
 "
+fix_alpha_border = true
 color_map = {
 Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
 Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),

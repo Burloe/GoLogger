@@ -61,6 +61,7 @@ Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
 [sub_resource type="DPITexture" id="DPITexture_5dkra"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#e0e0e0\" fill-opacity=\".2\"/></svg>
 "
+fix_alpha_border = true
 color_map = {
 Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
 Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
@@ -119,9 +120,9 @@ size_flags_vertical = 4
 tooltip_text = "Move left"
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
-theme_override_colors/icon_pressed_color = Color(0.18453693, 0.0435791, 0.21875, 1)
-theme_override_colors/icon_hover_color = Color(0.38453692, 0.2435791, 0.41875, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.18453693, 0.0435791, 0.21875, 1)
+theme_override_colors/icon_pressed_color = Color(0.13490197, 0.5427451, 0.44235295, 1)
+theme_override_colors/icon_hover_color = Color(0.334902, 0.7427451, 0.64235294, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.13490197, 0.5427451, 0.44235295, 1)
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.43137255)
 icon = SubResource("DPITexture_cqvv8")
 flat = true
@@ -137,6 +138,9 @@ tooltip_text = "Load files"
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
 theme_type_variation = &"Button_CategoryLoad"
+theme_override_colors/icon_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_hover_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.2, 0.2, 0.2, 1)
 toggle_mode = true
 icon_alignment = 1
 
@@ -149,9 +153,9 @@ size_flags_vertical = 4
 tooltip_text = "Move right"
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_g4hj7")
-theme_override_colors/icon_pressed_color = Color(0.18453693, 0.0435791, 0.21875, 1)
-theme_override_colors/icon_hover_color = Color(0.38453692, 0.2435791, 0.41875, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0.18453693, 0.0435791, 0.21875, 1)
+theme_override_colors/icon_pressed_color = Color(0.13490197, 0.5427451, 0.44235295, 1)
+theme_override_colors/icon_hover_color = Color(0.334902, 0.7427451, 0.64235294, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.13490197, 0.5427451, 0.44235295, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_64mv3")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_64mv3")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_64mv3")
@@ -237,10 +241,14 @@ icon = SubResource("DPITexture_l2oj6")
 flat = true
 icon_alignment = 1
 
-[node name="DefaultButton" type="Button" parent="HBoxContainer" unique_id=750332008]
+[node name="BoxContainer" type="BoxContainer" parent="HBoxContainer" unique_id=1505531573]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="DefaultButton" type="Button" parent="HBoxContainer/BoxContainer" unique_id=750332008]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
-custom_maximum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(24, 32)
+custom_maximum_size = Vector2(24, 32)
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Set as default to be used when calling msg(\"My entry\") without defining one."
@@ -252,9 +260,10 @@ icon = SubResource("DPITexture_5dkra")
 flat = true
 icon_alignment = 1
 
-[node name="DeleteButton" type="Button" parent="HBoxContainer" unique_id=753401324]
+[node name="DeleteButton" type="Button" parent="HBoxContainer/BoxContainer" unique_id=753401324]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(24, 32)
+custom_maximum_size = Vector2(24, 32)
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Folders and .log files are not deleted"
