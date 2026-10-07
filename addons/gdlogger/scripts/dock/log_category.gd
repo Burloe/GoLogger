@@ -99,7 +99,7 @@ func _ready() -> void:
 	move_right_btn.button_up.connect(func() -> void: move_category_requested.emit(self, 1))
 
 	line_edit.text_submitted.connect(apply_name) 
-	apply_btn.button_up.connect(apply_name.bind(line_edit.text)) 
+	apply_btn.button_up.connect(func() -> void: apply_name(line_edit.text))
 
 	is_default = is_default # loads the icon
 	apply_btn.disabled = line_edit.text.is_empty()
@@ -210,7 +210,6 @@ func apply_name(new_name: String) -> void:
 	line_edit.text = category_name
 	log_category_changed.emit()
 	line_edit.release_focus()
-	line_edit.unedit()
 	has_unapplied_name = false
 
 

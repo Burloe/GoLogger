@@ -180,7 +180,7 @@ func _ready() -> void:
 	)
 	
 	logs_tab.request_save.connect(save_data)
-	logs_tab.request_categories_save.connect(save_categories)
+	logs_tab.request_categories_save.connect(func() -> void: save_data(false, "categories"))
 	settings_tab.request_save.connect(save_data)
 
 	# # Signal connections 
@@ -329,7 +329,7 @@ func save_categories() -> void:
 		if log_c.default_btn.button_pressed: 
 			data.default_category = log_c.category_name
 
-		var c_data: GDLCategoryData = GDLCategoryData.new()
+		var c_data: GDLCategoryData = log_c.cat_data if log_c.cat_data else GDLCategoryData.new()
 		c_data.category_name = log_c.category_name 
 		log_c.cat_data = c_data
 		cats.append(c_data) 
