@@ -11,7 +11,8 @@ class_name GDLDock extends EditorDock
 	# GENERAL:
 		# Add EditorInspector for SaveData in MoreInfo panel
 	# Bugs: 
-		# 
+		# Apply button reverts the name when renaming an existing category
+		# Renaming uses the old name
 	# DOCK CATEGORY TAB:
 		# 
 	# DOCK SETTINGS TAB:
@@ -349,7 +350,7 @@ func _open_directory() -> void:
 #endregion
 
 
-#region Signal receivers
+#region Theme
 
 func _on_editor_settings_changed() -> void:
 	var col_settings: Array = [
@@ -378,87 +379,105 @@ func _on_editor_settings_changed() -> void:
 
 
 func _get_theme_colors() -> Dictionary:
-	var contrast: 	float = settings.get_setting("interface/theme/contrast")
-	var base_col: 	Color = settings.get_setting("interface/theme/base_color")
+	var contrast: float = settings.get_setting("interface/theme/contrast")
+	var base_col: Color = settings.get_setting("interface/theme/base_color")
 	var accent_col: Color = settings.get_setting("interface/theme/accent_color")
-	var factor: float = 1.25 # Maybe 1.5 or even 2
+	var factor: float = 1.25
+	var is_dark: bool = base_col.get_luminance() <= 0.5
 
-	# print("base_col: ", base_col, "    setting base col: ", base_col)
-	var colors := {}
-	if base_col.get_luminance() <= 0.5: # Dark
-		colors = {
-			"base_col+2":										base_col.lightened(contrast * factor),
-			"base_col+1":										base_col.lightened(contrast),
-			"base_col":											base_col,
-			"base_col-1":										base_col.darkened(contrast),
-			"base_col-2":										base_col.darkened(contrast * factor),
+	var shift := func(c: Color, amount: float) -> Color:
+		var go_lighter: bool = is_dark == (amount >= 0.0)
+		return c.lightened(absf(amount)) if go_lighter else c.darkened(absf(amount))
 
-			"accent_col+2":									accent_col.lightened(contrast * factor),
-			"accent_col+1":									accent_col.lightened(contrast),
-			"accent_col":										accent_col,
-			"accent_col-1":									accent_col.darkened(contrast),
-			"accent_col-2":									accent_col.darkened(contrast * factor),
+	return {
+		"is_dark": is_dark,
+		"contrast": contrast,
+		"base_col+2": shift.call(base_col,  contrast * factor),
+		"base_col+1": shift.call(base_col,  contrast),
+		"base_col":   base_col,
+		"base_col-1": shift.call(base_col, -contrast),
+		"base_col-2": shift.call(base_col, -contrast * factor),
+		"accent_col+2": shift.call(accent_col,  contrast * factor),
+		"accent_col+1": shift.call(accent_col,  contrast),
+		"accent_col":   accent_col,
+		"accent_col-1": shift.call(accent_col, -contrast),
+		"accent_col-2": shift.call(accent_col, -contrast * factor),
+	}
 
-			# Separator
-			"separator":										base_col.darkened(contrast * 4),
-			"colors": {
-				"icon_hover":									accent_col,
-				"icon_pressed":								accent_col.darkened(contrast * 2),
-				"icon_hover_pressed":					accent_col.darkened(contrast * 2),
-				"accent_type_icon_color": 		Color.WHITE,
-				"up_icon_hover_modulate": 		accent_col,
-				"up_icon_pressed_modulate":		accent_col.darkened(contrast * 2),
-				"down_icon_hover_modulate":		accent_col,
-				"down_icon_pressed_mdulate":	accent_col.darkened(contrast * 2),
-				"accented_font_color":				Color.WHITE,
-				"font_hovered_color":					Color.WHITE,
-				"font_selected_color":				base_col,
-				"font_pressed_color":					Color.WHITE,
-				"font_hover_pressed_color":		Color.WHITE,
-				"fond_icon_color":						Color.WHITE
-			}
-		}
-	else: # Light
-		colors = {
-			"base_col+2":										base_col.darkened(contrast * factor),
-			"base_col+1":										base_col.darkened(contrast),
-			"base_col":											base_col,
-			"base_col-1":										base_col.lightened(contrast),
-			"base_col-2":										base_col.lightened(contrast * factor),
+var FONT_DARK := Color.BLACK.lightened(0.15)
+var FONT_LIGHT := Color.WHITE.darkened(0.15)
 
-			"accent_col+2":									accent_col.darkened(contrast * factor),
-			"accent_col+1":									accent_col.darkened(contrast),
-			"accent_col":										accent_col,
-			"accent_col-1":									accent_col.lightened(contrast),
-			"accent_col-2":									accent_col.lightened(contrast * factor),
+# Color item -> stylebox that sits behind it, where the names don't match the state.
+const COLOR_TO_STYLEBOX := {
+	"TabContainer": {
+		"font_selected_color": "tab_selected",
+		"font_hovered_color": "tab_hovered",
+		"font_unselected_color": "tab_unselected",
+		"font_disabled_color": "tab_disabled",
+	},
+	"FoldableContainer": {
+		"collapsed_font_color": "title_collapsed_panel",
+		"hover_font_color": "title_collapsed_hover_panel",
+	}
+}
 
-			# Separator
-			"separator":										base_col.lightened(contrast * 4),
-			"colors": {
-				"icon_hover":									accent_col,
-				"icon_pressed":								accent_col.lightened(contrast * 2),
-				"icon_hover_pressed":					accent_col.lightened(contrast * 2),
-				"accent_type_icon_color": 		Color("0a0d09"),
-				"up_icon_hover_modulate": 		accent_col,
-				"up_icon_pressed_modulate":		accent_col.lightened(contrast * 2),
-				"down_icon_hover_modulate":		accent_col,
-				"down_icon_pressed_mdulate":	accent_col.lightened(contrast * 2),
-				"accented_font_color":				Color("0a0d09"),
-				"font_hovered_color":					Color("0a0d09"),
-				"font_selected_color":				base_col,
-				"font_pressed_color":					Color("0a0d09"),
-				"font_hover_pressed_col":			Color("0a0d09"),
-				"base_col":										Color("0a0d09"),
-				"base_hover_col":							Color("0a0d09").lightened(contrast),
-				"base_pressed_col":						Color("0a0d09").lightened(contrast * factor),
-				"base_hover_pressed_col":			Color("0a0d09").lightened(contrast * factor),
-				"accent_col":									Color.WHITE,
-				"accent_hover_col":						Color.WHITE.darkened(contrast),
-				"accent_pressed_col":					Color.WHITE.darkened(contrast * factor),
-				"accent_hover_pressed_col":		Color.WHITE.darkened(contrast * factor),
-			}
-		}
-	return colors
+
+
+func _state_from_name(color_name: String) -> String:
+	if color_name.contains("hover_pressed"): return "hover_pressed"
+	if color_name.contains("hover"):         return "hover"
+	if color_name.contains("pressed"):       return "pressed"
+	if color_name.contains("disabled"):      return "disabled"
+	return "normal"
+
+
+
+func _font_for_bg(bg: Color, state: String, contrast: float) -> Color:
+	var bg_is_light: bool = bg.get_luminance() > 0.5
+	var col: Color = FONT_DARK if bg_is_light else FONT_LIGHT
+	match state:
+		"hover", "pressed", "hover_pressed":
+			col = col.lightened(contrast) if bg_is_light else col.darkened(contrast)
+	return col
+
+
+
+func _apply_font_icon_colors(tags: Dictionary) -> void:
+	var contrast: float = tags["contrast"]
+
+	for control_type in gdl_theme.get_color_type_list():
+		if control_type == "EditorIcons":
+			continue
+
+		for color_name in gdl_theme.get_color_list(control_type):
+			if not (color_name.begins_with("font_") or color_name.begins_with("icon_")):
+				continue
+			if color_name.contains("outline") or color_name.contains("shadow"):
+				continue
+
+			var sb_name: String = COLOR_TO_STYLEBOX.get(control_type, {}).get(
+				color_name, _state_from_name(color_name))
+
+			var bg: Color = tags["base_col"]
+			if gdl_theme.has_stylebox(sb_name, control_type):
+				var sb := gdl_theme.get_stylebox(sb_name, control_type)
+				if sb is StyleBoxFlat:
+					bg = sb.bg_color
+
+			gdl_theme.set_color(color_name, control_type,
+				_font_for_bg(bg, _state_from_name(color_name), contrast))
+
+	# Special cases applied last
+	for c in ["icon_hover_color", "icon_pressed_color", "icon_disabled_color", "icon_hover_pressed_color"]:
+			gdl_theme.set_color(c, "CheckButton", tags["accent_col"])
+	
+	gdl_theme.set_color("collapsed_font_color", "FoldableContainer", FONT_LIGHT  if gdl_theme.get_stylebox("title_collapsed_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	gdl_theme.set_color("hover_font_color", "FoldableContainer", FONT_LIGHT  if gdl_theme.get_stylebox("title_collapsed_hover_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	gdl_theme.set_color("icon_hover_color", "Button_CategoryLoad", FONT_LIGHT if gdl_theme.get_stylebox("hover", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	gdl_theme.set_color("icon_pressed_color", "Button_CategoryLoad", FONT_LIGHT  if gdl_theme.get_stylebox("pressed", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	gdl_theme.set_color("icon_hover_pressed_color", "Button_CategoryLoad", FONT_LIGHT  if gdl_theme.get_stylebox("hover_pressed", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	gdl_theme.set_color("icon_disabled_color", "Button_CategoryLoad", FONT_LIGHT  if gdl_theme.get_stylebox("disabled", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+		
 
 
 
@@ -552,30 +571,8 @@ func _apply_theme_colors() -> void:
 					match stylebox_name:
 						"separator": sb.color = tags["base_col+2"]
 		
-	for control_type in gdl_theme.get_color_type_list():
-		for color_name in gdl_theme.get_color_list(control_type):
-			if control_type == "EditorIcons":
-				continue
-
-			gdl_theme.set_color(color_name, control_type, tags["colors"]["font_icon_color"])
-			# prints("Setting", control_type, color_name, "to", tags["font_icon_color"])
-			
-			# Handle types with accent color
-			if   color_name.contains("hover_pressed") and gdl_theme.get_color(color_name, control_type) == tags["colors"]["accent_col"]: 
-				gdl_theme.set_color(color_name, control_type, tags["accent_hover_pressed_col"])
-			elif color_name.contains("hover") and gdl_theme.get_color(color_name, control_type) == tags["colors"]["accent_col"]: 
-				gdl_theme.set_color(color_name, control_type, tags["accent_hover_col"])
-			elif color_name.contains("pressed") and gdl_theme.get_color(color_name, control_type) == tags["colors"]["accent_col"]: 
-				gdl_theme.set_color(color_name, control_type, tags["accent_pressed_col"])
-			elif color_name.contains("hover_pressed") and gdl_theme.get_color(color_name, control_type) == tags["colors"]["accent_col"]: 
-				gdl_theme.set_color(color_name, control_type, tags["accent_hover_pressed_col"])
-			
-			match control_type:
-				"CheckButton":
-					gdl_theme.set_color("icon_hover_color", control_type, tags["accent_col"])
-					gdl_theme.set_color("icon_pressed_color", control_type, tags["accent_col"])
-					gdl_theme.set_color("icon_disabled_color", control_type, tags["accent_col"])
-					gdl_theme.set_color("icon_hover_pressed_color", control_type, tags["accent_col"])
+	# Apply colors
+	_apply_font_icon_colors(tags)
 
 	gdl_theme.set_block_signals(false)
 	gdl_theme.emit_changed()

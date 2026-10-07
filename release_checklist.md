@@ -21,12 +21,14 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 ## Settings task list
 - [ ] `category_names`:
-  - [ ] New categories are appended to array at end.
+  - [x] New categories are appended to array at end.
   - [ ] Rename is applied to it's existing array entry.
   - [ ] Moving categories in Dock moves the array order.
   - [ ] Array entry is removed when LogCategory is queue freed.
   - [ ] Add a new category > Don't name it > Move or change another category and ensure the empty category isn't saved
   - [ ] Directory is deleted properly (ensure default category is cleared when def cat is deleted).
+  - [ ] Applying name is done with both the Enter key and the ApplyButton.
+  - [ ] Revert name button works.
 - [ ] `default_category`:
   - [ ] Category name is saved to file appropriately.
   - [ ] (In Dock) Existing default category's CheckBox is unchecked when another is checked.

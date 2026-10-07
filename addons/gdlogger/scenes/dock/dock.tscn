@@ -225,7 +225,7 @@ theme_override_constants/side_margin = 16
 theme_override_constants/tab_separation = 10
 theme_override_constants/icon_separation = 8
 theme_override_constants/icon_max_width = 23
-current_tab = 2
+current_tab = 1
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("1_lnu3o")
@@ -243,7 +243,6 @@ metadata/_tab_name = " "
 
 [node name="LogsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -256,7 +255,7 @@ metadata/_tab_name = "Logs"
 
 [node name="VBoxContainerSidebar" type="VBoxContainer" parent="DockTabContainer/LogsTab" unique_id=1074115547]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="LogSidebarTop" type="PanelContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar" unique_id=349648368]
 custom_minimum_size = Vector2(48, 88)
@@ -266,7 +265,7 @@ theme = ExtResource("4_o07th")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebarTop" unique_id=1306483708]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="AddCategoryButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebarTop/VBoxContainer" unique_id=1822746076]
 unique_name_in_owner = true
@@ -311,7 +310,7 @@ theme = ExtResource("4_o07th")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebarBottom" unique_id=1755458212]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="LGReloadButton" type="Button" parent="DockTabContainer/LogsTab/VBoxContainerSidebar/LogSidebarBottom/VBoxContainer" unique_id=1160699755]
 unique_name_in_owner = true
@@ -351,7 +350,7 @@ expand_icon = true
 [node name="VBoxContainerMain" type="VBoxContainer" parent="DockTabContainer/LogsTab" unique_id=1488523849]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="CategoryScrollContainer" type="ScrollContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain" unique_id=642802176]
 unique_name_in_owner = true
@@ -359,7 +358,7 @@ custom_minimum_size = Vector2(0, 88)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_h_cmargs_only"
+theme_type_variation = &"ScrollContainer_HCMargsOnly"
 follow_focus = true
 
 [node name="CategoryGridContainer" type="GridContainer" parent="DockTabContainer/LogsTab/VBoxContainerMain/CategoryScrollContainer" unique_id=2014106739]
@@ -385,6 +384,7 @@ size_flags_vertical = 3
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 script = ExtResource("19_luwxg")
@@ -400,7 +400,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="SidebarPanel" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=1744305237]
 custom_minimum_size = Vector2(48, 0)
@@ -409,7 +409,7 @@ theme = ExtResource("4_o07th")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/SidebarPanel" unique_id=481005282]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="ResetSettingsButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/SidebarPanel/VBoxContainer" unique_id=1084513318]
 unique_name_in_owner = true
@@ -455,7 +455,7 @@ scroll_hint_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
@@ -467,7 +467,7 @@ foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="AutostartCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1302278265]
 unique_name_in_owner = true
@@ -502,6 +502,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
+theme = ExtResource("4_o07th")
 text = "File count limit"
 vertical_alignment = 1
 
@@ -534,6 +535,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
+theme = ExtResource("4_o07th")
 text = "Method"
 vertical_alignment = 1
 
@@ -545,6 +547,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Method used to limit file size. 
 Use the selected Actions below to determine what happens once the method condition is fullfilled."
+theme = ExtResource("4_o07th")
 toggle_mode = false
 action_mode = 1
 selected = 0
@@ -576,6 +579,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
+theme = ExtResource("4_o07th")
 text = "Action"
 vertical_alignment = 1
 
@@ -608,6 +612,7 @@ tooltip_text = "What action is taken when the Limit condition is met.
 Overwrite - Overwrites the oldest entry
 Restart - Restarts the logging session
 Stop - Stops the logging session"
+theme = ExtResource("4_o07th")
 toggle_mode = false
 action_mode = 1
 selected = 0
@@ -633,6 +638,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
+theme = ExtResource("4_o07th")
 text = "Action"
 vertical_alignment = 1
 
@@ -664,6 +670,7 @@ tooltip_text = "What action is taken when the Limit condition is met.
 
 Restart - Restarts the logging session
 Stop - Stops the logging session"
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = ExtResource("15_lnu3o")
 theme_override_styles/pressed = ExtResource("23_g08q5")
 theme_override_styles/hover = ExtResource("23_g08q5")
@@ -692,7 +699,7 @@ foldable_group = SubResource("FoldableGroup_k47fi")
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer" unique_id=570791839]
 visible = false
 layout_mode = 2
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="IDToggleShowCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/IDFoldableContainer/VBoxContainer" unique_id=1203264481]
 unique_name_in_owner = true
@@ -731,6 +738,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("4_o07th")
 text = "Overlay Position"
 vertical_alignment = 1
 
@@ -780,6 +788,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("4_o07th")
 theme_override_constants/outline_size = 8
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qo8nw")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qo8nw")
@@ -795,6 +804,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("4_o07th")
 text = "Preview:"
 label_settings = SubResource("LabelSettings_cp33x")
 
@@ -819,7 +829,7 @@ scroll_hint_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 
 [node name="DirectoryFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer" unique_id=934129937]
 unique_name_in_owner = true
@@ -853,6 +863,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
 size_flags_vertical = 1
+theme = ExtResource("4_o07th")
 theme_override_font_sizes/font_size = 14
 text = "Base Directory:"
 vertical_alignment = 1
@@ -951,6 +962,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
 size_flags_vertical = 1
+theme = ExtResource("4_o07th")
 text = "Log Header Format:"
 vertical_alignment = 1
 
@@ -1054,6 +1066,7 @@ custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 1
+theme = ExtResource("4_o07th")
 text = "Entry Format:"
 vertical_alignment = 1
 
@@ -1102,6 +1115,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("4_o07th")
 text = "{entry} required"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1187,7 +1201,7 @@ size_flags_vertical = 3
 theme = ExtResource("4_o07th")
 theme_type_variation = &"TabContainer_NoHCMargs"
 theme_override_constants/tab_separation = 6
-current_tab = 2
+current_tab = 0
 tab_0/title = "Getting Started"
 tab_1/title = "Methods & Hotkeys"
 tab_2/title = "More Info"
@@ -1196,7 +1210,6 @@ metadata/_tab_name = "Help"
 
 [node name="GettingStarted" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=1377872369]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_type_variation = &"ScrollContainer_NoCMargins"
@@ -1221,12 +1234,13 @@ folded = true
 title = "Setup"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp" unique_id=1514331880]
+[node name="SetupRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp" unique_id=1514331880]
 visible = false
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1250,12 +1264,13 @@ folded = true
 title = "Categories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/CategoriesHelp" unique_id=165372222]
+[node name="CategoriesRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/CategoriesHelp" unique_id=165372222]
 visible = false
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1277,12 +1292,13 @@ folded = true
 title = "Log Browser"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/LogBrowserHelp" unique_id=1476901840]
+[node name="LogBrowserRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/LogBrowserHelp" unique_id=1476901840]
 visible = false
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1307,12 +1323,13 @@ folded = true
 title = "Messages / Entries"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp" unique_id=1166564036]
+[node name="MessagesRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp" unique_id=1166564036]
 visible = false
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1341,12 +1358,13 @@ folded = true
 title = "Directories"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/DirectoryHelp" unique_id=1565100639]
+[node name="DirectoriesRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/DirectoryHelp" unique_id=1565100639]
 visible = false
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1367,12 +1385,13 @@ folded = true
 title = "Multiple Instances"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrenciesHelp" unique_id=1890232147]
+[node name="ConcurrenciesRtlabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrenciesHelp" unique_id=1890232147]
 visible = false
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1406,16 +1425,17 @@ folded = true
 title = "Functions"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FunctionsHelp" unique_id=208538217]
+[node name="FunctionsRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FunctionsHelp" unique_id=208538217]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
 text = "[font_size=14]All methods are accessible using the [color=violet]Log[color=white] autoload.
-Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/GDLogger/[/i][color=white], where the shortcut resources are located.
+Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/gdlogger/[/i][color=white], where the shortcut resources are located.
 
 
 [color=#dcdcaa]Log[/color].[color=#6dc2ff]start_session[/color]()
@@ -1446,11 +1466,12 @@ folded = true
 title = "Hotkeys"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/HotkeysHelp" unique_id=1418471264]
+[node name="HotkeysRichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/HotkeysHelp" unique_id=1418471264]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1470,11 +1491,12 @@ folded = true
 title = "File Limits"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FileLimitsHelp" unique_id=1956207480]
+[node name="FileLimitsRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FileLimitsHelp" unique_id=1956207480]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1517,11 +1539,12 @@ folded = true
 title = "Formatting"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FormattingHelp" unique_id=838472294]
+[node name="FormattingRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FormattingHelp" unique_id=838472294]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
@@ -1545,6 +1568,7 @@ fit_content = true
 
 [node name="MoreInfo" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=656868993]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_type_variation = &"ScrollContainer_NoCMargins"
@@ -1561,7 +1585,7 @@ size_flags_vertical = 3
 [node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/HelpTab/MoreInfo/BoxContainer" unique_id=973467980]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 vertical = true
 
 [node name="Label" type="Label" parent="DockTabContainer/HelpTab/MoreInfo/BoxContainer/BoxContainer" unique_id=27916166]
@@ -1569,6 +1593,7 @@ custom_minimum_size = Vector2(356, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+theme = ExtResource("4_o07th")
 text = "If issues with the plugin arise, navigate to  \"res://addons/gdlogger/data.tres\", ensure it exists and secondly. Try replacing it with a new one by deleting it and right-click in the FileSystem folder > Create new > Resource > Find custom resource \"GDLData\", just make sure it's named \"data.tres\" and it's path is identical. This will reset categories and settings. 
 
 There's an issue with the icons not properly updating their colors in the dock whenever you switch between light and dark themes and base colors. It's fixed by simply reloading the editor which can be done via Project > Reload Current Project or restarting Godot
@@ -1618,6 +1643,7 @@ theme_override_constants/separation = 0
 [node name="Label" type="Label" parent="DockTabContainer/HelpTab/MoreInfo/BoxContainer/BoxContainer1/FoldableContainer/VBoxContainer" unique_id=1416033012]
 modulate = Color(1, 0.26, 0.26, 1)
 layout_mode = 2
+theme = ExtResource("4_o07th")
 theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 11
 text = "EDIT WITH CAUTION!"
@@ -1638,7 +1664,6 @@ unique_name_in_owner = true
 oversampling_override = 1.0
 position = Vector2i(65, 140)
 size = Vector2i(296, 164)
-visible = true
 min_size = Vector2i(296, 164)
 max_size = Vector2i(296, 164)
 theme = ExtResource("4_o07th")
@@ -1662,6 +1687,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox/BoxContainer" unique_id=1289453834]
 layout_mode = 2
+theme = ExtResource("4_o07th")
 text = "Sort files by: "
 
 [node name="Control" type="Control" parent="DockTabContainer/LogsSettingsPanelPopup/MarginContainer/LogSettingsContentBox/BoxContainer" unique_id=1529756979]
@@ -1797,6 +1823,7 @@ theme = ExtResource("4_o07th")
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 2
+theme = ExtResource("4_o07th")
 
 [node name="Control" type="Control" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer" unique_id=642737652]
 layout_mode = 2
@@ -1828,6 +1855,7 @@ icon_alignment = 1
 custom_minimum_size = Vector2(142, 0)
 layout_mode = 2
 size_flags_vertical = 1
+theme = ExtResource("4_o07th")
 theme_override_constants/line_spacing = -5
 theme_override_font_sizes/font_size = 22
 text = "Retain directory 
@@ -1838,7 +1866,7 @@ autowrap_mode = 3
 [node name="HBoxContainer" type="HBoxContainer" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer" unique_id=1765618995]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 8
+theme = ExtResource("4_o07th")
 alignment = 1
 
 [node name="KeepDirYesButton" type="Button" parent="PromptPopupPanelContainer/DeleteCategoryPopup/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1798434669]
