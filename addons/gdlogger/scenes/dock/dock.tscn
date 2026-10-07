@@ -345,7 +345,6 @@ theme = ExtResource("4_o07th")
 icon = SubResource("DPITexture_ytbm3")
 flat = true
 icon_alignment = 1
-expand_icon = true
 
 [node name="VBoxContainerMain" type="VBoxContainer" parent="DockTabContainer/LogsTab" unique_id=1488523849]
 layout_mode = 2
@@ -461,11 +460,13 @@ theme = ExtResource("4_o07th")
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_o07th")
+folded = true
 title = "General"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
+visible = false
 layout_mode = 2
 theme = ExtResource("4_o07th")
 

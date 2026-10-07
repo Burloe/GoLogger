@@ -138,6 +138,26 @@ func _input(event: InputEvent) -> void:
 		# if event is InputEventKey and event.keycode == KEY_MINUS and event.is_released():
 		# 	msg("Test entry in non-existent category.", "non_existant_category(should report error with no assigned default category)")
 
+func log_error(error: int = 0, err_data: Array[String] = []) -> void:
+	match error:
+		0: return
+		1: # start_session() errors
+			push_warning("GDLogger: Failed to create log file for session(", err_data[1], "). DirAccess Error - ", err_data[1])
+		2:
+			push_warning("GDLogger: Failed to create log file for session ", err_data, "")
+		3: # msg() errors
+			printerr("GDLogger: msg() called without specifying a category name and no default category assigned.")
+		4:
+			printerr("GDLogger: Failed to log entry into default category <", session_default_category, "> Please assign a new default category, or specify a category when logging entries.")
+		5:
+			printerr("GDLogger: Category ", err_data, " not found.")
+		6:
+			push_warning("GDLogger: Log entry failed. FileAccess Error - ", err_data)
+		7: # stop_session() errors
+			printerr("GDLogger: Failed to stop session properly. No valid file path found for category '", err_data, "'.")
+		8:
+			push_warning("GDLogger: Failed to stop session properly. FileAccess Error - ", err_data)
+
 
 
 func start_session() -> void:
@@ -177,12 +197,12 @@ func _start_category(i: GDLCategoryData) -> void:
 		var dir: DirAccess = DirAccess.open(path)
 		if !dir:
 			var _err = DirAccess.get_open_error()
-			if _err != OK: push_warning("GDLogger: ", get_error(_err, "DirAccess"), " (", path, ").")
+			if _err != OK: log_error(1, [error_string(_err), path])
 			return
 
 		var _f = FileAccess.open(f_path, FileAccess.WRITE)
 		if !_f:
-			push_warning("GDLogger: Failed to create log file for session(", f_path, ").")
+			log_error(2, [f_path])
 			return
 
 		var _log_files: PackedStringArray = []
@@ -199,116 +219,65 @@ func _start_category(i: GDLCategoryData) -> void:
 		var header: String = _get_header(c_name)
 		if header != "":
 			_f.store_line(header)
+		i.entry_count = 1 if header != "" else 0
 		_f.close()
 
 
 
 func msg(log_msg : String, category_name: String = "", print_msg: bool = false) -> void:
 	if log_msg == "":
-			printerr("GDLogger: Attempted to log empty entry.")
-			return
+		return
 
 	if !session_status:
-			return
+		return
 
 	var target_category: GDLCategoryData = null
 
 	if category_name == "": # Unspecified category -> Use Default category
-		if session_default_category.is_empty():
-			printerr("GDLogger: msg() called without specifying a category name and no default category assigned.\n\t Entry:\n", log_msg)
+		if session_default_category.is_empty(): log_error(3)
 		else:
 			target_category = _get_session_category(session_default_category)
-			if !target_category:
-				printerr("GDLogger: Failed to log entry into default category <", session_default_category, "> Please assign a new default category, or specify a category when logging entries.")
+			if !target_category: log_error(4)
 	else:
 		target_category = _get_session_category(category_name)
-		if !target_category:
-			printerr("GDLogger: Category '", category_name, "' not found.")
+		if !target_category: log_error(5, [category_name])
 
 	if !target_category:
 		return
 
+	var overwrite_oldest: bool = false
+	if data.limit_method in [LimitMethod.ENTRY_COUNT, LimitMethod.BOTH] \
+	and target_category.entry_count >= data.entry_cap:
+		match data.entry_count_action:
+			EntryCountAction.RESTART:
+				stop_session()
+				start_session()
+				msg(log_msg, target_category.category_name, print_msg)
+				return
+			EntryCountAction.STOP:
+				stop_session()
+				return
+			EntryCountAction.OVERWRITE_ENTRIES:
+				overwrite_oldest = true
 
-	# Read existing Entries (note that first entry is Log Header)
-	var _f = FileAccess.open(target_category.file_path, FileAccess.READ)
-	if !_f: # ER
-		var _err = FileAccess.get_open_error()
-		if _err != OK:
-			push_warning("GDlogger Error: Log entry failed [", get_error(_err, "FileAccess"), ".")
+	var _fw := FileAccess.open(target_category.file_path, FileAccess.READ_WRITE)
+	if !_fw:
+		log_error(6, [error_string(FileAccess.get_open_error())])
 		return
 
-	var content := _f.get_as_text()
-	var lines : Array[String] = []
+	if overwrite_oldest:
+		var content: String = _drop_oldest_entry(_fw.get_as_text())
+		_fw.resize(0)
+		_fw.seek(0)
+		_fw.store_string(content)
+		target_category.entry_count -= 1
 
-	if data.limit_method in [LimitMethod.ENTRY_COUNT, LimitMethod.BOTH]:
-		while not _f.eof_reached():
-			var _l = _f.get_line().strip_edges(false, true)
-			if _l != "":
-				lines.append(_l)
-		target_category.file_count = lines.size()
-
-	_f.close()
-
-	match data.limit_method:
-
-		LimitMethod.ENTRY_COUNT:
-			match data.entry_count_action:
-				EntryCountAction.OVERWRITE_ENTRIES:
-					while lines.size() >= data.entry_cap:
-						lines.remove_at(1) # Retain header
-
-				EntryCountAction.RESTART:
-					if lines.size() >= data.entry_cap:
-						stop_session()
-						start_session()
-						msg(log_msg, target_category.category_name)
-						return
-
-				EntryCountAction.STOP:
-					if lines.size() >= data.entry_cap:
-						stop_session()
-						return
-
-		LimitMethod.SESSION_TIMER:
-			match data.session_timer_action:
-				SessionTimerAction.RESTART:
-					stop_session()
-					start_session()
-					msg(log_msg, target_category.category_name)
-					return
-
-				SessionTimerAction.STOP:
-					stop_session()
-					return
-
-		LimitMethod.BOTH:
-			match data.entry_count_action:
-				EntryCountAction.RESTART:
-					if lines.size() >= data.entry_cap:
-						stop_session()
-						start_session()
-						msg(log_msg, target_category.category_name)
-						return
-
-				EntryCountAction.STOP:
-					if lines.size() >= data.entry_cap:
-						stop_session()
-						return
-
-	# Rewrite file with existing lines / Update entry count
-	target_category.entry_count = lines.size()
-	var _fw = FileAccess.open(target_category.file_path, FileAccess.WRITE)
-	if !_fw: # ErrCheck
-		var err = FileAccess.get_open_error()
-		if err != OK:
-			push_warning("GDLogger error: Log entry failed. ", get_error(err, "FileAccess"), "")
-
-	_fw.store_string(content)
-
-	# Write new entry
+	_fw.seek_end()
 	var new_entry: String = _get_entry_format(log_msg, target_category.category_name)
 	_fw.store_line(new_entry)
 	_fw.close()
+	target_category.entry_count += 1
+
 	msg_logged.emit(target_category.category_name, new_entry)
 	if print_msg:
 		print_rich("[color=fc4674][font_size=12][GDLogger][color=white] <", target_category.category_name, "> ", new_entry.dedent())
@@ -324,14 +293,14 @@ func stop_session() -> void:
 	for category in session_categories:
 		if category.file_path == "":
 			session_status = false
-			printerr("GDLogger: Failed to stop session properly. No valid file path found for category '", category, "'.")
+			log_error(7, [category.category_name])
 			continue
 
 
 		var _f = FileAccess.open(category.file_path, FileAccess.READ)
 		if !_f:
 			var _err = FileAccess.get_open_error()
-			push_warning("GDLogger: Failed to stop session properly. Error opening file!", category.file_path)
+			log_error(8, [error_string(_err)])
 			session_status = false
 			return
 		var _content := _f.get_as_text()
@@ -342,7 +311,7 @@ func stop_session() -> void:
 		if !_fw:
 			var _err = FileAccess.get_open_error()
 			if _err != OK:
-				push_warning("GDLogger: Attempting to stop session by writing to file (", category.file_path, ") -> Error[", _err, "]")
+				log_error(8, [error_string(_err)])
 				return
 		var _s := str(_content, str(_timestamp))
 		_fw.store_line(_s)
@@ -365,56 +334,12 @@ func _get_session_category(c_name: String) -> GDLCategoryData:
 
 
 
-static func get_error(error : int, object_type : String = "") -> String: #DELETE
-	match error:
-		1:  return str("<Error[1] ",  object_type, " Failed>")
-		2:  return str("<Error[2] ",  object_type, " Unavailable>")
-		3:  return str("<Error[3] ",  object_type, " Unconfigured>")
-		4:  return str("<Error[4] ",  object_type, " Unauthorized>")
-		5:  return str("<Error[5] ",  object_type, " Parameter range>")
-		6:  return str("<Error[6] ",  object_type, " Out of memory>")
-		7:  return str("<Error[7] ",  object_type, " File: Not found>")
-		8:  return str("<Error[8] ",  object_type, " File: Bad drive>")
-		9:  return str("<Error[9] ",  object_type, " File: Bad File path>")
-		10: return str("<Error[10] ", object_type, " No File permission>")
-		11: return str("<Error[11] ", object_type, " File already in use>")
-		12: return str("<Error[12] ", object_type, " Can't open File>")
-		13: return str("<Error[13] ", object_type, " Can't write to File>")
-		14: return str("<Error[14] ", object_type, " Can't read to File>")
-		15: return str("<Error[15] ", object_type, " File unrecognized>")
-		16: return str("<Error[16] ", object_type, " File corrupt>")
-		17: return str("<Error[17] ", object_type, " File missing dependencies>")
-		18: return str("<Error[18] ", object_type, " End of File>")
-		19: return str("<Error[19] ", object_type, " Can't open>")
-		20: return str("<Error[20] ", object_type, " Can't create>")
-		21: return str("<Error[21] ", object_type, " Query failed>")
-		22: return str("<Error[22] ", object_type, " Already in use>")
-		23: return str("<Error[23] ", object_type, " Locked>")
-		24: return str("<Error[24] ", object_type, " Timeout>")
-		25: return str("<Error[25] ", object_type, " Can't connect>")
-		26: return str("<Error[26] ", object_type, " Can't resolve>")
-		27: return str("<Error[27] ", object_type, " Connection error>")
-		28: return str("<Error[28] ", object_type, " Can't acquire resource>")
-		29: return str("<Error[29] ", object_type, " Can't fork process>")
-		30: return str("<Error[30] ", object_type, " Invalid data>")
-		31: return str("<Error[31] ", object_type, " Invalid parameter>")
-		32: return str("<Error[32] ", object_type, " Already exists>")
-		33: return str("<Error[33] ", object_type, " Doesn't exist>")
-		34: return str("<Error[34] ", object_type, " Database: Can't read>")
-		35: return str("<Error[35] ", object_type, " Database: Can't write>")
-		36: return str("<Error[36] ", object_type, " Compilation failed>")
-		37: return str("<Error[37] ", object_type, " Method not found>")
-		38: return str("<Error[38] ", object_type, " Link failed>")
-		39: return str("<Error[39] ", object_type, " Script failed>")
-		40: return str("<Error[40] ", object_type, " Cyclic link>")
-		41: return str("<Error[41] ", object_type, " Invalid declaration>")
-		42: return str("<Error[42] ", object_type, " Duplicate symbol>")
-		43: return str("<Error[43] ", object_type, " Parse error>")
-		44: return str("<Error[44] ", object_type, " Busy error>")
-		46: return str("<Error[45] ", object_type, " Skip error>")
-		47: return str("<Error[46] ", object_type, " Help error>")
-		48: return str("<Error[47] ", object_type, " Bug error>")
-	return "N/A"
+func _drop_oldest_entry(content: String) -> String:
+	var header_end: int = content.find("\n")
+	var first_end: int = content.find("\n", header_end + 1)
+	if header_end == -1 or first_end == -1:
+		return content
+	return content.substr(0, header_end + 1) + content.substr(first_end + 1)
 
 
 

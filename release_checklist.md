@@ -30,10 +30,10 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [x] Array entry is removed when LogCategory is queue freed.
   - [x] Add a new category > Don't name it > Move or change another category and ensure the empty category isn't saved
   - [x] Directory is deleted properly (ensure default category is cleared when def cat is deleted).
-- [ ] `default_category`:
-  - [ ] Category name is saved to file appropriately.
-  - [ ] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
-  - [ ] Unchecking clears setting to "".
+- [x] `default_category`:
+  - [x] Category name is saved to file appropriately.
+  - [x] (In Dock) Existing default category's CheckBox is unchecked when another is checked.
+  - [x] Unchecking clears setting to "".
 
 - [ ] `base_directory`:
   - [ ] New directory is created when change.
@@ -45,22 +45,22 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] `entry_format`:
   - [ ] Proper format is applied to entries.
   - [ ] Check all tags work properly.
-- [ ] `autostart_session`:
-  - [ ] Session is started automatically or not.
-- [ ] `use_utc`:
-	- [ ] UTC time used for .log file name, log header and entry format.
-- [ ] `id_toggle`:
-  - [ ] ID visibility is toggled.
-- [ ] `id_startup_state`:
-	- [ ] ID overlay is shown when true / off when false. Only applicable if `id_toggle` is true.
-- [ ] `id_print`:
-  - [ ] ID visible when `id_toggle` is false and hotkey is held.
-  - [ ] ID is shown on startup if `id_toggle` and `id_startup_state`.
-  - [ ] ID is printed on hotkey released.
-  - [ ] ID is printed when the hotkey if released / on toggle if `id_toggle` is true.
-- [ ] `id_align`:
+- [x] `autostart_session`:
+  - [x] Session is started automatically or not.
+- [x] `use_utc`:
+	- [x] UTC time used for .log file name, log header and entry format.
+- [x] `id_toggle`:
+  - [x] ID visibility is toggled.
+- [x] `id_startup_state`:
+	- [x] ID overlay is shown when true / off when false. Only applicable if `id_toggle` is true.
+- [x] `id_print`:
+  - [x] ID visible when `id_toggle` is false and hotkey is held.
+  - [x] ID is shown on startup if `id_toggle` and `id_startup_state`.
+  - [x] ID is printed on hotkey released.
+  - [x] ID is printed when the hotkey if released / on toggle if `id_toggle` is true.
+- [x] `id_align`:
 	- [x] Check label aligns to all nine positions properly.
-	- [ ] Check label fills viewport for different resolutions.
+	- [x] Check label fills viewport for different resolutions.
 - [ ] `limit_method`:
 	- [ ] Ensure correct limit method.
 - [ ] `entry_count_action`:
