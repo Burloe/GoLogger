@@ -48,9 +48,9 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var sett_base_dir_apply_btn: Button = %BaseDirApplyButton
 @onready var sett_open_dir_btn: Button = %OpenDirButton
 
-@onready var sett_log_header_line: LineEdit = %LogHeaderLineEdit
-@onready var sett_log_header_apply_btn: Button = %LogHeaderApplyButton
-@onready var sett_log_header_revert_btn: Button = %LogHeaderRevertButton
+@onready var sett_log_header_line: LineEdit = %HeaderLineEdit
+@onready var sett_log_header_apply_btn: Button = %HeaderApplyButton
+@onready var sett_log_header_revert_btn: Button = %HeaderRevertButton
 
 @onready var sett_entry_format_line: LineEdit = %EntryFormatLineEdit
 @onready var sett_entry_format_apply_btn: Button = %EntryFormatApplyButton

@@ -5,22 +5,19 @@ signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to
 signal request_theme_colors
 
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
-@onready var base_dir_lbl: Label = %BaseDirLabel
 @onready var base_dir_line_btn_cont: Panel = %BaseDirLineEditButtons
 @onready var base_dir_apply_btn: Button = %BaseDirApplyButton
 @onready var base_dir_revert_btn: Button = %BaseDirRevertButton
 # @onready var base_dir_opendir_btn: Button = %BaseDirOpenDirButton
 @onready var base_dir_container: HBoxContainer = %BaseDirHBox
 
-@onready var log_header_line: LineEdit = %LogHeaderLineEdit
-@onready var log_header_lbl: Label = %LogHeaderLabel
-@onready var log_header_line_btn_cont: Panel = %LogHeaderLineEditButtons
-@onready var log_header_apply_btn: Button = %LogHeaderApplyButton
-@onready var log_header_revert_btn: Button = %LogHeaderRevertButton
-@onready var log_header_container: HBoxContainer = %LogHeaderHBox
+@onready var header_line: LineEdit = %HeaderLineEdit
+@onready var header_line_btn_cont: Panel = %HeaderLineEditButtons
+@onready var log_header_apply_btn: Button = %HeaderApplyButton
+@onready var log_header_revert_btn: Button = %HeaderRevertButton
+@onready var log_header_container: HBoxContainer = %HeaderHBox
 
 @onready var entry_format_line: LineEdit = %EntryFormatLineEdit
-@onready var entry_format_lbl: Label = %EntryFormatLabel
 @onready var entry_format_line_btn_cont: Panel = %EntryFormatLineEditButtons
 @onready var entry_format_apply_btn: Button = %EntryFormatApplyButton
 @onready var entry_format_revert_btn: Button = %EntryFormatRevertButton
@@ -90,12 +87,6 @@ var container_array: Array[Control] = []
 
 var theme_colors = {}
 var settings_dict: Dictionary = {}
-var line_edit_states: Dictionary = {
-	"base_dir": {"mouse": false, "edit": false},
-	"log_header": {"mouse": false, "edit": false},
-	"entry_format": {"mouse": false, "edit": false}
-}
-
 
 ## Index 3 is a SEPERATOR and should not be used.
 enum LimitMethod {
@@ -134,7 +125,7 @@ func _ready() -> void:
 		base_dir_line,
 		base_dir_apply_btn,
 		base_dir_revert_btn, 
-		log_header_line,
+		header_line,
 		log_header_apply_btn,
 		log_header_revert_btn,
 		entry_format_line,
@@ -160,6 +151,8 @@ func _ready() -> void:
 
 	for node in btn_array:
 		_connect_control_signal(node)
+	# log_header_apply_btn.pressed.connect(_on_button_pressed.bind(log_header_apply_btn))
+	print(log_header_apply_btn.pressed.get_connections())
 
 
 
@@ -170,15 +163,13 @@ func initialize_tab() -> void:
 	_handle_limit_method_visibility()
 	
 
+
 # Called by dock.gd
 func init_visibility() -> void:
 	id_startup_btn.show() if data.id_startup else id_startup_btn.hide()
 	base_dir_line_btn_cont.hide()
-	base_dir_revert_btn.disabled = true
-	log_header_line_btn_cont.hide()
-	log_header_revert_btn.disabled = true
+	header_line_btn_cont.hide()
 	entry_format_line_btn_cont.hide()
-	entry_format_revert_btn.disabled = true
 	
 	var fold_conts: Array[FoldableContainer] = [
 		general_fold_cont,
@@ -210,7 +201,7 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 
 func _connect_line_edit_toggled() -> void:
 	base_dir_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(base_dir_line))
-	log_header_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(log_header_line))
+	header_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(header_line))
 	entry_format_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(entry_format_line))
 
 
@@ -230,13 +221,11 @@ func _connect_spinbox_line_submitted() -> void:
 	]
 
 	for line_edit in line_edits:
-		_connect_unique(line_edit.text_submitted, _on_spinbox_lineedit_submitted.bind(line_edit))
+		_connect_unique(line_edit.text_submitted, _on_spinbox_line_edit_submitted.bind(line_edit))
 
 
 
 func _connect_control_signal(node: Control) -> void:
-	if node is Button:
-		_connect_unique(node.button_up, _on_button_button_up.bind(node))
 	if node is CheckButton:
 		_connect_unique(node.toggled, _on_checkbox_toggled.bind(node))
 	elif node is OptionButton:
@@ -246,6 +235,9 @@ func _connect_control_signal(node: Control) -> void:
 		_connect_unique(node.text_submitted, _on_line_edit_text_submitted.bind(node))
 	elif node is SpinBox:
 		_connect_unique(node.value_changed, _on_spinbox_value_changed.bind(node)) 
+	elif node is Button:
+		# node.pressed.connect(_on_button_button_up.bind(node))
+		_connect_unique(node.pressed, _on_button_pressed.bind(node))
 
 
 
@@ -332,45 +324,39 @@ func _is_entry_format_valid(format: String) -> bool:
 
 #region Signal receivers
 
-func _on_button_button_up(node: Button) -> void:
+func _on_button_pressed(node: Button) -> void:
+	print("asdf")
+	print(node.get_name())
 	match node:
 		base_dir_apply_btn:
 			if _apply_new_base_directory():
-				base_dir_apply_btn.disabled = true
-				base_dir_revert_btn.disabled = true
 				base_dir_line_btn_cont.hide()
 				request_save.emit(false, "dock_settings.gd - base_dir_apply_btn")
 		
 		base_dir_revert_btn:
 			base_dir_line.text = data.base_dir
-			base_dir_apply_btn.disabled = true
-			base_dir_revert_btn.disabled = true
 			base_dir_line_btn_cont.hide()
 
 		log_header_apply_btn:
-			data.header_format = log_header_line.text
-			log_header_apply_btn.disabled = true
-			log_header_line.release_focus() 
-			log_header_line_btn_cont.hide()
+			data.header_format = header_line.text
+			print("ApplyButton: Set data.header_format to - ", header_line.text)
+			# log_header_apply_btn.disabled = true
+			header_line.release_focus()
+			header_line_btn_cont.hide()
 			request_save.emit(false, "dock_settings.gd - log_header_apply_btn")
 		
 		log_header_revert_btn:
-			log_header_line.text = data.header_format
-			log_header_apply_btn.disabled = true
-			log_header_revert_btn.disabled = true
-			log_header_line_btn_cont.hide()
+			header_line.text = data.header_format
+			header_line_btn_cont.hide()
 
 		entry_format_apply_btn:
 			data.entry_format = entry_format_line.text
-			entry_format_apply_btn.disabled = true
 			entry_format_line.release_focus() 
 			entry_format_line_btn_cont.hide()
 			request_save.emit(false, "dock_settings.gd - entry_format_apply_btn")
 
 		entry_format_revert_btn:
 			entry_format_line.text = data.entry_format
-			entry_format_apply_btn.disabled = true
-			entry_format_revert_btn.disabled = true
 			entry_format_line_btn_cont.hide()
 
 
@@ -379,33 +365,14 @@ func _on_button_button_up(node: Button) -> void:
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 	var last_applied_value: String = ""
 	match node:
-		base_dir_line:
-			base_dir_apply_btn.disabled = true 
-			base_dir_revert_btn.disabled = true 
-
-			if new_text != data.base_dir:
-				base_dir_apply_btn.disabled = false 
-				base_dir_revert_btn.disabled = false
-
-		log_header_line:
+		header_line:
 			last_applied_value = data.header_format
-			log_header_apply_btn.disabled = true 
-			log_header_revert_btn.disabled = true
-			if new_text != last_applied_value:
-				log_header_revert_btn.disabled = false
-				log_header_apply_btn.disabled = false
 
 		entry_format_line: 
 			last_applied_value = data.entry_format
-			entry_format_apply_btn.disabled = true
-			entry_format_revert_btn.disabled = true 
 			
 			entry_format_warning.visible = !_is_entry_format_valid(new_text)
 			entry_format_line.set_theme_type_variation("LineEdit_category_field_valid" if _is_entry_format_valid(new_text) else "LineEdit_category_field_invalid")
-
-			if new_text != last_applied_value and _is_entry_format_valid(new_text):
-				entry_format_apply_btn.disabled = false 
-				entry_format_revert_btn.disabled = false
 			
 
 
@@ -414,20 +381,15 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 		base_dir_line:
 			if _apply_new_base_directory():
 				base_dir_line.release_focus()
-				base_dir_apply_btn.disabled = true
-				base_dir_revert_btn.disabled = true
 				data.base_dir = base_dir_line.text
 
-		log_header_line:
-			log_header_line.release_focus()
-			log_header_apply_btn.disabled = true
-			log_header_revert_btn.disabled = true
-			data.header_format = log_header_line.text
+		header_line:
+			header_line.release_focus()
+			data.header_format = header_line.text
+			print("TextSubmitted: Set data.header_format to - ", header_line.text)
 
 		entry_format_line:
 			entry_format_line.release_focus()
-			entry_format_apply_btn.disabled = true
-			entry_format_revert_btn.disabled = true
 			data.entry_format = entry_format_line.text
 
 	request_save.emit(false, "dock_settings.gd - _on_line_edit_text_submitted")
@@ -490,26 +452,18 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckButton) -> void:
 
 
 
-func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:
-	request_theme_colors.emit()
-	var key: String
-	
+func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:	
 	match node:
 		base_dir_line: 
 			base_dir_line_btn_cont.visible = toggled_on
-			key = "base_dir"
-		log_header_line: 
-			log_header_line_btn_cont.visible = toggled_on
-			key = "log_header"
+		header_line: 
+			header_line_btn_cont.visible = toggled_on
 		entry_format_line: 
 			entry_format_line_btn_cont.visible = toggled_on
-			key = "entry_format"
-	
-	line_edit_states[key]["edit"] = toggled_on
 
 
 
-func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
+func _on_spinbox_line_edit_submitted(new_text: String, node: Control) -> void:
 	match node:
 		file_count_spinbox_line:
 			data.file_cap = int(new_text)
@@ -526,7 +480,7 @@ func _on_spinbox_lineedit_submitted(new_text: String, node: Control) -> void:
 			session_duration_spinbox.release_focus()
 			session_duration_spinbox_line.release_focus() 
 
-	request_save.emit(false, "dock_settings.gd - _on_spinbox_lineedit_submitted")
+	request_save.emit(false, "dock_settings.gd - _on_spinbox_line_edit_submitted")
 
 
 

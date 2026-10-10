@@ -866,7 +866,7 @@ layout_mode = 2
 size_flags_vertical = 1
 theme = ExtResource("4_o07th")
 theme_override_font_sizes/font_size = 14
-text = "Base Directory:"
+text = "Log Directory:"
 vertical_alignment = 1
 
 [node name="BaseDirLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
@@ -880,7 +880,7 @@ Recommended to use either a directory within \"user://\" or \"res://\"
 Default path is \"user://GDLogger/\". "
 theme = ExtResource("4_o07th")
 theme_type_variation = &"LineEdit_format_fields"
-text = "user://gdlogger/"
+text = "C:\\Users\\TomNi\\Videos\\test/"
 placeholder_text = "user://gdlogger/"
 expand_to_text_length = true
 emoji_menu_enabled = false
@@ -907,6 +907,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 tooltip_text = "Applies a new base directory"
+focus_mode = 0
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.3137255)
@@ -946,7 +947,7 @@ disabled = true
 icon = SubResource("DPITexture_l2oj6")
 icon_alignment = 1
 
-[node name="LogHeaderHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
+[node name="HeaderHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
@@ -958,7 +959,7 @@ Supported format tags:
     {hh}   {mi}   {ss} - hour, minute, second second[color=white]"
 theme_override_constants/separation = 8
 
-[node name="LogHeaderLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=1789578101]
+[node name="HeaderLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox" unique_id=1789578101]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(155, 0)
 layout_mode = 2
@@ -967,7 +968,7 @@ theme = ExtResource("4_o07th")
 text = "Log Header Format:"
 vertical_alignment = 1
 
-[node name="LogHeaderLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=683152660]
+[node name="HeaderLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox" unique_id=683152660]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 2
@@ -982,11 +983,11 @@ Supported format tags:
     {hh}   {mi}   {ss} - hour, minute, second"
 theme = ExtResource("4_o07th")
 theme_type_variation = &"LineEdit_format_fields"
-text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
+text = "teqweqwest{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 emoji_menu_enabled = false
 
-[node name="LogHeaderLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox" unique_id=1877077072]
+[node name="HeaderLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox" unique_id=1877077072]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(66, 0)
@@ -994,7 +995,7 @@ layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_override_styles/panel = ExtResource("23_g08q5")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons" unique_id=1510289973]
+[node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox/HeaderLineEditButtons" unique_id=1510289973]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1003,11 +1004,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="LogHeaderApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1394228566]
+[node name="HeaderApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox/HeaderLineEditButtons/HBoxContainer" unique_id=1394228566]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 tooltip_text = "Apply the new log header format"
+focus_mode = 0
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.0431373, 0.45098, 0.0705882, 1)
 theme_override_colors/icon_disabled_color = Color(1, 1, 1, 0.3137255)
@@ -1017,15 +1019,14 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_boc7e")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_boc7e")
 theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_boc7e")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_boc7e")
-disabled = true
 icon = SubResource("DPITexture_lxkmp")
 icon_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
+[node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox/HeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
-[node name="LogHeaderRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/LogHeaderHBox/LogHeaderLineEditButtons/HBoxContainer" unique_id=1011354875]
+[node name="HeaderRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox/HeaderLineEditButtons/HBoxContainer" unique_id=1011354875]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
@@ -1142,6 +1143,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 tooltip_text = "Apply new entry format"
+focus_mode = 0
 theme_override_colors/font_hover_color = Color(0.462745, 0.831373, 0.231373, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.045, 0.45, 0.072, 1)
 theme_override_colors/icon_hover_color = Color(0.462745, 0.831373, 0.231373, 1)

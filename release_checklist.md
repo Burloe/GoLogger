@@ -4,7 +4,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 
 ## BUGS
-- [ ] 
+- [ ] Apply buttons for formats aren't really applying the new ones but using enter to emit text_submitted does
 
 ## General
 
@@ -20,12 +20,12 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [ ] Go through code and make it uniform. For example, in `for` loops where category names are iterated through. Make all `for` loops have same naming conventions.
 
 ## Settings task list
-- [ ] `category_names`:
+- [x] `category_names`:
   - [x] New categories are appended to array at end.
   - [x] (Re)Naming:
     - [x] Rename is applied to it's existing array entry.
-    - [x] Applying name is done with both the Enter key and the ApplyButton.
-    - [x] Revert name button works.
+    - [ ] Applying name is done with both the Enter key and the ApplyButton.
+    - [ ] Revert name button works.
   - [x] Moving categories in Dock moves the array order.
   - [x] Array entry is removed when LogCategory is queue freed.
   - [x] Add a new category > Don't name it > Move or change another category and ensure the empty category isn't saved
@@ -37,14 +37,15 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 - [ ] `base_directory`:
   - [ ] New directory is created when change.
+  - [ ] Ensure that when the user has a `custom_user_dir` that the base directory is created in this custom directory.
   - [ ] Directories for all the categories are created when running the game if,
   - [ ] Checks directory is valid before applying and reverting if not.
-- [ ] `log_header_format`:
-  - [ ] New log header is used when starting a session.
-  - [ ] Check all tags work properly.
-- [ ] `entry_format`:
-  - [ ] Proper format is applied to entries.
-  - [ ] Check all tags work properly.
+- [x] `log_header_format`:
+  - [x] New log header is used when starting a session.
+  - [x] Check all tags work properly.
+- [x] `entry_format`:
+  - [x] Proper format is applied to entries.
+  - [x] Check all tags work properly.
 - [x] `autostart_session`:
   - [x] Session is started automatically or not.
 - [x] `use_utc`:
@@ -61,83 +62,74 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [x] `id_align`:
 	- [x] Check label aligns to all nine positions properly.
 	- [x] Check label fills viewport for different resolutions.
-- [ ] `limit_method`:
-	- [ ] Ensure correct limit method.
-- [ ] `entry_count_action`:
-	- [ ] Ensure action is enforced for the count / timer. i.e. the action is triggered at the count cap and the session timer wait time is set properly.
-- [ ] `session_timer_action`:
-	- [ ] Ensure that the proper action is used and works
-- [ ] `file_cap`:
-	- [ ] Ensure file cap is enforced when value is hit.
-- [ ] `entry_cap`:
-	- [ ] Ensure entry count action is triggered when this value is hit.
-- [ ] `session_duration`:
-	- [ ] Ensure session timer wait time is set to this value
-- [ ] `error_reporting`:
-	- [ ] Check warnings and errors are pushed/printed properly according to setting.
+- [x] `limit_method`:
+	- [x] Ensure correct limit method is used.
+	- [x] Ensure the correct OptionButtons are displayed for each of the three settings when selected.
+- [x] `entry_count_action`:
+	- [x] Ensure action is enforced for the count / timer. i.e. the action is triggered at the count cap and the session timer wait time is set properly.
+- [x] `session_timer_action`:
+	- [x] Ensure that the proper action is used and works
+- [x] `file_cap`:
+	- [x] Ensure file cap is enforced when value is hit.
+- [x] `entry_cap`:
+	- [x] Ensure entry count action is triggered when this value is hit.
+- [x] `session_duration`:
+	- [x] Ensure session timer wait time is set to this value
 - [ ] `Reset to Default`:
 	- [ ] Check all settings are indeed reset to their default values when pressed
 
 
 ## Sessions
 
-- [ ] Start Session:
-  - [ ] Verify a session starts when it should.
-  - [ ] Ensure `gdlogger_data.ini` is created if missing.
-  - [ ] Ensure `[categories.category_name]` exists in `gdlogger_data.ini`.
-  - [ ] Ensure `[categories.category_name].file_name` contains the current file name, for example `game(260417_020435).log`.
-  - [ ] Ensure `[categories.category_name].file_path` contains the absolute file path of the current file.
-  - [ ] Ensure `[categories.category_name].category_name` is updated correctly.
-  - [ ] Ensure `[categories.category_name].file_count` matches the number of `.log` files in the directory.
-  - [ ] Ensure `[categories.category_name].entry_count` matches the number of entries in the current `.log` file.
-  - [ ] Ensure a `.log` file is created with the current date and timestamp.
-  - [ ] Ensure `log_header` is written into the file.
-  - [ ] Ensure file count limiting removes the oldest file and preserves the correct number of files.
-  - [ ] Verify a unique `session_id` is generated.
-  - [ ] Verify the ID overlay displays the correct `instance_id`.
-  - [ ] Verify ID overlay visuals are applied according to settings.
+- [x] Start Session:
+  - [x] Verify a session starts when it should.
+  - [x] Ensure `data.tres` is created if missing.
+  - [x] Ensure a `.log` file is created with the current date and timestamp.
+  - [x] Ensure `log_header` is written into the file.
+  - [x] Ensure file count limiting removes the oldest file and preserves the correct number of files.
+  - [x] Verify a unique `session_id` is generated.
+  - [x] Verify the ID overlay displays the correct `instance_id`.
+  - [x] Verify ID overlay visuals are applied according to settings.
 
-- [ ] During Session:
-  - [ ] Verify session timer wait time is set correctly from `session_duration`.
-  - [ ] Ensure the session stops or restarts correctly on timeout.
-  - [ ] Verify `entry_count` is enforced at the correct limit.
-  - [ ] Ensure the session stops, restarts, or overwrites entries when the limit is reached.
-  - [ ] Ensure the oldest entry is the one removed.
-  - [ ] Verify `msg()` logs entries correctly.
-  - [ ] Verify `entry_format` is applied to each entry.
-  - [ ] Verify the session ID is added if the tag is present.
-  - [ ] Verify entries are not logged when a session has not started.
+- [x] During Session:
+  - [x] Verify session timer wait time is set correctly from `session_duration`.
+  - [x] Ensure the session stops or restarts correctly on timeout.
+  - [x] Verify `entry_count` is enforced at the correct limit.
+  - [x] Ensure the session stops, restarts, or overwrites entries when the limit is reached.
+  - [x] Ensure the oldest entry is the one removed.
+  - [x] Verify `msg()` logs entries correctly.
+  - [x] Verify `entry_format` is applied to each entry.
+  - [x] Verify the session ID is added if the tag is present.
+  - [x] Verify entries are not logged when a session has not started.
 
-- [ ] End of Session:
-  - [ ] Ensure `file_name`, `file_path`, and `entry_count` are reset to blank values in `gdlogger_data.ini`.
+- [x] End of Session:
+  - [x] Ensure `file_name`, `file_path`, and `entry_count` are reset to blank values in `gdlogger_data.ini`.
 
 ### Hotkeys
 
 - [ ] Check `start_session` hotkey
 - [ ] Check `stop_session` hotkey
-- [ ] Check `display_instance_id` hotkey
-- [ ] R-click INSIDE log content closes log file in Log Browser
+- [x] Check `display_instance_id` hotkey
 
-### `gdlogger_data.ini`
+### `data.tres`
 
-- [ ] Ensure `[categories][category_names]` updates whenever any category change is made in the dock.
-- [ ] Ensure `[categories][default_category]` updates whenever any category change is made in the dock.
-- [ ] Ensure each `[categories.category_name]` section updates its `file_name`, `file_path`, `category_name`, `file_count`, and `entry_count` values correctly.
-- [ ] Ensure `[categories][category_names]` matches the dock order.
-- [ ] Ensure `[categories][category_names]` reorders correctly when categories are moved.
-- [ ] Ensure `[categories][category_names]` deletes the correct category when one is removed.
-- [ ] Ensure `[categories][default_category]` assigns and reassigns correctly.
-- [ ] Ensure `[categories][default_category]` clears correctly when unticked.
-- [ ] Ensure new category sections are initialized with blank values.
-- [ ] Ensure category session fields update correctly during sessions.
+- [x] Ensure `[categories][category_names]` updates whenever any category change is made in the dock.
+- [x] Ensure `[categories][default_category]` updates whenever any category change is made in the dock.
+- [x] Ensure each `[categories.category_name]` section updates its `file_name`, `file_path`, `category_name`, `file_count`, and `entry_count` values correctly.
+- [x] Ensure `[categories][category_names]` matches the dock order.
+- [x] Ensure `[categories][category_names]` reorders correctly when categories are moved.
+- [x] Ensure `[categories][category_names]` deletes the correct category when one is removed.
+- [x] Ensure `[categories][default_category]` assigns and reassigns correctly.
+- [x] Ensure `[categories][default_category]` clears correctly when unticked.
+- [x] Ensure new category sections are initialized with blank values.
+- [x] Ensure category session fields update correctly during sessions.
 - [ ] Ensure settings are validated properly.
-- [ ] Ensure
 
 ## Dock
 
 ### Categories
 
-- [ ] Ensure `Apply` and `DefaultCategory` toggle correctly when modifying a category name.
+- [x] Ensure `Apply` and `DefaultCategory` toggle correctly when modifying a category name.
 - [ ] Ensure `Apply` is disabled when the current `LineEdit` value is invalid.
 - [ ] Ensure `Reset` appears when `CategoryName[LineEdit]` is being edited.
 - [ ] Ensure `Reset` restores the last applied `category_name`.
@@ -152,22 +144,18 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [ ] `base_directory`, `log_header_format` and `entry_format` Revert buttons reverts to the last applied value.
 
 ### Log Browser
-- [ ] Ensure categories are loaded and that the tabs in the TabContainer are named appropriately.
-- [ ] Ensure log files are properly refreshed and loaded when pressing `ReloadButton`.
-- [ ] Check that columns update automatically when resized and when `view` is changed.
-- [ ] Ensure files that can't open displays the error.
-- [ ] R-Click closes an open log file, ONLY WHEN CLICKED INSIDE THE CONTENTS CONTAINER.
+- [x] Ensure categories are loaded and that the tabs in the TabContainer are named appropriately.
+- [x] Ensure log files are properly refreshed and loaded when pressing `ReloadButton`.
 
 ### Settings Tab
 
-- [ ] Ensure theme uniformity follows `EditorSettings` `base_color`, `accent_color`, and `contrast`.
+- [x] Ensure theme uniformity follows `EditorSettings` `base_color`, `accent_color`, and `contrast`.
 - [ ] Ensure theme colors update correctly between light and dark editor themes.
-- [ ] Ensure each setting label highlights when either the setting control or its container is hovered.
-- [ ] Ensure each setting loads the correct value from the `.ini` file.
-- [ ] Ensure each setting saves the correct value to the `.ini` file.
-- [ ] Ensure each setting applies its behavior correctly.
+- [x] Ensure each setting loads the correct value from the `.ini` file.
+- [x] Ensure each setting saves the correct value to the `.ini` file.
+- [x] Ensure each setting applies its behavior correctly.
 - [ ] Ensure `BaseDirectory`, `LogHeaderFormat`, and `EntryFormat` show the `Apply` button when a valid value is present.
-- [ ] Ensure the inspector module for hotkeys loads and displays correctly.
+- [x] Ensure the inspector module for hotkeys loads and displays correctly.
 - [ ] Ensure each setting control and its container show the same tooltip text.
 
 ### Help Tab
