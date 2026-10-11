@@ -470,13 +470,99 @@ func _apply_font_icon_colors(tags: Dictionary) -> void:
 	# Special cases applied last
 	for c in ["icon_hover_color", "icon_pressed_color", "icon_disabled_color", "icon_hover_pressed_color"]:
 			gdl_theme.set_color(c, "CheckButton", tags["accent_col"])
+	# var special_cases: Dictionary = {
+	# 	"FoldableContainer": [
+	# 		["collapsed_font_color", "FoldableContainer", "title_collapsed_panel"],
+	# 		["hover_font_color", "FoldableContainer", "title_collapsed_hover_panel"]
+	# 	],
+	# 	"Button_CategoryLoad": [
+	# 		["icon_hover_color", "Button_CategoryLoad", "hover"],
+	# 		["icon_pressed_color", "Button_CategoryLoad", "pressed"],
+	# 		["icon_hover_pressed_color", "Button_CategoryLoad", "hover_pressed"],
+	# 		["icon_disabled_color", "Button_CategoryLoad", "disabled"]
+	# 	],
+	# 	"CheckButton": [
+	# 		["font_hover_color", "FoldableContainer", "title_collapsed_panel"],
+	# 		["font_pressed_color", "FoldableContainer", "title_collapsed_panel"],
+	# 		["font_hover_pressed_color", "FoldableContainer", "title_collapsed_panel"]
+	# 	],
+	# 	"SpinBox": [
+	# 		["down_icon_modulate", "SpinBox", "down_background"],
+	# 		["down_hover_icon_modulate", "SpinBox", "down_background_hovered"],
+	# 		["down_pressed_icon_modulate", "SpinBox", "down_background_pressed"],
+	# 		["up_icon_modulate", "SpinBox", "up_background"],
+	# 		["up_hover_icon_modulate", "SpinBox", "up_background_hovered"],
+	# 		["up_pressed_icon_modulate", "SpinBox", "up_background_pressed"]
+	# 	]
+	# }
 	
-	gdl_theme.set_color("collapsed_font_color", "FoldableContainer", FONT_LIGHT  if gdl_theme.get_stylebox("title_collapsed_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
-	gdl_theme.set_color("hover_font_color", "FoldableContainer", FONT_LIGHT  if gdl_theme.get_stylebox("title_collapsed_hover_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
-	gdl_theme.set_color("icon_hover_color", "Button_CategoryLoad", FONT_LIGHT if gdl_theme.get_stylebox("hover", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
-	gdl_theme.set_color("icon_pressed_color", "Button_CategoryLoad", FONT_LIGHT  if gdl_theme.get_stylebox("pressed", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
-	gdl_theme.set_color("icon_hover_pressed_color", "Button_CategoryLoad", FONT_LIGHT  if gdl_theme.get_stylebox("hover_pressed", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
-	gdl_theme.set_color("icon_disabled_color", "Button_CategoryLoad", FONT_LIGHT  if gdl_theme.get_stylebox("disabled", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# for color_type in special_cases:
+	# 	for entry in special_cases[color_type]:
+	# 		var color_name: String = entry[0]
+	# 		var stylebox_type: String = entry[1]
+	# 		var stylebox_name: String = entry[2]
+	# 		var stylebox := gdl_theme.get_stylebox(stylebox_name, stylebox_type)
+	# 		var color: Color = FONT_LIGHT if stylebox.bg_color.get_luminance() < 0.5 else FONT_DARK
+	# 		gdl_theme.set_color(color_name, color_type, color)
+		
+
+	
+	# gdl_theme.set_color("collapsed_font_color", 			"FoldableContainer", 		FONT_LIGHT if gdl_theme.get_stylebox("title_collapsed_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("hover_font_color", 					"FoldableContainer", 		FONT_LIGHT if gdl_theme.get_stylebox("title_collapsed_hover_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("icon_hover_color", 					"Button_CategoryLoad", 	FONT_LIGHT if gdl_theme.get_stylebox("hover", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("icon_pressed_color", 				"Button_CategoryLoad", 	FONT_LIGHT if gdl_theme.get_stylebox("pressed", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("icon_hover_pressed_color", 	"Button_CategoryLoad", 	FONT_LIGHT if gdl_theme.get_stylebox("hover_pressed", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("icon_disabled_color", 				"Button_CategoryLoad", 	FONT_LIGHT if gdl_theme.get_stylebox("disabled", "Button_CategoryLoad").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("font_hover_color", 					"CheckButton", 					FONT_LIGHT if gdl_theme.get_stylebox("title_collapsed_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("font_pressed_color", 				"CheckButton", 					FONT_LIGHT if gdl_theme.get_stylebox("title_collapsed_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("font_hover_pressed_color", 	"CheckButton", 					FONT_LIGHT if gdl_theme.get_stylebox("title_collapsed_panel", "FoldableContainer").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("down_icon_modulate", 				"SpinBox", 							FONT_LIGHT if gdl_theme.get_stylebox("down_background", "Spinbox").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("down_hover_icon_modulate", 	"SpinBox", 							FONT_LIGHT if gdl_theme.get_stylebox("down_background", "Spinbox").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("down_pressed_icon_modulate", "SpinBox", 							FONT_LIGHT if gdl_theme.get_stylebox("down_background", "Spinbox").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("up_icon_modulate", 					"SpinBox", 							FONT_LIGHT if gdl_theme.get_stylebox("up_background", "Spinbox").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("up_hover_icon_modulate", 		"SpinBox", 							FONT_LIGHT if gdl_theme.get_stylebox("up_background", "Spinbox").bg_color.get_luminance() < 0.5 else FONT_DARK)
+	# gdl_theme.set_color("up_pressed_icon_modulate", 	"SpinBox", 							FONT_LIGHT if gdl_theme.get_stylebox("up_background", "Spinbox").bg_color.get_luminance() < 0.5 else FONT_DARK)
+
+
+	var special_cases: Dictionary = {
+		"FoldableContainer": [
+				["collapsed_font_color", "title_collapsed_panel"],
+				["hover_font_color", "title_collapsed_hover_panel"]
+		],
+		"Button_CategoryLoad": [
+				["icon_hover_color", "hover"],
+				["icon_pressed_color", "pressed"],
+				["icon_hover_pressed_color", "hover_pressed"],
+				["icon_disabled_color", "disabled"]
+		],
+		"SpinBox": [
+				["down_icon_modulate", "down_background"],
+				["down_hover_icon_modulate", "down_background"],
+				["down_pressed_icon_modulate", "down_background"],
+				["up_icon_modulate", "up_background"],
+				["up_hover_icon_modulate", "down_background"],
+				["up_pressed_icon_modulate", "down_background"]
+		]
+	}
+
+	for ctrl_type in special_cases:
+		for entry in special_cases[ctrl_type]:
+			var color_name: String = entry[0]
+			var stylebox_name: String = entry[1]
+			var stylebox := gdl_theme.get_stylebox(stylebox_name, ctrl_type)
+			var color: Color = FONT_LIGHT if stylebox.bg_color.get_luminance() < 0.5 else FONT_DARK
+			gdl_theme.set_color(color_name, ctrl_type, color)
+
+			if color_name.contains("icon"):
+				if color_name.contains("hover"):
+					var _col = Color.WHITE if stylebox.bg_color.get_luminance() < 0.5 else Color.BLACK.lightened(0.25)
+					gdl_theme.set_color(color_name, ctrl_type, _col)
+					prints(ctrl_type, color_name, "    _col for hover:", _col)
+				
+				if color_name.contains("pressed"):
+					var _col = Color.WHITE.darkened(0.25) if stylebox.bg_color.get_luminance() < 0.5 else Color.BLACK.darkened(0.05)
+					gdl_theme.set_color(color_name, ctrl_type, _col)
+					prints(ctrl_type, color_name, "    _col for hover:", _col)
 		
 
 
@@ -551,6 +637,15 @@ func _apply_theme_colors() -> void:
 						"panel": 												sb.bg_color = tags["base_col-2"]
 						"separator": 										sb.color 		= tags["base_col+2"]
 				
+				"SpinBox":
+					match stylebox_name:
+						"down_background":							sb.bg_color = tags["base_col-1"]
+						"down_background_hover":				sb.bg_color = tags["base_col-1"]
+						"down_background_pressed":			sb.bg_color = tags["base_col-1"]
+						"up_background":								sb.bg_color = tags["base_col-1"]
+						"up_background_hover":					sb.bg_color = tags["base_col-1"]
+						"up_background_pressed":				sb.bg_color = tags["base_col-1"]
+
 				"TabContainer":
 					match stylebox_name:
 						"panel": 												sb.bg_color = tags["base_col-1"]

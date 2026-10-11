@@ -339,8 +339,6 @@ func _on_button_pressed(node: Button) -> void:
 
 		log_header_apply_btn:
 			data.header_format = header_line.text
-			print("ApplyButton: Set data.header_format to - ", header_line.text)
-			# log_header_apply_btn.disabled = true
 			header_line.release_focus()
 			header_line_btn_cont.hide()
 			request_save.emit(false, "dock_settings.gd - log_header_apply_btn")

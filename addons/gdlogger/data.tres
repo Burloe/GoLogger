@@ -30,5 +30,4 @@ category_path = "user://gdlogger/npc/"
 script = ExtResource("2_ru745")
 categories = Array[ExtResource("1_u03vm")]([SubResource("Resource_u03vm"), SubResource("Resource_ru745"), SubResource("Resource_rvoc7"), SubResource("Resource_aqfri"), SubResource("Resource_o1vy8")])
 default_category = "general"
-header_format = "reg{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
-entry_format = "[{hh}:{mi}:{ss}] {instance_id}: {entry}asd"
+file_cap = 50

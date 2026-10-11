@@ -299,8 +299,7 @@ func stop_session() -> void:
 
 		var _f = FileAccess.open(category.file_path, FileAccess.READ)
 		if !_f:
-			var _err = FileAccess.get_open_error()
-			log_error(8, [error_string(_err)])
+			log_error(8, [error_string(FileAccess.get_open_error())])
 			session_status = false
 			return
 		var _content := _f.get_as_text()
@@ -309,9 +308,8 @@ func stop_session() -> void:
 
 		var _fw = FileAccess.open(category.file_path, FileAccess.WRITE)
 		if !_fw:
-			var _err = FileAccess.get_open_error()
-			if _err != OK:
-				log_error(8, [error_string(_err)])
+			if FileAccess.get_open_error() != OK:
+				log_error(8, [error_string(FileAccess.get_open_error())])
 				return
 		var _s := str(_content, str(_timestamp))
 		_fw.store_line(_s)

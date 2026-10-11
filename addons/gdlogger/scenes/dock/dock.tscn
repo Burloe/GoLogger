@@ -5,7 +5,6 @@
 [ext_resource type="Theme" uid="uid://gjcp57h03j4p" path="res://addons/gdlogger/resources/theme/gdl_theme.tres" id="4_o07th"]
 [ext_resource type="Script" uid="uid://bxe2uhpjpqub" path="res://addons/gdlogger/scripts/dock/dock.gd" id="6_0swix"]
 [ext_resource type="Script" uid="uid://bg42rstww6k77" path="res://addons/gdlogger/scripts/dock/dock_logs.gd" id="10_kapcw"]
-[ext_resource type="StyleBox" uid="uid://d0ctcgxtji43k" path="res://addons/gdlogger/resources/theme/round(4444)_exp(8888)_cmarg(8888)_bgClr(base-1).tres" id="15_lnu3o"]
 [ext_resource type="Script" uid="uid://dkctt8pbi4h6m" path="res://addons/gdlogger/scripts/dock/dock_settings.gd" id="19_luwxg"]
 [ext_resource type="Texture2D" uid="uid://c74n2f1j4wew5" path="res://addons/gdlogger/resources/icons/GitHub_Invertocat_White.svg" id="21_8r8ny"]
 [ext_resource type="StyleBox" uid="uid://b5xnafw5yk1tg" path="res://addons/gdlogger/resources/theme/round(4444)_exp(8888)_cmarg(8888)_bgClr(base-2).tres" id="23_g08q5"]
@@ -199,7 +198,7 @@ default_slot = 8
 available_layouts = 7
 script = ExtResource("6_0swix")
 data = ExtResource("3_d5ffo")
-metadata/_edit_vertical_guides_ = [64.0, 16.0, 960.0, 8.0, 56.0, 0.0, 48.0, 72.0]
+metadata/_edit_vertical_guides_ = [960.0, 64.0, 384.0, 408.0]
 metadata/_edit_horizontal_guides_ = [144.0, 152.0, 56.0, 48.0, 128.0, 136.0, 40.0]
 
 [node name="PollingTimer" type="Timer" parent="." unique_id=1836800660]
@@ -225,7 +224,7 @@ theme_override_constants/side_margin = 16
 theme_override_constants/tab_separation = 10
 theme_override_constants/icon_separation = 8
 theme_override_constants/icon_max_width = 23
-current_tab = 1
+current_tab = 2
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("1_lnu3o")
@@ -243,6 +242,7 @@ metadata/_tab_name = " "
 
 [node name="LogsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1085194574]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -383,7 +383,6 @@ size_flags_vertical = 3
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 script = ExtResource("19_luwxg")
@@ -400,6 +399,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_o07th")
+theme_override_constants/separation = 8
 
 [node name="SidebarPanel" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=1744305237]
 custom_minimum_size = Vector2(48, 0)
@@ -442,7 +442,7 @@ icon_alignment = 1
 
 [node name="LSettingsPanel" type="ScrollContainer" parent="DockTabContainer/SettingsTab/HBoxContainer" unique_id=2008032766]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(394, 0)
+custom_minimum_size = Vector2(336, 0)
 layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_type_variation = &"ScrollContainer_NoCMargins"
@@ -458,21 +458,24 @@ theme = ExtResource("4_o07th")
 
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 40)
+custom_maximum_size = Vector2(320, -1)
 layout_mode = 2
 theme = ExtResource("4_o07th")
-folded = true
 title = "General"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
-visible = false
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 1)
+offset_transform_visual_only = false
 theme = ExtResource("4_o07th")
 
 [node name="AutostartCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1302278265]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(312, 32)
 layout_mode = 2
 theme = ExtResource("4_o07th")
 button_pressed = true
@@ -481,7 +484,7 @@ flat = true
 
 [node name="UTCCheckButton" type="CheckButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=660967489]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(312, 32)
 layout_mode = 2
 tooltip_text = "Use UTC(Coordinated Universal Time) 
 instead of system/local time for date and timestamps"
@@ -491,7 +494,7 @@ text = "UTC time"
 
 [node name="FileCountHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=781434512]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(312, 32)
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
@@ -509,12 +512,12 @@ vertical_alignment = 1
 
 [node name="FileCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/FileCountHBox" unique_id=753276573]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(88, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
-0l disables this feature"
+Zero value disables this feature"
 theme = ExtResource("4_o07th")
 max_value = 50.0
 value = 10.0
@@ -524,7 +527,7 @@ custom_arrow_step = 1.0
 
 [node name="LimitMethodHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1087907753]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(312, 32)
 layout_mode = 2
 tooltip_text = "Method used to limit file size. 
 Use the selected Actions below to determine what happens once the method condition is fullfilled."
@@ -542,7 +545,7 @@ vertical_alignment = 1
 
 [node name="LimitMethodOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(155, 32)
+custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -552,11 +555,12 @@ theme = ExtResource("4_o07th")
 toggle_mode = false
 action_mode = 1
 selected = 0
+fit_to_longest_item = false
 allow_reselect = true
 item_count = 5
 popup/item_0/text = "Entry Count"
 popup/item_0/id = 0
-popup/item_1/text = "Session Timer    "
+popup/item_1/text = "Timer"
 popup/item_1/id = 1
 popup/item_2/text = "Both"
 popup/item_2/id = 2
@@ -568,11 +572,12 @@ popup/item_4/id = 3
 
 [node name="EntryCountActionHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=320960729]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(312, 32)
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
 Overwrite Entries removes the oldest entry as new ones are logged.
 "
+theme_override_constants/separation = 8
 alignment = 2
 
 [node name="EntryActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
@@ -586,37 +591,34 @@ vertical_alignment = 1
 
 [node name="EntryCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1695558902]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 32)
+custom_minimum_size = Vector2(88, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "Number of entries until the entry count action is triggered."
+tooltip_text = "Number of entries until the Entry Count action is triggered."
 theme = ExtResource("4_o07th")
 min_value = 10.0
 max_value = 5000.0
 value = 1000.0
 rounded = true
 allow_greater = true
-alignment = 2
 update_on_text_changed = true
-suffix = "cap"
-custom_arrow_step = 10.0
+custom_arrow_step = 100.0
 
 [node name="EntryActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(110, 32)
+custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "What action is taken when the Limit condition is met.
+tooltip_text = "Action taken when Limit condition is met.
 
-Overwrite - Overwrites the oldest entry
-Restart - Restarts the logging session
-Stop - Stops the logging session"
+Overwrite - Overwrites the oldest entry."
 theme = ExtResource("4_o07th")
 toggle_mode = false
 action_mode = 1
 selected = 0
+fit_to_longest_item = false
 allow_reselect = true
 item_count = 3
 popup/item_0/text = "Overwrite"
@@ -632,6 +634,7 @@ visible = false
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
+theme_override_constants/separation = 8
 alignment = 2
 
 [node name="SessionTimerActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
@@ -645,7 +648,7 @@ vertical_alignment = 1
 
 [node name="SessionDurationSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=956442988]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 32)
+custom_minimum_size = Vector2(88, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -655,7 +658,6 @@ max_value = 10000.0
 value = 1200.0
 rounded = true
 allow_greater = true
-alignment = 2
 update_on_text_changed = true
 suffix = "s"
 custom_arrow_step = 1.0
@@ -663,23 +665,17 @@ select_all_on_focus = true
 
 [node name="SessionTimerActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(110, 32)
+custom_minimum_size = Vector2(128, 32)
+custom_maximum_size = Vector2(-1, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-tooltip_text = "What action is taken when the Limit condition is met.
-
-Restart - Restarts the logging session
-Stop - Stops the logging session"
+tooltip_text = "Action taken when Limit condition is met."
 theme = ExtResource("4_o07th")
-theme_override_styles/normal = ExtResource("15_lnu3o")
-theme_override_styles/pressed = ExtResource("23_g08q5")
-theme_override_styles/hover = ExtResource("23_g08q5")
-theme_override_styles/hover_pressed = ExtResource("23_g08q5")
-theme_override_styles/focus = ExtResource("23_g08q5")
 toggle_mode = false
 action_mode = 1
 selected = 0
+fit_to_longest_item = false
 allow_reselect = true
 item_count = 2
 popup/item_0/text = "Restart    "
@@ -689,6 +685,8 @@ popup/item_1/id = 1
 
 [node name="IDFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 40)
+custom_maximum_size = Vector2(320, -1)
 layout_mode = 2
 size_flags_vertical = 0
 theme = ExtResource("4_o07th")
@@ -852,6 +850,7 @@ theme_override_constants/separation = 15
 
 [node name="BaseDirHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=669120101]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 tooltip_text = "The directory where logs are stored in. 
 Recommended to use either a directory within \"user://\" or \"res://\"
@@ -861,7 +860,7 @@ theme_override_constants/separation = 8
 
 [node name="BaseDirLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=946152830]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(155, 0)
+custom_minimum_size = Vector2(155, 32)
 layout_mode = 2
 size_flags_vertical = 1
 theme = ExtResource("4_o07th")
@@ -871,7 +870,7 @@ vertical_alignment = 1
 
 [node name="BaseDirLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=1724121335]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(450, 0)
+custom_minimum_size = Vector2(450, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The directory where logs are stored in. 
@@ -880,7 +879,7 @@ Recommended to use either a directory within \"user://\" or \"res://\"
 Default path is \"user://GDLogger/\". "
 theme = ExtResource("4_o07th")
 theme_type_variation = &"LineEdit_format_fields"
-text = "C:\\Users\\TomNi\\Videos\\test/"
+text = "user://gdlogger/"
 placeholder_text = "user://gdlogger/"
 expand_to_text_length = true
 emoji_menu_enabled = false
@@ -888,12 +887,13 @@ emoji_menu_enabled = false
 [node name="BaseDirLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox" unique_id=1809329385]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(66, 0)
+custom_minimum_size = Vector2(66, 32)
 layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_override_styles/panel = ExtResource("23_g08q5")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons" unique_id=1847850916]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -904,7 +904,7 @@ theme_override_constants/separation = 0
 
 [node name="BaseDirApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=1831127922]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(31, 32)
 layout_mode = 2
 tooltip_text = "Applies a new base directory"
 focus_mode = 0
@@ -922,12 +922,13 @@ icon = SubResource("DPITexture_lxkmp")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=193635431]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
 [node name="BaseDirRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDirHBox/BaseDirLineEditButtons/HBoxContainer" unique_id=1237133605]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(31, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Revert to last applied name"
@@ -949,6 +950,7 @@ icon_alignment = 1
 
 [node name="HeaderHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=2063796377]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 tooltip_text = "Any text and symbol formatting can be used. 
     {project_name} {version} [{category}] log session started [{yy}-{mm}-{dd} | {yy}:{mi}:{ss}]:  >  GDLogger v1.3.2 [game] log session started [2025-08-23 | 15:36:08]:
@@ -961,7 +963,7 @@ theme_override_constants/separation = 8
 
 [node name="HeaderLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox" unique_id=1789578101]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(155, 0)
+custom_minimum_size = Vector2(155, 32)
 layout_mode = 2
 size_flags_vertical = 1
 theme = ExtResource("4_o07th")
@@ -970,7 +972,7 @@ vertical_alignment = 1
 
 [node name="HeaderLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox" unique_id=683152660]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(450, 0)
+custom_minimum_size = Vector2(450, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Any text and symbol formatting can be used. 
@@ -983,19 +985,20 @@ Supported format tags:
     {hh}   {mi}   {ss} - hour, minute, second"
 theme = ExtResource("4_o07th")
 theme_type_variation = &"LineEdit_format_fields"
-text = "teqweqwest{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
+text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 emoji_menu_enabled = false
 
 [node name="HeaderLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox" unique_id=1877077072]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(66, 0)
+custom_minimum_size = Vector2(66, 32)
 layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_override_styles/panel = ExtResource("23_g08q5")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox/HeaderLineEditButtons" unique_id=1510289973]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1006,7 +1009,7 @@ theme_override_constants/separation = 0
 
 [node name="HeaderApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox/HeaderLineEditButtons/HBoxContainer" unique_id=1394228566]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(31, 32)
 layout_mode = 2
 tooltip_text = "Apply the new log header format"
 focus_mode = 0
@@ -1023,12 +1026,13 @@ icon = SubResource("DPITexture_lxkmp")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox/HeaderLineEditButtons/HBoxContainer" unique_id=1862157266]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
 [node name="HeaderRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/HeaderHBox/HeaderLineEditButtons/HBoxContainer" unique_id=1011354875]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(31, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Revert to '{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:'"
@@ -1050,6 +1054,7 @@ icon_alignment = 1
 
 [node name="EntryFormatHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer" unique_id=154378586]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Any text and symbol formatting can be used. Include the {instance_id} tag if running multiple instances.
@@ -1064,7 +1069,7 @@ theme_override_constants/separation = 8
 
 [node name="EntryFormatLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=77862385]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(155, 0)
+custom_minimum_size = Vector2(155, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 1
@@ -1074,7 +1079,7 @@ vertical_alignment = 1
 
 [node name="EntryFormatLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=454432147]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(450, 0)
+custom_minimum_size = Vector2(450, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Any text and symbol formatting can be used. Include the {instance_id} tag if running multiple instances.
@@ -1096,6 +1101,7 @@ emoji_menu_enabled = false
 [node name="EntryFormatWarning" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
 unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = -0.003
@@ -1111,6 +1117,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
 
 [node name="Label" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1412207838]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1125,11 +1132,12 @@ vertical_alignment = 1
 [node name="EntryFormatLineEditButtons" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox" unique_id=1167054414]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(66, 0)
+custom_minimum_size = Vector2(66, 32)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("23_g08q5")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons" unique_id=1190529420]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1140,7 +1148,7 @@ theme_override_constants/separation = 0
 
 [node name="EntryFormatApplyButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=1933647225]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(31, 32)
 layout_mode = 2
 tooltip_text = "Apply new entry format"
 focus_mode = 0
@@ -1160,12 +1168,13 @@ icon = SubResource("DPITexture_lxkmp")
 icon_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=749157682]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_fcs7p")
 
 [node name="EntryFormatRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormatHBox/EntryFormatLineEditButtons/HBoxContainer" unique_id=1707328286]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(31, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Revert to '[{hh}:{mi}:{ss}] {instance_id}: {entry}'"
