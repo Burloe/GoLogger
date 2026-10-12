@@ -219,6 +219,15 @@ Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
 Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
 }
 
+[sub_resource type="DPITexture" id="DPITexture_bfha8"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5f5f\" d=\"m1 1v8 2h2 1v2l2-1.5 2-1.5-2-1.5-2-1.5v2h-1v-8z\"/><path fill=\"#e0e0e0\" d=\"m7 1v2h8v-2zm2 4v2h6v-2zm0 4v2h6v-2zm-2 4v2h8v-2z\"/></svg>
+"
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
 [sub_resource type="DPITexture" id="DPITexture_s7hq0"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M2 2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-4a1 1 0 0 1-1-1V3a1 1 0 0 0-1-1z\"/></svg>
 "
@@ -358,6 +367,18 @@ Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
 [sub_resource type="DPITexture" id="DPITexture_hu7xr"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect width=\"14\" height=\"14\" x=\"1\" y=\"1\" fill=\"gray\" rx=\"2.333\"/></svg>
 "
+color_map = {
+Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
+Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
+Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
+}
+
+[sub_resource type="DPITexture" id="DPITexture_te6l8"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M3 1a1 1 0 0 0-1 1c0 1.5.967 2.625 1.873 3.66.76.87 1.416 1.643 1.875 2.34-.459.697-1.114 1.472-1.875 2.342C2.967 11.377 2 12.5 2 14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1c0-1.5-.967-2.623-1.873-3.658-.76-.87-1.416-1.645-1.875-2.342.459-.697 1.114-1.47 1.875-2.34C13.033 4.625 14 3.5 14 2a1 1 0 0 0-1-1zm8.412 2c-.238.44-.305.79-.789 1.342-.844.964-1.898 1.972-2.518 3.21A1 1 0 0 0 8 8a1 1 0 0 0-.106-.447c-.619-1.239-1.673-2.247-2.517-3.211-.484-.553-.551-.901-.79-1.342z\"/></svg>
+"
+fix_alpha_border = true
+premult_alpha = true
+base_scale = 2.0
 color_map = {
 Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
 Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
@@ -835,6 +856,7 @@ EditorIcons/icons/ArrowRight = SubResource("DPITexture_yathj")
 EditorIcons/icons/ArrowUp = SubResource("DPITexture_d4sur")
 EditorIcons/icons/Close = SubResource("DPITexture_ds2yy")
 EditorIcons/icons/Debug = SubResource("DPITexture_e5b3s")
+EditorIcons/icons/DebugStep = SubResource("DPITexture_bfha8")
 EditorIcons/icons/Folder = SubResource("DPITexture_s7hq0")
 EditorIcons/icons/GDScript = SubResource("DPITexture_ytbm3")
 EditorIcons/icons/GuiChecked = SubResource("DPITexture_5uwds")
@@ -852,6 +874,7 @@ EditorIcons/icons/Reload = SubResource("DPITexture_fkxka")
 EditorIcons/icons/Remove = SubResource("DPITexture_abu1v")
 EditorIcons/icons/TileChecked = SubResource("DPITexture_m0oip")
 EditorIcons/icons/TileUnchecked = SubResource("DPITexture_hu7xr")
+EditorIcons/icons/Timer = SubResource("DPITexture_te6l8")
 FlowContainer/constants/h_separation = 8
 FlowContainer/constants/v_separation = 8
 FoldableContainer/colors/collapsed_font_color = Color(0.85, 0.85, 0.85, 1)
