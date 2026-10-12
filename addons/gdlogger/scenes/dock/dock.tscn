@@ -199,7 +199,7 @@ available_layouts = 7
 script = ExtResource("6_0swix")
 data = ExtResource("3_d5ffo")
 metadata/_edit_vertical_guides_ = [960.0, 64.0, 384.0, 408.0]
-metadata/_edit_horizontal_guides_ = [144.0, 152.0, 56.0, 48.0, 128.0, 136.0, 40.0]
+metadata/_edit_horizontal_guides_ = [56.0, 48.0, 40.0]
 
 [node name="PollingTimer" type="Timer" parent="." unique_id=1836800660]
 unique_name_in_owner = true
@@ -749,6 +749,7 @@ toggle_mode = false
 action_mode = 1
 alignment = 2
 selected = 0
+fit_to_longest_item = false
 item_count = 11
 popup/item_0/text = "Top - Left"
 popup/item_0/id = 0
@@ -831,6 +832,7 @@ theme = ExtResource("4_o07th")
 
 [node name="DirectoryFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer" unique_id=934129937]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme = ExtResource("4_o07th")
 folded = true
@@ -1680,8 +1682,10 @@ max_size = Vector2i(296, 164)
 theme = ExtResource("4_o07th")
 
 [node name="MarginContainer" type="MarginContainer" parent="DockTabContainer/LogsSettingsPanelPopup" unique_id=1292106550]
-offset_right = 296.0
-offset_bottom = 164.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 292.0
+offset_bottom = 168.0
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
