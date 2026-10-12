@@ -31,3 +31,4 @@ script = ExtResource("2_ru745")
 categories = Array[ExtResource("1_u03vm")]([SubResource("Resource_u03vm"), SubResource("Resource_ru745"), SubResource("Resource_rvoc7"), SubResource("Resource_aqfri"), SubResource("Resource_o1vy8")])
 default_category = "general"
 file_cap = 50
+limit_method = 2

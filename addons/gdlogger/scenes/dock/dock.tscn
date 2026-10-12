@@ -512,15 +512,15 @@ vertical_alignment = 1
 
 [node name="FileCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/FileCountHBox" unique_id=753276573]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
 Zero value disables this feature"
 theme = ExtResource("4_o07th")
-max_value = 50.0
 value = 10.0
+rounded = true
+allow_greater = true
 alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
@@ -630,7 +630,6 @@ popup/item_2/id = 1
 
 [node name="SessionTimerActionHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=53869427]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Session Timer. "
