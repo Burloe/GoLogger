@@ -29,21 +29,17 @@ signal request_theme_colors
 @onready var colorcode_btn: CheckButton = %LGColorCodeCheckButton
 @onready var auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
 
-@onready var limit_method_btn: OptionButton = %LimitMethodOptButton
-@onready var limit_method_lbl: Label = %LimitMethodLabel
-@onready var limit_method_container: HBoxContainer = %LimitMethodHBox
+@onready var limits_tabbar: TabBar = %LimitsTabBar
 
+@onready var entry_count_container: PanelContainer = %EntryCount
 @onready var entry_count_action_btn: OptionButton = %EntryActionOptButton
-@onready var entry_count_action_lbl: Label = %EntryActionLabel
-@onready var entry_count_action_container: HBoxContainer = %EntryCountActionHBox
-var entry_count_spinbox_line: LineEdit
 @onready var entry_count_spinbox: SpinBox = %EntryCountSpinBox
+var entry_count_spinbox_line: LineEdit
 
+@onready var session_timer_container: PanelContainer= %SessionTimer
 @onready var session_timer_action_btn: OptionButton = %SessionTimerActionOptButton
-@onready var session_timer_action_lbl: Label = %SessionTimerActionLabel
-@onready var session_timer_action_container: HBoxContainer = %SessionTimerActionHBox
-var session_duration_spinbox_line: LineEdit
 @onready var session_duration_spinbox: SpinBox = %SessionDurationSpinBox
+var session_duration_spinbox_line: LineEdit
 
 var file_count_spinbox_line: LineEdit
 @onready var file_count_spinbox: SpinBox = %FileCountSpinBox
@@ -121,6 +117,10 @@ func _ready() -> void:
 	_assign_spinbox_line_edits()
 	_connect_spinbox_line_submitted()
 
+	limits_tabbar.tab_changed.connect(_handle_limit_method_visibility)
+	session_duration_spinbox.get_line_edit().theme_type_variation = "LineEdit_LimitsSpinbox"
+	entry_count_spinbox.get_line_edit().theme_type_variation = "LineEdit_LimitsSpinbox"
+
 	btn_array = [
 		base_dir_line,
 		base_dir_apply_btn,
@@ -137,7 +137,6 @@ func _ready() -> void:
 		id_toggle_btn,
 		id_align_opt_btn,
 		id_startup_btn,
-		limit_method_btn,
 		entry_count_action_btn,
 		session_timer_action_btn,
 		file_count_spinbox,
@@ -151,8 +150,7 @@ func _ready() -> void:
 
 	for node in btn_array:
 		_connect_control_signal(node)
-	# log_header_apply_btn.pressed.connect(_on_button_pressed.bind(log_header_apply_btn))
-	print(log_header_apply_btn.pressed.get_connections())
+
 
 
 
@@ -160,7 +158,7 @@ func _ready() -> void:
 func initialize_tab() -> void:
 	entry_format_warning.visible = !_is_entry_format_valid(entry_format_line.text)
 	data.apply_values()
-	_handle_limit_method_visibility()
+	_handle_limit_method_visibility(data.limit_method)
 	
 
 
@@ -282,15 +280,13 @@ func _apply_new_base_directory() -> bool:
 
 
 
-func _handle_limit_method_visibility() -> void:
-	var show_entry_limits := data.limit_method == LimitMethod.ENTRY_COUNT or data.limit_method == LimitMethod.BOTH
-	var show_time_limits := data.limit_method == LimitMethod.SESSION_TIMER or data.limit_method == LimitMethod.BOTH
+func _handle_limit_method_visibility(to: int) -> void:
+	data.limit_method = to
+	if limits_tabbar.get_current_tab() != to: limits_tabbar.set_current_tab(to)
+	entry_count_container.visible = to in [LimitMethod.ENTRY_COUNT, LimitMethod.BOTH]
+	session_timer_container.visible = to in [LimitMethod.SESSION_TIMER, LimitMethod.BOTH]
+	print(to)
 
-	entry_count_action_container.visible = show_entry_limits 
-	session_timer_action_container.visible = show_time_limits 
-
-	entry_count_action_lbl.text = "Entry Action" if data.limit_method == LimitMethod.BOTH else "Action"
-	session_timer_action_lbl.text = "Timer Action" if data.limit_method == LimitMethod.BOTH else "Action"
 
 
 
@@ -396,25 +392,6 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 
 func _on_optbtn_item_selected(index: int, node: OptionButton) -> void:
 	match node:
-		limit_method_btn:
-			data.limit_method = index
-			entry_count_action_container.hide() 
-			session_timer_action_container.hide() 
-			entry_count_action_lbl.text = "Action"
-			session_timer_action_lbl.text = "Action"
-			
-			match index:
-				LimitMethod.ENTRY_COUNT:
-					entry_count_action_container.show() 
-				LimitMethod.SESSION_TIMER: 
-					session_timer_action_container.show() 
-				LimitMethod.BOTH:
-					entry_count_action_container.show()
-					session_timer_action_container.show() 
-					entry_count_action_lbl.text = "Entry Action"
-					session_timer_action_lbl.text = "Timer Action"
-			data.limit_method = index
-
 		entry_count_action_btn:
 			data.entry_count_action = index
 

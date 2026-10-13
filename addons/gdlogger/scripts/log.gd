@@ -142,7 +142,7 @@ func log_error(error: int = 0, err_data: Array[String] = []) -> void:
 	match error:
 		0: return
 		1: # start_session() errors
-			push_warning("GDLogger: Failed to create log file for session(", err_data[1], "). DirAccess Error - ", err_data[1])
+			push_warning("GDLogger: Failed to create log file for session(", err_data[0] if err_data.size() > 1 else "Unknown session", "). DirAccess Error - ", err_data[1] if err_data.size() > 1 else "Unknown error")
 		2:
 			push_warning("GDLogger: Failed to create log file for session ", err_data, "")
 		3: # msg() errors
@@ -152,9 +152,9 @@ func log_error(error: int = 0, err_data: Array[String] = []) -> void:
 		5:
 			printerr("GDLogger: Category ", err_data, " not found.")
 		6:
-			push_warning("GDLogger: Log entry failed. FileAccess Error - ", err_data)
+			push_warning("GDLogger: Log entry failed. FileAccess Error - ", err_data if err_data.size() > 0 else "Unknown error")
 		7: # stop_session() errors
-			printerr("GDLogger: Failed to stop session properly. No valid file path found for category '", err_data, "'.")
+			printerr("GDLogger: Failed to stop session properly. No valid file path found for category '", err_data if err_data.size() > 0 else "Unknown category", "'.")
 		8:
 			push_warning("GDLogger: Failed to stop session properly. FileAccess Error - ", err_data)
 

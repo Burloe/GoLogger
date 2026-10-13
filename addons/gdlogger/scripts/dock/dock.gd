@@ -60,17 +60,16 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var sett_autostart_btn: CheckButton = %AutostartCheckButton
 @onready var sett_utc_btn: CheckButton = %UTCCheckButton
 
-@onready var sett_limit_method_btn: OptionButton = %LimitMethodOptButton
-@onready var sett_limit_method_container: HBoxContainer = %LimitMethodHBox
+@onready var sett_limit_method_tabbar: TabBar = %LimitsTabBar
 
+@onready var sett_entry_count: PanelContainer = %EntryCount
 @onready var sett_entry_count_action_btn: OptionButton = %EntryActionOptButton
 @onready var sett_entry_count_action_lbl: Label = %EntryActionLabel
-@onready var sett_entry_count_action_container: HBoxContainer = %EntryCountActionHBox
 @onready var sett_entry_count_spinbox: SpinBox = %EntryCountSpinBox
 
+@onready var sett_session_timer: PanelContainer = %SessionTimer
 @onready var sett_session_timer_action_btn: OptionButton = %SessionTimerActionOptButton
 @onready var sett_session_timer_action_lbl: Label = %SessionTimerActionLabel
-@onready var sett_session_timer_action_container: HBoxContainer = %SessionTimerActionHBox
 @onready var sett_session_duration_spinbox: SpinBox = %SessionDurationSpinBox
 
 @onready var sett_file_count_spinbox: SpinBox = %FileCountSpinBox
@@ -256,11 +255,11 @@ func _assign_settings_controls() -> void:
 	data.id_toggle_ctrl = sett_id_toggle_btn
 	data.id_startup_ctrl = sett_id_startup_btn
 	data.id_align_ctrl = sett_id_align_opt_btn
-	data.limit_method_ctrl = sett_limit_method_btn
-	data.entry_count_container = sett_entry_count_action_container
+	data.limit_method_ctrl = sett_limit_method_tabbar
+	data.entry_count_container = sett_entry_count
 	data.entry_count_action_ctrl = sett_entry_count_action_btn
 	data.entry_count_action_lbl = sett_entry_count_action_lbl
-	data.session_timer_container = sett_session_timer_action_container
+	data.session_timer_container = sett_session_timer
 	data.session_timer_action_ctrl = sett_session_timer_action_btn
 	data.session_timer_action_lbl = sett_session_timer_action_lbl
 	data.file_cap_ctrl = sett_file_count_spinbox
@@ -584,6 +583,10 @@ func _apply_theme_colors() -> void:
 						"panel": 												sb.bg_color = tags["base_col-2"]
 						"separator": 										sb.color 		= tags["base_col+2"]
 				
+				"PanelContainer_TabBar":
+					match stylebox_name:
+						"panel": 												sb.bg_color = tags["base_col-2"]
+
 				"SpinBox":
 					match stylebox_name:
 						"down_background":							sb.bg_color = tags["base_col-1"]
@@ -593,6 +596,11 @@ func _apply_theme_colors() -> void:
 						"up_background_hover":					sb.bg_color = tags["base_col-1"]
 						"up_background_pressed":				sb.bg_color = tags["base_col-1"]
 
+				"TabBar":
+					match stylebox_name:
+						"tab_hovered": 									sb.bg_color = tags["base_col-1"]
+						"tab_selected": 								sb.bg_color = tags["base_col"]
+				
 				"TabContainer":
 					match stylebox_name:
 						"panel": 												sb.bg_color = tags["base_col-1"]

@@ -518,103 +518,79 @@ size_flags_vertical = 4
 tooltip_text = "Limits the number of files in any log category folder.
 Zero value disables this feature"
 theme = ExtResource("4_o07th")
-value = 10.0
+value = 50.0
 rounded = true
 allow_greater = true
 alignment = 2
 update_on_text_changed = true
 custom_arrow_step = 1.0
 
-[node name="LimitMethodHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1087907753]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(312, 32)
+[node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=261183717]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
-tooltip_text = "Method used to limit file size. 
-Use the selected Actions below to determine what happens once the method condition is fullfilled."
-theme_override_constants/separation = 75
-alignment = 2
 
-[node name="LimitMethodLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=816554777]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1874234068]
 layout_mode = 2
-size_flags_horizontal = 2
+vertical = true
+
+[node name="Label" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/BoxContainer" unique_id=1239418831]
+layout_mode = 2
+text = "Limit settings"
+horizontal_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/BoxContainer" unique_id=1470170647]
+layout_mode = 2
 theme = ExtResource("4_o07th")
-text = "Method"
-vertical_alignment = 1
+theme_type_variation = &"PanelContainer_TabBar"
 
-[node name="LimitMethodOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/LimitMethodHBox" unique_id=1033250819]
+[node name="LimitsTabBar" type="TabBar" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/BoxContainer/PanelContainer" unique_id=471878700]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Method used to limit file size. 
-Use the selected Actions below to determine what happens once the method condition is fullfilled."
 theme = ExtResource("4_o07th")
-toggle_mode = false
-action_mode = 1
-selected = 0
-fit_to_longest_item = false
-allow_reselect = true
-item_count = 5
-popup/item_0/text = "Entry Count"
-popup/item_0/id = 0
-popup/item_1/text = "Timer"
-popup/item_1/id = 1
-popup/item_2/text = "Both"
-popup/item_2/id = 2
-popup/item_3/id = 4
-popup/item_3/disabled = true
-popup/item_3/separator = true
-popup/item_4/text = "None"
-popup/item_4/id = 3
+current_tab = 0
+tab_alignment = 1
+tab_count = 3
+tab_0/title = "Entry Count"
+tab_1/title = "Timer"
+tab_2/title = "Both"
 
-[node name="EntryCountActionHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=320960729]
+[node name="EntryCount" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=171142697]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(312, 32)
+layout_mode = 2
+theme = ExtResource("4_o07th")
+theme_type_variation = &"PanelContainer_TabBar"
+
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCount" unique_id=949048878]
+unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Action taken when Limit Method is set to Entry Count.
 Overwrite Entries removes the oldest entry as new ones are logged.
 "
 theme_override_constants/separation = 8
-alignment = 2
 
-[node name="EntryActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=393810729]
+[node name="EntryActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCount/BoxContainer" unique_id=393810729]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
 theme = ExtResource("4_o07th")
-text = "Action"
+text = "Count"
 vertical_alignment = 1
 
-[node name="EntryCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1695558902]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 32)
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCount/BoxContainer" unique_id=717988133]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Number of entries until the Entry Count action is triggered."
-theme = ExtResource("4_o07th")
-min_value = 10.0
-max_value = 5000.0
-value = 1000.0
-rounded = true
-allow_greater = true
-update_on_text_changed = true
-custom_arrow_step = 100.0
 
-[node name="EntryActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCountActionHBox" unique_id=1125196045]
+[node name="EntryActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCount/BoxContainer/BoxContainer" unique_id=1125196045]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(128, 32)
+custom_minimum_size = Vector2(104, 0)
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "Action taken when Limit condition is met.
 
 Overwrite - Overwrites the oldest entry."
 theme = ExtResource("4_o07th")
+theme_type_variation = &"OptionButton_Limits"
 toggle_mode = false
 action_mode = 1
 selected = 0
@@ -628,7 +604,29 @@ popup/item_1/id = 1
 popup/item_2/text = "Stop"
 popup/item_2/id = 1
 
-[node name="SessionTimerActionHBox" type="HBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=53869427]
+[node name="EntryCountSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/EntryCount/BoxContainer" unique_id=1695558902]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Number of entries until the Entry Count action is triggered."
+theme = ExtResource("4_o07th")
+min_value = 10.0
+max_value = 5000.0
+value = 1000.0
+rounded = true
+allow_greater = true
+update_on_text_changed = true
+custom_arrow_step = 100.0
+
+[node name="SessionTimer" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer" unique_id=1003170145]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("4_o07th")
+theme_type_variation = &"PanelContainer_TabBar"
+
+[node name="SessionTimerActionBox" type="BoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimer" unique_id=1492136270]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -636,16 +634,37 @@ tooltip_text = "Action taken when Limit Method is set to Session Timer. "
 theme_override_constants/separation = 8
 alignment = 2
 
-[node name="SessionTimerActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=1517872769]
+[node name="SessionTimerActionLabel" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimer/SessionTimerActionBox" unique_id=1517872769]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 2
 theme = ExtResource("4_o07th")
-text = "Action"
+text = "Timer"
 vertical_alignment = 1
 
-[node name="SessionDurationSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=956442988]
+[node name="SessionTimerActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimer/SessionTimerActionBox" unique_id=759435842]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(104, 0)
+custom_maximum_size = Vector2(-1, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Action taken when Limit condition is met."
+theme = ExtResource("4_o07th")
+theme_type_variation = &"OptionButton_Limits"
+toggle_mode = false
+action_mode = 1
+selected = 0
+fit_to_longest_item = false
+allow_reselect = true
+item_count = 2
+popup/item_0/text = "Restart    "
+popup/item_0/id = 0
+popup/item_1/text = "Stop"
+popup/item_1/id = 1
+
+[node name="SessionDurationSpinBox" type="SpinBox" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimer/SessionTimerActionBox" unique_id=956442988]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(88, 32)
 layout_mode = 2
@@ -661,26 +680,6 @@ update_on_text_changed = true
 suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
-
-[node name="SessionTimerActionOptButton" type="OptionButton" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/SessionTimerActionHBox" unique_id=759435842]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(128, 32)
-custom_maximum_size = Vector2(-1, 32)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-tooltip_text = "Action taken when Limit condition is met."
-theme = ExtResource("4_o07th")
-toggle_mode = false
-action_mode = 1
-selected = 0
-fit_to_longest_item = false
-allow_reselect = true
-item_count = 2
-popup/item_0/text = "Restart    "
-popup/item_0/id = 0
-popup/item_1/text = "Stop"
-popup/item_1/id = 1
 
 [node name="IDFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true

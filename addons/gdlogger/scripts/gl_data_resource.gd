@@ -81,17 +81,6 @@ class_name GDLData extends Resource
 	set(value):
 		limit_method = value
 		update_list()
-		for i in [entry_count_container, session_timer_container, entry_count_action_lbl, session_timer_action_lbl]:
-			if i == null: return
-
-		var show_entry_limits := limit_method == 0 or limit_method == 2
-		var show_time_limits := limit_method == 1 or limit_method == 2
-
-		entry_count_container.visible = show_entry_limits 
-		session_timer_container.visible = show_time_limits 
-
-		entry_count_action_lbl.text = "Entry Action" if limit_method == 2 else "Action"
-		session_timer_action_lbl.text = "Timer Action" if limit_method == 2 else "Action"
 		emit_changed()
 @export_enum("Overwrite Entries", "Restart Session", "Stop Session") var entry_count_action: int = 0:
 	set(value):
@@ -146,11 +135,11 @@ var id_print_ctrl: CheckButton = null
 var id_toggle_ctrl: CheckButton = null
 var id_startup_ctrl: CheckButton = null
 var id_align_ctrl: OptionButton = null
-var limit_method_ctrl: OptionButton = null
-var entry_count_container: HBoxContainer = null
+var limit_method_ctrl: TabBar = null
+var entry_count_container: PanelContainer = null
 var entry_count_action_ctrl: OptionButton = null
 var entry_count_action_lbl: Label = null
-var session_timer_container: HBoxContainer = null
+var session_timer_container: PanelContainer = null
 var session_timer_action_ctrl: OptionButton = null
 var session_timer_action_lbl: Label = null
 var file_cap_ctrl: SpinBox = null
@@ -230,7 +219,7 @@ func reset_to_default() -> bool:
 	if list.is_empty(): 
 		return false
 
-	limit_method_ctrl.selected = list["limit_method"]["default"]
+	limit_method_ctrl.current_tab = list["limit_method"]["default"]
 
 	browser_sort = 					list["browser_sort"]["default"]
 	colorcode_dates = 			list["colorcode_dates"]["default"]
