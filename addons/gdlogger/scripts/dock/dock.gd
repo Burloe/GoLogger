@@ -46,6 +46,7 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var sett_reset_btn: Button = %ResetSettingsButton
 @onready var sett_base_dir_line: LineEdit = %BaseDirLineEdit
 @onready var sett_base_dir_apply_btn: Button = %BaseDirApplyButton
+@onready var sett_base_dir_revert_btn: Button = %BaseDirRevertButton
 @onready var sett_open_dir_btn: Button = %OpenDirButton
 
 @onready var sett_log_header_line: LineEdit = %HeaderLineEdit
@@ -466,8 +467,13 @@ func _apply_font_icon_colors(tags: Dictionary) -> void:
 				_font_for_bg(bg, _state_from_name(color_name), contrast))
 
 	# Special cases applied last
-	for c in ["icon_hover_color", "icon_pressed_color", "icon_disabled_color", "icon_hover_pressed_color"]:
-			gdl_theme.set_color(c, "CheckButton", tags["accent_col"])
+	# for c in ["icon_hover_color", "icon_pressed_color", "icon_disabled_color", "icon_hover_pressed_color"]:
+	# 	gdl_theme.set_color(c, "CheckButton", tags["accent_col"])
+
+	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
+		gdl_theme.set_color(c, "CheckButton", FONT_LIGHT if tags["base_col"].get_luminance() < 0.5 else FONT_DARK)
+	for c in [sett_entry_format_revert_btn, sett_log_header_revert_btn, sett_base_dir_revert_btn]:
+		gdl_theme.set_color("caret_color", "LineEdit_FormatFields", Color.WHITE if tags["base_col"].get_luminance() < 0.5 else Color.BLACK)
 
 	var special_cases: Dictionary = {
 		"FoldableContainer": [
@@ -546,6 +552,14 @@ func _apply_theme_colors() -> void:
 						"pressed":											sb.bg_color = tags["accent_col"]
 						"hover_pressed":								sb.bg_color = tags["accent_col"]
 						"disabled":											sb.bg_color = tags["accent_col"]
+				"Button_SortButton":
+					match stylebox_name:
+						"normal": 											sb.bg_color = tags["base_col-2"]
+						"hover":												sb.bg_color = tags["base_col-2"]
+						"pressed":											sb.bg_color = tags["base_col-2"]
+						"hover_pressed":								sb.bg_color = tags["base_col-2"]
+						"disabled":											sb.bg_color = tags["base_col-2"]
+				
 				"LogFile":
 					match stylebox_name:
 						"hover": 							
@@ -558,10 +572,14 @@ func _apply_theme_colors() -> void:
 							sb.bg_color = tags["base_col-1"]
 							sb.border_color = tags["accent_col-1"]
 						
-				"LineEdit":													sb.bg_color = tags["base_col-1"]
-				"LineEdit_FormatFields":						sb.bg_color = tags["base_col-1"]
-				"LineEdit_CategoryFieldValid":			sb.bg_color = tags["base_col-1"]
-				"LineEdit_CategoryFieldInvalid":		sb.bg_color = tags["base_col-1"]
+				"LineEdit":													
+					sb.bg_color = tags["base_col-1"]
+				"LineEdit_FormatFields":						
+					sb.bg_color = tags["base_col-1"]
+				"LineEdit_CategoryFieldValid":			
+					sb.bg_color = tags["base_col-1"]
+				"LineEdit_CategoryFieldInvalid":		
+					sb.bg_color = tags["base_col-1"]
 				
 				"HScrollBar", "VScrollBar":
 					match stylebox_name:

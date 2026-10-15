@@ -66,7 +66,7 @@ var open_log_with_os: bool = false:
 var cur_sort: int = 0: 
 	set(value):
 		cur_sort = value
-		var modes := ["New first", "Old first"]
+		var modes := ["New first ", "Old first "]
 		data.browser_sort = value
 		sort_mode_btn.text = modes[value]
 
@@ -615,7 +615,7 @@ func _on_log_settings_button_up() -> void:
 	log_settings_popup.size = Vector2.ZERO
 	print(log_settings_popup.size)
 	log_settings_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE
-	log_settings_popup.position = Vector2i(log_settings_btn.get_screen_position() + Vector2(48, -116))
+	log_settings_popup.position = Vector2i(log_settings_btn.get_screen_position() + Vector2(48, -156))
 
 	if log_settings_popup.visible:
 		log_settings_popup.popup()
