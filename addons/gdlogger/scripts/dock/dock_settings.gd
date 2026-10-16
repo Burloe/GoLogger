@@ -9,7 +9,7 @@ signal request_theme_colors
 @onready var base_dir_revert_btn: Button = %BaseDirRevertButton
 
 @onready var header_line: LineEdit = %HeaderLineEdit
-@onready var log_header_apply_btn: Button = %HeaderApplyButton
+@onready var header_apply_btn: Button = %HeaderApplyButton
 @onready var header_revert_btn: Button = %HeaderRevertButton
 
 @onready var entry_format_line: LineEdit = %EntryFormatLineEdit
@@ -38,8 +38,6 @@ var file_count_spinbox_line: LineEdit
 @onready var file_count_spinbox: SpinBox = %FileCountSpinBox
 @onready var file_count_lbl: Label = %FileCountLabel
 
-# @onready var plugin_version_sett_lbl: Label = %PluginVersionLabel
-
 @onready var id_fold_cont: FoldableContainer = %IDFoldableContainer
 @onready var id_align_lbl: Label = %IDAlignLabel
 @onready var id_align_opt_btn: OptionButton = %IDAlignOptButton
@@ -58,13 +56,6 @@ var inspector: EditorInspector
 @onready var dir_fold_cont: FoldableContainer = %DirectoryFoldableContainer
 
 @export var data: GDLData = null
-
-
-var plugin_version: String =  "1.4":
-	set(value):
-		plugin_version = value
-		# if plugin_version_sett_lbl != null:
-			# plugin_version_sett_lbl.text = str("GDLogger v.", value)
 
 var _is_shutting_down: bool = false
 var id_font_settings_min_size: int = 200
@@ -102,7 +93,6 @@ func _ready() -> void:
 	id_inspector.edit(ResourceLoader.load("uid://dskegm87ypj8f"))
 	id_font_sett_cont.folding_changed.connect(_handle_fold_container_min_size.bind(id_font_sett_cont))
 	hotkey_container.folding_changed.connect(_handle_fold_container_min_size.bind(hotkey_container))
-	_connect_line_edit_toggled()
 	_assign_spinbox_line_edits()
 	_connect_spinbox_line_submitted()
 
@@ -116,7 +106,7 @@ func _ready() -> void:
 		base_dir_apply_btn,
 		base_dir_revert_btn, 
 		header_line,
-		log_header_apply_btn,
+		header_apply_btn,
 		header_revert_btn,
 		entry_format_line,
 		entry_format_apply_btn,
@@ -141,8 +131,6 @@ func _ready() -> void:
 	for node in btn_array:
 		_connect_control_signal(node)
 
-	prints(%LSettingsPanel.size.x, %GeneralFoldableContainer.size.x)
-
 
 
 ## Called by dock.gd after data is initialized.
@@ -155,9 +143,9 @@ func initialize_tab() -> void:
 
 # Called by dock.gd
 func init_visibility() -> void:
-	base_dir_revert_btn.hide()
-	header_revert_btn.hide()
-	entry_format_revert_btn.hide()
+	base_dir_revert_btn.disabled = true
+	header_revert_btn.disabled = true
+	entry_format_revert_btn.disabled = true
 	
 	var fold_conts: Array[FoldableContainer] = [
 		general_fold_cont,
@@ -184,13 +172,6 @@ func _connect_unique(signal_obj: Signal, callback: Callable) -> void:
 	if signal_obj.is_connected(callback):
 		signal_obj.disconnect(callback)
 	signal_obj.connect(callback)
-
-
-
-func _connect_line_edit_toggled() -> void:
-	base_dir_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(base_dir_line))
-	header_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(header_line))
-	entry_format_line.editing_toggled.connect(_on_line_edit_edit_toggled.bind(entry_format_line))
 
 
 
@@ -264,7 +245,7 @@ func _apply_new_base_directory() -> bool:
 
 	data.base_dir = new_dir
 	base_dir_line.text = new_dir
-	base_dir_revert_btn.tooltip_text = str("Revert to '", new_dir, "'")
+	base_dir_revert_btn.tooltip_text = str("Revert to:  ", new_dir)
  
 	return true
 
@@ -275,7 +256,6 @@ func _handle_limit_method_visibility(to: int) -> void:
 	if limits_tabbar.get_current_tab() != to: limits_tabbar.set_current_tab(to)
 	entry_count_container.visible = to in [LimitMethod.ENTRY_COUNT, LimitMethod.BOTH]
 	session_timer_container.visible = to in [LimitMethod.SESSION_TIMER, LimitMethod.BOTH]
-	print(to)
 
 
 
@@ -311,54 +291,55 @@ func _is_entry_format_valid(format: String) -> bool:
 #region Signal receivers
 
 func _on_button_pressed(node: Button) -> void:
-	print("asdf")
-	print(node.get_name())
 	match node:
 		base_dir_apply_btn:
 			if _apply_new_base_directory():
-				base_dir_revert_btn.hide()
+				base_dir_revert_btn.disabled = true
 				request_save.emit(false, "dock_settings.gd - base_dir_apply_btn")
 		
 		base_dir_revert_btn:
 			base_dir_line.text = data.base_dir
-			base_dir_revert_btn.hide()
+			base_dir_revert_btn.disabled = true
 
-		log_header_apply_btn:
+		header_apply_btn:
 			data.header_format = header_line.text
 			header_line.release_focus()
-			header_revert_btn.hide()
-			request_save.emit(false, "dock_settings.gd - log_header_apply_btn")
+			header_revert_btn.disabled = true
+			request_save.emit(false, "dock_settings.gd - header_apply_btn")
 		
 		header_revert_btn:
 			header_line.text = data.header_format
-			header_revert_btn.hide()
+			header_revert_btn.disabled = true
 
 		entry_format_apply_btn:
 			data.entry_format = entry_format_line.text
 			entry_format_line.release_focus() 
-			entry_format_revert_btn.hide()
+			entry_format_revert_btn.disabled = true
 			request_save.emit(false, "dock_settings.gd - entry_format_apply_btn")
 
 		entry_format_revert_btn:
 			entry_format_line.text = data.entry_format
-			entry_format_revert_btn.hide()
+			entry_format_revert_btn.disabled = true
 
 
 
 
 func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
-	var last_applied_value: String = ""
 	base_dir_apply_btn.disabled = base_dir_line.text == data.base_dir if !base_dir_line.text.is_empty() else true
-	log_header_apply_btn.disabled = header_line.text == data.header_format if !header_line.text.is_empty() else true
+	base_dir_revert_btn.disabled = base_dir_line.text == data.base_dir if !base_dir_line.text.is_empty() else true
+	header_apply_btn.disabled = header_line.text == data.header_format if !header_line.text.is_empty() else true
+	header_revert_btn.disabled = header_line.text == data.header_format if !header_line.text.is_empty() else true
 	entry_format_apply_btn.disabled = entry_format_line.text == data.entry_format if !entry_format_line.text.is_empty() else true
-	match node:
-		header_line:
-			last_applied_value = data.header_format
+	entry_format_revert_btn.disabled = entry_format_line.text == data.entry_format if !entry_format_line.text.is_empty() else true
 
-		entry_format_line: 
-			last_applied_value = data.entry_format
-			
+	match node:
+		base_dir_line:
+			base_dir_revert_btn.tooltip_text = str("Revert to:   ", data.base_dir)
+		header_line:
+			header_revert_btn.tooltip_text = str("Revert to:   ", data.header_format)
+		entry_format_line: 			
 			entry_format_warning.visible = !_is_entry_format_valid(new_text)
+			entry_format_line.tooltip_text = str("Revert to:   ", data.entry_format)
 			entry_format_line.set_theme_type_variation("LineEdit_FormatFields" if _is_entry_format_valid(new_text) else "LineEdit_FormatFieldsInvalid")
 			
 
@@ -369,19 +350,24 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			if _apply_new_base_directory():
 				base_dir_line.release_focus()
 				data.base_dir = base_dir_line.text
+				base_dir_revert_btn.disabled = true
 
 		header_line:
 			header_line.release_focus()
 			data.header_format = header_line.text
-			print("TextSubmitted: Set data.header_format to - ", header_line.text)
+			header_revert_btn.disabled = true
 
 		entry_format_line:
 			entry_format_line.release_focus()
 			data.entry_format = entry_format_line.text
+			entry_format_revert_btn.disabled = true
 
 	base_dir_apply_btn.disabled = base_dir_line.text == data.base_dir if !base_dir_line.text.is_empty() else true
-	log_header_apply_btn.disabled = header_line.text == data.header_format if !header_line.text.is_empty() else true
+	# base_dir_revert_btn.disabled = base_dir_line.text == data.base_dir if !base_dir_line.text.is_empty() else true
+	header_apply_btn.disabled = header_line.text == data.header_format if !header_line.text.is_empty() else true
+	# header_revert_btn.disabled = header_line.text == data.header_format if !header_line.text.is_empty() else true
 	entry_format_apply_btn.disabled = entry_format_line.text == data.entry_format if !entry_format_line.text.is_empty() else true
+	# entry_format_revert_btn.disabled = entry_format_line.text == data.entry_format if !entry_format_line.text.is_empty() else true
 	request_save.emit(false, "dock_settings.gd - _on_line_edit_text_submitted")
 
 
@@ -422,14 +408,7 @@ func _on_checkbox_toggled(toggled_on: bool, node: CheckButton) -> void:
 
 
 
-func _on_line_edit_edit_toggled(toggled_on: bool, node: LineEdit) -> void:	
-	match node:
-		base_dir_line: 
-			base_dir_revert_btn.visible = toggled_on
-		header_line: 
-			header_revert_btn.visible = toggled_on
-		entry_format_line: 
-			entry_format_revert_btn.visible = toggled_on
+
 
 
 

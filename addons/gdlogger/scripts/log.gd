@@ -483,8 +483,6 @@ func _handle_id_align() -> void: #NOTWORKING
 	elif id_alignment in [8,9,10]:
 		instance_id_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 
-	# print(instance_id_label.horizontal_alignment, " - ", instance_id_label.vertical_alignment)
-
 
 
 func _on_timer_timeout(_timer: Timer) -> void:
@@ -515,4 +513,3 @@ func _on_timer_timeout(_timer: Timer) -> void:
 			if cur_id_align != data.id_align:
 				_handle_id_align()
 				cur_id_align = data.id_align
-				prints("cur:", cur_id_align, "data:", data.id_align)

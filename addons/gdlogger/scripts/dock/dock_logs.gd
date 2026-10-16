@@ -613,7 +613,6 @@ func _get_logfile_color(used_colors: Array[Color]) -> Color:
 func _on_log_settings_button_up() -> void:
 	log_settings_popup.visible = !log_settings_popup.visible
 	log_settings_popup.size = Vector2.ZERO
-	print(log_settings_popup.size)
 	log_settings_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE
 	log_settings_popup.position = Vector2i(log_settings_btn.get_screen_position() + Vector2(48, -156))
 

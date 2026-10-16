@@ -184,7 +184,6 @@ func validate_settings() -> bool:
 	if session_duration < 1:
 			session_duration = 1
 			faults += 1
-	print("validate_settings: ", faults)
 	return true if faults == 0 else false
 
 
@@ -196,9 +195,6 @@ func apply_values() -> void:
 	for key in list.keys():
 		var ctrl = list[key]["ctrl"] 
 		var val = list[key]["value"]
-		# prints(key, ":", ctrl, " - List Value:", val, "\n")
-		# prints(key, ":", " - List Value:", val, "\n")
-		# print(key, " ", ctrl[key], " - ", val[key])
 		if ctrl is CheckButton:
 			ctrl.button_pressed = val
 		
@@ -210,7 +206,6 @@ func apply_values() -> void:
 
 		elif ctrl is LineEdit:
 			ctrl.text = val
-		# prints(ctrl, " - ", val, utc, utc_ctrl.button_pressed, )
 
 
 

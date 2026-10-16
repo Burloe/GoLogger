@@ -23,6 +23,18 @@ const gdl_theme = preload("uid://gjcp57h03j4p")
 const gh_ico_darkmode = preload("uid://c74n2f1j4wew5")
 const gh_ico_lightmode = preload("uid://c0fie23lxf1be")
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
+const COLOR_TO_STYLEBOX := {
+	"TabContainer": {
+		"font_selected_color": "tab_selected",
+		"font_hovered_color": "tab_hovered",
+		"font_unselected_color": "tab_unselected",
+		"font_disabled_color": "tab_disabled",
+	},
+	"FoldableContainer": {
+		"collapsed_font_color": "title_collapsed_panel",
+		"hover_font_color": "title_collapsed_hover_panel",
+	}
+}
 
 @export var data: GDLData = null
 @onready var renable_btn: Button = %RENABLEButton
@@ -93,8 +105,7 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 @onready var help_setup: 					FoldableContainer = %SetupHelp
 @onready var help_categories: 		FoldableContainer = %CategoriesHelp
 @onready var help_messages: 			FoldableContainer = %MessagesHelp
-@onready var help_concurrencies: 	FoldableContainer = %ConcurrenciesHelp
-@onready var help_log_browser:		FoldableContainer = %LogBrowserHelp
+@onready var help_concurrency: 		FoldableContainer = %ConcurrencyHelp
 @onready var help_functions: 			FoldableContainer = %FunctionsHelp
 @onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
 @onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
@@ -104,11 +115,11 @@ const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 var theme_col_base = ProjectSettings.get_setting("interface/theme/base_color")
 var theme_col_accent = ProjectSettings.get_setting("interface/theme/accent_color")
 var theme_contrast = ProjectSettings.get_setting("interface/theme/contrast") 
-var plugin_version: String =  "2.0":
+var plugin_version: String =  "2.0.0":
 	set(value):
 		plugin_version = value
 		if version_linkbtn:
-			version_linkbtn.text = str("GDLogger v.", value)
+			version_linkbtn.text = str("v.", value)
 
 var log_header_value: String = "":
 	set(value):
@@ -128,6 +139,9 @@ var is_shutting_down: bool = false:
 	set(value):
 		is_shutting_down = value
 		logs_tab.is_shutting_down = value
+
+var FONT_DARK := Color.BLACK.lightened(0.15)
+var FONT_LIGHT := Color.WHITE.darkened(0.15)
 
 enum LimitMethod {
 	ENTRY_COUNT,
@@ -220,8 +234,7 @@ func _init_visibility() -> void:
 		help_setup,
 		help_categories,
 		help_messages,
-		help_concurrencies,
-		help_log_browser,
+		help_concurrency,
 		help_functions,
 		help_hotkeys,
 		help_file_limits,
@@ -350,6 +363,7 @@ func _open_directory() -> void:
 #endregion
 
 
+
 #region Theme
 
 func _on_editor_settings_changed() -> void:
@@ -372,6 +386,7 @@ func _on_editor_settings_changed() -> void:
 	theme_col_base = new_base
 	theme_col_accent = new_accent
 	theme_contrast = new_contrast
+	logs_tab.load_log_files()
 	
 	if debounce_timer: 
 		debounce_timer.start()
@@ -403,23 +418,6 @@ func _get_theme_colors() -> Dictionary:
 		"accent_col-1": shift.call(accent_col, -contrast),
 		"accent_col-2": shift.call(accent_col, -contrast * factor),
 	}
-
-var FONT_DARK := Color.BLACK.lightened(0.15)
-var FONT_LIGHT := Color.WHITE.darkened(0.15)
-
-# Color item -> stylebox that sits behind it, where the names don't match the state.
-const COLOR_TO_STYLEBOX := {
-	"TabContainer": {
-		"font_selected_color": "tab_selected",
-		"font_hovered_color": "tab_hovered",
-		"font_unselected_color": "tab_unselected",
-		"font_disabled_color": "tab_disabled",
-	},
-	"FoldableContainer": {
-		"collapsed_font_color": "title_collapsed_panel",
-		"hover_font_color": "title_collapsed_hover_panel",
-	}
-}
 
 
 
@@ -466,34 +464,33 @@ func _apply_font_icon_colors(tags: Dictionary) -> void:
 			gdl_theme.set_color(color_name, control_type,
 				_font_for_bg(bg, _state_from_name(color_name), contrast))
 
-	# Special cases applied last
-	# for c in ["icon_hover_color", "icon_pressed_color", "icon_disabled_color", "icon_hover_pressed_color"]:
-	# 	gdl_theme.set_color(c, "CheckButton", tags["accent_col"])
-
 	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
 		gdl_theme.set_color(c, "CheckButton", FONT_LIGHT if tags["base_col"].get_luminance() < 0.5 else FONT_DARK)
 	for c in [sett_entry_format_revert_btn, sett_log_header_revert_btn, sett_base_dir_revert_btn]:
 		gdl_theme.set_color("caret_color", "LineEdit_FormatFields", Color.WHITE if tags["base_col"].get_luminance() < 0.5 else Color.BLACK)
 
 	var special_cases: Dictionary = {
+		"Button_RevertButton": [
+			["icon_disabled_color", "disabled"]
+		],
 		"FoldableContainer": [
-				["collapsed_font_color", "title_collapsed_panel"],
-				["hover_font_color", "title_collapsed_hover_panel"]
+			["collapsed_font_color", "title_collapsed_panel"],
+			["hover_font_color", "title_collapsed_hover_panel"]
 		],
 		"OptionButton": [
-				["hover_font_color", "hover"],
-				["pressed_font_color", "pressed"],
-				["icon_hover_color", "hover"],
-				["icon_pressed_color", "pressed"],
-				["icon_hover_pressed_color", "hover_pressed"]
+			["hover_font_color", "hover"],
+			["pressed_font_color", "pressed"],
+			["icon_hover_color", "hover"],
+			["icon_pressed_color", "pressed"],
+			["icon_hover_pressed_color", "hover_pressed"]
 		],
 		"SpinBox": [
-				["down_icon_modulate", "down_background"],
-				["down_hover_icon_modulate", "down_background"],
-				["down_pressed_icon_modulate", "down_background"],
-				["up_icon_modulate", "up_background"],
-				["up_hover_icon_modulate", "down_background"],
-				["up_pressed_icon_modulate", "down_background"]
+			["down_icon_modulate", "down_background"],
+			["down_hover_icon_modulate", "down_background"],
+			["down_pressed_icon_modulate", "down_background"],
+			["up_icon_modulate", "up_background"],
+			["up_hover_icon_modulate", "down_background"],
+			["up_pressed_icon_modulate", "down_background"]
 		]
 	}
 
@@ -515,8 +512,12 @@ func _apply_font_icon_colors(tags: Dictionary) -> void:
 				if color_name.contains("pressed"):
 					var _col = Color.WHITE.darkened(0.3) if stylebox.bg_color.get_luminance() < 0.5 else Color.BLACK.darkened(0.05)
 					gdl_theme.set_color(color_name, ctrl_type, _col)
+				
+				if color_name.contains("disabled"):
+					var _col = Color("d9d9d932") if stylebox.bg_color.get_luminance() < 0.5 else Color("26262632")
+					gdl_theme.set_color(color_name, ctrl_type, _col)
+					print("asdf")
 		
-
 
 
 func _apply_theme_colors() -> void:
@@ -552,6 +553,13 @@ func _apply_theme_colors() -> void:
 						"pressed":											sb.bg_color = tags["accent_col"]
 						"hover_pressed":								sb.bg_color = tags["accent_col"]
 						"disabled":											sb.bg_color = tags["accent_col"]
+				"Button_RevertButton":
+					match stylebox_name:
+						"normal": 											sb.bg_color = tags["base_col"]
+						"hover":												sb.bg_color = tags["base_col"]
+						"pressed":											sb.bg_color = tags["base_col"]
+						"hover_pressed":								sb.bg_color = tags["base_col"]
+						"disabled":											sb.bg_color = tags["base_col"]
 				"Button_SortButton":
 					match stylebox_name:
 						"normal": 											sb.bg_color = tags["base_col-2"]
@@ -575,7 +583,9 @@ func _apply_theme_colors() -> void:
 				"LineEdit":													
 					sb.bg_color = tags["base_col-1"]
 				"LineEdit_FormatFields":						
-					sb.bg_color = tags["base_col-1"]
+					sb.bg_color = tags["base_col"]
+				"LineEdit_FormatFieldsInvalid":
+					sb.bg_color = tags["base_col"]
 				"LineEdit_CategoryFieldValid":			
 					sb.bg_color = tags["base_col-1"]
 				"LineEdit_CategoryFieldInvalid":		

@@ -140,7 +140,6 @@ func _on_timer_timeout() -> void:
 	for cat in data.categories:
 		if cat.category_name.is_empty():
 			continue
-			prints(cat, cat.category_name)
 		Log.msg(_build_simulated_entry(), cat.category_name)
 
 	if !data.default_category.is_empty():

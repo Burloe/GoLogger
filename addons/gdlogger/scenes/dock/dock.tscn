@@ -90,8 +90,6 @@ outline_color = Color(0, 0, 0, 1)
 [sub_resource type="FoldableGroup" id="FoldableGroup_fcs7p"]
 allow_folding_all = true
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k47fi"]
-
 [sub_resource type="DPITexture" id="DPITexture_l2oj6"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M8 9h7V2l-2 2a6.927 8.938-30 0 0-9 11 4.364 6.234-10 0 1 6-8z\"/></svg>
 "
@@ -454,11 +452,13 @@ custom_minimum_size = Vector2(320, 40)
 custom_maximum_size = Vector2(320, -1)
 layout_mode = 2
 theme = ExtResource("4_o07th")
+folded = true
 title = "General"
 title_alignment = 1
 foldable_group = SubResource("FoldableGroup_k47fi")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer" unique_id=414672781]
+visible = false
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(0, 1)
@@ -523,7 +523,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_override_constants/tab_separation = 33
-current_tab = 0
+current_tab = 2
 tab_alignment = 1
 tab_count = 3
 tab_0/title = "Entry Count"
@@ -598,8 +598,8 @@ value = 1000.0
 rounded = true
 allow_greater = true
 update_on_text_changed = true
-suffix = "cap"
 custom_arrow_step = 100.0
+suffix = "cap"
 
 [node name="SessionTimer" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/BoxContainer" unique_id=1003170145]
 unique_name_in_owner = true
@@ -661,9 +661,9 @@ value = 1200.0
 rounded = true
 allow_greater = true
 update_on_text_changed = true
-suffix = "s"
 custom_arrow_step = 1.0
 select_all_on_focus = true
+suffix = "s"
 
 [node name="FileCount" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/BoxContainer" unique_id=480650093]
 unique_name_in_owner = true
@@ -698,8 +698,8 @@ value = 50.0
 rounded = true
 allow_greater = true
 update_on_text_changed = true
-suffix = "cap"
 custom_arrow_step = 1.0
+suffix = "cap"
 
 [node name="IDFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer" unique_id=1336991210]
 unique_name_in_owner = true
@@ -877,10 +877,6 @@ theme = ExtResource("4_o07th")
 title = "Directory and Formats"
 foldable_group = SubResource("FoldableGroup_fcs7p")
 
-[node name="Control" type="Control" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1869616791]
-layout_mode = 2
-mouse_filter = 1
-
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1504669251]
 layout_mode = 2
 theme_override_constants/separation = 15
@@ -910,7 +906,12 @@ theme_override_font_sizes/font_size = 14
 text = "Log Directory:"
 vertical_alignment = 1
 
-[node name="BaseDirLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDir/BaseDirHBox" unique_id=1724121335]
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDir/BaseDirHBox" unique_id=1630616169]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="BaseDirLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDir/BaseDirHBox/BoxContainer" unique_id=1724121335]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 32)
 layout_mode = 2
@@ -924,41 +925,25 @@ theme = ExtResource("4_o07th")
 theme_type_variation = &"LineEdit_FormatFields"
 text = "user://gdlogger/"
 placeholder_text = "user://gdlogger/"
-expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="BaseDirRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDir/BaseDirHBox/BaseDirLineEdit" unique_id=1237133605]
+[node name="BaseDirRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/BaseDir/BaseDirHBox/BoxContainer" unique_id=1237133605]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(16, 16)
-custom_maximum_size = Vector2(16, 16)
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -16.0
-offset_bottom = 16.0
-grow_horizontal = 0
-grow_vertical = 2
-size_flags_horizontal = 3
-offset_transform_enabled = true
-offset_transform_position = Vector2(-8, 0)
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 offset_transform_visual_only = false
 tooltip_text = "Revert to last applied name"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme = ExtResource("4_o07th")
+theme_type_variation = &"Button_RevertButton"
 theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.07450981, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.5126667, 0.13999999, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.3, 0.07500002, 1)
 theme_override_constants/outline_size = 8
-theme_override_styles/normal = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 icon = SubResource("DPITexture_l2oj6")
 icon_alignment = 1
 
@@ -1008,7 +993,12 @@ theme = ExtResource("4_o07th")
 text = "Log Header Format:"
 vertical_alignment = 1
 
-[node name="HeaderLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/Header/HeaderHBox" unique_id=683152660]
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/Header/HeaderHBox" unique_id=1496302703]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="HeaderLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/Header/HeaderHBox/BoxContainer" unique_id=683152660]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 32)
 layout_mode = 2
@@ -1028,38 +1018,24 @@ text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:
 placeholder_text = "{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:"
 emoji_menu_enabled = false
 
-[node name="HeaderRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/Header/HeaderHBox/HeaderLineEdit" unique_id=1011354875]
+[node name="HeaderRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/Header/HeaderHBox/BoxContainer" unique_id=1011354875]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(16, 16)
-custom_maximum_size = Vector2(16, 16)
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -16.0
-offset_bottom = 16.0
-grow_horizontal = 0
-grow_vertical = 2
-size_flags_horizontal = 3
-offset_transform_enabled = true
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 offset_transform_position = Vector2(-8, 0)
 offset_transform_visual_only = false
 tooltip_text = "Revert to '{project_name} {version} {category} session [{yy}-{mm}-{dd} | {hh}:{mi}:{ss}]:'"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme = ExtResource("4_o07th")
+theme_type_variation = &"Button_RevertButton"
 theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.07450981, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.5126667, 0.13999999, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.3, 0.07500002, 1)
 theme_override_constants/outline_size = 8
-theme_override_styles/normal = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 icon = SubResource("DPITexture_l2oj6")
 icon_alignment = 1
 
@@ -1112,7 +1088,12 @@ theme = ExtResource("4_o07th")
 text = "Entry Format:"
 vertical_alignment = 1
 
-[node name="EntryFormatLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox" unique_id=454432147]
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox" unique_id=539758089]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="EntryFormatLineEdit" type="LineEdit" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox/BoxContainer" unique_id=454432147]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(450, 32)
 layout_mode = 2
@@ -1131,10 +1112,9 @@ theme = ExtResource("4_o07th")
 theme_type_variation = &"LineEdit_FormatFields"
 text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
 placeholder_text = "[{hh}:{mi}:{ss}] {instance_id}: {entry}"
-expand_to_text_length = true
 emoji_menu_enabled = false
 
-[node name="EntryFormatWarning" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox/EntryFormatLineEdit" unique_id=1878849767]
+[node name="EntryFormatWarning" type="Panel" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox/BoxContainer/EntryFormatLineEdit" unique_id=1878849767]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(0, 32)
@@ -1152,7 +1132,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tayiv")
 
-[node name="Label" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox/EntryFormatLineEdit/EntryFormatWarning" unique_id=1412207838]
+[node name="Label" type="Label" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox/BoxContainer/EntryFormatLineEdit/EntryFormatWarning" unique_id=1412207838]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 1
 anchors_preset = 15
@@ -1165,38 +1145,24 @@ text = "{entry} required"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EntryFormatRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox/EntryFormatLineEdit" unique_id=1707328286]
+[node name="EntryFormatRevertButton" type="Button" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer/VBoxContainer/EntryFormat/EntryFormatHBox/BoxContainer" unique_id=1707328286]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(16, 16)
-custom_maximum_size = Vector2(16, 16)
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -16.0
-offset_top = -8.0
-offset_bottom = 8.0
-grow_horizontal = 0
-grow_vertical = 2
-size_flags_horizontal = 3
-offset_transform_enabled = true
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 offset_transform_position = Vector2(-8, 0)
 offset_transform_visual_only = false
 tooltip_text = "Revert to '[{hh}:{mi}:{ss}] {instance_id}: {entry}'"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme = ExtResource("4_o07th")
+theme_type_variation = &"Button_RevertButton"
 theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.07450981, 1)
 theme_override_colors/icon_hover_color = Color(1, 0.5126667, 0.13999999, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.3, 0.07500002, 1)
 theme_override_constants/outline_size = 8
-theme_override_styles/normal = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_boc7e")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_k47fi")
 icon = SubResource("DPITexture_l2oj6")
 icon_alignment = 1
 
@@ -1322,37 +1288,6 @@ The Left/Right arrows allows you to sort the order of the categories in the dock
 The Open Folder button will load that category's log files for you to open and read."
 fit_content = true
 
-[node name="LogBrowserHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=76721491]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_o07th")
-folded = true
-title = "Log Browser"
-foldable_group = SubResource("FoldableGroup_tvbkj")
-
-[node name="LogBrowserRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/LogBrowserHelp" unique_id=1476901840]
-visible = false
-custom_minimum_size = Vector2(560, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("4_o07th")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "A new feature in 2.0 allows you to browse and read .log files all within the editor. You can select a log file to read your file and in the top right of the popup, the settings button allows you to customize the look of the font, size, color etc. 
-Alternatively, you can also use the settings button in the Logs tag affords you additional customization.
-
-Loading large files for viewing may freeze Godot depending on the file size and your computer's performance. If this is affecting you, lower your Entry Count or Session Timer settings. You can also enable the option to open with OS which will be faster.
-
-Future updates may include:
-	Proper folder navigation
-	File renaming
-	File deletion
-"
-fit_content = true
-
 [node name="MessagesHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=487613138]
 unique_name_in_owner = true
 layout_mode = 2
@@ -1388,43 +1323,16 @@ You can also use [i]print_msg[/i] to print individual entries if desired.
     "
 fit_content = true
 
-[node name="DirectoryHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=694307931]
+[node name="ConcurrencyHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=665020188]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_o07th")
 folded = true
-title = "Directories"
+title = "Instance ID & Multiple Instances"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="DirectoriesRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/DirectoryHelp" unique_id=1565100639]
-visible = false
-custom_minimum_size = Vector2(560, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("4_o07th")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "The default directory where your [color=#ffeca1].log[/color] files are stored is [color=#ffeca1]\"user://gdlogger/\"[/color]. Since this directory is outside of the [color=#ffeca1]\"res://\"[/color] (project folder), it isn't packaged with your project when you export it, meaning your users/players have access to the files and can share them with the developer. It is recommended that you use [color=#ffeca1]\"user://\"[/color] but change the [color=#ffeca1]\"gdlogger\"[/color] part.
-
-[color=lightred][b]Warning![/b][/color] [color=pink]Do [b]NOT[/b] use [color=#ffeca1]\"user://logs/\"[/color]. Godot stores its own logs in that folder and you risk that GDLogger might delete said logs in its operations. There are safeguards to prevent this directory from being used but still, never use it.[/color]
-
-Remember that there are buttons to open the directory using your operating system's file browser. You can also use the normal Project > [color=#ffeca1]\"Open User Data Folder\"[/color] in Godot.
-"
-fit_content = true
-
-[node name="ConcurrenciesHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=665020188]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_o07th")
-folded = true
-title = "Multiple Instances"
-foldable_group = SubResource("FoldableGroup_tvbkj")
-
-[node name="ConcurrenciesRtlabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrenciesHelp" unique_id=1890232147]
+[node name="ConcurrencyRtlabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrencyHelp" unique_id=1890232147]
 visible = false
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
@@ -1437,6 +1345,55 @@ bbcode_enabled = true
 text = "When running multiple instances of your project, as is the case with multiplayer games where two or more instances is run for debugging. The two instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instance logged what entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[/color] setting.
 
 To see the ID of an instance, use the [color=fc4674]Display Instance ID[/color] hotkey([i]Ctrl + Shift + I[/i] by default). This will display the instance ID on your screen in your game. Within the Settings tab of the dock, under ID Overlay, you'll find settings to customize it's behavior and how it's displayed. Including the font used, size, outline and color to suit your game's resolution and ensure it is clearly visible. "
+fit_content = true
+
+[node name="FileLimitsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=1580460435]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_o07th")
+folded = true
+title = "File Limits"
+foldable_group = SubResource("FoldableGroup_fx5fv")
+
+[node name="FileLimitsRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/FileLimitsHelp" unique_id=1956207480]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_o07th")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GDLogger features limitations to control log file lengths. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
+
+[font_size=14]File Count:[font_size=14]
+This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one. Only [i].log[/i] files that haven't been renamed are subject to the file count handling,
+
+[color=darkgray][i]Recommended:[/i][/color]
+[i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported. Setting it to 0 will disable the limitation but it's not recommended.[/i]
+
+
+[font_size=14][b]Entry count[/b][font_size=14]
+	As new entries are logged, they are counted, and once the limit is reached, one of the following actions is triggered:
+
+		Overwrite Entries – Replaces the oldest entries as new ones are added.
+		Restart Session – Ends the current session and starts a new one, creating a new .log file.
+		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
+
+
+[font_size=14][b]Session timer:[/b][font_size=14]
+	Starts a timer at the beginning of a session and runs for the duration specified in the Session Duration setting. This method is useful for time-based testing. 
+	The Session Timer emits the signals [color=turquoise]session_started[/color] and [color=turquoise]session_stopped[/color], which can be used to synchronize with other systems or features.
+	
+		Restart Session – Ends the current session and starts a new one, creating a new .log file.
+		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
+
+
+
+[b]Recommended overall settings:[/b]
+Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed."
 fit_content = true
 
 [node name="Methods" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=830461916]
@@ -1521,54 +1478,6 @@ text = "There are four hotkeys available to interact with GDLogger during runtim
 Hotkeys can be changed using InputEventShortcut resources. As such, they're excluded and doesn't crowd your InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector."
 fit_content = true
 
-[node name="FileLimitsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=1580460435]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_o07th")
-folded = true
-title = "File Limits"
-foldable_group = SubResource("FoldableGroup_fx5fv")
-
-[node name="FileLimitsRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FileLimitsHelp" unique_id=1956207480]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("4_o07th")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GDLogger features limitations to control log file lengths. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
-
-[font_size=14]File Count:[font_size=14]
-This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one. Only [i].log[/i] files that haven't been renamed are subject to the file count handling,
-
-[color=darkgray][i]Recommended:[/i][/color]
-[i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported. Setting it to 0 will disable the limitation but it's not recommended.[/i]
-
-
-[font_size=14][b]Entry count[/b][font_size=14]
-	As new entries are logged, they are counted, and once the limit is reached, one of the following actions is triggered:
-
-		Overwrite Entries – Replaces the oldest entries as new ones are added.
-		Restart Session – Ends the current session and starts a new one, creating a new .log file.
-		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
-
-
-[font_size=14][b]Session timer:[/b][font_size=14]
-	Starts a timer at the beginning of a session and runs for the duration specified in the Session Duration setting. This method is useful for time-based testing. 
-	The Session Timer emits the signals [color=turquoise]session_started[/color] and [color=turquoise]session_stopped[/color], which can be used to synchronize with other systems or features.
-	
-		Restart Session – Ends the current session and starts a new one, creating a new .log file.
-		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
-
-
-
-[b]Recommended overall settings:[/b]
-Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed."
-fit_content = true
-
 [node name="FormattingHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=1185594613]
 unique_name_in_owner = true
 layout_mode = 2
@@ -1641,7 +1550,7 @@ Note that autoloaded scripts/scenes are loaded in the order as shown in ProjectS
 If another autoload is trying to log an entry before Log.tscn has loaded, it might throw an error or simply not log the entry.
 Move Log.tscn higher in the list.
 
-If issues persists afterwards, please open an issue on Github with the link below."
+If problems persists, please open an issue on Github with the link below."
 autowrap_mode = 3
 
 [node name="GithubTextureRect" type="TextureRect" parent="DockTabContainer/HelpTab/MoreInfo/BoxContainer/BoxContainer" unique_id=1515991255]
@@ -1701,9 +1610,8 @@ visible = false
 [node name="LogsSettingsPanelPopup" type="PopupPanel" parent="DockTabContainer" unique_id=1420748330]
 unique_name_in_owner = true
 oversampling_override = 1.0
-position = Vector2i(65, 250)
+position = Vector2i(65, 32)
 size = Vector2i(296, 227)
-visible = true
 min_size = Vector2i(296, 188)
 theme = ExtResource("4_o07th")
 theme_type_variation = &"PopupPanel_LogSettings"
@@ -1776,7 +1684,6 @@ text = "Automatic file reloading"
 
 [node name="VersionHBoxContainer" type="HBoxContainer" parent="." unique_id=699322649]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 40)
 custom_maximum_size = Vector2(-1, 40)
 layout_mode = 2
@@ -1789,6 +1696,7 @@ alignment = 2
 
 [node name="VersionLinkButton2" type="LinkButton" parent="VersionHBoxContainer" unique_id=1249339521]
 unique_name_in_owner = true
+visible = false
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(64, 40)
 layout_mode = 2
@@ -1801,7 +1709,7 @@ https://github.com/Burloe/GoLogger"
 theme_override_font_sizes/font_size = 14
 button_mask = 4
 text = "GDL"
-underline = 1
+underline = 2
 uri = "https://github.com/Burloe/GoLogger"
 
 [node name="Control" type="Control" parent="VersionHBoxContainer" unique_id=907219906]
@@ -1817,24 +1725,23 @@ layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(8, -8)
 theme = ExtResource("4_o07th")
-button_mask = 4
 icon = SubResource("DPITexture_e5b3s")
 icon_alignment = 1
 
 [node name="VersionLinkButton" type="LinkButton" parent="VersionHBoxContainer" unique_id=2086881914]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.29411766)
-custom_minimum_size = Vector2(128, 40)
+custom_minimum_size = Vector2(64, 40)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 offset_transform_enabled = true
-offset_transform_position = Vector2(27.06, 2)
+offset_transform_position = Vector2(18, 0)
 tooltip_text = "MMB to open repo:
 https://github.com/Burloe/GoLogger"
 theme_override_font_sizes/font_size = 14
 button_mask = 4
-text = "GDLogger v.2.0"
+text = "v.2.0.0"
 underline = 1
 uri = "https://github.com/Burloe/GoLogger"
 
