@@ -1,7 +1,7 @@
 @tool
 extends Control
 
-signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save the entire dock state to file. "source" is used to specify what action emitted the signal for debugging purposes.
+signal request_save(ignore_errors:bool, source: String) ## Emitted to dock.gd to save dock's categories state to file. Settings still handles on a per case basis. "source" is used to specify what action emitted the signal for debugging purposes.
 signal request_theme_colors
 
 @onready var base_dir_line: LineEdit = %BaseDirLineEdit
@@ -291,34 +291,41 @@ func _is_entry_format_valid(format: String) -> bool:
 #region Signal receivers
 
 func _on_button_pressed(node: Button) -> void:
+	print("apply button pressed: ", node.get_name())
 	match node:
 		base_dir_apply_btn:
 			if _apply_new_base_directory():
 				base_dir_revert_btn.disabled = true
+				base_dir_apply_btn.disabled = true
 				request_save.emit(false, "dock_settings.gd - base_dir_apply_btn")
 		
 		base_dir_revert_btn:
 			base_dir_line.text = data.base_dir
+			base_dir_apply_btn.disabled = true
 			base_dir_revert_btn.disabled = true
 
 		header_apply_btn:
 			data.header_format = header_line.text
 			header_line.release_focus()
 			header_revert_btn.disabled = true
+			header_apply_btn.disabled = true
 			request_save.emit(false, "dock_settings.gd - header_apply_btn")
 		
 		header_revert_btn:
 			header_line.text = data.header_format
+			header_apply_btn.disabled = true
 			header_revert_btn.disabled = true
 
 		entry_format_apply_btn:
 			data.entry_format = entry_format_line.text
 			entry_format_line.release_focus() 
+			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true
 			request_save.emit(false, "dock_settings.gd - entry_format_apply_btn")
 
 		entry_format_revert_btn:
 			entry_format_line.text = data.entry_format
+			entry_format_apply_btn.disabled = true
 			entry_format_revert_btn.disabled = true
 
 
@@ -344,7 +351,10 @@ func _on_line_edit_text_changed(new_text: String, node: LineEdit) -> void:
 			
 
 
-func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void: 
+func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
+	if new_text.is_empty():
+		return
+	
 	match node:
 		base_dir_line:
 			if _apply_new_base_directory():
@@ -363,11 +373,8 @@ func _on_line_edit_text_submitted(new_text: String, node: LineEdit) -> void:
 			entry_format_revert_btn.disabled = true
 
 	base_dir_apply_btn.disabled = base_dir_line.text == data.base_dir if !base_dir_line.text.is_empty() else true
-	# base_dir_revert_btn.disabled = base_dir_line.text == data.base_dir if !base_dir_line.text.is_empty() else true
 	header_apply_btn.disabled = header_line.text == data.header_format if !header_line.text.is_empty() else true
-	# header_revert_btn.disabled = header_line.text == data.header_format if !header_line.text.is_empty() else true
 	entry_format_apply_btn.disabled = entry_format_line.text == data.entry_format if !entry_format_line.text.is_empty() else true
-	# entry_format_revert_btn.disabled = entry_format_line.text == data.entry_format if !entry_format_line.text.is_empty() else true
 	request_save.emit(false, "dock_settings.gd - _on_line_edit_text_submitted")
 
 
