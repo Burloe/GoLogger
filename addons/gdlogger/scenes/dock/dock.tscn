@@ -445,6 +445,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("4_o07th")
+theme_override_constants/separation = 4
 
 [node name="GeneralFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer" unique_id=1807564640]
 unique_name_in_owner = true
@@ -868,16 +869,19 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("4_o07th")
+theme_override_constants/separation = 4
 
 [node name="DirectoryFoldableContainer" type="FoldableContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer" unique_id=934129937]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme = ExtResource("4_o07th")
+folded = true
 title = "Directory and Formats"
 foldable_group = SubResource("FoldableGroup_fcs7p")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/RSettingsPanel/VBoxContainer/DirectoryFoldableContainer" unique_id=1504669251]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -1236,7 +1240,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_o07th")
 folded = true
-title = "Setup"
+title = "Getting Started with GDLogger"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
 [node name="SetupRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp" unique_id=1514331880]
@@ -1249,8 +1253,15 @@ theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "GDLogger works immediately with the default configuration and comes with a single \"general\" category. Meaning you can instantly start creating entries such as: 
+text = "GDLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries in your codebase that log into files located in [i]user://gdlogger/game/[/i]:
+ 
     [i][color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"This is my first log entry.\"[/color], [color=#ce9178]\"game\"[/color])[/i]
+
+The most basic knowledge needed to use this plugin is the following:
+* Categories are optional but allows the user to sort logs entries into different files.
+* Use [i]Log.msg(\"My first entry\", \"game\")[/i] to log an entry. Any data that can be converted into a string can be used, the same way you would a [i]print()[/i].
+* Mark one Category as [b]Default[/b] to log an entry into that Category without needing to specify it after the entry string.
+* Below the Category section, your log files will appear for the currently selected category which you can open within the editor or alternatively use your OS default .log file program.
 
 Use the Logs tab to add, remove, or rename categories and even read log files. Sessions dictate when the plugin logs entries or not, which automatically starts at runtime by default. But this can be turned off in the settings.
 
@@ -1611,7 +1622,8 @@ visible = false
 unique_name_in_owner = true
 oversampling_override = 1.0
 position = Vector2i(65, 32)
-size = Vector2i(296, 227)
+size = Vector2i(296, 245)
+visible = true
 min_size = Vector2i(296, 188)
 theme = ExtResource("4_o07th")
 theme_type_variation = &"PopupPanel_LogSettings"
@@ -1621,7 +1633,7 @@ unique_name_in_owner = true
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 288.0
-offset_bottom = 219.0
+offset_bottom = 237.0
 theme_override_constants/separation = 8
 vertical = true
 
@@ -1674,13 +1686,41 @@ layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_type_variation = &"PanelContainer_TabBar"
 
-[node name="LGAutoReloadCheckButton" type="CheckButton" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox/PanelContainer3" unique_id=592944399]
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox/PanelContainer3" unique_id=1255638466]
+layout_mode = 2
+vertical = true
+
+[node name="LGAutoReloadCheckButton" type="CheckButton" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox/PanelContainer3/BoxContainer" unique_id=592944399]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Automatically or manual reloading of log files"
 theme = ExtResource("4_o07th")
 button_pressed = true
 text = "Automatic file reloading"
+
+[node name="PollRateBoxContainer" type="BoxContainer" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox/PanelContainer3/BoxContainer" unique_id=749020193]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.27450982)
+layout_mode = 2
+tooltip_text = "Set the frequency of the automatic reload
+"
+
+[node name="PollRateLabel" type="Label" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox/PanelContainer3/BoxContainer/PollRateBoxContainer" unique_id=22435336]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Poll Rate
+1 sec"
+horizontal_alignment = 1
+
+[node name="PollRateHSlider" type="HSlider" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox/PanelContainer3/BoxContainer/PollRateBoxContainer" unique_id=301359629]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "Set the frequency of the automatic reload"
+min_value = 1.0
+max_value = 300.0
+value = 1.0
 
 [node name="VersionHBoxContainer" type="HBoxContainer" parent="." unique_id=699322649]
 unique_name_in_owner = true

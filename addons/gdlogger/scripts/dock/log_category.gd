@@ -21,15 +21,16 @@ signal show_delete_category_prompt(category: GDLLogCategory)
 @onready var line_edit: LineEdit = 					%CategoryNameLineEdit
 @onready var del_btn:	Button = 							%DeleteButton
 
-@onready var line_edit_panel: Panel = 			%LineEditPanel
-@onready var edit_hbox: HBoxContainer = 		%LineEditHBox
+# @onready var line_edit_panel: Panel = 			%LineEditPanel
 @onready var apply_btn: Button = 						%ApplyButton
 @onready var revert_btn: Button = 					%RevertButton
-@onready var faky: Control = 								%Faky
 
 @onready var settings = EditorInterface.get_editor_settings()
 @onready var editor_base_col: Color = settings.get("interface/theme/base_color")
 @onready var editor_accent_col: Color = settings.get("interface/theme/accent_color") 
+
+var def_selected_ico = preload("uid://c36bkmpgdm8i3")
+var def_unselected_ico = preload("uid://vvwus07irw0o")
 
 var size_unedited: Vector2 = size # 210, 48)
 var size_edited = Vector2(size_unedited.x + 52, 48)# var size_edited = Vector2(262, 48)
@@ -51,23 +52,11 @@ var category_name: String = "":
 var is_default: bool = false:
 	set(value):
 		is_default = value
-		default_btn.icon = get_theme_icon("TileUnchecked" if category_name.is_empty() else "TileChecked" if value else "TileUnchecked", "EditorIcons")
+		default_btn.icon = def_unselected_ico if category_name.is_empty() else def_selected_ico if value else def_unselected_ico
 
-var has_unapplied_name: bool = false:
-	set(value):
-		has_unapplied_name = value
-		if value and !is_editing_name:
-			_tween_line_edit_module(true)
-		elif !value and !is_editing_name:
-			_tween_line_edit_module(false)
+var has_unapplied_name: bool = false
 
-var is_editing_name: bool = false:
-	set(value):
-		is_editing_name = value
-		if value and !has_unapplied_name:
-			_tween_line_edit_module(true)
-		elif !value and !has_unapplied_name:
-			_tween_line_edit_module(false)
+var is_editing_name: bool = false
 
 var is_new: bool = false:
 	set(value):
@@ -108,20 +97,18 @@ func _ready() -> void:
 
 	revert_btn.button_up.connect(
 		func() -> void:
-			# line_edit.unedit()
-			line_edit.release_focus()
 			line_edit.text = category_name
-			line_edit_panel.hide()
+			apply_btn.disabled = true
+			revert_btn.disabled = true
+			line_edit.release_focus()
+			revert_btn.set_theme_type_variation("Button_CategoryRevertButton")
+			line_edit.set_theme_type_variation("LineEdit_CategoryFieldValid")
 	)
 
 	line_edit.editing_toggled.connect(
 		func(toggled_on: bool) -> void: 
-			revert_btn.tooltip_text = str("Revert to '", category_name, "'")
+			revert_btn.tooltip_text = str("Revert to '", category_name, "'") if toggled_on else "Revert to last applied name"
 			is_editing_name = toggled_on
-			if category_name == line_edit.text or line_edit.text.is_empty(): 
-				apply_btn.disabled =  true
-			else: 
-				apply_btn.disabled = false
 	)
 
 	default_btn.toggled.connect(
@@ -134,28 +121,6 @@ func _ready() -> void:
 
 	default_btn.disabled = category_name.is_empty()
 	size = Vector2.ZERO 
-
-
-func _tween_line_edit_module(show: bool = false) -> void:
-	if is_new:
-		size = size_edited
-		is_new = false
-		line_edit_panel.show()
-		line_edit_panel.modulate = Color.WHITE
-		return
-	
-	var tw := create_tween().set_parallel(true)
-	faky.visible = show
-	faky.size.x = 0 if show else 42
-	tw.tween_property(self, "size", size_edited if show else size_unedited, 0.03)
-	tw.tween_property(faky, "size", Vector2(42 if show else 0, faky.size.y), 0.03)
-	await tw.finished
-	var tween := create_tween()
-	faky.visible = !show
-	faky.size.x = 0
-	line_edit_panel.visible  = show
-	line_edit_panel.modulate = Color.TRANSPARENT if show else Color.WHITE
-	tween.tween_property(line_edit_panel, "modulate", Color.WHITE if show else Color.TRANSPARENT, 0.03)
 
 
 
@@ -177,18 +142,18 @@ func apply_name(new_name: String) -> void:
 	if !is_name_available(new_name) or new_name.is_empty():
 		line_edit.text = category_name
 		line_edit.unedit()
-		line_edit.set_theme_type_variation("LineEdit_category_field_valid")
-		_tween_line_edit_module(false)
+		line_edit.set_theme_type_variation("LineEdit_CategoryFieldValid")
+		revert_btn.set_theme_type_variation("Button_CategoryRevertButton")
 		has_unapplied_name = false
+		apply_btn.disabled = line_edit.text == category_name
 		return 
 	
 	elif new_name == category_name:
 		line_edit.release_focus()
 		line_edit.unedit()
-		_tween_line_edit_module(false)
 		has_unapplied_name = false
+		apply_btn.disabled = line_edit.text == category_name
 		return
-
 
 	new_name = new_name.replace(" ", "_")
 	var cat_names = data.get_category_names()
@@ -210,6 +175,8 @@ func apply_name(new_name: String) -> void:
 	line_edit.text = category_name
 	log_category_changed.emit()
 	line_edit.release_focus()
+	revert_btn.disabled = true
+	apply_btn.disabled = true
 	has_unapplied_name = false
 
 
@@ -219,14 +186,19 @@ func _on_text_changed(new_text: String) -> void:
 	line_edit.text = line_edit.text.validate_filename()
 	new_text = new_text.replace(" ", "_")
 	line_edit.caret_column = c_column
+	revert_btn.tooltip_text = str("Revert to:   ", category_name)
 
 	has_unapplied_name = new_text not in [category_name, ""]
 
 	if new_text.is_empty() or !is_name_available(new_text) and category_name != new_text: 
 		apply_btn.disabled = true
+		revert_btn.disabled = false
+		revert_btn.set_theme_type_variation("Button_CategoryRevertButtonInvalid")
 		line_edit.set_theme_type_variation("LineEdit_CategoryFieldInvalid")
 	else:
 		apply_btn.disabled = new_text == category_name
+		revert_btn.disabled = new_text == category_name
+		revert_btn.set_theme_type_variation("Button_CategoryRevertButton")
 		line_edit.set_theme_type_variation("LineEdit_CategoryFieldValid")
 
 

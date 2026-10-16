@@ -52,6 +52,7 @@ const COLOR_TO_STYLEBOX := {
 @onready var lg_colorcode_btn: Button = %LGColorCodeCheckButton
 @onready var lg_open_with_os_btn: Button = %LGOpenLogsCheckButton
 @onready var lg_auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
+@onready var lg_poll_rate_slider:HSlider = %PollRateHSlider
 
 # Settings tab
 @onready var settings_tab: Control = %SettingsTab
@@ -262,6 +263,7 @@ func _assign_settings_controls() -> void:
 	data.color_code_ctrl = lg_colorcode_btn
 	data.open_logs_enternally_ctrl = lg_open_with_os_btn
 	data.auto_reload_ctrl = lg_auto_reload_btn
+	data.poll_rate_ctrl = lg_poll_rate_slider
 	data.autostart_ctrl = sett_autostart_btn
 	data.utc_ctrl = sett_utc_btn
 	data.colorcode_dates_ctrl = lg_colorcode_btn
@@ -477,6 +479,9 @@ func _apply_font_icon_colors(tags: Dictionary) -> void:
 			["collapsed_font_color", "title_collapsed_panel"],
 			["hover_font_color", "title_collapsed_hover_panel"]
 		],
+		"LineEdit_CategoryFieldsValid": [
+			["caret_color", "focus"]
+		],
 		"OptionButton": [
 			["hover_font_color", "hover"],
 			["pressed_font_color", "pressed"],
@@ -516,7 +521,6 @@ func _apply_font_icon_colors(tags: Dictionary) -> void:
 				if color_name.contains("disabled"):
 					var _col = Color("d9d9d932") if stylebox.bg_color.get_luminance() < 0.5 else Color("26262632")
 					gdl_theme.set_color(color_name, ctrl_type, _col)
-					print("asdf")
 		
 
 
@@ -560,6 +564,13 @@ func _apply_theme_colors() -> void:
 						"pressed":											sb.bg_color = tags["base_col"]
 						"hover_pressed":								sb.bg_color = tags["base_col"]
 						"disabled":											sb.bg_color = tags["base_col"]
+				"Button_CategoryRevertButton":
+					match stylebox_name:
+						"normal": 											sb.bg_color = tags["base_col-1"]
+						"hover":												sb.bg_color = tags["base_col-1"]
+						"pressed":											sb.bg_color = tags["base_col-1"]
+						"hover_pressed":								sb.bg_color = tags["base_col-1"]
+						"disabled":											sb.bg_color = tags["base_col-1"]
 				"Button_SortButton":
 					match stylebox_name:
 						"normal": 											sb.bg_color = tags["base_col-2"]
@@ -611,6 +622,9 @@ func _apply_theme_colors() -> void:
 						"panel": 												sb.bg_color = tags["base_col-2"]
 						"separator": 										sb.color 		= tags["base_col+2"]
 				
+				"PanelContainer_CategoryToolbar":
+					match stylebox_name:
+						"panel":												sb.bg_color = tags["base_col-1"]
 				"PanelContainer_TabBar":
 					match stylebox_name:
 						"panel": 												sb.bg_color = tags["base_col-2"]
@@ -648,6 +662,9 @@ func _apply_theme_colors() -> void:
 				"HSeparator", "VSeparator":
 					match stylebox_name:
 						"separator": sb.color = tags["base_col+2"]
+				"HSeparator_Weak", "VSeperator_Weak":
+					match stylebox_name:
+						"separator": sb.color = tags["base_col+1"]
 		
 	# Apply colors
 	_apply_font_icon_colors(tags)

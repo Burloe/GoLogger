@@ -149,6 +149,42 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 corner_detail = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vi2h4"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.15058824, 0.2227451, 0.22901963, 1)
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vna84"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.15058824, 0.2227451, 0.22901963, 1)
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_detail = 4
+expand_margin_left = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8s0ba"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0, 0, 1)
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_detail = 4
+expand_margin_left = 4.0
+
 [sub_resource type="DPITexture" id="DPITexture_l2oj6"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M8 9h7V2l-2 2a6.927 8.938-30 0 0-9 11 4.364 6.234-10 0 1 6-8z\"/></svg>
 "
@@ -507,10 +543,6 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 corner_detail = 4
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rx20u"]
 content_margin_left = 4.0
@@ -523,10 +555,6 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 corner_detail = 4
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y0jft"]
 content_margin_left = 4.0
@@ -698,6 +726,14 @@ content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
 bg_color = Color(0.1882353, 0.2784314, 0.28627452, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ybkyq"]
+bg_color = Color(0.15058824, 0.2227451, 0.22901963, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -948,6 +984,13 @@ grow_begin = -2.0
 grow_end = -2.0
 vertical = true
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_31vl3"]
+color = Color(0.1882353, 0.2784314, 0.28627452, 1)
+grow_begin = -2.0
+grow_end = -2.0
+thickness = 2
+vertical = true
+
 [resource]
 BoxContainer/constants/separation = 8
 Button/colors/font_color = Color(0.85, 0.85, 0.85, 1)
@@ -995,8 +1038,21 @@ Button_CategoryLoad/styles/hover = SubResource("StyleBoxFlat_6raue")
 Button_CategoryLoad/styles/hover_pressed = SubResource("StyleBoxFlat_aav5c")
 Button_CategoryLoad/styles/normal = SubResource("StyleBoxFlat_31vl3")
 Button_CategoryLoad/styles/pressed = SubResource("StyleBoxFlat_cqvv8")
+Button_CategoryRevertButton/base_type = &"Button"
+Button_CategoryRevertButton/styles/disabled = SubResource("StyleBoxFlat_vi2h4")
+Button_CategoryRevertButton/styles/hover = SubResource("StyleBoxFlat_vna84")
+Button_CategoryRevertButton/styles/hover_pressed = SubResource("StyleBoxFlat_vna84")
+Button_CategoryRevertButton/styles/normal = SubResource("StyleBoxFlat_vna84")
+Button_CategoryRevertButton/styles/pressed = SubResource("StyleBoxFlat_vna84")
+Button_CategoryRevertButtonInvalid/base_type = &"Button"
+Button_CategoryRevertButtonInvalid/styles/disabled = SubResource("StyleBoxFlat_8s0ba")
+Button_CategoryRevertButtonInvalid/styles/hover = SubResource("StyleBoxFlat_8s0ba")
+Button_CategoryRevertButtonInvalid/styles/hover_pressed = SubResource("StyleBoxFlat_8s0ba")
+Button_CategoryRevertButtonInvalid/styles/normal = SubResource("StyleBoxFlat_8s0ba")
+Button_CategoryRevertButtonInvalid/styles/pressed = SubResource("StyleBoxFlat_8s0ba")
 Button_RevertButton/base_type = &"Button"
-Button_RevertButton/colors/icon_disabled_color = Color(1, 1, 1, 0.19607843)
+Button_RevertButton/colors/disabled = Color(0.15, 0.15, 0.15, 1)
+Button_RevertButton/colors/icon_disabled_color = Color(0.8509804, 0.8509804, 0.8509804, 0.19607843)
 Button_RevertButton/icons/icon = SubResource("DPITexture_l2oj6")
 Button_RevertButton/styles/disabled = SubResource("StyleBoxFlat_jp7po")
 Button_RevertButton/styles/focus = SubResource("StyleBoxFlat_jp7po")
@@ -1083,7 +1139,6 @@ LineEdit/colors/font_selected_color = Color(0.85, 0.85, 0.85, 1)
 LineEdit/styles/focus = SubResource("StyleBoxFlat_cf0rl")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_cf0rl")
 LineEdit_CategoryFieldInvalid/base_type = &"LineEdit"
-LineEdit_CategoryFieldInvalid/colors/caret_color = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldInvalid/colors/clear_button_color_pressed = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldInvalid/colors/font_color = Color(0.85, 0.85, 0.85, 1)
 LineEdit_CategoryFieldInvalid/colors/font_selected_color = Color(0.85, 0.85, 0.85, 1)
@@ -1092,7 +1147,6 @@ LineEdit_CategoryFieldInvalid/colors/selection_color = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldInvalid/styles/focus = SubResource("StyleBoxFlat_6khnw")
 LineEdit_CategoryFieldInvalid/styles/normal = SubResource("StyleBoxFlat_6khnw")
 LineEdit_CategoryFieldValid/base_type = &"LineEdit"
-LineEdit_CategoryFieldValid/colors/caret_color = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldValid/colors/clear_button_color = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldValid/colors/clear_button_color_pressed = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldValid/colors/font_color = Color(0.85, 0.85, 0.85, 1)
@@ -1103,6 +1157,7 @@ LineEdit_CategoryFieldValid/colors/selection_color = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldValid/constants/outline_size = 5
 LineEdit_CategoryFieldValid/styles/focus = SubResource("StyleBoxFlat_rx20u")
 LineEdit_CategoryFieldValid/styles/normal = SubResource("StyleBoxFlat_rx20u")
+LineEdit_CategoryFieldsValid/colors/caret_color = Color(0.15, 0.15, 0.15, 1)
 LineEdit_FormatFields/base_type = &"LineEdit"
 LineEdit_FormatFields/colors/caret_color = Color(1, 1, 1, 1)
 LineEdit_FormatFields/colors/clear_button_color = Color(0, 0, 0, 1)
@@ -1163,6 +1218,8 @@ OptionButton_Limits/styles/normal = SubResource("StyleBoxFlat_ufcg0")
 OptionButton_Limits/styles/pressed = SubResource("StyleBoxFlat_r5nli")
 Panel/styles/panel = SubResource("StyleBoxFlat_fwrcu")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_so5gp")
+PanelContainer_CategoryToolbar/base_type = &"PanelContainer"
+PanelContainer_CategoryToolbar/styles/panel = SubResource("StyleBoxFlat_ybkyq")
 PanelContainer_TabBar/base_type = &"PanelContainer"
 PanelContainer_TabBar/styles/panel = SubResource("StyleBoxFlat_m0oip")
 Panel_BaseCol_NoCmarg/base_type = &"Panel"
@@ -1249,3 +1306,5 @@ VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_v5nyb")
 VScrollBar/styles/scroll = SubResource("StyleBoxEmpty_vghxg")
 VScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_vghxg")
 VSeparator/styles/separator = SubResource("StyleBoxLine_6raue")
+VSeparator_Weak/base_type = &"VSeparator"
+VSeparator_Weak/styles/separator = SubResource("StyleBoxLine_31vl3")

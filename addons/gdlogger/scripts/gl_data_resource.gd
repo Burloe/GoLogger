@@ -31,6 +31,10 @@ class_name GDLData extends Resource
 	set(value):
 		auto_reload = value
 		update_list()
+@export_range(1.0, 300, 1.0) var poll_rate: int = 1:
+	set(value):
+		poll_rate = value
+		update_list()
 
 @export_group("Settings")
 @export_subgroup("Directory & Formats")
@@ -127,6 +131,7 @@ var browser_sort_ctrl: Button = null
 var color_code_ctrl: CheckButton = null
 var open_logs_enternally_ctrl: Button = null
 var auto_reload_ctrl: CheckButton = null
+var poll_rate_ctrl: HSlider = null
 
 var autostart_ctrl: CheckButton = null
 var utc_ctrl: CheckButton = null
@@ -300,6 +305,7 @@ func update_list() -> void:
 		"browser_sort": 				{"value": browser_sort, 				"default": 0, 			"ctrl": browser_sort_ctrl},
 		"open_logs_enternally":	{"value": open_logs_enternally,	"default": false,		"ctrl": open_logs_enternally_ctrl},
 		"auto_reload": 					{"value": auto_reload, 					"default": true, 		"ctrl": auto_reload_ctrl},
+		"poll_rate":						{"value": poll_rate,						"default": 1,				"ctrl": poll_rate_ctrl},
 		"autostart": 						{"value": autostart, 						"default": true, 		"ctrl": autostart_ctrl},
 		"utc": 									{"value": utc, 									"default": false, 	"ctrl": utc_ctrl},
 		"colorcode_dates":			{"value": colorcode_dates,			"default": false,		"ctrl": colorcode_dates_ctrl},

@@ -4,7 +4,7 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 
 ## BUGS
-- [ ] Apply buttons for formats aren't really applying the new ones but using enter to emit text_submitted does
+- [x] Apply buttons for formats aren't really applying the new ones but using enter to emit text_submitted does
 
 ## General
 
@@ -24,8 +24,8 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [x] New categories are appended to array at end.
   - [x] (Re)Naming:
     - [x] Rename is applied to it's existing array entry.
-    - [ ] Applying name is done with both the Enter key and the ApplyButton.
-    - [ ] Revert name button works.
+    - [x] Applying name is done with both the Enter key and the ApplyButton.
+    - [x] Revert name button works.
   - [x] Moving categories in Dock moves the array order.
   - [x] Array entry is removed when LogCategory is queue freed.
   - [x] Add a new category > Don't name it > Move or change another category and ensure the empty category isn't saved
@@ -36,10 +36,10 @@ This file should be deleted if it was installed with the plugin. Please only ins
   - [x] Unchecking clears setting to "".
 
 - [ ] `base_directory`:
-  - [ ] New directory is created when change.
-  - [ ] Ensure that when the user has a `custom_user_dir` that the base directory is created in this custom directory.
-  - [ ] Directories for all the categories are created when running the game if,
-  - [ ] Checks directory is valid before applying and reverting if not.
+  - [x] New directory is created when change.
+  - [x] Ensure that when the user has a `custom_user_dir` that the base directory is created in this custom directory.
+  - [x] Directories for all the categories are created when running the game if,
+  - [x] Checks directory is valid before applying and reverting if not.
 - [x] `log_header_format`:
   - [x] New log header is used when starting a session.
   - [x] Check all tags work properly.
@@ -75,8 +75,8 @@ This file should be deleted if it was installed with the plugin. Please only ins
 	- [x] Ensure entry count action is triggered when this value is hit.
 - [x] `session_duration`:
 	- [x] Ensure session timer wait time is set to this value
-- [ ] `Reset to Default`:
-	- [ ] Check all settings are indeed reset to their default values when pressed
+- [x] `Reset to Default`:
+	- [x] Check all settings are indeed reset to their default values when pressed
 
 
 ## Sessions
@@ -107,8 +107,8 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 ### Hotkeys
 
-- [ ] Check `start_session` hotkey
-- [ ] Check `stop_session` hotkey
+- [x] Check `start_session` hotkey
+- [x] Check `stop_session` hotkey
 - [x] Check `display_instance_id` hotkey
 
 ### `data.tres`
@@ -123,25 +123,24 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [x] Ensure `[categories][default_category]` clears correctly when unticked.
 - [x] Ensure new category sections are initialized with blank values.
 - [x] Ensure category session fields update correctly during sessions.
-- [ ] Ensure settings are validated properly.
+- [x] Ensure settings are validated properly.
 
 ## Dock
 
 ### Categories
 
 - [x] Ensure `Apply` and `DefaultCategory` toggle correctly when modifying a category name.
-- [ ] Ensure `Apply` is disabled when the current `LineEdit` value is invalid.
-- [ ] Ensure `Reset` appears when `CategoryName[LineEdit]` is being edited.
-- [ ] Ensure `Reset` restores the last applied `category_name`.
-- [ ] Ensure `Lock` disables `CategoryName[LineEdit]` and `Delete`.
-- [ ] Ensure `DefaultCategory` toggles correctly across all `LogCategory` instances.
-- [ ] Ensure move buttons reposition `LogCategory` items correctly.
-- [ ] Ensure left- and right-most move buttons disable correctly. Including after a `LogCategory` deletion.
-- [ ] Ensure `Delete` properly `queue_free()`s the target `LogCategory`.
-- [ ] Apply and Revert buttons for LineEdits:
-  - [ ] `base_directory`, `log_header_format` and `entry_format` Revert buttons.
-  - [ ] `base_directory`, `log_header_format` and `entry_format` Apply buttons and Enter keypress applies the values.
-  - [ ] `base_directory`, `log_header_format` and `entry_format` Revert buttons reverts to the last applied value.
+- [x] Ensure `Apply` is disabled when the current `LineEdit` value is invalid.
+- [x] Ensure `Reset` appears when `CategoryName[LineEdit]` is being edited.
+- [x] Ensure `Reset` restores the last applied `category_name`.
+- [x] Ensure `DefaultCategory` toggles correctly across all `LogCategory` instances.
+- [x] Ensure move buttons reposition `LogCategory` items correctly.
+- [x] Ensure left- and right-most move buttons disable correctly. Including after a `LogCategory` deletion.
+- [x] Ensure `Delete` properly `queue_free()`s the target `LogCategory`.
+- [x] Apply and Revert buttons for LineEdits:
+  - [x] `base_directory`, `log_header_format` and `entry_format` Revert buttons.
+  - [x] `base_directory`, `log_header_format` and `entry_format` Apply buttons and Enter keypress applies the values.
+  - [x] `base_directory`, `log_header_format` and `entry_format` Revert buttons reverts to the last applied value.
 
 ### Log Browser
 - [x] Ensure categories are loaded and that the tabs in the TabContainer are named appropriately.
@@ -154,9 +153,8 @@ This file should be deleted if it was installed with the plugin. Please only ins
 - [x] Ensure each setting loads the correct value from the `.ini` file.
 - [x] Ensure each setting saves the correct value to the `.ini` file.
 - [x] Ensure each setting applies its behavior correctly.
-- [ ] Ensure `BaseDirectory`, `LogHeaderFormat`, and `EntryFormat` show the `Apply` button when a valid value is present.
+- [x] Ensure `BaseDirectory`, `LogHeaderFormat`, and `EntryFormat` show the `Apply` button when a valid value is present.
 - [x] Ensure the inspector module for hotkeys loads and displays correctly.
-- [ ] Ensure each setting control and its container show the same tooltip text.
 
 ### Help Tab
 

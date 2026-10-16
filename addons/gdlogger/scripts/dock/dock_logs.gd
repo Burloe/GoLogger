@@ -27,6 +27,9 @@ signal request_categories_save
 @onready var colorcode_btn: CheckButton = %LGColorCodeCheckButton
 @onready var sort_mode_btn: Button = %LGSortButton
 @onready var auto_reload_btn: CheckButton = %LGAutoReloadCheckButton
+@onready var poll_rate_container: BoxContainer = %PollRateBoxContainer
+@onready var poll_rate_lbl: Label = %PollRateLabel
+@onready var poll_rate_slider: HSlider = %PollRateHSlider
 
 @onready var file_container: FlowContainer = %FileFlowContainer 
 @onready var reload_btn: Button = %LGReloadButton
@@ -76,6 +79,14 @@ var reload_automatically: bool = true:
 		data.auto_reload = value
 		reload_btn.visible = !value
 
+var poll_rate_value: int = 1:
+	set(value):
+		poll_rate_value = value
+		data.poll_rate = value
+		polling_timer.stop()
+		polling_timer.wait_time = value
+		polling_timer.start(value)
+
 var theme_colors: Dictionary = {}
 
 enum LimitMethod { ## Index 3 is a SEPERATOR and should not be used.
@@ -99,8 +110,6 @@ enum SessionTimerAction {
 
 
 
-
-
 func _ready() -> void:
 	log_settings_popup.hide()
 	_connect_unique(add_category_btn.button_up, _add_category)  
@@ -110,7 +119,16 @@ func _ready() -> void:
 	reload_btn.button_up.connect(load_log_files)
 	polling_timer.timeout.connect(func() -> void: if reload_automatically: load_log_files())
 	log_settings_btn.button_up.connect(_on_log_settings_button_up)
-	auto_reload_btn.toggled.connect(func(toggled_on: bool) -> void: reload_automatically = toggled_on)
+	auto_reload_btn.toggled.connect(
+		func(toggled_on: bool) -> void: 
+			reload_automatically = toggled_on
+			poll_rate_container.modulate = Color.WHITE if toggled_on else Color("ffffff46")
+	)
+	poll_rate_slider.drag_ended.connect(
+		func(toggled_on: bool) -> void: 
+			poll_rate_value = poll_rate_slider.value
+			poll_rate_lbl.text = str("Poll Rate\n", data.poll_rate, " sec")
+	)
 	open_w_os_btn.toggled.connect(func(toggled_on: bool) -> void: open_log_with_os = toggled_on)
 	colorcode_btn.toggled.connect(_on_colorcode_changed)
 	sort_mode_btn.button_up.connect(
@@ -133,11 +151,14 @@ func initialize_tab() -> void:
 	reload_automatically = data.auto_reload
 	reload_btn.visible = !data.auto_reload
 	
-	# TODO Add LGSettings initializers here
 	cur_sort = data.browser_sort
 	colorcode_btn.button_pressed = data.colorcode_dates
 	reload_automatically = data.auto_reload
 	auto_reload_btn.button_pressed = data.auto_reload
+	poll_rate_value = data.poll_rate
+	poll_rate_container.modulate = Color.WHITE if data.auto_reload else Color("ffffff46")
+
+
 
 	for log_c in category_container.get_children():
 		log_c.queue_free()
@@ -369,8 +390,6 @@ func load_log_files(is_initializing: bool = false) -> void: ## Used to both init
 		_reconcile_log_files(target_files, current_category)
 		_on_colorcode_changed(data.colorcode_dates)
 
-		# await get_tree().physics_frame
-		# _update_columns(is_initializing) 
 		is_reloading = false
 
 
@@ -558,6 +577,10 @@ func _open_log_file(log_file: GDLLogFile) -> void:
 	cur_logfile = log_file 
 
 
+func _on_polling_rate_slider_value_changed(value_changed: bool) -> void:
+	poll_rate_value = poll_rate_slider.value
+
+
 
 func _on_colorcode_changed(toggled_on: bool) -> void:
 	var files := file_container.get_children() 
@@ -614,7 +637,7 @@ func _on_log_settings_button_up() -> void:
 	log_settings_popup.visible = !log_settings_popup.visible
 	log_settings_popup.size = Vector2.ZERO
 	log_settings_popup.initial_position = Window.WINDOW_INITIAL_POSITION_ABSOLUTE
-	log_settings_popup.position = Vector2i(log_settings_btn.get_screen_position() + Vector2(48, -156))
+	log_settings_popup.position = Vector2i(log_settings_btn.get_screen_position() + Vector2(48, -218))
 
 	if log_settings_popup.visible:
 		log_settings_popup.popup()
