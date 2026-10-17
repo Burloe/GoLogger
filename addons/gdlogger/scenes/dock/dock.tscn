@@ -139,15 +139,6 @@ shadow_size = 8
 shadow_color = Color(0, 0, 0, 0.29411766)
 shadow_offset = Vector2(0, 0)
 
-[sub_resource type="DPITexture" id="DPITexture_e5b3s"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#e0e0e0\" d=\"M8 1a5 5 0 0 0-3.535 1.465 1 1 0 0 0 1.414 1.414 3 3 0 0 1 4.242 0 1 1 0 0 0 1.414-1.414A5 5 0 0 0 8 1zM3 4.996a1 1 0 0 0-1 1c0 .833.327 1.697.969 2.5.33.413.77.796 1.3 1.072a4 4 0 0 0-.136.432H2a1 1 0 0 0 0 2h2.131a4 4 0 0 0 .18.537c-.142.09-.279.185-.41.283-.586.44-1.108.97-1.608 1.47a1 1 0 0 0 1.414 1.413c.5-.5.978-.972 1.393-1.283.17-.127.31-.203.443-.27a4 4 0 0 0 4.914 0c.133.067.273.142.442.268.414.311.892.783 1.392 1.283a1 1 0 0 0 1.414-1.414c-.5-.5-1.022-1.03-1.607-1.469a6.236 6.236 0 0 0-.408-.28 4 4 0 0 0 .175-.54h2.133a1 1 0 0 0 0-2h-2.13a4 4 0 0 0-.135-.434 4.117 4.117 0 0 0 1.296-1.07c.643-.803.97-1.666.97-2.5a1 1 0 0 0-2 0c0 .167-.174.803-.532 1.25-.25.314-.549.55-.932.666a4 4 0 0 0-.603-.412 2 2 0 1 0-3.867 0 4 4 0 0 0-.604.408c-.383-.117-.68-.352-.931-.666-.358-.447-.532-1.083-.532-1.25a1 1 0 0 0-1-1z\"/></svg>
-"
-color_map = {
-Color(1, 0.37254903, 0.37254903, 1): Color(1, 0.47, 0.42, 1),
-Color(0.37254903, 1, 0.5921569, 1): Color(0.45, 0.95, 0.5, 1),
-Color(1, 0.8666667, 0.39607844, 1): Color(0.83, 0.78, 0.62, 1)
-}
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qiahn"]
 bg_color = Color(0, 0, 0, 0.39215687)
 
@@ -211,7 +202,7 @@ theme_override_constants/side_margin = 16
 theme_override_constants/tab_separation = 10
 theme_override_constants/icon_separation = 8
 theme_override_constants/icon_max_width = 23
-current_tab = 2
+current_tab = 1
 tab_focus_mode = 0
 tab_0/title = " "
 tab_0/icon = ExtResource("1_lnu3o")
@@ -229,7 +220,6 @@ metadata/_tab_name = " "
 
 [node name="LogsTab" type="HBoxContainer" parent="DockTabContainer" unique_id=1085194574]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -370,6 +360,7 @@ size_flags_vertical = 3
 
 [node name="SettingsTab" type="Control" parent="DockTabContainer" unique_id=1242299856]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 script = ExtResource("19_luwxg")
@@ -785,6 +776,7 @@ custom_minimum_size = Vector2(104, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 theme = ExtResource("4_o07th")
+theme_type_variation = &"OptionButton_Limits"
 toggle_mode = false
 action_mode = 1
 alignment = 2
@@ -1212,8 +1204,7 @@ theme_type_variation = &"TabContainer_NoHCMargs"
 theme_override_constants/tab_separation = 6
 current_tab = 0
 tab_0/title = "Getting Started"
-tab_1/title = "Methods & Hotkeys"
-tab_2/title = "More Info"
+tab_1/title = "More Info"
 metadata/_tab_index = 3
 metadata/_tab_name = "Help"
 
@@ -1243,8 +1234,17 @@ folded = true
 title = "Getting Started with GDLogger"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="SetupRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp" unique_id=1514331880]
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp" unique_id=1155395858]
 visible = false
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp/BoxContainer" unique_id=433205646]
+layout_mode = 2
+text = "GDLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries in your codebase that log into files located in [i]user://gdlogger/game/[/i]:
+"
+
+[node name="SetupRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp/BoxContainer" unique_id=1514331880]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1253,23 +1253,21 @@ theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "GDLogger works immediately with the default configuration and comes with a single \"game\" category. Meaning you can instantly start creating entries in your codebase that log into files located in [i]user://gdlogger/game/[/i]:
- 
-    [i][color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"This is my first log entry.\"[/color], [color=#ce9178]\"game\"[/color])[/i]
+text = "    [i][color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"This is my first log entry.\"[/color], [color=#ce9178]\"game\"[/color])[/i]"
+fit_content = true
 
+[node name="Label2" type="Label" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/SetupHelp/BoxContainer" unique_id=27748186]
+layout_mode = 2
+text = "
 The most basic knowledge needed to use this plugin is the following:
 * Categories are optional but allows the user to sort logs entries into different files.
 * Use [i]Log.msg(\"My first entry\", \"game\")[/i] to log an entry. Any data that can be converted into a string can be used, the same way you would a [i]print()[/i].
-* Mark one Category as [b]Default[/b] to log an entry into that Category without needing to specify it after the entry string.
-* Below the Category section, your log files will appear for the currently selected category which you can open within the editor or alternatively use your OS default .log file program.
+* Sessions are used to indicate when the plugin is logging or not. Each session creates a new logfile
+* In order to limit the length/size of a log file, limits are put in place to do so automatically. However you can programmatically stop and start sessions with the functions Log.start_session() and Log.stop_sessione
 
 Use the Logs tab to add, remove, or rename categories and even read log files. Sessions dictate when the plugin logs entries or not, which automatically starts at runtime by default. But this can be turned off in the settings.
 
-GDLogger uses an [b]Log[/b] singleton, making its functions accessible from all scenes and scripts.
-
-[b]Note[/b] that autloaded scenes and scripts are loaded in the order of the list in your ProjectSettings. If another autoload is trying to log an entry before Log, the entry may bot be logged. Move Log higher in the list to fix this.
-	"
-fit_content = true
+[b]Note[/b] that autloaded scenes and scripts are loaded in the order of the list in your ProjectSettings. If another autoload is trying to log an entry before Log, the entry may bot be logged. Move Log higher in the list to fix this."
 
 [node name="CategoriesHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=1969559512]
 unique_name_in_owner = true
@@ -1299,6 +1297,52 @@ The Left/Right arrows allows you to sort the order of the categories in the dock
 The Open Folder button will load that category's log files for you to open and read."
 fit_content = true
 
+[node name="FunctionsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=347626334]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_o07th")
+title = "Functions"
+foldable_group = SubResource("FoldableGroup_fx5fv")
+
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/FunctionsHelp" unique_id=140892089]
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/FunctionsHelp/BoxContainer" unique_id=1840048037]
+layout_mode = 2
+text = "All methods are accessible using the autoload.
+Hotkeys can be customized by navigating to res://addons/gdlogger/, where the shortcut resources are located.
+"
+
+[node name="FunctionsRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/FunctionsHelp/BoxContainer" unique_id=208538217]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_o07th")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "[color=#dcdcaa]Log[/color].[color=#6dc2ff]start_session[/color]()
+    [color=#6a9955][i]Hotkey: Ctrl + Shift + O[/i][/color]
+
+
+[color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#c586c0]log_msg[/color]: [color=#4ec9b0]String[/color], [color=#c586c0]category_name[/color]: [color=#c586c0]int[/color] = [color=#b5cea8]0[/color], [color=#c586c0]print_msg[/color]: [color=#4ec9b0]bool[/color] = [color=#569cd6]false[/color])
+    [color=#6a9955]Example:[/color]
+        [color=#dcdcaa]Log[/color].[color=#6dc2ff]entry[/color]([color=#ce9178]\"Player's current health: \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]current_health[/color]) + [color=#ce9178]\" / \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]max_health[/color]), [color=#b5cea8]1[/color])
+
+
+[color=#dcdcaa]Log[/color].[color=#6dc2ff]stop_session[/color]()
+    [color=#6a9955][i]Hotkey: Ctrl + Shift + P[/i][/color]"
+fit_content = true
+
+[node name="Label2" type="Label" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/FunctionsHelp/BoxContainer" unique_id=335077149]
+layout_mode = 2
+text = "
+There are two signals available to help you synchronize the plugin with game logic.
+	session_toggled(toggled_on: bool)
+	msg_logged(category_name: String, msg: String)"
+
 [node name="MessagesHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=487613138]
 unique_name_in_owner = true
 layout_mode = 2
@@ -1308,8 +1352,17 @@ folded = true
 title = "Messages / Entries"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="MessagesRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp" unique_id=1166564036]
+[node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp" unique_id=1985414100]
 visible = false
+layout_mode = 2
+vertical = true
+
+[node name="Label" type="Label" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp/BoxContainer" unique_id=1286199977]
+layout_mode = 2
+text = "Messages(msg) or entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging. 
+"
+
+[node name="MessagesRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp/BoxContainer" unique_id=1166564036]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1318,20 +1371,31 @@ theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
 bbcode_enabled = true
-text = "Messages(msg) or entries are plain text strings and can include any data that can be converted to a string, allowing flexible and descriptive logging. 
+text = "[i][color=#57b3ff]Log[/color].[color=#63c5da]msg[/color]([color=#b8b8b8]log_msg[/color] [color=#ff7085]:[/color] [color=#42ffc2]String[/color], [color=#b8b8b8]category_name[/color][color=#ff7085]:[/color] [color=#42ffc2]String[/color] [color=#ff7085]=[/color] [color=#ffeca1]\"\"[/color], [color=#b8b8b8]print_msg[/color][color=#ff7085]:[/color] [color=#42ffc2]bool[/color] [color=#ff7085]=[/color] [color=#ff7085]false[/color])[/i]"
+fit_content = true
 
-[i][color=#57b3ff]Log[/color].[color=#63c5da]msg[/color]([color=#b8b8b8]log_msg[/color] [color=#ff7085]:[/color] [color=#42ffc2]String[/color], [color=#b8b8b8]category_name[/color][color=#ff7085]:[/color] [color=#42ffc2]String[/color] [color=#ff7085]=[/color] [color=#ffeca1]\"\"[/color], [color=#b8b8b8]print_msg[/color][color=#ff7085]:[/color] [color=#42ffc2]bool[/color] [color=#ff7085]=[/color] [color=#ff7085]false[/color])[/i]
+[node name="Label2" type="Label" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp/BoxContainer" unique_id=1403561495]
+layout_mode = 2
+text = "
+The Log.msg() function requires only a string or message/entry to be passed in but has additional arguments you can pass in, such as the category you want the entry to be logged into(is required if you haven't marked one of your categories as default. 
 
-The [b][color=#57b3ff]Log[/color].[color=#63c5da]msg[/color]()[/b] function requires only a string or message/entry to be passed in but has additional arguments you can pass in, such as the category you want the entry to be logged into(is required if you haven't marked one of your categories as [i]default[/i]. 
+You can also use print_msg to print individual entries if desired. 
 
-You can also use [i]print_msg[/i] to print individual entries if desired. 
+Example:"
 
-[b]Example:[/b]
-    [color=#ff7085]func[/color] [color=#6dc2ff]_on_damage_taken[/color]([color=#c586c0]amount[/color]: [color=#4ec9b0]float[/color], [color=#c586c0]source[/color]: [color=#4ec9b0]CharacterBody2D[/color])  ->  [color=#4ec9b0]void[/color]:
+[node name="MessagesRTLabel2" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/MessagesHelp/BoxContainer" unique_id=985376784]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_o07th")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "    [color=#ff7085]func[/color] [color=#6dc2ff]_on_damage_taken[/color]([color=#c586c0]amount[/color]: [color=#4ec9b0]float[/color], [color=#c586c0]source[/color]: [color=#4ec9b0]CharacterBody2D[/color])  ->  [color=#4ec9b0]void[/color]:
         [color=#c586c0]current_health[/color] -= [color=#c586c0]amount[/color]
         [color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#ce9178]\"Player took \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]amount[/color]) + [color=#ce9178]\" damage from entity [\"[/color] + [color=#c586c0]source[/color].[color=#6dc2ff]get_name[/color]() + [color=#ce9178]\"] - Current health: \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]current_health[/color]) + [color=#ce9178]\" / \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]max_health[/color]))
-        [color=#6a9955]# Player took 16.4 damage from entity [GoblinA] - Current health: 139.96 / 268[/color]
-    "
+        [color=#6a9955]# Player took 16.4 damage from entity [GoblinA] - Current health: 139.96 / 268[/color]"
 fit_content = true
 
 [node name="ConcurrencyHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=665020188]
@@ -1339,12 +1403,10 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_o07th")
-folded = true
 title = "Instance ID & Multiple Instances"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
-[node name="ConcurrencyRtlabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrencyHelp" unique_id=1890232147]
-visible = false
+[node name="ConcurrencyLabel" type="Label" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrencyHelp" unique_id=709873131]
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1352,144 +1414,11 @@ size_flags_vertical = 3
 theme = ExtResource("4_o07th")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "When running multiple instances of your project, as is the case with multiplayer games where two or more instances is run for debugging. The two instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instance logged what entry. The instance ID can be removed by erasing the {instance_id} tag from the [color=fc4674]Entry Format[/color] setting.
+text = "When running multiple instances of your project, as is the case with multiplayer games where two or more instances is run for debugging. The two instances will log into the same file, and by default. Entries are tagged with a unique instance ID to help distinguish which instance logged what entry. The instance ID can be removed by erasing the {instance_id} tag from the Entry Format setting.
 
-To see the ID of an instance, use the [color=fc4674]Display Instance ID[/color] hotkey([i]Ctrl + Shift + I[/i] by default). This will display the instance ID on your screen in your game. Within the Settings tab of the dock, under ID Overlay, you'll find settings to customize it's behavior and how it's displayed. Including the font used, size, outline and color to suit your game's resolution and ensure it is clearly visible. "
-fit_content = true
+To see the ID of an instance, use the Display Instance ID hotkey(Ctrl + Shift + I by default). This will display the instance ID on your screen in your game. Within the Settings tab of the dock, under ID Overlay, you'll find settings to customize it's behavior and how it's displayed. Including the font used, size, outline and color to suit your game's resolution and ensure it is clearly visible. "
 
-[node name="FileLimitsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=1580460435]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_o07th")
-folded = true
-title = "File Limits"
-foldable_group = SubResource("FoldableGroup_fx5fv")
-
-[node name="FileLimitsRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/FileLimitsHelp" unique_id=1956207480]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("4_o07th")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "[font_size=14]While log files are lightweight, creating an unlimited number of files or logging for extended periods is never recommended. GDLogger features limitations to control log file lengths. These limitations can be disabled if necessary, but doing so may affect performance. If you experience micro-stuttering or other issues, enable these settings or lower their limits.
-
-[font_size=14]File Count:[font_size=14]
-This option defines the maximum number of .log files allowed in each category folder. The default limit is 10. When the limit is reached, the oldest file is replaced with a new one. Only [i].log[/i] files that haven't been renamed are subject to the file count handling,
-
-[color=darkgray][i]Recommended:[/i][/color]
-[i]A file count limit of 10–20 is suitable for most use cases, though higher values are also supported. Setting it to 0 will disable the limitation but it's not recommended.[/i]
-
-
-[font_size=14][b]Entry count[/b][font_size=14]
-	As new entries are logged, they are counted, and once the limit is reached, one of the following actions is triggered:
-
-		Overwrite Entries – Replaces the oldest entries as new ones are added.
-		Restart Session – Ends the current session and starts a new one, creating a new .log file.
-		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
-
-
-[font_size=14][b]Session timer:[/b][font_size=14]
-	Starts a timer at the beginning of a session and runs for the duration specified in the Session Duration setting. This method is useful for time-based testing. 
-	The Session Timer emits the signals [color=turquoise]session_started[/color] and [color=turquoise]session_stopped[/color], which can be used to synchronize with other systems or features.
-	
-		Restart Session – Ends the current session and starts a new one, creating a new .log file.
-		Stop Session – Stops logging entirely. The session must be manually restarted using hotkeys or code.
-
-
-
-[b]Recommended overall settings:[/b]
-Using the Entry Count method with the Overwrite Entries action provides the most consistent performance but may overwrite older data if logging continues for long periods. Familiarize yourself with the session hotkeys for manual control when needed."
-fit_content = true
-
-[node name="Methods" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=830461916]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-theme = ExtResource("4_o07th")
-theme_type_variation = &"ScrollContainer_NoCMargins"
-scroll_hint_mode = 1
-metadata/_tab_index = 1
-metadata/_tab_name = "Methods & Hotkeys"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="DockTabContainer/HelpTab/Methods" unique_id=839083938]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 8
-
-[node name="FunctionsHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=347626334]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_o07th")
-folded = true
-title = "Functions"
-foldable_group = SubResource("FoldableGroup_fx5fv")
-
-[node name="FunctionsRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FunctionsHelp" unique_id=208538217]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("4_o07th")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "[font_size=14]All methods are accessible using the [color=violet]Log[color=white] autoload.
-Hotkeys can be customized by navigating to [color=darkgray][i]res://addons/gdlogger/[/i][color=white], where the shortcut resources are located.
-
-
-[color=#dcdcaa]Log[/color].[color=#6dc2ff]start_session[/color]()
-    Starts a logging session, creating new .log files and enabling entry logging.
-    [color=#6a9955][i]Hotkey: Ctrl + Shift + O[/i][/color]
-
-[color=#dcdcaa]Log[/color].[color=#6dc2ff]msg[/color]([color=#c586c0]log_msg[/color]: [color=#4ec9b0]String[/color], [color=#c586c0]category_name[/color]: [color=#c586c0]int[/color] = [color=#b5cea8]0[/color], [color=#c586c0]print_msg[/color]: [color=#4ec9b0]bool[/color] = [color=#569cd6]false[/color])
-    Logs an entry into the specified [i]category_index[/i]. You can optionally print any entry to the output as well using [i]print_msg[/i].
-    Example:
-        [color=#dcdcaa]Log[/color].[color=#6dc2ff]entry[/color]([color=#ce9178]\"Player's current health: \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]current_health[/color]) + [color=#ce9178]\" / \"[/color] + [color=#dcdcaa]str[/color]([color=#c586c0]max_health[/color]), [color=#b5cea8]1[/color])
-
-[color=#dcdcaa]Log[/color].[color=#6dc2ff]stop_session[/color]()
-    Stops the active logging session.
-    [color=#6a9955][i]Hotkey: Ctrl + Shift + P[/i][/color]
-
-
-There are two signals available to help you synchronize the plugin with game logic.[color=palegolderod]
-	session_toggled([i]toggled_on: bool[/i])
-	msg_logged([i]category_name: String, msg: String[/i])"
-fit_content = true
-
-[node name="HotkeysHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=664124483]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_o07th")
-folded = true
-title = "Hotkeys"
-foldable_group = SubResource("FoldableGroup_fx5fv")
-
-[node name="HotkeysRichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/HotkeysHelp" unique_id=1418471264]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("4_o07th")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
-bbcode_enabled = true
-text = "There are four hotkeys available to interact with GDLogger during runtime. 
-[b]Start Session[/b][/color][color=#d4d4d4]:[/color]           [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]O[/color]
-[b]Stop Session[/b][/color][color=#d4d4d4]:[/color]            [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]P[/color]
-[b]Display Instance ID[/b][/color][color=#d4d4d4]:[/color]  [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]I[/color]
-Hotkeys can be changed using InputEventShortcut resources. As such, they're excluded and doesn't crowd your InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector."
-fit_content = true
-
-[node name="FormattingHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/Methods/VBoxContainer" unique_id=1185594613]
+[node name="FormattingHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=1185594613]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1498,7 +1427,7 @@ folded = true
 title = "Formatting"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
-[node name="FormattingRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/Methods/VBoxContainer/FormattingHelp" unique_id=838472294]
+[node name="FormattingRTLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/FormattingHelp" unique_id=838472294]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1525,6 +1454,31 @@ Any tag and custom string formatting can be used.
 "
 fit_content = true
 
+[node name="HotkeysHelp" type="FoldableContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer" unique_id=664124483]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_o07th")
+folded = true
+title = "Hotkeys"
+foldable_group = SubResource("FoldableGroup_fx5fv")
+
+[node name="HotkeysRichTextLabel" type="RichTextLabel" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/HotkeysHelp" unique_id=1418471264]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("4_o07th")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2vjd2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2vjd2")
+bbcode_enabled = true
+text = "There are four hotkeys available to interact with GDLogger during runtime. 
+[b]Start Session[/b][/color][color=#d4d4d4]:[/color]           [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]O[/color]
+[b]Stop Session[/b][/color][color=#d4d4d4]:[/color]            [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]P[/color]
+[b]Display Instance ID[/b][/color][color=#d4d4d4]:[/color]  [color=#6a9955]Ctrl[/color] + [color=#6a9955]Shift[/color] + [color=#dcdcaa]I[/color]
+Hotkeys can be changed using InputEventShortcut resources. As such, they're excluded and doesn't crowd your InputMap. You can easily add, change or remove bindings to the resources in the Settings tab which opens the resources in the Inspector."
+fit_content = true
+
 [node name="MoreInfo" type="ScrollContainer" parent="DockTabContainer/HelpTab" unique_id=656868993]
 unique_name_in_owner = true
 visible = false
@@ -1533,7 +1487,7 @@ theme = ExtResource("4_o07th")
 theme_type_variation = &"ScrollContainer_NoCMargins"
 scroll_hint_mode = 1
 tile_scroll_hint = true
-metadata/_tab_index = 2
+metadata/_tab_index = 1
 metadata/_tab_name = "More Info"
 
 [node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/HelpTab/MoreInfo" unique_id=743311543]
@@ -1623,7 +1577,6 @@ unique_name_in_owner = true
 oversampling_override = 1.0
 position = Vector2i(65, 32)
 size = Vector2i(296, 245)
-visible = true
 min_size = Vector2i(296, 188)
 theme = ExtResource("4_o07th")
 theme_type_variation = &"PopupPanel_LogSettings"
@@ -1734,39 +1687,21 @@ mouse_filter = 2
 theme_override_constants/separation = 0
 alignment = 2
 
-[node name="VersionLinkButton2" type="LinkButton" parent="VersionHBoxContainer" unique_id=1249339521]
+[node name="RENABLEButton" type="Button" parent="VersionHBoxContainer" unique_id=1733649966]
 unique_name_in_owner = true
-visible = false
-modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(64, 40)
+custom_maximum_size = Vector2(64, -1)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 offset_transform_enabled = true
-offset_transform_position = Vector2(27.06, 2)
-tooltip_text = "MMB to open repo:
-https://github.com/Burloe/GoLogger"
-theme_override_font_sizes/font_size = 14
-button_mask = 4
-text = "GDL"
-underline = 2
-uri = "https://github.com/Burloe/GoLogger"
+offset_transform_position = Vector2(8, -8)
+theme = ExtResource("4_o07th")
+flat = true
+icon_alignment = 1
 
 [node name="Control" type="Control" parent="VersionHBoxContainer" unique_id=907219906]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-
-[node name="RENABLEButton" type="Button" parent="VersionHBoxContainer" unique_id=1733649966]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 40)
-custom_maximum_size = Vector2(40, 40)
-layout_mode = 2
-offset_transform_enabled = true
-offset_transform_position = Vector2(8, -8)
-theme = ExtResource("4_o07th")
-icon = SubResource("DPITexture_e5b3s")
-icon_alignment = 1
 
 [node name="VersionLinkButton" type="LinkButton" parent="VersionHBoxContainer" unique_id=2086881914]
 unique_name_in_owner = true

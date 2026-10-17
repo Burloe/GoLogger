@@ -208,6 +208,7 @@ func _add_category(_name: String = ""): ## _name only applicable at loading
 				for c: GDLLogCategory in category_container.get_children():
 					if c.category_name != current_category:
 						c.select_btn.button_pressed = false
+						c.select_btn.disabled = false
 	)
 	_n.tree_exited.connect(_on_category_tree_exited)
 	handle_category_mov_button_state()
@@ -236,8 +237,10 @@ func ensure_default_category() -> void:
 func _on_category_move_requested(category: GDLLogCategory, direction: int) -> void:
 	var cats: Array = category_container.get_children()
 	var from: int = category.get_index()
-	var to: int = from
-	var opposite_dir = 1 if direction == -1 else -1
+	var to: int = from + direction
+
+	if to < 0 or to >= cats.size():
+		return
 
 	for c in cats:
 		c.move_left_btn.disabled = true
@@ -245,43 +248,27 @@ func _on_category_move_requested(category: GDLLogCategory, direction: int) -> vo
 		c.move_left_btn.add_theme_color_override("icon_disabled_color", c.move_left_btn.get_theme_color("icon_normal_color"))
 		c.move_right_btn.add_theme_color_override("icon_disabled_color", c.move_right_btn.get_theme_color("icon_normal_color"))
 	category_container.get_child(0).move_left_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
-	category_container.get_child(category_container.get_child_count() -1).move_right_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
+	category_container.get_child(category_container.get_child_count() - 1).move_right_btn.add_theme_color_override("icon_disabled_color", Color.TRANSPARENT)
 
-	to += direction
-
-	if to < 0 or to >= cats.size():
-		return
-
-	var cols: int = max(1, category_container.columns)
 	var h_sep: float = float(category_container.get_theme_constant("h_separation"))
-	var v_sep: float = float(category_container.get_theme_constant("v_separation"))
-	var step_x: float = category.size.x + h_sep
-	var step_y: float = category.size.y + v_sep 
-	var from_row: int = int(from / cols)
-	var from_col: int = from % cols
-	var to_row: int = int(to / cols)
-	var to_col: int = to % cols
-
-	var delta := Vector2(
-		float(to_col - from_col) * step_x,
-		float(to_row - from_row) * step_y
-	)
-
 	var other: GDLLogCategory = cats[to]
+
+	var category_delta := Vector2(direction * (other.size.x + h_sep), 0.0)
+	var other_delta := Vector2(-direction * (category.size.x + h_sep), 0.0)
 
 	var tween := create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC).set_parallel()
 	category.offset_transform_enabled = true
 	other.offset_transform_enabled = true
 
-	tween.tween_property(category, "offset_transform_position", delta, 0.05)
-	tween.tween_property(other, "offset_transform_position", -delta, 0.05)
+	tween.tween_property(category, "offset_transform_position", category_delta, 0.05)
+	tween.tween_property(other, "offset_transform_position", other_delta, 0.05)
 	await tween.finished 
 
 	category_container.move_child(category, to)
 	category.offset_transform_position = Vector2.ZERO
 	category.offset_transform_enabled = false
-	cats[to].offset_transform_position = Vector2.ZERO
-	cats[to].offset_transform_enabled = false
+	other.offset_transform_position = Vector2.ZERO
+	other.offset_transform_enabled = false
 	request_categories_save.emit()
 	for c in cats:
 		c.move_left_btn.disabled = false
@@ -354,37 +341,37 @@ func _check_conflict_name(cat_obj: GDLLogCategory, new_name: String) -> bool:
 
 func load_log_files(is_initializing: bool = false) -> void: ## Used to both initialize and reload the file list
 		if not is_active or is_reloading:
-				return 
+			return 
 
 		if data != null:
-				base_dir = data.base_dir
+			base_dir = data.base_dir
 
 		if base_dir == "":
-				printerr("GDLogger: Failed to load Base Directory!")
-				return
+			printerr("GDLogger: Failed to load Base Directory!")
+			return
 
 		if current_category == "" and !data.categories.is_empty() and data.categories[0] != null:
-				for cat in data.categories:
-						if cat.category_name == data.default_category:
-								current_category = cat.category_name
-								for log_cat in category_container.get_children():
-										if log_cat.category_name == current_category:
-												log_cat.select_btn.button_pressed = true
-								break
+			for cat in data.categories:
+				if cat.category_name == data.default_category:
+					current_category = cat.category_name
+					for log_cat in category_container.get_children():
+						if log_cat.category_name == current_category:
+							log_cat.select_btn.button_pressed = true
+					break
 
 		if current_category == "":
-				_clear_all_log_files()
-				return
+			_clear_all_log_files()
+			return
 
 		var target_files: Array = _sort_file_list(current_category)
 
 		var current_file_names: Array = []
 		for lf in log_files:
-				if is_instance_valid(lf):
-						current_file_names.append(lf.file_name)
+			if is_instance_valid(lf):
+				current_file_names.append(lf.file_name)
 
 		if !is_initializing and current_file_names == target_files:
-				return
+			return
 
 		is_reloading = true
 		_reconcile_log_files(target_files, current_category)
@@ -405,20 +392,20 @@ func _clear_all_log_files() -> void:
 func _reconcile_log_files(target_files: Array, category_name: String) -> void:
 		var existing_by_name: Dictionary = {}
 		for lf in log_files:
-				if is_instance_valid(lf):
-						existing_by_name[lf.file_name] = lf
+			if is_instance_valid(lf):
+					existing_by_name[lf.file_name] = lf
 
 		var target_set: Dictionary = {}
 		for file_name in target_files:
-				target_set[file_name] = true
+			target_set[file_name] = true
 
 		for file_name in existing_by_name.keys():
-				if not target_set.has(file_name):
-						var lf: GDLLogFile = existing_by_name[file_name]
-						if is_instance_valid(lf):
-								file_container.remove_child(lf)
-								lf.queue_free()
-						existing_by_name.erase(file_name)
+			if not target_set.has(file_name):
+				var lf: GDLLogFile = existing_by_name[file_name]
+				if is_instance_valid(lf):
+					file_container.remove_child(lf)
+					lf.queue_free()
+				existing_by_name.erase(file_name)
 
 		var updated_log_files: Array[GDLLogFile] = []
 		var colorcode: Color = Color.BLACK
@@ -426,31 +413,31 @@ func _reconcile_log_files(target_files: Array, category_name: String) -> void:
 		var prev_file: String = ""
 
 		for i in range(target_files.size()):
-				var file_name: String = str(target_files[i])
-				var lf: GDLLogFile = null
+			var file_name: String = str(target_files[i])
+			var lf: GDLLogFile = null
 
-				if existing_by_name.has(file_name):
-						lf = existing_by_name[file_name]
-						if lf.get_index() != i:
-								file_container.move_child(lf, i)
-				else:
-						lf = _create_logfile_obj(category_name, file_name)
-						if lf == null:
-								continue
-						file_container.add_child(lf)
-						file_container.move_child(lf, i)
-						lf.button_up.connect(_open_log_file.bind(lf))
+			if existing_by_name.has(file_name):
+				lf = existing_by_name[file_name]
+				if lf.get_index() != i:
+					file_container.move_child(lf, i)
+			else:
+				lf = _create_logfile_obj(category_name, file_name)
+				if lf == null:
+					continue
+				file_container.add_child(lf)
+				file_container.move_child(lf, i)
+				lf.button_up.connect(_open_log_file.bind(lf))
 
-				if data.colorcode_dates:
-						var new_c := _get_logfile_color(used_cols)
-						var pdate: String = prev_file.lstrip(str(category_name, "(")).rstrip(").log")
-						var cdate: String = file_name.lstrip(str(category_name, "(")).rstrip(").log")
-						if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
-								colorcode = _get_logfile_color(used_cols)
-								used_cols.append(colorcode)
+			if data.colorcode_dates:
+				var new_c := _get_logfile_color(used_cols)
+				var pdate: String = prev_file.lstrip(str(category_name, "(")).rstrip(").log")
+				var cdate: String = file_name.lstrip(str(category_name, "(")).rstrip(").log")
+				if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
+					colorcode = _get_logfile_color(used_cols)
+					used_cols.append(colorcode)
 
-				updated_log_files.append(lf)
-				prev_file = file_name
+			updated_log_files.append(lf)
+			prev_file = file_name
 
 		log_files = updated_log_files
 
@@ -460,11 +447,11 @@ func _create_logfile_obj(category_name: String, file_name: String) -> GDLLogFile
 		var file_path: String = str(base_dir.path_join(str(category_name, "_logs")).path_join(file_name), "/")
 		
 		if not FileAccess.file_exists(file_path):
-				return null
+			return null
 
 		var f := FileAccess.open(file_path, FileAccess.READ)
 		if f == null:
-				return null
+			return null
 				
 		var content := f.get_file_as_string(file_path)
 		var has_error := f.get_open_error() != OK
@@ -480,22 +467,22 @@ func _create_logfile_obj(category_name: String, file_name: String) -> GDLLogFile
 		lf.connect_to_popup(popup_panel)
 
 		if hovered_logfile != null and hovered_logfile.file_name == file_name and hovered_logfile.category_name == category_name:
-				lf.mouse_entered.emit()
+			lf.mouse_entered.emit()
 
 		if has_error or !lf.is_file_valid():
-				lf.assign_icon(false)
+			lf.assign_icon(false)
 
 		return lf
 
 
 func _get_category_files(category_name: String) -> PackedStringArray:
 		if base_dir == "" or category_name.is_empty():
-				return []
+			return []
 
 		var c_path: String = str(base_dir.path_join(category_name), "_logs/")
 		var d := DirAccess.open(c_path)
 		if d != null:
-				return d.get_files()
+			return d.get_files()
 
 		return []
 
@@ -598,8 +585,8 @@ func _on_colorcode_changed(toggled_on: bool) -> void:
 			var pdate: String = prev_file.date_stamp if prev_file else ""
 
 			if !prev_file or !cur_file.date_stamp.contains(prev_file.date_stamp):
-					colorcode = _get_logfile_color(used_cols)
-					used_cols.append(colorcode)
+				colorcode = _get_logfile_color(used_cols)
+				used_cols.append(colorcode)
 			cur_file.add_theme_color_override("font_color", 							colorcode)
 			cur_file.add_theme_color_override("font_hover_color", 				colorcode.lightened(0.2))
 			cur_file.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
@@ -612,24 +599,30 @@ func _on_colorcode_changed(toggled_on: bool) -> void:
 
 
 func _get_logfile_color(used_colors: Array[Color]) -> Color:
-	var rng := RandomNumberGenerator.new()
-	var luminance: float = settings.get_setting("interface/theme/base_color").get_luminance()
-	var min_luminance := 0.85 if luminance <= 0.5 else 0.05
-	var max_luminance := 1.0 if luminance <= 0.5 else 0.20
+	var is_dark: bool = settings.get_setting("interface/theme/base_color").get_luminance() <= 0.5
+	var sat_range := Vector2(0.65, 0.9) if is_dark else Vector2(0.75, 1.0)
+	var val_range := Vector2(0.85, 1.0) if is_dark else Vector2(0.45, 0.65)
 
-	while true:
-		var color := Color(rng.randf(), rng.randf(), rng.randf(), 0.8)
-		if color == Color.BLACK or color.get_luminance() < min_luminance or color.get_luminance() > max_luminance:
-			continue
+	var best_color := Color.WHITE
+	var best_dist := -1.0
 
-		var is_used := false
-		for used_color: Color in used_colors:
-			if color.is_equal_approx(used_color):
-				is_used = true
-				break
-		if not is_used:
-			return color
-	return Color.BLACK
+	# Sample candidate hues and keep the one furthest from every hue already used.
+	for i in 24:
+		var hue := randf()
+		var min_dist := 1.0
+		for used: Color in used_colors:
+			var d := absf(hue - used.h)
+			min_dist = minf(min_dist, minf(d, 1.0 - d)) # Hue is circular
+
+		if min_dist > best_dist:
+			best_dist = min_dist
+			best_color = Color.from_hsv(
+				hue,
+				randf_range(sat_range.x, sat_range.y),
+				randf_range(val_range.x, val_range.y)
+			)
+
+	return best_color
 
 
 
@@ -653,7 +646,6 @@ func _on_show_delete_category_prompt(category: GDLLogCategory) -> void:
 
 
 func _on_del_prompt_button_up(btn: Button) -> void:
-	# Derived from the name; the stored category_path may lack the "_logs" suffix.
 	var cat_path: String = str(data.base_dir, category_to_delete.category_name, "_logs") if category_to_delete else ""
 
 	match btn:

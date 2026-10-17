@@ -171,7 +171,6 @@ func start_session() -> void:
 	for c in data.categories:
 		session_categories.append(c.duplicate() as GDLCategoryData)
 	session_default_category = data.default_category
-	print(data.default_category, session_default_category)
 
 
 	for i in session_categories:

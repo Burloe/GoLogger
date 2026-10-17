@@ -1,12 +1,13 @@
 @tool
 class_name GDLLogFile extends Button
 
-
+@export var data: GDLData = null
 @export var fallback_name: String = str("<NA>")
 @export var date_stamp: String = ""
 @export var time_stamp: String = ""
 
 const DISPLAY_NAME_CHAR_LIMIT: int = 18
+const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 
 # var selected: bool = false:
 # 	set(value):
@@ -28,6 +29,7 @@ var file_name: String = "":
 			time_stamp = dt.split("_", false, 2)[1]
 			is_non_gl_log = is_gl_name(value) 
 
+var open_external_setting: bool = false
 
 var is_non_gl_log: bool = false
 var display_name: String = ""
@@ -38,10 +40,12 @@ var file_contents: String = ""
 
 
 func _ready() -> void:
-	# toggled.connect(func(toggle_on: bool) -> void: selected = toggle_on)
+	if FileAccess.file_exists(DATA_PATH):
+		data = load(DATA_PATH)
 	text = display_name if display_name != "" else fallback_name
 	expand_icon = true
 	add_theme_constant_override("icon_max_width", 32)
+	toggled.connect(func(toggled_on: bool) -> void: if toggled and data.open_logs_enternally:	button_pressed = false)
 
 
 

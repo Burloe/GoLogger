@@ -14,11 +14,14 @@ signal close_logfile
 @onready var settings = EditorInterface.get_editor_settings()
 
 var file_contents_lblsett: String = "uid://cqn5x8cb7vjy3"
-var dragging: bool = false
 var first_popup := true
 var saved_position := Vector2i.ZERO
+var dragging: bool = false
+var drag_offset := Vector2i.ZERO
 
 var resizing := false
+var resize_start_mouse := Vector2i.ZERO
+var resize_start_size := Vector2i.ZERO
 
 var file_name: String = "":
 	set(value):
@@ -69,30 +72,28 @@ func _save_popup_position() -> void:
 
 
 func _on_title_bar_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			dragging = event.pressed
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		dragging = event.pressed
+		if dragging:
+			drag_offset = DisplayServer.mouse_get_position() - position
 
 	elif event is InputEventMouseMotion and dragging:
-		position += Vector2i(event.relative.x, event.relative.y)
+		position = DisplayServer.mouse_get_position() - drag_offset
 		saved_position = position
 
 
 
 func _on_resize_handle_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			resizing = event.pressed
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		resizing = event.pressed
+		if resizing:
+			resize_start_mouse = DisplayServer.mouse_get_position()
+			resize_start_size = size
 
 	elif event is InputEventMouseMotion and resizing:
-		var new_size: Vector2i = Vector2i(
-			int(size.x) + event.relative.x,
-			int(size.y) + event.relative.y
-		)
-
-		new_size.x = max(int(new_size.x), 300)
-		new_size.y = max(int(new_size.y), 200)
-
+		var new_size: Vector2i = resize_start_size + (DisplayServer.mouse_get_position() - resize_start_mouse)
+		new_size.x = maxi(new_size.x, 300)
+		new_size.y = maxi(new_size.y, 200)
 		size = new_size
 
 

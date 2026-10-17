@@ -480,7 +480,6 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 corner_detail = 4
-expand_margin_top = 4.0
 expand_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6pdd"]
@@ -490,6 +489,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 corner_detail = 4
+expand_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5nyb"]
 bg_color = Color(0.15058824, 0.2227451, 0.22901963, 1)
@@ -498,7 +498,6 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 corner_detail = 4
-expand_margin_top = 4.0
 expand_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vghxg"]
@@ -1150,7 +1149,6 @@ LineEdit_CategoryFieldValid/base_type = &"LineEdit"
 LineEdit_CategoryFieldValid/colors/clear_button_color = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldValid/colors/clear_button_color_pressed = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldValid/colors/font_color = Color(0.85, 0.85, 0.85, 1)
-LineEdit_CategoryFieldValid/colors/font_placeholder_color = Color(0.85, 0.85, 0.85, 1)
 LineEdit_CategoryFieldValid/colors/font_selected_color = Color(0.85, 0.85, 0.85, 1)
 LineEdit_CategoryFieldValid/colors/font_uneditable_color = Color(0.85, 0.85, 0.85, 1)
 LineEdit_CategoryFieldValid/colors/selection_color = Color(0, 0, 0, 1)
@@ -1241,6 +1239,10 @@ ScrollContainer/constants/scrollbar_v_separation = 8
 ScrollContainer/styles/panel = SubResource("StyleBoxFlat_cqteu")
 ScrollContainer_HCMargsOnly/base_type = &"ScrollContainer"
 ScrollContainer_HCMargsOnly/constants/scrollbar_h_separation = 8
+ScrollContainer_HCMargsOnly/constants/scrollbar_margin_bottom = 4
+ScrollContainer_HCMargsOnly/constants/scrollbar_margin_left = 4
+ScrollContainer_HCMargsOnly/constants/scrollbar_margin_right = 4
+ScrollContainer_HCMargsOnly/constants/scrollbar_margin_top = 4
 ScrollContainer_HCMargsOnly/constants/scrollbar_v_separation = 8
 ScrollContainer_HCMargsOnly/styles/focus = SubResource("StyleBoxEmpty_aav5c")
 ScrollContainer_HCMargsOnly/styles/panel = SubResource("StyleBoxEmpty_aav5c")

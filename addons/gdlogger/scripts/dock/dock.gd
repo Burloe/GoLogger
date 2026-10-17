@@ -109,7 +109,6 @@ const COLOR_TO_STYLEBOX := {
 @onready var help_concurrency: 		FoldableContainer = %ConcurrencyHelp
 @onready var help_functions: 			FoldableContainer = %FunctionsHelp
 @onready var help_hotkeys: 				FoldableContainer = %HotkeysHelp
-@onready var help_file_limits: 		FoldableContainer = %FileLimitsHelp
 @onready var help_formatting: 		FoldableContainer = %FormattingHelp
 
 @onready var settings = EditorInterface.get_editor_settings()
@@ -238,7 +237,6 @@ func _init_visibility() -> void:
 		help_concurrency,
 		help_functions,
 		help_hotkeys,
-		help_file_limits,
 		help_formatting
 	]
 

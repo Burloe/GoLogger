@@ -34,7 +34,8 @@ func _disable_plugin() -> void:
 
 
 
-func _renable_plugin() -> void: 
-	print("GDLogger: Reload complete.")
-	_exit_tree()
-	_enter_tree()
+func _renable_plugin() -> void:
+	if Input.is_key_pressed(KEY_CTRL):
+		_exit_tree()
+		_enter_tree()
+		print_rich("GDLogger: Reload complete. Good job finding this ദ്ദി(ᵔᗜᵔ)")

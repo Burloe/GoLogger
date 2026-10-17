@@ -93,7 +93,6 @@ func _ready() -> void:
 	is_default = is_default # loads the icon
 	apply_btn.disabled = line_edit.text.is_empty()
 	revert_btn.disabled = false
-	line_edit.size.x = 110
 
 	revert_btn.button_up.connect(
 		func() -> void:
