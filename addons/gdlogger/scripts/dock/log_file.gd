@@ -9,11 +9,6 @@ class_name GDLLogFile extends Button
 const DISPLAY_NAME_CHAR_LIMIT: int = 18
 const DATA_PATH: String = "res://addons/gdlogger/data.tres"
 
-# var selected: bool = false:
-# 	set(value):
-# 		selected = value
-		# add_theme_stylebox_override("normal", 				sb_selected if value else sb_unselected)
-		# add_theme_stylebox_override("pressed", 				sb_selected if value else sb_unselected)
 var base_dir
 var category_name: String = ""
 var file_path: String = ""

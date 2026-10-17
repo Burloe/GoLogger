@@ -606,13 +606,12 @@ func _get_logfile_color(used_colors: Array[Color]) -> Color:
 	var best_color := Color.WHITE
 	var best_dist := -1.0
 
-	# Sample candidate hues and keep the one furthest from every hue already used.
 	for i in 24:
 		var hue := randf()
 		var min_dist := 1.0
 		for used: Color in used_colors:
 			var d := absf(hue - used.h)
-			min_dist = minf(min_dist, minf(d, 1.0 - d)) # Hue is circular
+			min_dist = minf(min_dist, minf(d, 1.0 - d))
 
 		if min_dist > best_dist:
 			best_dist = min_dist

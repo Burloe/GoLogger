@@ -48,8 +48,8 @@ var category_name: String = "":
 			if default_btn:
 				default_btn.disabled = category_name.is_empty() 
 
-## Only used to assign icon -> use default_btn.button_pressed to check if def
-var is_default: bool = false:
+
+var is_default: bool = false: ## Only used to assign icon, use default_btn.button_pressed to check if def
 	set(value):
 		is_default = value
 		default_btn.icon = def_unselected_ico if category_name.is_empty() else def_selected_ico if value else def_unselected_ico

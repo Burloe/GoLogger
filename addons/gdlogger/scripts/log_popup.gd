@@ -9,6 +9,7 @@ signal close_logfile
 @onready var settings_btn: Button = %SettingsButton
 @onready var close_btn: Button = %CloseButton
 @onready var filename_lbl: Label = %FileNameLabel
+@onready var content_scroll_container: ScrollContainer = %ContentScrollContainer
 @onready var content_lbl: Label = %ContentLabel
 @onready var lbsett_inspector: EditorInspector = %LblSettingsEditorInspector
 @onready var settings = EditorInterface.get_editor_settings()
@@ -56,6 +57,8 @@ func _ready() -> void:
 
 
 func _on_about_to_popup() -> void:
+	content_scroll_container.scroll_horizontal = 0
+	content_scroll_container.scroll_vertical = 0
 	if first_popup:
 		first_popup = false
 		call_deferred("_save_popup_position")

@@ -314,7 +314,7 @@ func regen_data() -> void:
 
 
 
-## Saves dock state to file. "external_source" is used to debug what func/signal called this from another tab script.
+## Saves category state to file. "external_source" is used to debug what func/signal called this from another tab script.
 func save_data(ignore_errors: bool = false, external_source: String = "") -> void: 
 	if is_shutting_down:
 		return

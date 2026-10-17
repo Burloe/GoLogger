@@ -139,6 +139,7 @@ size_flags_vertical = 3
 theme = ExtResource("3_bte71")
 
 [node name="ContentScrollContainer" type="ScrollContainer" parent="Control/VBoxContainer/VSplitContainer" unique_id=90701162]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("3_bte71")

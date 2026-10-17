@@ -158,5 +158,5 @@ This file should be deleted if it was installed with the plugin. Please only ins
 
 ### Help Tab
 
-- [ ] Spellcheck and grammar check all help content.
-- [ ] Ensure all help text matches the latest version.
+- [x] Spellcheck and grammar check all help content.
+- [x] Ensure all help text matches the latest version.
