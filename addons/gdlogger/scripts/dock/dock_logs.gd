@@ -39,7 +39,9 @@ signal request_categories_save
 var inspector: EditorInspector
 
 const LOG_FILE_BUTTON := preload("uid://bq7nahsc5aca7")
-const CATEGORY_SCENE = preload("uid://c3n416c5fajm5") 
+const CATEGORY_SCENE = preload("uid://c3n416c5fajm5")
+const HUE_STEP := 0.618034 # Golden ratio conjugate: consecutive hues stay well separated.
+const LOGFILE_COLOR_ITEMS: Array[String] = ["font_color", "font_hover_color", "font_hover_pressed_color"]
 
 var is_active: bool = true
 var is_shutting_down: bool = false
@@ -123,11 +125,19 @@ func _ready() -> void:
 		func(toggled_on: bool) -> void: 
 			reload_automatically = toggled_on
 			poll_rate_container.modulate = Color.WHITE if toggled_on else Color("ffffff46")
+			if toggled_on:
+				polling_timer.stop()
+				polling_timer.wait_time = data.poll_rate
+				polling_timer.start(data.poll_rate)
+			else:	polling_timer.stop()
 	)
 	poll_rate_slider.drag_ended.connect(
 		func(toggled_on: bool) -> void: 
 			poll_rate_value = poll_rate_slider.value
 			poll_rate_lbl.text = str("Poll Rate\n", data.poll_rate, " sec")
+			polling_timer.stop()
+			polling_timer.wait_time = data.poll_rate
+			polling_timer.start(data.poll_rate)
 	)
 	open_w_os_btn.toggled.connect(func(toggled_on: bool) -> void: open_log_with_os = toggled_on)
 	colorcode_btn.toggled.connect(_on_colorcode_changed)
@@ -375,8 +385,7 @@ func load_log_files(is_initializing: bool = false) -> void: ## Used to both init
 
 		is_reloading = true
 		_reconcile_log_files(target_files, current_category)
-		_on_colorcode_changed(data.colorcode_dates)
-
+		_apply_logfile_colors()
 		is_reloading = false
 
 
@@ -390,56 +399,44 @@ func _clear_all_log_files() -> void:
 
 
 func _reconcile_log_files(target_files: Array, category_name: String) -> void:
-		var existing_by_name: Dictionary = {}
-		for lf in log_files:
+	var existing_by_name: Dictionary = {}
+	for lf in log_files:
+		if is_instance_valid(lf):
+			existing_by_name[lf.file_name] = lf
+
+	var target_set: Dictionary = {}
+	for file_name in target_files:
+		target_set[file_name] = true
+
+	for file_name in existing_by_name.keys():
+		if not target_set.has(file_name):
+			var lf: GDLLogFile = existing_by_name[file_name]
 			if is_instance_valid(lf):
-					existing_by_name[lf.file_name] = lf
+				file_container.remove_child(lf)
+				lf.queue_free()
+			existing_by_name.erase(file_name)
 
-		var target_set: Dictionary = {}
-		for file_name in target_files:
-			target_set[file_name] = true
+	var updated_log_files: Array[GDLLogFile] = []
 
-		for file_name in existing_by_name.keys():
-			if not target_set.has(file_name):
-				var lf: GDLLogFile = existing_by_name[file_name]
-				if is_instance_valid(lf):
-					file_container.remove_child(lf)
-					lf.queue_free()
-				existing_by_name.erase(file_name)
+	for i in range(target_files.size()):
+		var file_name: String = str(target_files[i])
+		var lf: GDLLogFile = null
 
-		var updated_log_files: Array[GDLLogFile] = []
-		var colorcode: Color = Color.BLACK
-		var used_cols: Array[Color] = []
-		var prev_file: String = ""
-
-		for i in range(target_files.size()):
-			var file_name: String = str(target_files[i])
-			var lf: GDLLogFile = null
-
-			if existing_by_name.has(file_name):
-				lf = existing_by_name[file_name]
-				if lf.get_index() != i:
-					file_container.move_child(lf, i)
-			else:
-				lf = _create_logfile_obj(category_name, file_name)
-				if lf == null:
-					continue
-				file_container.add_child(lf)
+		if existing_by_name.has(file_name):
+			lf = existing_by_name[file_name]
+			if lf.get_index() != i:
 				file_container.move_child(lf, i)
-				lf.button_up.connect(_open_log_file.bind(lf))
+		else:
+			lf = _create_logfile_obj(category_name, file_name)
+			if lf == null:
+				continue
+			file_container.add_child(lf)
+			file_container.move_child(lf, i)
+			lf.button_up.connect(_open_log_file.bind(lf))
 
-			if data.colorcode_dates:
-				var new_c := _get_logfile_color(used_cols)
-				var pdate: String = prev_file.lstrip(str(category_name, "(")).rstrip(").log")
-				var cdate: String = file_name.lstrip(str(category_name, "(")).rstrip(").log")
-				if prev_file.is_empty() or !cdate.begins_with(pdate.substr(0, 6)):
-					colorcode = _get_logfile_color(used_cols)
-					used_cols.append(colorcode)
+		updated_log_files.append(lf)
 
-			updated_log_files.append(lf)
-			prev_file = file_name
-
-		log_files = updated_log_files
+	log_files = updated_log_files
 
 
 
@@ -570,31 +567,50 @@ func _on_polling_rate_slider_value_changed(value_changed: bool) -> void:
 
 
 func _on_colorcode_changed(toggled_on: bool) -> void:
-	var files := file_container.get_children() 
-	var colorcode: Color = Color.BLACK
-	var used_cols: Array[Color]= []
-	var prev_file: GDLLogFile = null
 	data.colorcode_dates = toggled_on
+	_apply_logfile_colors()
 
-	if files.is_empty():
-		return
 
-	for cur_file: GDLLogFile in files:
-		var file_name = cur_file.file_name
-		if data.colorcode_dates:
-			var pdate: String = prev_file.date_stamp if prev_file else ""
 
-			if !prev_file or !cur_file.date_stamp.contains(prev_file.date_stamp):
-				colorcode = _get_logfile_color(used_cols)
-				used_cols.append(colorcode)
-			cur_file.add_theme_color_override("font_color", 							colorcode)
-			cur_file.add_theme_color_override("font_hover_color", 				colorcode.lightened(0.2))
-			cur_file.add_theme_color_override("font_hover_pressed_color", colorcode.darkened(0.2))
-		else:
-			cur_file.remove_theme_color_override("font_color")
-			cur_file.remove_theme_color_override("font_hover_color")
-			cur_file.remove_theme_color_override("font_hover_pressed_color")
-		prev_file = cur_file
+func _apply_logfile_colors() -> void:
+	var group := -1
+	var color := Color.WHITE
+	var prev_date := ""
+
+	for file: GDLLogFile in file_container.get_children():
+		if not data.colorcode_dates:
+			_clear_logfile_color(file)
+			continue
+
+		if group < 0 or not file.date_stamp.contains(prev_date):
+			group += 1
+			color = _get_group_color(group)
+
+		_set_logfile_color(file, color)
+		prev_date = file.date_stamp
+
+
+
+func _get_group_color(group: int) -> Color:
+	var is_dark: bool = settings.get_setting("interface/theme/base_color").get_luminance() <= 0.5
+	var saturation := 0.75 if is_dark else 0.9
+	var value := 0.95 if is_dark else 0.55
+	return Color.from_hsv(fmod(group * HUE_STEP, 1.0), saturation, value)
+
+
+
+func _set_logfile_color(file: GDLLogFile, color: Color) -> void:
+	file.add_theme_color_override("font_color", color)
+	file.add_theme_color_override("font_hover_color", color.lightened(0.2))
+	file.add_theme_color_override("font_hover_pressed_color", color.darkened(0.2))
+
+
+
+func _clear_logfile_color(file: GDLLogFile) -> void:
+	for item in LOGFILE_COLOR_ITEMS:
+		file.remove_theme_color_override(item)
+
+
 
 
 

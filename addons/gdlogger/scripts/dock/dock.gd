@@ -36,6 +36,79 @@ const COLOR_TO_STYLEBOX := {
 	}
 }
 
+const BUTTON_STATES := ["normal", "hover", "pressed", "hover_pressed", "disabled"]
+const TAB_CONTAINER_RULES := {
+	"base_col-1": ["panel"],
+	"accent_col": ["tab_selected"],
+}
+
+# {control_type: {colour_tag: [stylebox names]}}. "*" matches every stylebox; unlisted ones stay "base_col".
+const STYLEBOX_COLORS := {
+	"Button_Accented": {
+		"accent_col": ["normal"],
+		"accent_col+1": ["hover"],
+		"accent_col-1": ["pressed", "hover_pressed"],
+	},
+	"Button_CategoryLoad": {"accent_col": ["hover", "pressed", "hover_pressed", "disabled"]},
+	"Button_CategoryRevertButton": {"base_col-1": BUTTON_STATES},
+	"Button_SortButton": {"base_col-2": BUTTON_STATES},
+	"LogFile": {"base_col+1": ["hover"], "base_col-1": ["pressed", "hover_pressed"]},
+	"LineEdit": {"base_col-1": ["*"]},
+	"LineEdit_CategoryFieldValid": {"base_col-1": ["*"]},
+	"LineEdit_CategoryFieldInvalid": {"base_col-1": ["*"]},
+	"HScrollBar": {"base_col+1": ["grabber_highlight"], "base_col-1": ["grabber_pressed"]},
+	"VScrollBar": {"base_col+1": ["grabber_highlight"], "base_col-1": ["grabber_pressed"]},
+	"OptionButton": {"base_col-1": ["normal", "hover"], "base_col-2": ["pressed", "hover_pressed"]},
+	"Panel": {"base_col-2": ["*"]},
+	"Panel_BaseCol_NoCMarg": {"base_col-2": ["*"]},
+	"PopupMenu": {"base_col+2": ["hover", "separator"], "base_col-2": ["panel"]},
+	"PanelContainer_CategoryToolbar": {"base_col-1": ["panel"]},
+	"PanelContainer_TabBar": {"base_col-2": ["panel"]},
+	"ScrollContainer": {"base_col-1": ["*"]},
+	"ScrollContainer_HCMargsOnly": {"base_col-1": ["*"]},
+	"ScrollContainer_NoCMargs": {"base_col-1": ["*"]},
+	"SpinBox": {"base_col-1": [
+		"down_background", "down_background_hover", "down_background_pressed",
+		"up_background", "up_background_hover", "up_background_pressed",
+	]},
+	"TabBar": {"base_col-1": ["tab_hovered"]},
+	"TabContainer": TAB_CONTAINER_RULES,
+	"TabContainer_NoHCMargs": TAB_CONTAINER_RULES,
+	"HSeparator": {"base_col+2": ["separator"]},
+	"VSeparator": {"base_col+2": ["separator"]},
+	"HSeparator_Weak": {"base_col+1": ["separator"]},
+	"VSeparator_Weak": {"base_col+1": ["separator"]},
+}
+
+const BORDER_COLORS := {
+	"LogFile": {"accent_col": ["hover"], "accent_col-1": ["pressed", "hover_pressed"]},
+}
+
+# {control_type: {colour_name: stylebox whose background decides the colour}}
+const SPECIAL_COLORS := {
+	"Button_RevertButton": {"icon_disabled_color": "disabled"},
+	"FoldableContainer": {
+		"collapsed_font_color": "title_collapsed_panel",
+		"hover_font_color": "title_collapsed_hover_panel",
+	},
+	"LineEdit_CategoryFieldValid": {"caret_color": "focus"},
+	"OptionButton": {
+		"hover_font_color": "hover",
+		"pressed_font_color": "pressed",
+		"icon_hover_color": "hover",
+		"icon_pressed_color": "pressed",
+		"icon_hover_pressed_color": "hover_pressed",
+	},
+	"SpinBox": {
+		"down_icon_modulate": "down_background",
+		"down_hover_icon_modulate": "down_background",
+		"down_pressed_icon_modulate": "down_background",
+		"up_icon_modulate": "up_background",
+		"up_hover_icon_modulate": "down_background",
+		"up_pressed_icon_modulate": "down_background",
+	},
+}
+
 @export var data: GDLData = null
 @onready var renable_btn: Button = %RENABLEButton
 @onready var docktab_container: TabContainer = %DockTabContainer
@@ -181,8 +254,6 @@ func _ready() -> void:
 
 	debounce_timer.wait_time = THEME_DEBOUNCE_SEC
 	debounce_timer.timeout.connect(_apply_theme_colors)
-
-	_apply_theme_colors()
 
 	docktab_container.tab_changed.connect(
 		func(tab: int) -> void: 
@@ -367,14 +438,6 @@ func _open_directory() -> void:
 #region Theme
 
 func _on_editor_settings_changed() -> void:
-	var col_settings: Array = [
-		settings.get_setting("interface/theme/follow_system_theme"), 
-		settings.get_setting("interface(theme/color_preset)"), 
-		settings.get_setting("interface/theme/icon_and_font_color"),
-		settings.get_setting("interface/theme/base_color"),
-		settings.get_setting("interface/theme/accent_color")
-	]
-
 	var new_base: Color = settings.get_setting("interface/theme/base_color")
 	var new_accent: Color = settings.get_setting("interface/theme/accent_color")
 	var new_contrast: float = settings.get_setting("interface/theme/contrast")
@@ -464,210 +527,71 @@ func _apply_font_icon_colors(tags: Dictionary) -> void:
 			gdl_theme.set_color(color_name, control_type,
 				_font_for_bg(bg, _state_from_name(color_name), contrast))
 
+	var base_is_dark: bool = tags["base_col"].get_luminance() < 0.5
+	var text_color: Color = FONT_LIGHT if base_is_dark else FONT_DARK
+
 	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
-		gdl_theme.set_color(c, "CheckButton", FONT_LIGHT if tags["base_col"].get_luminance() < 0.5 else FONT_DARK)
-	for c in [sett_entry_format_revert_btn, sett_log_header_revert_btn, sett_base_dir_revert_btn]:
-		gdl_theme.set_color("caret_color", "LineEdit_FormatFields", Color.WHITE if tags["base_col"].get_luminance() < 0.5 else Color.BLACK)
+		gdl_theme.set_color(c, "CheckButton", text_color)
+	gdl_theme.set_color("caret_color", "LineEdit_FormatFields", Color.WHITE if base_is_dark else Color.BLACK)
 
-	var special_cases: Dictionary = {
-		"Button_RevertButton": [
-			["icon_disabled_color", "disabled"]
-		],
-		"FoldableContainer": [
-			["collapsed_font_color", "title_collapsed_panel"],
-			["hover_font_color", "title_collapsed_hover_panel"]
-		],
-		"LineEdit_CategoryFieldsValid": [
-			["caret_color", "focus"]
-		],
-		"OptionButton": [
-			["hover_font_color", "hover"],
-			["pressed_font_color", "pressed"],
-			["icon_hover_color", "hover"],
-			["icon_pressed_color", "pressed"],
-			["icon_hover_pressed_color", "hover_pressed"]
-		],
-		"SpinBox": [
-			["down_icon_modulate", "down_background"],
-			["down_hover_icon_modulate", "down_background"],
-			["down_pressed_icon_modulate", "down_background"],
-			["up_icon_modulate", "up_background"],
-			["up_hover_icon_modulate", "down_background"],
-			["up_pressed_icon_modulate", "down_background"]
-		]
-	}
+	for ctrl_type in SPECIAL_COLORS:
+		for color_name in SPECIAL_COLORS[ctrl_type]:
+			var stylebox_name: String = SPECIAL_COLORS[ctrl_type][color_name]
+			var stylebox := gdl_theme.get_stylebox(stylebox_name, ctrl_type) as StyleBoxFlat
+			if stylebox == null:
+				continue
+			gdl_theme.set_color(color_name, ctrl_type, _special_color(color_name, stylebox.bg_color))
 
-	for ctrl_type in special_cases:
-		for entry in special_cases[ctrl_type]:
-			var color_name: String = entry[0]
-			var stylebox_name: String = entry[1]
-			var stylebox := gdl_theme.get_stylebox(stylebox_name, ctrl_type)
-			var color: Color = FONT_LIGHT if stylebox.bg_color.get_luminance() < 0.5 else FONT_DARK
-			
-			gdl_theme.set_color(color_name, ctrl_type, color)
 
-			if color_name.contains("icon"):
-				
-				if color_name.contains("hover"):
-					var _col = Color.WHITE if stylebox.bg_color.get_luminance() < 0.5 else Color.BLACK.lightened(0.25)
-					gdl_theme.set_color(color_name, ctrl_type, _col)
-				
-				if color_name.contains("pressed"):
-					var _col = Color.WHITE.darkened(0.3) if stylebox.bg_color.get_luminance() < 0.5 else Color.BLACK.darkened(0.05)
-					gdl_theme.set_color(color_name, ctrl_type, _col)
-				
-				if color_name.contains("disabled"):
-					var _col = Color("d9d9d932") if stylebox.bg_color.get_luminance() < 0.5 else Color("26262632")
-					gdl_theme.set_color(color_name, ctrl_type, _col)
+
+func _special_color(color_name: String, bg: Color) -> Color:
+	var bg_is_dark := bg.get_luminance() < 0.5
+
+	if color_name.contains("icon"):
+		# Priority: disabled beats pressed beats hover.
+		if color_name.contains("disabled"):
+			return Color("d9d9d932") if bg_is_dark else Color("26262632")
+		if color_name.contains("pressed"):
+			return Color.WHITE.darkened(0.3) if bg_is_dark else Color.BLACK.darkened(0.05)
+		if color_name.contains("hover"):
+			return Color.WHITE if bg_is_dark else Color.BLACK.lightened(0.25)
+
+	return FONT_LIGHT if bg_is_dark else FONT_DARK
 		
 
 
 func _apply_theme_colors() -> void:
-	var tags: Dictionary = _get_theme_colors()	
+	var tags: Dictionary = _get_theme_colors()
 	gdl_theme.set_block_signals(true)
 
 	for control_type in gdl_theme.get_stylebox_type_list():
+		if control_type == "EditorIcons":
+			continue
+
 		for stylebox_name in gdl_theme.get_stylebox_list(control_type):
 			var sb: StyleBox = gdl_theme.get_stylebox(stylebox_name, control_type)
-					
-			if control_type == "EditorIcons":
-				continue
-			
-			if sb is not StyleBoxFlat and sb is not StyleBoxLine:
-				continue
+			var color: Color = tags[_lookup_tag(STYLEBOX_COLORS, control_type, stylebox_name, "base_col")]
 
 			if sb is StyleBoxFlat:
-				sb.bg_color = tags["base_col"]
-			else:
-				sb.color = tags["base_col"]
+				sb.bg_color = color
+				var border_tag := _lookup_tag(BORDER_COLORS, control_type, stylebox_name)
+				if not border_tag.is_empty():
+					sb.border_color = tags[border_tag]
+			elif sb is StyleBoxLine:
+				sb.color = color
 
-			match control_type:
-				"Button_Accented":
-					match stylebox_name:
-						"normal": 											sb.bg_color = tags["accent_col"]
-						"hover":												sb.bg_color = tags["accent_col+1"]
-						"pressed":											sb.bg_color = tags["accent_col-1"]
-						"hover_pressed":								sb.bg_color = tags["accent_col-1"]
-				"Button_CategoryLoad":
-					match stylebox_name:
-						"normal": 											sb.bg_color = tags["base_col"]
-						"hover":												sb.bg_color = tags["accent_col"]
-						"pressed":											sb.bg_color = tags["accent_col"]
-						"hover_pressed":								sb.bg_color = tags["accent_col"]
-						"disabled":											sb.bg_color = tags["accent_col"]
-				"Button_RevertButton":
-					match stylebox_name:
-						"normal": 											sb.bg_color = tags["base_col"]
-						"hover":												sb.bg_color = tags["base_col"]
-						"pressed":											sb.bg_color = tags["base_col"]
-						"hover_pressed":								sb.bg_color = tags["base_col"]
-						"disabled":											sb.bg_color = tags["base_col"]
-				"Button_CategoryRevertButton":
-					match stylebox_name:
-						"normal": 											sb.bg_color = tags["base_col-1"]
-						"hover":												sb.bg_color = tags["base_col-1"]
-						"pressed":											sb.bg_color = tags["base_col-1"]
-						"hover_pressed":								sb.bg_color = tags["base_col-1"]
-						"disabled":											sb.bg_color = tags["base_col-1"]
-				"Button_SortButton":
-					match stylebox_name:
-						"normal": 											sb.bg_color = tags["base_col-2"]
-						"hover":												sb.bg_color = tags["base_col-2"]
-						"pressed":											sb.bg_color = tags["base_col-2"]
-						"hover_pressed":								sb.bg_color = tags["base_col-2"]
-						"disabled":											sb.bg_color = tags["base_col-2"]
-				
-				"LogFile":
-					match stylebox_name:
-						"hover": 							
-							sb.bg_color = tags["base_col+1"]
-							sb.border_color = tags["accent_col"]
-						"pressed":
-							sb.bg_color = tags["base_col-1"]
-							sb.border_color = tags["accent_col-1"]
-						"hover_pressed":
-							sb.bg_color = tags["base_col-1"]
-							sb.border_color = tags["accent_col-1"]
-						
-				"LineEdit":													
-					sb.bg_color = tags["base_col-1"]
-				"LineEdit_FormatFields":						
-					sb.bg_color = tags["base_col"]
-				"LineEdit_FormatFieldsInvalid":
-					sb.bg_color = tags["base_col"]
-				"LineEdit_CategoryFieldValid":			
-					sb.bg_color = tags["base_col-1"]
-				"LineEdit_CategoryFieldInvalid":		
-					sb.bg_color = tags["base_col-1"]
-				
-				"HScrollBar", "VScrollBar":
-					match stylebox_name:
-						"grabber_highlight": 						sb.bg_color = tags["base_col+1"]
-						"grabber_pressed": 							sb.bg_color = tags["base_col-1"]
-				
-				"OptionButton":
-					match stylebox_name:
-						"normal":												sb.bg_color = tags["base_col-1"]
-						"hover": 												sb.bg_color = tags["base_col-1"]
-						"pressed":											sb.bg_color = tags["base_col-2"]
-						"hover_pressed":								sb.bg_color = tags["base_col-2"]
-				
-				"Panel":														sb.bg_color = tags["base_col-2"]
-				"Panel_BaseCol_NoCMarg":						sb.bg_color = tags["base_col-2"]				
-				"PopupMenu":
-					match stylebox_name:
-						"hover": 												sb.bg_color = tags["base_col+2"]
-						"panel": 												sb.bg_color = tags["base_col-2"]
-						"separator": 										sb.color 		= tags["base_col+2"]
-				
-				"PanelContainer_CategoryToolbar":
-					match stylebox_name:
-						"panel":												sb.bg_color = tags["base_col-1"]
-				"PanelContainer_TabBar":
-					match stylebox_name:
-						"panel": 												sb.bg_color = tags["base_col-2"]
-
-				"SpinBox":
-					match stylebox_name:
-						"down_background":							sb.bg_color = tags["base_col-1"]
-						"down_background_hover":				sb.bg_color = tags["base_col-1"]
-						"down_background_pressed":			sb.bg_color = tags["base_col-1"]
-						"up_background":								sb.bg_color = tags["base_col-1"]
-						"up_background_hover":					sb.bg_color = tags["base_col-1"]
-						"up_background_pressed":				sb.bg_color = tags["base_col-1"]
-
-				"TabBar":
-					match stylebox_name:
-						"tab_hovered": 									sb.bg_color = tags["base_col-1"]
-						"tab_selected": 								sb.bg_color = tags["base_col"]
-				
-				"TabContainer":
-					match stylebox_name:
-						"panel": 												sb.bg_color = tags["base_col-1"]
-						"tab_selected":									sb.bg_color = tags["accent_col"]
-						"tab_bar_background": 					sb.bg_color = tags["base_col"]
-				"TabContainer_NoHCMargs":
-					match stylebox_name:
-						"panel": 												sb.bg_color = tags["base_col-1"]
-						"tab_selected":									sb.bg_color = tags["accent_col"]
-						"tab_bar_background": 					sb.bg_color = tags["base_col"]
-
-				
-				"ScrollContainer":									sb.bg_color = tags["base_col-1"]
-				"ScrollContainer_HCMargsOnly": 			sb.bg_color = tags["base_col-1"]
-				"ScrollContainer_NoCMargs":		 			sb.bg_color = tags["base_col-1"]
-				
-				"HSeparator", "VSeparator":
-					match stylebox_name:
-						"separator": sb.color = tags["base_col+2"]
-				"HSeparator_Weak", "VSeperator_Weak":
-					match stylebox_name:
-						"separator": sb.color = tags["base_col+1"]
-		
-	# Apply colors
 	_apply_font_icon_colors(tags)
 
 	gdl_theme.set_block_signals(false)
 	gdl_theme.emit_changed()
+
+
+
+func _lookup_tag(rules: Dictionary, control_type: String, stylebox_name: String, fallback: String = "") -> String:
+	var type_rules: Dictionary = rules.get(control_type, {})
+	for tag in type_rules:
+		if stylebox_name in type_rules[tag] or "*" in type_rules[tag]:
+			return tag
+	return fallback
 
 #endregion

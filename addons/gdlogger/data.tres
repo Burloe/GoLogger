@@ -13,3 +13,5 @@ is_default = true
 script = ExtResource("2_ru745")
 categories = Array[ExtResource("1_u03vm")]([SubResource("Resource_u03vm")])
 default_category = "game"
+browser_sort = 1
+colorcode_dates = true

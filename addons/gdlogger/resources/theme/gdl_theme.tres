@@ -984,7 +984,7 @@ grow_end = -2.0
 vertical = true
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_31vl3"]
-color = Color(0.1882353, 0.2784314, 0.28627452, 1)
+color = Color(0.35058826, 0.4227451, 0.42901963, 1)
 grow_begin = -2.0
 grow_end = -2.0
 thickness = 2
@@ -1146,6 +1146,7 @@ LineEdit_CategoryFieldInvalid/colors/selection_color = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldInvalid/styles/focus = SubResource("StyleBoxFlat_6khnw")
 LineEdit_CategoryFieldInvalid/styles/normal = SubResource("StyleBoxFlat_6khnw")
 LineEdit_CategoryFieldValid/base_type = &"LineEdit"
+LineEdit_CategoryFieldValid/colors/caret_color = Color(0.85, 0.85, 0.85, 1)
 LineEdit_CategoryFieldValid/colors/clear_button_color = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldValid/colors/clear_button_color_pressed = Color(0, 0, 0, 1)
 LineEdit_CategoryFieldValid/colors/font_color = Color(0.85, 0.85, 0.85, 1)

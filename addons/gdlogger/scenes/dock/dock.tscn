@@ -181,7 +181,6 @@ metadata/_edit_horizontal_guides_ = [56.0, 48.0, 40.0]
 
 [node name="PollingTimer" type="Timer" parent="." unique_id=1836800660]
 unique_name_in_owner = true
-autostart = true
 ignore_time_scale = true
 
 [node name="DebounceTimer" type="Timer" parent="." unique_id=240096999]
@@ -515,7 +514,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_o07th")
 theme_override_constants/tab_separation = 33
-current_tab = 2
+current_tab = 0
 tab_alignment = 1
 tab_count = 3
 tab_0/title = "Entry Count"
@@ -595,6 +594,7 @@ suffix = "cap"
 
 [node name="SessionTimer" type="PanelContainer" parent="DockTabContainer/SettingsTab/HBoxContainer/LSettingsPanel/VBoxContainer/GeneralFoldableContainer/VBoxContainer/BoxContainer" unique_id=1003170145]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(304, 40)
 custom_maximum_size = Vector2(304, 40)
 layout_mode = 2
@@ -686,7 +686,7 @@ tooltip_text = "Limits the number of files in any log category folder.
 Zero value disables this feature"
 theme = ExtResource("4_o07th")
 theme_type_variation = &"Spinbox_Limits"
-value = 50.0
+value = 10.0
 rounded = true
 allow_greater = true
 update_on_text_changed = true
@@ -940,6 +940,7 @@ theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.0745098
 theme_override_colors/icon_hover_color = Color(1, 0.5126667, 0.13999999, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.3, 0.07500002, 1)
 theme_override_constants/outline_size = 8
+disabled = true
 icon = SubResource("DPITexture_l2oj6")
 icon_alignment = 1
 
@@ -1032,6 +1033,7 @@ theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.0745098
 theme_override_colors/icon_hover_color = Color(1, 0.5126667, 0.13999999, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.3, 0.07500002, 1)
 theme_override_constants/outline_size = 8
+disabled = true
 icon = SubResource("DPITexture_l2oj6")
 icon_alignment = 1
 
@@ -1159,6 +1161,7 @@ theme_override_colors/icon_pressed_color = Color(0.7490196, 0.3019608, 0.0745098
 theme_override_colors/icon_hover_color = Color(1, 0.5126667, 0.13999999, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.75, 0.3, 0.07500002, 1)
 theme_override_constants/outline_size = 8
+disabled = true
 icon = SubResource("DPITexture_l2oj6")
 icon_alignment = 1
 
@@ -1302,10 +1305,12 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_o07th")
+folded = true
 title = "Functions"
 foldable_group = SubResource("FoldableGroup_fx5fv")
 
 [node name="BoxContainer" type="BoxContainer" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/FunctionsHelp" unique_id=140892089]
+visible = false
 layout_mode = 2
 vertical = true
 
@@ -1403,10 +1408,12 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_o07th")
+folded = true
 title = "Instance ID & Multiple Instances"
 foldable_group = SubResource("FoldableGroup_tvbkj")
 
 [node name="ConcurrencyLabel" type="Label" parent="DockTabContainer/HelpTab/GettingStarted/VBoxContainer/ConcurrencyHelp" unique_id=709873131]
+visible = false
 custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1596,7 +1603,7 @@ layout_mode = 2
 tooltip_text = "Automatically reload log files in Logs tab"
 theme = ExtResource("4_o07th")
 theme_type_variation = &"Button_SortButton"
-text = "New first "
+text = "Old first "
 alignment = 2
 
 [node name="Label" type="Label" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox/LGSortButton" unique_id=1289453834]
@@ -1620,6 +1627,7 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Automatically reload log files in Logs tab"
 theme = ExtResource("4_o07th")
+button_pressed = true
 text = "Color code files by day"
 
 [node name="PanelContainer2" type="PanelContainer" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox" unique_id=2072660849]
@@ -1653,7 +1661,6 @@ text = "Automatic file reloading"
 
 [node name="PollRateBoxContainer" type="BoxContainer" parent="DockTabContainer/LogsSettingsPanelPopup/LogSettingsContentBox/PanelContainer3/BoxContainer" unique_id=749020193]
 unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0.27450982)
 layout_mode = 2
 tooltip_text = "Set the frequency of the automatic reload
 "
